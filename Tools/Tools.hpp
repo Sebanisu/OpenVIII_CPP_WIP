@@ -27,13 +27,31 @@ Case Insensitive strings equal
         //todo std::equal constexpr in cpp20
     }
 
-    template<typename T>
+
+    //Replace all of one char to another char. The arguments are static_cast to the same type as the smallest sizeof.
+    //I use this to make the separator on windows or linux matches the strings.
+    template<typename T, typename T2>
     [[maybe_unused]] constexpr inline static void
-    replaceAll(std::string &haystack, const T &needle, const T &replacement) noexcept {
+    replaceAll(std::string &haystack, const T &needleIn, const T2 &replacementIn) noexcept {
+
+        if (needleIn == replacementIn)
+        {
+            return;
+        }
+        //handle when T2 doesn't match T
+        const auto replacement = (sizeof(T) < sizeof(T2))
+                ? static_cast<T>(replacementIn)
+                : replacementIn;
+        const auto needle = (sizeof(T2) < sizeof(T))
+                ? static_cast<T2>(needleIn)
+                : needleIn;
+        //windows uses a wchar_t instead of char. So I need to static cast to make them both match
+        //though might need at least one value to be char. I'm unsure what would happen if we were in
+        //a unicode mode.
         if (needle == replacement) {
             return;
         }
-        auto replace = [needle, replacement](const T &input) {
+        const auto replace = [needle, replacement](const T &input) {
             return input == needle ? replacement : input;
         };
         std::transform(haystack.begin(), haystack.end(), haystack.begin(), replace);

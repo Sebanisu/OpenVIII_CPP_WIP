@@ -135,6 +135,56 @@ namespace OpenVIII::Archive {
                 fp.close();
             }
         }
+        //todo move getfiles to here
+        static auto GetFiles(const std::string_view path) {
+            //order must match switch below
+            static constexpr const std::array<std::string_view, 3> extensions = {OpenVIII::Archive::FL::Ext,
+                                                                                 OpenVIII::Archive::FS::Ext,
+                                                                                 OpenVIII::Archive::FI::Ext};
+            const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
+            auto tmp = std::map<std::string, OpenVIII::Archive::FIFLFS>();
+            auto archive = OpenVIII::Archive::FIFLFS();
+            for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
+                if (fileEntry.is_regular_file()) {
+                    unsigned char i = 0;
+                    for (const auto &ext : extensions) {
+                        if (OpenVIII::Tools::iEquals(fileEntry.path().extension().string(), ext)) {
+                            switch (i) {
+                                case 0:
+                                    archive.FL(fileEntry);
+                                    break;
+                                case 1:
+                                    archive.FS(fileEntry);
+                                    break;
+                                case 2:
+                                    archive.FI(fileEntry);
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            if (archive.AllSet()) {
+                                auto name = fileEntry.path().filename().stem().string();
+                                std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+                                tmp.insert(std::make_pair(name, archive));
+                                archive = OpenVIII::Archive::FIFLFS();
+                            }
+                            break;
+                        }
+                        i++;
+                    }
+                }
+            }
+            return tmp;
+        }
+
+        static void testPAIR(const std::pair<std::string_view, OpenVIII::Archive::FIFLFS> &pair) {
+            const auto&[name, paths] = pair;
+            std::cout << name << " " << paths << '\n';
+            paths.Test();
+            //testFLPath(paths.FL(),paths.FI());
+        }
+        //todo make getfiles allow recursive archives
     };
 }
 #endif // !_FIFLFS_H

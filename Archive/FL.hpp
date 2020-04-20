@@ -19,8 +19,7 @@ namespace OpenVIII::Archive {
                 }
 
                 input.erase(0, 3);
-                Tools::replaceAll(input, '\\',
-                                  static_cast<char>(std::filesystem::path::preferred_separator)); //windows uses a wchar_t instead of char.
+                Tools::replaceAll(input, '\\', std::filesystem::path::preferred_separator);
             }
         }
 
