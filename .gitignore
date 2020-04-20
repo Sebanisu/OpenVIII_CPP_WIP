@@ -1,0 +1,10 @@
+
+.vs/FIFIFLArchive/v16/.suo
+*.ipch
+*.db
+*.sqlite
+.vs/CMake Overview
+cmake-build-*/
+*/build/
+.vs/VIIIcppTest/v16/.suo
+*.opendb
