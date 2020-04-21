@@ -1,8 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\out"
+    "\\Archive",
+    "\\Compression",
+    "\\out",
+    "\\Tools"
   ],
-  "SelectedNode": "\\CMakeLists.txt",
+  "SelectedNode": "\\Tools\\Tools.hpp",
   "PreviewInSolutionExplorer": false
 }

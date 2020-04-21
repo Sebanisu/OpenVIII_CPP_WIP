@@ -15,6 +15,11 @@ namespace OpenVIII::Compression {
         constexpr static const unsigned int flagsBits = 0xFF00U;
         constexpr static const unsigned int offsetMask = 0xF0U;
         constexpr static const unsigned int countMask = 0x0FU;
+        
+        constexpr static const auto F = 18U;
+        constexpr static const auto N = 4096U;
+        constexpr static const auto N_ = N - 1U;
+        constexpr static const auto THRESHOLD = 2U;
     public:
         // NEW LZSS
         // LZSS.C -- A Data Compression Program
@@ -30,16 +35,13 @@ namespace OpenVIII::Compression {
         // I updated the code to unsigned where anything used a bit op
         // If you know the dstSize you can reserve that space. If not we'll start with an empty vector.
         static auto Decompress(const std::vector<unsigned char> &src,size_t dstSize = 0) {
-            auto dst = std::vector<unsigned char>(dstSize);
+            auto dst = std::vector<unsigned char>();
+            dst.reserve(dstSize);
             auto iterator = src.begin();
             const auto &srcEnd = src.end();
-            constexpr const auto F = 18U;
-            constexpr const auto N = 4096U;
-            constexpr const auto N_ = N - 1;
-            constexpr const int THRESHOLD = 2;
             unsigned int current{0};
-            auto textBuf = std::array<decltype(current),
-                    N + F - 1>(); // ring buffer of size N, with extra F-1 bytes to facilitate string comparison
+            auto textBuf = std::array<unsigned int, N_ + F>();
+            // ring buffer of size N, with extra F-1 bytes to facilitate string comparison
 
             auto r = N - F;
             auto flags = 0U;

@@ -65,11 +65,12 @@ namespace OpenVIII::Archive {
         }
 
         [[maybe_unused]] [[nodiscard]] static std::vector<FI> GetAllEntries(const std::filesystem::path &path) {
-            auto vector = std::vector<FI>(GetCount(path));
+            auto vector = std::vector<FI>();
             auto fp = std::ifstream(path, std::ios::in | std::ios::binary);
             if (!fp.is_open()) {
                 return vector;
             }
+            vector.reserve(GetCount(path));
             for (size_t i = 0; i < std::filesystem::file_size(path); i += Size) {
                 const auto fi = GetEntry(fp, i);
                 vector.push_back(fi);
