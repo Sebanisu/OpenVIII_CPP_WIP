@@ -63,7 +63,7 @@
       <updated>1587487485732</updated>
       <workItem from="1587487489415" duration="223000" />
       <workItem from="1587487713978" duration="7876000" />
-      <workItem from="1587498262827" duration="5059000" />
+      <workItem from="1587498262827" duration="5630000" />
     </task>
     <servers />
   </component>
@@ -79,38 +79,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587487682422" />
-    <state width="1877" height="173" key="GridCell.Tab.0.bottom" timestamp="1587502853246">
+    <state width="1877" height="173" key="GridCell.Tab.0.bottom" timestamp="1587503978016">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="173" key="GridCell.Tab.0.bottom/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587502853246" />
-    <state width="1877" height="173" key="GridCell.Tab.0.center" timestamp="1587502853246">
+    <state width="1877" height="173" key="GridCell.Tab.0.bottom/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587503978016" />
+    <state width="1877" height="173" key="GridCell.Tab.0.center" timestamp="1587503978015">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="173" key="GridCell.Tab.0.center/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587502853246" />
-    <state width="1877" height="173" key="GridCell.Tab.0.left" timestamp="1587502853246">
+    <state width="1877" height="173" key="GridCell.Tab.0.center/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587503978015" />
+    <state width="1877" height="173" key="GridCell.Tab.0.left" timestamp="1587503978015">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="173" key="GridCell.Tab.0.left/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587502853246" />
-    <state width="1877" height="173" key="GridCell.Tab.0.right" timestamp="1587502853246">
+    <state width="1877" height="173" key="GridCell.Tab.0.left/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587503978015" />
+    <state width="1877" height="173" key="GridCell.Tab.0.right" timestamp="1587503978016">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="173" key="GridCell.Tab.0.right/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587502853246" />
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1587502848766">
+    <state width="1877" height="173" key="GridCell.Tab.0.right/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587503978016" />
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1587503901102">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587502848766" />
-    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1587502848766">
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587503901102" />
+    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1587503901102">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587502848766" />
-    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1587502848766">
+    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587503901102" />
+    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1587503901102">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587502848766" />
-    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1587502848766">
+    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587503901102" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1587503901102">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587502848766" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587503901102" />
     <state width="640" height="204" key="ImportCMakeProjectWizard.bottomPanel" timestamp="1587487707027">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -125,15 +125,6 @@
     <state x="461" y="164" key="SettingsEditor/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587487749416" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Archive/FS.hpp</url>
-          <line>47</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="fl.c_str()" language="ObjectiveC" />
@@ -141,6 +132,10 @@
         <watch expression="flData_.length()" language="ObjectiveC" />
         <watch expression="strlen(flData_.c_str())" language="ObjectiveC" />
         <watch expression="index" language="ObjectiveC" />
+        <watch expression="buffer.size()" language="ObjectiveC" />
+        <watch expression="fi" language="ObjectiveC" />
+        <watch expression="tmp.size()" language="ObjectiveC" />
+        <watch expression="s" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>

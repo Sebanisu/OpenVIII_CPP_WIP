@@ -44,7 +44,7 @@ namespace OpenVIII::Archive {
             switch (fi.CompressionType()) {
                 default:
                 case TCompressionType::None:
-                    readBuffer(fi.UncompressedSize());
+                    buffer = readBuffer(fi.UncompressedSize());
                     fp.close();
                     return buffer;
                 case TCompressionType::LZSS:
