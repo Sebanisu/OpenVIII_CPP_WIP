@@ -11,6 +11,7 @@
 #include <string>
 #include <algorithm>
 #include <set>
+#include <iterator>
 
 namespace OpenVIII::Archive {
     struct FIFLFS {
@@ -135,44 +136,60 @@ namespace OpenVIII::Archive {
                 fp.close();
             }
         }
-        //todo move getfiles to here
-        static auto GetFiles(const std::string_view path) {
-            //order must match switch below
-            static constexpr const std::array<std::string_view, 3> extensions = {OpenVIII::Archive::FL::Ext,
-                                                                                 OpenVIII::Archive::FS::Ext,
-                                                                                 OpenVIII::Archive::FI::Ext};
-            const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
-            auto tmp = std::map<std::string, OpenVIII::Archive::FIFLFS>();
-            auto archive = OpenVIII::Archive::FIFLFS();
-            for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
-                if (fileEntry.is_regular_file()) {
-                    unsigned char i = 0;
-                    for (const auto &ext : extensions) {
-                        if (OpenVIII::Tools::iEquals(fileEntry.path().extension().string(), ext)) {
-                            switch (i) {
-                                case 0:
-                                    archive.FL(fileEntry);
-                                    break;
-                                case 1:
-                                    archive.FS(fileEntry);
-                                    break;
-                                case 2:
-                                    archive.FI(fileEntry);
-                                    break;
-                                default:
-                                    break;
-                            }
 
-                            if (archive.AllSet()) {
-                                auto name = fileEntry.path().filename().stem().string();
-                                std::transform(name.begin(), name.end(), name.begin(), ::toupper);
-                                tmp.insert(std::make_pair(name, archive));
-                                archive = OpenVIII::Archive::FIFLFS();
-                            }
-                            break;
+        //order must match switch below
+        static constexpr const std::array<std::string_view, 3> extensions = {OpenVIII::Archive::FL::Ext,
+                                                                             OpenVIII::Archive::FS::Ext,
+                                                                             OpenVIII::Archive::FI::Ext};
+
+        static void AddFileToFIFLFSByExtension(FIFLFS &archive, const std::filesystem::directory_entry &fileEntry) {
+
+            if (fileEntry.is_regular_file()) {
+                unsigned char i = 0;
+                for (const auto &ext : extensions) {
+                    if (OpenVIII::Tools::iEquals(fileEntry.path().extension().string(), ext)) {
+                        switch (i) {
+                            case 0:
+                                archive.FL(fileEntry);
+                                break;
+                            case 1:
+                                archive.FS(fileEntry);
+                                break;
+                            case 2:
+                                archive.FI(fileEntry);
+                                break;
+                            default:
+                                break;
                         }
-                        i++;
+
+                        break;
                     }
+                    i++;
+                }
+            }
+        }
+
+//todo move get files to here
+        using FIFLFSmap = std::map<std::string, OpenVIII::Archive::FIFLFS>;
+
+        static FIFLFSmap GetFilesFromPath(const std::string_view path) {
+            const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
+            return GetFilesFromIterator(std::filesystem::directory_iterator(path, options));
+        }
+
+        template<class iter_t>
+        static FIFLFSmap GetFilesFromIterator(iter_t iter) {
+//            static_assert(!std::is_same<typename std::iterator_traits<iter_t>::value_type,
+//                    void>::value, "not an iterator!");
+            auto tmp = FIFLFSmap();
+            auto archive = OpenVIII::Archive::FIFLFS();
+            for (const auto &fileEntry : iter) {
+                AddFileToFIFLFSByExtension(archive, fileEntry);
+                if (archive.AllSet()) {
+                    auto name = fileEntry.path().filename().stem().string();
+                    std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+                    tmp.insert(std::make_pair(name, archive));
+                    archive = OpenVIII::Archive::FIFLFS();
                 }
             }
             return tmp;

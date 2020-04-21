@@ -70,7 +70,7 @@ int main() {
     if (!std::filesystem::exists(path)) {
         return 0;
     }
-    const auto files = OpenVIII::Archive::FIFLFS::GetFiles(path);
+    const auto files = OpenVIII::Archive::FIFLFS::GetFilesFromPath(path);
     std::for_each(files.begin(), files.end(), &OpenVIII::Archive::FIFLFS::testPAIR);
     return 0;
 }
