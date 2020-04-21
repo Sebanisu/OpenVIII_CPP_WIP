@@ -74,7 +74,7 @@ namespace OpenVIII::Archive {
         }
 
         [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FIFLFS &data) {
-            os << '{' << data.fi_ << ", " << data.fl_ << ", " << data.fs_ << '}';
+            os << '{' << data.GetBaseName() << ", " << '{' << data.fi_ << ", " << data.fl_ << ", " << data.fs_ << "}}";
             return os;
         }
 
@@ -101,12 +101,21 @@ namespace OpenVIII::Archive {
             const auto allFL = Archive::FL::GetAllEntries(fl_, flOffset_);
 
 
+            auto archive = OpenVIII::Archive::FIFLFS();
             std::filesystem::path path;
             std::filesystem::path dir;
             std::filesystem::path filename;
             std::basic_ofstream<char> fp;
             for (const auto &item : allFL) {
                 const auto &[id, strPath] = item;
+                const auto directoryEntry = std::filesystem::directory_entry(strPath);
+                if (archive.SetByExtension(directoryEntry)) {
+                    if (archive.AllSet()) {
+                        std::cout << archive << '\n';
+                        archive = FIFLFS();
+                    }
+                    continue;
+                }
                 //strPath.replace(strPath.begin(),strPath.end(),'\\','/');
 
                 auto buffer = GetEntry(id);
@@ -137,27 +146,26 @@ namespace OpenVIII::Archive {
             }
         }
 
-        //order must match switch below
-        static constexpr const std::array<std::string_view, 3> extensions = {OpenVIII::Archive::FL::Ext,
-                                                                             OpenVIII::Archive::FS::Ext,
-                                                                             OpenVIII::Archive::FI::Ext};
 
-        constexpr static bool
-        AddFileToFIFLFSByExtension(FIFLFS &archive, const std::filesystem::directory_entry &fileEntry) {
+        bool
+        SetByExtension(const std::filesystem::directory_entry &fileEntry) {
 
             if (fileEntry.path().has_extension()) {
                 unsigned char i = 0;
-                for (const auto &ext : extensions) {
+                //order to match the switch below
+                for (const auto &ext : {OpenVIII::Archive::FL::Ext,
+                                        OpenVIII::Archive::FS::Ext,
+                                        OpenVIII::Archive::FI::Ext}) {
                     if (OpenVIII::Tools::iEquals(fileEntry.path().extension().string(), ext)) {
                         switch (i) {
                             case 0:
-                                archive.FL(fileEntry);
+                                FL(fileEntry);
                                 return true;
                             case 1:
-                                archive.FS(fileEntry);
+                                FS(fileEntry);
                                 return true;
                             case 2:
-                                archive.FI(fileEntry);
+                                FI(fileEntry);
                                 return true;
                             default:
                                 break;
@@ -186,12 +194,10 @@ namespace OpenVIII::Archive {
             auto tmp = FIFLFSmap();
             auto archive = OpenVIII::Archive::FIFLFS();
             for (const auto &fileEntry : iter) {
-                if (AddFileToFIFLFSByExtension(archive, fileEntry)) {
+                if (archive.SetByExtension(fileEntry)) {
                     if (archive.AllSet()) { //todo confirm basename matches right now i'm assuming the 3 files are together.
                         //todo check for language codes to choose correct files
-                        auto name = fileEntry.path().filename().stem().string();
-                        std::transform(name.begin(), name.end(), name.begin(), ::toupper);
-                        tmp.insert(std::make_pair(name, archive));
+                        tmp.insert(std::make_pair(archive.GetBaseName(), archive));
                         archive = OpenVIII::Archive::FIFLFS();
                     }
                 }
@@ -199,9 +205,21 @@ namespace OpenVIII::Archive {
             return tmp;
         }
 
+        std::string GetBaseName() const {
+            std::string name;
+            for (const auto &path: {FI(), FL(), FS()}) {
+                if (!path.string().empty()) {
+                    name = path.filename().stem().string();
+                    std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+                    break;
+                }
+            }
+            return name;
+        }
+
         static void testPAIR(const std::pair<std::string_view, OpenVIII::Archive::FIFLFS> &pair) {
             const auto&[name, paths] = pair;
-            std::cout << name << " " << paths << '\n';
+            std::cout << paths << '\n';
             paths.Test();
             //testFLPath(paths.FL(),paths.FI());
         }
