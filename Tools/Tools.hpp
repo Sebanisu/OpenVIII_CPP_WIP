@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <type_traits>
 
 namespace OpenVIII::Tools {
 /*
@@ -28,31 +29,30 @@ Case Insensitive strings equal
     }
 
 
-    //Replace all of one char to another char. The arguments are static_cast to the same type as the smallest sizeof.
+    //Replace all of one char to another char. Arguments will be static_cast to the type of string char used in haystack.
     //I use this to make the separator on windows or linux matches the strings.
-    template<typename T, typename T2>
+    template<typename needleType, typename replacementType>
     [[maybe_unused]] constexpr inline static void
-    replaceAll(std::string &haystack, const T &needleIn, const T2 &replacementIn) noexcept {
+    replaceAll(std::string &haystack, const needleType &needle, const replacementType &replacement) noexcept {
 
-        if (needleIn == replacementIn)
-        {
+        static_assert(std::is_integral<needleType>::value && std::is_integral<replacementType>::value,
+                      "Should be dealing with chars so is integral should cover that.");
+        if (haystack.empty()) {
             return;
         }
-        //handle when T2 doesn't match T
-        const auto replacement = (sizeof(T) < sizeof(T2))
-                ? static_cast<T>(replacementIn)
-                : replacementIn;
-        const auto needle = (sizeof(T2) < sizeof(T))
-                ? static_cast<T2>(needleIn)
-                : needleIn;
-        //windows uses a wchar_t instead of char. So I need to static cast to make them both match
-        //though might need at least one value to be char. I'm unsure what would happen if we were in
-        //a unicode mode.
-        if (needle == replacement) {
+
+        if (static_cast<int>(needle) ==
+            static_cast<int>(replacement)) { //casting because worried if the types don't match.
             return;
         }
-        const auto replace = [needle, replacement](const T &input) {
-            return input == needle ? replacement : input;
+        const auto replace = [needle, replacement](const auto &input) {
+            //handle when T2 doesn't match T by casting to match input;
+            return input == static_cast<decltype(input)>(needle)
+                   ? static_cast<decltype(input)>(replacement)
+                   : input;
+            //windows uses a wchar_t instead of char. So I need to static cast to make them match
+            //though might need at least one value to be char. I'm unsure what would happen if we were in
+            //a unicode mode.
         };
         std::transform(haystack.begin(), haystack.end(), haystack.begin(), replace);
     }
@@ -84,6 +84,7 @@ Find Case Insensitive Sub String in a given substring (version returns location 
         return (it != haystack.end());
         //todo make constexpr in cpp 20
     }
+
 #pragma clang diagnostic pop
 }
 #endif // !_TOOLS_H
