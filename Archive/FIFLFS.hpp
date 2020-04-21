@@ -23,6 +23,9 @@ namespace OpenVIII::Archive {
         size_t fsOffset_{0U};
         size_t flOffset_{0U};
         size_t count_{0U};
+        std::vector<unsigned char> fiData_{};
+        std::vector<unsigned char> fsData_{};
+        std::vector<char> flData_{}; //this is char because the file contains strings.
     public:
         [[maybe_unused]] [[nodiscard]] auto FI() const {
             return fi_;
@@ -36,7 +39,18 @@ namespace OpenVIII::Archive {
             return fl_;
         }
 
-        void FI(const std::filesystem::path &fi, const size_t &offset = 0U, size_t size = 0U) {
+        [[maybe_unused]] [[nodiscard]] auto FIData() const {
+            return fiData_;
+        }
+
+        [[maybe_unused]] [[nodiscard]] auto FSData() const {
+            return fsData_;
+        }
+
+        [[maybe_unused]] [[nodiscard]] auto FLData() const {
+            return flData_;
+        }
+        [[maybe_unused]] void FI(const std::filesystem::path &fi, const size_t &offset = 0U, size_t size = 0U) {
             fi_ = fi;
             fiOffset_ = offset;
             if (size == 0U) {
@@ -46,15 +60,42 @@ namespace OpenVIII::Archive {
             }
             count_ = FI::GetCount(size);
         }
+        void FI(const std::filesystem::path &fi,const std::vector<unsigned char> &vector, const size_t &offset=0U, size_t size=0U) {
+            FI(fi,offset,size);
+            if(!vector.empty()) {
+                fiData_ = vector;
+            }
+        }
 
         void FS(const std::filesystem::path &fs, const size_t &offset = 0U) {
             fs_ = fs;
             fsOffset_ = offset;
         }
+        void FS(const std::filesystem::path &fs,const std::vector<unsigned char> &vector, const size_t &offset = 0U) {
+            FS(fs,offset);
+            if(!vector.empty()) {
+                fsData_ = vector;
+            }
+        }
 
         void FL(const std::filesystem::path &fl, const size_t &offset = 0U) {
             fl_ = fl;
             flOffset_ = offset;
+        }
+
+        void FL(const std::filesystem::path &fl,const std::vector<unsigned char> &vector, const size_t &offset = 0U) {
+            FL(fl,offset);
+            if (!vector.empty()) {
+                flData_ = std::vector<char>(vector.size());
+                std::memcpy(flData_.data(), vector.data(), vector.size()); //optimizes away safer than cast.
+            }
+        }
+
+        [[maybe_unused]] void FL(const std::filesystem::path &fl,const std::vector<char> &vector, const size_t &offset = 0U) {
+            FL(fl,offset);
+            if (!vector.empty()) {
+                flData_ = vector;
+            }
         }
 
         [[nodiscard]] bool AllSet() const {
@@ -98,9 +139,8 @@ namespace OpenVIII::Archive {
         }
 
         void Test() const {
-            const auto allFL = Archive::FL::GetAllEntries(fl_, flOffset_);
-
-
+            std::cout << "Getting Filenames from : " << fl_ << std::endl;
+            const auto allFL = Archive::FL::GetAllEntriesData(fl_, flData_, flOffset_);
             auto archive = OpenVIII::Archive::FIFLFS();
             std::filesystem::path path;
             std::filesystem::path dir;
@@ -109,16 +149,15 @@ namespace OpenVIII::Archive {
             for (const auto &item : allFL) {
                 const auto &[id, strPath] = item;
                 const auto directoryEntry = std::filesystem::directory_entry(strPath);
-                if (archive.SetByExtension(directoryEntry)) {
+                auto buffer = GetEntry(id);
+                if (archive.SetByExtension(directoryEntry, buffer)) {
                     if (archive.AllSet()) {
-                        std::cout << archive << '\n';
+                        std::cout << archive << std::endl;
+                        archive.Test();
                         archive = FIFLFS();
                     }
                     continue;
                 }
-                //strPath.replace(strPath.begin(),strPath.end(),'\\','/');
-
-                auto buffer = GetEntry(id);
 
                 const auto writeBuffer = [&fp, &buffer]() {
                     auto tmp = std::vector<char>(buffer.size());
@@ -127,7 +166,7 @@ namespace OpenVIII::Archive {
                     //todo in cpp20 use bitcast instead. or find another way to write data.
                 };
                 const auto &size{buffer.size()};
-                std::cout << '{' << id << ", " << size << ", " << strPath << "}\n";
+                std::cout << '{' << id << ", " << size << ", " << strPath << "}"<<std::endl;
                 if (size == 0) {
                     continue;
                 }
@@ -148,7 +187,7 @@ namespace OpenVIII::Archive {
 
 
         bool
-        SetByExtension(const std::filesystem::directory_entry &fileEntry) {
+        SetByExtension(const std::filesystem::directory_entry &fileEntry, const std::vector<unsigned char>& vector) {
 
             if (fileEntry.path().has_extension()) {
                 unsigned char i = 0;
@@ -159,13 +198,13 @@ namespace OpenVIII::Archive {
                     if (OpenVIII::Tools::iEquals(fileEntry.path().extension().string(), ext)) {
                         switch (i) {
                             case 0:
-                                FL(fileEntry);
+                                FL(fileEntry,vector, 0U);
                                 return true;
                             case 1:
-                                FS(fileEntry);
+                                FS(fileEntry,vector, 0U );
                                 return true;
                             case 2:
-                                FI(fileEntry);
+                                FI(fileEntry,vector, 0U, 0U);
                                 return true;
                             default:
                                 break;
@@ -194,7 +233,7 @@ namespace OpenVIII::Archive {
             auto tmp = FIFLFSmap();
             auto archive = OpenVIII::Archive::FIFLFS();
             for (const auto &fileEntry : iter) {
-                if (archive.SetByExtension(fileEntry)) {
+                if (archive.SetByExtension(fileEntry, std::vector<unsigned char>())) {
                     if (archive.AllSet()) { //todo confirm basename matches right now i'm assuming the 3 files are together.
                         //todo check for language codes to choose correct files
                         tmp.insert(std::make_pair(archive.GetBaseName(), archive));
