@@ -25,7 +25,7 @@ namespace OpenVIII::Archive {
         size_t count_{0U};
         std::vector<unsigned char> fiData_{};
         std::vector<unsigned char> fsData_{};
-        std::vector<char> flData_{}; //this is char because the file contains strings.
+        std::basic_string<char> flData_{}; //this is char because the file contains strings.
     public:
         [[maybe_unused]] [[nodiscard]] auto FI() const {
             return fi_;
@@ -86,12 +86,13 @@ namespace OpenVIII::Archive {
         void FL(const std::filesystem::path &fl,const std::vector<unsigned char> &vector, const size_t &offset = 0U) {
             FL(fl,offset);
             if (!vector.empty()) {
-                flData_ = std::vector<char>(vector.size());
+                flData_ = std::basic_string<char>();
+                flData_.resize(vector.size());
                 std::memcpy(flData_.data(), vector.data(), vector.size()); //optimizes away safer than cast.
             }
         }
 
-        [[maybe_unused]] void FL(const std::filesystem::path &fl,const std::vector<char> &vector, const size_t &offset = 0U) {
+        [[maybe_unused]] void FL(const std::filesystem::path &fl,const std::string_view &vector, const size_t &offset = 0U) {
             FL(fl,offset);
             if (!vector.empty()) {
                 flData_ = vector;

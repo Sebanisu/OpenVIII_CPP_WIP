@@ -69,8 +69,6 @@ Find Case Insensitive Sub String in a given substring (version returns location 
 //	return haystack.find(needle, offset);
 //}
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "readability-qualified-auto"
 
     //Find Case Insensitive Sub String in a given substring
     [[maybe_unused]] [[nodiscard]] inline static auto
@@ -85,6 +83,6 @@ Find Case Insensitive Sub String in a given substring (version returns location 
         //todo make constexpr in cpp 20
     }
 
-#pragma clang diagnostic pop
+
 }
 #endif // !_TOOLS_H
