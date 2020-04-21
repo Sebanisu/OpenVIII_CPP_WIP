@@ -48,23 +48,25 @@ public:
 
     auto r = N - F;
     auto flags = 0U;
-    while (iterator < srcEnd && (dstSize == 0 || dst.size() < dstSize)) {
+    const auto testAtEnd = [&iterator,&srcEnd]()
+    {return iterator + 1 > srcEnd;};
+    while (iterator < srcEnd /*&& (dstSize == 0 || dst.size() < dstSize)*/) {
       if (((flags >>= 1U) & flagsMask) == 0) {
-        if (iterator + 1 >= srcEnd) { break; }
+        if (testAtEnd()) { break; }
         flags = *iterator++ | flagsBits;// uses higher byte cleverly to Count eight
       }
       if ((flags & 1U) == 1) {// raw value
-        if (iterator + 1 >= srcEnd) { break; }
+        if (testAtEnd()) { break; }
         current = *iterator++;
-        if (dstSize != 0 && dst.size() + 1 >= dstSize) break;
+        //if (dstSize != 0 && dst.size() + 1 >= dstSize) break;
         dst.push_back(static_cast<unsigned char>(current));
         textBuf.at(r++) = current;
         r &= N_;
       } else {// value previously read
         // get bounds of ring buffer
-        if (iterator + 1 >= srcEnd) { break; }
+        if (testAtEnd()) { break; }
         decltype(current) offset = *iterator++;
-        if (iterator + 1 >= srcEnd) { break; }
+        if (testAtEnd()) { break; }
         decltype(current) count = *iterator++;
         offset |= ((count & offsetMask) << 4U);
         count = (count & countMask) + THRESHOLD;
@@ -73,7 +75,7 @@ public:
           // get value
           current = textBuf.at((offset + k) & N_);
           // assign value
-          if (dstSize != 0 && dst.size() + 1 >= dstSize) return dst;
+          //if (dstSize != 0 && dst.size() + 1 >= dstSize) return dst;
           dst.push_back(static_cast<unsigned char>(current));
           textBuf.at(r++) = current;
           r &= N_;
