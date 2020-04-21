@@ -49,7 +49,7 @@ namespace OpenVIII::Archive {
                     return buffer;
                 case TCompressionType::LZSS:
                     readVal(compSize);
-                    buffer = readBuffer(fi.UncompressedSize());
+                    buffer = readBuffer(compSize);
                     fp.close();
                     return Compression::LZSS::Decompress(buffer, fi.UncompressedSize());
                 case TCompressionType::LZ4: {

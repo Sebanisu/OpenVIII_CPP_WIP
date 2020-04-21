@@ -13,9 +13,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5c9826f-101f-48f1-b607-c8b5cb8a0a2b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Archive/FIFLFS.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Archive/FIFLFS.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Compression/LZSS.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Compression/LZSS.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/FS.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Archive/FS.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +63,7 @@
       <updated>1587487485732</updated>
       <workItem from="1587487489415" duration="223000" />
       <workItem from="1587487713978" duration="7876000" />
-      <workItem from="1587498262827" duration="4533000" />
+      <workItem from="1587498262827" duration="5059000" />
     </task>
     <servers />
   </component>
@@ -127,6 +125,15 @@
     <state x="461" y="164" key="SettingsEditor/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587487749416" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Archive/FS.hpp</url>
+          <line>47</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="fl.c_str()" language="ObjectiveC" />
