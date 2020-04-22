@@ -27,4 +27,4 @@ add_executable(Archive
         Archive/FL.hpp
         Archive/FS.hpp
         Compression/LZSS.hpp
-        Tools/Tools.hpp Archive/FIFLFS.cpp)
+        Tools/Tools.hpp)
