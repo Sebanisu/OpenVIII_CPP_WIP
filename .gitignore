@@ -8,3 +8,4 @@ cmake-build-*/
 */build/
 .vs/VIIIcppTest/v16/.suo
 *.opendb
+.idea/workspace.xml
