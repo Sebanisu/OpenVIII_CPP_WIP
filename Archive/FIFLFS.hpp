@@ -1,5 +1,5 @@
-#ifndef _FIFLFS_H
-#define _FIFLFS_H
+#ifndef OPENVIII_FIFLFS_H
+#define OPENVIII_FIFLFS_H
 
 #include "FI.hpp"
 #include "FL.hpp"
@@ -48,12 +48,9 @@ public:
     }
     count_ = FI::GetCount(size);
   }
-  void FI(const std::filesystem::path &fi,
-    const std::vector<unsigned char> &vector,
-    const size_t &offset = 0U,
-    size_t size = 0U)
+  void FI(const std::filesystem::path &fi, const std::vector<unsigned char> &vector, const size_t &offset = 0U)
   {
-    FI(fi, offset, size);
+    FI(fi, offset, vector.size());
     if (!vector.empty()) { fiData_ = vector; }
   }
 
@@ -81,10 +78,10 @@ public:
       flData_ = std::basic_string<char>();
       flData_.resize(vector.size());
       std::memcpy(flData_.data(), vector.data(), vector.size());// optimizes away safer than cast.
-      auto index = flData_.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_\n\r\\:/.");
-      if (index != std::string::npos) {
-        std::cerr << "\nError: Invalid character found in FL data! = " << fl << '\n';
-      }
+      // check for garbage
+      auto index =
+        flData_.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_\n\r\\:/.");
+      if (index != std::string::npos) { std::cerr << "\nError: Invalid character found in FL data! = " << fl << '\n'; }
     }
   }
 
@@ -127,7 +124,17 @@ public:
   [[nodiscard]] auto GetEntry(const unsigned int &id) const
   {
     auto fi = Archive::FI();
-    if (id < count_ || count_ == 0) { fi = FI::GetEntry(fi_, id, fiOffset_); }
+    if (id < count_ || count_ == 0) {
+      if (!fiData_.empty()) {
+        fi = FI::GetEntry(fiData_, id, fiOffset_);
+      } else {
+        fi = FI::GetEntry(fi_, id, fiOffset_);
+      }
+    }
+
+    if (!fsData_.empty()) {
+      return FS::GetEntry(fsData_, fi, fsOffset_);
+    }
     return FS::GetEntry(fs_, fi, fsOffset_);
   }
 
@@ -183,7 +190,6 @@ public:
 
   bool SetByExtension(const std::filesystem::directory_entry &fileEntry, const std::vector<unsigned char> &vector)
   {
-
     if (fileEntry.path().has_extension()) {
       unsigned char i = 0;
       // order to match the switch below
@@ -197,12 +203,11 @@ public:
             FS(fileEntry, vector, 0U);
             return true;
           case 2:
-            FI(fileEntry, vector, 0U, 0U);
+            FI(fileEntry, vector, 0U);
             return true;
           default:
             break;
           }
-
           break;
         }
         i++;
@@ -261,4 +266,4 @@ public:
   // todo make getfiles allow recursive archives
 };
 }// namespace OpenVIII::Archive
-#endif// !_FIFLFS_H
+#endif// !OPENVIII_FIFLFS_H

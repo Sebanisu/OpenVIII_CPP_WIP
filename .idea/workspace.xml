@@ -13,8 +13,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5c9826f-101f-48f1-b607-c8b5cb8a0a2b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/pcvii.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/pcvii.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/Archive.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Archive/Archive.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/Archive.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Archive/Archive.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/FI.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Archive/FI.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/FIFLFS.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Archive/FIFLFS.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/FL.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Archive/FL.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/FS.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Archive/FS.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Compression/LZSS.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Compression/LZSS.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tools/Tools.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Tools/Tools.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +51,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="CMakeSettings" />
   </component>
   <component name="RunManager">
@@ -64,7 +73,7 @@
       <updated>1587487485732</updated>
       <workItem from="1587487489415" duration="223000" />
       <workItem from="1587487713978" duration="7876000" />
-      <workItem from="1587498262827" duration="7009000" />
+      <workItem from="1587498262827" duration="16477000" />
     </task>
     <servers />
   </component>
@@ -72,30 +81,38 @@
     <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="586" y="198" key="#Inspections" timestamp="1587519048955">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="586" y="198" key="#Inspections/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587519048955" />
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587487721519">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587487721519" />
+    <state x="707" y="374" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1587519366076">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="707" y="374" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587519366076" />
     <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1587487682422">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587487682422" />
-    <state width="1877" height="122" key="GridCell.Tab.0.bottom" timestamp="1587505158057">
+    <state width="1877" height="229" key="GridCell.Tab.0.bottom" timestamp="1587519786834">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="122" key="GridCell.Tab.0.bottom/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587505158057" />
-    <state width="1877" height="122" key="GridCell.Tab.0.center" timestamp="1587505158057">
+    <state width="1877" height="229" key="GridCell.Tab.0.bottom/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587519786834" />
+    <state width="1877" height="229" key="GridCell.Tab.0.center" timestamp="1587519786834">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="122" key="GridCell.Tab.0.center/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587505158057" />
-    <state width="1877" height="122" key="GridCell.Tab.0.left" timestamp="1587505158057">
+    <state width="1877" height="229" key="GridCell.Tab.0.center/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587519786834" />
+    <state width="1877" height="229" key="GridCell.Tab.0.left" timestamp="1587519786834">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="122" key="GridCell.Tab.0.left/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587505158057" />
-    <state width="1877" height="122" key="GridCell.Tab.0.right" timestamp="1587505158057">
+    <state width="1877" height="229" key="GridCell.Tab.0.left/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587519786834" />
+    <state width="1877" height="229" key="GridCell.Tab.0.right" timestamp="1587519786834">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="122" key="GridCell.Tab.0.right/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587505158057" />
+    <state width="1877" height="229" key="GridCell.Tab.0.right/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587519786834" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1587503901102">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -124,6 +141,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="164" key="SettingsEditor/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587487749416" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1587510382235">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/0.-1080.1920.1080@0.0.1920.1040" timestamp="1587510382235" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

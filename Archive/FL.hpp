@@ -1,5 +1,5 @@
-#ifndef _FL_H
-#define _FL_H
+#ifndef OPENVIII_FL_H
+#define OPENVIII_FL_H
 
 #include <set>
 #include <string>
@@ -110,4 +110,4 @@ public:
   }
 };// namespace OpenVIII::Archive
 }// namespace OpenVIII::Archive
-#endif// !_FL_H
+#endif// !OPENVIII_FL_H

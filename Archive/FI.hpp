@@ -1,12 +1,12 @@
-
-#ifndef _FI_H
-#define _FI_H
+#ifndef OPENVIII_FI_H
+#define OPENVIII_FI_H
 
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <filesystem>
 #include <cstring>
+#include <iterator>
 #include <array>
 
 namespace OpenVIII::Archive {
@@ -55,7 +55,7 @@ public:
   //        }
 
   [[nodiscard]] constexpr static auto GetCount(const size_t fileSize) { return fileSize / Size; }
-  //GetCount which is fileSize/Size if file doesn't exist return 0;
+  // GetCount which is fileSize/Size if file doesn't exist return 0;
   [[nodiscard]] auto static GetCount(const std::filesystem::path &path)
   {
     if (std::filesystem::exists(path)) { return GetCount(std::filesystem::file_size(path)); }
@@ -74,6 +74,27 @@ public:
     }
     fp.close();
     return vector;
+  }
+
+
+  [[nodiscard]] static FI GetEntry(const std::vector<unsigned char> &data, const unsigned int &id, const size_t &offsetIn)
+  {
+    const auto count = GetCount(data.size());
+    if (id < count) {
+      auto start = GetStart(id, offsetIn);
+      unsigned int offset = 0;
+      unsigned int uncompressedSize = 0;
+      unsigned int compressionType = 0;
+      if (data.begin() + start + Size > data.end()) {return FI();}
+      memcpy(&uncompressedSize, (data.begin() + start).base() ,sizeof(uncompressedSize));
+      start += sizeof(uncompressedSize);
+      memcpy(&offset, (data.begin() + start).base() ,sizeof(offset));
+      start += sizeof(offset);
+      memcpy(&compressionType, (data.begin() + start).base() ,sizeof(compressionType));
+      return FI(uncompressedSize, offset, static_cast<TCompressionType>(compressionType));
+    }
+
+    return FI();
   }
 
   [[nodiscard]] static FI GetEntry(const std::filesystem::path &path, const unsigned int &id, const size_t &offset)
@@ -125,4 +146,4 @@ public:
 };
 }// namespace OpenVIII::Archive
 
-#endif// !_FI_H
+#endif// !OPENVIII_FI_H

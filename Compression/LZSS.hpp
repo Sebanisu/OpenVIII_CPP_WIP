@@ -1,5 +1,5 @@
-#ifndef _LZSS_H
-#define _LZSS_H
+#ifndef OPENVIII_LZSS_H
+#define OPENVIII_LZSS_H
 
 #include <cstring>
 #include <iostream>
