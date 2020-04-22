@@ -16,9 +16,9 @@ namespace OpenVIII::Archive {
 struct FL
 {
 private:
-  static void CleanString(std::string &input)
+  constexpr static void CleanString(std::string &input)
   {
-    std::cout << input << '\n';
+    // std::cout << input << '\n';
     if (std::size(input) > 4) {
       if (input[input.size() - 1] == '\r') { input.erase(input.size() - 1); }
 
@@ -26,8 +26,9 @@ private:
       Tools::replaceAll(input, '\\', std::filesystem::path::preferred_separator);
     }
   }
+
   template<class Container, typename idType>
-  static void splitAndInsert(const std::string &str, Container &cont, idType &id, char delimiter = ' ')
+  static void splitAndInsert(const std::string &str, Container &cont, idType &id, char delimiter)
   {
     std::stringstream ss(str);
     std::string token;
@@ -40,13 +41,13 @@ private:
 public:
   constexpr const static auto Ext = std::string_view(".FL");
 
-  // Get a sorted set of all entries.
   [[nodiscard]] static auto
-    GetAllEntriesData(const std::filesystem::path &path, const std::string &data, const size_t offset = 0U)
+    GetAllEntriesData(const std::filesystem::path &path, const std::string &data, const size_t &offset)
   {
     struct comp
     {
-      bool operator()(const std::pair<int, std::string> &left, const std::pair<int, std::string> &right) const
+      bool operator()(const std::pair<unsigned int, std::string> &left,
+        const std::pair<unsigned int, std::string> &right) const
       {
         if (left.second.length() < right.second.length()) { return true; }
         if (left.second.length() > right.second.length()) { return false; }
@@ -55,16 +56,16 @@ public:
       }
     };
 
-    auto set = std::set<std::pair<int, std::string>, comp>();
+    auto set = std::set<std::pair<unsigned int, std::string>, comp>();
     std::ifstream fp;
 
-    int i = 0;
+    unsigned int id = 0;
     std::string innerPath;
-    auto loop = [&i, &offset, &fp, &innerPath, &set]() mutable {
-      fp.seekg(offset, std::ios::beg);
+    auto loop = [&id, &offset, &fp, &innerPath, &set]() mutable {
+      fp.seekg(static_cast<long>(offset), std::ios::beg);
       while (std::getline(fp, innerPath)) {
         CleanString(innerPath);
-        set.insert(std::pair(i++, innerPath));
+        set.insert(std::pair(id++, innerPath));
       }
       if (!fp.is_open()) { fp.close(); }
       return set;
@@ -74,7 +75,7 @@ public:
         std::cout << "\033[1;31mFL Data is null!\033[0m\n";
         return set;
       }
-      splitAndInsert(data, set, i, '\n');
+      splitAndInsert(data, set, id, '\n');
     } else {
       fp = std::ifstream(path, std::ios::in);
       if (!fp.is_open()) { return set; }
@@ -82,20 +83,17 @@ public:
     }
     return set;
   }
-
-  [[maybe_unused]] [[nodiscard]] static auto GetAllEntries(const std::filesystem::path &path, const size_t offset = 0U)
+  [[maybe_unused]] [[nodiscard]] static auto GetAllEntries(const std::filesystem::path &path, const size_t &offset)
   {
     auto tmp = std::string();
     return GetAllEntriesData(path, tmp, offset);
   }
-
-  // Get entry the contains a string.
-  [[maybe_unused]] [[nodiscard]] static auto
-    GetEntry(const std::filesystem::path &path, const std::string_view &needle, const size_t offset = 0U)
+  [[nodiscard]] static auto
+    GetEntry(const std::filesystem::path &path, const std::string_view &needle, const size_t &offset)
   {
     std::ifstream fp = std::ifstream(path, std::ios::in);
-    int i = 0;
-    fp.seekg(offset, std::ios::beg);
+    unsigned int i = 0;
+    fp.seekg(static_cast<long>(offset), std::ios::beg);
     std::string innerPath;
     while (std::getline(fp, innerPath)) {
       if (Tools::iFind(innerPath, needle)) {
@@ -106,8 +104,9 @@ public:
       i++;
     }
     fp.close();
-    return std::make_pair(-1, std::string(""));
+    return std::make_pair(0U, std::string(""));
   }
-};// namespace OpenVIII::Archive
+};
+// namespace OpenVIII::Archive
 }// namespace OpenVIII::Archive
 #endif// !OPENVIII_FL_H

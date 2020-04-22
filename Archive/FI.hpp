@@ -81,7 +81,7 @@ public:
   {
     const auto count = GetCount(data.size());
     if (id < count) {
-      auto start = GetStart(id, offsetIn);
+      auto start = static_cast<long>(GetStart(id, offsetIn));
       unsigned int offset = 0;
       unsigned int uncompressedSize = 0;
       unsigned int compressionType = 0;
