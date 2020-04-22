@@ -154,7 +154,7 @@ public:
 
     auto result = std::vector<unsigned char>();
     result.reserve(sizeAlloc);
-    auto InsertNode = [&text_buf, &rson, &lson, &match_length, &dad, &match_position](const auto &item) {
+    const auto InsertNode = [&text_buf, &rson, &lson, &match_length, &dad, &match_position](const auto &item) {
       /* Inserts string of length 18, text_buf[item..item+18-1], into one of the trees (text_buf[item]'th tree) and returns the
        * longest-match position and length via the global variables match_position and match_length.
        * If match_length = 18, then removes the old node in favor of the new one, because the old one will be deleted
@@ -214,7 +214,7 @@ public:
       dad[p] = NotUsed;// remove p
     };
     // deletes node p from tree
-    auto DeleteNode = [&dad, &rson, &lson](auto p){
+    const auto DeleteNode = [&dad, &rson, &lson](auto p){
       unsigned int q;
       if (dad[p] == NotUsed) return;// not in tree
 
@@ -363,7 +363,7 @@ public:
  [[maybe_unused]] static auto Test(const size_t & size)
   {
     if(size <=0) return true;
-    std::vector<unsigned char> vecOfRandomNums = std::vector<unsigned char>(static_cast<unsigned int>(rand()) % static_cast<unsigned int>(size));
+    std::vector<unsigned char> vecOfRandomNums = std::vector<unsigned char>(static_cast<unsigned int>(size));
     if(vecOfRandomNums.empty()) return true;
     std::generate(vecOfRandomNums.begin(), vecOfRandomNums.end(), []() {
            return static_cast<unsigned char>(static_cast<unsigned int>(rand()) % 255U);
