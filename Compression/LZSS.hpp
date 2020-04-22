@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <algorithm>
 
 namespace OpenVIII::Compression {
 
@@ -26,7 +27,7 @@ private:
 
 
   constexpr static const int NPlus1 = N + 1U;
-  constexpr static const int NPlus13 = N + 13U;
+  constexpr static const int NPlus17 = N + 17U;
 
 public:
   // NEW LZSS
@@ -136,8 +137,7 @@ public:
     auto rson = std::array<unsigned int, 4353>();
     auto dad = std::array<unsigned int, NPlus1>();
 
-    auto text_buf = std::array<unsigned char,
-      NPlus13>();// ring buffer of size N, with extra 17 bytes to facilitate string comparison
+    auto text_buf = std::array<unsigned char, NPlus17>();// ring buffer of size N, with extra 17 bytes to facilitate string comparison
     unsigned int len;
     unsigned int r;
     unsigned int s;
@@ -358,6 +358,28 @@ public:
     // result.truncate(curResult);
     result.erase(result.begin() + curResult, result.end());
     return result;
+  }
+
+ [[maybe_unused]] static auto Test(const size_t & size)
+  {
+    if(size <=0) return true;
+    std::vector<unsigned char> vecOfRandomNums = std::vector<unsigned char>(static_cast<unsigned int>(rand()) % static_cast<unsigned int>(size));
+    if(vecOfRandomNums.empty()) return true;
+    std::generate(vecOfRandomNums.begin(), vecOfRandomNums.end(), []() {
+           return static_cast<unsigned char>(static_cast<unsigned int>(rand()) % 255U);
+    });
+    auto compressed = Compress(vecOfRandomNums);
+    auto uncompressed = Decompress(compressed);
+    if(std::equal(vecOfRandomNums.begin(),vecOfRandomNums.end(),uncompressed.begin()))
+    {
+      std::cout<<"Successful compress and uncompress! "<< size <<" bytes\n";
+      return true;
+    }
+    else
+    {
+      std::cerr<<"Failure!\n";
+      return false;
+    }
   }
 };
 }// namespace OpenVIII::Compression
