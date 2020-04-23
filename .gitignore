@@ -9,3 +9,9 @@ cmake-build-*/
 .vs/VIIIcppTest/v16/.suo
 *.opendb
 .idea/workspace.xml
+.idea/codeStyles/codeStyleConfig.xml
+.idea/codeStyles/Project.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/VIIIcppTest.iml
