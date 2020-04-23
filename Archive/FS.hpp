@@ -14,6 +14,12 @@
 namespace OpenVIII::Archive {
 struct FS
 {
+private:
+  template<typename T,typename T2, typename T3>
+  static void cpy(const T& start, const T2& dst, const T3& length)
+  {
+         std::copy(start, start + static_cast<long>(length), dst);
+  }
 public:
   static constexpr const auto Ext = std::string_view(".FS");
 
@@ -66,17 +72,25 @@ public:
     if (fi.UncompressedSize() == 0) { return std::vector<unsigned char>(); }
 
     std::vector<unsigned char> buffer;
+    const auto &iterator =
+      data.begin() + fi.Offset() + static_cast<long>(offset);
+    const auto& ptr =
+        data.data() + fi.Offset() + static_cast<long>(offset);
+    //ptr and iterator.base() would be the same. sadly msvc doesn't have a .base()
+    //usages of memcpy can be replaced with std::bitcast in cpp20
     unsigned int compSize{ 0 };
     switch (fi.CompressionType()) {
     case TCompressionType::None:
+      if(iterator+fi.UncompressedSize() > data.end()) {break;}
       buffer = std::vector<unsigned char>(fi.UncompressedSize());
-      memcpy(buffer.data(), (data.begin() + fi.Offset() + static_cast<long>(offset)).base(), fi.UncompressedSize());
+      cpy(iterator, buffer.begin(), fi.UncompressedSize());
       return buffer;
     case TCompressionType::LZSS:
-      memcpy(&compSize, (data.begin() + fi.Offset() + static_cast<long>(offset)).base(), sizeof(compSize));
-      buffer = std::vector<unsigned char>(compSize);
-      memcpy(
-        buffer.data(), (data.begin() + fi.Offset() + static_cast<long>(offset) + sizeof(compSize)).base(), compSize);
+      if(iterator+sizeof(compSize) > data.end()) {break;}
+        std::memcpy(&compSize,ptr, sizeof(compSize));
+      if(iterator+compSize > data.end()) {break;}
+        buffer = std::vector<unsigned char>(compSize);
+        cpy(iterator + sizeof(compSize) , buffer.begin(), compSize);
       return Compression::LZSS::Decompress(buffer, fi.UncompressedSize());
     case TCompressionType::LZ4:
       // todo add support for LZ4

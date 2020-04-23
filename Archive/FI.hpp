@@ -8,6 +8,7 @@
 #include <cstring>
 #include <iterator>
 #include <array>
+#include <algorithm>
 
 namespace OpenVIII::Archive {
 enum class TCompressionType : unsigned int {
@@ -27,7 +28,7 @@ private:
   unsigned int uncompressedSize_{ 0 };
   unsigned int offset_{ 0 };
   TCompressionType compressionType_{ TCompressionType::None };
-
+    
 public:
   constexpr static const size_t Size = 12U;
 
@@ -77,20 +78,21 @@ public:
   }
 
 
-  [[nodiscard]] static FI GetEntry(const std::vector<unsigned char> &data, const unsigned int &id, const size_t &offsetIn)
+  [[nodiscard]] static FI
+    GetEntry(const std::vector<unsigned char> &data, const unsigned int &id, const size_t &offsetIn)
   {
     const auto count = GetCount(data.size());
     if (id < count) {
-      auto start = static_cast<long>(GetStart(id, offsetIn));
+      auto start = data.data() + static_cast<long>(GetStart(id, offsetIn));
       unsigned int offset = 0;
       unsigned int uncompressedSize = 0;
       unsigned int compressionType = 0;
-      if (data.begin() + start + Size > data.end()) {return FI();}
-      memcpy(&uncompressedSize, (data.begin() + start).base() ,sizeof(uncompressedSize));
+      if (start + Size > data.data()+data.size()) { return FI(); }
+      std::memcpy(&uncompressedSize, start,sizeof(uncompressedSize));
       start += sizeof(uncompressedSize);
-      memcpy(&offset, (data.begin() + start).base() ,sizeof(offset));
+      std::memcpy(&offset, start, sizeof(offset));
       start += sizeof(offset);
-      memcpy(&compressionType, (data.begin() + start).base() ,sizeof(compressionType));
+      std::memcpy(&compressionType, start, sizeof(compressionType));
       return FI(uncompressedSize, offset, static_cast<TCompressionType>(compressionType));
     }
 
