@@ -28,7 +28,7 @@ private:
   unsigned int uncompressedSize_{ 0 };
   unsigned int offset_{ 0 };
   TCompressionType compressionType_{ TCompressionType::None };
-    
+
 public:
   constexpr static const size_t Size = 12U;
 
@@ -87,8 +87,8 @@ public:
       unsigned int offset = 0;
       unsigned int uncompressedSize = 0;
       unsigned int compressionType = 0;
-      if (start + Size > data.data()+data.size()) { return FI(); }
-      std::memcpy(&uncompressedSize, start,sizeof(uncompressedSize));
+      if (start + Size > data.data() + data.size()) { return FI(); }
+      std::memcpy(&uncompressedSize, start, sizeof(uncompressedSize));
       start += sizeof(uncompressedSize);
       std::memcpy(&offset, start, sizeof(offset));
       start += sizeof(offset);

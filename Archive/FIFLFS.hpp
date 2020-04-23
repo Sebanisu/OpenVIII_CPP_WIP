@@ -132,9 +132,7 @@ public:
       }
     }
 
-    if (!fsData_.empty()) {
-      return FS::GetEntry(fsData_, fi, fsOffset_);
-    }
+    if (!fsData_.empty()) { return FS::GetEntry(fsData_, fi, fsOffset_); }
     return FS::GetEntry(fs_, fi, fsOffset_);
   }
 

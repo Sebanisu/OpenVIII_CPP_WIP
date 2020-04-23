@@ -11,9 +11,9 @@ int main()
   const auto files = OpenVIII::Archive::FIFLFS::GetFilesFromPath(path);
   std::for_each(files.begin(), files.end(), &OpenVIII::Archive::FIFLFS::testPAIR);
 
-////test LZSS
-//size_t i =0;
-//while(OpenVIII::Compression::LZSS::Test(i++)) { }
+  ////test LZSS
+  // size_t i =0;
+  // while(OpenVIII::Compression::LZSS::Test(i++)) { }
 
   return 0;
 }
