@@ -168,7 +168,7 @@ public:
       const auto writeBuffer = [&fp, &buffer]() {
         auto tmp = std::vector<char>(buffer.size());
         memcpy(tmp.data(), buffer.data(), buffer.size());
-        fp.write(tmp.data(), buffer.size());
+        fp.write(tmp.data(), static_cast<long>(buffer.size()));
         // todo in cpp20 use bitcast instead. or find another way to write data.
       };
       const auto &size{ buffer.size() };

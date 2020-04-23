@@ -27,4 +27,4 @@ add_executable(Archive
         Archive/FL.hpp
         Archive/FS.hpp
         Compression/LZSS.hpp
-        Tools/Tools.hpp)
+        Tools/Tools.hpp Archive/ZZZ.hpp Archive/ZZZ/FileData.hpp)
