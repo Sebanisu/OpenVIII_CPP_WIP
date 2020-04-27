@@ -9,7 +9,7 @@
 #include <iterator>
 #include <array>
 #include <algorithm>
-
+#include "..\Tools\Tools.hpp"
 namespace OpenVIII::Archive {
 enum class TCompressionType : unsigned int {
   None = 0,
@@ -78,12 +78,11 @@ public:
   }
 
 
-  [[nodiscard]] static FI
-    GetEntry(const std::vector<unsigned char> &data, const unsigned int &id, const size_t &offsetIn)
+  [[nodiscard]] static FI GetEntry(const std::vector<char> &data, const unsigned int &id, const size_t &offsetIn)
   {
     const auto count = GetCount(data.size());
     if (id < count) {
-      auto start = data.data() + static_cast<long>(GetStart(id, offsetIn));
+      const auto *start = data.data() + static_cast<long>(GetStart(id, offsetIn));
       unsigned int offset = 0;
       unsigned int uncompressedSize = 0;
       unsigned int compressionType = 0;
@@ -125,20 +124,19 @@ public:
     unsigned int offset = 0;
     unsigned int uncompressedSize = 0;
     unsigned int compressionType = 0;
-    fp.seekg(start, std::ios::beg);
+    fp.seekg(static_cast<long>(start), std::ios::beg);
 
-    auto readVal = [&fp](auto &v) {
-      auto tmp = std::array<char, sizeof(v)>{};
-      fp.read(tmp.data(), sizeof(v));
-      memcpy(&v, tmp.data(), sizeof(v));// memcpy will be optimized away. It is safer than casting.
-      // TODO change to bitcast in cpp 20 or read another way?
-    };
-    readVal(uncompressedSize);
-    readVal(offset);
-    readVal(compressionType);
+    //    auto readVal = [&fp](auto &v) {
+    //      auto tmp = std::array<char, sizeof(v)>{};
+    //      fp.read(tmp.data(), sizeof(v));
+    //      memcpy(&v, tmp.data(), sizeof(v));// memcpy will be optimized away. It is safer than casting.
+    //      // TODO change to bitcast in cpp 20 or read another way?
+    //    };
+    Tools::ReadVal(fp, uncompressedSize);
+    Tools::ReadVal(fp, offset);
+    Tools::ReadVal(fp, compressionType);
     return FI(uncompressedSize, offset, static_cast<TCompressionType>(compressionType));
   }
-
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FI &data)
   {
     os << '{' << data.uncompressedSize_ << ", " << data.offset_ << ", "

@@ -48,9 +48,9 @@ public:
   // http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
 
 
-  [[nodiscard]] static auto Decompress(const std::vector<unsigned char> &src, size_t dstSize = 0)
+  [[nodiscard]] static auto Decompress(const std::vector<char> &src, size_t dstSize = 0)
   {
-    auto dst = std::vector<unsigned char>();
+    auto dst = std::vector<char>();
     dst.reserve(dstSize);
     auto iterator = src.begin();
     const auto &srcEnd = src.end();
@@ -64,21 +64,21 @@ public:
     while (iterator < srcEnd /*&& (dstSize == 0 || dst.size() < dstSize)*/) {
       if (((flags >>= 1U) & flagsMask) == 0) {
         if (testAtEnd()) { break; }
-        flags = *iterator++ | flagsBits;// uses higher byte cleverly to Count eight
+        flags = static_cast<unsigned char>(*iterator++) | flagsBits;// uses higher byte cleverly to Count eight
       }
       if ((flags & 1U) == 1) {// raw value
         if (testAtEnd()) { break; }
-        current = *iterator++;
+        current = static_cast<unsigned char>(*iterator++);
         // if (dstSize != 0 && dst.size() + 1 >= dstSize) break;
-        dst.push_back(static_cast<unsigned char>(current));
+        dst.push_back(static_cast<char>(current));
         textBuf.at(r++) = current;
         r &= NMinus1;
       } else {// value previously read
         // get bounds of ring buffer
         if (testAtEnd()) { break; }
-        decltype(current) offset = *iterator++;
+        decltype(current) offset = static_cast<unsigned char>(*iterator++);
         if (testAtEnd()) { break; }
-        decltype(current) count = *iterator++;
+        decltype(current) count = static_cast<unsigned char>(*iterator++);
         offset |= ((count & offsetMask) << 4U);
         count = (count & countMask) + THRESHOLD;
         // read from ring buffer
@@ -87,7 +87,7 @@ public:
           current = textBuf.at((offset + k) & NMinus1);
           // assign value
           // if (dstSize != 0 && dst.size() + 1 >= dstSize) return dst;
-          dst.push_back(static_cast<unsigned char>(current));
+          dst.push_back(static_cast<char>(current));
           textBuf.at(r++) = current;
           r &= NMinus1;
         }
@@ -126,7 +126,7 @@ public:
    * */
 
 
-  [[nodiscard]] [[maybe_unused]] static auto Compress(const std::vector<unsigned char> &src)
+  [[nodiscard]] [[maybe_unused]] static auto Compress(const std::vector<char> &src)
   {
 
     unsigned int match_length = {};
@@ -137,7 +137,8 @@ public:
     auto rson = std::array<unsigned int, 4353>();
     auto dad = std::array<unsigned int, NPlus1>();
 
-    auto text_buf = std::array<unsigned char, NPlus17>();// ring buffer of size N, with extra 17 bytes to facilitate string comparison
+    auto text_buf =
+      std::array<unsigned char, NPlus17>();// ring buffer of size N, with extra 17 bytes to facilitate string comparison
     unsigned int len;
     unsigned int r;
     unsigned int s;
@@ -152,12 +153,12 @@ public:
     const auto dataEnd = src.end();
     auto data = src.begin();
 
-    auto result = std::vector<unsigned char>();
+    auto result = std::vector<char>();
     result.reserve(sizeAlloc);
     const auto InsertNode = [&text_buf, &rson, &lson, &match_length, &dad, &match_position](const auto &item) {
-      /* Inserts string of length 18, text_buf[item..item+18-1], into one of the trees (text_buf[item]'th tree) and returns the
-       * longest-match position and length via the global variables match_position and match_length.
-       * If match_length = 18, then removes the old node in favor of the new one, because the old one will be deleted
+      /* Inserts string of length 18, text_buf[item..item+18-1], into one of the trees (text_buf[item]'th tree) and
+       * returns the longest-match position and length via the global variables match_position and match_length. If
+       * match_length = 18, then removes the old node in favor of the new one, because the old one will be deleted
        * sooner. Note item plays double role, as tree node and position in buffer. */
 
       unsigned int nodeIndex, p, cmp;
@@ -214,7 +215,7 @@ public:
       dad[p] = NotUsed;// remove p
     };
     // deletes node p from tree
-    const auto DeleteNode = [&dad, &rson, &lson](auto p){
+    const auto DeleteNode = [&dad, &rson, &lson](auto p) {
       unsigned int q;
       if (dad[p] == NotUsed) return;// not in tree
 
@@ -280,7 +281,7 @@ public:
     // memset(text_buf, 0, r); //std::array should init with 0s.
 
     for (len = 0; len < 18 && data < dataEnd; ++len)
-      text_buf[r + len] = *data++;// Read 18 bytes into the last 18 bytes of the buffer
+      text_buf[r + len] = static_cast<unsigned char>(*data++);// Read 18 bytes into the last 18 bytes of the buffer
     if (/* (textsize =  */ len /* ) */ == 0) {
       result.clear();
       return result;// text of size zero
@@ -302,13 +303,13 @@ public:
         code_buf[0] |= mask;//'send one byte' flag
         code_buf[code_buf_ptr++] = text_buf[r];// Send unencoded.
       } else {
-        code_buf[code_buf_ptr++] = (unsigned char)match_position;
-        code_buf[code_buf_ptr++] =
-          (unsigned char)(((match_position >> 4) & 0xf0)
-                          | (match_length - (2 + 1)));// Send position and length pair. Note match_length > 2.
+        code_buf[code_buf_ptr++] = static_cast<unsigned char>(match_position);
+        code_buf[code_buf_ptr++] = static_cast<unsigned char>(
+          (((match_position >> 4) & 0xF0U))
+          | (match_length - (2 + 1)));// Send position and length pair. Note match_length > 2.
       }
 
-      if ((mask = static_cast<unsigned char>((mask<<1U))) == 0)// Shift mask left one bit.
+      if ((mask = static_cast<unsigned char>((mask << 1U))) == 0)// Shift mask left one bit.
       {
         //			for(i=0 ; i<code_buf_ptr ; ++i)//Send at most 8 units of
         //				result.append(code_buf[i]);//code together
@@ -322,7 +323,7 @@ public:
 
       last_match_length = match_length;
       for (i = 0; i < last_match_length && data < dataEnd; ++i) {
-        c = *data++;
+        c = static_cast<unsigned int>(*data++);
         DeleteNode(s);// Delete old strings and
         text_buf[s] = static_cast<unsigned char>(c);// read new bytes
 
@@ -360,24 +361,21 @@ public:
     return result;
   }
 
- [[maybe_unused]] static auto Test(const size_t & size)
+  [[maybe_unused]] static auto Test(const size_t &size)
   {
-    if(size <=0) return true;
-    std::vector<unsigned char> vecOfRandomNums = std::vector<unsigned char>(static_cast<unsigned int>(size));
-    if(vecOfRandomNums.empty()) return true;
+    if (size <= 0) return true;
+    std::vector<char> vecOfRandomNums = std::vector<char>(static_cast<unsigned int>(size));
+    if (vecOfRandomNums.empty()) return true;
     std::generate(vecOfRandomNums.begin(), vecOfRandomNums.end(), []() {
-           return static_cast<unsigned char>(static_cast<unsigned int>(rand()) % 255U);
+      return static_cast<char>(static_cast<unsigned int>(rand()) % 255U);
     });
     auto compressed = Compress(vecOfRandomNums);
     auto uncompressed = Decompress(compressed);
-    if(std::equal(vecOfRandomNums.begin(),vecOfRandomNums.end(),uncompressed.begin()))
-    {
-      std::cout<<"Successful compress and uncompress! "<< size <<" bytes\n";
+    if (std::equal(vecOfRandomNums.begin(), vecOfRandomNums.end(), uncompressed.begin())) {
+      std::cout << "Successful compress and uncompress! " << size << " bytes\n";
       return true;
-    }
-    else
-    {
-      std::cerr<<"Failure!\n";
+    } else {
+      std::cerr << "Failure!\n";
       return false;
     }
   }

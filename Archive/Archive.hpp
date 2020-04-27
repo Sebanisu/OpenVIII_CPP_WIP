@@ -1,16 +1,12 @@
-﻿#ifndef OPENVIII_ARCHIVE_H
-#define OPENVIII_ARCHIVE_H
+//
+// Created by pcvii on 4/27/2020.
+//
 
-#include <iostream>
+#ifndef VIIICPPTEST_ARCHIVE_HPP
+#define VIIICPPTEST_ARCHIVE_HPP
 #include "FI.hpp"
 #include "FL.hpp"
 #include "FS.hpp"
-#include <map>
-#include "FIFLFS.hpp"
 #include "ZZZ.hpp"
-
-// TODO: Reference additional headers your program requires here.
-
-int main();
-
-#endif
+#include "FIFLFS.hpp"
+#endif// VIIICPPTEST_ARCHIVE_HPP
