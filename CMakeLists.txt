@@ -34,17 +34,17 @@ add_library(Archive STATIC
 
 set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
 add_executable(TestExtractFIFLFS
-        Archive/TestExtractFIFLFS.hpp Archive/TestExtractFIFLFS.cpp
+        Tests/TestExtractFIFLFS.hpp Tests/TestExtractFIFLFS.cpp
         )
 set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractFIFLFS Archive)
 add_executable(TestExtractZZZ
-        Archive/TestExtractZZZ.hpp Archive/TestExtractZZZ.cpp
+        Tests/TestExtractZZZ.hpp Tests/TestExtractZZZ.cpp
 )
 target_link_libraries(TestExtractZZZ Archive)
 set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
 add_executable(TestLZSS
-        Archive/TestLZSS.hpp Archive/TestLZSS.cpp
+        Tests/TestLZSS.hpp Tests/TestLZSS.cpp
 )
 target_link_libraries(TestLZSS Archive)
 set_target_properties(TestLZSS PROPERTIES LINKER_LANGUAGE CXX)

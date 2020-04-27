@@ -4,6 +4,6 @@
 
 #ifndef VIIICPPTEST_TESTLZSS_HPP
 #define VIIICPPTEST_TESTLZSS_HPP
-#include "..\Compression\LZSS\LZSS.hpp"
+#include "LZSS/LZSS.hpp"
 int main();
 #endif// VIIICPPTEST_TESTLZSS_HPP

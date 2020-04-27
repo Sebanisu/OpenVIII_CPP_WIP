@@ -8,6 +8,6 @@
 #include <map>
 #include <filesystem>
 #include "ZZZ.hpp"
-#include "..\Tools\Tools.hpp"
+#include "Tools.hpp"
 int main();
 #endif// VIIICPPTEST_TESTEXTRACTZZZ_HPP
