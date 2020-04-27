@@ -9,8 +9,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <FI.hpp>
-#include "..\..\Tools\Tools.hpp"
+#include "../FI.hpp"
+#include "../../Tools/Tools.hpp"
 namespace OpenVIII::Archive {
 struct [[maybe_unused]] FileData
 {

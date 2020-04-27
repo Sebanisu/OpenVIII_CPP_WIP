@@ -6,8 +6,9 @@
 #include <cctype>
 #include <type_traits>
 //#include <iostream>
-//#include <fstream>
+#include <fstream>
 #include <istream>
+#include <filesystem>
 #include <cassert>
 
 namespace OpenVIII::Tools {

@@ -7,7 +7,7 @@
 #include <string>
 #include <map>
 #include <filesystem>
-#include "ZZZ.hpp"
-#include "Tools.hpp"
+#include "../Libs/Archive/ZZZ.hpp"
+#include "../Libs/Tools/Tools.hpp"
 int main();
 #endif// VIIICPPTEST_TESTEXTRACTZZZ_HPP
