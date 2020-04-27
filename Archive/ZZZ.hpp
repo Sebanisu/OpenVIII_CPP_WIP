@@ -73,20 +73,18 @@ public:
   static auto GetEntry(const std::filesystem::path &path, const FileData &data)
   {
     if (!(path.has_extension() && Tools::iEquals(path.extension().string(), Ext)) || !std::filesystem::exists(path)) {
-      return std::vector<unsigned char>();
+      return std::vector<char>();
     }
     auto fp = std::ifstream(path, std::ios::binary | std::ios::in);
     if (!fp.is_open()) {
       fp.close();
-      return std::vector<unsigned char>();
+      return std::vector<char>();
     }
 
-    auto buffer = std::vector<unsigned char>(data.Size());
+    auto buffer = std::vector<char>(data.Size());
     fp.seekg(static_cast<long>(data.Offset()));
-    auto tmp = std::vector<char>(data.Size());
-    fp.read(tmp.data(), static_cast<long>(data.Size()));
+    fp.read(buffer.data(), static_cast<long>(data.Size()));
     fp.close();
-    memcpy(buffer.data(), tmp.data(), data.Size());
     // todo in cpp20 use bitcast instead. or find another way to write data.
     return buffer;
   }
@@ -96,61 +94,37 @@ public:
   {
 
     auto archive = OpenVIII::Archive::FIFLFS();
-    std::filesystem::path path;
-    std::filesystem::path dir;
-    std::filesystem::path filename;
-    std::basic_ofstream<char> fp;
     for (const auto &item : data_) {
       const auto &[zzzPath, zzzOffset, zzzSize] = item.GetTuple();
-      const auto directoryEntry = std::filesystem::directory_entry(zzzPath);
       auto buffer = GetEntry(item);
-      if (archive.SetByExtension(directoryEntry, buffer)) {
-        if (archive.AllSet()) {
-          std::cout << archive << std::endl;
-          archive.Test();
-          archive = FIFLFS();
-        }
-        continue;
-      }
-
-      const auto writeBuffer = [&fp, &buffer]() {
-        auto tmp = std::vector<char>(buffer.size());
-        memcpy(tmp.data(), buffer.data(), buffer.size());
-        fp.write(tmp.data(), static_cast<long>(buffer.size()));
-        // todo in cpp20 use bitcast instead. or find another way to write data.
-      };
-      const auto &size{ buffer.size() };
-      std::cout << '{' << size << ", " << zzzPath << "}\n";
-      if (size == 0) { continue; }
-      if (buffer.empty()) { continue; }
-      path = zzzPath;
-      dir = std::filesystem::path("tmp");
-      filename = dir / path;
-      std::filesystem::create_directories(filename.parent_path());
-      fp = std::ofstream(filename, std::ios::out | std::ios::binary | std::ios::trunc);
-      if (fp.is_open()) { writeBuffer(); }
-      fp.close();
+      if (FIFLFS::TryAddTestReset(archive, zzzPath.string(), buffer)) { continue; }
+      std::cout << '{' << buffer.size() << ", " << zzzPath << "}\n";
+      Tools::WriteBuffer(buffer, zzzPath.string());
     }
   }
   using ZZZmap = std::map<std::string, OpenVIII::Archive::ZZZ>;
 
-  static ZZZmap GetFilesFromPath(const std::string_view path)
+  [[maybe_unused]] [[nodiscard]] static ZZZmap GetFilesFromPath(const std::string_view path)
   {
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
 
     auto tmp = ZZZmap();
     auto archive = OpenVIII::Archive::ZZZ();
+    int i{};
     for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
-      if(!(fileEntry.path().has_extension() && Tools::iEquals(fileEntry.path().extension().string(),Ext))) {continue;}
+      if (!(fileEntry.path().has_extension() && Tools::iEquals(fileEntry.path().extension().string(), Ext))) {
+        continue;
+      }
       // todo check for language codes to choose correct files
       auto basename = fileEntry.path().filename().stem().string();
-      std::transform(basename.begin(),basename.end(), basename.begin(),::toupper);
+      if (std::empty(basename)) tmp.insert(std::make_pair("__"+std::to_string(i++),archive));
+      std::transform(basename.begin(), basename.end(), basename.begin(), ::toupper);
       archive = OpenVIII::Archive::ZZZ(fileEntry);
       tmp.insert(std::make_pair(basename, archive));
     }
     return tmp;
   }
-  static void testPAIR(const std::pair<std::string_view, OpenVIII::Archive::ZZZ> &pair)
+  [[maybe_unused]] static void testPair(const std::pair<std::string_view, OpenVIII::Archive::ZZZ> &pair)
   {
     const auto &[name, zzz] = pair;
     std::cout << '{' << name << ", " << zzz.path_ << "}\n";

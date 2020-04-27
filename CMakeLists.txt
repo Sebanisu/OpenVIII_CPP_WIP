@@ -1,7 +1,9 @@
 cmake_minimum_required (VERSION 3.16)
-project(VIIIcppTest)
+project(VIIIcppTest C CXX)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 # Set default compile flags for GCC
 if(CMAKE_COMPILER_IS_GNUCXX)
     message(STATUS "GCC detected, adding compile flags")
@@ -19,12 +21,30 @@ include_directories(Archive)
 include_directories(Compression)
 include_directories(Tools)
 
-add_executable(Archive
-        Archive/Archive.cpp
-        Archive/Archive.hpp
+add_library(Archive STATIC
         Archive/FI.hpp
         Archive/FIFLFS.hpp
         Archive/FL.hpp
         Archive/FS.hpp
-        Compression/LZSS.hpp
-        Tools/Tools.hpp Archive/ZZZ.hpp Archive/ZZZ/FileData.hpp)
+        Compression/LZSS/LZSS.hpp
+        Tools/Tools.hpp
+        Archive/ZZZ.hpp
+        Archive/ZZZ/FileData.hpp
+        Archive/Archive.hpp Archive/Archive.cpp)
+
+set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
+add_executable(TestExtractFIFLFS
+        Archive/TestExtractFIFLFS.hpp Archive/TestExtractFIFLFS.cpp
+        )
+set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestExtractFIFLFS Archive)
+add_executable(TestExtractZZZ
+        Archive/TestExtractZZZ.hpp Archive/TestExtractZZZ.cpp
+)
+target_link_libraries(TestExtractZZZ Archive)
+set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
+add_executable(TestLZSS
+        Archive/TestLZSS.hpp Archive/TestLZSS.cpp
+)
+target_link_libraries(TestLZSS Archive)
+set_target_properties(TestLZSS PROPERTIES LINKER_LANGUAGE CXX)

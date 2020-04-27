@@ -5,8 +5,39 @@
 #include <algorithm>
 #include <cctype>
 #include <type_traits>
+//#include <iostream>
+//#include <fstream>
+#include <istream>
+#include <cassert>
 
 namespace OpenVIII::Tools {
+template<typename T> inline void ReadVal(std::istream &fp, T &item)
+{
+  static_assert(std::is_trivial_v<T>);
+  std::array<char, sizeof(item)> tmp{};
+  fp.read(tmp.data(), tmp.size());
+  memcpy(&item, tmp.data(), sizeof(item));
+}
+template<typename T> inline auto ReadBuffer(std::istream &fp, const T &s)
+{
+  static_assert(std::is_integral_v<T>, "Integral Required");
+  assert(s > 0);
+  auto buf = std::vector<char>(s);
+  fp.read(buf.data(), s);
+  return buf;
+}
+inline bool
+  WriteBuffer(const std::vector<char> &buffer, const std::string_view &path, const std::string_view &root = "tmp")
+{
+  if (std::empty(buffer)) { return false; }
+  auto dir = std::filesystem::path(root);
+  auto filename = dir / path;
+  std::filesystem::create_directories(filename.parent_path());
+  auto fp = std::ofstream(filename, std::ios::out | std::ios::binary | std::ios::trunc);
+  if (fp.is_open()) { fp.write(buffer.data(), static_cast<long>(buffer.size())); }
+  fp.close();
+  return true;
+}
 /*
 Case Insensitive strings equal
 */
