@@ -2,8 +2,8 @@
 #define OPENVIII_FIFLFS_H
 
 #include "FI.hpp"
-#include "FL.hpp"
-#include "FS.hpp"
+#include "FL.h"
+#include "FS.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>

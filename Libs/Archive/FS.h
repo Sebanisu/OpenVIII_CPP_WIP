@@ -10,7 +10,7 @@
 #include <iterator>
 #include <cstring>
 #include "Compression/LZSS/LZSS.h"
-#include "../Tools/Tools.hpp"
+#include "Tools/Tools.h"
 
 namespace OpenVIII::Archive {
 struct FS

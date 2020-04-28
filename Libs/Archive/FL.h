@@ -11,7 +11,7 @@
 #include <vector>
 #include <optional>
 #include <cassert>
-#include "../Tools/Tools.hpp"
+#include "Tools/Tools.h"
 
 namespace OpenVIII::Archive {
 struct FL

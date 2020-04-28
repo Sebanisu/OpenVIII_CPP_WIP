@@ -2,15 +2,15 @@
 // Created by pcvii on 4/23/2020.
 //
 
-#ifndef VIIICPPTEST_FILEDATA_HPP
-#define VIIICPPTEST_FILEDATA_HPP
+#ifndef VIIICPPTEST_FILEDATA_H
+#define VIIICPPTEST_FILEDATA_H
 #include <string>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include "../FI.hpp"
-#include "../../Tools/Tools.hpp"
+#include "Tools/Tools.h"
 namespace OpenVIII::Archive {
 struct [[maybe_unused]] FileData
 {
@@ -80,4 +80,4 @@ constexpr FileData() = default;
 }
 ;
 }
-#endif// VIIICPPTEST_FILEDATA_HPP
+#endif// VIIICPPTEST_FILEDATA_H

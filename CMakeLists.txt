@@ -34,38 +34,38 @@ set_target_properties(Compression PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(Compression lz4)
 
 add_library(Tools STATIC
-        Libs/Tools/Tools.hpp
+        Libs/Tools/Tools.h
         Libs/Tools/Tools.cpp
 )
 set_target_properties(Tools PROPERTIES LINKER_LANGUAGE CXX)
 
 add_library(Archive STATIC
         Libs/Archive/FI.hpp
-        Libs/Archive/FIFLFS.hpp
-        Libs/Archive/FL.hpp
-        Libs/Archive/FS.hpp
-        Libs/Archive/ZZZ.hpp
-        Libs/Archive/ZZZ/FileData.hpp
-        Libs/Archive/Archive.hpp
+        Libs/Archive/FIFLFS.h
+        Libs/Archive/FL.h
+        Libs/Archive/FS.h
+        Libs/Archive/ZZZ.h
+        Libs/Archive/ZZZ/FileData.h
+        Libs/Archive/Archive.h
         Libs/Archive/Archive.cpp
         )
 set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(Archive Tools Compression)
 
 add_executable(TestExtractFIFLFS
-        Tests/TestExtractFIFLFS.hpp Tests/TestExtractFIFLFS.cpp
+        Tests/TestExtractFIFLFS.h Tests/TestExtractFIFLFS.cpp
         )
 set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractFIFLFS Archive)
 
 add_executable(TestExtractZZZ
-        Tests/TestExtractZZZ.hpp Tests/TestExtractZZZ.cpp
+        Tests/TestExtractZZZ.h Tests/TestExtractZZZ.cpp
 )
 target_link_libraries(TestExtractZZZ Archive)
 set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(TestLZSS
-        Tests/TestLZSS.hpp Tests/TestLZSS.cpp
+        Tests/TestLZSS.h Tests/TestLZSS.cpp
 )
 target_link_libraries(TestLZSS Compression)
 set_target_properties(TestLZSS PROPERTIES LINKER_LANGUAGE CXX)

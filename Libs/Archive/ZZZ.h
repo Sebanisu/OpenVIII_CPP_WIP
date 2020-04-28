@@ -1,19 +1,19 @@
 //
 // Created by pcvii on 4/23/2020.
 //
-#ifndef VIIICPPTEST_ZZZ_HPP
-#define VIIICPPTEST_ZZZ_HPP
+#ifndef VIIICPPTEST_ZZZ_H
+#define VIIICPPTEST_ZZZ_H
 #include <string>
 #include "FI.hpp"
-#include "../Tools/Tools.hpp"
+#include "Tools/Tools.h"
 #include <filesystem>
 #include <set>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "FIFLFS.hpp"
-#include "ZZZ/FileData.hpp"
+#include "FIFLFS.h"
+#include "ZZZ/FileData.h"
 namespace OpenVIII::Archive {
 
 struct [[maybe_unused]] ZZZ
@@ -117,7 +117,7 @@ public:
       }
       // todo check for language codes to choose correct files
       auto basename = fileEntry.path().filename().stem().string();
-      if (std::empty(basename)) tmp.insert(std::make_pair("__"+std::to_string(i++),archive));
+      if (std::empty(basename)) { tmp.insert(std::make_pair("__" + std::to_string(i++), archive)); }
       std::transform(basename.begin(), basename.end(), basename.begin(), ::toupper);
       archive = OpenVIII::Archive::ZZZ(fileEntry);
       tmp.insert(std::make_pair(basename, archive));
@@ -134,4 +134,4 @@ public:
 };
 
 }// namespace OpenVIII::Archive
-#endif// VIIICPPTEST_ZZZ_HPP
+#endif// VIIICPPTEST_ZZZ_H
