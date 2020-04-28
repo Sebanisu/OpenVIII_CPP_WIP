@@ -21,7 +21,7 @@ private:
   constexpr static const unsigned int NotUsed = 4096U;
 
   constexpr static const auto F = 18U;
-  constexpr static const auto FMinus1 = F-1;
+  constexpr static const auto FMinus1 = F - 1;
   constexpr static const auto N = NotUsed;
   constexpr static const auto NMinus1 = N - 1U;
   constexpr static const auto THRESHOLD = 2U;
@@ -143,13 +143,13 @@ public:
 
     auto text_buf =
       std::array<unsigned char, NPlus17>();// ring buffer of size N, with extra 17 bytes to facilitate string comparison
-    unsigned int len=0;
-    unsigned int r=0;
-    unsigned int s=0;
-    unsigned int last_match_length=0;
-    unsigned int i=0;
-    unsigned int c=0;
-    unsigned int code_buf_ptr=0;
+    unsigned int len = 0;
+    unsigned int r = 0;
+    unsigned int s = 0;
+    unsigned int last_match_length = 0;
+    unsigned int i = 0;
+    unsigned int c = 0;
+    unsigned int code_buf_ptr = 0;
     unsigned int curResult{};
     size_t sizeAlloc = src.size() / 2U;
     auto code_buf = std::array<unsigned char, FMinus1>();
@@ -197,14 +197,12 @@ public:
         }
 
         for (nodeIndex = 1; nodeIndex < 18; nodeIndex++) {
-          if ((cmp = key[nodeIndex] - text_buf.at(p + nodeIndex)) != 0) { break;
-}
+          if ((cmp = key[nodeIndex] - text_buf.at(p + nodeIndex)) != 0) { break; }
         }
 
         if (nodeIndex > match_length) {
           match_position = p;
-          if ((match_length = nodeIndex) >= 18) { break;
-}
+          if ((match_length = nodeIndex) >= 18) { break; }
         }
       }
 
@@ -225,8 +223,9 @@ public:
     // deletes node p from tree
     const auto DeleteNode = [&dad, &rson, &lson](auto p) {
       unsigned int q = 0;
-      if (dad.at(p) == NotUsed) { return;// not in tree
-}
+      if (dad.at(p) == NotUsed) {
+        return;// not in tree
+      }
 
       if (rson.at(p) == NotUsed) {
         q = lson.at(p);
@@ -291,7 +290,7 @@ public:
 
     for (len = 0; len < 18 && data < dataEnd; ++len) {
       text_buf.at(r + len) = static_cast<unsigned char>(*data++);// Read 18 bytes into the last 18 bytes of the buffer
-}
+    }
     if (/* (textsize =  */ len /* ) */ == 0) {
       result.clear();
       return result;// text of size zero
@@ -300,15 +299,16 @@ public:
     for (i = 1; i <= 18; ++i) {
       InsertNode(
         r - i);// Insert the 18 strings, each of which begins with one or more 'space' characters.  Note the order in
-}
-               // which these strings are inserted.  This way, degenerate trees will be less likely to occur.
+    }
+    // which these strings are inserted.  This way, degenerate trees will be less likely to occur.
 
     InsertNode(
       r);// Finally, insert the whole string just read.  The global variables match_length and match_position are set.
 
     do {
-      if (match_length > len) { match_length = len;// match_length may be spuriously long near the end of text.
-}
+      if (match_length > len) {
+        match_length = len;// match_length may be spuriously long near the end of text.
+      }
 
       if (match_length <= 2) {
         match_length = 1;// Not long enough match.  Send one byte.
@@ -342,7 +342,7 @@ public:
         if (s < FMinus1) {
           text_buf.at(s + N) = static_cast<unsigned char>(
             c);// If the position is near the end of buffer, extend the buffer to make string comparison easier.
-}
+        }
 
         s = (s + 1) & (NMinus1);
         r = (r + 1) & (NMinus1);
@@ -355,8 +355,9 @@ public:
         DeleteNode(s);// no need to read, but
         s = (s + 1) & (NMinus1);
         r = (r + 1) & (NMinus1);
-        if (--len != 0U) { InsertNode(r);// buffer may not be empty.
-}
+        if (--len != 0U) {
+          InsertNode(r);// buffer may not be empty.
+        }
       }
 
     } while (len > 0);// until length of string to be processed is zero
@@ -377,11 +378,9 @@ public:
 
   [[maybe_unused]] static auto Test(const size_t &size)
   {
-    if (size <= 0) { return true;
-}
+    if (size <= 0) { return true; }
     std::vector<char> vecOfRandomNums = std::vector<char>(static_cast<unsigned int>(size));
-    if (vecOfRandomNums.empty()) { return true;
-}
+    if (vecOfRandomNums.empty()) { return true; }
     std::generate(vecOfRandomNums.begin(), vecOfRandomNums.end(), []() {
       return static_cast<char>(static_cast<unsigned int>(rand()) % 255U);
     });
@@ -390,9 +389,9 @@ public:
     if (std::equal(vecOfRandomNums.begin(), vecOfRandomNums.end(), uncompressed.begin())) {
       std::cout << "Successful compress and uncompress! " << size << " bytes\n";
       return true;
-    }       std::cerr << "Failure!\n";
-      return false;
-
+    }
+    std::cerr << "Failure!\n";
+    return false;
   }
 };
 }// namespace OpenVIII::Compression
