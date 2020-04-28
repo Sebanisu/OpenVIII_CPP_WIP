@@ -5,7 +5,7 @@
 #include "../External/lz4/lib/lz4.h"
 #include <vector>
 #include <cstring>
-#include "L4Z.hpp"
+#include "L4Z.h"
 auto OpenVIII::Compression::L4Z::Decompress(const std::vector<char> &data, const size_t &size)
 {
   constexpr const auto minSize = 8U;

@@ -9,7 +9,7 @@
 #include <utility>
 #include <iterator>
 #include <cstring>
-#include "../Compression/LZSS/LZSS.hpp"
+#include "Compression/LZSS/LZSS.h"
 #include "../Tools/Tools.hpp"
 
 namespace OpenVIII::Archive {

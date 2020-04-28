@@ -27,9 +27,9 @@ add_library(lz4
 set_target_properties(lz4 PROPERTIES LINKER_LANGUAGE CXX)
 
 add_library(Compression STATIC
-        Libs/Compression/LZSS/LZSS.hpp
+        Libs/Compression/LZSS/LZSS.h
         Libs/Compression/Compression.cpp
-        Libs/Compression/L4Z/L4Z.hpp Libs/Compression/L4Z/L4Z.cpp)
+        Libs/Compression/L4Z/L4Z.h Libs/Compression/L4Z/L4Z.cpp)
 set_target_properties(Compression PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(Compression lz4)
 
