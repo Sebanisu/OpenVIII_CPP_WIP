@@ -20,10 +20,18 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 include_directories(Libs)
 include_directories(Tests)
 
+add_library(lz4
+        External/lz4/lib/lz4.h
+        External/lz4/lib/LZ4_.c
+        )
+set_target_properties(lz4 PROPERTIES LINKER_LANGUAGE CXX)
+
 add_library(Compression STATIC
         Libs/Compression/LZSS/LZSS.hpp
-        Libs/Compression/Compression.cpp)
+        Libs/Compression/Compression.cpp
+        Libs/Compression/L4Z/L4Z.hpp Libs/Compression/L4Z/L4Z.cpp)
 set_target_properties(Compression PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(Compression lz4)
 
 add_library(Tools STATIC
         Libs/Tools/Tools.hpp
