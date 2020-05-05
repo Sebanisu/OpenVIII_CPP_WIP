@@ -9,7 +9,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     message(STATUS "GCC detected, adding compile flags")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -Wshadow -Wpedantic -Wconversion")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -Wshadow -Wpedantic -Wconversion -Wpadded")
     # change to 2a for cpp20 pre release
 elseif(MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -36,7 +36,7 @@ target_link_libraries(Compression lz4)
 add_library(Tools STATIC
         Libs/Tools/Tools.h
         Libs/Tools/Tools.cpp
-)
+        Libs/color.h)
 set_target_properties(Tools PROPERTIES LINKER_LANGUAGE CXX)
 
 add_library(Archive STATIC

@@ -117,7 +117,7 @@ public:
       }
       // todo check for language codes to choose correct files
       auto basename = fileEntry.path().filename().stem().string();
-      if (std::empty(basename)) { tmp.insert(std::make_pair("__" + std::to_string(i++), archive)); }
+      if (std::empty(basename)) { tmp.insert(std::make_pair("__" + std::to_string(i++), std::move(archive))); }
       std::transform(basename.begin(), basename.end(), basename.begin(), ::toupper);
       archive = OpenVIII::Archive::ZZZ(fileEntry);
       tmp.insert(std::make_pair(basename, archive));

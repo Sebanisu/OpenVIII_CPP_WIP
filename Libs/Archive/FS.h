@@ -10,6 +10,8 @@
 #include <iterator>
 #include <cstring>
 #include "Compression/LZSS/LZSS.h"
+
+#include "Compression/L4Z/L4Z.h"
 #include "Tools/Tools.h"
 
 namespace OpenVIII::Archive {
@@ -87,7 +89,8 @@ public:
       return Compression::LZSS::Decompress(buffer, fi.UncompressedSize());
     case TCompressionType::LZ4:
       // todo add support for LZ4
-      return std::vector<char>();
+      return Compression::L4Z::Decompress(data.data()+offset,data.size()-offset,fi.UncompressedSize());
+      //return std::vector<char>();
     }
     return std::vector<char>();
   }

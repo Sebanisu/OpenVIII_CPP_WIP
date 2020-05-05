@@ -6,6 +6,7 @@
 #include <vector>
 #include <array>
 #include <algorithm>
+#include <climits>
 
 namespace OpenVIII::Compression {
 
@@ -13,13 +14,18 @@ namespace OpenVIII::Compression {
 struct LZSS
 {
 private:
+
+  constexpr static const int rSize = 4078;
+  constexpr static const unsigned int matchmask = 0xF0U;
+  constexpr static const int pOffset = 4097;
   constexpr static const unsigned int flagsMask = 0x100U;
   constexpr static const unsigned int flagsBits = 0xFF00U;
-  constexpr static const unsigned int offsetMask = 0xF0U;
+  constexpr static const unsigned int offsetMask = matchmask;
   constexpr static const unsigned int countMask = 0x0FU;
 
   constexpr static const unsigned int NotUsed = 4096U;
 
+  constexpr static const int nodeSize = 18;
   constexpr static const auto F = 18U;
   constexpr static const auto FMinus1 = F - 1;
   constexpr static const auto N = NotUsed;
@@ -132,6 +138,7 @@ public:
 
   [[nodiscard]] [[maybe_unused]] static auto Compress(const std::vector<char> &src)
   {
+    // todo pass a std::span in cpp 20 instead of vector.
 
     unsigned int match_length = {};
     unsigned int match_position{};
@@ -143,13 +150,13 @@ public:
 
     auto text_buf =
       std::array<unsigned char, NPlus17>();// ring buffer of size N, with extra 17 bytes to facilitate string comparison
-    unsigned int len = 0;
-    unsigned int r = 0;
-    unsigned int s = 0;
-    unsigned int last_match_length = 0;
-    unsigned int i = 0;
-    unsigned int c = 0;
-    unsigned int code_buf_ptr = 0;
+//    unsigned int len = 0;
+//    unsigned int r = 0;
+//    unsigned int s = 0;
+//    unsigned int last_match_length = 0;
+//    unsigned int i = 0;
+//    unsigned int c = 0;
+//    unsigned int code_buf_ptr = 0;
     unsigned int curResult{};
     size_t sizeAlloc = src.size() / 2U;
     auto code_buf = std::array<unsigned char, FMinus1>();
@@ -165,14 +172,14 @@ public:
        * match_length = 18, then removes the old node in favor of the new one, because the old one will be deleted
        * sooner. Note item plays double role, as tree node and position in buffer. */
 
-      unsigned int nodeIndex = 0;
-      unsigned int p = 0;
-      unsigned int cmp = 0;
+//      unsigned int nodeIndex = 0;
+//      unsigned int p = 0;
+//      unsigned int cmp = 0;
 
 
-      cmp = 1;
-      auto key = &text_buf.at(item);
-      p = 4097 + *key;
+      unsigned int cmp = 1U;
+      auto key = text_buf.begin() + item; // todo replace with std::span.
+      unsigned int p = pOffset + *key;
 
       rson.at(item) = lson.at(item) = NotUsed;
       match_length = 0;
@@ -195,14 +202,14 @@ public:
             return;
           }
         }
-
-        for (nodeIndex = 1; nodeIndex < 18; nodeIndex++) {
-          if ((cmp = key[nodeIndex] - text_buf.at(p + nodeIndex)) != 0) { break; }
+        unsigned int nodeIndex = 1;
+        for (; nodeIndex < nodeSize; nodeIndex++) {
+          if ((cmp = *(key+nodeIndex) - text_buf.at(p + nodeIndex)) != 0) { break; } //todo need std::span to remove pointer math.
         }
 
         if (nodeIndex > match_length) {
           match_position = p;
-          if ((match_length = nodeIndex) >= 18) { break; }
+          if ((match_length = nodeIndex) >= nodeSize) { break; }
         }
       }
 
@@ -222,11 +229,12 @@ public:
     };
     // deletes node p from tree
     const auto DeleteNode = [&dad, &rson, &lson](auto p) {
-      unsigned int q = 0;
+      //unsigned int q = 0;
       if (dad.at(p) == NotUsed) {
         return;// not in tree
       }
 
+      unsigned int q{};
       if (rson.at(p) == NotUsed) {
         q = lson.at(p);
       } else if (lson.at(p) == NotUsed) {
@@ -279,24 +287,24 @@ public:
                     // that the unit is an unencoded letter (1 byte), "0" a position-and-length pair (2 bytes). Thus,
                     // eight units require at most 16 bytes of code.
 
-    code_buf_ptr = mask = 1;
+    unsigned int code_buf_ptr = mask = 1;
 
-    s = 0;
-    r = 4078;
+    unsigned int s = 0;
+    unsigned int r = rSize;
 
     //	for(i=s ; i<r ; ++i)
     //		text_buf[i] = '\x0';//Clear the buffer with  any character that will appear often.
     // memset(text_buf, 0, r); //std::array should init with 0s.
-
-    for (len = 0; len < 18 && data < dataEnd; ++len) {
+    unsigned int len=0;
+    for (; len < nodeSize && data < dataEnd; ++len) {
       text_buf.at(r + len) = static_cast<unsigned char>(*data++);// Read 18 bytes into the last 18 bytes of the buffer
     }
     if (/* (textsize =  */ len /* ) */ == 0) {
       result.clear();
       return result;// text of size zero
     }
-
-    for (i = 1; i <= 18; ++i) {
+    unsigned int i = 1;
+    for (; i <= nodeSize; ++i) {
       InsertNode(
         r - i);// Insert the 18 strings, each of which begins with one or more 'space' characters.  Note the order in
     }
@@ -317,7 +325,7 @@ public:
       } else {
         code_buf.at(code_buf_ptr++) = static_cast<unsigned char>(match_position);
         code_buf.at(code_buf_ptr++) = static_cast<unsigned char>(
-          (((match_position >> 4U) & 0xF0U))
+          (((match_position >> 4U) & matchmask))
           | (match_length - (2 + 1)));// Send position and length pair. Note match_length > 2.
       }
 
@@ -333,9 +341,9 @@ public:
         code_buf_ptr = mask = 1;
       }
 
-      last_match_length = match_length;
+      unsigned int last_match_length = match_length;
       for (i = 0; i < last_match_length && data < dataEnd; ++i) {
-        c = static_cast<unsigned char>(*data++);
+        unsigned int c = static_cast<unsigned char>(*data++);
         DeleteNode(s);// Delete old strings and
         text_buf.at(s) = static_cast<unsigned char>(c);// read new bytes
 
@@ -382,7 +390,7 @@ public:
     std::vector<char> vecOfRandomNums = std::vector<char>(static_cast<unsigned int>(size));
     if (vecOfRandomNums.empty()) { return true; }
     std::generate(vecOfRandomNums.begin(), vecOfRandomNums.end(), []() {
-      return static_cast<char>(static_cast<unsigned int>(rand()) % 255U);
+      return static_cast<char>(static_cast<unsigned int>(rand()) % UCHAR_MAX);
     });
     auto compressed = Compress(vecOfRandomNums);
     auto uncompressed = Decompress(compressed);
