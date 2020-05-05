@@ -188,57 +188,57 @@ public:
 using ABGR1555 = color<colorPart<bit5, 0>, colorPart<bit5, bit5>, colorPart<bit5, bit5 * 2>, colorPart<1, bit5 * 3>>;
 using RGBA60bit =
   color<colorPart<bit16, bit16 * 3>, colorPart<bit16, bit16 * 2>, colorPart<bit16, bit16>, colorPart<bit16, 0>>;
-// int main()
-//{
-//
-//  // auto c = color();
-//
-//  auto c = ABGR1555();
-//  c.R(1.0);
-//  c.B(1.0);
-//  c.G(std::ratio<1, 1>());
-//  auto output = [](const auto &c) {
-//    std::cout << "\nred\n";
-//    std::cout << static_cast<int>(c.R().lshift) << std::endl;
-//    std::cout << static_cast<int>(c.R().rshift) << std::endl;
-//    std::cout << static_cast<int>(c.R().value()) << std::endl;
-//    std::cout << static_cast<int>(c.R().data()) << std::endl;
-//    std::cout << std::hex << static_cast<size_t>(c.R().shift()) << std::dec << std::endl;
-//
-//    std::cout << "\ngreen\n";
-//    std::cout << static_cast<int>(c.G().lshift) << std::endl;
-//    std::cout << static_cast<int>(c.G().rshift) << std::endl;
-//    std::cout << static_cast<int>(c.G().value()) << std::endl;
-//    std::cout << static_cast<int>(c.G().data()) << std::endl;
-//    std::cout << std::hex << static_cast<size_t>(c.G().shift()) << std::dec << std::endl;
-//
-//    std::cout << "\nblue\n";
-//    std::cout << static_cast<int>(c.B().lshift) << std::endl;
-//    std::cout << static_cast<int>(c.B().rshift) << std::endl;
-//    std::cout << static_cast<int>(c.B().value()) << std::endl;
-//    std::cout << static_cast<int>(c.B().data()) << std::endl;
-//    std::cout << std::hex << static_cast<size_t>(c.B().shift()) << std::dec << std::endl;
-//
-//    std::cout << "\nalpha\n";
-//    std::cout << static_cast<int>(c.A().lshift) << std::endl;
-//    std::cout << static_cast<int>(c.A().rshift) << std::endl;
-//    std::cout << static_cast<int>(c.A().value()) << std::endl;
-//    std::cout << static_cast<int>(c.A().data()) << std::endl;
-//    std::cout << std::hex << static_cast<size_t>(c.A().shift()) << std::dec << std::endl;
-//
-//    std::cout << "\nhex of color\n";
-//    std::cout << std::hex << static_cast<size_t>(c.value()) << std::dec << std::endl;
-//  };
-//  output(c);
-//  auto d = color();
-//  auto h = RGBA60bit();
-//  d = c;
-//  h = c;
-//  // d.r=1.0f;
-//  // c = d;
-//  std::cout << std::endl;
-//  output(d);
-//  std::cout << std::endl;
-//  output(h);
-//}
+ int main()
+{
+
+  // auto c = color();
+
+  auto c = ABGR1555();
+  c.R(1.0);
+  c.B(1.0);
+  c.G(std::ratio<1, 1>());
+  auto output = [](const auto &c) {
+    std::cout << "\nred\n";
+    std::cout << static_cast<int>(c.R().lshift) << std::endl;
+    std::cout << static_cast<int>(c.R().rshift) << std::endl;
+    std::cout << static_cast<int>(c.R().value()) << std::endl;
+    std::cout << static_cast<int>(c.R().data()) << std::endl;
+    std::cout << std::hex << static_cast<size_t>(c.R().shift()) << std::dec << std::endl;
+
+    std::cout << "\ngreen\n";
+    std::cout << static_cast<int>(c.G().lshift) << std::endl;
+    std::cout << static_cast<int>(c.G().rshift) << std::endl;
+    std::cout << static_cast<int>(c.G().value()) << std::endl;
+    std::cout << static_cast<int>(c.G().data()) << std::endl;
+    std::cout << std::hex << static_cast<size_t>(c.G().shift()) << std::dec << std::endl;
+
+    std::cout << "\nblue\n";
+    std::cout << static_cast<int>(c.B().lshift) << std::endl;
+    std::cout << static_cast<int>(c.B().rshift) << std::endl;
+    std::cout << static_cast<int>(c.B().value()) << std::endl;
+    std::cout << static_cast<int>(c.B().data()) << std::endl;
+    std::cout << std::hex << static_cast<size_t>(c.B().shift()) << std::dec << std::endl;
+
+    std::cout << "\nalpha\n";
+    std::cout << static_cast<int>(c.A().lshift) << std::endl;
+    std::cout << static_cast<int>(c.A().rshift) << std::endl;
+    std::cout << static_cast<int>(c.A().value()) << std::endl;
+    std::cout << static_cast<int>(c.A().data()) << std::endl;
+    std::cout << std::hex << static_cast<size_t>(c.A().shift()) << std::dec << std::endl;
+
+    std::cout << "\nhex of color\n";
+    std::cout << std::hex << static_cast<size_t>(c.value()) << std::dec << std::endl;
+  };
+  output(c);
+  auto d = color();
+  auto h = RGBA60bit();
+  d = c;
+  h = c;
+  // d.r=1.0f;
+  // c = d;
+  std::cout << std::endl;
+  output(d);
+  std::cout << std::endl;
+  output(h);
+}
 #endif// VIIICPPTEST_COLOR_H
