@@ -8,7 +8,7 @@
 #include <iostream>
 #include <bitset>
 #include <ratio>
-
+namespace OpenVIII::Color {
 
 [[maybe_unused]] constexpr const static auto bit1 = 1U;
 [[maybe_unused]] constexpr const static auto bit4 = 4U;
@@ -79,6 +79,7 @@ private:
     {
       if constexpr (std::is_integral_v<T>) {
         value_ = (static_cast<unsigned>(c) >> rshift) & MaxValue;// precision loss here
+        //TODO fix this. I think it's not correct.
       } else if constexpr (std::is_floating_point_v<T>) {
 
         if (c > 1.0) {
@@ -260,4 +261,5 @@ using RGBA60bit =
 //  std::cout << std::endl;
 //  output(h);
 //}
+}
 #endif// VIIICPPTEST_COLOR_H

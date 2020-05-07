@@ -46,6 +46,7 @@ public:
 
     std::vector<char> buffer;
     unsigned int compSize{ 0 };
+    unsigned int sectSize{ 0 };
     switch (fi.CompressionType()) {
     case TCompressionType::None:
       buffer = Tools::ReadBuffer(fp, fi.UncompressedSize());
@@ -57,9 +58,16 @@ public:
       fp.close();
       return Compression::LZSS::Decompress(buffer, fi.UncompressedSize());
     case TCompressionType::LZ4:
-      // todo add support for LZ4
+      // L4Z header contains size of total section as uint32, 4 byte string
+      // the size of the compressed data is the first value minus 8. the second value is something i'm unsure of
+      Tools::ReadVal(fp, sectSize);
+      auto str = std::array<char,4>();
+      fp.read(str.data(),4);
+      Tools::ReadVal(fp, compSize);
+      buffer = Tools::ReadBuffer(fp, sectSize-8);
       fp.close();
-      return std::vector<char>();
+      return Compression::L4Z::Decompress(
+        buffer.data(), sectSize-8, fi.UncompressedSize());
     }
     return std::vector<char>();
   }
@@ -69,11 +77,12 @@ public:
     if (fi.UncompressedSize() == 0) { return std::vector<char>(); }
 
     std::vector<char> buffer;
-    const auto &iterator = data.begin() + fi.Offset() + static_cast<long>(offset);
-    const auto &ptr = data.data() + fi.Offset() + static_cast<long>(offset);
+    auto iterator = data.begin() + fi.Offset() + static_cast<long>(offset);
+    auto ptr = data.data() + fi.Offset() + static_cast<long>(offset);
     // ptr and iterator.base() would be the same. sadly msvc doesn't have a .base()
     // todo usages of memcpy can be replaced with std::bitcast in cpp20
     unsigned int compSize{ 0 };
+    unsigned int sectSize{ 0 };
     switch (fi.CompressionType()) {
     case TCompressionType::None:
       if (iterator + fi.UncompressedSize() > data.end()) { break; }
@@ -88,9 +97,19 @@ public:
       std::copy(iterator + sizeof(compSize), iterator + sizeof(compSize) + compSize, buffer.begin());
       return Compression::LZSS::Decompress(buffer, fi.UncompressedSize());
     case TCompressionType::LZ4:
-      // todo add support for LZ4
-      return Compression::L4Z::Decompress(data.data()+offset,data.size()-offset,fi.UncompressedSize());
-      //return std::vector<char>();
+      // L4Z header contains size of total section as uint32, 4 byte string
+      // the size of the compressed data is the first value minus 8. the second value is something i'm unsure of
+      if (iterator + sizeof(sectSize) > data.end()) { break; }
+      std::memcpy(&sectSize, ptr, sizeof(sectSize));
+      ptr+=sizeof(sectSize);
+      if (iterator + sectSize + sizeof(sectSize)> data.end()) { break; }
+      auto str = std::string_view(ptr, 4U);
+      ptr+=std::size(str);
+      std::memcpy(&compSize, ptr, sizeof(compSize));
+      ptr+=sizeof(compSize);
+      return Compression::L4Z::Decompress(
+        ptr, sectSize-8, fi.UncompressedSize());
+      // return std::vector<char>();
     }
     return std::vector<char>();
   }
