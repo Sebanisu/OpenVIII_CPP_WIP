@@ -85,16 +85,22 @@ public:
     unsigned int sectSize{ 0 };
     switch (fi.CompressionType()) {
     case TCompressionType::None:
-      if (iterator + fi.UncompressedSize() > data.end()) { break; }
-      buffer = std::vector<char>(fi.UncompressedSize());
-      std::copy(iterator, iterator + fi.UncompressedSize(), buffer.begin());
+      if (iterator + fi.UncompressedSize() > data.end()) {
+        auto umm = data.size() - fi.UncompressedSize();
+        break;
+      }
+      buffer = std::vector<char>();
+      buffer.reserve(fi.UncompressedSize());
+      std::copy(iterator, iterator + fi.UncompressedSize(), std::back_inserter(buffer));
       return buffer;
     case TCompressionType::LZSS:
       if (iterator + sizeof(compSize) > data.end()) { break; }
       std::memcpy(&compSize, ptr, sizeof(compSize));
+      iterator+=sizeof(compSize);
       if (iterator + compSize > data.end()) { break; }
-      buffer = std::vector<char>(compSize);
-      std::copy(iterator + sizeof(compSize), iterator + sizeof(compSize) + compSize, buffer.begin());
+      buffer = std::vector<char>();
+      buffer.reserve(compSize);
+      std::copy(iterator, iterator+compSize, std::back_inserter(buffer)); //todo replace with std::span in cpp20
       return Compression::LZSS::Decompress(buffer, fi.UncompressedSize());
     case TCompressionType::LZ4:
       // L4Z header contains size of total section as uint32, 4 byte string

@@ -117,17 +117,13 @@ public:
 
   [[nodiscard]] auto GetEntry(const unsigned int &id) const
   {
-    auto fi = Archive::FI();
     if (id < count_ || count_ == 0) {
       if (!fiData_.empty()) {
-        fi = FI::GetEntry(fiData_, id, fiOffset_);
+        return FI::GetEntry(fiData_, id, fiOffset_);
       } else {
-        fi = FI::GetEntry(fi_, id, fiOffset_);
+        return FI::GetEntry(fi_, id, fiOffset_);
       }
     }
-
-    if (!fsData_.empty()) { return FS::GetEntry(fsData_, fi, fsOffset_); }
-    return FS::GetEntry(fs_, fi, fsOffset_);
   }
 
   [[maybe_unused]] [[nodiscard]] auto GetEntry(const std::string_view &needle) const
@@ -161,10 +157,24 @@ public:
     auto archive = FIFLFS();
     for (const auto &item : entries) {
       const auto &[id, strPath] = item;
-      auto buffer = GetEntry(id);
-      if (TryAddTestReset(archive, strPath, buffer)) { continue; }
-      std::cout << '{' << id << ", " << buffer.size() << ", " << strPath << "}" << std::endl;
-      Tools::WriteBuffer(buffer, strPath);
+      auto fi = GetEntry(id);
+
+      std::vector<char> buffer{};
+      if (fi.UncompressedSize() > 0) {
+        if (!fsData_.empty()) { buffer = FS::GetEntry(fsData_, fi, fsOffset_); }
+        else {
+          buffer = FS::GetEntry(fs_, fi, fsOffset_);
+        }
+      }
+      if (buffer.size() == 0) {
+        std::cout << '{' << id << ", "
+                  << "Empty!"
+                  << ", " << strPath << "}" << fi << std::endl;
+      } else {
+        if (TryAddTestReset(archive, strPath, buffer)) { continue; }
+        //std::cout << '{' << id << ", " << buffer.size() << ", " << strPath << "}" << std::endl;
+        Tools::WriteBuffer(buffer, strPath);
+      }
     }
   }
 
