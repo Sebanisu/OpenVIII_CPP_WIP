@@ -15,9 +15,9 @@ namespace OpenVIII::Archive {
 struct [[maybe_unused]] FileData
 {
 private:
-  unsigned int filenameLength_{};
-  std::string filename_{};
+  //unsigned int filenameLength_{};
   unsigned long offset_{};
+  std::string filename_{};
   unsigned int size_{};
 
 public:
@@ -34,34 +34,29 @@ constexpr FileData() = default;
 {
   filename_ = filename;
   Tools::replaceAll(filename_, '\\', std::filesystem::path::preferred_separator);
-  filenameLength_ = static_cast<unsigned int>(std::size(filename_));
+  //filenameLength_ = static_cast<unsigned int>(std::size(filename_));
   offset_ = offset;
   size_ = size;
-  std::cout << '{'<< offset<<", " << size<< ", " <<filename << "}\n";
+  //std::cout << '{'<< offset<<", " << size<< ", " <<filename << "}\n";
 }
 [[maybe_unused]] static FileData GetEntry(std::ifstream &fp)
 {
   unsigned int filenameLength{};
-  unsigned long offset{};
-  unsigned int size{};
+  decltype(offset_) offset{};
+  decltype(size_) size{};
   if (!fp.is_open()) { return FileData(); }
-  auto read = [&fp](auto &value) {
-    std::array<char, sizeof(value)> tmp{};
-    fp.read(tmp.data(), tmp.size());
-    memcpy(&value, tmp.data(), tmp.size());
-  };
-  read(filenameLength);
+  Tools::ReadVal(fp,filenameLength);
   auto filename = std::basic_string<char>();
   filename.resize(filenameLength);
   fp.read(filename.data(), filenameLength);
-  read(offset);
-  read(size);
+  Tools::ReadVal(fp,offset);
+  Tools::ReadVal(fp,size);
   return FileData(filename, offset, size);
 }
 // size of all the data in this struct
 [[maybe_unused]] [[nodiscard]] constexpr auto TotalSize()
 {
-  return sizeof(filenameLength_) + std::size(filename_) + sizeof(offset_) + sizeof(size_);
+  return sizeof(unsigned int) + std::size(filename_) + sizeof(offset_) + sizeof(size_);
 }
 // gets path as a std::filesystem::path
 [[maybe_unused]] [[nodiscard]] auto GetPath() const { return std::filesystem::path(filename_); }

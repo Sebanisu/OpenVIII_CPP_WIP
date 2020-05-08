@@ -75,18 +75,22 @@ public:
     if (!(path.has_extension() && Tools::iEquals(path.extension().string(), Ext)) || !std::filesystem::exists(path)) {
       return std::vector<char>();
     }
-    auto fp = std::ifstream(path, std::ios::binary | std::ios::in);
-    if (!fp.is_open()) {
-      fp.close();
-      return std::vector<char>();
-    }
+    {
+      auto fp = std::ifstream(path, std::ios::binary | std::ios::in);
+      if (!fp.is_open()) {
+        fp.close();
+        return std::vector<char>();
+      }
 
-    auto buffer = std::vector<char>(data.Size());
-    fp.seekg(static_cast<long>(data.Offset()));
-    fp.read(buffer.data(), static_cast<long>(data.Size()));
-    fp.close();
-    // todo in cpp20 use bitcast instead. or find another way to write data.
-    return buffer;
+
+      fp.seekg(static_cast<long>(data.Offset()));
+      {
+        auto buffer = Tools::ReadBuffer(fp, data.Size());
+        fp.close();
+        // todo in cpp20 use bitcast instead. or find another way to write data.
+        return buffer;
+      }
+    }
   }
   auto GetEntry(const FileData &data) const { return GetEntry(path_, data); }
 

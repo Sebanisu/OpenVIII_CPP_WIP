@@ -80,7 +80,8 @@ public:
       // check for garbage
       auto index =
         flData_.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_\n\r\\:/.-");
-      if (index != std::string::npos) { std::cerr << "\nError: Invalid character found in FL data! = " << fl << '\n'; }
+      if (index != std::string::npos) {
+        std::cerr << "\nError: Invalid character found in FL data! = " << fl << '\n'; }
     }
   }
 
