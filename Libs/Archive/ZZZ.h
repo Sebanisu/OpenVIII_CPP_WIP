@@ -98,12 +98,19 @@ public:
   {
 
     auto archive = OpenVIII::Archive::FIFLFS();
-    for (const auto &item : data_) {
-      const auto &[zzzPath, zzzOffset, zzzSize] = item.GetTuple();
-      auto buffer = GetEntry(item);
-      if (FIFLFS::TryAddTestReset(archive, zzzPath.string(), buffer)) { continue; }
-      std::cout << '{' << buffer.size() << ", " << zzzPath << "}\n";
-      Tools::WriteBuffer(buffer, zzzPath.string());
+    {
+      for (const auto &item : data_) {
+        // to know that a file isn't part of a the FIFLFS archive i need to check next item to see if they go together
+        // but sadly it seems set doesn't give me a easy way to check the next element because sets aren't contiguous in
+        // ram.
+        const auto &[zzzPath, zzzOffset, zzzSize] = item.GetTuple();
+        auto buffer = GetEntry(item);
+        std::cout << '{' << zzzOffset << ", " << zzzSize << ", " << zzzPath << "}\n";
+        if (FIFLFS::CheckExtension(zzzPath)) {}
+        if (FIFLFS::TryAddTestReset(archive, zzzPath.string(), buffer)) { continue; }
+        std::cout << '{' << buffer.size() << ", " << zzzPath << "}\n";
+        Tools::WriteBuffer(buffer, zzzPath.string());
+      }
     }
   }
   using ZZZmap = std::map<std::string, OpenVIII::Archive::ZZZ>;

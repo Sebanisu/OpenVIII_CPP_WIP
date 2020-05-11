@@ -16,8 +16,8 @@ struct [[maybe_unused]] FileData
 {
 private:
   //unsigned int filenameLength_{};
-  unsigned long offset_{};
   std::string filename_{};
+  unsigned long offset_{};
   unsigned int size_{};
 
 public:
@@ -47,6 +47,8 @@ constexpr FileData() = default;
   if (!fp.is_open()) { return FileData(); }
   Tools::ReadVal(fp,filenameLength);
   auto filename = std::basic_string<char>();
+  // made as a char basic string to make sure
+  // we aren't reading wide chars or something odd.
   filename.resize(filenameLength);
   fp.read(filename.data(), filenameLength);
   Tools::ReadVal(fp,offset);
@@ -61,10 +63,10 @@ constexpr FileData() = default;
 // gets path as a std::filesystem::path
 [[maybe_unused]] [[nodiscard]] auto GetPath() const { return std::filesystem::path(filename_); }
 // convert to FI. (loss of precision size_t to unsigned int)
-[[maybe_unused]] [[nodiscard]] constexpr auto GetFI() const
-{
-  return FI(static_cast<unsigned int>(size_), static_cast<unsigned int>(offset_));
-}
+//[[maybe_unused]] [[nodiscard]] constexpr auto GetFI() const
+//{
+//  return FI(static_cast<unsigned int>(size_), static_cast<unsigned int>(offset_));
+//}
 // get size of file
 [[maybe_unused]] [[nodiscard]] constexpr auto Size() const { return size_; }
 // get offset of file

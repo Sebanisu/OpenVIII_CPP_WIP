@@ -86,7 +86,7 @@ public:
     switch (fi.CompressionType()) {
     case TCompressionType::None:
       if (iterator + fi.UncompressedSize() > data.end()) {
-        auto umm = data.size() - fi.UncompressedSize();
+        //auto umm = data.size() - fi.UncompressedSize();
         break;
       }
       buffer = std::vector<char>();

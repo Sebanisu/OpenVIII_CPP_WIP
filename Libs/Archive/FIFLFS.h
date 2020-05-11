@@ -28,6 +28,10 @@ private:
   std::vector<char> fiData_{};
   std::vector<char> fsData_{};
   std::basic_string<char> flData_{};// this is char because the file contains strings.
+  std::string fiBase_{};
+  std::string fsBase_{};
+  std::string flBase_{};
+
 public:
   [[maybe_unused]] [[nodiscard]] auto FI() const { return fi_; }
 
@@ -81,7 +85,10 @@ public:
       auto index =
         flData_.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_\n\r\\:/.-");
       if (index != std::string::npos) {
-        std::cerr << "\nError: Invalid character found in FL data! = " << fl << '\n'; }
+        std::cerr << "\nError: Invalid character (" << static_cast<int>(flData_[index])
+                  << ") found in FL data! = " << fl << '\n';
+        exit(EXIT_FAILURE);
+      }
     }
   }
 
@@ -162,23 +169,39 @@ public:
 
       std::vector<char> buffer{};
       if (fi.UncompressedSize() > 0) {
-        if (!fsData_.empty()) { buffer = FS::GetEntry(fsData_, fi, fsOffset_); }
-        else {
+        if (!fsData_.empty()) {
+          buffer = FS::GetEntry(fsData_, fi, fsOffset_);
+        } else {
           buffer = FS::GetEntry(fs_, fi, fsOffset_);
         }
       }
+
       if (buffer.size() == 0) {
         std::cout << '{' << id << ", "
                   << "Empty!"
                   << ", " << strPath << "}" << fi << std::endl;
+        if (fi.UncompressedSize() > 0) { exit(EXIT_FAILURE); }
       } else {
         if (TryAddTestReset(archive, strPath, buffer)) { continue; }
-        //std::cout << '{' << id << ", " << buffer.size() << ", " << strPath << "}" << std::endl;
+        std::cout << '{' << id << ", " << buffer.size() << ", " << strPath << "}" << std::endl;
         Tools::WriteBuffer(buffer, strPath);
       }
+      if (fi.UncompressedSize() != buffer.size()) { exit(EXIT_FAILURE); }
     }
   }
 
+  char static CheckExtension(const std::filesystem::path &path)
+  {
+
+    char i = 0;// 0 does not match;
+    if (path.has_extension())
+      for (const auto &ext : { OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext, OpenVIII::Archive::FI::Ext }) {
+        i++;
+        if (OpenVIII::Tools::iEquals(path.extension().string(), ext)) { return i; }
+      }
+
+    return 0;
+  }
   /*
    * 0 = didn't add
    * 1 = added
@@ -186,30 +209,65 @@ public:
    * */
   char TryAdd(const std::filesystem::directory_entry &fileEntry, const std::vector<char> &vector)
   {
-    if (fileEntry.path().has_extension()) {
-      unsigned char i = 0;
-      // order to match the switch below
-      for (const auto &ext : { OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext, OpenVIII::Archive::FI::Ext }) {
-        if (OpenVIII::Tools::iEquals(fileEntry.path().extension().string(), ext)) {
-          switch (i) {
-          case 0:
-            FL(fileEntry, vector, 0U);
-            return AllSet() ? 2 : 1;
-          case 1:
-            FS(fileEntry, vector, 0U);
-            return AllSet() ? 2 : 1;
-          case 2:
-            FI(fileEntry, vector, 0U);
-            return AllSet() ? 2 : 1;
-          default:
-            break;
-          }
-          break;
-        }
-        i++;
-      }
+    switch (CheckExtension(fileEntry.path())) {
+    case 1:
+      FL(fileEntry, vector, 0U);
+      flBase_ = FLBaseName();
+      compareBaseNames();
+      return AllSet() ? 2 : 1;
+    case 2:
+      FS(fileEntry, vector, 0U);
+      fsBase_ = FSBaseName();
+      compareBaseNames();
+      return AllSet() ? 2 : 1;
+    case 3:
+      FI(fileEntry, vector, 0U);
+      fiBase_ = FIBaseName();
+      compareBaseNames();
+      return AllSet() ? 2 : 1;
+    default:
+      break;
     }
     return 0;
+  }
+  void compareBaseNames()
+  {
+    if ((flBase_ == fsBase_ && fiBase_ == fsBase_) || std::empty(flBase_) || std::empty(fiBase_)
+        || std::empty(fsBase_)) {
+      return;
+    }
+    if (flBase_ != fsBase_ || fiBase_ != fsBase_) {
+      if (flBase_ == fiBase_) {
+        std::cerr << "Removing FS Data: " << fs_ << "\n";
+        fsBase_ = std::string{};
+        fsData_ = std::vector<char>{};
+        fsOffset_ = 0;
+        fs_ = std::filesystem::path{};
+
+        exit(EXIT_FAILURE);
+      }
+    } else if (fiBase_ != flBase_) {
+      if (flBase_ == fsBase_) {
+        std::cerr << "Removing FL Data: " << fl_ << "\n";
+        fiBase_ = std::string{};
+        fiData_ = std::vector<char>{};
+        fiOffset_ = 0;
+        fi_ = std::filesystem::path{};
+
+        exit(EXIT_FAILURE);
+      } else if (fiBase_ == fsBase_) {
+        std::cerr << "Removing FI Data: " << fi_ << "\n";
+        flBase_ = std::string{};
+        flData_ = std::basic_string<char>{};
+        flOffset_ = 0;
+        fl_ = std::filesystem::path{};
+
+        exit(EXIT_FAILURE);
+      }
+    } else {
+      std::cerr << "No files matched!\n";
+      exit(EXIT_FAILURE);
+    }
   }
 
   // todo move get files to here
@@ -221,7 +279,7 @@ public:
     return GetFilesFromIterator(std::filesystem::directory_iterator(path, options));// todo may need sorted.
   }
 
-  template<class iter_t> static FIFLFSmap GetFilesFromIterator(iter_t iter)
+  template<class iter_t> [[nodiscard]] static FIFLFSmap GetFilesFromIterator(iter_t iter)
   {
     auto tmp = FIFLFSmap();
     auto archive = OpenVIII::Archive::FIFLFS();
@@ -236,8 +294,17 @@ public:
     }
     return tmp;
   }
-
-  std::string GetBaseName() const
+  [[nodiscard]] std::string FIBaseName() const { return GetBaseName(FI()); }
+  [[nodiscard]] std::string FLBaseName() const { return GetBaseName(FL()); }
+  [[nodiscard]] std::string FSBaseName() const { return GetBaseName(FS()); }
+  [[nodiscard]] std::string static GetBaseName(const std::filesystem::path &path)
+  {
+    if (path.string().empty()) return std::string{};
+    auto name = path.filename().stem().string();
+    std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+    return name;
+  }
+  [[nodiscard]] std::string GetBaseName() const
   {
     std::string name;
     for (const auto &path : { FI(), FL(), FS() }) {
