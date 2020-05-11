@@ -24,27 +24,23 @@ private:
   // stored at top of zzz file to tell how many files are stored inside
   //  [[maybe_unused]] unsigned int count_{};
   // file data inside zzz file.
-  std::set<FileData, FileData::Comparator> data_{};
+  std::vector<FileData> data_{};
 
   [[maybe_unused]] constexpr static auto Ext = ".zzz";
 
   std::filesystem::path path_{};
 
 public:
+  ZZZ(const ZZZ&) = default;
+  ZZZ& operator = (const ZZZ&) = default;
+  ZZZ(ZZZ &&) = default;
+  ZZZ& operator=(ZZZ &&) = default;
+  ~ZZZ() = default;
   constexpr ZZZ() = default;
-  //[[maybe_unused]] explicit ZZZ(const std::set<FileData, FileData::Comparator> &data);
-  //  {
-  //    data_ = data;
-  //    count_ = static_cast<unsigned int>(std::size(data));
-  //  }
-  //  [[maybe_unused]] constexpr auto size() { return std::size(data_); }
-  //  [[maybe_unused]] auto begin() { return std::begin(data_); }
-  //  [[maybe_unused]] auto end() { return std::end(data_); }
-  [[maybe_unused]] [[nodiscard]] static auto GetAllEntries(const std::filesystem::path &path)
+  ZZZ(const std::filesystem::path &path)
   {
-    auto data = std::set<FileData, FileData::Comparator>();
     if (!(path.has_extension() && Tools::iEquals(path.extension().string(), Ext)) || !std::filesystem::exists(path)) {
-      return data;
+      return;
     }
 
 
@@ -52,23 +48,20 @@ public:
     auto fp = std::ifstream(path, std::ios::binary | std::ios::in);
     if (!fp.is_open()) {
       fp.close();
-      return data;
+      return;
     }
-    std::cout << "Getting File Entries from : " << path << std::endl;
-    std::array<char, sizeof(count)> tmp{};
-    fp.read(tmp.data(), tmp.size());
-    memcpy(&count, tmp.data(), sizeof(count));
-    for (auto i = 0U; fp.is_open() && !fp.eof() && i < count; i++) {
-      auto fd = FileData::GetEntry(fp);
-      if (!fd.GetPathString().empty()) { data.insert(fd); }
-    }
-    fp.close();
-    return data;
-  }
-  [[maybe_unused]] explicit ZZZ(const std::filesystem::path &path)
-  {
     path_ = path;
-    data_ = GetAllEntries(path_);
+    Tools::ReadVal(fp, count);
+    std::cout << "Getting File " << count << " Entries from : " << path << std::endl;
+    data_.reserve(count);
+    for (auto i = 0U; fp.is_open() && !fp.eof() && i < count; i++) {
+      if ((data_.emplace_back(FileData(fp)).empty())) {
+        std::cerr << "empty element detected and removed\n";
+        data_.pop_back();
+      }
+    }
+    std::sort(data_.begin(), data_.end(), FileData::Comparator());
+    fp.close();
   }
   static auto GetEntry(const std::filesystem::path &path, const FileData &data)
   {
@@ -94,23 +87,37 @@ public:
   }
   auto GetEntry(const FileData &data) const { return GetEntry(path_, data); }
 
+  [[maybe_unused]] [[nodiscard]] bool empty() { return data_.empty(); }
   [[maybe_unused]] void Test() const
   {
 
     auto archive = OpenVIII::Archive::FIFLFS();
     {
-      for (const auto &item : data_) {
-        // to know that a file isn't part of a the FIFLFS archive i need to check next item to see if they go together
-        // but sadly it seems set doesn't give me a easy way to check the next element because sets aren't contiguous in
-        // ram.
+      auto beg = data_.begin();
+      auto end = data_.end();
+      for (auto cur = beg; cur < end; cur++) {
+        // const auto &item : data_
+        const auto &item = *cur;
+
+        const auto &next =
+          cur + 1 < end && FIFLFS::CheckExtension((*(cur + 1)).GetPathString()) ? *(cur + 1) : FileData();
+        const auto &prev =
+          cur - 1 > beg && FIFLFS::CheckExtension((*(cur - 1)).GetPathString()) ? *(cur - 1) :FileData();
+        // getting a prev and next element to check vs cur item. To make sure at least 2 of them match so we don't add
+        // an orphan to the FIFLFS archive.
         const auto &[zzzPath, zzzOffset, zzzSize] = item.GetTuple();
         auto buffer = GetEntry(item);
         std::cout << '{' << zzzOffset << ", " << zzzSize << ", " << zzzPath << "}\n";
-        if (FIFLFS::CheckExtension(zzzPath)) {}
-        if (FIFLFS::TryAddTestReset(archive, zzzPath.string(), buffer)) { continue; }
+        if (FIFLFS::CheckExtension(zzzPath)
+            && ((!next.empty() && FIFLFS::GetBaseName(zzzPath) == FIFLFS::GetBaseName(next.GetPathString())) ||
+
+                (!prev.empty() && FIFLFS::GetBaseName(zzzPath) == FIFLFS::GetBaseName(prev.GetPathString())))) {
+          if (FIFLFS::TryAddTestReset(archive, zzzPath, buffer)) { continue; }
+        }
         std::cout << '{' << buffer.size() << ", " << zzzPath << "}\n";
-        Tools::WriteBuffer(buffer, zzzPath.string());
+        Tools::WriteBuffer(buffer, zzzPath);
       }
+
     }
   }
   using ZZZmap = std::map<std::string, OpenVIII::Archive::ZZZ>;

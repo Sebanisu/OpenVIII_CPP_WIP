@@ -132,6 +132,7 @@ public:
         return FI::GetEntry(fi_, id, fiOffset_);
       }
     }
+    return OpenVIII::Archive::FI();
   }
 
   [[maybe_unused]] [[nodiscard]] auto GetEntry(const std::string_view &needle) const
@@ -278,7 +279,6 @@ public:
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
     return GetFilesFromIterator(std::filesystem::directory_iterator(path, options));// todo may need sorted.
   }
-
   template<class iter_t> [[nodiscard]] static FIFLFSmap GetFilesFromIterator(iter_t iter)
   {
     auto tmp = FIFLFSmap();

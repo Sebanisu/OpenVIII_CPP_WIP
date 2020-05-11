@@ -53,8 +53,6 @@ Case Insensitive strings equal
   // return std::equal(str1.begin(), str1.end(), str2.begin(), iEqual);
   // todo std::equal constexpr in cpp20
 }
-
-
 // Replace all of one char to another char. Arguments will be static_cast to the type of string char used in haystack.
 // I use this to make the separator on windows or linux matches the strings.
 template<typename needleType, typename replacementType>
@@ -77,6 +75,12 @@ template<typename needleType, typename replacementType>
     // a unicode mode.
   };
   std::transform(haystack.begin(), haystack.end(), haystack.begin(), replace);
+}
+
+[[maybe_unused]]
+constexpr inline static void replaceSlashes(std::string &haystack)
+{
+  replaceAll(haystack, '\\', std::filesystem::path::preferred_separator);
 }
 /*
 Find Case Insensitive Sub String in a given substring (version returns location in string and allows offset)

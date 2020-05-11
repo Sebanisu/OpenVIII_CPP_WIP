@@ -5,7 +5,6 @@
 #ifndef VIIICPPTEST_FILEDATA_H
 #define VIIICPPTEST_FILEDATA_H
 #include <string>
-#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -15,10 +14,9 @@ namespace OpenVIII::Archive {
 struct [[maybe_unused]] FileData
 {
 private:
-  //unsigned int filenameLength_{};
-  std::string filename_{};
-  unsigned long offset_{};
-  unsigned int size_{};
+  std::basic_string<char> filename_{};// defined as char because some compilers default to wide char.
+  std::uint64_t offset_{};
+  std::uint32_t size_{};
 
 public:
   struct [[maybe_unused]] Comparator{ bool operator()(const FileData &left, const FileData &right)
@@ -30,32 +28,40 @@ return left.filename_ < right.filename_;
 }
 ;
 constexpr FileData() = default;
+FileData(const FileData &) = default;
+  FileData(FileData &&) = default;
+FileData& operator=(const FileData &) = default;
+  FileData& operator=(FileData &&) = default;
+  ~FileData() = default;
 [[maybe_unused]] FileData(const std::string_view &filename, const unsigned long offset, unsigned int size)
 {
   filename_ = filename;
-  Tools::replaceAll(filename_, '\\', std::filesystem::path::preferred_separator);
-  //filenameLength_ = static_cast<unsigned int>(std::size(filename_));
+  Tools::replaceSlashes(filename_);
   offset_ = offset;
   size_ = size;
-  //std::cout << '{'<< offset<<", " << size<< ", " <<filename << "}\n";
 }
-[[maybe_unused]] static FileData GetEntry(std::ifstream &fp)
+bool empty() const
 {
-  unsigned int filenameLength{};
-  decltype(offset_) offset{};
-  decltype(size_) size{};
-  if (!fp.is_open()) { return FileData(); }
-  Tools::ReadVal(fp,filenameLength);
-  auto filename = std::basic_string<char>();
-  // made as a char basic string to make sure
-  // we aren't reading wide chars or something odd.
-  filename.resize(filenameLength);
-  fp.read(filename.data(), filenameLength);
-  Tools::ReadVal(fp,offset);
-  Tools::ReadVal(fp,size);
-  return FileData(filename, offset, size);
+  return size_ == 0 || filename_.empty();
 }
-// size of all the data in this struct
+FileData(std::ifstream &fp)
+{
+  if (!fp.is_open()) { return; }
+  {
+    unsigned int filenameLength{};
+    Tools::ReadVal(fp, filenameLength);
+    // made as a char basic string to make sure
+    // we aren't reading wide chars or something odd.
+    filename_.resize(filenameLength);
+    fp.read(filename_.data(), filenameLength);
+  }
+  Tools::replaceSlashes(filename_);// make sure slashes match compiler
+  Tools::ReadVal(fp, offset_);
+  Tools::ReadVal(fp, size_);
+}
+
+
+// size of this file entry in the zzz file.
 [[maybe_unused]] [[nodiscard]] constexpr auto TotalSize()
 {
   return sizeof(unsigned int) + std::size(filename_) + sizeof(offset_) + sizeof(size_);
@@ -73,7 +79,7 @@ constexpr FileData() = default;
 [[maybe_unused]] [[nodiscard]] constexpr auto Offset() const { return offset_; }
 // gets path as a std::string_view
 [[maybe_unused]] [[nodiscard]] auto GetPathString() const { return std::string_view(filename_); }
-[[maybe_unused]] auto GetTuple() const { return std::make_tuple(GetPath(), Offset(), Size()); }
+[[maybe_unused]] [[nodiscard]] auto GetTuple() const { return std::make_tuple(GetPathString(), Offset(), Size()); }
 }
 ;
 }
