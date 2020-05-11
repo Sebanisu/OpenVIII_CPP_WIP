@@ -11,7 +11,7 @@
 #include <vector>
 #include <optional>
 #include <cassert>
-#include "../Tools/Tools.hpp"
+#include "Tools/Tools.h"
 
 namespace OpenVIII::Archive {
 struct FL
@@ -35,7 +35,7 @@ private:
     std::string token;
     while (std::getline(ss, token, delimiter)) {
       CleanString(token);
-      cont.insert(std::make_pair(id++, token));
+      cont.insert(std::make_pair(id++, std::move(token)));
     }
   }
 
@@ -66,7 +66,7 @@ public:
       fp.seekg(static_cast<long>(offset), std::ios::beg);
       while (std::getline(fp, innerPath)) {
         CleanString(innerPath);
-        set.insert(std::pair(id++, innerPath));
+        set.insert(std::make_pair(id++, std::move(innerPath)));
       }
       if (!fp.is_open()) { fp.close(); }
       return set;
@@ -100,7 +100,7 @@ public:
       if (Tools::iFind(innerPath, needle)) {
         CleanString(innerPath);
         fp.close();
-        return (std::make_pair(i, innerPath));
+        return (std::make_pair(i, std::move(innerPath)));
       }
       i++;
     }

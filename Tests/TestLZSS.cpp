@@ -1,7 +1,7 @@
 //
 // Created by pcvii on 4/27/2020.
 //
-#include "TestLZSS.hpp"
+#include "TestLZSS.h"
 
 int main()
 {

@@ -1,7 +1,7 @@
 //
 // Created by pcvii on 4/27/2020.
 //
-#include "TestExtractZZZ.hpp"
+#include "TestExtractZZZ.h"
 int main()
 {
   // test ZZZ extract with FIFLFS
