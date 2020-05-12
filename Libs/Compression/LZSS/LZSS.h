@@ -15,17 +15,17 @@ struct LZSS
 {
 private:
 
-  constexpr static const int rSize = 4078;
-  constexpr static const unsigned int matchmask = 0xF0U;
-  constexpr static const int pOffset = 4097;
+  constexpr static const unsigned int rSize = 4078U;
+  constexpr static const unsigned int matchMask = 0xF0U;
+  constexpr static const unsigned int pOffset = 4097U;
   constexpr static const unsigned int flagsMask = 0x100U;
   constexpr static const unsigned int flagsBits = 0xFF00U;
-  constexpr static const unsigned int offsetMask = matchmask;
+  constexpr static const unsigned int offsetMask = matchMask;
   constexpr static const unsigned int countMask = 0x0FU;
 
   constexpr static const unsigned int NotUsed = 4096U;
 
-  constexpr static const int nodeSize = 18;
+  constexpr static const unsigned int nodeSize = 18U;
   constexpr static const auto F = 18U;
   constexpr static const auto FMinus1 = F - 1;
   constexpr static const auto N = NotUsed;
@@ -204,7 +204,7 @@ public:
         }
         unsigned int nodeIndex = 1;
         for (; nodeIndex < nodeSize; nodeIndex++) {
-          if ((cmp = *(key+nodeIndex) - text_buf.at(p + nodeIndex)) != 0) { break; } //todo need std::span to remove pointer math.
+          if ((cmp = *(key+nodeIndex) - static_cast<unsigned int>((text_buf.at(p + nodeIndex)))) != 0) { break; } //todo need std::span to remove pointer math.
         }
 
         if (nodeIndex > match_length) {
@@ -325,7 +325,7 @@ public:
       } else {
         code_buf.at(code_buf_ptr++) = static_cast<unsigned char>(match_position);
         code_buf.at(code_buf_ptr++) = static_cast<unsigned char>(
-          (((match_position >> 4U) & matchmask))
+          (((match_position >> 4U) & matchMask))
           | (match_length - (2 + 1)));// Send position and length pair. Note match_length > 2.
       }
 
