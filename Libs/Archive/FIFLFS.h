@@ -162,7 +162,7 @@ public:
   void Test() const
   {
     std::cout << "Getting Filenames from : " << fl_ << std::endl;
-    const auto entries = Archive::FL::GetAllEntriesData(fl_, flData_, flOffset_);
+    const auto entries = Archive::FL::GetAllEntriesData(fl_, flData_, flOffset_,count_);
     auto archive = FIFLFS();
     for (const auto &item : entries) {
       const auto &[id, strPath] = item;

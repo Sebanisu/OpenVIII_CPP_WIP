@@ -24,7 +24,7 @@ private:
       if (input[input.size() - 1] == '\r') { input.erase(input.size() - 1); }
 
       input.erase(0, 3);
-      Tools::replaceAll(input, '\\', std::filesystem::path::preferred_separator);
+      Tools::replaceSlashes(input);
     }
   }
 
@@ -38,52 +38,45 @@ public:
     const size_t count = 0)
   {
 
-    std::ifstream fp{};
     auto vector = std::vector<std::pair<unsigned int, std::string>>();
-    if (!data.empty() || (fp = std::ifstream(path, std::ios::in)).is_open()) {
+    const auto process = [&count, &vector, &offset](auto &cont) {
+      if (!cont.seekg(static_cast<long>(offset))) { return; }
       if (count > 0) vector.reserve(count);
+      unsigned int id = 0;
 
-      const auto loop = [&vector](auto &cont) {
-        unsigned int id = 0;
-
-        std::string innerPath;
-        while (std::getline(cont, innerPath, '\n')) {
-          CleanString(innerPath);
-          vector.emplace_back(std::make_pair(id++, std::move(innerPath)));
-        }
-      };
+      std::basic_string<char> innerPath;
+      while (std::getline(cont, innerPath, '\n')) {
+        CleanString(vector.emplace_back(std::make_pair(id++, std::move(innerPath))).second);
+      }
+      std::sort(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
+        if (left.second.length() < right.second.length()) { return true; }
+        if (left.second.length() > right.second.length()) { return false; }
+        return left.second < right.second;
+      });
+    };
+    if (data.empty()) {
+      auto fp = std::ifstream(path, std::ios::in);
 
       if (fp.is_open()) {
-        fp.seekg(static_cast<long>(offset));
-        loop(fp);
-        if (!fp.is_open()) { fp.close(); }
-      } else {
-        if (data[0] == '\0') {
-          std::cout << "\033[1;31mFL Data is null!\033[0m\n";
-          // exit(EXIT_FAILURE);
-          return vector;
-        }
-        auto ss = std::stringstream(data);
-        loop(ss);
+        process(fp);
+        fp.close();
       }
-
-      std::sort(vector.begin(),
-        vector.end(),
-        [](const auto &left, const auto &right) {
-          if (left.second.length() < right.second.length()) { return true; }
-          if (left.second.length() > right.second.length()) { return false; }
-          return left.second < right.second;
-        });
-      // no real way to know the number of lines here. FI can know the number because the count is the filesize /12.
-      // pass the count as an argument to reserve the correct number of elements.
-      vector.shrink_to_fit();
+    } else {
+      if (data[0] != '\0') {
+        auto ss = std::stringstream(data);
+        process(ss);
+      } else {
+        std::cout << "\033[1;31mFL Data is null!\033[0m\n";
+      }
     }
+    vector.shrink_to_fit();
     return vector;
   }
-  [[maybe_unused]] [[nodiscard]] static auto GetAllEntries(const std::filesystem::path &path, const size_t &offset)
+  [[maybe_unused]] [[nodiscard]] static auto
+    GetAllEntries(const std::filesystem::path &path, const size_t &offset, const size_t &count = 0)
   {
     auto tmp = std::string();
-    return GetAllEntriesData(path, tmp, offset);
+    return GetAllEntriesData(path, tmp, offset, count);
   }
   [[nodiscard]] static auto
     GetEntry(const std::filesystem::path &path, const std::string_view &needle, const size_t &offset)
