@@ -1,39 +1,39 @@
-cmake_minimum_required (VERSION 3.16)
+cmake_minimum_required(VERSION 3.16)
 project(VIIIcppTest C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 # Set default compile flags for GCC
-if(CMAKE_COMPILER_IS_GNUCXX)
+if (CMAKE_COMPILER_IS_GNUCXX)
     message(STATUS "GCC detected, adding compile flags")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -Wshadow -Wpedantic -Wconversion -Wfatal-errors -Wold-style-cast -Wunused -Wcast-align -Werror -Wuseless-cast -Wlogical-op -Wsign-conversion -Wduplicated-cond -Wduplicated-branches -Wnull-dereference -Wdouble-promotion -Wconversion -Woverloaded-virtual -Wnon-virtual-dtor -Wformat=2")
     #-Wpadded
     # change to 2a for cpp20 pre release
-elseif(MSVC)
+elseif (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /W4")
     # change to latest for cpp20 pre release
-endif(CMAKE_COMPILER_IS_GNUCXX)
+endif (CMAKE_COMPILER_IS_GNUCXX)
 include_directories(Libs)
 include_directories(Tests)
 find_package(Git QUIET)
-if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+if (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     # Update submodules as needed
     option(GIT_SUBMODULE "Check submodules during build" ON)
-    if(GIT_SUBMODULE)
+    if (GIT_SUBMODULE)
         message(STATUS "Submodule update")
         execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 RESULT_VARIABLE GIT_SUBMOD_RESULT)
-        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+        if (NOT GIT_SUBMOD_RESULT EQUAL "0")
             message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        endif()
-    endif()
-endif()
+        endif ()
+    endif ()
+endif ()
 add_library(lz4
         External/lz4/lib/lz4.h
         External/lz4/lib/lz4.c
@@ -66,20 +66,31 @@ add_library(Archive STATIC
 set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(Archive Tools Compression)
 
+#test app for trying to extract a all files from the FIFLFS archives.
 add_executable(TestExtractFIFLFS
         Tests/TestExtractFIFLFS.h Tests/TestExtractFIFLFS.cpp
         )
 set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractFIFLFS Archive)
 
+#test app for trying to extract a single file from the FIFLFS archives.
+add_executable(TestExtractSingleFIFLFS
+        Tests/TestExtractSingleFIFLFS.h Tests/TestExtractSingleFIFLFS.cpp
+        )
+set_target_properties(TestExtractSingleFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestExtractSingleFIFLFS Archive)
+
+
+#test app for trying to extract a all files from the ZZZ and FIFLFS archives.
 add_executable(TestExtractZZZ
         Tests/TestExtractZZZ.h Tests/TestExtractZZZ.cpp
-)
+        )
 target_link_libraries(TestExtractZZZ Archive)
 set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
 
+#test app LZSS compression and decompression by passing random vector<char> to it with gradually increasing lengths.
 add_executable(TestLZSS
         Tests/TestLZSS.h Tests/TestLZSS.cpp
-)
+        )
 target_link_libraries(TestLZSS Compression)
 set_target_properties(TestLZSS PROPERTIES LINKER_LANGUAGE CXX)
