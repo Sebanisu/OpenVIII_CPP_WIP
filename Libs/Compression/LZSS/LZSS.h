@@ -57,11 +57,12 @@ public:
   // https://github.com/niemasd/PyFF7/blob/master/PyFF7/lzss.py
   // http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
 
-
-  [[nodiscard]] static auto Decompress(const std::vector<char> &src, size_t dstSize = 0)
+template<typename dstT = std::vector<char>, typename srcT = std::vector<char>>
+  [[nodiscard]] static dstT Decompress(const srcT &src, size_t dstSize = 0)
   {
-    auto dst = std::vector<char>();
-    dst.reserve(dstSize);
+    //todo replace src type with a std::span so you can pass any container.
+    dstT dst{};
+    if(dstSize>0) { dst.reserve(dstSize); }
     auto iterator = src.begin();
     const auto &srcEnd = src.end();
     unsigned int current{ 0 };
@@ -135,28 +136,21 @@ public:
    * Porting to STL - sebanisu.
    * */
 
-
-  [[nodiscard]] [[maybe_unused]] static auto Compress(const std::vector<char> &src)
+template<typename srcT = std::vector<char>>
+  [[nodiscard]] [[maybe_unused]] static auto Compress(const srcT &src)
   {
     // todo pass a std::span in cpp 20 instead of vector.
 
     unsigned int match_length = {};
     unsigned int match_position{};
 
-    auto lson = std::array<unsigned int, NPlus2>();
     // left & right children & parents -- These constitute binary search trees.
-    auto rson = std::array<unsigned int, RightSideSize>();
-    auto dad = std::array<unsigned int, NPlus2>();
+    auto leftSide = std::array<unsigned int, NPlus2>();
+    auto rightSide = std::array<unsigned int, RightSideSize>();
+    auto parent = std::array<unsigned int, NPlus2>();
 
     auto text_buf =
       std::array<unsigned char, NPlus17>();// ring buffer of size N, with extra 17 bytes to facilitate string comparison
-//    unsigned int len = 0;
-//    unsigned int r = 0;
-//    unsigned int s = 0;
-//    unsigned int last_match_length = 0;
-//    unsigned int i = 0;
-//    unsigned int c = 0;
-//    unsigned int code_buf_ptr = 0;
     unsigned int curResult{};
     size_t sizeAlloc = src.size() / 2U;
     auto code_buf = std::array<unsigned char, FMinus1>();
@@ -166,39 +160,34 @@ public:
 
     auto result = std::vector<char>();
     result.reserve(sizeAlloc);
-    const auto InsertNode = [&text_buf, &rson, &lson, &match_length, &dad, &match_position](const auto &item) {
+    const auto InsertNode = [&text_buf, &rightSide, &leftSide, &match_length, &parent, &match_position](const auto &item) {
       /* Inserts string of length 18, text_buf[item..item+18-1], into one of the trees (text_buf.at(item)'th tree) and
        * returns the longest-match position and length via the global variables match_position and match_length. If
        * match_length = 18, then removes the old node in favor of the new one, because the old one will be deleted
        * sooner. Note item plays double role, as tree node and position in buffer. */
 
-//      unsigned int nodeIndex = 0;
-//      unsigned int p = 0;
-//      unsigned int cmp = 0;
-
-
       unsigned int cmp = 1U;
       auto key = text_buf.begin() + item; // todo replace with std::span.
       unsigned int p = pOffset + *key;
 
-      rson.at(item) = lson.at(item) = NotUsed;
+      rightSide.at(item) = leftSide.at(item) = NotUsed;
       match_length = 0;
 
       while (true) {
         if (cmp >= 0) {
-          if (rson.at(p) != NotUsed) {
-            p = rson.at(p);
+          if (rightSide.at(p) != NotUsed) {
+            p = rightSide.at(p);
           } else {
-            rson.at(p) = item;
-            dad.at(item) = p;
+            rightSide.at(p) = item;
+            parent.at(item) = p;
             return;
           }
         } else {
-          if (lson.at(p) != NotUsed) {
-            p = lson.at(p);
+          if (leftSide.at(p) != NotUsed) {
+            p = leftSide.at(p);
           } else {
-            lson.at(p) = item;
-            dad.at(item) = p;
+            leftSide.at(p) = item;
+            parent.at(item) = p;
             return;
           }
         }
@@ -213,55 +202,55 @@ public:
         }
       }
 
-      dad.at(item) = dad.at(p);
-      lson.at(item) = lson.at(p);
-      rson.at(item) = rson.at(p);
+      parent.at(item) = parent.at(p);
+      leftSide.at(item) = leftSide.at(p);
+      rightSide.at(item) = rightSide.at(p);
 
-      dad.at(lson.at(p)) = item;
-      dad.at(rson.at(p)) = item;
+      parent.at(leftSide.at(p)) = item;
+      parent.at(rightSide.at(p)) = item;
 
-      if (rson.at(dad.at(p)) == p) {
-        rson.at(dad.at(p)) = item;
+      if (rightSide.at(parent.at(p)) == p) {
+        rightSide.at(parent.at(p)) = item;
       } else {
-        lson.at(dad.at(p)) = item;
+        leftSide.at(parent.at(p)) = item;
       }
-      dad.at(p) = NotUsed;// remove p
+      parent.at(p) = NotUsed;// remove p
     };
     // deletes node p from tree
-    const auto DeleteNode = [&dad, &rson, &lson](auto p) {
+    const auto DeleteNode = [&parent, &rightSide, &leftSide](auto p) {
       //unsigned int q = 0;
-      if (dad.at(p) == NotUsed) {
+      if (parent.at(p) == NotUsed) {
         return;// not in tree
       }
 
       unsigned int q{};
-      if (rson.at(p) == NotUsed) {
-        q = lson.at(p);
-      } else if (lson.at(p) == NotUsed) {
-        q = rson.at(p);
+      if (rightSide.at(p) == NotUsed) {
+        q = leftSide.at(p);
+      } else if (leftSide.at(p) == NotUsed) {
+        q = rightSide.at(p);
       } else {
-        q = lson.at(p);
-        if (rson.at(q) != NotUsed) {
+        q = leftSide.at(p);
+        if (rightSide.at(q) != NotUsed) {
           do {
-            q = rson.at(q);
-          } while (rson.at(q) != NotUsed);
+            q = rightSide.at(q);
+          } while (rightSide.at(q) != NotUsed);
 
-          rson.at(dad.at(q)) = lson.at(q);
-          dad.at(lson.at(q)) = dad.at(q);
-          lson.at(q) = lson.at(p);
-          dad.at(lson.at(p)) = q;
+          rightSide.at(parent.at(q)) = leftSide.at(q);
+          parent.at(leftSide.at(q)) = parent.at(q);
+          leftSide.at(q) = leftSide.at(p);
+          parent.at(leftSide.at(p)) = q;
         }
-        rson.at(q) = rson.at(p);
-        dad.at(rson.at(p)) = q;
+        rightSide.at(q) = rightSide.at(p);
+        parent.at(rightSide.at(p)) = q;
       }
-      dad.at(q) = dad.at(p);
+      parent.at(q) = parent.at(p);
 
-      if (rson.at(dad.at(p)) == p) {
-        rson.at(dad.at(p)) = q;
+      if (rightSide.at(parent.at(p)) == p) {
+        rightSide.at(parent.at(p)) = q;
       } else {
-        lson.at(dad.at(p)) = q;
+        leftSide.at(parent.at(p)) = q;
       }
-      dad.at(p) = NotUsed;
+      parent.at(p) = NotUsed;
     };
 
     //    if(result.size() < sizeAlloc) {
@@ -273,15 +262,15 @@ public:
             codesize = 0;//code size counter */
 
     // initialize trees
-    /* For i = 0 to NMinus1, rson[i] and lson[i] will be the right and left children of node i. These nodes need not be
-    initialized. Also, dad[i] is the parent of node i. These are initialized to NotUsed which stands for 'not used.'
-    For i = 0 to 255, rson[4097 + i] is the root of the tree for strings that begin with character i. These are
+    /* For i = 0 to NMinus1, rightSide[i] and leftSide[i] will be the right and left children of node i. These nodes need not be
+    initialized. Also, parent[i] is the parent of node i. These are initialized to NotUsed which stands for 'not used.'
+    For i = 0 to 255, rightSide[4097 + i] is the root of the tree for strings that begin with character i. These are
     initialized to NotUsed. Note there are 256 trees. */
 
-    // for(i=4097 ; i<=4352 ; ++i)	rson[i] = NotUsed;
-    // for(i=0 ; i<N ; ++i)	dad[i] = NotUsed;
-    dad.fill(NotUsed);
-    std::fill(rson.begin() + NPlus1, rson.end(), NotUsed);
+    // for(i=4097 ; i<=4352 ; ++i)	rightSide[i] = NotUsed;
+    // for(i=0 ; i<N ; ++i)	parent[i] = NotUsed;
+    parent.fill(NotUsed);
+    std::fill(rightSide.begin() + NPlus1, rightSide.end(), NotUsed);
 
     code_buf[0] = 0;// code_buf[1..16] saves eight units of code, and code_buf[0] works as eight flags, "1" representing
                     // that the unit is an unencoded letter (1 byte), "0" a position-and-length pair (2 bytes). Thus,
