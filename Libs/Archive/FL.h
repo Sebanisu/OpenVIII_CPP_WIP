@@ -17,13 +17,13 @@ namespace OpenVIII::Archive {
 struct FL
 {
 private:
-  constexpr static void CleanString(std::string &input)
+  constexpr static void CleanString(std::string &input) noexcept
   {
-    // std::cout << input << '\n';
     if (std::size(input) > 4) {
-      if (input[input.size() - 1] == '\r') { input.erase(input.size() - 1); }
-
-      input.erase(0, 3);
+      if (input.at(input.size() - 1) == '\r') { input.pop_back(); }// remove the carriage return character
+      if (Tools::iEquals(std::string_view(input.c_str(), 3), "c:\\")) {
+        input.erase(0, 3);// remove c:\ from the start of the strings.
+      }
       Tools::replaceSlashes(input);
     }
   }
@@ -82,10 +82,10 @@ public:
     GetEntry(const std::filesystem::path &path, const std::string_view &needle, const size_t &offset)
   {
     std::ifstream fp = std::ifstream(path, std::ios::in);
-    unsigned int i = 0;
+
     fp.seekg(static_cast<long>(offset));
     std::string innerPath;
-    while (std::getline(fp, innerPath)) {
+    for (unsigned int i = 0; std::getline(fp, innerPath); i++) {
       if (Tools::iFind(innerPath, needle)) {
         CleanString(innerPath);
         fp.close();
