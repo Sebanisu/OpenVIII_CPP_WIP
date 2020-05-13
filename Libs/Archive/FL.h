@@ -43,7 +43,7 @@ public:
     const std::string &data,
     const size_t &offset,
     const size_t count = 0U,
-    const std::string_view needle={})
+    const std::string_view needle = {})
   {
 
     auto vector = std::vector<std::pair<unsigned int, std::string>>();
@@ -53,7 +53,7 @@ public:
       // id numerical order is same order as fi data. So need to keep the id so we can reference the fi correctly.
       std::basic_string<char> innerPath;
       for (unsigned int id = 0; std::getline(cont, innerPath, '\n'); id++) {
-        if(!needle.empty() && !Tools::iFind(innerPath, needle)) continue; //filter value by string if need.
+        if (!needle.empty() && !Tools::iFind(innerPath, needle)) continue;// filter value by string if need.
         CleanString(vector.emplace_back(std::make_pair(id, std::move(innerPath))).second);
       }
       // sort the strings. to make it easier to choose the correct string first.
@@ -83,9 +83,10 @@ public:
     return vector;
   }
   // Get all entries from the FL file sorted and cleaned.
-  [[maybe_unused]] [[nodiscard]] static auto
-    GetAllEntries(const std::filesystem::path &path, const size_t &offset, const size_t &count = 0,
-                  const std::string_view needle={})
+  [[maybe_unused]] [[nodiscard]] static auto GetAllEntries(const std::filesystem::path &path,
+    const size_t &offset,
+    const size_t &count = 0,
+    const std::string_view needle = {})
   {
     auto tmp = std::string();
     return GetAllEntriesData(path, tmp, offset, count, needle);
