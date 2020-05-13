@@ -14,9 +14,15 @@
 #include "Tools/Tools.h"
 
 namespace OpenVIII::Archive {
+// FL files contain internal file structure paths. As a flat text file.
+// This class is used to search the strings for a filename or
+// grab all the entries. The entry will be a string paired with an int
+// that is the line number. This is used to ID the FI entries.
 struct FL
 {
 private:
+  // Remove the C:\ from the start, remove the \r from the end,
+  // and change \ to the correct slash.
   constexpr static void CleanString(std::string &input) noexcept
   {
     if (std::size(input) > 4) {
@@ -32,6 +38,7 @@ private:
 public:
   constexpr const static auto Ext = std::string_view(".FL");
 
+  // Get All entries sorted from file or data buffer.
   [[nodiscard]] static auto GetAllEntriesData(const std::filesystem::path &path,
     const std::string &data,
     const size_t &offset,
@@ -73,15 +80,18 @@ public:
     vector.shrink_to_fit();
     return vector;
   }
+  // Get all entries from the FL file sorted and cleaned.
   [[maybe_unused]] [[nodiscard]] static auto
     GetAllEntries(const std::filesystem::path &path, const size_t &offset, const size_t &count = 0)
   {
     auto tmp = std::string();
     return GetAllEntriesData(path, tmp, offset, count);
   }
+  // Get a single entry that is the first match for needle.
   [[nodiscard]] static auto
     GetEntry(const std::filesystem::path &path, const std::string_view &needle, const size_t &offset)
-  {
+  {// Maybe should search all entries instead of using this because this is not sorted. Sorting matters when the
+   // strings are similar. Though this might be faster if only getting a few files from an archive.
     std::ifstream fp = std::ifstream(path, std::ios::in);
 
     fp.seekg(static_cast<long>(offset));
