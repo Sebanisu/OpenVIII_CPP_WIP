@@ -42,11 +42,10 @@ public:
     const auto process = [&count, &vector, &offset](auto &cont) {
       if (!cont.seekg(static_cast<long>(offset))) { return; }
       if (count > 0) vector.reserve(count);
-      unsigned int id = 0;
-
+      // id numerical order is same order as fi data. So need to keep the id so we can reference the fi correctly.
       std::basic_string<char> innerPath;
-      while (std::getline(cont, innerPath, '\n')) {
-        CleanString(vector.emplace_back(std::make_pair(id++, std::move(innerPath))).second);
+      for (unsigned int id = 0; std::getline(cont, innerPath, '\n'); id++) {
+        CleanString(vector.emplace_back(std::make_pair(id, std::move(innerPath))).second);
       }
       std::sort(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
         if (left.second.length() < right.second.length()) { return true; }
