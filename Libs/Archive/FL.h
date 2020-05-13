@@ -47,6 +47,8 @@ public:
       for (unsigned int id = 0; std::getline(cont, innerPath, '\n'); id++) {
         CleanString(vector.emplace_back(std::make_pair(id, std::move(innerPath))).second);
       }
+      // sort the strings. to make it easier to choose the correct string first.
+      // shorter length and then what ever str < str2 does.
       std::sort(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
         if (left.second.length() < right.second.length()) { return true; }
         if (left.second.length() > right.second.length()) { return false; }
