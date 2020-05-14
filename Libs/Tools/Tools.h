@@ -19,17 +19,20 @@ template<typename T> inline void ReadVal(std::istream &fp, T &item)
   fp.read(tmp.data(), tmp.size());
   memcpy(&item, tmp.data(), sizeof(item));
 }
-template<typename T> inline auto ReadBuffer(std::istream &fp, const T &s)
+template<typename dstT = std::vector<char>, typename sizeT> inline auto ReadBuffer(std::istream &fp, const sizeT &s)
 {
-  static_assert(std::is_integral_v<T>, "Integral Required");
+  static_assert(std::is_integral_v<sizeT>, "Integral Required");
   assert(s > 0);
-  auto buf = std::vector<char>(s);
+  dstT buf{};
+  buf.resize(s);
   fp.read(buf.data(), s);
   return buf;
 }
+template<typename srcT = std::vector<char>>
 inline bool
-  WriteBuffer(const std::vector<char> &buffer, const std::string_view &path, const std::string_view &root = "tmp")
+  WriteBuffer(const srcT &buffer, const std::string_view &path, const std::string_view &root = "tmp")
 {
+  //todo make buffer a std::span
   if (std::empty(buffer)) { return false; }
   auto dir = std::filesystem::path(root);
   auto filename = dir / path;

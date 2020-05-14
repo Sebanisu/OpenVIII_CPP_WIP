@@ -148,12 +148,14 @@ public:
     const auto &[id, path] = found;
     return GetEntry(id);
   }
-  auto TryAdd(const std::string_view &strPath, const std::vector<char> &buffer)
+  template<typename srcT = std::vector<char>>
+  auto TryAdd(const std::string_view &strPath, const srcT &buffer)
   {
     const auto directoryEntry = std::filesystem::directory_entry(strPath);
     return TryAdd(directoryEntry, buffer);
   }
-  auto static TryAddTestReset(FIFLFS &archive, const std::string_view &strPath, const std::vector<char> &buffer)
+  template<typename srcT = std::vector<char>>
+  auto static TryAddTestReset(FIFLFS &archive, const std::string_view &strPath, const srcT &buffer)
   {
     switch (archive.TryAdd(strPath, buffer)) {
     case 1:
@@ -173,26 +175,50 @@ public:
     auto archive = FIFLFS();
     for (const auto &item : entries) {
       const auto &[id, strPath] = item;
+      std::filesystem::path path(strPath);
       auto fi = GetEntry(id);
 
+
       std::vector<char> buffer{};
+      std::basic_string<char> strbuffer{};
       if (fi.UncompressedSize() > 0) {
-        if (!fs_.data.empty()) {
-          buffer = FS::GetEntry(fs_.data, fi, fs_.offset);
-        } else {
-          buffer = FS::GetEntry(fs_.path, fi, fs_.offset);
+        if(path.has_extension() &&Tools::iEquals(path.extension().string(),FL::Ext)) {
+          if (!fs_.data.empty()) {
+            strbuffer = FS::GetEntry<std::basic_string<char>>(fs_.data, fi, fs_.offset);
+          } else {
+            strbuffer = FS::GetEntry<std::basic_string<char>>(fs_.path, fi, fs_.offset);
+          }
+        }
+        else
+        {
+          if (!fs_.data.empty()) {
+            buffer = FS::GetEntry<std::vector<char>>(fs_.data, fi, fs_.offset);
+          } else {
+            buffer = FS::GetEntry<std::vector<char>>(fs_.path, fi, fs_.offset);
+          }
         }
       }
 
-      if (buffer.size() == 0) {
+      if (buffer.empty() && strbuffer.empty()) {
         std::cout << '{' << id << ", "
                   << "Empty!"
                   << ", " << strPath << "}" << fi << std::endl;
         if (fi.UncompressedSize() > 0) { exit(EXIT_FAILURE); }
       } else {
-        if (TryAddTestReset(archive, strPath, buffer)) { continue; }
-        std::cout << '{' << id << ", " << buffer.size() << ", " << strPath << "}" << std::endl;
-        Tools::WriteBuffer(buffer, strPath);
+        auto tryadd = [&archive,&strPath,&id](auto & b)
+        {
+               if (TryAddTestReset(archive, strPath, b)) { return true; }
+               std::cout << '{' << id << ", " << b.size() << ", " << strPath << "}" << std::endl;
+               Tools::WriteBuffer(b, strPath);
+               return false;
+        };
+        if (strbuffer.empty()) {
+          if(tryadd(buffer))
+            continue;
+        } else {
+          if(tryadd(strbuffer))
+            continue;
+        }
       }
       if (fi.UncompressedSize() != buffer.size()) { exit(EXIT_FAILURE); }
     }
@@ -215,26 +241,41 @@ public:
    * 1 = added
    * 2 = added and all set
    * */
-  char TryAdd(const std::filesystem::directory_entry &fileEntry, const std::vector<char> &vector)
+  template<typename srcT = std::vector<char>>
+  char TryAdd(const std::filesystem::directory_entry &fileEntry, const srcT &vector)
   {
-    switch (CheckExtension(fileEntry.path())) {
-    case 1:
-      FL(fileEntry, vector, 0U);
-      fl_.GetBaseName();
-      compareBaseNames();
-      return AllSet() ? 2 : 1;
-    case 2:
-      FS(fileEntry, vector, 0U);
-      fs_.GetBaseName();
-      compareBaseNames();
-      return AllSet() ? 2 : 1;
-    case 3:
-      FI(fileEntry, vector, 0U);
-      fi_.GetBaseName();
-      compareBaseNames();
-      return AllSet() ? 2 : 1;
-    default:
-      break;
+    if constexpr(std::is_convertible_v<std::vector<char>,srcT>) {
+      switch (CheckExtension(fileEntry.path())) {
+      case 1:
+        FL(fileEntry, vector, 0U);
+        fl_.GetBaseName();
+        compareBaseNames();
+        return AllSet() ? 2 : 1;
+      case 2:
+        FS(fileEntry, vector, 0U);
+        fs_.GetBaseName();
+        compareBaseNames();
+        return AllSet() ? 2 : 1;
+      case 3:
+        FI(fileEntry, vector, 0U);
+        fi_.GetBaseName();
+        compareBaseNames();
+        return AllSet() ? 2 : 1;
+      default:
+        break;
+      }
+    }
+    else if constexpr(std::is_convertible_v<std::basic_string<char>,srcT>)
+    {
+      switch (CheckExtension(fileEntry.path())) {
+      case 1:
+        FL(fileEntry, vector, 0U);
+        fl_.GetBaseName();
+        compareBaseNames();
+        return AllSet() ? 2 : 1;
+      default:
+        break;
+      }
     }
     return 0;
   }
