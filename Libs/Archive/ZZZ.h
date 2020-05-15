@@ -31,10 +31,10 @@ private:
   std::filesystem::path path_{};
 
 public:
-  ZZZ(const ZZZ&) = default;
-  ZZZ& operator = (const ZZZ&) = default;
+  ZZZ(const ZZZ &) = default;
+  ZZZ &operator=(const ZZZ &) = default;
   ZZZ(ZZZ &&) = default;
-  ZZZ& operator=(ZZZ &&) = default;
+  ZZZ &operator=(ZZZ &&) = default;
   ~ZZZ() = default;
   constexpr ZZZ() = default;
   ZZZ(const std::filesystem::path &path)
@@ -52,7 +52,7 @@ public:
     }
     path_ = path;
     Tools::ReadVal(fp, count);
-    std::cout << "Getting File " << count << " Entries from : " << path << std::endl;
+    std::cout << "Getting " << count << " File Entries from : " << path << std::endl;
     data_.reserve(count);
     for (auto i = 0U; fp.is_open() && !fp.eof() && i < count; i++) {
       if ((data_.emplace_back(FileData(fp)).empty())) {
@@ -63,61 +63,79 @@ public:
     std::sort(data_.begin(), data_.end(), FileData::Comparator());
     fp.close();
   }
-  static auto GetEntry(const std::filesystem::path &path, const FileData &data)
+  template<typename dstT = std::vector<char>>
+  static void GetEntry(const std::filesystem::path &path, const FileData &data, dstT &dst)
   {
     if (!(path.has_extension() && Tools::iEquals(path.extension().string(), Ext)) || !std::filesystem::exists(path)) {
-      return std::vector<char>();
+      return;
     }
     {
       auto fp = std::ifstream(path, std::ios::binary | std::ios::in);
       if (!fp.is_open()) {
         fp.close();
-        return std::vector<char>();
+        return;
       }
 
 
       fp.seekg(static_cast<long>(data.Offset()));
       {
-        auto buffer = Tools::ReadBuffer(fp, data.Size());
+        dst = Tools::ReadBuffer<dstT>(fp, data.Size());
         fp.close();
         // todo in cpp20 use bitcast instead. or find another way to write data.
-        return buffer;
+        return;
       }
     }
   }
-  auto GetEntry(const FileData &data) const { return GetEntry(path_, data); }
+  template<typename dstT = std::vector<char>> void GetEntry(const FileData &data, dstT &dst) const
+  {
+    GetEntry(path_, data, dst);
+  }
 
   [[maybe_unused]] [[nodiscard]] bool empty() { return data_.empty(); }
   [[maybe_unused]] void Test() const
   {
 
-    auto archive = OpenVIII::Archive::FIFLFS();
+    FIFLFS archive{};
     {
       auto beg = data_.begin();
       auto end = data_.end();
       for (auto cur = beg; cur < end; cur++) {
         // const auto &item : data_
         const auto &item = *cur;
+        const auto &[strPath, zzzOffset, zzzSize] = item.GetTuple();
+        {
+          const auto &next =
+            cur + 1 < end && (FIFLFS::CheckExtension((*(cur + 1)).GetPathString()) != 0) ? *(cur + 1) : FileData();
+          const auto &prev =
+            cur - 1 > beg && (FIFLFS::CheckExtension((*(cur - 1)).GetPathString()) != 0) ? *(cur - 1) : FileData();
+          // getting a prev and next element to check vs cur item. To make sure at least 2 of them match so we don't add
+          // an orphan to the FIFLFS archive.
+          std::cout << '{' << zzzOffset << ", " << zzzSize << ", " << strPath << "}\n";
+          if ((FIFLFS::CheckExtension(strPath) != 0)
+              && ((!next.empty() && FIFLFS::GetBaseName(strPath) == FIFLFS::GetBaseName(next.GetPathString())) ||
 
-        const auto &next =
-          cur + 1 < end && FIFLFS::CheckExtension((*(cur + 1)).GetPathString()) ? *(cur + 1) : FileData();
-        const auto &prev =
-          cur - 1 > beg && FIFLFS::CheckExtension((*(cur - 1)).GetPathString()) ? *(cur - 1) :FileData();
-        // getting a prev and next element to check vs cur item. To make sure at least 2 of them match so we don't add
-        // an orphan to the FIFLFS archive.
-        const auto &[zzzPath, zzzOffset, zzzSize] = item.GetTuple();
-        auto buffer = GetEntry(item);
-        std::cout << '{' << zzzOffset << ", " << zzzSize << ", " << zzzPath << "}\n";
-        if (FIFLFS::CheckExtension(zzzPath)
-            && ((!next.empty() && FIFLFS::GetBaseName(zzzPath) == FIFLFS::GetBaseName(next.GetPathString())) ||
+                  (!prev.empty() && FIFLFS::GetBaseName(strPath) == FIFLFS::GetBaseName(prev.GetPathString())))) {
 
-                (!prev.empty() && FIFLFS::GetBaseName(zzzPath) == FIFLFS::GetBaseName(prev.GetPathString())))) {
-          if (FIFLFS::TryAddTestReset(archive, zzzPath, buffer)) { continue; }
+            std::filesystem::path fsPath(strPath);
+            char retVal = 0;
+            retVal = archive.TryAddNew(path_, 0U, fsPath, item);
+
+            if (retVal == 1) { continue; }
+            if (retVal == 2) {
+              archive.Test();
+              archive = {};
+              continue;
+            };
+          }
         }
-        std::cout << '{' << buffer.size() << ", " << zzzPath << "}\n";
-        Tools::WriteBuffer(buffer, zzzPath);
-      }
+        {
+          std::vector<char> buffer;
 
+          GetEntry(item, buffer);
+          std::cout << '{' << buffer.size() << ", " << strPath << "}\n";
+          Tools::WriteBuffer(buffer, strPath);
+        }
+      }
     }
   }
   using ZZZmap = std::map<std::string, OpenVIII::Archive::ZZZ>;

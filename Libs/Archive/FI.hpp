@@ -11,7 +11,7 @@
 #include <algorithm>
 #include "..\Tools\Tools.h"
 namespace OpenVIII::Archive {
-enum class TCompressionType : unsigned int {
+enum class CompressionTypeT : unsigned int {
   None = 0,
   LZSS = 1,
   LZ4 [[maybe_unused]] = 2,
@@ -27,7 +27,7 @@ struct FI
 private:
   unsigned int uncompressedSize_{ 0 };
   unsigned int offset_{ 0 };
-  TCompressionType compressionType_{ TCompressionType::None };
+  CompressionTypeT compressionType_{ CompressionTypeT::None };
 
 public:
   constexpr static const size_t Size = 12U;
@@ -44,7 +44,7 @@ public:
 
   constexpr FI(const unsigned int &uncompressedSize,
     const unsigned int &offset,
-    const TCompressionType &compressionType = TCompressionType::None)
+    const CompressionTypeT &compressionType = CompressionTypeT::None)
   {
     uncompressedSize_ = uncompressedSize;
     offset_ = offset;
@@ -92,7 +92,7 @@ public:
       std::memcpy(&offset, start, sizeof(offset));
       start += sizeof(offset);
       std::memcpy(&compressionType, start, sizeof(compressionType));
-      return FI(uncompressedSize, offset, static_cast<TCompressionType>(compressionType));
+      return FI(uncompressedSize, offset, static_cast<CompressionTypeT>(compressionType));
     }
 
     return FI();
@@ -135,7 +135,7 @@ public:
     Tools::ReadVal(fp, uncompressedSize);
     Tools::ReadVal(fp, offset);
     Tools::ReadVal(fp, compressionType);
-    return FI(uncompressedSize, offset, static_cast<TCompressionType>(compressionType));
+    return FI(uncompressedSize, offset, static_cast<CompressionTypeT>(compressionType));
   }
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FI &data)
   {

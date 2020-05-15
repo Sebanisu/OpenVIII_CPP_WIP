@@ -29,10 +29,9 @@ template<typename dstT = std::vector<char>, typename sizeT> inline auto ReadBuff
   return buf;
 }
 template<typename srcT = std::vector<char>>
-inline bool
-  WriteBuffer(const srcT &buffer, const std::string_view &path, const std::string_view &root = "tmp")
+inline bool WriteBuffer(const srcT &buffer, const std::string_view &path, const std::string_view &root = "tmp")
 {
-  //todo make buffer a std::span
+  // todo make buffer a std::span
   if (std::empty(buffer)) { return false; }
   auto dir = std::filesystem::path(root);
   auto filename = dir / path;
@@ -80,8 +79,7 @@ template<typename needleType, typename replacementType>
   std::transform(haystack.begin(), haystack.end(), haystack.begin(), replace);
 }
 
-[[maybe_unused]]
-constexpr inline static void replaceSlashes(std::string &haystack)
+[[maybe_unused]] constexpr inline static void replaceSlashes(std::string &haystack)
 {
   replaceAll(haystack, '\\', std::filesystem::path::preferred_separator);
 }

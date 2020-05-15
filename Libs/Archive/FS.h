@@ -20,11 +20,11 @@ struct FS
 public:
   static constexpr const auto Ext = std::string_view(".FS");
 
-  template<typename dstT = std::vector<char>>
-  [[nodiscard]] static dstT
-    GetEntry(const std::filesystem::path &path, const OpenVIII::Archive::FI &fi, const size_t &offset)
+  template<typename dstT = std::vector<char>,typename datT = OpenVIII::Archive::FI>
+  static void
+    GetEntry(const std::filesystem::path &path, const datT &fi, const size_t &offset, dstT &dst)
   {
-    if (fi.UncompressedSize() == 0) { return {}; }
+    if (fi.UncompressedSize() == 0) { return; }
     std::ifstream fp = std::ifstream(path, std::ios::in | std::ios::binary);
     // if compressed will keep decompressing till get size
     // size compressed isn't quite known with out finding the offset of the next file and finding difference.
@@ -44,77 +44,76 @@ public:
     //      // TODO change to bitcast in cpp 20 or read another way?
     //    };
 
-    dstT buffer;
-    unsigned int compSize{ 0 };
-    unsigned int sectSize{ 0 };
+
     switch (fi.CompressionType()) {
-    case TCompressionType::None:
-      buffer = Tools::ReadBuffer<dstT>(fp, fi.UncompressedSize());
-      fp.close();
-      return buffer;
-    case TCompressionType::LZSS:
+    case CompressionTypeT::None: {
+      dst = Tools::ReadBuffer<dstT>(fp, fi.UncompressedSize());
+      break;
+    }
+    case CompressionTypeT::LZSS: {
+      unsigned int compSize{ 0 };
       Tools::ReadVal(fp, compSize);
-      buffer = Tools::ReadBuffer<dstT>(fp, compSize);
-      fp.close();
-      return Compression::LZSS::Decompress<dstT>(buffer, fi.UncompressedSize());
-    case TCompressionType::LZ4:
+      dstT buffer = Tools::ReadBuffer<dstT>(fp, compSize);
+      dst = Compression::LZSS::Decompress<dstT>(buffer, fi.UncompressedSize());
+    } break;
+    case CompressionTypeT::LZ4: {
+      unsigned int sectSize{ 0 };
       // L4Z header contains size of total section as uint32, 4 byte string
       // the size of the compressed data is the first value minus 8. the second value is something i'm unsure of
       Tools::ReadVal(fp, sectSize);
-      auto str = std::array<char, 4>();
-      fp.read(str.data(), 4);
-      Tools::ReadVal(fp, compSize);
-      buffer = Tools::ReadBuffer<dstT>(fp, sectSize - 8);
-      fp.close();
-      return Compression::L4Z::Decompress<dstT>(buffer.data(), sectSize - 8, fi.UncompressedSize());
+      constexpr static auto skipSize = 8U;
+      fp.seekg(skipSize, std::ios::cur);
+      dstT buffer = Tools::ReadBuffer<dstT>(fp, sectSize - skipSize);
+      dst = Compression::L4Z::Decompress<dstT>(buffer.data(), sectSize - skipSize, fi.UncompressedSize());
+    } break;
     }
-    return {};
+    fp.close();
+    return;
   }
   template<typename dstT = std::vector<char>>
-  [[nodiscard]] static dstT
-    GetEntry(const std::vector<char> &data, const OpenVIII::Archive::FI &fi, const size_t &offset)
+  static void GetEntry(const std::vector<char> &data, const OpenVIII::Archive::FI &fi, const size_t &offset, dstT &dst)
   {
-    if (fi.UncompressedSize() == 0) { return {}; }
+    if (fi.UncompressedSize() == 0) { return; }
 
-    dstT buffer{};
     auto iterator = data.begin() + fi.Offset() + static_cast<long>(offset);
     auto ptr = data.data() + fi.Offset() + static_cast<long>(offset);
     // ptr and iterator.base() would be the same. sadly msvc doesn't have a .base()
     // todo usages of memcpy can be replaced with std::bitcast in cpp20
-    unsigned int compSize{ 0 };
-    unsigned int sectSize{ 0 };
+
     switch (fi.CompressionType()) {
-    case TCompressionType::None:
-      if (iterator + fi.UncompressedSize() > data.end()) {
-        // auto umm = data.size() - fi.UncompressedSize();
-        break;
-      }
-      buffer.reserve(fi.UncompressedSize());
-      std::copy(iterator, iterator + fi.UncompressedSize(), std::back_inserter(buffer));
-      return buffer;
-    case TCompressionType::LZSS:
+    case CompressionTypeT::None: {
+      if (iterator + fi.UncompressedSize() > data.end()) { break; }
+      dst = {};
+      dst.reserve(fi.UncompressedSize());
+      std::copy(iterator, iterator + fi.UncompressedSize(), std::back_inserter(dst));
+    } break;
+    case CompressionTypeT::LZSS: {
+      unsigned int compSize{ 0 };
       if (iterator + sizeof(compSize) > data.end()) { break; }
       std::memcpy(&compSize, ptr, sizeof(compSize));
       iterator += sizeof(compSize);
       if (iterator + compSize > data.end()) { break; }
-      buffer.reserve(compSize);
-      std::copy(iterator, iterator + compSize, std::back_inserter(buffer));// todo replace with std::span in cpp20
-      return Compression::LZSS::Decompress<dstT>(buffer, fi.UncompressedSize());
-    case TCompressionType::LZ4:
-      // L4Z header contains size of total section as uint32, 4 byte string
+      ptr += sizeof(compSize);
+      std::string_view span(
+        ptr, compSize);// i think this works then I don't need to copy the data from one vector to another.
+      // buffer.reserve(compSize);
+      // std::copy(iterator, iterator + compSize, std::back_inserter(buffer));// todo replace with std::span in cpp20.
+      dst = Compression::LZSS::Decompress<dstT>(span, fi.UncompressedSize());
+    } break;
+    case CompressionTypeT::LZ4: {
+      unsigned int sectSize{ 0 };
+      // L4Z header contains size of total section as uint32, 4 byte string and another uint32.
       // the size of the compressed data is the first value minus 8. the second value is something i'm unsure of
       if (iterator + sizeof(sectSize) > data.end()) { break; }
       std::memcpy(&sectSize, ptr, sizeof(sectSize));
       ptr += sizeof(sectSize);
       if (iterator + sectSize + sizeof(sectSize) > data.end()) { break; }
-      auto str = std::string_view(ptr, 4U);
-      ptr += std::size(str);
-      std::memcpy(&compSize, ptr, sizeof(compSize));
-      ptr += sizeof(compSize);
-      return Compression::L4Z::Decompress<dstT>(ptr, sectSize - 8, fi.UncompressedSize());
-      // return std::vector<char>();
+      constexpr static auto skipBytes = 8U;
+      ptr += skipBytes;
+      dst = Compression::L4Z::Decompress<dstT>(ptr, sectSize - skipBytes, fi.UncompressedSize());
+    } break;
     }
-    return {};
+    return;
   }
 };
 }// namespace OpenVIII::Archive

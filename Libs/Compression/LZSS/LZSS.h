@@ -14,7 +14,6 @@ namespace OpenVIII::Compression {
 struct LZSS
 {
 private:
-
   constexpr static const unsigned int rSize = 4078U;
   constexpr static const unsigned int matchMask = 0xF0U;
   constexpr static const unsigned int pOffset = 4097U;
@@ -57,12 +56,14 @@ public:
   // https://github.com/niemasd/PyFF7/blob/master/PyFF7/lzss.py
   // http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
 
-template<typename dstT = std::vector<char>, typename srcT = std::vector<char>>
+  template<typename dstT = std::vector<char>, typename srcT = std::vector<char>>
   [[nodiscard]] static dstT Decompress(const srcT &src, size_t dstSize = 0)
   {
-    //todo replace src type with a std::span so you can pass any container.
+    // todo replace src type with a std::span so you can pass any container.
+    // string view might work if nulls aren't detected as end and size is respected.
+    // and string view is const. I mostly want to just have something I can hold the pointers in.
     dstT dst{};
-    if(dstSize>0) { dst.reserve(dstSize); }
+    if (dstSize > 0) { dst.reserve(dstSize); }
     auto iterator = src.begin();
     const auto &srcEnd = src.end();
     unsigned int current{ 0 };
@@ -136,8 +137,7 @@ template<typename dstT = std::vector<char>, typename srcT = std::vector<char>>
    * Porting to STL - sebanisu.
    * */
 
-template<typename srcT = std::vector<char>>
-  [[nodiscard]] [[maybe_unused]] static auto Compress(const srcT &src)
+  template<typename srcT = std::vector<char>>[[nodiscard]] [[maybe_unused]] static auto Compress(const srcT &src)
   {
     // todo pass a std::span in cpp 20 instead of vector.
 
@@ -160,14 +160,15 @@ template<typename srcT = std::vector<char>>
 
     auto result = std::vector<char>();
     result.reserve(sizeAlloc);
-    const auto InsertNode = [&text_buf, &rightSide, &leftSide, &match_length, &parent, &match_position](const auto &item) {
+    const auto InsertNode = [&text_buf, &rightSide, &leftSide, &match_length, &parent, &match_position](
+                              const auto &item) {
       /* Inserts string of length 18, text_buf[item..item+18-1], into one of the trees (text_buf.at(item)'th tree) and
        * returns the longest-match position and length via the global variables match_position and match_length. If
        * match_length = 18, then removes the old node in favor of the new one, because the old one will be deleted
        * sooner. Note item plays double role, as tree node and position in buffer. */
 
       unsigned int cmp = 1U;
-      auto key = text_buf.begin() + item; // todo replace with std::span.
+      auto key = text_buf.begin() + item;// todo replace with std::span.
       unsigned int p = pOffset + *key;
 
       rightSide.at(item) = leftSide.at(item) = NotUsed;
@@ -193,7 +194,9 @@ template<typename srcT = std::vector<char>>
         }
         unsigned int nodeIndex = 1;
         for (; nodeIndex < nodeSize; nodeIndex++) {
-          if ((cmp = *(key+nodeIndex) - static_cast<unsigned int>((text_buf.at(p + nodeIndex)))) != 0) { break; } //todo need std::span to remove pointer math.
+          if ((cmp = *(key + nodeIndex) - static_cast<unsigned int>((text_buf.at(p + nodeIndex)))) != 0) {
+            break;
+          }// todo need std::span to remove pointer math.
         }
 
         if (nodeIndex > match_length) {
@@ -218,7 +221,7 @@ template<typename srcT = std::vector<char>>
     };
     // deletes node p from tree
     const auto DeleteNode = [&parent, &rightSide, &leftSide](auto p) {
-      //unsigned int q = 0;
+      // unsigned int q = 0;
       if (parent.at(p) == NotUsed) {
         return;// not in tree
       }
@@ -262,10 +265,10 @@ template<typename srcT = std::vector<char>>
             codesize = 0;//code size counter */
 
     // initialize trees
-    /* For i = 0 to NMinus1, rightSide[i] and leftSide[i] will be the right and left children of node i. These nodes need not be
-    initialized. Also, parent[i] is the parent of node i. These are initialized to NotUsed which stands for 'not used.'
-    For i = 0 to 255, rightSide[4097 + i] is the root of the tree for strings that begin with character i. These are
-    initialized to NotUsed. Note there are 256 trees. */
+    /* For i = 0 to NMinus1, rightSide[i] and leftSide[i] will be the right and left children of node i. These nodes
+    need not be initialized. Also, parent[i] is the parent of node i. These are initialized to NotUsed which stands for
+    'not used.' For i = 0 to 255, rightSide[4097 + i] is the root of the tree for strings that begin with character i.
+    These are initialized to NotUsed. Note there are 256 trees. */
 
     // for(i=4097 ; i<=4352 ; ++i)	rightSide[i] = NotUsed;
     // for(i=0 ; i<N ; ++i)	parent[i] = NotUsed;
@@ -284,7 +287,7 @@ template<typename srcT = std::vector<char>>
     //	for(i=s ; i<r ; ++i)
     //		text_buf[i] = '\x0';//Clear the buffer with  any character that will appear often.
     // memset(text_buf, 0, r); //std::array should init with 0s.
-    unsigned int len=0;
+    unsigned int len = 0;
     for (; len < nodeSize && data < dataEnd; ++len) {
       text_buf.at(r + len) = static_cast<unsigned char>(*data++);// Read 18 bytes into the last 18 bytes of the buffer
     }

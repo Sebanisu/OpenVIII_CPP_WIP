@@ -29,10 +29,10 @@ return left.filename_ < right.filename_;
 ;
 constexpr FileData() = default;
 FileData(const FileData &) = default;
-  FileData(FileData &&) = default;
-FileData& operator=(const FileData &) = default;
-  FileData& operator=(FileData &&) = default;
-  ~FileData() = default;
+FileData(FileData &&) = default;
+FileData &operator=(const FileData &) = default;
+FileData &operator=(FileData &&) = default;
+~FileData() = default;
 [[maybe_unused]] FileData(const std::string_view &filename, const unsigned long offset, unsigned int size)
 {
   filename_ = filename;
@@ -40,10 +40,7 @@ FileData& operator=(const FileData &) = default;
   offset_ = offset;
   size_ = size;
 }
-bool empty() const
-{
-  return size_ == 0 || filename_.empty();
-}
+bool empty() const noexcept { return size_ == 0 || filename_.empty(); }
 FileData(std::ifstream &fp)
 {
   if (!fp.is_open()) { return; }
@@ -74,9 +71,15 @@ FileData(std::ifstream &fp)
 //  return FI(static_cast<unsigned int>(size_), static_cast<unsigned int>(offset_));
 //}
 // get size of file
-[[maybe_unused]] [[nodiscard]] constexpr auto Size() const { return size_; }
+[[maybe_unused]] [[nodiscard]] constexpr auto Size() const noexcept { return size_; }
+[[maybe_unused]] [[nodiscard]] constexpr auto CompressionType()const noexcept
+{
+  return Archive::CompressionTypeT::None;
+}
+//alias for Size that should mirror FI
+  [[maybe_unused]] [[nodiscard]] constexpr auto UncompressedSize() const noexcept { return size_; }
 // get offset of file
-[[maybe_unused]] [[nodiscard]] constexpr auto Offset() const { return offset_; }
+[[maybe_unused]] [[nodiscard]] constexpr auto Offset() const noexcept { return offset_; }
 // gets path as a std::string_view
 [[maybe_unused]] [[nodiscard]] auto GetPathString() const { return std::string_view(filename_); }
 [[maybe_unused]] [[nodiscard]] auto GetTuple() const { return std::make_tuple(GetPathString(), Offset(), Size()); }

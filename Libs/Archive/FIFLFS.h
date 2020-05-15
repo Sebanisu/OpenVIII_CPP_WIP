@@ -54,6 +54,12 @@ public:
     if (size == 0U && std::filesystem::exists(fi_.path)) { size = std::filesystem::file_size(fi_.path); }
     count_ = FI::GetCount(size);
   }
+  void GetCount(size_t size = 0U)
+  {
+    if (size == 0U && std::filesystem::exists(fi_.path)) { size = std::filesystem::file_size(fi_.path); }
+    if (size == 0U && !fi_.data.empty()) size = fi_.data.size();
+    count_ = FI::GetCount(size);
+  }
   void FI(const std::filesystem::path &path, const std::vector<char> &vector, const size_t &offset = 0U)
   {
     FI(path, offset, vector.size());
@@ -106,22 +112,23 @@ public:
 
   FIFLFS() = default;
 
-  FIFLFS(const std::filesystem::path &fi,
-    const std::filesystem::path &fs,
-    const std::filesystem::path &fl,
-    const size_t &fiOffset = 0U,
-    const size_t &fsOffset = 0U,
-    const size_t &flOffset = 0U)
-  {
-    fi_.path = fi;
-    fs_.path = fs;
-    fl_.path = fl;
-    fi_.offset = fiOffset;
-    fl_.offset = flOffset;
-    fs_.offset = fsOffset;
-    // todo should i have this constructor? is it even used? the reason i think not setting all possible values and why
-    // would we want it to...
-  }
+  //  FIFLFS(const std::filesystem::path &fi,
+  //    const std::filesystem::path &fs,
+  //    const std::filesystem::path &fl,
+  //    const size_t &fiOffset = 0U,
+  //    const size_t &fsOffset = 0U,
+  //    const size_t &flOffset = 0U)
+  //  {
+  //    fi_.path = fi;
+  //    fs_.path = fs;
+  //    fl_.path = fl;
+  //    fi_.offset = fiOffset;
+  //    fl_.offset = flOffset;
+  //    fs_.offset = fsOffset;
+  //    // todo should i have this constructor? is it even used? the reason i think not setting all possible values and
+  //    why
+  //    // would we want it to...
+  //  }
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FIFLFS &data)
   {
@@ -148,8 +155,7 @@ public:
     const auto &[id, path] = found;
     return GetEntry(id);
   }
-  template<typename srcT = std::vector<char>>
-  auto TryAdd(const std::string_view &strPath, const srcT &buffer)
+  template<typename srcT = std::vector<char>> auto TryAdd(const std::string_view &strPath, const srcT &buffer)
   {
     const auto directoryEntry = std::filesystem::directory_entry(strPath);
     return TryAdd(directoryEntry, buffer);
@@ -161,66 +167,83 @@ public:
     case 1:
       return true;
     case 2:
-      std::cout << archive << std::endl;
       archive.Test();
       archive = FIFLFS();
       return true;
     }
     return false;
   }
+  operator bool() const { return AllSet(); }
+  template<typename srcT = std::vector<char>, typename datT = Archive::FI>
+  char TryAddNew(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi)
+  {
+    switch (CheckExtension(fileEntry)) {
+    case 1:
+      FL(fileEntry, 0U);
+      FS::GetEntry(src, fi, srcOffset, fl_.data);
+      fl_.GetBaseName();
+      compareBaseNames();
+      return AllSet() ? 2 : 1;
+    case 2:
+      FS(fileEntry, 0U);
+      FS::GetEntry(src, fi, srcOffset, fs_.data);
+      fs_.GetBaseName();
+      compareBaseNames();
+      return AllSet() ? 2 : 1;
+    case 3:
+      FI(fileEntry, 0U);
+      FS::GetEntry(src, fi, srcOffset, fi_.data);
+      GetCount();
+      fi_.GetBaseName();
+      compareBaseNames();
+      return AllSet() ? 2 : 1;
+    default:
+      break;
+    }
+    return 0;
+  }
   void Test() const
   {
+    if (!std::filesystem::exists(fl_.path)) { std::cout << "internal file!\n"; }
+    std::cout << *this << std::endl;
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
-    const auto entries = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, count_);
-    auto archive = FIFLFS();
-    for (const auto &item : entries) {
+    FIFLFS archive{};
+    for (const auto &item : Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, count_)) {
       const auto &[id, strPath] = item;
-      std::filesystem::path path(strPath);
       auto fi = GetEntry(id);
+      {
+        std::filesystem::path path(strPath);
+        char retVal = 0;
+        if (!fs_.data.empty()) {
+          retVal = archive.TryAddNew(fs_.data, fs_.offset, path, fi);
 
-
-      std::vector<char> buffer{};
-      std::basic_string<char> strbuffer{};
-      if (fi.UncompressedSize() > 0) {
-        if(path.has_extension() &&Tools::iEquals(path.extension().string(),FL::Ext)) {
-          if (!fs_.data.empty()) {
-            strbuffer = FS::GetEntry<std::basic_string<char>>(fs_.data, fi, fs_.offset);
-          } else {
-            strbuffer = FS::GetEntry<std::basic_string<char>>(fs_.path, fi, fs_.offset);
-          }
-        }
-        else
-        {
-          if (!fs_.data.empty()) {
-            buffer = FS::GetEntry<std::vector<char>>(fs_.data, fi, fs_.offset);
-          } else {
-            buffer = FS::GetEntry<std::vector<char>>(fs_.path, fi, fs_.offset);
-          }
-        }
-      }
-
-      if (buffer.empty() && strbuffer.empty()) {
-        std::cout << '{' << id << ", "
-                  << "Empty!"
-                  << ", " << strPath << "}" << fi << std::endl;
-        if (fi.UncompressedSize() > 0) { exit(EXIT_FAILURE); }
-      } else {
-        auto tryadd = [&archive,&strPath,&id](auto & b)
-        {
-               if (TryAddTestReset(archive, strPath, b)) { return true; }
-               std::cout << '{' << id << ", " << b.size() << ", " << strPath << "}" << std::endl;
-               Tools::WriteBuffer(b, strPath);
-               return false;
-        };
-        if (strbuffer.empty()) {
-          if(tryadd(buffer))
-            continue;
         } else {
-          if(tryadd(strbuffer))
-            continue;
+          retVal = archive.TryAddNew(fs_.path, fs_.offset, path, fi);
         }
+        if (retVal == 1) { continue; }
+        if (retVal == 2) {
+          archive.Test();
+          archive = {};
+          continue;
+        };
       }
-      if (fi.UncompressedSize() != buffer.size()) { exit(EXIT_FAILURE); }
+      {
+        std::vector<char> buffer{};
+        if (!fs_.data.empty()) {
+          FS::GetEntry(fs_.data, fi, fs_.offset, buffer);
+        } else {
+          FS::GetEntry(fs_.path, fi, fs_.offset, buffer);
+        }
+        if (buffer.empty()) {
+          std::cout << '{' << id << ", "
+                    << "Empty!"
+                    << ", " << strPath << "}" << fi << std::endl;
+          if (fi.UncompressedSize() > 0) { exit(EXIT_FAILURE); }
+        }
+        if (fi.UncompressedSize() != buffer.size()) { exit(EXIT_FAILURE); }
+        std::cout << '{' << id << ", " << buffer.size() << ", " << strPath << "}" << std::endl;
+        Tools::WriteBuffer(buffer, strPath);
+      }
     }
   }
 
@@ -236,6 +259,8 @@ public:
 
     return 0;
   }
+
+
   /*
    * 0 = didn't add
    * 1 = added
@@ -244,7 +269,7 @@ public:
   template<typename srcT = std::vector<char>>
   char TryAdd(const std::filesystem::directory_entry &fileEntry, const srcT &vector)
   {
-    if constexpr(std::is_convertible_v<std::vector<char>,srcT>) {
+    if constexpr (std::is_convertible_v<std::vector<char>, srcT>) {
       switch (CheckExtension(fileEntry.path())) {
       case 1:
         FL(fileEntry, vector, 0U);
@@ -264,9 +289,7 @@ public:
       default:
         break;
       }
-    }
-    else if constexpr(std::is_convertible_v<std::basic_string<char>,srcT>)
-    {
+    } else if constexpr (std::is_convertible_v<std::basic_string<char>, srcT>) {
       switch (CheckExtension(fileEntry.path())) {
       case 1:
         FL(fileEntry, vector, 0U);
