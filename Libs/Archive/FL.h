@@ -23,14 +23,17 @@ struct FL
 private:
   // Remove the C:\ from the start, remove the \r from the end,
   // and change \ to the correct slash.
-  constexpr static void CleanString(std::string &input) noexcept
+  // added skipFixed if data is set then i probably fixed slashes already.
+  constexpr static void CleanString(std::string &input, const bool &skipFixed = true) noexcept
   {
     if (std::size(input) > 4) {
-      if (input.at(input.size() - 1) == '\r') { input.pop_back(); }// remove the carriage return character
-      if (Tools::iEquals(std::string_view(input.c_str(), 3), "c:\\")) {
+      if (Tools::iEquals(std::string_view(input.c_str(), 2), "c:")) {
         input.erase(0, 3);// remove c:\ from the start of the strings.
       }
-      Tools::replaceSlashes(input);
+      if (skipFixed) {
+        if (input.at(input.size() - 1) == '\r') { input.pop_back(); }// remove the carriage return character
+        Tools::replaceSlashes(input);
+      }
     }
   }
 
@@ -47,14 +50,14 @@ public:
   {
 
     auto vector = std::vector<std::pair<unsigned int, std::string>>();
-    const auto process = [&count, &vector, &offset, &needle](auto &cont) {
+    const auto process = [&count, &vector, &offset, &needle, &data](auto &cont) {
       if (!cont.seekg(static_cast<long>(offset))) { return; }
       if (count > 0) vector.reserve(count);
       // id numerical order is same order as fi data. So need to keep the id so we can reference the fi correctly.
       std::basic_string<char> innerPath;
       for (unsigned int id = 0; std::getline(cont, innerPath, '\n'); id++) {
         if (!needle.empty() && !Tools::iFind(innerPath, needle)) continue;// filter value by string if need.
-        CleanString(vector.emplace_back(std::make_pair(id, std::move(innerPath))).second);
+        CleanString(vector.emplace_back(std::make_pair(id, std::move(innerPath))).second, data.empty());
       }
       // sort the strings. to make it easier to choose the correct string first.
       // shorter length and then what ever str < str2 does.

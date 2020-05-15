@@ -22,11 +22,11 @@ struct [[maybe_unused]] ZZZ
 
 private:
   // stored at top of zzz file to tell how many files are stored inside
-  //  [[maybe_unused]] unsigned int count_{};
+  // unsigned int count_{};
   // file data inside zzz file.
   std::vector<FileData> data_{};
 
-  [[maybe_unused]] constexpr static auto Ext = ".zzz";
+  constexpr static auto Ext = ".zzz";
 
   std::filesystem::path path_{};
 
@@ -42,7 +42,6 @@ public:
     if (!(path.has_extension() && Tools::iEquals(path.extension().string(), Ext)) || !std::filesystem::exists(path)) {
       return;
     }
-
 
     unsigned int count{};
     auto fp = std::ifstream(path, std::ios::binary | std::ios::in);
@@ -63,36 +62,7 @@ public:
     std::sort(data_.begin(), data_.end(), FileData::Comparator());
     fp.close();
   }
-  template<typename dstT = std::vector<char>>
-  static void GetEntry(const std::filesystem::path &path, const FileData &data, dstT &dst)
-  {
-    if (!(path.has_extension() && Tools::iEquals(path.extension().string(), Ext)) || !std::filesystem::exists(path)) {
-      return;
-    }
-    {
-      auto fp = std::ifstream(path, std::ios::binary | std::ios::in);
-      if (!fp.is_open()) {
-        fp.close();
-        return;
-      }
-
-
-      fp.seekg(static_cast<long>(data.Offset()));
-      {
-        dst = Tools::ReadBuffer<dstT>(fp, data.Size());
-        fp.close();
-        // todo in cpp20 use bitcast instead. or find another way to write data.
-        return;
-      }
-    }
-  }
-  template<typename dstT = std::vector<char>> void GetEntry(const FileData &data, dstT &dst) const
-  {
-    GetEntry(path_, data, dst);
-  }
-
-  [[maybe_unused]] [[nodiscard]] bool empty() { return data_.empty(); }
-  [[maybe_unused]] void Test() const
+  void Test() const
   {
 
     FIFLFS archive{};
@@ -117,21 +87,21 @@ public:
                   (!prev.empty() && FIFLFS::GetBaseName(strPath) == FIFLFS::GetBaseName(prev.GetPathString())))) {
 
             std::filesystem::path fsPath(strPath);
-            char retVal = 0;
-            retVal = archive.TryAddNew(path_, 0U, fsPath, item);
-
-            if (retVal == 1) { continue; }
-            if (retVal == 2) {
-              archive.Test();
-              archive = {};
-              continue;
-            };
+            {
+              char retVal = archive.TryAddNested(path_, 0U, fsPath, item);
+              if (retVal == 1) { continue; }
+              if (retVal == 2) {
+                archive.Test();
+                archive = {};
+                continue;
+              };
+            }
           }
         }
         {
           std::vector<char> buffer;
-
-          GetEntry(item, buffer);
+          FS::GetEntry(path_, item, 0U, buffer);
+          // GetEntry(item, buffer);
           std::cout << '{' << buffer.size() << ", " << strPath << "}\n";
           Tools::WriteBuffer(buffer, strPath);
         }
@@ -140,7 +110,7 @@ public:
   }
   using ZZZmap = std::map<std::string, OpenVIII::Archive::ZZZ>;
 
-  [[maybe_unused]] [[nodiscard]] static ZZZmap GetFilesFromPath(const std::string_view path)
+  [[nodiscard]] static ZZZmap GetFilesFromPath(const std::string_view path)
   {
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
 
@@ -160,7 +130,7 @@ public:
     }
     return tmp;
   }
-  [[maybe_unused]] static void testPair(const std::pair<std::string_view, OpenVIII::Archive::ZZZ> &pair)
+  static void testPair(const std::pair<std::string_view, OpenVIII::Archive::ZZZ> &pair)
   {
     const auto &[name, zzz] = pair;
     std::cout << '{' << name << ", " << zzz.path_ << "}\n";
