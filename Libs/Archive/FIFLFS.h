@@ -22,6 +22,7 @@ private:
   {
     std::filesystem::path path{};
     size_t offset{};
+    size_t size{}; // if forced otherwise 0;
     T data{};
     std::string base{};
 
@@ -33,30 +34,12 @@ private:
   ds_<std::vector<char>> fs_{};
   ds_<std::basic_string<char>> fl_{};// this is char because the file contains strings.
   size_t count_{};
-  void FI(const std::filesystem::path &path, const size_t &offset = 0U, size_t size = 0U)
-  {
-    fi_.path = path;
-    fi_.offset = offset;
-    if (size == 0U && std::filesystem::exists(fi_.path)) { size = std::filesystem::file_size(fi_.path); }
-    count_ = FI::GetCount(size);
-  }
   void GetCount(size_t size = 0U)
   {
+    if (size == 0U) size = fi_.size;
     if (size == 0U && std::filesystem::exists(fi_.path)) { size = std::filesystem::file_size(fi_.path); }
     if (size == 0U && !fi_.data.empty()) size = fi_.data.size();
     count_ = FI::GetCount(size);
-  }
-
-  void FS(const std::filesystem::path &path, const size_t &offset = 0U)
-  {
-    fs_.path = path;
-    fs_.offset = offset;
-  }
-
-  void FL(const std::filesystem::path &path, const size_t &offset = 0U)
-  {
-    fl_.path = path;
-    fl_.offset = offset;
   }
 
 public:
@@ -74,7 +57,7 @@ public:
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FIFLFS &data)
   {
-    os << '{' << data.GetBaseName() << ", " << '{' << data.fi_.path << ", " << data.fl_.path << ", " << data.fs_.path
+    os << '{' << data.GetBaseName()  << ", " << '{' << data.fi_.path << ", " << data.fl_.path << ", " << data.fs_.path
        << "}}";
     return os;
   }
@@ -99,25 +82,36 @@ public:
    * 2 = added and all set
    * */
 
-  char TryAdd(const std::filesystem::path &fileEntry)
+  char TryAdd(const std::filesystem::path &fileEntry,const std::filesystem::path & realPath = "",size_t offset = 0U, size_t size =0U)
   {
-    switch (CheckExtension(fileEntry)) {
-    case 1:
-      FL(fileEntry, 0U);
-      fl_.GetBaseName();
+    const auto set = [&fileEntry, &offset,&realPath,&size](auto & ds)
+    {
+
+           ds.path = fileEntry;
+            ds.offset = offset;
+            ds.size = size;
+            if(realPath.has_stem())
+              ds.base = GetBaseName(realPath);
+            else
+            ds.GetBaseName();
+    };
+    switch (realPath.has_extension()? CheckExtension(realPath) : CheckExtension(fileEntry)) {
+    case 1:{
+      set(fl_);
       compareBaseNames();
       return AllSet() ? 2 : 1;
-    case 2:
-      FS(fileEntry, 0U);
-      fs_.GetBaseName();
+    }
+    case 2:{
+      set(fs_);
       compareBaseNames();
       return AllSet() ? 2 : 1;
-    case 3:
-      FI(fileEntry, 0U);
+    }
+    case 3: {
+      set(fi_);
       GetCount();
-      fi_.GetBaseName();
       compareBaseNames();
       return AllSet() ? 2 : 1;
+    }
     default:
       break;
     }
@@ -128,28 +122,32 @@ public:
   char TryAddNested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi)
   {
 
+    const auto set = [&fileEntry, &srcOffset](auto & ds)
+    {
+
+           ds.path = fileEntry;
+           ds.offset = srcOffset;
+           ds.GetBaseName();
+    };
     switch (CheckExtension(fileEntry)) {
     case 1:
-      FL(fileEntry, 0U);
+      set(fl_);
       fl_.data = FS::GetEntry<decltype(fl_.data)>(src, fi, srcOffset);
       //remove carriage returns
       fl_.data.erase(std::remove(fl_.data.begin(),fl_.data.end(),'\r'),fl_.data.end());
       //change slashes to preferred
       Tools::replaceSlashes(fl_.data);
-      fl_.GetBaseName();
       compareBaseNames();
       return AllSet() ? 2 : 1;
     case 2:
-      FS(fileEntry, 0U);
+      set(fs_);
       fs_.data = FS::GetEntry(src, fi, srcOffset);
-      fs_.GetBaseName();
       compareBaseNames();
       return AllSet() ? 2 : 1;
     case 3:
-      FI(fileEntry, 0U);
+      set(fi_);
       fi_.data = FS::GetEntry(src, fi, srcOffset);
       GetCount();
-      fi_.GetBaseName();
       compareBaseNames();
       return AllSet() ? 2 : 1;
     default:
@@ -277,15 +275,12 @@ public:
   }
   [[nodiscard]] std::string GetBaseName() const
   {
-    std::string name;
-    for (const auto &path : { fi_.path, fl_.path, fs_.path }) {
-      if (!path.string().empty()) {
-        name = path.filename().stem().string();
-        std::transform(name.begin(), name.end(), name.begin(), ::toupper);
-        break;
+    for (const auto &path : { fi_.base, fl_.base, fs_.base }) {
+      if (!path.empty()) {
+        return path;
       }
     }
-    return name;
+    return {};
   }
 
   static void testPair(const std::pair<std::string_view, OpenVIII::Archive::FIFLFS> &pair)
