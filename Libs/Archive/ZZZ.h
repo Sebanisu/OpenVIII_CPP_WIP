@@ -37,7 +37,7 @@ public:
   ZZZ &operator=(ZZZ &&) = default;
   ~ZZZ() = default;
   constexpr ZZZ() = default;
-  ZZZ(const std::filesystem::path &path)
+  explicit ZZZ(const std::filesystem::path &path)
   {
     if (!(path.has_extension() && Tools::iEquals(path.extension().string(), Ext)) || !std::filesystem::exists(path)) {
       return;
@@ -94,14 +94,12 @@ public:
                 archive.Test();
                 archive = {};
                 continue;
-              };
+              }
             }
           }
         }
         {
-          std::vector<char> buffer;
-          FS::GetEntry(path_, item, 0U, buffer);
-          // GetEntry(item, buffer);
+          auto buffer = FS::GetEntry(path_, item, 0U);
           std::cout << '{' << buffer.size() << ", " << strPath << "}\n";
           Tools::WriteBuffer(buffer, strPath);
         }

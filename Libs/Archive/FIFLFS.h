@@ -131,7 +131,7 @@ public:
     switch (CheckExtension(fileEntry)) {
     case 1:
       FL(fileEntry, 0U);
-      FS::GetEntry(src, fi, srcOffset, fl_.data);
+      fl_.data = FS::GetEntry<decltype(fl_.data)>(src, fi, srcOffset);
       //remove carriage returns
       fl_.data.erase(std::remove(fl_.data.begin(),fl_.data.end(),'\r'),fl_.data.end());
       //change slashes to preferred
@@ -141,13 +141,13 @@ public:
       return AllSet() ? 2 : 1;
     case 2:
       FS(fileEntry, 0U);
-      FS::GetEntry(src, fi, srcOffset, fs_.data);
+      fs_.data = FS::GetEntry(src, fi, srcOffset);
       fs_.GetBaseName();
       compareBaseNames();
       return AllSet() ? 2 : 1;
     case 3:
       FI(fileEntry, 0U);
-      FS::GetEntry(src, fi, srcOffset, fi_.data);
+      fi_.data = FS::GetEntry(src, fi, srcOffset);
       GetCount();
       fi_.GetBaseName();
       compareBaseNames();
@@ -183,11 +183,11 @@ public:
         };
       }
       {
-        std::vector<char> buffer{};
+        std::vector<char> buffer;
         if (!fs_.data.empty()) {
-          FS::GetEntry(fs_.data, fi, fs_.offset, buffer);
+          buffer = FS::GetEntry(fs_.data, fi, fs_.offset);
         } else {
-          FS::GetEntry(fs_.path, fi, fs_.offset, buffer);
+          buffer = FS::GetEntry(fs_.path, fi, fs_.offset);
         }
         if (buffer.empty()) {
           std::cout << '{' << id << ", "
