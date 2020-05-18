@@ -9,7 +9,7 @@
 #include <iterator>
 #include <array>
 #include <algorithm>
-#include "..\Tools\Tools.h"
+#include "Tools/Tools.h"
 namespace OpenVIII::Archive {
 enum class CompressionTypeT : unsigned int {
   None = 0,
