@@ -127,7 +127,7 @@ public:
 
     const auto set = [&fileEntry, &srcOffset](auto &ds) {
       ds.path = fileEntry;
-      ds.offset = srcOffset;
+      ds.offset = 0U; // the offset is 0 because we are getting the truncated data below.
       ds.GetBaseName();
     };
     switch (CheckExtension(fileEntry)) {
@@ -158,11 +158,14 @@ public:
   }
   void Test() const
   {
-    if (!std::filesystem::exists(fl_.path)) { std::cout << "internal file!\n"; }
+    if (!std::filesystem::exists(fl_.path)) {
+      std::cout << "nested file!\n";
+    }
     std::cout << *this << std::endl;
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
     FIFLFS archive{};
-    for (const auto &item : Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_)) {
+    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_);
+    for (const auto &item : items) {
       const auto &[id, strPath] = item;
       //std::cout << "TryAddNested: {" << id << ", " << strPath << "}\n";
     
