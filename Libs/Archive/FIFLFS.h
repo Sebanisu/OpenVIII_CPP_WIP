@@ -194,9 +194,7 @@ public:
           std::cout << '{' << id << ", "
                     << "Empty!"
                     << ", " << strPath << "}" << fi << std::endl;
-          // if (fi.UncompressedSize() > 0) { exit(EXIT_FAILURE); }
-          //exit(EXIT_FAILURE);
-          if(!(fi.UncompressedSize() == 0 && fi.Offset() == 0 && fi.CompressionType() == Archive::CompressionTypeT::None)) { //goto tryAgain;
+          if(!(fi.UncompressedSize() == 0 && fi.CompressionType() == Archive::CompressionTypeT::None)) {
             exit(EXIT_FAILURE);
           }
         }

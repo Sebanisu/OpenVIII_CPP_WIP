@@ -69,14 +69,14 @@ target_link_libraries(Archive Tools Compression)
 #test app for trying to extract a all files from the FIFLFS archives.
 add_executable(TestExtractFIFLFS
         Tests/TestExtractFIFLFS.h Tests/TestExtractFIFLFS.cpp
-        )
+        Tests/paths.h)
 set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractFIFLFS Archive)
 
 #test app for trying to extract a single file from the FIFLFS archives.
 add_executable(TestExtractSingleFIFLFS
-        Tests/TestExtractSingleFIFLFS.h Tests/TestExtractSingleFIFLFS.cpp
-        )
+        Tests/TestExtractSingleFIFLFS.h
+        Tests/paths.h Tests/TestExtractSingleFIFLFS.cpp)
 set_target_properties(TestExtractSingleFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractSingleFIFLFS Archive)
 
@@ -84,7 +84,7 @@ target_link_libraries(TestExtractSingleFIFLFS Archive)
 #test app for trying to extract a all files from the ZZZ and FIFLFS archives.
 add_executable(TestExtractZZZ
         Tests/TestExtractZZZ.h Tests/TestExtractZZZ.cpp
-        )
+        Tests/paths.h)
 target_link_libraries(TestExtractZZZ Archive)
 set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
 
