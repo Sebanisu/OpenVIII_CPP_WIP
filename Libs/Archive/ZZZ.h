@@ -61,6 +61,7 @@ public:
     }
     std::sort(data_.begin(), data_.end(), FileData::Comparator());
     fp.close();
+    data_.shrink_to_fit();
   }
   void Test() const
   {
@@ -114,6 +115,7 @@ public:
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
 
     auto tmp = ZZZmap();
+    tmp.reserve(2); //main and other
     auto archive = OpenVIII::Archive::ZZZ();
     int i{};
     for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
@@ -127,6 +129,7 @@ public:
       archive = OpenVIII::Archive::ZZZ(fileEntry);
       tmp.emplace_back(std::make_pair(basename, archive));
     }
+    tmp.shrink_to_fit();
     return tmp;
   }
   static void testPair(const std::pair<std::string_view, OpenVIII::Archive::ZZZ> &pair)
