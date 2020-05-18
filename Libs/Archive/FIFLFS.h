@@ -22,13 +22,17 @@ private:
   {
     std::filesystem::path path{};
     size_t offset{};
-    size_t size{}; // if forced otherwise 0;
+    size_t size{};// if forced otherwise 0;
     T data{};
-    std::string base{};
+    mutable std::string base{};
 
-    // Assigns basename and returns it.
-    std::string GetBaseName() { return base = FIFLFS::GetBaseName(path); }
-    operator bool() const { return (!path.empty() && std::filesystem::exists(path)) || !std::empty(data); }
+    //    // Assigns basename and returns it.
+    [[maybe_unused]] std::string GetBaseName() const noexcept { return base = FIFLFS::GetBaseName(path); }
+    operator bool() const
+    {
+      return (!path.empty() && std::filesystem::exists(path)) || !std::empty(data)
+             || (!path.empty() && (offset > 0 || size > 0));
+    }
   };
   ds_<std::vector<char>> fi_{};
   ds_<std::vector<char>> fs_{};
@@ -50,28 +54,27 @@ public:
   [[nodiscard]] const auto &FL() const noexcept { return fl_; }
 
 
-
   [[nodiscard]] bool AllSet() const { return fi_ && fs_ && fl_; }
 
   FIFLFS() = default;
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FIFLFS &data)
   {
-    os << '{' << data.GetBaseName()  << ", " << '{' << data.fi_.path << ", " << data.fl_.path << ", " << data.fs_.path
+    os << '{' << data.GetBaseName() << ", " << '{' << data.fi_.path << ", " << data.fl_.path << ", " << data.fs_.path
        << "}}";
     return os;
   }
 
-  [[nodiscard]] auto GetEntry(const unsigned int &id) const
+  [[nodiscard]] Archive::FI GetEntry(const unsigned int &id) const
   {
-    if (id < count_ || count_ == 0) {
+    if (count_ == 0 || id < count_) {
       if (!fi_.data.empty()) {
-        return FI::GetEntry(fi_.data, id, fi_.offset);
+        return FI::GetEntry(fi_.data, id, fi_.offset, fi_.size);
       } else {
-        return FI::GetEntry(fi_.path, id, fi_.offset);
+        return FI::GetEntry(fi_.path, id, fi_.offset, fi_.size);
       }
     }
-    return OpenVIII::Archive::FI();
+    return {};
   }
 
 
@@ -82,26 +85,26 @@ public:
    * 2 = added and all set
    * */
 
-  char TryAdd(const std::filesystem::path &fileEntry,const std::filesystem::path & realPath = "",size_t offset = 0U, size_t size =0U)
+  char TryAdd(const std::filesystem::path &fileEntry,
+    const std::filesystem::path &realPath = "",
+    size_t offset = 0U,
+    size_t size = 0U)
   {
-    const auto set = [&fileEntry, &offset,&realPath,&size](auto & ds)
-    {
-
-           ds.path = fileEntry;
-            ds.offset = offset;
-            ds.size = size;
-            if(realPath.has_stem())
-              ds.base = GetBaseName(realPath);
-            else
-            ds.GetBaseName();
+    const auto set = [&fileEntry, &offset, &realPath, &size](auto &ds) {
+      ds.path = fileEntry;
+      ds.offset = offset;
+      ds.size = size;
+      if (realPath.has_stem()) ds.base = GetBaseName(realPath);
+      else
+        ds.GetBaseName();
     };
-    switch (realPath.has_extension()? CheckExtension(realPath) : CheckExtension(fileEntry)) {
-    case 1:{
+    switch (realPath.has_extension() ? CheckExtension(realPath) : CheckExtension(fileEntry)) {
+    case 1: {
       set(fl_);
       compareBaseNames();
       return AllSet() ? 2 : 1;
     }
-    case 2:{
+    case 2: {
       set(fs_);
       compareBaseNames();
       return AllSet() ? 2 : 1;
@@ -122,20 +125,18 @@ public:
   char TryAddNested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi)
   {
 
-    const auto set = [&fileEntry, &srcOffset](auto & ds)
-    {
-
-           ds.path = fileEntry;
-           ds.offset = srcOffset;
-           ds.GetBaseName();
+    const auto set = [&fileEntry, &srcOffset](auto &ds) {
+      ds.path = fileEntry;
+      ds.offset = srcOffset;
+      ds.GetBaseName();
     };
     switch (CheckExtension(fileEntry)) {
     case 1:
       set(fl_);
       fl_.data = FS::GetEntry<decltype(fl_.data)>(src, fi, srcOffset);
-      //remove carriage returns
-      fl_.data.erase(std::remove(fl_.data.begin(),fl_.data.end(),'\r'),fl_.data.end());
-      //change slashes to preferred
+      // remove carriage returns
+      fl_.data.erase(std::remove(fl_.data.begin(), fl_.data.end(), '\r'), fl_.data.end());
+      // change slashes to preferred
       Tools::replaceSlashes(fl_.data);
       compareBaseNames();
       return AllSet() ? 2 : 1;
@@ -161,8 +162,11 @@ public:
     std::cout << *this << std::endl;
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
     FIFLFS archive{};
-    for (const auto &item : Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, count_)) {
+    auto list = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_);
+    for (const auto &item : list) {
       const auto &[id, strPath] = item;
+      std::cout << "TryAddNested: {" << id << ", " << strPath << "}\n";
+    
       auto fi = GetEntry(id);
       {
         std::filesystem::path path(strPath);
@@ -191,7 +195,11 @@ public:
           std::cout << '{' << id << ", "
                     << "Empty!"
                     << ", " << strPath << "}" << fi << std::endl;
-          if (fi.UncompressedSize() > 0) { exit(EXIT_FAILURE); }
+          // if (fi.UncompressedSize() > 0) { exit(EXIT_FAILURE); }
+          //exit(EXIT_FAILURE);
+          if(fi.UncompressedSize() == 0 && fi.Offset() == 0 && fi.CompressionType() == Archive::CompressionTypeT::None) { //goto tryAgain;
+            exit(EXIT_FAILURE);
+          }
         }
         if (fi.UncompressedSize() != buffer.size()) { exit(EXIT_FAILURE); }
         std::cout << '{' << id << ", " << buffer.size() << ", " << strPath << "}" << std::endl;
@@ -212,7 +220,6 @@ public:
 
     return 0;
   }
-
 
 
   void compareBaseNames()
@@ -276,9 +283,7 @@ public:
   [[nodiscard]] std::string GetBaseName() const
   {
     for (const auto &path : { fi_.base, fl_.base, fs_.base }) {
-      if (!path.empty()) {
-        return path;
-      }
+      if (!path.empty()) { return path; }
     }
     return {};
   }
