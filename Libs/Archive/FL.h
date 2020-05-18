@@ -55,10 +55,9 @@ public:
            cont.seekg(0,std::ios::end);
          auto length = cont.tellg();
       if (!cont.seekg(static_cast<long>(offset))) {
-
         std::cerr << "failed to seek to offset: " << offset <<"; length: "<< length<<";\n";
         exit(EXIT_FAILURE);
-        return; }
+        }
       if (count > 0) { vector.reserve(count); }
       // id numerical order is same order as fi data. So need to keep the id so we can reference the fi correctly.
       {
