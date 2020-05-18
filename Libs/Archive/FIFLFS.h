@@ -251,7 +251,7 @@ public:
   }
 
   // todo move get files to here
-  using FIFLFSmap = std::map<std::string, OpenVIII::Archive::FIFLFS>;
+  using FIFLFSmap = std::vector<std::pair<std::string, OpenVIII::Archive::FIFLFS>>;
 
   [[nodiscard]] static FIFLFSmap GetFilesFromPath(const std::string_view path)
   {
@@ -266,8 +266,9 @@ public:
       if (archive.TryAdd(fileEntry)) {
         if (archive.AllSet()) {// todo confirm basename matches right now i'm assuming the 3 files are together.
           // todo check for language codes to choose correct files
-          tmp.insert(std::make_pair(archive.GetBaseName(), archive));
-          archive = OpenVIII::Archive::FIFLFS();
+          //auto key = archive.GetBaseName();
+          tmp.emplace_back(std::make_pair(archive.GetBaseName(), std::move(archive)));
+          archive = {};
         }
       }
     }
