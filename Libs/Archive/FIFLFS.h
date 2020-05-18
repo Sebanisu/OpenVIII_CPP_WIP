@@ -162,10 +162,9 @@ public:
     std::cout << *this << std::endl;
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
     FIFLFS archive{};
-    auto list = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_);
-    for (const auto &item : list) {
+    for (const auto &item : Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_)) {
       const auto &[id, strPath] = item;
-      std::cout << "TryAddNested: {" << id << ", " << strPath << "}\n";
+      //std::cout << "TryAddNested: {" << id << ", " << strPath << "}\n";
     
       auto fi = GetEntry(id);
       {
@@ -197,7 +196,7 @@ public:
                     << ", " << strPath << "}" << fi << std::endl;
           // if (fi.UncompressedSize() > 0) { exit(EXIT_FAILURE); }
           //exit(EXIT_FAILURE);
-          if(fi.UncompressedSize() == 0 && fi.Offset() == 0 && fi.CompressionType() == Archive::CompressionTypeT::None) { //goto tryAgain;
+          if(!(fi.UncompressedSize() == 0 && fi.Offset() == 0 && fi.CompressionType() == Archive::CompressionTypeT::None)) { //goto tryAgain;
             exit(EXIT_FAILURE);
           }
         }
