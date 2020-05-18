@@ -20,10 +20,10 @@ struct FIFLFS
 private:
   template<typename T> struct ds_
   {
-    std::filesystem::path path{};
-    size_t offset{};
-    size_t size{};// if forced otherwise 0;
-    T data{};
+    mutable std::filesystem::path path{};
+    mutable size_t offset{};
+    mutable size_t size{};// if forced otherwise 0;
+    mutable T data{};
     mutable std::string base{};
 
     //    // Assigns basename and returns it.
@@ -37,8 +37,8 @@ private:
   ds_<std::vector<char>> fi_{};
   ds_<std::vector<char>> fs_{};
   ds_<std::basic_string<char>> fl_{};// this is char because the file contains strings.
-  size_t count_{};
-  void GetCount(size_t size = 0U)
+  mutable size_t count_{};
+  void GetCount(size_t size = 0U) const
   {
     if (size == 0U) size = fi_.size;
     if (size == 0U && std::filesystem::exists(fi_.path)) { size = std::filesystem::file_size(fi_.path); }
@@ -78,7 +78,7 @@ public:
   }
 
 
-  operator bool() const { return AllSet(); }
+  operator bool() const noexcept { return AllSet(); }
   /*
    * 0 = didn't add
    * 1 = added
@@ -88,7 +88,7 @@ public:
   char TryAdd(const std::filesystem::path &fileEntry,
     const std::filesystem::path &realPath = "",
     size_t offset = 0U,
-    size_t size = 0U)
+    size_t size = 0U) const
   {
     const auto set = [&fileEntry, &offset, &realPath, &size](auto &ds) {
       ds.path = fileEntry;
@@ -122,7 +122,7 @@ public:
     return 0;
   }
   template<typename srcT = std::vector<char>, typename datT = Archive::FI>
-  char TryAddNested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi)
+  char TryAddNested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi) const
   {
 
     const auto set = [&fileEntry, &srcOffset](auto &ds) {
@@ -222,7 +222,7 @@ public:
   }
 
 
-  void compareBaseNames()
+  void compareBaseNames() const
   {
     if ((fl_.base == fs_.base && fi_.base == fs_.base) || std::empty(fl_.base) || std::empty(fi_.base)
         || std::empty(fs_.base)) {
@@ -230,22 +230,22 @@ public:
     }
     if (fl_.base != fs_.base || fi_.base != fs_.base) {
       if (fl_.base == fi_.base) {
-        std::cerr << "Removing FS Data: " << fs_ << "\n";
-        fs_ = {};
+        std::cerr << "base name mismatch FS Data: " << fs_ << "\n";
+        //fs_ = {};
         exit(EXIT_FAILURE);
       }
     } else if (fi_.base != fl_.base) {
       if (fl_.base == fs_.base) {
-        std::cerr << "Removing FL Data: " << fl_ << "\n";
-        fi_ = {};
+        std::cerr << "base name mismatch FL Data: " << fl_ << "\n";
+        //fi_ = {};
         exit(EXIT_FAILURE);
       } else if (fi_.base == fs_.base) {
-        std::cerr << "Removing FI Data: " << fi_ << "\n";
-        fl_ = {};
+        std::cerr << "base name mismatch FI Data: " << fi_ << "\n";
+        //fl_ = {};
         exit(EXIT_FAILURE);
       }
     } else {
-      std::cerr << "No files matched!\n";
+      std::cerr << "No basename matched!\n";
       exit(EXIT_FAILURE);
     }
   }
@@ -261,6 +261,7 @@ public:
   template<class iter_t>[[nodiscard]] static FIFLFSmap GetFilesFromIterator(iter_t iter)
   {
     auto tmp = FIFLFSmap();
+    tmp.reserve(6U); // battle, field, magic, main, menu, world
     auto archive = OpenVIII::Archive::FIFLFS();
     for (const auto &fileEntry : iter) {
       if (archive.TryAdd(fileEntry)) {
@@ -272,6 +273,7 @@ public:
         }
       }
     }
+    tmp.shrink_to_fit(); //if there is more than 6 it'll collapse the vector
     return tmp;
   }
   [[nodiscard]] std::string static GetBaseName(const std::filesystem::path &path)
@@ -296,7 +298,6 @@ public:
     paths.Test();
     // testFLPath(paths.FL(),paths.FI());
   }
-  // todo make get files allow recursive archives
 };
 }// namespace OpenVIII::Archive
 #endif// !OPENVIII_FIFLFS_H
