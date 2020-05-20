@@ -5,6 +5,9 @@ Credits:
 
 Reference:
  - http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media
+ - http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
+ - https://github.com/MaKiPL/OpenVIII-monogame
+ - https://github.com/myst6re/deling
  
 Requires:
  - https://github.com/lz4/lz4
