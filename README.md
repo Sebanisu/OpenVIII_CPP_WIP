@@ -1,6 +1,5 @@
-I'm just trying to see how hard it would be to port some things to cpp. Testing code on gcc and msvc. I'm not sure how far I'm gonna go. 
+Credits https://github.com/MaKiPL, https://github.com/myst6re.
 
-Trying to stick with Standard Libs for cpp17 and maybe cpp20 when possible. I'm thinking of using Imgui if I get to the point of drawing anything on screen.
+Reference http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media
 
-
-I'm inexprenced. I am trying to learn as I go. It might not be correct.
+This is WIP and everything is subject to change. Currently requires cpp17. I plan to upgrade to cpp20 when it's more widely supported.
