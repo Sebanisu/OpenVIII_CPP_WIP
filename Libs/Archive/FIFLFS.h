@@ -85,20 +85,20 @@ public:
    * 2 = added and all set
    * */
 
-  char TryAdd(const std::filesystem::path &fileEntry,
-    const std::filesystem::path &realPath = "",
+  char TryAdd(const std::filesystem::path &existingFilePath,
+    const std::filesystem::path &virtualFilePath = "",
     size_t offset = 0U,
     size_t size = 0U) const
   {
-    const auto set = [&fileEntry, &offset, &realPath, &size](auto &ds) {
-      ds.path = fileEntry;
+    const auto set = [&existingFilePath, &offset, &virtualFilePath, &size](auto &ds) {
+      ds.path = existingFilePath;
       ds.offset = offset;
       ds.size = size;
-      if (realPath.has_stem()) ds.base = GetBaseName(realPath);
+      if (virtualFilePath.has_stem()) ds.base = GetBaseName(virtualFilePath);
       else
         ds.GetBaseName();
     };
-    switch (realPath.has_extension() ? CheckExtension(realPath) : CheckExtension(fileEntry)) {
+    switch (virtualFilePath.has_extension() ? CheckExtension(virtualFilePath) : CheckExtension(existingFilePath)) {
     case 1: {
       set(fl_);
       compareBaseNames();
@@ -122,12 +122,13 @@ public:
     return 0;
   }
   template<typename srcT = std::vector<char>, typename datT = Archive::FI>
-  char TryAddNested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi) const
+  char
+    TryAddNested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi) const
   {
 
     const auto set = [&fileEntry, &srcOffset](auto &ds) {
       ds.path = fileEntry;
-      ds.offset = 0U; // the offset is 0 because we are getting the truncated data below.
+      ds.offset = 0U;// the offset is 0 because we are getting the truncated data below.
       ds.GetBaseName();
     };
     switch (CheckExtension(fileEntry)) {
@@ -158,26 +159,32 @@ public:
   }
   void Test() const
   {
-    if (!std::filesystem::exists(fl_.path)) {
-      std::cout << "nested file!\n";
-    }
+    if (!std::filesystem::exists(fl_.path)) { std::cout << "nested file!\n"; }
     std::cout << *this << std::endl;
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
     FIFLFS archive{};
     auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_);
     for (const auto &item : items) {
-      const auto &[id, strPath] = item;
-      //std::cout << "TryAddNested: {" << id << ", " << strPath << "}\n";
-    
+      const auto &[id, strVirtualPath] = item;
+      // std::cout << "TryAddNested: {" << id << ", " << strVirtualPath << "}\n";
+
       auto fi = GetEntry(id);
       {
-        std::filesystem::path path(strPath);
+        std::filesystem::path virtualPath(strVirtualPath);
         char retVal;
         if (!fs_.data.empty()) {
-          retVal = archive.TryAddNested(fs_.data, fs_.offset, path, fi);
+          retVal = archive.TryAddNested(fs_.data, fs_.offset, virtualPath, fi);
 
         } else {
-          retVal = archive.TryAddNested(fs_.path, fs_.offset, path, fi);
+          if (fi.CompressionType() == Archive::CompressionTypeT::None) {
+            retVal = archive.TryAdd(fs_.path, virtualPath, fs_.offset + fi.Offset(), fi.UncompressedSize());
+            if(retVal!=0)
+            {
+              std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
+            }
+          } else {
+            retVal = archive.TryAddNested(fs_.path, fs_.offset, virtualPath, fi);
+          }
         }
         if (retVal == 1) { continue; }
         if (retVal == 2) {
@@ -196,14 +203,14 @@ public:
         if (buffer.empty()) {
           std::cout << '{' << id << ", "
                     << "Empty!"
-                    << ", " << strPath << "}" << fi << std::endl;
-          if(!(fi.UncompressedSize() == 0 && fi.CompressionType() == Archive::CompressionTypeT::None)) {
+                    << ", " << strVirtualPath << "}" << fi << std::endl;
+          if (!(fi.UncompressedSize() == 0 && fi.CompressionType() == Archive::CompressionTypeT::None)) {
             exit(EXIT_FAILURE);
           }
         }
         if (fi.UncompressedSize() != buffer.size()) { exit(EXIT_FAILURE); }
-        std::cout << '{' << id << ", " << buffer.size() << ", " << strPath << "}" << std::endl;
-        Tools::WriteBuffer(buffer, strPath);
+        std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
+        Tools::WriteBuffer(buffer, strVirtualPath);
       }
     }
   }
@@ -231,17 +238,17 @@ public:
     if (fl_.base != fs_.base || fi_.base != fs_.base) {
       if (fl_.base == fi_.base) {
         std::cerr << "base name mismatch FS Data: " << fs_ << "\n";
-        //fs_ = {};
+        // fs_ = {};
         exit(EXIT_FAILURE);
       }
     } else if (fi_.base != fl_.base) {
       if (fl_.base == fs_.base) {
         std::cerr << "base name mismatch FL Data: " << fl_ << "\n";
-        //fi_ = {};
+        // fi_ = {};
         exit(EXIT_FAILURE);
       } else if (fi_.base == fs_.base) {
         std::cerr << "base name mismatch FI Data: " << fi_ << "\n";
-        //fl_ = {};
+        // fl_ = {};
         exit(EXIT_FAILURE);
       }
     } else {
@@ -261,19 +268,19 @@ public:
   template<class iter_t>[[nodiscard]] static FIFLFSmap GetFilesFromIterator(iter_t iter)
   {
     auto tmp = FIFLFSmap();
-    tmp.reserve(6U); // battle, field, magic, main, menu, world
+    tmp.reserve(6U);// battle, field, magic, main, menu, world
     auto archive = OpenVIII::Archive::FIFLFS();
     for (const auto &fileEntry : iter) {
       if (archive.TryAdd(fileEntry)) {
         if (archive.AllSet()) {// todo confirm basename matches right now i'm assuming the 3 files are together.
           // todo check for language codes to choose correct files
-          //auto key = archive.GetBaseName();
+          // auto key = archive.GetBaseName();
           tmp.emplace_back(std::make_pair(archive.GetBaseName(), std::move(archive)));
           archive = {};
         }
       }
     }
-    tmp.shrink_to_fit(); //if there is more than 6 it'll collapse the vector
+    tmp.shrink_to_fit();// if there is more than 6 it'll collapse the vector
     return tmp;
   }
   [[nodiscard]] std::string static GetBaseName(const std::filesystem::path &path)
