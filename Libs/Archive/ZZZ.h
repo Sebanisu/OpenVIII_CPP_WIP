@@ -63,6 +63,12 @@ public:
     fp.close();
     data_.shrink_to_fit();
   }
+  void SaveEntry(const FileData &item, const std::string_view &strPath) const
+  {
+    auto buffer = FS::GetEntry(path_, item, 0U);
+    std::cout << '{' << buffer.size() << ", " << strPath << "}\n";
+    Tools::WriteBuffer(buffer, strPath);
+  }
   void Test() const
   {
 
@@ -90,7 +96,7 @@ public:
             std::filesystem::path fsPath(strPath);
             {
               // char retVal = archive.TryAddNested(path_, 0U, fsPath, item);
-              char retVal = archive.TryAdd(path_,fsPath, item.Offset(), item.UncompressedSize());
+              char retVal = archive.TryAdd(path_, fsPath, item.Offset(), item.UncompressedSize());
               if (retVal == 1) { continue; }
               if (retVal == 2) {
                 archive.Test();
@@ -100,11 +106,7 @@ public:
             }
           }
         }
-        {
-          auto buffer = FS::GetEntry(path_, item, 0U);
-          std::cout << '{' << buffer.size() << ", " << strPath << "}\n";
-          Tools::WriteBuffer(buffer, strPath);
-        }
+        SaveEntry(item, strPath);
       }
     }
   }
@@ -115,7 +117,7 @@ public:
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
 
     auto tmp = ZZZmap();
-    tmp.reserve(2); //main and other
+    tmp.reserve(2);// main and other
     auto archive = OpenVIII::Archive::ZZZ();
     int i{};
     for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
