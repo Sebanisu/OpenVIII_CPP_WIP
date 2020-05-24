@@ -13,14 +13,14 @@ int main()
   const auto Test = [&dis,&gen](const size_t &size)
   {
     if (size <= 0) { return true; }
-    std::vector<char> vecOfRandomNums = std::vector<char>(static_cast<unsigned int>(size));
-    if (vecOfRandomNums.empty()) { return true; }
-    std::generate(vecOfRandomNums.begin(), vecOfRandomNums.end(), [&dis,&gen]() {
+    std::vector<char> randomNums = std::vector<char>(static_cast<unsigned int>(size));
+    if (randomNums.empty()) { return true; }
+    std::generate(randomNums.begin(), randomNums.end(), [&dis,&gen]() {
            return static_cast<char>(dis(gen));
     });
-    auto compressed = OpenVIII::Compression::LZSS::Compress(vecOfRandomNums);
+    auto compressed = OpenVIII::Compression::LZSS::Compress(randomNums);
     auto uncompressed = OpenVIII::Compression::LZSS::Decompress(compressed);
-    if (std::equal(vecOfRandomNums.begin(), vecOfRandomNums.end(), uncompressed.begin())) {
+    if (std::equal(randomNums.begin(), randomNums.end(), uncompressed.begin())) {
       std::cout << "Successful compress and uncompress! " << size << " bytes\n";
       return true;
     }
