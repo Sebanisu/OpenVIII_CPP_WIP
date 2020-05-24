@@ -18,8 +18,8 @@ elseif (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /W4")
     # change to latest for cpp20 pre release
 endif (CMAKE_COMPILER_IS_GNUCXX)
-include_directories(Libs)
-include_directories(Tests)
+add_subdirectory(External/VIIICompression)
+add_subdirectory(External/VIIITools)
 find_package(Git QUIET)
 if (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     # Update submodules as needed
@@ -46,8 +46,6 @@ if (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif ()
 endif ()
 
-add_subdirectory(External/VIIICompression)
-add_subdirectory(External/VIIITools)
 #include_directories(External/VIIICompression)
 #include_directories(External/VIIITools)
 #add_library(lz4
