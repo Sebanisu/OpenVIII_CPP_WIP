@@ -25,72 +25,84 @@ if (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     # Update submodules as needed
     option(GIT_SUBMODULE "Check submodules during build" ON)
     if (GIT_SUBMODULE)
-        message(STATUS "Submodule update")
-        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+        message(STATUS "Submodule foreach reset")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule foreach git reset --hard
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                RESULT_VARIABLE GIT_SUBMOD_RESULT)
+        message(STATUS "Submodule foreach git pull")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule foreach git pull origin master
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 RESULT_VARIABLE GIT_SUBMOD_RESULT)
         if (NOT GIT_SUBMOD_RESULT EQUAL "0")
             message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        endif ()
+        endif()
+#        message(STATUS "Submodule update")
+#        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+#                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#                RESULT_VARIABLE GIT_SUBMOD_RESULT)
+#        if (NOT GIT_SUBMOD_RESULT EQUAL "0")
+#            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+#        endif ()
     endif ()
 endif ()
-add_library(lz4
-        External/lz4/lib/lz4.h
-        External/lz4/lib/lz4.c
-        )
-set_target_properties(lz4 PROPERTIES LINKER_LANGUAGE CXX)
-
-add_library(Compression STATIC
-        Libs/Compression/LZSS/LZSS.h
-        Libs/Compression/Compression.cpp
-        Libs/Compression/L4Z/L4Z.h Libs/Compression/L4Z/L4Z.cpp)
-set_target_properties(Compression PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(Compression lz4)
-
-add_library(Tools STATIC
-        Libs/Tools/Tools.h
-        Libs/Tools/Tools.cpp
-        Libs/color.h)
-set_target_properties(Tools PROPERTIES LINKER_LANGUAGE CXX)
-
-add_library(Archive STATIC
-        Libs/Archive/FI.hpp
-        Libs/Archive/FIFLFS.h
-        Libs/Archive/FL.h
-        Libs/Archive/FS.h
-        Libs/Archive/ZZZ.h
-        Libs/Archive/FileData.h
-        Libs/Archive/Archive.h
-        Libs/Archive/Archive.cpp
-        )
-set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(Archive Tools Compression)
-
-#test app for trying to extract a all files from the FIFLFS archives.
-add_executable(TestExtractFIFLFS
-        Tests/TestExtractFIFLFS.h Tests/TestExtractFIFLFS.cpp
-        Tests/paths.h)
-set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractFIFLFS Archive)
-
-#test app for trying to extract a single file from the FIFLFS archives.
-add_executable(TestExtractSingleFIFLFS
-        Tests/TestExtractSingleFIFLFS.h
-        Tests/paths.h Tests/TestExtractSingleFIFLFS.cpp)
-set_target_properties(TestExtractSingleFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractSingleFIFLFS Archive)
-
-
-#test app for trying to extract a all files from the ZZZ and FIFLFS archives.
-add_executable(TestExtractZZZ
-        Tests/TestExtractZZZ.h Tests/TestExtractZZZ.cpp
-        Tests/paths.h)
-target_link_libraries(TestExtractZZZ Archive)
-set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
+#add_library(lz4
+#        External/lz4/lib/lz4.h
+#        External/lz4/lib/lz4.c
+#        )
+#set_target_properties(lz4 PROPERTIES LINKER_LANGUAGE CXX)
+#
+#add_library(Compression STATIC
+#        Libs/Compression/LZSS/LZSS.h
+#        Libs/Compression/Compression.cpp
+#        Libs/Compression/L4Z/L4Z.h Libs/Compression/L4Z/L4Z.cpp)
+#set_target_properties(Compression PROPERTIES LINKER_LANGUAGE CXX)
+#target_link_libraries(Compression lz4)
+#
+#add_library(Tools STATIC
+#        Libs/Tools/Tools.h
+#        Libs/Tools/Tools.cpp
+#        Libs/color.h)
+#set_target_properties(Tools PROPERTIES LINKER_LANGUAGE CXX)
+#
+#add_library(Archive STATIC
+#        Libs/Archive/FI.hpp
+#        Libs/Archive/FIFLFS.h
+#        Libs/Archive/FL.h
+#        Libs/Archive/FS.h
+#        Libs/Archive/ZZZ.h
+#        Libs/Archive/FileData.h
+#        Libs/Archive/Archive.h
+#        Libs/Archive/Archive.cpp
+#        )
+#set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
+#target_link_libraries(Archive Tools Compression)
+#
+##test app for trying to extract a all files from the FIFLFS archives.
+#add_executable(TestExtractFIFLFS
+#        Tests/TestExtractFIFLFS.h Tests/TestExtractFIFLFS.cpp
+#        Tests/paths.h)
+#set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
+#target_link_libraries(TestExtractFIFLFS Archive)
+#
+##test app for trying to extract a single file from the FIFLFS archives.
+#add_executable(TestExtractSingleFIFLFS
+#        Tests/TestExtractSingleFIFLFS.h
+#        Tests/paths.h Tests/TestExtractSingleFIFLFS.cpp)
+#set_target_properties(TestExtractSingleFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
+#target_link_libraries(TestExtractSingleFIFLFS Archive)
+#
+#
+##test app for trying to extract a all files from the ZZZ and FIFLFS archives.
+#add_executable(TestExtractZZZ
+#        Tests/TestExtractZZZ.h Tests/TestExtractZZZ.cpp
+#        Tests/paths.h)
+#target_link_libraries(TestExtractZZZ Archive)
+#set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
 
 #test app LZSS compression and decompression by passing random vector<char> to it with gradually increasing lengths.
+add_subdirectory(External/VIIICompression)
 add_executable(TestLZSS
         Tests/TestLZSS.h Tests/TestLZSS.cpp
         )
-target_link_libraries(TestLZSS Compression)
+target_link_libraries(TestLZSS VIIICompression)
 set_target_properties(TestLZSS PROPERTIES LINKER_LANGUAGE CXX)
