@@ -1,3 +1,6 @@
-[submodule "External/lz4"]
-	path = External/lz4
-	url = https://github.com/Sebanisu/lz4
+[submodule "External/VIIICompression"]
+	path = External/VIIICompression
+	url = https://github.com/Sebanisu/VIIICompression.git
+[submodule "External/VIIITools"]
+	path = External/VIIITools
+	url = https://github.com/Sebanisu/VIIITools.git

@@ -59,7 +59,7 @@ add_library(Archive STATIC
         Libs/Archive/FL.h
         Libs/Archive/FS.h
         Libs/Archive/ZZZ.h
-        Libs/Archive/ZZZ/FileData.h
+        Libs/Archive/FileData.h
         Libs/Archive/Archive.h
         Libs/Archive/Archive.cpp
         )
