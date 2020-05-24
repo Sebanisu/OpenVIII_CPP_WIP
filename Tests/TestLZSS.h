@@ -5,5 +5,6 @@
 #ifndef VIIICPPTEST_TESTLZSS_H
 #define VIIICPPTEST_TESTLZSS_H
 #include "../External/VIIICompression/LZSS.h"
+#include <iostream>
 int main();
 #endif// VIIICPPTEST_TESTLZSS_H
