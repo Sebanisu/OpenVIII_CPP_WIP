@@ -7,7 +7,7 @@
 #include <string>
 #include <map>
 #include <filesystem>
-#include "../Libs/Archive/ZZZ.h"
-#include "Tools/Tools.h"
+#include "../ZZZ.h"
+#include "../External/VIIITools/Tools.h"
 int main();
 #endif// VIIICPPTEST_TESTEXTRACTZZZ_H

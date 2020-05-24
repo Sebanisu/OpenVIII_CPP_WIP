@@ -1,7 +1,7 @@
-#ifndef OPENVIII_FS_H
-#define OPENVIII_FS_H
+#ifndef VIIIARCHIVE_FS_H
+#define VIIIARCHIVE_FS_H
 
-#include "FI.hpp"
+#include "FI.h"
 #include <fstream>
 #include <iostream>
 #include <filesystem>
@@ -9,10 +9,10 @@
 #include <utility>
 #include <iterator>
 #include <cstring>
-#include "Compression/LZSS/LZSS.h"
 
-#include "Compression/L4Z/L4Z.h"
-#include "Tools/Tools.h"
+#include "External/VIIICompression/LZSS.h"
+#include "External/VIIICompression/L4Z.h"
+#include "External/VIIITools/Tools.h"
 
 namespace OpenVIII::Archive {
 struct FS
@@ -119,4 +119,4 @@ public:
   }
 };
 }// namespace OpenVIII::Archive
-#endif// !OPENVIII_FS_H
+#endif// !VIIIARCHIVE_FS_H

@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <map>
-#include "../Libs/Archive/FIFLFS.h"
-#include "Tools/Tools.h"
+#include "../FIFLFS.h"
+#include "../External/VIIITools/Tools.h"
 int main();
 #endif// VIIICPPTEST_TESTEXTRACTSINGLEFIFLFS_H

@@ -1,5 +1,5 @@
-#ifndef OPENVIII_FL_H
-#define OPENVIII_FL_H
+#ifndef VIIIARCHIVE_FL_H
+#define VIIIARCHIVE_FL_H
 
 #include <set>
 #include <string>
@@ -11,7 +11,8 @@
 #include <vector>
 #include <optional>
 #include <cassert>
-#include "Tools/Tools.h"
+
+#include "External/VIIITools/Tools.h"
 
 namespace OpenVIII::Archive {
 // FL files contain internal file structure paths. As a flat text file.
@@ -136,4 +137,4 @@ public:
 };
 // namespace OpenVIII::Archive
 }// namespace OpenVIII::Archive
-#endif// !OPENVIII_FL_H
+#endif// !VIIIARCHIVE_FL_H

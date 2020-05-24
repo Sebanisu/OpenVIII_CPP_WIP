@@ -1,5 +1,5 @@
-#ifndef OPENVIII_FI_H
-#define OPENVIII_FI_H
+#ifndef VIIIARCHIVE_FI_H
+#define VIIIARCHIVE_FI_H
 
 #include <fstream>
 #include <iostream>
@@ -9,7 +9,7 @@
 #include <iterator>
 #include <array>
 #include <algorithm>
-#include "Tools/Tools.h"
+#include "External/VIIITools/Tools.h"
 namespace OpenVIII::Archive {
 enum class CompressionTypeT : unsigned int {
   None = 0,
@@ -111,4 +111,4 @@ public:
 };
 }// namespace OpenVIII::Archive
 
-#endif// !OPENVIII_FI_H
+#endif// !VIIIARCHIVE_FI_H

@@ -8,8 +8,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include "FI.hpp"
-#include "Tools/Tools.h"
+#include "FI.h"
+#include "External/VIIITools/Tools.h"
 namespace OpenVIII::Archive {
 struct [[maybe_unused]] FileData
 {

@@ -1,7 +1,7 @@
-#ifndef OPENVIII_FIFLFS_H
-#define OPENVIII_FIFLFS_H
+#ifndef VIIIARCHIVE_FIFLFS_H
+#define VIIIARCHIVE_FIFLFS_H
 
-#include "FI.hpp"
+#include "FI.h"
 #include "FL.h"
 #include "FS.h"
 #include <filesystem>
@@ -307,4 +307,4 @@ public:
   }
 };
 }// namespace OpenVIII::Archive
-#endif// !OPENVIII_FIFLFS_H
+#endif// !VIIIARCHIVE_FIFLFS_H

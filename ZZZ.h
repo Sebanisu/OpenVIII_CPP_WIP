@@ -4,8 +4,8 @@
 #ifndef VIIICPPTEST_ZZZ_H
 #define VIIICPPTEST_ZZZ_H
 #include <string>
-#include "FI.hpp"
-#include "Tools/Tools.h"
+#include "FI.h"
+#include "External/VIIITools/Tools.h"
 #include <filesystem>
 #include <set>
 #include <fstream>

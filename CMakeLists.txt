@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(VIIIcppTest C CXX)
+project(VIIIArchive C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -45,6 +45,11 @@ if (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 #        endif ()
     endif ()
 endif ()
+
+add_subdirectory(External/VIIICompression)
+add_subdirectory(External/VIIITools)
+#include_directories(External/VIIICompression)
+#include_directories(External/VIIITools)
 #add_library(lz4
 #        External/lz4/lib/lz4.h
 #        External/lz4/lib/lz4.c
@@ -64,45 +69,37 @@ endif ()
 #        Libs/color.h)
 #set_target_properties(Tools PROPERTIES LINKER_LANGUAGE CXX)
 #
-#add_library(Archive STATIC
-#        Libs/Archive/FI.hpp
-#        Libs/Archive/FIFLFS.h
-#        Libs/Archive/FL.h
-#        Libs/Archive/FS.h
-#        Libs/Archive/ZZZ.h
-#        Libs/Archive/FileData.h
-#        Libs/Archive/Archive.h
-#        Libs/Archive/Archive.cpp
-#        )
-#set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
-#target_link_libraries(Archive Tools Compression)
+add_library(Archive
+        FI.h
+        FIFLFS.h
+        FL.h
+        FS.h
+        ZZZ.h
+        FileData.h
+        Archive.h
+        Archive.cpp
+        )
+set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(Archive VIIITools VIIICompression)
 #
 ##test app for trying to extract a all files from the FIFLFS archives.
-#add_executable(TestExtractFIFLFS
-#        Tests/TestExtractFIFLFS.h Tests/TestExtractFIFLFS.cpp
-#        Tests/paths.h)
-#set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-#target_link_libraries(TestExtractFIFLFS Archive)
+add_executable(TestExtractFIFLFS
+        Tests/TestExtractFIFLFS.h Tests/TestExtractFIFLFS.cpp
+        Tests/paths.h)
+set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestExtractFIFLFS Archive)
 #
 ##test app for trying to extract a single file from the FIFLFS archives.
-#add_executable(TestExtractSingleFIFLFS
-#        Tests/TestExtractSingleFIFLFS.h
-#        Tests/paths.h Tests/TestExtractSingleFIFLFS.cpp)
-#set_target_properties(TestExtractSingleFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-#target_link_libraries(TestExtractSingleFIFLFS Archive)
-#
+add_executable(TestExtractSingleFIFLFS
+        Tests/TestExtractSingleFIFLFS.h
+        Tests/paths.h Tests/TestExtractSingleFIFLFS.cpp)
+set_target_properties(TestExtractSingleFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestExtractSingleFIFLFS Archive)
+
 #
 ##test app for trying to extract a all files from the ZZZ and FIFLFS archives.
-#add_executable(TestExtractZZZ
-#        Tests/TestExtractZZZ.h Tests/TestExtractZZZ.cpp
-#        Tests/paths.h)
-#target_link_libraries(TestExtractZZZ Archive)
-#set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
-
-#test app LZSS compression and decompression by passing random vector<char> to it with gradually increasing lengths.
-add_subdirectory(External/VIIICompression)
-add_executable(TestLZSS
-        Tests/TestLZSS.h Tests/TestLZSS.cpp
-        )
-target_link_libraries(TestLZSS VIIICompression)
-set_target_properties(TestLZSS PROPERTIES LINKER_LANGUAGE CXX)
+add_executable(TestExtractZZZ
+        Tests/TestExtractZZZ.h Tests/TestExtractZZZ.cpp
+        Tests/paths.h)
+target_link_libraries(TestExtractZZZ Archive)
+set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)

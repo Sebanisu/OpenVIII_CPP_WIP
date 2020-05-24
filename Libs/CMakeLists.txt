@@ -1,3 +1,0 @@
-target_include_directories(Archive PUBLIC)
-target_include_directories(Compression PUBLIC)
-target_include_directories(Tools PUBLIC)
