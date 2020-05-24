@@ -69,9 +69,9 @@ public:
   {
     if (count_ == 0 || id < count_) {
       if (!fi_.data.empty()) {
-        return FI::GetEntry(fi_.data, id, fi_.offset, fi_.size);
+        return Archive::FI(fi_.data, id, fi_.offset);
       } else {
-        return FI::GetEntry(fi_.path, id, fi_.offset, fi_.size);
+        return Archive::FI(fi_.path, id, fi_.offset);
       }
     }
     return {};

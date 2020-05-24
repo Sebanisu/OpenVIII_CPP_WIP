@@ -25,32 +25,13 @@ struct FI
 {
   // changed to int because libraries require casting to int anyway.
 private:
-  unsigned int uncompressedSize_{ 0 };
-  unsigned int offset_{ 0 };
+  unsigned int uncompressedSize_{};
+  unsigned int offset_{};
   CompressionTypeT compressionType_{ CompressionTypeT::None };
 
-  [[nodiscard]] constexpr static size_t GetStart(const unsigned int &id, const size_t &offset = 0U)
+  [[nodiscard]] constexpr static size_t GetStartOffset(const unsigned int &id, const size_t &offset = 0U)
   {
     return (id * Size) + offset;
-  }
-
-  [[nodiscard]] static FI GetEntry(std::ifstream &fp, const size_t &start = 0U)
-  {
-    unsigned int offset = 0;
-    unsigned int uncompressedSize = 0;
-    unsigned int compressionType = 0;
-    fp.seekg(static_cast<long>(start), std::ios::beg);
-
-    //    auto readVal = [&fp](auto &v) {
-    //      auto tmp = std::array<char, sizeof(v)>{};
-    //      fp.read(tmp.data(), sizeof(v));
-    //      memcpy(&v, tmp.data(), sizeof(v));// memcpy will be optimized away. It is safer than casting.
-    //      // TODO change to bitcast in cpp 20 or read another way?
-    //    };
-    Tools::ReadVal(fp, uncompressedSize);
-    Tools::ReadVal(fp, offset);
-    Tools::ReadVal(fp, compressionType);
-    return FI(uncompressedSize, offset, static_cast<CompressionTypeT>(compressionType));
   }
 
 public:
@@ -64,64 +45,59 @@ public:
 
   [[nodiscard]] constexpr auto CompressionType() const noexcept { return compressionType_; }
 
-  constexpr FI() = default;
+  constexpr FI() noexcept = default;
 
   constexpr FI(const unsigned int &uncompressedSize,
     const unsigned int &offset,
-    const CompressionTypeT &compressionType = CompressionTypeT::None)
+    const CompressionTypeT &compressionType = CompressionTypeT::None) noexcept
   {
     uncompressedSize_ = uncompressedSize;
     offset_ = offset;
     compressionType_ = compressionType;
   }
+  
+  FI(std::ifstream &&fp, const long &startOffset = 0, bool close = false)
+  {
+    if (!fp.is_open()) return;
+    if (startOffset < 0) return;// shouldn't be less than 0;
+    fp.seekg(startOffset);
+
+    Tools::ReadVal(fp, uncompressedSize_);
+    if (uncompressedSize_ > 0) {// if size is 0 than no point in reading more.
+      Tools::ReadVal(fp, offset_);
+      Tools::ReadVal(fp, compressionType_);
+    }
+    if (close) fp.close();
+  }
+
+  FI(const std::filesystem::path &path, const unsigned int &id, const size_t &offset)
+    : FI(std::ifstream(path, std::ios::in | std::ios::binary), static_cast<long>(GetStartOffset(id, offset)), true)
+  {}
+
+  FI(const std::vector<char> &buffer, const size_t &startOffset = 0U)
+  {
+    auto bufferPointer = buffer.data();
+    if (bufferPointer + startOffset + Size > bufferPointer + buffer.size()) return;
+    bufferPointer += startOffset;
+    std::memcpy(&uncompressedSize_, bufferPointer, sizeof(uncompressedSize_));
+    if (uncompressedSize_ > 0) {// if size is 0 than no point in reading more.
+      bufferPointer += sizeof(uncompressedSize_);
+      std::memcpy(&offset_, bufferPointer, sizeof(offset_));
+      bufferPointer += sizeof(offset_);
+      std::memcpy(&compressionType_, bufferPointer, sizeof(compressionType_));
+    }
+  }
+
+  FI(const std::vector<char> &buffer, const unsigned int &id, const size_t &offset)
+    : FI(buffer, GetStartOffset(id, offset))
+  {}
 
   [[nodiscard]] constexpr static auto GetCount(const size_t fileSize) noexcept { return fileSize / Size; }
   // GetCount which is fileSize/Size if file doesn't exist return 0;
-  [[nodiscard]] auto static GetCount(const std::filesystem::path &path)
+  [[maybe_unused]] [[nodiscard]] auto static GetCount(const std::filesystem::path &path)
   {
     if (std::filesystem::exists(path)) { return GetCount(std::filesystem::file_size(path)); }
     return static_cast<uintmax_t>(0U);
-  }
-
-  [[nodiscard]] static FI
-    GetEntry(const std::vector<char> &data, const unsigned int &id, const size_t &offsetIn, const size_t &size)
-  {
-    const auto count = GetCount(data.size());
-    if (id < count) {
-
-      const auto startOffset = GetStart(id, offsetIn);
-      if (size != 0U && startOffset > offsetIn + size - Size) return {};
-      const auto *start = data.data() + static_cast<long>(startOffset);
-      unsigned int offset = 0;
-      unsigned int uncompressedSize = 0;
-      unsigned int compressionType = 0;
-      std::memcpy(&uncompressedSize, start, sizeof(uncompressedSize));
-      start += sizeof(uncompressedSize);
-      std::memcpy(&offset, start, sizeof(offset));
-      start += sizeof(offset);
-      std::memcpy(&compressionType, start, sizeof(compressionType));
-      return FI(uncompressedSize, offset, static_cast<CompressionTypeT>(compressionType));
-    }
-
-    return FI();
-  }
-
-  [[nodiscard]] static FI
-    GetEntry(const std::filesystem::path &path, const unsigned int &id, const size_t &offset, const size_t &size)
-  {
-    const auto count = GetCount(path);
-    if (id < count) {
-      auto fp = std::ifstream(path, std::ios::in | std::ios::binary);
-      if (fp.is_open()) {
-        const auto start = GetStart(id, offset);
-        if (size != 0U && start > offset + size - Size) return {};
-        const FI fi = GetEntry(fp, start);
-        fp.close();
-        return fi;
-      }
-      fp.close();
-    }
-    return {};
   }
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FI &data)
