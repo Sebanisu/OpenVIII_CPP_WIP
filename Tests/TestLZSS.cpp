@@ -2,24 +2,35 @@
 // Created by pcvii on 4/27/2020.
 //
 #include "TestLZSS.h"
+#include <random>
 
 int main()
 {
   // test LZSS
-  size_t i = 0;
-  while (OpenVIII::Compression::LZSS::Test(i++)) {}
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<unsigned char> dis(0U);
+  const auto Test = [&dis,&gen](const size_t &size)
+  {
+    if (size <= 0) { return true; }
+    std::vector<char> vecOfRandomNums = std::vector<char>(static_cast<unsigned int>(size));
+    if (vecOfRandomNums.empty()) { return true; }
+    std::generate(vecOfRandomNums.begin(), vecOfRandomNums.end(), [&dis,&gen]() {
+           return static_cast<char>(dis(gen));
+    });
+    auto compressed = OpenVIII::Compression::LZSS::Compress(vecOfRandomNums);
+    auto uncompressed = OpenVIII::Compression::LZSS::Decompress(compressed);
+    if (std::equal(vecOfRandomNums.begin(), vecOfRandomNums.end(), uncompressed.begin())) {
+      std::cout << "Successful compress and uncompress! " << size << " bytes\n";
+      return true;
+    }
+    std::cerr << "Failure!\n";
+    return false;
+  };
 
-  //  //test lzss known issue
-  //  std::vector<char> t =
-  //  {0x4A,static_cast<char>(0xAA),0x25,0x59,static_cast<char>(0xC6),static_cast<char>(0x9C),0x5A,0x24,0x3D}; auto
-  //  compressed = OpenVIII::Compression::LZSS::Compress(t); auto uncompressed =
-  //  OpenVIII::Compression::LZSS::Decompress(compressed); if(std::equal(t.begin(),t.end(),uncompressed.begin()))
-  //  {
-  //    std::cout<<"Successful compress and uncompress! "<< t.size() <<" bytes\n";
-  //    return 0;
-  //  }
-  //    std::cerr<<"Failure!\n";
-  //    return 1;
+  size_t i = 0;
+  while (Test(i++)) {}
+
 
 
   return 0;

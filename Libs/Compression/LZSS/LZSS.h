@@ -154,7 +154,7 @@ public:
     unsigned int curResult{};
     size_t sizeAlloc = src.size() / 2U;
     auto code_buf = std::array<unsigned char, FMinus1>();
-    unsigned char mask = 0;
+
     const auto dataEnd = src.end();
     auto data = src.begin();
 
@@ -279,7 +279,6 @@ public:
                     // that the unit is an unencoded letter (1 byte), "0" a position-and-length pair (2 bytes). Thus,
                     // eight units require at most 16 bytes of code.
 
-    unsigned int code_buf_ptr = mask = 1;
 
     unsigned int s = 0;
     unsigned int r = rSize;
@@ -305,10 +304,14 @@ public:
     InsertNode(
       r);// Finally, insert the whole string just read.  The global variables match_length and match_position are set.
 
+    unsigned int code_buf_ptr = 1;
+    unsigned char mask = 1;
+
     do {
       if (match_length > len) {
         match_length = len;// match_length may be spuriously long near the end of text.
       }
+
 
       if (match_length <= 2) {
         match_length = 1;// Not long enough match.  Send one byte.
@@ -374,24 +377,6 @@ public:
     // result.truncate(curResult);
     result.erase(result.begin() + curResult, result.end());
     return result;
-  }
-
-  [[maybe_unused]] static auto Test(const size_t &size)
-  {
-    if (size <= 0) { return true; }
-    std::vector<char> vecOfRandomNums = std::vector<char>(static_cast<unsigned int>(size));
-    if (vecOfRandomNums.empty()) { return true; }
-    std::generate(vecOfRandomNums.begin(), vecOfRandomNums.end(), []() {
-      return static_cast<char>(static_cast<unsigned int>(rand()) % UCHAR_MAX);
-    });
-    auto compressed = Compress(vecOfRandomNums);
-    auto uncompressed = Decompress(compressed);
-    if (std::equal(vecOfRandomNums.begin(), vecOfRandomNums.end(), uncompressed.begin())) {
-      std::cout << "Successful compress and uncompress! " << size << " bytes\n";
-      return true;
-    }
-    std::cerr << "Failure!\n";
-    return false;
   }
 };
 }// namespace OpenVIII::Compression

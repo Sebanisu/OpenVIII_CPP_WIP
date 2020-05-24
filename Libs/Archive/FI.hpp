@@ -14,7 +14,7 @@ namespace OpenVIII::Archive {
 enum class CompressionTypeT : unsigned int {
   None = 0,
   LZSS = 1,
-  LZ4 [[maybe_unused]] = 2,
+  LZ4 = 2,
   // below are custom values i was setting for files that are
   // lzss compressed but aren't auto decompressed by the library.
   // LZSS_UnknownSize = 3, //some entries are compressed with lzss but it is decompressed later
@@ -55,9 +55,11 @@ public:
     offset_ = offset;
     compressionType_ = compressionType;
   }
-  
+
   FI(std::ifstream &&fp, const long &startOffset = 0, bool close = false)
   {
+    // unsure if this is correct but passing from ifstream is an rvalue
+    // so umm it won't let me use a normal reference unless it's const.
     if (!fp.is_open()) return;
     if (startOffset < 0) return;// shouldn't be less than 0;
     fp.seekg(startOffset);
