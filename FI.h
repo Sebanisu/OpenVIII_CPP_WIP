@@ -1,3 +1,15 @@
+// This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FI_H
 #define VIIIARCHIVE_FI_H
 
@@ -60,8 +72,10 @@ public:
   {
     // unsure if this is correct but passing from ifstream is an rvalue
     // so umm it won't let me use a normal reference unless it's const.
-    if (!fp.is_open()) return;
-    if (startOffset < 0) return;// shouldn't be less than 0;
+    if (!fp.is_open()) { return;
+}
+    if (startOffset < 0) { return;// shouldn't be less than 0;
+}
     fp.seekg(startOffset);
 
     Tools::ReadVal(fp, uncompressedSize_);
@@ -69,7 +83,8 @@ public:
       Tools::ReadVal(fp, offset_);
       Tools::ReadVal(fp, compressionType_);
     }
-    if (close) fp.close();
+    if (close) { fp.close();
+}
   }
 
   FI(const std::filesystem::path &path, const unsigned int &id, const size_t &offset)

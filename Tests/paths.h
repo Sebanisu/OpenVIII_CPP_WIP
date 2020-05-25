@@ -1,16 +1,21 @@
+// This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 //
-// Created by pcvii on 5/18/2020.
+// This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
-
-#ifndef VIIICPPTEST_PATHS_H
-#define VIIICPPTEST_PATHS_H
-struct Paths{
-  static auto get() { return
-    std::array<std::string, 4>({
-      R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)",
-      R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)",
-      R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)",
-      R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"});
-  }
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#ifndef VIIIARCHIVE_TESTPATHS_H
+#define VIIIARCHIVE_TESTPATHS_H
+#include <array>
+struct Paths
+{
+  constexpr static auto count = 4;
+  static std::array<std::string,count> get();
 };
-#endif// VIIICPPTEST_PATHS_H
+#endif// VIIIARCHIVE_TESTPATHS_H

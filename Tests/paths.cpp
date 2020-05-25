@@ -10,13 +10,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_H
-#define VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_H
-#include <string>
-#include <algorithm>
-#include <filesystem>
-#include <map>
-#include "../FIFLFS.h"
-#include "../External/VIIITools/Tools.h"
-int main();
-#endif// VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_H
+#include "paths.h"
+std::array<std::string,Paths::count> Paths::get()
+{
+  return
+    { R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)",
+      R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)",
+      R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)",
+      R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)" };
+}

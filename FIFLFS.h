@@ -1,3 +1,15 @@
+// This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FIFLFS_H
 #define VIIIARCHIVE_FIFLFS_H
 
@@ -18,8 +30,9 @@ namespace OpenVIII::Archive {
 struct FIFLFS
 {
 private:
-  template<typename T> struct ds_
+  template<typename T> struct Grouping
   {
+  public:
     mutable std::filesystem::path path{};
     mutable size_t offset{};
     mutable size_t size{};// if forced otherwise 0;
@@ -34,15 +47,15 @@ private:
              || (!path.empty() && (offset > 0 || size > 0));
     }
   };
-  ds_<std::vector<char>> fi_{};
-  ds_<std::vector<char>> fs_{};
-  ds_<std::basic_string<char>> fl_{};// this is char because the file contains strings.
+  Grouping<std::vector<char>> fi_{};
+  Grouping<std::vector<char>> fs_{};
+  Grouping<std::basic_string<char>> fl_{};// this is char because the file contains strings.
   mutable size_t count_{};
   void GetCount(size_t size = 0U) const
   {
-    if (size == 0U) size = fi_.size;
+    if (size == 0U) { size = fi_.size; }
     if (size == 0U && std::filesystem::exists(fi_.path)) { size = std::filesystem::file_size(fi_.path); }
-    if (size == 0U && !fi_.data.empty()) size = fi_.data.size();
+    if (size == 0U && !fi_.data.empty()) { size = fi_.data.size(); }
     count_ = FI::GetCount(size);
   }
 
@@ -68,11 +81,8 @@ public:
   [[nodiscard]] Archive::FI GetEntry(const unsigned int &id) const
   {
     if (count_ == 0 || id < count_) {
-      if (!fi_.data.empty()) {
-        return Archive::FI(fi_.data, id, fi_.offset);
-      } else {
-        return Archive::FI(fi_.path, id, fi_.offset);
-      }
+      if (!fi_.data.empty()) { return Archive::FI(fi_.data, id, fi_.offset); }
+      return Archive::FI(fi_.path, id, fi_.offset);
     }
     return {};
   }
@@ -94,9 +104,11 @@ public:
       ds.path = existingFilePath;
       ds.offset = offset;
       ds.size = size;
-      if (virtualFilePath.has_stem()) ds.base = GetBaseName(virtualFilePath);
-      else
+      if (virtualFilePath.has_stem()) {
+        ds.base = GetBaseName(virtualFilePath);
+      } else {
         ds.GetBaseName();
+      }
     };
     switch (virtualFilePath.has_extension() ? CheckExtension(virtualFilePath) : CheckExtension(existingFilePath)) {
     case 1: {
@@ -170,28 +182,25 @@ public:
 
       auto fi = GetEntry(id);
       {
-        std::filesystem::path virtualPath(strVirtualPath);
-        char retVal;
-        if (!fs_.data.empty()) {
-          retVal = archive.TryAddNested(fs_.data, fs_.offset, virtualPath, fi);
+        char retVal = [this, &archive, &strVirtualPath, &fi]() {
+          std::filesystem::path virtualPath(strVirtualPath);
+          if (!fs_.data.empty()) { return archive.TryAddNested(fs_.data, fs_.offset, virtualPath, fi); }
 
-        } else {
           if (fi.CompressionType() == Archive::CompressionTypeT::None) {
-            retVal = archive.TryAdd(fs_.path, virtualPath, fs_.offset + fi.Offset(), fi.UncompressedSize());
-            if(retVal!=0)
-            {
+            auto localRetVal = archive.TryAdd(fs_.path, virtualPath, fs_.offset + fi.Offset(), fi.UncompressedSize());
+            if (localRetVal != 0) {
               std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
             }
-          } else {
-            retVal = archive.TryAddNested(fs_.path, fs_.offset, virtualPath, fi);
+            return localRetVal;
           }
-        }
+          return archive.TryAddNested(fs_.path, fs_.offset, virtualPath, fi);
+        }();
         if (retVal == 1) { continue; }
         if (retVal == 2) {
           archive.Test();
           archive = {};
           continue;
-        };
+        }
       }
       {
         std::vector<char> buffer;
@@ -219,11 +228,12 @@ public:
   {
 
     char i = 0;// 0 does not match;
-    if (path.has_extension())
+    if (path.has_extension()) {
       for (const auto &ext : { OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext, OpenVIII::Archive::FI::Ext }) {
         i++;
         if (OpenVIII::Tools::iEquals(path.extension().string(), ext)) { return i; }
       }
+    }
 
     return 0;
   }
@@ -268,7 +278,8 @@ public:
   template<class iter_t>[[nodiscard]] static FIFLFSmap GetFilesFromIterator(iter_t iter)
   {
     auto tmp = FIFLFSmap();
-    tmp.reserve(6U);// battle, field, magic, main, menu, world
+    constexpr auto defaultSize = 6U;// battle, field, magic, main, menu, world
+    tmp.reserve(defaultSize);
     auto archive = OpenVIII::Archive::FIFLFS();
     for (const auto &fileEntry : iter) {
       if (archive.TryAdd(fileEntry)) {
@@ -285,7 +296,7 @@ public:
   }
   [[nodiscard]] std::string static GetBaseName(const std::filesystem::path &path)
   {
-    if (path.string().empty()) return std::string{};
+    if (path.string().empty()) { return {}; }
     auto name = path.filename().stem().string();
     std::transform(name.begin(), name.end(), name.begin(), ::toupper);
     return name;

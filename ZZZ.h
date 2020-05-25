@@ -1,8 +1,17 @@
+// This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 //
-// Created by pcvii on 4/23/2020.
+// This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
-#ifndef VIIICPPTEST_ZZZ_H
-#define VIIICPPTEST_ZZZ_H
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#ifndef VIIIARCHIVE_ZZZ_H
+#define VIIIARCHIVE_ZZZ_H
 #include <string>
 #include "FI.h"
 #include "External/VIIITools/Tools.h"
@@ -144,4 +153,4 @@ public:
 };
 
 }// namespace OpenVIII::Archive
-#endif// VIIICPPTEST_ZZZ_H
+#endif// VIIIARCHIVE_ZZZ_H

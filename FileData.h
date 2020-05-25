@@ -2,8 +2,8 @@
 // Created by pcvii on 4/23/2020.
 //
 
-#ifndef VIIICPPTEST_FILEDATA_H
-#define VIIICPPTEST_FILEDATA_H
+#ifndef VIIIARCHIVE_FILEDATA_H
+#define VIIIARCHIVE_FILEDATA_H
 #include <string>
 #include <filesystem>
 #include <fstream>
@@ -86,4 +86,4 @@ FileData(std::ifstream &fp)
 }
 ;
 }
-#endif// VIIICPPTEST_FILEDATA_H
+#endif// VIIIARCHIVE_FILEDATA_H
