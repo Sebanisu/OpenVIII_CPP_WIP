@@ -10,7 +10,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-//todo This is an expermental file will go into it's own project later.
+// todo This is an expermental file will go into it's own project later.
 #ifndef VIIIARCHIVE_TESTCOLOR_H
 #define VIIIARCHIVE_TESTCOLOR_H
 #include <cstddef>
@@ -79,7 +79,9 @@ private:
   constexpr colorPart &operator/(const colorPart &c)
   {
     constexpr auto v = c.dataF();
-    if constexpr (v != 0.0) { return dataF() / c.dataF(); }
+    if constexpr (v != 0.0) {
+      return dataF() / c.dataF();
+    }
     return 0.0;
   }
   template<typename T, typename = std::enable_if<std::is_integral_v<T> || std::is_floating_point_v<T>>>
@@ -88,7 +90,7 @@ private:
     {
       if constexpr (std::is_integral_v<T>) {
         value_ = (static_cast<unsigned>(c) >> rshift) & MaxValue;// precision loss here
-        //TODO fix this. I think it's not correct.
+        // TODO fix this. I think it's not correct.
       } else if constexpr (std::is_floating_point_v<T>) {
 
         if (c > 1.0) {
@@ -151,7 +153,9 @@ public:
   }
   [[maybe_unused]] [[nodiscard]] constexpr auto shift() const noexcept
   {
-    if constexpr (lshift != 0) { return value_.to_ulong() << lshift; }
+    if constexpr (lshift != 0) {
+      return value_.to_ulong() << lshift;
+    }
 
     return value_.to_ulong();
   }
@@ -197,18 +201,24 @@ public:
     r_ = r;
     g_ = g;
     b_ = b;
-    if constexpr (!std::is_null_pointer_v<alpha>) { a_ = a; }
+    if constexpr (!std::is_null_pointer_v<alpha>) {
+      a_ = a;
+    }
   }
   color(const red &r, const green &g, const blue &b) noexcept
   {
     r_ = r;
     g_ = g;
     b_ = b;
-    if constexpr (!std::is_null_pointer_v<alpha>) { a_ = 1.0; }
+    if constexpr (!std::is_null_pointer_v<alpha>) {
+      a_ = 1.0;
+    }
   }
   [[nodiscard]] constexpr auto value() const noexcept
   {
-    if constexpr (!std::is_null_pointer_v<alpha>) { return r_.shift() | g_.shift() | b_.shift() | a_.shift(); }
+    if constexpr (!std::is_null_pointer_v<alpha>) {
+      return r_.shift() | g_.shift() | b_.shift() | a_.shift();
+    }
     return r_.shift() | g_.shift() | b_.shift();
   }
 };
@@ -270,5 +280,5 @@ using RGBA60bit =
 //  std::cout << std::endl;
 //  output(h);
 //}
-}
+}// namespace OpenVIII::Color
 #endif// VIIIARCHIVE_TESTCOLOR_H

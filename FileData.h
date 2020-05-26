@@ -22,7 +22,9 @@ public:
   struct [[maybe_unused]] Comparator{ bool operator()(const FileData &left, const FileData &right)
       const { if (std::size(left.filename_) < std::size(right.filename_)){ return true;
 }
-if (std::size(left.filename_) > std::size(right.filename_)) { return false; }
+if (std::size(left.filename_) > std::size(right.filename_)) {
+  return false;
+}
 return left.filename_ < right.filename_;
 }// namespace OpenVIII::Archive
 }
@@ -43,7 +45,9 @@ FileData &operator=(FileData &&) = default;
 bool empty() const noexcept { return size_ == 0 || filename_.empty(); }
 FileData(std::ifstream &fp)
 {
-  if (!fp.is_open()) { return; }
+  if (!fp.is_open()) {
+    return;
+  }
   {
     unsigned int filenameLength{};
     Tools::ReadVal(fp, filenameLength);
@@ -72,12 +76,12 @@ FileData(std::ifstream &fp)
 //}
 // get size of file
 [[maybe_unused]] [[nodiscard]] constexpr auto Size() const noexcept { return size_; }
-[[maybe_unused]] [[nodiscard]] constexpr auto CompressionType()const noexcept
+[[maybe_unused]] [[nodiscard]] constexpr auto CompressionType() const noexcept
 {
   return Archive::CompressionTypeT::None;
 }
-//alias for Size that should mirror FI
-  [[maybe_unused]] [[nodiscard]] constexpr auto UncompressedSize() const noexcept { return size_; }
+// alias for Size that should mirror FI
+[[maybe_unused]] [[nodiscard]] constexpr auto UncompressedSize() const noexcept { return size_; }
 // get offset of file
 [[maybe_unused]] [[nodiscard]] constexpr auto Offset() const noexcept { return offset_; }
 // gets path as a std::string_view

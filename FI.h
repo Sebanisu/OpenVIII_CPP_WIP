@@ -72,10 +72,12 @@ public:
   {
     // unsure if this is correct but passing from ifstream is an rvalue
     // so umm it won't let me use a normal reference unless it's const.
-    if (!fp.is_open()) { return;
-}
-    if (startOffset < 0) { return;// shouldn't be less than 0;
-}
+    if (!fp.is_open()) {
+      return;
+    }
+    if (startOffset < 0) {
+      return;// shouldn't be less than 0;
+    }
     fp.seekg(startOffset);
 
     Tools::ReadVal(fp, uncompressedSize_);
@@ -83,8 +85,9 @@ public:
       Tools::ReadVal(fp, offset_);
       Tools::ReadVal(fp, compressionType_);
     }
-    if (close) { fp.close();
-}
+    if (close) {
+      fp.close();
+    }
   }
 
   FI(const std::filesystem::path &path, const unsigned int &id, const size_t &offset)
@@ -94,7 +97,8 @@ public:
   FI(const std::vector<char> &buffer, const size_t &startOffset = 0U)
   {
     auto bufferPointer = buffer.data();
-    if (bufferPointer + startOffset + Size > bufferPointer + buffer.size()) return;
+    if (bufferPointer + startOffset + Size > bufferPointer + buffer.size())
+      return;
     bufferPointer += startOffset;
     std::memcpy(&uncompressedSize_, bufferPointer, sizeof(uncompressedSize_));
     if (uncompressedSize_ > 0) {// if size is 0 than no point in reading more.
@@ -113,7 +117,9 @@ public:
   // GetCount which is fileSize/Size if file doesn't exist return 0;
   [[maybe_unused]] [[nodiscard]] auto static GetCount(const std::filesystem::path &path)
   {
-    if (std::filesystem::exists(path)) { return GetCount(std::filesystem::file_size(path)); }
+    if (std::filesystem::exists(path)) {
+      return GetCount(std::filesystem::file_size(path));
+    }
     return static_cast<uintmax_t>(0U);
   }
 

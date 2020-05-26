@@ -16,6 +16,6 @@
 struct Paths
 {
   constexpr static auto count = 4;
-  static std::array<std::string,count> get();
+  static std::array<std::string, count> get();
 };
 #endif// VIIIARCHIVE_TESTPATHS_H

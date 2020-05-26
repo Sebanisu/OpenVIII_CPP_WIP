@@ -23,7 +23,7 @@
 #include <vector>
 #include <optional>
 #include <cassert>
-
+#include <initializer_list>
 #include "External/VIIITools/Tools.h"
 
 namespace OpenVIII::Archive {
@@ -44,7 +44,9 @@ private:
         input.erase(0, 3);// remove c:\ from the start of the strings.
       }
       if (skipFixed) {
-        if (input.at(input.size() - 1) == '\r') { input.pop_back(); }// remove the carriage return character
+        if (input.at(input.size() - 1) == '\r') {
+          input.pop_back();
+        }// remove the carriage return character
         Tools::replaceSlashes(input);
       }
     }
@@ -61,17 +63,19 @@ public:
 
     const size_t &size = 0U,
     const size_t &count = 0U,
-    const std::string_view needle = {})
+    const std::initializer_list<std::string_view> needle = {})
   {
     auto vector = std::vector<std::pair<unsigned int, std::string>>();
     const auto process = [&count, &size, &vector, &offset, &needle, &data](auto &cont) {
-           cont.seekg(0,std::ios::end);
-         auto length = cont.tellg();
+      cont.seekg(0, std::ios::end);
+      auto length = cont.tellg();
       if (!cont.seekg(static_cast<long>(offset))) {
-        std::cerr << "failed to seek to offset: " << offset <<"; length: "<< length<<";\n";
+        std::cerr << "failed to seek to offset: " << offset << "; length: " << length << ";\n";
         exit(EXIT_FAILURE);
-        }
-      if (count > 0) { vector.reserve(count); }
+      }
+      if (count > 0) {
+        vector.reserve(count);
+      }
       // id numerical order is same order as fi data. So need to keep the id so we can reference the fi correctly.
       {
         std::basic_string<char> innerPath;
@@ -79,18 +83,26 @@ public:
              (count == 0U || vector.size() < count) && (size == 0U || cont.tellg() < static_cast<long>(size + offset))
              && std::getline(cont, innerPath, '\n');
              id++) {
-          if (!needle.empty() && !Tools::iFind(innerPath, needle)) {
-            continue;// filter value by string if need.
+          if (!std::empty(needle)
+              && !std::any_of(needle.begin(), needle.end(), [&innerPath](const std::string_view &innerNeedle) {
+                   return !innerPath.empty() && Tools::iFind(innerPath, innerNeedle);
+                 })) {
+            continue;
           }
+
           CleanString(vector.emplace_back(std::make_pair(id, std::move(innerPath))).second, data.empty());
-          innerPath={};
+          innerPath = {};
         }
       }
       // sort the strings. to make it easier to choose the correct string first.
       // shorter length and then what ever str < str2 does.
       std::sort(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
-        if (left.second.length() < right.second.length()) { return true; }
-        if (left.second.length() > right.second.length()) { return false; }
+        if (left.second.length() < right.second.length()) {
+          return true;
+        }
+        if (left.second.length() > right.second.length()) {
+          return false;
+        }
         return left.second < right.second;
       });
     };
@@ -116,14 +128,14 @@ public:
     const size_t &offset,
     const size_t &size = 0,
     const size_t &count = 0,
-    const std::string_view needle = {})
+    const std::initializer_list<std::string_view> needle = {})
   {
     auto tmp = std::string();
     return GetAllEntriesData(path, tmp, offset, size, count, needle);
   }
   // Get a single entry that is the first match for needle.
   [[nodiscard]] static auto GetEntry(const std::filesystem::path &path,
-    const std::string_view &needle,
+    const std::initializer_list<std::string_view> &needle,
     const size_t &offset = 0U,
     const size_t &size = 0U,
     const size_t &count = 0U)
@@ -136,7 +148,10 @@ public:
     for (unsigned int i = 0; (count == 0U || i < count) && (size == 0U || fp.tellg() < static_cast<long>(size + offset))
                              && std::getline(fp, innerPath);
          i++) {
-      if (Tools::iFind(innerPath, needle)) {
+      if (!std::empty(needle)
+          && std::any_of(needle.begin(), needle.end(), [&innerPath](const std::string_view &innerNeedle) {
+               return !innerPath.empty() && Tools::iFind(innerPath, innerNeedle);
+             })) {
         CleanString(innerPath);
         fp.close();
         return (std::make_pair(i, std::move(innerPath)));
@@ -145,8 +160,15 @@ public:
     }
     fp.close();
     return std::make_pair(0U, std::string(""));
-  }
-};
+}
+static void CleanBuffer(std::string & buffer)
+{
+  // remove carriage returns
+  buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
+  // change slashes to preferred
+  Tools::replaceSlashes(buffer);
+}
+};// namespace OpenVIII::Archive
 // namespace OpenVIII::Archive
 }// namespace OpenVIII::Archive
 #endif// !VIIIARCHIVE_FL_H

@@ -32,11 +32,12 @@ struct FS
 public:
   static constexpr const auto Ext = std::string_view(".FS");
 
-  template<typename dstT = std::vector<char>,typename datT = OpenVIII::Archive::FI>
-  static
-  dstT GetEntry(const std::filesystem::path &path, const datT &fi, const size_t &offset)
+  template<typename dstT = std::vector<char>, typename datT = OpenVIII::Archive::FI>
+  static dstT GetEntry(const std::filesystem::path &path, const datT &fi, const size_t &offset)
   {
-    if (fi.UncompressedSize() == 0) { return{}; }
+    if (fi.UncompressedSize() == 0) {
+      return {};
+    }
     std::ifstream fp = std::ifstream(path, std::ios::in | std::ios::binary);
     // if compressed will keep decompressing till get size
     // size compressed isn't quite known with out finding the offset of the next file and finding difference.
@@ -79,14 +80,18 @@ public:
     }
     }
     fp.close();
-    return{};
+    return {};
   }
   template<typename dstT = std::vector<char>>
   static dstT GetEntry(const std::vector<char> &data, const OpenVIII::Archive::FI &fi, const size_t &offset)
   {
-    //todo do I need this version of the function? I think at least for nested entries. zzz shouldn't use this.
+    // it shouldn't be empty
+    if(data.empty()) return {};
+    // todo do I need this version of the function? I think at least for nested entries. zzz shouldn't use this.
     // It should use the other one. Though that is only the case for FIFLFS archives.
-    if (fi.UncompressedSize() == 0) { return {}; }
+    if (fi.UncompressedSize() == 0) {
+      return {};
+    }
 
     auto iterator = data.begin() + fi.Offset() + static_cast<long>(offset);
     auto ptr = data.data() + fi.Offset() + static_cast<long>(offset);
@@ -95,18 +100,24 @@ public:
 
     switch (fi.CompressionType()) {
     case CompressionTypeT::None: {
-      if (iterator + fi.UncompressedSize() > data.end()) { break; }
-      //dstT dst = {};
-      //dst.reserve(fi.UncompressedSize());
-      //std::copy(iterator, iterator + fi.UncompressedSize(), std::back_inserter(dst)); //todo do I need this copy?
-      return {iterator, iterator + fi.UncompressedSize()};
+      if (iterator + fi.UncompressedSize() > data.end()) {
+        break;
+      }
+      // dstT dst = {};
+      // dst.reserve(fi.UncompressedSize());
+      // std::copy(iterator, iterator + fi.UncompressedSize(), std::back_inserter(dst)); //todo do I need this copy?
+      return { iterator, iterator + fi.UncompressedSize() };
     }
     case CompressionTypeT::LZSS: {
       unsigned int compSize{ 0 };
-      if (iterator + sizeof(compSize) > data.end()) { break; }
+      if (iterator + sizeof(compSize) > data.end()) {
+        break;
+      }
       std::memcpy(&compSize, ptr, sizeof(compSize));
       iterator += sizeof(compSize);
-      if (iterator + compSize > data.end()) { break; }
+      if (iterator + compSize > data.end()) {
+        break;
+      }
       ptr += sizeof(compSize);
       std::string_view span(
         ptr, compSize);// i think this works then I don't need to copy the data from one vector to another.
@@ -118,16 +129,20 @@ public:
       unsigned int sectSize{ 0 };
       // L4Z header contains size of total section as uint32, 4 byte string and another uint32.
       // the size of the compressed data is the first value minus 8. the second value is something i'm unsure of
-      if (iterator + sizeof(sectSize) > data.end()) { break; }
+      if (iterator + sizeof(sectSize) > data.end()) {
+        break;
+      }
       std::memcpy(&sectSize, ptr, sizeof(sectSize));
       ptr += sizeof(sectSize);
-      if (iterator + sectSize + sizeof(sectSize) > data.end()) { break; }
+      if (iterator + sectSize + sizeof(sectSize) > data.end()) {
+        break;
+      }
       constexpr static auto skipBytes = 8U;
       ptr += skipBytes;
       return Compression::L4Z::Decompress<dstT>(ptr, sectSize - skipBytes, fi.UncompressedSize());
     }
     }
-    return{};
+    return {};
   }
 };
 }// namespace OpenVIII::Archive

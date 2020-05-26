@@ -53,9 +53,15 @@ private:
   mutable size_t count_{};
   void GetCount(size_t size = 0U) const
   {
-    if (size == 0U) { size = fi_.size; }
-    if (size == 0U && std::filesystem::exists(fi_.path)) { size = std::filesystem::file_size(fi_.path); }
-    if (size == 0U && !fi_.data.empty()) { size = fi_.data.size(); }
+    if (size == 0U) {
+      size = fi_.size;
+    }
+    if (size == 0U && std::filesystem::exists(fi_.path)) {
+      size = std::filesystem::file_size(fi_.path);
+    }
+    if (size == 0U && !fi_.data.empty()) {
+      size = fi_.data.size();
+    }
     count_ = FI::GetCount(size);
   }
 
@@ -81,7 +87,9 @@ public:
   [[nodiscard]] Archive::FI GetEntry(const unsigned int &id) const
   {
     if (count_ == 0 || id < count_) {
-      if (!fi_.data.empty()) { return Archive::FI(fi_.data, id, fi_.offset); }
+      if (!fi_.data.empty()) {
+        return Archive::FI(fi_.data, id, fi_.offset);
+      }
       return Archive::FI(fi_.path, id, fi_.offset);
     }
     return {};
@@ -147,10 +155,7 @@ public:
     case 1:
       set(fl_);
       fl_.data = FS::GetEntry<decltype(fl_.data)>(src, fi, srcOffset);
-      // remove carriage returns
-      fl_.data.erase(std::remove(fl_.data.begin(), fl_.data.end(), '\r'), fl_.data.end());
-      // change slashes to preferred
-      Tools::replaceSlashes(fl_.data);
+      FL::CleanBuffer(fl_.data);
       compareBaseNames();
       return AllSet() ? 2 : 1;
     case 2:
@@ -171,7 +176,9 @@ public:
   }
   void Test() const
   {
-    if (!std::filesystem::exists(fl_.path)) { std::cout << "nested file!\n"; }
+    if (!std::filesystem::exists(fl_.path)) {
+      std::cout << "nested file!\n";
+    }
     std::cout << *this << std::endl;
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
     FIFLFS archive{};
@@ -184,7 +191,9 @@ public:
       {
         char retVal = [this, &archive, &strVirtualPath, &fi]() {
           std::filesystem::path virtualPath(strVirtualPath);
-          if (!fs_.data.empty()) { return archive.TryAddNested(fs_.data, fs_.offset, virtualPath, fi); }
+          if (!fs_.data.empty()) {
+            return archive.TryAddNested(fs_.data, fs_.offset, virtualPath, fi);
+          }
 
           if (fi.CompressionType() == Archive::CompressionTypeT::None) {
             auto localRetVal = archive.TryAdd(fs_.path, virtualPath, fs_.offset + fi.Offset(), fi.UncompressedSize());
@@ -195,7 +204,9 @@ public:
           }
           return archive.TryAddNested(fs_.path, fs_.offset, virtualPath, fi);
         }();
-        if (retVal == 1) { continue; }
+        if (retVal == 1) {
+          continue;
+        }
         if (retVal == 2) {
           archive.Test();
           archive = {};
@@ -217,7 +228,9 @@ public:
             exit(EXIT_FAILURE);
           }
         }
-        if (fi.UncompressedSize() != buffer.size()) { exit(EXIT_FAILURE); }
+        if (fi.UncompressedSize() != buffer.size()) {
+          exit(EXIT_FAILURE);
+        }
         std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
         Tools::WriteBuffer(buffer, strVirtualPath);
       }
@@ -231,7 +244,9 @@ public:
     if (path.has_extension()) {
       for (const auto &ext : { OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext, OpenVIII::Archive::FI::Ext }) {
         i++;
-        if (OpenVIII::Tools::iEquals(path.extension().string(), ext)) { return i; }
+        if (OpenVIII::Tools::iEquals(path.extension().string(), ext)) {
+          return i;
+        }
       }
     }
 
@@ -296,7 +311,9 @@ public:
   }
   [[nodiscard]] std::string static GetBaseName(const std::filesystem::path &path)
   {
-    if (path.string().empty()) { return {}; }
+    if (path.string().empty()) {
+      return {};
+    }
     auto name = path.filename().stem().string();
     std::transform(name.begin(), name.end(), name.begin(), ::toupper);
     return name;
@@ -304,7 +321,9 @@ public:
   [[nodiscard]] std::string GetBaseName() const
   {
     for (const auto &path : { fi_.base, fl_.base, fs_.base }) {
-      if (!path.empty()) { return path; }
+      if (!path.empty()) {
+        return path;
+      }
     }
     return {};
   }

@@ -15,10 +15,12 @@
 int main()
 {
   // test ZZZ extract with FIFLFS
-  for(auto path : Paths::get()) {
+  for (auto path : Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
 
-    if (!std::filesystem::exists(path)) { continue; }
+    if (!std::filesystem::exists(path)) {
+      continue;
+    }
     const auto files = OpenVIII::Archive::ZZZ::GetFilesFromPath(path);
     std::for_each(files.begin(), files.end(), &OpenVIII::Archive::ZZZ::testPair);
   }
