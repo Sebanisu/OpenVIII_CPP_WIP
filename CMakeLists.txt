@@ -76,28 +76,14 @@ add_library(Archive
         FileData.h
         Archive.h
         Archive.cpp
-        ZZZ.cpp FS.cpp FL.cpp FileData.cpp FIFLFS.cpp FI.cpp)
+        ZZZ.cpp
+        FS.cpp
+        FL.cpp
+        FileData.cpp
+        FIFLFS.cpp
+        FI.cpp)
 set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(Archive VIIITools VIIICompression)
-#
-##test app for trying to extract a all files from the FIFLFS archives.
-add_executable(TestExtractFIFLFS
-        Tests/TestExtractFIFLFS.h Tests/TestExtractFIFLFS.cpp
-        Tests/paths.h Tests/paths.cpp)
-set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractFIFLFS Archive)
-#
-##test app for trying to extract a single file from the FIFLFS archives.
-add_executable(TestExtractSingleFIFLFS
-        Tests/TestExtractSingleFIFLFS.h
-        Tests/paths.h Tests/TestExtractSingleFIFLFS.cpp Tests/paths.cpp)
-set_target_properties(TestExtractSingleFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractSingleFIFLFS Archive)
 
-#
-##test app for trying to extract a all files from the ZZZ and FIFLFS archives.
-add_executable(TestExtractZZZ
-        Tests/TestExtractZZZ.h Tests/TestExtractZZZ.cpp
-        Tests/paths.h Tests/paths.cpp)
-target_link_libraries(TestExtractZZZ Archive)
-set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
+
+add_subdirectory(Tests)
