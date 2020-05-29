@@ -29,6 +29,6 @@ target_link_libraries(TestExtractZZZ Archive paths)
 ##test searching threw zzz contents and nested fi fl fs files.
 add_executable(TestExtractSingleZZZ
         TestExtractSingleZZZ.h TestExtractSingleZZZ.cpp)
-set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractZZZ Archive paths)
+set_target_properties(TestExtractSingleZZZ PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestExtractSingleZZZ Archive paths)
 

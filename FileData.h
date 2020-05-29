@@ -19,16 +19,6 @@ private:
   std::uint32_t size_{};
 
 public:
-  struct [[maybe_unused]] Comparator{ bool operator()(const FileData &left, const FileData &right)
-      const { if (std::size(left.filename_) < std::size(right.filename_)){ return true;
-}
-if (std::size(left.filename_) > std::size(right.filename_)) {
-  return false;
-}
-return left.filename_ < right.filename_;
-}// namespace OpenVIII::Archive
-}
-;
 constexpr FileData() = default;
 FileData(const FileData &) = default;
 FileData(FileData &&) = default;

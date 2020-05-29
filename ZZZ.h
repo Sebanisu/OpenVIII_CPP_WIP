@@ -34,12 +34,12 @@ private:
   // unsigned int count_{};
   // file data inside zzz file.
   std::vector<FileData> data_{};
-
-  constexpr static auto Ext = ".zzz";
-
   std::filesystem::path path_{};
 
 public:
+  constexpr static auto Ext = ".zzz";
+  [[maybe_unused]] [[nodiscard]] auto &Data() const noexcept { return data_; }
+  [[maybe_unused]] [[nodiscard]] auto &Path() const noexcept { return path_; }
   ZZZ(const ZZZ &) = default;
   ZZZ &operator=(const ZZZ &) = default;
   ZZZ(ZZZ &&) = default;
@@ -68,7 +68,21 @@ public:
         data_.pop_back();
       }
     }
-    std::sort(data_.begin(), data_.end(), FileData::Comparator());
+    std::sort(data_.begin(), data_.end(), [](const FileData &left, const FileData &right) {
+      const auto &rightString = right.GetPathString();
+      const auto &leftString = left.GetPathString();
+      {
+        const auto &rightSize = std::size(rightString);
+        const auto &leftSize = std::size(leftString);
+        if (leftSize < rightSize) {
+          return true;
+        }
+        if (leftSize > rightSize) {
+          return false;
+        }
+      }
+      return leftString < rightString;
+    });
     fp.close();
     data_.shrink_to_fit();
   }
