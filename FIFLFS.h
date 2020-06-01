@@ -97,7 +97,7 @@ public:
   }
 
 
-  operator bool() const noexcept { return AllSet(); }
+  explicit operator bool() const noexcept { return AllSet(); }
   /*
    * 0 = didn't add
    * 1 = added
@@ -247,7 +247,7 @@ public:
     tmp.reserve(defaultSize);
     auto archive = OpenVIII::Archive::FIFLFS<true>();
     for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
-      if (archive.TryAdd(fileEntry)) {
+      if (archive.TryAdd(fileEntry) != 0) {
         if (archive.AllSet()) {// todo confirm basename matches right now i'm assuming the 3 files are together.
           // todo check for language codes to choose correct files
           // auto key = archive.GetBaseName();
