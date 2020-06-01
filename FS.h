@@ -27,6 +27,7 @@
 #include "External/VIIITools/Tools.h"
 
 namespace OpenVIII::Archive {
+static size_t largestCompressedBuffer{};
 struct FS
 {
 public:
@@ -65,6 +66,8 @@ public:
     case CompressionTypeT::LZSS: {
       unsigned int compSize{ 0 };
       Tools::ReadVal(fp, compSize);
+      if (compSize > largestCompressedBuffer)
+        largestCompressedBuffer = compSize;
       dstT buffer = Tools::ReadBuffer<dstT>(fp, compSize);
       return Compression::LZSS::Decompress<dstT>(buffer, fi.UncompressedSize());
     }
@@ -75,8 +78,13 @@ public:
       Tools::ReadVal(fp, sectSize);
       constexpr static auto skipSize = 8U;
       fp.seekg(skipSize, std::ios::cur);
-      dstT buffer = Tools::ReadBuffer<dstT>(fp, sectSize - skipSize);
-      return Compression::L4Z::Decompress<dstT>(buffer.data(), sectSize - skipSize, fi.UncompressedSize());
+      const auto compSize = sectSize - skipSize;
+      dstT buffer = Tools::ReadBuffer<dstT>(fp, compSize);
+
+      if (compSize > largestCompressedBuffer) {
+        largestCompressedBuffer = compSize;
+      }
+      return Compression::L4Z::Decompress<dstT>(buffer.data(), compSize, fi.UncompressedSize());
     }
     }
     fp.close();
@@ -86,7 +94,9 @@ public:
   static dstT GetEntry(const std::vector<char> &data, const OpenVIII::Archive::FI &fi, const size_t &offset)
   {
     // it shouldn't be empty
-    if(data.empty()) return {};
+    if (data.empty()) {
+      return {};
+    }
     // todo do I need this version of the function? I think at least for nested entries. zzz shouldn't use this.
     // It should use the other one. Though that is only the case for FIFLFS archives.
     if (fi.UncompressedSize() == 0) {
@@ -114,6 +124,9 @@ public:
         break;
       }
       std::memcpy(&compSize, ptr, sizeof(compSize));
+      if (compSize > largestCompressedBuffer) {
+        largestCompressedBuffer = compSize;
+      }
       iterator += sizeof(compSize);
       if (iterator + compSize > data.end()) {
         break;
@@ -139,7 +152,11 @@ public:
       }
       constexpr static auto skipBytes = 8U;
       ptr += skipBytes;
-      return Compression::L4Z::Decompress<dstT>(ptr, sectSize - skipBytes, fi.UncompressedSize());
+      const auto compSize = sectSize - skipBytes;
+      if (compSize > largestCompressedBuffer) {
+        largestCompressedBuffer = compSize;
+      }
+      return Compression::L4Z::Decompress<dstT>(ptr, compSize, fi.UncompressedSize());
     }
     }
     return {};

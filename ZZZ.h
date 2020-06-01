@@ -105,16 +105,16 @@ public:
         const auto &[strPath, zzzOffset, zzzSize] = item.GetTuple();
         {
           const auto &next =
-            cur + 1 < end && (FIFLFS::CheckExtension((*(cur + 1)).GetPathString()) != 0) ? *(cur + 1) : FileData();
+            cur + 1 < end && (FIFLFS<true>::CheckExtension((*(cur + 1)).GetPathString()) != 0) ? *(cur + 1) : FileData();
           const auto &prev =
-            cur - 1 > beg && (FIFLFS::CheckExtension((*(cur - 1)).GetPathString()) != 0) ? *(cur - 1) : FileData();
+            cur - 1 > beg && (FIFLFS<true>::CheckExtension((*(cur - 1)).GetPathString()) != 0) ? *(cur - 1) : FileData();
           // getting a prev and next element to check vs cur item. To make sure at least 2 of them match so we don't add
           // an orphan to the FIFLFS archive.
           std::cout << '{' << zzzOffset << ", " << zzzSize << ", " << strPath << "}\n";
-          if ((FIFLFS::CheckExtension(strPath) != 0)
-              && ((!next.empty() && FIFLFS::GetBaseName(strPath) == FIFLFS::GetBaseName(next.GetPathString())) ||
+          if ((FIFLFS<true>::CheckExtension(strPath) != 0)
+              && ((!next.empty() && FIFLFS<true>::GetBaseName(strPath) == FIFLFS<true>::GetBaseName(next.GetPathString())) ||
 
-                  (!prev.empty() && FIFLFS::GetBaseName(strPath) == FIFLFS::GetBaseName(prev.GetPathString())))) {
+                  (!prev.empty() && FIFLFS<true>::GetBaseName(strPath) == FIFLFS<true>::GetBaseName(prev.GetPathString())))) {
 
             std::filesystem::path fsPath(strPath);
             {

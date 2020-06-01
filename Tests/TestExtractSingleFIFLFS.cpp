@@ -29,7 +29,7 @@ int main()
     if (!std::filesystem::exists(path)) {
       continue;
     }
-    const auto files = OpenVIII::Archive::FIFLFS::GetFilesFromPath(path);
+    const auto files = OpenVIII::Archive::FIFLFS<true>::GetFilesFromPath(path);
     for (const auto &entry : files) {
 
       const auto &fiflfs = entry.second;
@@ -51,7 +51,7 @@ int main()
             if (!innerPath.empty()) {
               auto p = std::filesystem::path(innerPath);
               {
-                auto extNum = OpenVIII::Archive::FIFLFS::CheckExtension(p);
+                auto extNum = OpenVIII::Archive::FIFLFS<true>::CheckExtension(p);
                 if (extNum == 1) {
                   const auto &parent_fi = fiflfs.FI();
                   const auto &parent_fs = fiflfs.FS();

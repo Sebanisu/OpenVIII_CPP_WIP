@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestExtractFIFLFS.h"
 #include "paths.h"
+
 int main()
 {
   //      //test FIFLFS
@@ -24,8 +25,14 @@ int main()
     if (!std::filesystem::exists(path)) {
       continue;
     }
-    const auto files = OpenVIII::Archive::FIFLFS::GetFilesFromPath(path);
-    std::for_each(std::begin(files), std::end(files), &OpenVIII::Archive::FIFLFS::testPair);
+    const auto files = OpenVIII::Archive::FIFLFS<true>::GetFilesFromPath(path);
+    for(const auto & pair : files)
+    {
+      const auto &[name, paths] = pair;
+      std::cout << paths << '\n';
+      paths.Test();
+    }
   }
+  std::cout << OpenVIII::Archive::largestCompressedBuffer << std::endl;
   return 0;
 }

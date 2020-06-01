@@ -24,5 +24,6 @@ int main()
     const auto files = OpenVIII::Archive::ZZZ::GetFilesFromPath(path);
     std::for_each(files.begin(), files.end(), &OpenVIII::Archive::ZZZ::testPair);
   }
+  std::cout<<OpenVIII::Archive::largestCompressedBuffer<<std::endl;
   return 0;
 }

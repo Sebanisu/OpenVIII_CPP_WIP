@@ -27,6 +27,7 @@
 #include <iterator>
 
 namespace OpenVIII::Archive {
+template<[[maybe_unused]] bool HasNested = false>
 struct FIFLFS
 {
 private:
@@ -41,7 +42,7 @@ private:
 
     //    // Assigns basename and returns it.
     [[maybe_unused]] std::string GetBaseName() const noexcept { return base = FIFLFS::GetBaseName(path); }
-    operator bool() const
+    explicit operator bool() const
     {
       return (!path.empty() && std::filesystem::exists(path)) || !std::empty(data)
              || (!path.empty() && (offset > 0 || size > 0));
@@ -236,67 +237,16 @@ public:
       }
     }
   }
+  using FIFLFSmap = std::vector<std::pair<std::string, OpenVIII::Archive::FIFLFS<true>>>;
 
-  char static CheckExtension(const std::filesystem::path &path)
-  {
-
-    char i = 0;// 0 does not match;
-    if (path.has_extension()) {
-      for (const auto &ext : { OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext, OpenVIII::Archive::FI::Ext }) {
-        i++;
-        if (OpenVIII::Tools::iEquals(path.extension().string(), ext)) {
-          return i;
-        }
-      }
-    }
-
-    return 0;
-  }
-
-
-  void compareBaseNames() const
-  {
-    if ((fl_.base == fs_.base && fi_.base == fs_.base) || std::empty(fl_.base) || std::empty(fi_.base)
-        || std::empty(fs_.base)) {
-      return;
-    }
-    if (fl_.base != fs_.base || fi_.base != fs_.base) {
-      if (fl_.base == fi_.base) {
-        std::cerr << "base name mismatch FS Data: " << fs_ << "\n";
-        // fs_ = {};
-        exit(EXIT_FAILURE);
-      }
-    } else if (fi_.base != fl_.base) {
-      if (fl_.base == fs_.base) {
-        std::cerr << "base name mismatch FL Data: " << fl_ << "\n";
-        // fi_ = {};
-        exit(EXIT_FAILURE);
-      } else if (fi_.base == fs_.base) {
-        std::cerr << "base name mismatch FI Data: " << fi_ << "\n";
-        // fl_ = {};
-        exit(EXIT_FAILURE);
-      }
-    } else {
-      std::cerr << "No basename matched!\n";
-      exit(EXIT_FAILURE);
-    }
-  }
-
-  // todo move get files to here
-  using FIFLFSmap = std::vector<std::pair<std::string, OpenVIII::Archive::FIFLFS>>;
-
-  [[nodiscard]] static FIFLFSmap GetFilesFromPath(const std::string_view path)
+  static auto GetFilesFromPath(const std::filesystem::path & path)
   {
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
-    return GetFilesFromIterator(std::filesystem::directory_iterator(path, options));// todo may need sorted.
-  }
-  template<class iter_t>[[nodiscard]] static FIFLFSmap GetFilesFromIterator(iter_t iter)
-  {
     auto tmp = FIFLFSmap();
     constexpr auto defaultSize = 6U;// battle, field, magic, main, menu, world
     tmp.reserve(defaultSize);
-    auto archive = OpenVIII::Archive::FIFLFS();
-    for (const auto &fileEntry : iter) {
+    auto archive = OpenVIII::Archive::FIFLFS<true>();
+    for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
       if (archive.TryAdd(fileEntry)) {
         if (archive.AllSet()) {// todo confirm basename matches right now i'm assuming the 3 files are together.
           // todo check for language codes to choose correct files
@@ -309,6 +259,42 @@ public:
     tmp.shrink_to_fit();// if there is more than 6 it'll collapse the vector
     return tmp;
   }
+  auto static CheckExtension(const std::filesystem::path &path)
+  {
+    return Tools::iEndsWithAny(path.string(),{OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext, OpenVIII::Archive::FI::Ext });
+  }
+
+
+  void compareBaseNames() const
+  {
+    if ((fl_.base == fs_.base && fi_.base == fs_.base) || std::empty(fl_.base) || std::empty(fi_.base)
+        || std::empty(fs_.base)) {
+      return;
+    }
+    if (fl_.base != fs_.base || fi_.base != fs_.base) {
+      if (fl_.base == fi_.base) {
+        std::cerr << "base name mismatch FS Data: " << fs_.path << "\n";
+        // fs_ = {};
+        exit(EXIT_FAILURE);
+      }
+    } else if (fi_.base != fl_.base) {
+      if (fl_.base == fs_.base) {
+        std::cerr << "base name mismatch FL Data: " << fl_.path << "\n";
+        // fi_ = {};
+        exit(EXIT_FAILURE);
+      } else if (fi_.base == fs_.base) {
+        std::cerr << "base name mismatch FI Data: " << fi_.path << "\n";
+        // fl_ = {};
+        exit(EXIT_FAILURE);
+      }
+    } else {
+      std::cerr << "No basename matched!\n";
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  // todo move get files to here
+
   [[nodiscard]] std::string static GetBaseName(const std::filesystem::path &path)
   {
     if (path.string().empty()) {
@@ -328,13 +314,7 @@ public:
     return {};
   }
 
-  static void testPair(const std::pair<std::string_view, OpenVIII::Archive::FIFLFS> &pair)
-  {
-    const auto &[name, paths] = pair;
-    std::cout << paths << '\n';
-    paths.Test();
-    // testFLPath(paths.FL(),paths.FI());
-  }
 };
+
 }// namespace OpenVIII::Archive
 #endif// !VIIIARCHIVE_FIFLFS_H
