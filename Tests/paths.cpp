@@ -14,7 +14,11 @@
 std::array<std::string, Paths::count> Paths::get()
 {
   return { R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)",
-    R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)",
+           R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)",
+    R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)",
+           R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)",
+           R"(/mnt/k/ff82000)",
+           R"(K:\ff82000)",
     R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)",
     R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)" };
 }

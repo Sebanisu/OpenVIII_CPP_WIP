@@ -46,11 +46,11 @@ private:
 
     const auto tryAddToFIFLFS = [&path](auto &archive) { return archive.TryAdd(path) != 0; };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
-           if (path.has_extension() && Tools::iEquals(path.extension().string(), ZZZ::Ext)) {
-             archive.emplace(ZZZ(path));
-             return true;
-           }
-           return false;
+      if (path.has_extension() && Tools::iEquals(path.extension().string(), ZZZ::Ext)) {
+        archive.emplace(ZZZ(path));
+        return true;
+      }
+      return false;
     };
     switch (archiveType_) {
     case ArchiveType::Battle:
@@ -72,6 +72,7 @@ private:
     }
     return false;
   }
+
 public:
   template<ArchiveType archiveType_> constexpr static auto GetString()
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
@@ -96,30 +97,30 @@ public:
     }
   }
 
-//  constexpr static auto GetString(ArchiveType archiveType_)
-//  {// this string can be compared to the stem of the filename to determine which archive is try added to.
-//    // returns nullptr on failure.
-//    using namespace std::literals;
-//    switch (archiveType_) {
-//    case ArchiveType::Battle:
-//      return GetString<ArchiveType::Battle>();
-//    case ArchiveType::Field:
-//      return GetString<ArchiveType::Field>();
-//    case ArchiveType::Magic:
-//      return GetString<ArchiveType::Magic>();
-//    case ArchiveType::Main:
-//      return GetString<ArchiveType::Main>();
-//    case ArchiveType::Menu:
-//      return GetString<ArchiveType::Menu>();
-//    case ArchiveType::World:
-//      return GetString<ArchiveType::World>();
-//    case ArchiveType::ZZZMain:
-//      return GetString<ArchiveType::ZZZMain>();
-//    case ArchiveType::ZZZOther:
-//      return GetString<ArchiveType::ZZZOther>();
-//    }
-//    return ""sv;
-//  }
+  //  constexpr static auto GetString(ArchiveType archiveType_)
+  //  {// this string can be compared to the stem of the filename to determine which archive is try added to.
+  //    // returns nullptr on failure.
+  //    using namespace std::literals;
+  //    switch (archiveType_) {
+  //    case ArchiveType::Battle:
+  //      return GetString<ArchiveType::Battle>();
+  //    case ArchiveType::Field:
+  //      return GetString<ArchiveType::Field>();
+  //    case ArchiveType::Magic:
+  //      return GetString<ArchiveType::Magic>();
+  //    case ArchiveType::Main:
+  //      return GetString<ArchiveType::Main>();
+  //    case ArchiveType::Menu:
+  //      return GetString<ArchiveType::Menu>();
+  //    case ArchiveType::World:
+  //      return GetString<ArchiveType::World>();
+  //    case ArchiveType::ZZZMain:
+  //      return GetString<ArchiveType::ZZZMain>();
+  //    case ArchiveType::ZZZOther:
+  //      return GetString<ArchiveType::ZZZOther>();
+  //    }
+  //    return ""sv;
+  //  }
   template<ArchiveType archiveType_> const auto &Get() const noexcept
   {
     if constexpr (archiveType_ == ArchiveType::Battle) {
@@ -146,6 +147,32 @@ public:
   explicit Archives(const std::filesystem::path &path)
   {
     path_ = path;
+    {
+      using namespace std::string_literals;
+      const std::filesystem::path &dataPath = path_ / "Data";
+      if (std::filesystem::exists(dataPath)) {
+        std::string lang = [this]() {
+          {
+            const std::filesystem::path &langDatPath = path_ / "lang.dat";
+            if (std::filesystem::exists(langDatPath)) {
+              std::ifstream fp = std::ifstream(langDatPath, std::ios::in);
+              std::string returnValue{};
+              fp.seekg(0, std::ios::end);
+              returnValue.resize(static_cast<unsigned>((fp.tellg())));
+              fp.seekg(0);
+              fp.read(returnValue.data(), static_cast<signed>(returnValue.size()));
+              fp.close();
+              std::cout << "lang.dat = " << returnValue << '\n';
+              return returnValue;
+            }
+          }
+          return ""s;
+        }();
+        path_ = dataPath;
+        if (!std::empty(lang))
+          path_ /= ("lang-"s + lang);
+      }
+    }
     //    static constexpr auto values = std::array<ArchiveType, 8>{ { ArchiveType::Battle,
     //      ArchiveType::Field,
     //      ArchiveType::Magic,
@@ -161,7 +188,7 @@ public:
 
       static_for<static_cast<int>(ArchiveType::Field), static_cast<int>(ArchiveType::ZZZOther)>(
         [&fileEntry, this](const ArchiveType &test, const auto &stem) {
-          const auto& localPath = fileEntry.path();
+          const auto &localPath = fileEntry.path();
           if (!(localPath.has_stem() && OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
             return;
           }
