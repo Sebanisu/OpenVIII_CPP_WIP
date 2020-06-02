@@ -175,7 +175,7 @@ public:
     {
       const auto &localPath = fileEntry.path();
       if (localPath.has_stem()) {
-        static_for<static_cast<int>(ArchiveType::Field), static_cast<int>(ArchiveType::ZZZOther)>(
+        static_for<static_cast<int>(ArchiveType::Battle), static_cast<int>(ArchiveType::ZZZOther)>(
           [&localPath, this](const ArchiveType &test, const auto &stem) {
             if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
               return;
