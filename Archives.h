@@ -40,37 +40,37 @@ private:
       static_for<First + 1, Last>(f);
     }
   }
-  void SetLang(const std::filesystem::path & path, const std::string_view & lang)
+  void SetLang(const std::filesystem::path &path, const std::string_view &lang)
   {
     lang_ = lang;
     using namespace std::string_literals;
     if (std::empty(lang)) {
       lang_ = [this, &path]() {
-             {
-               // try to read lang.dat from ff8 steam folder
-               const std::filesystem::path &langDatPath = path / "lang.dat";
-               if (std::filesystem::exists(langDatPath)) {
-                 std::ifstream fp = std::ifstream(langDatPath, std::ios::in);
-                 std::string returnValue{};
-                 fp.seekg(0, std::ios::end);
-                 returnValue.resize(static_cast<unsigned>((fp.tellg())));// sets to length.
-                 fp.seekg(0);
-                 fp.read(returnValue.data(), static_cast<signed>(returnValue.size()));
-                 fp.close();
-                 std::cout << "lang.dat detected: ";
-                 return returnValue;
-               }
-             }
-             // remaster stores the language value in my documents. I don't see a cross platform way to find this in cpp.
-             // will probably need a c# launcher to pass the lang code to this. As .Net has a standard cross platform
-             // way to get the documents folder.
-             // Documents\My Games\FINAL FANTASY VIII Remastered\Steam\(\d+)\config.txt
-             return "en"s; //defaulting to english
+        {
+          // try to read lang.dat from ff8 steam folder
+          const std::filesystem::path &langDatPath = path / "lang.dat";
+          if (std::filesystem::exists(langDatPath)) {
+            std::ifstream fp = std::ifstream(langDatPath, std::ios::in);
+            std::string returnValue{};
+            fp.seekg(0, std::ios::end);
+            returnValue.resize(static_cast<unsigned>((fp.tellg())));// sets to length.
+            fp.seekg(0);
+            fp.read(returnValue.data(), static_cast<signed>(returnValue.size()));
+            fp.close();
+            std::cout << "lang.dat detected: ";
+            return returnValue;
+          }
+        }
+        // remaster stores the language value in my documents. I don't see a cross platform way to find this in cpp.
+        // will probably need a c# launcher to pass the lang code to this. As .Net has a standard cross platform
+        // way to get the documents folder.
+        // Documents\My Games\FINAL FANTASY VIII Remastered\Steam\(\d+)\config.txt
+        return "en"s;// defaulting to english
       }();
     }
     std::cout << "lang = " << lang_ << '\n';
   }
-  void SetPath(const std::filesystem::path & path)
+  void SetPath(const std::filesystem::path &path)
   {
     using namespace std::string_literals;
     assert(!std::empty(lang_));
@@ -86,11 +86,11 @@ private:
       }
     }
   }
-  bool TryAdd(const ArchiveType &archiveType_, const std::filesystem::path &path)
+  bool TryAdd(const ArchiveType &archiveType_, const std::filesystem::path &path, const std::filesystem::path & nestedPath="", const size_t &offset = 0, const size_t &size = 0U )
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
     // returns nullptr on failure.
 
-    const auto tryAddToFIFLFS = [&path](auto &archive) { return archive.TryAdd(path) != 0; };
+    const auto tryAddToFIFLFS = [&path,&nestedPath,&offset,&size](auto &archive) { return archive.TryAdd(path,nestedPath,offset,size) != 0; };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
       if (path.has_extension() && Tools::iEquals(path.extension().string(), ZZZ::Ext)) {
         archive.emplace(ZZZ(path));
@@ -111,8 +111,42 @@ private:
       return tryAddToFIFLFS(menu_);
     case ArchiveType::World:
       return tryAddToFIFLFS(world_);
-    case ArchiveType::ZZZMain:
-      return tryAddToZZZ(zzzMain_);
+    case ArchiveType::ZZZMain: {
+      if (tryAddToZZZ(zzzMain_)) {
+        using namespace std::string_literals;
+        for (const auto &dataItem : zzzMain_->Data()) {
+          {
+            const auto pathString = dataItem.GetPathString();
+            if (FIFLFS<true>::CheckExtension(pathString) == 0U) {
+              continue;
+            }
+
+            auto langStartingFilter = std::filesystem::path("data") / ("lang-"s);
+            auto langStarting = std::filesystem::path(langStartingFilter.string() + lang_);
+
+            if (Tools::iStartsWith(pathString, langStartingFilter.string())
+                && !Tools::iStartsWith(pathString, langStarting.string())) {
+              continue;
+            }
+//            std::cout<< pathString << '\n';
+//            std::cout << "  " << path << '\n';
+//            std::cout << "  " << dataItem.Offset() << '\n';
+//            std::cout << "  " << dataItem.UncompressedSize() << '\n';
+            auto localPath = std::filesystem::path(pathString);
+            static_for<static_cast<int>(ArchiveType::Battle), static_cast<int>(ArchiveType::World)>(
+              [&localPath, &dataItem,&path, this](const ArchiveType &test, const auto &stem) {
+                     if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
+                       return;
+                     }
+
+                     TryAdd(test, path, localPath, dataItem.Offset(), dataItem.UncompressedSize());
+              });
+          }
+        }
+        return true;
+      }
+      return false;
+    }
     case ArchiveType::ZZZOther:
       return tryAddToZZZ(zzzOther_);
     }
@@ -165,7 +199,7 @@ public:
     }
   }
   Archives() = default;
-  explicit Archives(const std::filesystem::path &path, const std::string_view & lang = "")
+  explicit Archives(const std::filesystem::path &path, const std::string_view &lang = "")
   {
     SetLang(path, lang);
     SetPath(path);

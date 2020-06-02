@@ -27,8 +27,7 @@
 #include <iterator>
 
 namespace OpenVIII::Archive {
-template<[[maybe_unused]] bool HasNested = false>
-struct FIFLFS
+template<[[maybe_unused]] bool HasNested = false> struct FIFLFS
 {
 private:
   template<typename T> struct Grouping
@@ -39,6 +38,7 @@ private:
     mutable size_t size{};// if forced otherwise 0;
     mutable T data{};
     mutable std::string base{};
+    mutable std::filesystem::path nestedPath{};
 
     //    // Assigns basename and returns it.
     [[maybe_unused]] std::string GetBaseName() const noexcept { return base = FIFLFS::GetBaseName(path); }
@@ -80,9 +80,11 @@ public:
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FIFLFS &data)
   {
-    os << '{' << data.GetBaseName() << ", " << '{' << data.fi_.path << ", " << data.fl_.path << ", " << data.fs_.path
-       << "}}";
-    return os;
+    const auto str = [](auto fiflfs) {
+      return std::empty(fiflfs.nestedPath) ? fiflfs.path : fiflfs.path / fiflfs.nestedPath;
+    };
+    return os << '{' << data.GetBaseName() << " {" << data.count_ << " File Entries from : " << str(data.fi_) << ", "
+              << str(data.fl_) << ", " << str(data.fs_) << "}}";
   }
 
   [[nodiscard]] Archive::FI GetEntry(const unsigned int &id) const
@@ -105,21 +107,22 @@ public:
    * */
 
   char TryAdd(const std::filesystem::path &existingFilePath,
-    const std::filesystem::path &virtualFilePath = "",
+    const std::filesystem::path &nestedPath = "",
     size_t offset = 0U,
     size_t size = 0U) const
   {
-    const auto set = [&existingFilePath, &offset, &virtualFilePath, &size](auto &ds) {
+    const auto set = [&existingFilePath, &offset, &nestedPath, &size](auto &ds) {
       ds.path = existingFilePath;
       ds.offset = offset;
       ds.size = size;
-      if (virtualFilePath.has_stem()) {
-        ds.base = GetBaseName(virtualFilePath);
+      ds.nestedPath = nestedPath;
+      if (nestedPath.has_stem()) {
+        ds.base = GetBaseName(nestedPath);
       } else {
         ds.GetBaseName();
       }
     };
-    switch (virtualFilePath.has_extension() ? CheckExtension(virtualFilePath) : CheckExtension(existingFilePath)) {
+    switch (nestedPath.has_extension() ? CheckExtension(nestedPath) : CheckExtension(existingFilePath)) {
     case 1: {
       set(fl_);
       compareBaseNames();
@@ -239,7 +242,7 @@ public:
   }
   using FIFLFSmap = std::vector<std::pair<std::string, OpenVIII::Archive::FIFLFS<true>>>;
 
-  static auto GetFilesFromPath(const std::filesystem::path & path)
+  static auto GetFilesFromPath(const std::filesystem::path &path)
   {
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
     auto tmp = FIFLFSmap();
@@ -261,7 +264,8 @@ public:
   }
   auto static CheckExtension(const std::filesystem::path &path)
   {
-    return Tools::iEndsWithAny(path.string(),{OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext, OpenVIII::Archive::FI::Ext });
+    return Tools::iEndsWithAny(
+      path.string(), { OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext, OpenVIII::Archive::FI::Ext });
   }
 
 
@@ -313,7 +317,6 @@ public:
     }
     return {};
   }
-
 };
 
 }// namespace OpenVIII::Archive

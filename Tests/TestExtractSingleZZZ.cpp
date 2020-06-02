@@ -35,7 +35,7 @@ int main()
       for (const auto &dataItem : zzzFilePair.second.Data()) {
         {
           const auto pathString = dataItem.GetPathString();
-          if (OpenVIII::Tools::iEndsWithAny(pathString, Extensions)) {
+          if (OpenVIII::Tools::iEndsWithAny(pathString, Extensions) != 0U) {
             std::cout << "  nested: {" << pathString << "}\n";
           } else if (OpenVIII::Tools::iFind(pathString, needle)) {
             std::cout << "  {" << pathString << "}\n";
