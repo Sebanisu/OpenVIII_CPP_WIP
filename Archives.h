@@ -31,28 +31,6 @@ private:
   FIFLFS<false> world_{};
   std::optional<ZZZ> zzzMain_{};
   std::optional<ZZZ> zzzOther_{};
-  template<ArchiveType archiveType_> auto &MutableGet() noexcept
-  {
-    if constexpr (std::is_same_v<archiveType_, ArchiveType::Battle>) {
-      return battle_;
-    } else if constexpr (std::is_same_v<archiveType_, ArchiveType::Field>) {
-      return field_;
-    } else if constexpr (std::is_same_v<archiveType_, ArchiveType::Magic>) {
-      return magic_;
-    } else if constexpr (std::is_same_v<archiveType_, ArchiveType::Main>) {
-      return main_;
-    } else if constexpr (std::is_same_v<archiveType_, ArchiveType::Menu>) {
-      return menu_;
-    } else if constexpr (std::is_same_v<archiveType_, ArchiveType::World>) {
-      return world_;
-    } else if constexpr (std::is_same_v<archiveType_, ArchiveType::ZZZMain>) {
-      return zzzMain_;
-    } else if constexpr (std::is_same_v<archiveType_, ArchiveType::ZZZOther>) {
-      return zzzOther_;
-    } else {
-      return nullptr;
-    }
-  }
   template<int First, int Last, typename Lambda> void static_for(Lambda const &f)
   {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
     if constexpr (First <= Last) {
@@ -142,12 +120,27 @@ public:
 //    }
 //    return ""sv;
 //  }
-
-  template<ArchiveType archiveType_>
-
-  const auto &Get() const noexcept
+  template<ArchiveType archiveType_> const auto &Get() const noexcept
   {
-    return MutableGet<archiveType_>();
+    if constexpr (archiveType_ == ArchiveType::Battle) {
+      return battle_;
+    } else if constexpr (archiveType_ == ArchiveType::Field) {
+      return field_;
+    } else if constexpr (archiveType_ == ArchiveType::Magic) {
+      return magic_;
+    } else if constexpr (archiveType_ == ArchiveType::Main) {
+      return main_;
+    } else if constexpr (archiveType_ == ArchiveType::Menu) {
+      return menu_;
+    } else if constexpr (archiveType_ == ArchiveType::World) {
+      return world_;
+    } else if constexpr (archiveType_ == ArchiveType::ZZZMain) {
+      return zzzMain_;
+    } else if constexpr (archiveType_ == ArchiveType::ZZZOther) {
+      return zzzOther_;
+    } else {
+      return nullptr;
+    }
   }
   Archives() = default;
   explicit Archives(const std::filesystem::path &path)

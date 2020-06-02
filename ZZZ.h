@@ -60,7 +60,6 @@ public:
     }
     path_ = path;
     Tools::ReadVal(fp, count);
-    std::cout << "Getting " << count << " File Entries from : " << path << std::endl;
     data_.reserve(count);
     for (auto i = 0U; fp.is_open() && !fp.eof() && i < count; i++) {
       if ((data_.emplace_back(FileData(fp)).empty())) {
@@ -167,6 +166,19 @@ public:
     std::cout << '{' << name << ", " << zzz.path_ << "}\n";
     zzz.Test();
     // testFLPath(paths.FL(),paths.FI());
+  }
+
+  [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const ZZZ &data)
+  {
+    return os << '{' << data.Path().stem().string() << " zzz {"<< std::size(data.Data()) << " File Entries from : " << data.Path() << "}}";
+  }
+  [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const std::optional<ZZZ> &data)
+  {
+
+    if(data.has_value()) {
+      return os << data.value();
+    }
+    return os;
   }
 };
 

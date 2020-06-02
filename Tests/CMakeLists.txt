@@ -26,6 +26,14 @@ set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractZZZ Archive paths)
 
 #
+##Test Archives loading struct
+add_executable(TestArchives
+        TestArchives.h TestArchives.cpp)
+set_target_properties(TestArchives PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestArchives Archive paths)
+
+
+#
 ##test searching threw zzz contents and nested fi fl fs files.
 add_executable(TestExtractSingleZZZ
         TestExtractSingleZZZ.h TestExtractSingleZZZ.cpp)
