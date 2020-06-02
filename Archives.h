@@ -23,6 +23,7 @@ struct Archives
 {
 private:
   std::filesystem::path path_{};
+  std::string lang_{};
   FIFLFS<false> battle_{};
   FIFLFS<true> field_{};
   FIFLFS<false> magic_{};
@@ -39,7 +40,52 @@ private:
       static_for<First + 1, Last>(f);
     }
   }
+  void SetLang(const std::filesystem::path & path, const std::string_view & lang)
+  {
+    lang_ = lang;
+    using namespace std::string_literals;
+    if (std::empty(lang)) {
+      lang_ = [this, &path]() {
+             {
+               // try to read lang.dat from ff8 steam folder
+               const std::filesystem::path &langDatPath = path / "lang.dat";
+               if (std::filesystem::exists(langDatPath)) {
+                 std::ifstream fp = std::ifstream(langDatPath, std::ios::in);
+                 std::string returnValue{};
+                 fp.seekg(0, std::ios::end);
+                 returnValue.resize(static_cast<unsigned>((fp.tellg())));// sets to length.
+                 fp.seekg(0);
+                 fp.read(returnValue.data(), static_cast<signed>(returnValue.size()));
+                 fp.close();
+                 std::cout << "lang.dat detected: ";
+                 return returnValue;
+               }
+             }
+             // remaster stores the language value in my documents. I don't see a cross platform way to find this in cpp.
+             // will probably need a c# launcher to pass the lang code to this. As .Net has a standard cross platform
+             // way to get the documents folder.
+             // Documents\My Games\FINAL FANTASY VIII Remastered\Steam\(\d+)\config.txt
+             return "en"s; //defaulting to english
+      }();
+    }
+    std::cout << "lang = " << lang_ << '\n';
+  }
+  void SetPath(const std::filesystem::path & path)
+  {
+    using namespace std::string_literals;
+    assert(!std::empty(lang_));
+    path_ = path;
+    const std::filesystem::path &dataPath = path_ / "Data";
+    if (std::filesystem::exists(dataPath)) {
 
+      path_ = dataPath;
+      {
+        const std::filesystem::path &langFolderPath = path_ / ("lang-"s + lang_);
+        if (!std::empty(lang_) && std::filesystem::exists(langFolderPath))
+          path_ = langFolderPath;
+      }
+    }
+  }
   bool TryAdd(const ArchiveType &archiveType_, const std::filesystem::path &path)
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
     // returns nullptr on failure.
@@ -96,31 +142,6 @@ public:
       return ""sv;
     }
   }
-
-  //  constexpr static auto GetString(ArchiveType archiveType_)
-  //  {// this string can be compared to the stem of the filename to determine which archive is try added to.
-  //    // returns nullptr on failure.
-  //    using namespace std::literals;
-  //    switch (archiveType_) {
-  //    case ArchiveType::Battle:
-  //      return GetString<ArchiveType::Battle>();
-  //    case ArchiveType::Field:
-  //      return GetString<ArchiveType::Field>();
-  //    case ArchiveType::Magic:
-  //      return GetString<ArchiveType::Magic>();
-  //    case ArchiveType::Main:
-  //      return GetString<ArchiveType::Main>();
-  //    case ArchiveType::Menu:
-  //      return GetString<ArchiveType::Menu>();
-  //    case ArchiveType::World:
-  //      return GetString<ArchiveType::World>();
-  //    case ArchiveType::ZZZMain:
-  //      return GetString<ArchiveType::ZZZMain>();
-  //    case ArchiveType::ZZZOther:
-  //      return GetString<ArchiveType::ZZZOther>();
-  //    }
-  //    return ""sv;
-  //  }
   template<ArchiveType archiveType_> const auto &Get() const noexcept
   {
     if constexpr (archiveType_ == ArchiveType::Battle) {
@@ -144,63 +165,24 @@ public:
     }
   }
   Archives() = default;
-  explicit Archives(const std::filesystem::path &path)
+  explicit Archives(const std::filesystem::path &path, const std::string_view & lang = "")
   {
-    path_ = path;
-    {
-      using namespace std::string_literals;
-      const std::filesystem::path &dataPath = path_ / "Data";
-      if (std::filesystem::exists(dataPath)) {
-        std::string lang = [this]() {
-          {
-            const std::filesystem::path &langDatPath = path_ / "lang.dat";
-            if (std::filesystem::exists(langDatPath)) {
-              std::ifstream fp = std::ifstream(langDatPath, std::ios::in);
-              std::string returnValue{};
-              fp.seekg(0, std::ios::end);
-              returnValue.resize(static_cast<unsigned>((fp.tellg())));
-              fp.seekg(0);
-              fp.read(returnValue.data(), static_cast<signed>(returnValue.size()));
-              fp.close();
-              std::cout << "lang.dat = " << returnValue << '\n';
-              return returnValue;
-            }
-          }
-          return ""s;
-        }();
-        path_ = dataPath;
-        if (!std::empty(lang))
-          path_ /= ("lang-"s + lang);
-      }
-    }
-    //    static constexpr auto values = std::array<ArchiveType, 8>{ { ArchiveType::Battle,
-    //      ArchiveType::Field,
-    //      ArchiveType::Magic,
-    //      ArchiveType::Main,
-    //      ArchiveType::Menu,
-    //      ArchiveType::World,
-    //      ArchiveType::ZZZMain,
-    //      ArchiveType::ZZZOther } };
-    const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
+    SetLang(path, lang);
+    SetPath(path);
 
+    const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
     for (const auto &fileEntry : std::filesystem::directory_iterator(path_, options))// todo may need sorted.
     {
-
-      static_for<static_cast<int>(ArchiveType::Field), static_cast<int>(ArchiveType::ZZZOther)>(
-        [&fileEntry, this](const ArchiveType &test, const auto &stem) {
-          const auto &localPath = fileEntry.path();
-          if (!(localPath.has_stem() && OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
-            return;
-          }
-          TryAdd(test, fileEntry.path());
-        });
-      //      for (const auto &i : values) {
-      //        if (fileEntry.path().has_stem() && OpenVIII::Tools::iEquals(GetString(i),
-      //        fileEntry.path().stem().string())
-      //            && TryAdd(i, path_)) {
-      //          break;
-      //        }
-      //      }
+      const auto &localPath = fileEntry.path();
+      if (localPath.has_stem()) {
+        static_for<static_cast<int>(ArchiveType::Field), static_cast<int>(ArchiveType::ZZZOther)>(
+          [&localPath, this](const ArchiveType &test, const auto &stem) {
+            if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
+              return;
+            }
+            TryAdd(test, localPath);
+          });
+      }
     }
   }
 };// namespace OpenVIII::Archive
