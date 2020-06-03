@@ -51,14 +51,20 @@ private:
           const std::filesystem::path &langDatPath = path / "lang.dat";
           if (std::filesystem::exists(langDatPath)) {
             std::ifstream fp = std::ifstream(langDatPath, std::ios::in);
-            std::string returnValue{};
-            fp.seekg(0, std::ios::end);
-            returnValue.resize(static_cast<unsigned>((fp.tellg())));// sets to length.
-            fp.seekg(0);
-            fp.read(returnValue.data(), static_cast<signed>(returnValue.size()));
+            if (fp.is_open()) {
+              fp.seekg(0, std::ios::end);
+              const auto &length = fp.tellg();
+              if (length <= 0) {
+                std::string returnValue{};
+                returnValue.resize(static_cast<unsigned>(length));// sets to length.
+                fp.seekg(0);
+                fp.read(returnValue.data(), length);
+                fp.close();
+                std::cout << "lang.dat detected: ";
+                return returnValue;
+              }
+            }
             fp.close();
-            std::cout << "lang.dat detected: ";
-            return returnValue;
           }
         }
         // remaster stores the language value in my documents. I don't see a cross platform way to find this in cpp.
@@ -86,11 +92,16 @@ private:
       }
     }
   }
-  bool TryAdd(const ArchiveType &archiveType_, const std::filesystem::path &path, const std::filesystem::path & nestedPath="", const size_t &offset = 0, const size_t &size = 0U )
+  bool TryAdd(const ArchiveType &archiveType_,
+    const std::filesystem::path &path,
+    const std::filesystem::path &nestedPath = "",
+    const size_t &offset = 0,
+    const size_t &size = 0U)
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
     // returns nullptr on failure.
 
-    const auto tryAddToFIFLFS = [&path,&nestedPath,&offset,&size](auto &archive) { return archive.TryAdd(path,nestedPath,offset,size) != 0; };
+    const auto tryAddToFIFLFS = [&path, &nestedPath, &offset, &size](
+                                  auto &archive) { return archive.TryAdd(path, nestedPath, offset, size) != 0; };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
       if (path.has_extension() && Tools::iEquals(path.extension().string(), ZZZ::Ext)) {
         archive.emplace(ZZZ(path));
@@ -128,18 +139,18 @@ private:
                 && !Tools::iStartsWith(pathString, langStarting.string())) {
               continue;
             }
-//            std::cout<< pathString << '\n';
-//            std::cout << "  " << path << '\n';
-//            std::cout << "  " << dataItem.Offset() << '\n';
-//            std::cout << "  " << dataItem.UncompressedSize() << '\n';
+            //            std::cout<< pathString << '\n';
+            //            std::cout << "  " << path << '\n';
+            //            std::cout << "  " << dataItem.Offset() << '\n';
+            //            std::cout << "  " << dataItem.UncompressedSize() << '\n';
             auto localPath = std::filesystem::path(pathString);
             static_for<static_cast<int>(ArchiveType::Battle), static_cast<int>(ArchiveType::World)>(
-              [&localPath, &dataItem,&path, this](const ArchiveType &test, const auto &stem) {
-                     if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
-                       return;
-                     }
+              [&localPath, &dataItem, &path, this](const ArchiveType &test, const auto &stem) {
+                if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
+                  return;
+                }
 
-                     TryAdd(test, path, localPath, dataItem.Offset(), dataItem.UncompressedSize());
+                TryAdd(test, path, localPath, dataItem.Offset(), dataItem.UncompressedSize());
               });
           }
         }
