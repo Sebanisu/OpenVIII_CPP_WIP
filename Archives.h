@@ -104,7 +104,7 @@ private:
                                   auto &archive) { return archive.TryAdd(path, nestedPath, offset, size) != 0; };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
       if (path.has_extension() && Tools::iEquals(path.extension().string(), ZZZ::Ext)) {
-        archive.emplace(ZZZ(path));
+        archive.emplace(path);
         return true;
       }
       return false;
