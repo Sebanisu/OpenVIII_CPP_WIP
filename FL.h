@@ -81,7 +81,13 @@ public:
         std::basic_string<char> innerPath;
         for (unsigned int id = 0;
              (count == 0U || vector.size() < count) && (size == 0U || cont.tellg() < static_cast<long>(size + offset))
-             && std::getline(cont, innerPath, '\n');
+             && [&innerPath, &cont]() -> bool {
+                    if (cont.seekg(3, std::ios::cur)) {
+                      /* skip c:\ */
+                      return static_cast<bool>(std::getline(cont, innerPath));
+                    }
+                    return false;
+             }();
              id++) {
           if (!std::empty(needle)
               && !std::any_of(needle.begin(), needle.end(), [&innerPath](const std::string_view &innerNeedle) {
@@ -90,7 +96,13 @@ public:
             continue;
           }
 
-          CleanString(vector.emplace_back(std::make_pair(id, std::move(innerPath))).second, data.empty());
+          // https://youtu.be/oTMSgI1XjF8?t=1727
+          CleanString(
+            vector
+              .emplace_back(
+                std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(std::move(innerPath)))
+              .second,
+            data.empty());
           innerPath = {};
         }
       }
@@ -145,8 +157,16 @@ public:
 
     fp.seekg(static_cast<long>(offset));
     std::string innerPath;
+    fp.seekg(3, std::ios::cur);
     for (unsigned int i = 0; (count == 0U || i < count) && (size == 0U || fp.tellg() < static_cast<long>(size + offset))
-                             && std::getline(fp, innerPath);
+                               && [&innerPath, &fp]() -> bool {
+           if (fp.seekg(3, std::ios::cur)) {
+             /* skip c:\ */
+             return static_cast<bool>(std::getline(fp, innerPath));
+           }
+           return false;
+         }();
+
          i++) {
       if (!std::empty(needle)
           && std::any_of(needle.begin(), needle.end(), [&innerPath](const std::string_view &innerNeedle) {
@@ -160,14 +180,14 @@ public:
     }
     fp.close();
     return std::make_pair(0U, std::string(""));
-}
-static void CleanBuffer(std::string & buffer)
-{
-  // remove carriage returns
-  buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
-  // change slashes to preferred
-  Tools::replaceSlashes(buffer);
-}
+  }
+  static void CleanBuffer(std::string &buffer)
+  {
+    // remove carriage returns
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
+    // change slashes to preferred
+    Tools::replaceSlashes(buffer);
+  }
 };// namespace OpenVIII::Archive
 // namespace OpenVIII::Archive
 }// namespace OpenVIII::Archive

@@ -254,7 +254,7 @@ public:
         if (archive.AllSet()) {// todo confirm basename matches right now i'm assuming the 3 files are together.
           // todo check for language codes to choose correct files
           // auto key = archive.GetBaseName();
-          tmp.emplace_back(std::make_pair(archive.GetBaseName(), std::move(archive)));
+          tmp.emplace_back(std::piecewise_construct,std::forward_as_tuple(archive.GetBaseName()), std::forward_as_tuple(std::move(archive)));
           archive = {};
         }
       }

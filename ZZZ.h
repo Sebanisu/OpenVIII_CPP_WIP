@@ -62,7 +62,7 @@ public:
     Tools::ReadVal(fp, count);
     data_.reserve(count);
     for (auto i = 0U; fp.is_open() && !fp.eof() && i < count; i++) {
-      if ((data_.emplace_back(FileData(fp)).empty())) {
+      if ((data_.emplace_back(fp).empty())) {
         std::cerr << "empty element detected and removed\n";
         data_.pop_back();
       }
@@ -103,17 +103,22 @@ public:
         const auto &item = *cur;
         const auto &[strPath, zzzOffset, zzzSize] = item.GetTuple();
         {
-          const auto &next =
-            cur + 1 < end && (FIFLFS<true>::CheckExtension((*(cur + 1)).GetPathString()) != 0) ? *(cur + 1) : FileData();
-          const auto &prev =
-            cur - 1 > beg && (FIFLFS<true>::CheckExtension((*(cur - 1)).GetPathString()) != 0) ? *(cur - 1) : FileData();
+          const auto &next = cur + 1 < end && (FIFLFS<true>::CheckExtension((*(cur + 1)).GetPathString()) != 0)
+                               ? *(cur + 1)
+                               : FileData();
+          const auto &prev = cur - 1 > beg && (FIFLFS<true>::CheckExtension((*(cur - 1)).GetPathString()) != 0)
+                               ? *(cur - 1)
+                               : FileData();
           // getting a prev and next element to check vs cur item. To make sure at least 2 of them match so we don't add
           // an orphan to the FIFLFS archive.
           std::cout << '{' << zzzOffset << ", " << zzzSize << ", " << strPath << "}\n";
           if ((FIFLFS<true>::CheckExtension(strPath) != 0)
-              && ((!next.empty() && FIFLFS<true>::GetBaseName(strPath) == FIFLFS<true>::GetBaseName(next.GetPathString())) ||
+              && ((!next.empty()
+                    && FIFLFS<true>::GetBaseName(strPath) == FIFLFS<true>::GetBaseName(next.GetPathString()))
+                  ||
 
-                  (!prev.empty() && FIFLFS<true>::GetBaseName(strPath) == FIFLFS<true>::GetBaseName(prev.GetPathString())))) {
+                  (!prev.empty()
+                    && FIFLFS<true>::GetBaseName(strPath) == FIFLFS<true>::GetBaseName(prev.GetPathString())))) {
 
             std::filesystem::path fsPath(strPath);
             {
@@ -142,20 +147,20 @@ public:
 
     auto tmp = ZZZmap();
     tmp.reserve(2);// main and other
-    auto archive = OpenVIII::Archive::ZZZ();
     int i{};
     for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
       if (!(fileEntry.path().has_extension() && Tools::iEquals(fileEntry.path().extension().string(), Ext))) {
         continue;
       }
       // todo check for language codes to choose correct files
-      auto basename = fileEntry.path().filename().stem().string();
-      if (std::empty(basename)) {
-        tmp.emplace_back(std::make_pair("__" + std::to_string(i++), std::move(archive)));
+
+      auto &pair = tmp.emplace_back(std::piecewise_construct,
+        std::forward_as_tuple(fileEntry.path().filename().stem().string()),
+        std::forward_as_tuple(fileEntry));
+      if (std::empty(pair.first)) {
+        pair.first = "__" + std::to_string(i++);
       }
-      std::transform(basename.begin(), basename.end(), basename.begin(), ::toupper);
-      archive = OpenVIII::Archive::ZZZ(fileEntry);
-      tmp.emplace_back(std::make_pair(basename, archive));
+      std::transform(pair.first.begin(), pair.first.end(), pair.first.begin(), ::toupper);
     }
     tmp.shrink_to_fit();
     return tmp;
@@ -170,12 +175,13 @@ public:
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const ZZZ &data)
   {
-    return os << '{' << data.Path().stem().string() << " zzz {"<< std::size(data.Data()) << " File Entries from : " << data.Path() << "}}";
+    return os << '{' << data.Path().stem().string() << " zzz {" << std::size(data.Data())
+              << " File Entries from : " << data.Path() << "}}";
   }
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const std::optional<ZZZ> &data)
   {
 
-    if(data.has_value()) {
+    if (data.has_value()) {
       return os << data.value();
     }
     return os;
