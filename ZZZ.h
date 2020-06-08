@@ -52,7 +52,7 @@ public:
       return;
     }
 
-    unsigned int count{};
+    std::uint32_t count{};
     auto fp = std::ifstream(path, std::ios::binary | std::ios::in);
     if (!fp.is_open()) {
       fp.close();

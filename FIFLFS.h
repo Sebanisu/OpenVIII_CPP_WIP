@@ -87,7 +87,7 @@ public:
               << str(data.fl_) << ", " << str(data.fs_) << "}}";
   }
 
-  [[nodiscard]] Archive::FI GetEntry(const unsigned int &id) const
+  [[nodiscard]] Archive::FI GetEntryIndex(const unsigned int &id) const
   {
     if (count_ == 0 || id < count_) {
       if (!fi_.data.empty()) {
@@ -191,7 +191,7 @@ public:
       const auto &[id, strVirtualPath] = item;
       // std::cout << "TryAddNested: {" << id << ", " << strVirtualPath << "}\n";
 
-      auto fi = GetEntry(id);
+      auto fi = GetEntryIndex(id);
       {
         char retVal = [this, &archive, &strVirtualPath, &fi]() {
           std::filesystem::path virtualPath(strVirtualPath);
@@ -254,7 +254,9 @@ public:
         if (archive.AllSet()) {// todo confirm basename matches right now i'm assuming the 3 files are together.
           // todo check for language codes to choose correct files
           // auto key = archive.GetBaseName();
-          tmp.emplace_back(std::piecewise_construct,std::forward_as_tuple(archive.GetBaseName()), std::forward_as_tuple(std::move(archive)));
+          tmp.emplace_back(std::piecewise_construct,
+            std::forward_as_tuple(archive.GetBaseName()),
+            std::forward_as_tuple(std::move(archive)));
           archive = {};
         }
       }
@@ -316,6 +318,39 @@ public:
       }
     }
     return {};
+  }
+  template<typename outT = std::vector<char>>
+  [[nodiscard]] outT GetEntryData(const OpenVIII::Archive::FI & fi) const
+  {
+    return  [this, &fi]() {
+           if(std::empty(fs_.data)) {
+             return OpenVIII::Archive::FS::GetEntry<outT>(fs_.path, fi, fs_.offset);
+           }
+           return OpenVIII::Archive::FS::GetEntry<outT>(fs_.data,fi,fs_.offset);
+    }();
+  }
+  template<typename outT = std::vector<char>>[[nodiscard]] outT GetEntryData(const std::string_view &filename) const
+  {
+    const auto &[id, path] = [this, &filename]() {
+      if (std::empty(fl_.data)) {
+        return OpenVIII::Archive::FL::GetEntry(fl_.path, { filename }, fl_.offset, fl_.size, count_);
+      }
+      return OpenVIII::Archive::FL::GetEntryData(fl_.path, fl_.data, { filename }, fl_.offset, fl_.size, count_);
+    }();
+
+//    const auto &fi = [this, &filename, &id]() {
+//      if (std::empty(fi_.data)) {
+//        return OpenVIII::Archive::FI(fi_.path, id, fi_.offset);
+//      }
+//      return OpenVIII::Archive::FI(fi_.data, id, fi_.offset);
+//    }();
+    return GetEntryData<outT>(GetEntryIndex(id));
+//    return  [this, &filename, &fi]() {
+//      if(std::empty(fs_.data)) {
+//        return OpenVIII::Archive::FS::GetEntry(fs_.path, fi, fs_.offset);
+//      }
+//      return OpenVIII::Archive::FS::GetEntry(fs_.data,fi,fs_.offset);
+//    }();
   }
 };
 

@@ -23,7 +23,7 @@
 #include <algorithm>
 #include "External/VIIITools/Tools.h"
 namespace OpenVIII::Archive {
-enum class CompressionTypeT : unsigned int {
+enum class CompressionTypeT : std::uint32_t {
   None = 0,
   LZSS = 1,
   LZ4 = 2,
@@ -37,8 +37,8 @@ struct FI
 {
   // changed to int because libraries require casting to int anyway.
 private:
-  unsigned int uncompressedSize_{};
-  unsigned int offset_{};
+  std::uint32_t uncompressedSize_{};
+  std::uint32_t offset_{};
   CompressionTypeT compressionType_{ CompressionTypeT::None };
 
   [[nodiscard]] constexpr static size_t GetStartOffset(const unsigned int &id, const size_t &offset = 0U)
