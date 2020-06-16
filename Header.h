@@ -424,6 +424,59 @@ enum class Element : std::uint8_t {
   Water = 0x40,
   Holy = 0x80,
 };
+enum class AttackFlags : uint8_t
+{
+  None = 0x0,
+  Shelled = 0x1,
+  Unk0X2 = 0x2,
+  Unk0X4 = 0x4,
+  BreakDamageLimit = 0x8,
+  Reflected = 0x10,
+  Unk0X20 = 0x20,
+  Unk0X40 = 0x40,
+  Revive = 0x80
+}
+/* https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/Resources/Attack_Type_List.txt"/> */
+enum class AttackType : uint8_t
+{
+  None,
+  PhysicalAttack,
+  MagicAttack,
+  CurativeMagic,
+  CurativeItem,
+  Revive,
+  ReviveAtFullHP,
+  PhysicalDamage,
+  MagicDamage,
+  RenzokukenFinisher,
+  SquallGunbladeAttack,
+  GF,
+  Scan,
+  LvDown,
+  SummonItem,
+  GFIgnoreTargetSPR,
+  LvUp,
+  Card,
+  Kamikaze,
+  Devour,
+  GFDamage,
+  Unknown1,
+  MagicAttackIgnoreTargetSPR,
+  AngeloSearch,
+  MoogleDance,
+  WhiteWindQuistis,
+  LvAttack,
+  FixedDamage,
+  TargetCurrentHP1,
+  FixedMagicDamageBasedOnGFLevel,
+  Unknown2,
+  Unknown3,
+  GivePercentageHP,
+  Unknown4,
+  EveryoneGrudge,
+  OneHPDamage,
+  PhysicalAttackIgnoreTargetVIT
+}
 struct EncodedStringOffset
 {
 private:
@@ -562,6 +615,51 @@ public:
   [[nodiscard]] T &Tonberry() const noexcept { return Tonberry_; }
   [[nodiscard]] T &Eden() const noexcept { return Eden_; }
 };
+
+enum class BattleOnlyStatuses : uint32_t
+{
+  None = 0x0, Sleep = 0x1, Haste = 0x2, Slow = 0x4, Stop = 0x8, Regen = 0x10,
+  Protect = 0x20, Shell = 0x40, Reflect = 0x80, Aura = 0x100, Curse = 0x200,
+  Doom = 0x400, Invincible = 0x800, Petrifying = 0x1000, Float = 0x2000,
+  Confuse = 0x4000, Drain = 0x8000, Eject = 0x10000, Double = 0x20000,
+  Triple = 0x40000, Defend = 0x80000, Unk0X100000 = 0x100000, Unk0X200000 = 0x200000,
+  Charged = 0x400000, BackAttack = 0x800000, Vit0 = 0x1000000, AngelWing = 0x2000000,
+  Unk0X4000000 = 0x4000000, Unk0X8000000 = 0x8000000, Unk0X10000000 = 0x10000000,
+  Unk0X20000000 = 0x20000000, HasMagic = 0x40000000, SummonGF = 0x80000000,
+}
+
+enum class PersistentStatuses : uint16_t
+{
+  None = 0x00, Death = 0x01, Poison = 0x02, Petrify = 0x04,
+  Darkness = 0x08, Silence = 0x10, Berserk = 0x20, Zombie = 0x40, Unk0X0080 = 0x80,
+  Unk0X0100 = 0x0100,
+  Unk0X0200 = 0x0200,
+  Unk0X0400 = 0x0400,
+  Unk0X0800 = 0x0800,
+  Unk0X1000 = 0x1000,
+  Unk0X2000 = 0x2000,
+  Unk0X4000 = 0x4000,
+  Unk0X8000 = 0x8000,
+}
+
+enum class JunctionStatuses : uint16_t
+{
+  None = 0x0,
+  Death = 0x1,
+  Poison = 0x2,
+  Petrify = 0x4,
+  Darkness = 0x8,
+  Silence = 0x10,
+  Berserk = 0x20,
+  Zombie = 0x40,
+  Sleep = 0x80,
+  Slow = 0x100,
+  Stop = 0x200,
+  // Curse; unused for attack
+  Curse = 0x400,
+  Confusion = 0x800,
+  Drain = 0x1000,
+}
 struct Magic
 {
   /*
@@ -623,27 +721,27 @@ private:
   EncodedStringOffset descriptionOffset_{};
   uint16_t magicID_{};
   uint8_t unknown0_{};
-  uint8_t attackType_{};
+  AttackType attackType_{};
   uint8_t spellPower_{};
   uint8_t unknown1_{};
   Target target_{};
-  uint8_t attackFlags_;
+  AttackFlags attackFlags_;
   uint8_t drawResist_{};
   uint8_t hitCount_{};
-  Element elements_{};
+  Element element_{};
   uint8_t unknown2_{};
-  uint32_t statuses1_{};
-  uint16_t statuses0_{};
+  BattleOnlyStatuses statuses1_{};
+  PersistentStatuses statuses0_{};
   uint8_t statusAttack_{};
   StatGroup<uint8_t> Junction_{};
-  uint8_t JElemAttackFlag_{};
+  Element JElemAttackFlag_{};
   uint8_t JElemAttackValue_{};
-  uint8_t JElemDefenseFlag_{};
+  Element JElemDefenseFlag_{};
   uint8_t JElemDefenseValue_{};
   uint8_t JStatusAttackValue_{};
   uint8_t JStatusDefenseValue_{};
-  uint16_t JStatusesAttackFlag_{};
-  uint16_t JStatusesDefendFlag_{};
+  JunctionStatuses JStatusesAttackFlag_{};
+  JunctionStatuses JStatusesDefendFlag_{};
   GFGroup<uint8_t> compatibility_{};
   uint16_t unknown3_{};
 
@@ -1602,8 +1700,8 @@ public:
   {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
     if constexpr (First < Count) {
       constexpr auto sectionType = std::integral_constant<SectionTypes, static_cast<SectionTypes>(First)>{};
-      const auto & data = GetSectionData<sectionType>();
-        f(GetSectionName<sectionType>(), GetSpan<sectionType>(), data);
+      const auto &data = GetSectionData<sectionType>();
+      f(GetSectionName<sectionType>(), GetSpan<sectionType>(), data);
 
       static_for<First + 1, Count>(f);
     }
