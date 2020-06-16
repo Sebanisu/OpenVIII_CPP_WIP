@@ -9,7 +9,7 @@
 #define VIIIARCHIVE_ARCHIVES_H
 namespace OpenVIII::Archive {
 // There are 6 main FIFLFS archives and 2 main zzz archives for ff8 and ff8 remaster.
-enum class ArchiveType {
+enum class ArchiveTypeT : std::int8_t {
   Battle,
   Field,
   Magic,
@@ -35,7 +35,7 @@ private:
   template<int First, int Last, typename Lambda> void static_for(Lambda const &f)
   {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
     if constexpr (First <= Last) {
-      constexpr auto archiveType_ = std::integral_constant<ArchiveType, static_cast<ArchiveType>(First)>{};
+      constexpr auto archiveType_ = std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(First)>{};
       f(archiveType_, GetString<archiveType_>());
       static_for<First + 1, Last>(f);
     }
@@ -92,7 +92,7 @@ private:
       }
     }
   }
-  bool TryAdd(const ArchiveType &archiveType_,
+  bool TryAdd(const ArchiveTypeT &archiveType_,
     const std::filesystem::path &path,
     const std::filesystem::path &nestedPath = "",
     const size_t &offset = 0,
@@ -110,19 +110,19 @@ private:
       return false;
     };
     switch (archiveType_) {
-    case ArchiveType::Battle:
+    case ArchiveTypeT::Battle:
       return tryAddToFIFLFS(battle_);
-    case ArchiveType::Field:
+    case ArchiveTypeT::Field:
       return tryAddToFIFLFS(field_);
-    case ArchiveType::Magic:
+    case ArchiveTypeT::Magic:
       return tryAddToFIFLFS(magic_);
-    case ArchiveType::Main:
+    case ArchiveTypeT::Main:
       return tryAddToFIFLFS(main_);
-    case ArchiveType::Menu:
+    case ArchiveTypeT::Menu:
       return tryAddToFIFLFS(menu_);
-    case ArchiveType::World:
+    case ArchiveTypeT::World:
       return tryAddToFIFLFS(world_);
-    case ArchiveType::ZZZMain: {
+    case ArchiveTypeT::ZZZMain: {
       if (tryAddToZZZ(zzzMain_)) {
         using namespace std::string_literals;
         for (const auto &dataItem : zzzMain_->Data()) {
@@ -144,8 +144,8 @@ private:
             //            std::cout << "  " << dataItem.Offset() << '\n';
             //            std::cout << "  " << dataItem.UncompressedSize() << '\n';
             auto localPath = std::filesystem::path(pathString);
-            static_for<static_cast<int>(ArchiveType::Battle), static_cast<int>(ArchiveType::World)>(
-              [&localPath, &dataItem, &path, this](const ArchiveType &test, const auto &stem) {
+            static_for<static_cast<int>(ArchiveTypeT::Battle), static_cast<int>(ArchiveTypeT::World)>(
+              [&localPath, &dataItem, &path, this](const ArchiveTypeT &test, const auto &stem) {
                 if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
                   return;
                 }
@@ -158,52 +158,52 @@ private:
       }
       return false;
     }
-    case ArchiveType::ZZZOther:
+    case ArchiveTypeT::ZZZOther:
       return tryAddToZZZ(zzzOther_);
     }
     return false;
   }
 
 public:
-  template<ArchiveType archiveType_> constexpr static auto GetString()
+  template<ArchiveTypeT archiveType_> constexpr static auto GetString()
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
     // returns nullptr on failure.
     using namespace std::literals;
-    if constexpr (archiveType_ == ArchiveType::Battle) {
+    if constexpr (archiveType_ == ArchiveTypeT::Battle) {
       return "BATTLE"sv;
-    } else if constexpr (archiveType_ == ArchiveType::Field) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::Field) {
       return "FIELD"sv;
-    } else if constexpr (archiveType_ == ArchiveType::Magic) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::Magic) {
       return "MAGIC"sv;
-    } else if constexpr (archiveType_ == ArchiveType::Main || archiveType_ == ArchiveType::ZZZMain) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::Main || archiveType_ == ArchiveTypeT::ZZZMain) {
       return "MAIN"sv;
-    } else if constexpr (archiveType_ == ArchiveType::Menu) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::Menu) {
       return "MENU"sv;
-    } else if constexpr (archiveType_ == ArchiveType::World) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::World) {
       return "WORLD"sv;
-    } else if constexpr (archiveType_ == ArchiveType::ZZZOther) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::ZZZOther) {
       return "OTHER"sv;
     } else {
       return ""sv;
     }
   }
-  template<ArchiveType archiveType_> const auto &Get() const noexcept
+  template<ArchiveTypeT archiveType_> const auto &Get() const noexcept
   {
-    if constexpr (archiveType_ == ArchiveType::Battle) {
+    if constexpr (archiveType_ == ArchiveTypeT::Battle) {
       return battle_;
-    } else if constexpr (archiveType_ == ArchiveType::Field) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::Field) {
       return field_;
-    } else if constexpr (archiveType_ == ArchiveType::Magic) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::Magic) {
       return magic_;
-    } else if constexpr (archiveType_ == ArchiveType::Main) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::Main) {
       return main_;
-    } else if constexpr (archiveType_ == ArchiveType::Menu) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::Menu) {
       return menu_;
-    } else if constexpr (archiveType_ == ArchiveType::World) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::World) {
       return world_;
-    } else if constexpr (archiveType_ == ArchiveType::ZZZMain) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::ZZZMain) {
       return zzzMain_;
-    } else if constexpr (archiveType_ == ArchiveType::ZZZOther) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::ZZZOther) {
       return zzzOther_;
     } else {
       return nullptr;
@@ -220,8 +220,8 @@ public:
     {
       const auto &localPath = fileEntry.path();
       if (localPath.has_stem()) {
-        static_for<static_cast<int>(ArchiveType::Battle), static_cast<int>(ArchiveType::ZZZOther)>(
-          [&localPath, this](const ArchiveType &test, const auto &stem) {
+        static_for<static_cast<int>(ArchiveTypeT::Battle), static_cast<int>(ArchiveTypeT::ZZZOther)>(
+          [&localPath, this](const ArchiveTypeT &test, const auto &stem) {
             if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
               return;
             }
