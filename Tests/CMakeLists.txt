@@ -42,6 +42,6 @@ target_link_libraries(TestExtractSingleZZZ Archive paths)
 
 ##test kernel.bin
 add_executable(TestKernel
-        TestKernel.cpp TestKernel.h ../Kernel.cpp ../Kernel.h)
+        TestKernel.cpp TestKernel.h ../Header.cpp ../Header.h)
 set_target_properties(TestKernel PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestKernel Archive paths)

@@ -13,7 +13,7 @@
 #include "TestKernel.h"
 #include "../Archives.h"
 #include "paths.h"
-#include "../Kernel.h"
+#include "../Header.h"
 int main()
 {
   for (auto path : Paths::get()) {
@@ -25,12 +25,51 @@ int main()
     const auto archives = OpenVIII::Archive::Archives(path);
     [[maybe_unused]] const auto &main = archives.Get<OpenVIII::Archive::ArchiveType::Main>();
     std::cout << main << std::endl;
-    auto kernel = Kernel{ main };
+    auto kernel = OpenVIII::Kernel::Header{ main };
     [[maybe_unused]] const auto &buffer = kernel.Buffer();
     std::cout << "kernel.bin " << buffer.size() << " bytes; " << kernel.SectionCount() << " section count\n";
-    const auto &sectionOffsets = kernel.SectionOffsets();
-    std::for_each(
-      sectionOffsets.begin(), sectionOffsets.end(),[](const auto &value) { std::cout << value << std::endl; });
+    std::cout << static_cast<int>(OpenVIII::Kernel::SectionTypes::Count) << std::endl;
+    //    const auto &sectionOffsets = kernel.SectionOffsets();
+    //    std::for_each(
+    //      sectionOffsets.begin(), sectionOffsets.end(),[](const auto &value) { std::cout << value << std::endl; });
+    kernel.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypes::First),
+      static_cast<int>(OpenVIII::Kernel::SectionTypes::Count)>([](auto string, auto span, auto data) {
+      std::cout << "  " << string << " - " << std::size(span) << " bytes\n";
+
+      return data;
+    });
+    kernel.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypes::First),
+      static_cast<int>(OpenVIII::Kernel::SectionTypes::Count)>([](auto string, auto span, auto data) {
+      if constexpr (!std::is_null_pointer_v<decltype(
+                      data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
+        std::cout << string << " ( " << std::size(span) << "bytes) has " << data.Count() << " entries\n";
+        for (size_t i = 0; i < data.Count(); i++) {
+          auto entry = data.GetEntry(i);
+          std::cout << i << ": ";
+          entry.Out(std::cout, data.TextSpan());
+          std::cout << '\n';
+        }
+      }
+    });
+    //    {
+    //
+    //      auto data = kernel.GetSectionData<OpenVIII::Kernel::SectionTypes::First>();
+    //      std::cout << kernel.GetSectionName<OpenVIII::Kernel::SectionTypes::First>() << " has " << data.Count()
+    //                << " entries\n";
+    //      for (size_t i = 0; i < data.Count(); i++) {
+    //        auto entry = data.GetEntry(i);
+    //        std::cout<< i<<": ";
+    //        auto name = entry.DecodedName(data.TextSpan());
+    //        auto description = entry.DecodedDescription(data.TextSpan());
+    //        if(!std::empty(name)) {
+    //          std::cout << name;
+    //        }
+    //        if(!std::empty(description)) {
+    //          std::cout << ", " << description;
+    //        }
+    //        std::cout<< '\n';
+    //      }
+    //    }
   }
   return 0;
 }

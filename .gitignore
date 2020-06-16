@@ -1,12 +1,9 @@
-
-.vs/FIFIFLArchive/v16/.suo
 *.ipch
 *.db
 *.sqlite
 .vs/CMake Overview
 cmake-build-*/
 */build/
-.vs/VIIIcppTest/v16/.suo
 *.opendb
 .idea/workspace.xml
 .idea/codeStyles/codeStyleConfig.xml
@@ -15,3 +12,4 @@ cmake-build-*/
 .idea/modules.xml
 .idea/vcs.xml
 .idea/VIIIcppTest.iml
+.vs/*
