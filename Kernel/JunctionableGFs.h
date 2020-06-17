@@ -133,57 +133,98 @@ struct JunctionableGFs
      * 0x0083	1 byte	Level Mod (used in damage formula)
      */
 private:
-  EncodedStringOffset nameOffset_{};
-  EncodedStringOffset descriptionOffset_{};
-
-  std::uint16_t	magicID_{};
-  AttackTypeT attackType_{};
-  std::uint8_t	gfPower_{};
-  std::uint16_t	unknown0_{};
-  AttackFlagsT	attackFlags_{};
-  std::uint8_t	unknown1_{};
-  std::uint8_t	unknown1b_{};
-  ElementT	element_{};
-  PersistentStatusesT	PersistentStatuses_{};
-  BattleOnlyStatusesT	BattleOnlyStatuses_{};
-  std::uint8_t	gfHPModifier_{};
-  std::uint8_t	unknown2_{};
-  std::uint8_t	unknown3_{};
-  std::uint8_t	unknown4_{};
-  std::uint8_t	unknown5_{};
-  std::uint8_t	unknown6_{};
-  std::uint8_t	unknown7_{};
-  std::uint8_t	statusAttackEnabler_{};
-    UnlockableAbility unlockableAbility1{};
-    UnlockableAbility unlockableAbility2{};
-    UnlockableAbility unlockableAbility3{};
-    UnlockableAbility unlockableAbility4{};
-    UnlockableAbility unlockableAbility5{};
-    UnlockableAbility unlockableAbility6{};
-
-    UnlockableAbility unlockableAbility7{};
-    UnlockableAbility unlockableAbility8{};
-    UnlockableAbility unlockableAbility9{};
-    UnlockableAbility unlockableAbility10{};
-    UnlockableAbility unlockableAbility11{};
-    UnlockableAbility unlockableAbility12{};
-    UnlockableAbility unlockableAbility13{};
-    UnlockableAbility unlockableAbility14{};
-    UnlockableAbility unlockableAbility15{};
-    UnlockableAbility unlockableAbility16{};
-    UnlockableAbility unlockableAbility17{};
-    UnlockableAbility unlockableAbility18{};
-    UnlockableAbility unlockableAbility19{};
-    UnlockableAbility unlockableAbility20{};
-    UnlockableAbility unlockableAbility21{};
-  GFGroup<std::uint8_t>	compatibility_{};
-  std::uint16_t	unknown8_{};
-  std::uint8_t	powerMod_{};
-  std::uint8_t	levelMod_{};
+EncodedStringOffset nameOffset_{};
+EncodedStringOffset descriptionOffset_{};
+std::uint16_t magicID_{};
+AttackTypeT attackType_{};
+std::uint8_t gfPower_{};
+std::uint16_t unknown0_{};
+AttackFlagsT attackFlags_{};
+std::uint8_t unknown1_{};
+std::uint8_t unknown2_{};
+ElementT element_{};
+PersistentStatusesT PersistentStatuses_{};
+BattleOnlyStatusesT BattleOnlyStatuses_{};
+std::uint8_t gfHPModifier_{};
+std::uint8_t unknown3_{};
+std::uint8_t unknown4_{};
+std::uint8_t unknown5_{};
+std::uint8_t unknown6_{};
+std::uint8_t unknown7_{};
+std::uint8_t unknown8_{};
+std::uint8_t statusAttackEnabler_{};
+UnlockableAbility unlockableAbility1_{};
+UnlockableAbility unlockableAbility2_{};
+UnlockableAbility unlockableAbility3_{};
+UnlockableAbility unlockableAbility4_{};
+UnlockableAbility unlockableAbility5_{};
+UnlockableAbility unlockableAbility6_{};
+UnlockableAbility unlockableAbility7_{};
+UnlockableAbility unlockableAbility8_{};
+UnlockableAbility unlockableAbility9_{};
+UnlockableAbility unlockableAbility10_{};
+UnlockableAbility unlockableAbility11_{};
+UnlockableAbility unlockableAbility12_{};
+UnlockableAbility unlockableAbility13_{};
+UnlockableAbility unlockableAbility14_{};
+UnlockableAbility unlockableAbility15_{};
+UnlockableAbility unlockableAbility16_{};
+UnlockableAbility unlockableAbility17_{};
+UnlockableAbility unlockableAbility18_{};
+UnlockableAbility unlockableAbility19_{};
+UnlockableAbility unlockableAbility20_{};
+UnlockableAbility unlockableAbility21_{};
+GFGroup<std::uint8_t> compatibility_{};
+std::uint16_t unknown9_{};
+std::uint8_t powerMod_{};
+std::uint8_t levelMod_{};
 
 public:
   [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
   [[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
+  [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
+  [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
+  [[nodiscard]] auto GFPower() const noexcept { return gfPower_; }
+  [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
+  [[nodiscard]] auto AttackFlags() const noexcept { return attackFlags_; }
+  [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
+  [[nodiscard]] auto unknown2() const noexcept { return unknown2_; }
+  [[nodiscard]] auto Element() const noexcept { return element_; }
+  [[nodiscard]] auto PersistentStatuses() const noexcept { return PersistentStatuses_; }
+  [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return BattleOnlyStatuses_; }
+  [[nodiscard]] auto GFHPModifier() const noexcept { return gfHPModifier_; }
+  [[nodiscard]] auto unknown3() const noexcept { return unknown3_; }
+  [[nodiscard]] auto unknown4() const noexcept { return unknown4_; }
+  [[nodiscard]] auto unknown5() const noexcept { return unknown5_; }
+  [[nodiscard]] auto unknown6() const noexcept { return unknown6_; }
+  [[nodiscard]] auto unknown7() const noexcept { return unknown7_; }
+  [[nodiscard]] auto unknown8() const noexcept { return unknown8_; }
+  [[nodiscard]] auto StatusAttackEnabler() const noexcept { return statusAttackEnabler_; }
+  [[nodiscard]] auto UnlockableAbility1() const noexcept { return unlockableAbility1_; }
+  [[nodiscard]] auto UnlockableAbility2() const noexcept { return unlockableAbility2_; }
+  [[nodiscard]] auto UnlockableAbility3() const noexcept { return unlockableAbility3_; }
+  [[nodiscard]] auto UnlockableAbility4() const noexcept { return unlockableAbility4_; }
+  [[nodiscard]] auto UnlockableAbility5() const noexcept { return unlockableAbility5_; }
+  [[nodiscard]] auto UnlockableAbility6() const noexcept { return unlockableAbility6_; }
+  [[nodiscard]] auto UnlockableAbility7() const noexcept { return unlockableAbility7_; }
+  [[nodiscard]] auto UnlockableAbility8() const noexcept { return unlockableAbility8_; }
+  [[nodiscard]] auto UnlockableAbility9() const noexcept { return unlockableAbility9_; }
+  [[nodiscard]] auto UnlockableAbility10() const noexcept { return unlockableAbility10_; }
+  [[nodiscard]] auto UnlockableAbility11() const noexcept { return unlockableAbility11_; }
+  [[nodiscard]] auto UnlockableAbility12() const noexcept { return unlockableAbility12_; }
+  [[nodiscard]] auto UnlockableAbility13() const noexcept { return unlockableAbility13_; }
+  [[nodiscard]] auto UnlockableAbility14() const noexcept { return unlockableAbility14_; }
+  [[nodiscard]] auto UnlockableAbility15() const noexcept { return unlockableAbility15_; }
+  [[nodiscard]] auto UnlockableAbility16() const noexcept { return unlockableAbility16_; }
+  [[nodiscard]] auto UnlockableAbility17() const noexcept { return unlockableAbility17_; }
+  [[nodiscard]] auto UnlockableAbility18() const noexcept { return unlockableAbility18_; }
+  [[nodiscard]] auto UnlockableAbility19() const noexcept { return unlockableAbility19_; }
+  [[nodiscard]] auto UnlockableAbility20() const noexcept { return unlockableAbility20_; }
+  [[nodiscard]] auto UnlockableAbility21() const noexcept { return unlockableAbility21_; }
+  [[nodiscard]] auto Compatibility() const noexcept { return compatibility_; }
+  [[nodiscard]] auto unknown9() const noexcept { return unknown9_; }
+  [[nodiscard]] auto PowerMod() const noexcept { return powerMod_; }
+  [[nodiscard]] auto LevelMod() const noexcept { return levelMod_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer)
   {
     auto name = nameOffset_.DecodedString(buffer);
