@@ -105,17 +105,17 @@ public:
   [[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
   [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
   [[nodiscard]] auto Unknown0() const noexcept { return unknown0_; }
-  [[nodiscard]] auto GetAttackType() const noexcept { return attackType_; }
+  [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
   [[nodiscard]] auto SpellPower() const noexcept { return spellPower_; }
   [[nodiscard]] auto Unknown1() const noexcept { return unknown1_; }
-  [[nodiscard]] auto GetTarget() const noexcept { return target_; }
-  [[nodiscard]] auto GetAttackFlags() const noexcept { return attackFlags_; }
+  [[nodiscard]] auto Target() const noexcept { return target_; }
+  [[nodiscard]] auto AttackFlags() const noexcept { return attackFlags_; }
   [[nodiscard]] auto DrawResist() const noexcept { return drawResist_; }
   [[nodiscard]] auto HitCount() const noexcept { return hitCount_; }
-  [[nodiscard]] auto GetElement() const noexcept { return element_; }
+  [[nodiscard]] auto Element() const noexcept { return element_; }
   [[nodiscard]] auto Unknown2() const noexcept { return unknown2_; }
-  [[nodiscard]] auto GetBattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }
-  [[nodiscard]] auto GetPersistentStatuses() const noexcept { return persistentStatuses_; }
+  [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }
+  [[nodiscard]] auto PersistentStatuses() const noexcept { return persistentStatuses_; }
   [[nodiscard]] auto StatusAttack() const noexcept { return statusAttack_; }
   [[nodiscard]] auto JunctionStats() const noexcept { return junctionStats_; }
   [[nodiscard]] auto JElemAttackFlag() const noexcept { return jElemAttackFlag_; }
