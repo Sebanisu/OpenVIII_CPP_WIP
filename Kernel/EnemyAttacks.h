@@ -34,19 +34,19 @@ struct EnemyAttacks
    */
 private:
   EncodedStringOffset nameOffset_{};
-  uint16_t magicID_;
-  CameraChangeT cameraChange_;
-  uint8_t unknown0_;
-  AttackTypeT attackType_;
-  uint8_t attackPower_;
-  AttackFlagsT attackFlags_;
-  uint8_t unknown1_;
-  ElementT element_;
-  uint8_t unknown2_;
-  uint8_t statusAttackEnabler_;
-  uint8_t attackParameter_;
-  PersistentStatusesT persistentStatuses_;// statuses 0-7
-  BattleOnlyStatusesT battleOnlyStatuses_;// statuses 8-31
+  uint16_t magicID_{};
+  CameraChangeT cameraChange_{};
+  uint8_t unknown0_{};
+  AttackTypeT attackType_{};
+  uint8_t attackPower_{};
+  AttackFlagsT attackFlags_{};
+  uint8_t unknown1_{};
+  ElementT element_{};
+  uint8_t unknown2_{};
+  uint8_t statusAttackEnabler_{};
+  uint8_t attackParameter_{};
+  PersistentStatusesT persistentStatuses_{};// statuses 0-7
+  BattleOnlyStatusesT battleOnlyStatuses_{};// statuses 8-31
 
 public:
   [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }

@@ -12,7 +12,7 @@ struct CameraChangeT
 private:
   static constexpr std::uint8_t highBitMask_ = 0x80U;
   static constexpr std::uint8_t otherBitsMask_ = 0x7FU;
-  std::uint8_t cameraChange_;
+  std::uint8_t cameraChange_{};
 
 public:
   [[nodiscard]] bool Checked() const noexcept { return (cameraChange_ & highBitMask_) != 0; }

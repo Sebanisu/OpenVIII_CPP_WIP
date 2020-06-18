@@ -1,12 +1,12 @@
 //
-// Created by pcvii on 6/16/2020.
+// Created by pcvii on 6/17/2020.
 //
 
-#ifndef VIIIARCHIVE_STATGROUP_H
-#define VIIIARCHIVE_STATGROUP_H
+#ifndef VIIIARCHIVE_STATGROUPNOEVANOHIT_H
+#define VIIIARCHIVE_STATGROUPNOEVANOHIT_H
 
 namespace OpenVIII::Kernel {
-template<typename T> struct StatGroup
+template<typename T> struct StatGroupNoEVANoHIT
 {
 private:
   T HP_{};
@@ -15,8 +15,6 @@ private:
   T MAG_{};
   T SPR_{};
   T SPD_{};
-  T EVA_{};
-  T HIT_{};
   T LUCK_{};
 
 public:
@@ -26,9 +24,7 @@ public:
   [[nodiscard]] T &MAG() const noexcept { return MAG_; }
   [[nodiscard]] T &SPR() const noexcept { return SPR_; }
   [[nodiscard]] T &SPD() const noexcept { return SPD_; }
-  [[nodiscard]] T &EVA() const noexcept { return EVA_; }
-  [[nodiscard]] T &HIT() const noexcept { return HIT_; }
   [[nodiscard]] T &LUCK() const noexcept { return LUCK_; }
 };
 }
-#endif// VIIIARCHIVE_STATGROUP_H
+#endif// VIIIARCHIVE_STATGROUPNOEVANOHIT_H
