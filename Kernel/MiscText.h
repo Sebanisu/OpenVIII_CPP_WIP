@@ -1,11 +1,14 @@
 //
-// Created by pcvii on 6/16/2020.
+// Created by pcvii on 6/22/2020.
 //
 
-#ifndef VIIIARCHIVE_SLOTSARRAY_H
-#define VIIIARCHIVE_SLOTSARRAY_H
+#ifndef VIIIARCHIVE_MISCTEXT_H
+#define VIIIARCHIVE_MISCTEXT_H
+
 #include "EncodedStringOffset.h"
-struct SlotsArray
+
+namespace OpenVIII::Kernel {
+struct MiscText
 {
 private:
   EncodedStringOffset nameOffset_{};
@@ -27,4 +30,5 @@ public:
     return os;
   }
 };
-#endif// VIIIARCHIVE_SLOTSARRAY_H
+}
+#endif// VIIIARCHIVE_MISCTEXT_H

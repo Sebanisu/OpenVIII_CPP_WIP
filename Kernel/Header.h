@@ -50,6 +50,8 @@
 #include "SlotsArray.h"
 #include "Devour.h"
 #include "Misc.h"
+#include "MiscText.h"
+#include "QuistisBlueMagicLimitBreakParams.h"
 // will be moving kernel into it"s own project once it"svs more fully baked.
 namespace OpenVIII::Kernel {
 
@@ -102,7 +104,7 @@ public:
     } else if constexpr (sectionType == SectionTypesT::NonJunctionableGFs) {
       return SectionData<NonJunctionableGFs>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::NonJunctionableGFsText>() };
     } else if constexpr (sectionType == SectionTypesT::CommandAbilitiesData) {
-      return SectionData<CommandAbilitiesData>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::CommandAbilitiesText>() };
+      return SectionData<CommandAbilitiesData>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::JunctionAbilities) {
       return SectionData<JunctionAbilities>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::JunctionAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::CommandAbilities) {
@@ -111,7 +113,7 @@ public:
       return SectionData<StatPercentIncreaseAbilities>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::StatPercentIncreaseAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::CharacterAbilities) {
-      return SectionData<CharacterAbilities>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::CommandAbilitiesText>() };
+      return SectionData<CharacterAbilities>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::CharacterAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::PartyAbilities) {
       return SectionData<PartyAbilities>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::PartyAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::GFAbilities) {
@@ -123,8 +125,9 @@ public:
         GetSpan<SectionTypesT::TeamLagunaLimitBreaksText>() };
     } else if constexpr (sectionType == SectionTypesT::QuistisBlueMagicLimitBreak) {
       return SectionData<QuistisBlueMagicLimitBreak>{ GetSpan<sectionType>(),
-        GetSpan<SectionTypesT::QuistisBlueMagicLimitBreakText>(),
-        GetSpan<SectionTypesT::QuistisBlueMagicLimitBreakParams>() };
+        GetSpan<SectionTypesT::QuistisBlueMagicLimitBreakText>()};
+    } else if constexpr (sectionType == SectionTypesT::QuistisBlueMagicLimitBreakParams) {
+      return SectionData<QuistisBlueMagicLimitBreakParams>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::IrvineShotLimitBreak) {
       return SectionData<IrvineShotLimitBreak>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::IrvineShotLimitBreakText>() };
@@ -146,9 +149,13 @@ public:
       return SectionData<Devour>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::DevourText>() };
     } else if constexpr (sectionType == SectionTypesT::Misc) {
       return SectionData<Misc>{
-        GetSpan<sectionType>(), GetSpan<SectionTypesT::MiscText>(), GetSpan<SectionTypesT::MiscText2>()
+        GetSpan<sectionType>()
       };
-    } else {
+    }  else if constexpr (sectionType == SectionTypesT::MiscTextPointers) {
+      return SectionData<MiscText>{
+        GetSpan<sectionType>(), GetSpan<SectionTypesT::MiscText>()
+      };
+    }else {
       return nullptr;
     }
   }
@@ -246,8 +253,8 @@ public:
     if constexpr (sectionType == SectionTypesT::Misc) {
       return "Misc"sv;
     }
-    if constexpr (sectionType == SectionTypesT::MiscText) {
-      return "MiscText"sv;
+    if constexpr (sectionType == SectionTypesT::MiscTextPointers) {
+      return "MiscTextPointers"sv;
     }
     if constexpr (sectionType == SectionTypesT::BattleCommandsText) {
       return "BattleCommandsText"sv;
@@ -321,8 +328,8 @@ public:
     if constexpr (sectionType == SectionTypesT::DevourText) {
       return "DevourText"sv;
     }
-    if constexpr (sectionType == SectionTypesT::MiscText2) {
-      return "MiscText2"sv;
+    if constexpr (sectionType == SectionTypesT::MiscText) {
+      return "MiscText"sv;
     }
     return ""sv;
   }

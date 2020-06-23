@@ -225,7 +225,7 @@ public:
   [[nodiscard]] auto unknown9() const noexcept { return unknown9_; }
   [[nodiscard]] auto PowerMod() const noexcept { return powerMod_; }
   [[nodiscard]] auto LevelMod() const noexcept { return levelMod_; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer)
+  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.DecodedString(buffer);
     auto description = descriptionOffset_.DecodedString(buffer);

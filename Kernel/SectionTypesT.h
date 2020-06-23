@@ -38,7 +38,7 @@ enum class SectionTypesT : std::int8_t {
   SlotsSets,
   Devour,
   Misc,
-  MiscText,
+  MiscTextPointers,
   BattleCommandsText,
   MagicText,
   JunctionableGFsText,
@@ -63,7 +63,7 @@ enum class SectionTypesT : std::int8_t {
   RinoaLimitBreakPart1Text,
   RinoaLimitBreakPart2Text,
   DevourText,
-  MiscText2,
+  MiscText,
   Count,
   First = BattleCommands
 };

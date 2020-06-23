@@ -69,7 +69,7 @@ public:
   [[nodiscard]] auto PersistentStatuses() const noexcept { return persistentStatuses_; }// statuses 0-7
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
 
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer)
+  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.DecodedString(buffer);
     auto description = descriptionOffset_.DecodedString(buffer);

@@ -74,7 +74,7 @@ StatGroupNoEVANoHIT<std::array<std::uint8_t,4>> stats_;
 
 public:
   [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer)
+  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.DecodedString(buffer);
     if (!std::empty(name)) {
