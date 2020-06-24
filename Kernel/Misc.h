@@ -196,16 +196,16 @@ public:
   [[nodiscard]] auto ShotTimers() const noexcept { return shotTimers_; }
   std::ostream &Out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
-    return os << static_cast<std::uint32_t>(SleepTimer()) << ", " << static_cast<std::uint32_t>(HasteTimer())
-              << ", " << static_cast<std::uint32_t>(SlowTimer()) << ", " << static_cast<std::uint32_t>(StopTimer())
-              << ", " << static_cast<std::uint32_t>(RegenTimer()) << ", " << static_cast<std::uint32_t>(ProtectTimer())
-              << ", " << static_cast<std::uint32_t>(ShellTimer()) << ", " << static_cast<std::uint32_t>(ReflectTimer())
-              << ", " << static_cast<std::uint32_t>(AuraTimer()) << ", " << static_cast<std::uint32_t>(CurseTimer())
-              << ", " << static_cast<std::uint32_t>(DoomTimer()) << ", "
-              << static_cast<std::uint32_t>(InvincibleTimer()) << ", " << static_cast<std::uint32_t>(PetrifyingTimer())
-              << ", " << static_cast<std::uint32_t>(FloatTimer()) << ", "
-              << static_cast<std::uint32_t>(ATBSpeedMultiplier()) << ", " << static_cast<std::uint32_t>(DeadTimer())
-              << ", " << static_cast<std::uint32_t>(DeathLimitEffect()) << ", "
+    return os << static_cast<std::uint32_t>(SleepTimer()) << ", " << static_cast<std::uint32_t>(HasteTimer()) << ", "
+              << static_cast<std::uint32_t>(SlowTimer()) << ", " << static_cast<std::uint32_t>(StopTimer()) << ", "
+              << static_cast<std::uint32_t>(RegenTimer()) << ", " << static_cast<std::uint32_t>(ProtectTimer()) << ", "
+              << static_cast<std::uint32_t>(ShellTimer()) << ", " << static_cast<std::uint32_t>(ReflectTimer()) << ", "
+              << static_cast<std::uint32_t>(AuraTimer()) << ", " << static_cast<std::uint32_t>(CurseTimer()) << ", "
+              << static_cast<std::uint32_t>(DoomTimer()) << ", " << static_cast<std::uint32_t>(InvincibleTimer())
+              << ", " << static_cast<std::uint32_t>(PetrifyingTimer()) << ", "
+              << static_cast<std::uint32_t>(FloatTimer()) << ", " << static_cast<std::uint32_t>(ATBSpeedMultiplier())
+              << ", " << static_cast<std::uint32_t>(DeadTimer()) << ", "
+              << static_cast<std::uint32_t>(DeathLimitEffect()) << ", "
               << static_cast<std::uint32_t>(PoisonLimitEffect()) << ", "
               << static_cast<std::uint32_t>(PetrifyLimitEffect()) << ", "
               << static_cast<std::uint32_t>(DarknessLimitEffect()) << ", "

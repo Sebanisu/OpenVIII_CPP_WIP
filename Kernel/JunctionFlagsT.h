@@ -5,9 +5,8 @@
 #ifndef VIIIARCHIVE_JUNCTIONFLAGST_H
 #define VIIIARCHIVE_JUNCTIONFLAGST_H
 #include <cstdint>
-enum class JunctionFlagsT : std::uint32_t // cannot contain all abilities because 
-{
-  None = 0x0,
+enum class JunctionFlagsT : std::uint32_t// cannot contain all abilities because
+{ None = 0x0,
   HP = 0x1,
   Str = 0x2,
   Vit = 0x4,

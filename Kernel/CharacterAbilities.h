@@ -58,5 +58,5 @@ public:
     return os;
   }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_CHARACTERABILITIES_H

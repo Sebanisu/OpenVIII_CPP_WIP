@@ -32,7 +32,7 @@ private:
   FIFLFS<false> world_{};
   std::optional<ZZZ> zzzMain_{};
   std::optional<ZZZ> zzzOther_{};
-  template<int First, int Last, typename Lambda> void static_for(Lambda const &f)
+  template<int First, int Last, typename Lambda> void static_for([[maybe_unused]] Lambda const &f)
   {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
     if constexpr (First <= Last) {
       constexpr auto archiveType_ = std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(First)>{};
@@ -79,14 +79,16 @@ private:
   void SetPath(const std::filesystem::path &path)
   {
     using namespace std::string_literals;
+    using namespace std::string_view_literals;
     assert(!std::empty(lang_));
     path_ = path;
-    const std::filesystem::path &dataPath = path_ / "Data";
+    const std::filesystem::path &dataPath = path_ / "Data"sv;
     if (std::filesystem::exists(dataPath)) {
-
       path_ = dataPath;
       {
-        const std::filesystem::path &langFolderPath = path_ / ("lang-"s + lang_);
+        static constexpr auto langStart = "lang-"sv;
+        std::filesystem::path langFolderPath = path_ / langStart;
+        langFolderPath = langFolderPath.string() + lang_;
         if (!std::empty(lang_) && std::filesystem::exists(langFolderPath))
           path_ = langFolderPath;
       }
@@ -125,14 +127,16 @@ private:
     case ArchiveTypeT::ZZZMain: {
       if (tryAddToZZZ(zzzMain_)) {
         using namespace std::string_literals;
+        using namespace std::string_view_literals;
         for (const auto &dataItem : zzzMain_->Data()) {
           {
             const auto pathString = dataItem.GetPathString();
             if (FIFLFS<true>::CheckExtension(pathString) == 0U) {
               continue;
             }
-
-            auto langStartingFilter = std::filesystem::path("data") / ("lang-"s);
+            static constexpr auto data = "data"sv;
+            static constexpr auto langStart = "lang-"sv;
+            auto langStartingFilter = std::filesystem::path(data) / langStart;
             auto langStarting = std::filesystem::path(langStartingFilter.string() + lang_);
 
             if (Tools::iStartsWith(pathString, langStartingFilter.string())
@@ -165,26 +169,34 @@ private:
   }
 
 public:
-  template<ArchiveTypeT archiveType_> constexpr static auto GetString()
+  template<ArchiveTypeT archiveType_> constexpr auto GetString()
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
     // returns nullptr on failure.
     using namespace std::literals;
     if constexpr (archiveType_ == ArchiveTypeT::Battle) {
-      return "BATTLE"sv;
+      constexpr auto battle = "BATTLE"sv;
+      return battle;
     } else if constexpr (archiveType_ == ArchiveTypeT::Field) {
-      return "FIELD"sv;
+      constexpr auto field = "FIELD"sv;
+      return field;
     } else if constexpr (archiveType_ == ArchiveTypeT::Magic) {
-      return "MAGIC"sv;
+      constexpr auto magic = "MAGIC"sv;
+      return magic;
     } else if constexpr (archiveType_ == ArchiveTypeT::Main || archiveType_ == ArchiveTypeT::ZZZMain) {
-      return "MAIN"sv;
+      constexpr auto main = "MAIN"sv;
+      return main;
     } else if constexpr (archiveType_ == ArchiveTypeT::Menu) {
-      return "MENU"sv;
+      constexpr auto menu = "MENU"sv;
+      return menu;
     } else if constexpr (archiveType_ == ArchiveTypeT::World) {
-      return "WORLD"sv;
+      constexpr auto world = "WORLD"sv;
+      return world;
     } else if constexpr (archiveType_ == ArchiveTypeT::ZZZOther) {
-      return "OTHER"sv;
+      constexpr auto other = "OTHER"sv;
+      return other;
     } else {
-      return ""sv;
+      constexpr auto error = ""sv;
+      return error;
     }
   }
   template<ArchiveTypeT archiveType_> const auto &Get() const noexcept

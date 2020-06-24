@@ -22,22 +22,22 @@ int main()
     }
     std::cout << path << std::endl;
     const auto archives = OpenVIII::Archive::Archives(path);
-    [[maybe_unused]] const auto & battle = archives.Get<OpenVIII::Archive::ArchiveTypeT::Battle>();
+    [[maybe_unused]] const auto &battle = archives.Get<OpenVIII::Archive::ArchiveTypeT::Battle>();
     std::cout << battle << std::endl;
-    [[maybe_unused]] const auto & field = archives.Get<OpenVIII::Archive::ArchiveTypeT::Field>();
+    [[maybe_unused]] const auto &field = archives.Get<OpenVIII::Archive::ArchiveTypeT::Field>();
     std::cout << field << std::endl;
-    [[maybe_unused]] const auto & magic = archives.Get<OpenVIII::Archive::ArchiveTypeT::Magic>();
+    [[maybe_unused]] const auto &magic = archives.Get<OpenVIII::Archive::ArchiveTypeT::Magic>();
     std::cout << magic << std::endl;
-    [[maybe_unused]] const auto & main = archives.Get<OpenVIII::Archive::ArchiveTypeT::Main>();
+    [[maybe_unused]] const auto &main = archives.Get<OpenVIII::Archive::ArchiveTypeT::Main>();
     std::cout << main << std::endl;
-    [[maybe_unused]] const auto & menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
+    [[maybe_unused]] const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
     std::cout << menu << std::endl;
-    [[maybe_unused]] const auto & world = archives.Get<OpenVIII::Archive::ArchiveTypeT::World>();
+    [[maybe_unused]] const auto &world = archives.Get<OpenVIII::Archive::ArchiveTypeT::World>();
     std::cout << world << std::endl;
 
-    [[maybe_unused]] const auto & zzzMain = archives.Get<OpenVIII::Archive::ArchiveTypeT::ZZZMain>();
+    [[maybe_unused]] const auto &zzzMain = archives.Get<OpenVIII::Archive::ArchiveTypeT::ZZZMain>();
     std::cout << zzzMain << std::endl;
-    [[maybe_unused]] const auto & zzzOther = archives.Get<OpenVIII::Archive::ArchiveTypeT::ZZZOther>();
+    [[maybe_unused]] const auto &zzzOther = archives.Get<OpenVIII::Archive::ArchiveTypeT::ZZZOther>();
     std::cout << zzzOther << std::endl;
   }
   return 0;

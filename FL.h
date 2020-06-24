@@ -156,11 +156,12 @@ public:
 
   // Get a single entry that is the first match for needle.
   template<typename srcT>
-  [[nodiscard]] static auto GetEntryData(const std::filesystem::path &path,const srcT & data,
-                                     const std::initializer_list<std::string_view> &needle,
-                                     const size_t &offset = 0U,
-                                     const size_t &size = 0U,
-                                     const size_t &count = 0U)
+  [[nodiscard]] static auto GetEntryData(const std::filesystem::path &path,
+    const srcT &data,
+    const std::initializer_list<std::string_view> &needle,
+    const size_t &offset = 0U,
+    const size_t &size = 0U,
+    const size_t &count = 0U)
   {// Maybe should search all entries instead of using this because this is not sorted. Sorting matters when the
     // strings are similar. Though this might be faster if only getting a few files from an archive.
     auto buffer = GetAllEntriesData(path, data, offset, size, count, needle, 1);
@@ -178,7 +179,7 @@ public:
    // strings are similar. Though this might be faster if only getting a few files from an archive.
     auto data = GetAllEntriesData(path, "", offset, size, count, needle, 1);
     if (std::empty(data))
-      return std::make_pair(0U,std::string(""));
+      return std::make_pair(0U, std::string(""));
     return data.at(0);
     //    std::ifstream fp = std::ifstream(path, std::ios::in);
     //

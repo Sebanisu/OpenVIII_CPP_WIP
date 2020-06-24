@@ -15,7 +15,9 @@
 #include "paths.h"
 int main()
 {
-  const std::initializer_list<std::string_view> Extensions = { OpenVIII::Archive::FI::Ext, OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext };
+  const std::initializer_list<std::string_view> Extensions = {
+    OpenVIII::Archive::FI::Ext, OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext
+  };
   std::string needle{};
   std::cout << "Enter string to search for: ";
   std::getline(std::cin, needle);

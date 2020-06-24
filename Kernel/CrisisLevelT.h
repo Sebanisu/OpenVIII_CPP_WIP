@@ -23,7 +23,7 @@ public:
   {
 
     os << '{';
-    bool start {true};
+    bool start{ true };
     for (const auto &level : input.levels_) {
       if (!start) {
         os << ", ";

@@ -27,5 +27,5 @@ public:
     return os;
   }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_CAMERACHANGET_H

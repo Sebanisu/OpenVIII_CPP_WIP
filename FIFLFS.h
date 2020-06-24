@@ -27,7 +27,7 @@
 #include <iterator>
 
 namespace OpenVIII::Archive {
-template<[[maybe_unused]] bool HasNested = false> struct FIFLFS
+template<bool HasNested = false> struct FIFLFS
 {
 private:
   template<typename T> struct Grouping
@@ -111,7 +111,7 @@ public:
     size_t offset = 0U,
     size_t size = 0U) const
   {
-    const auto set = [&existingFilePath, &offset, &nestedPath, &size](auto &ds) {
+    const auto set = [&existingFilePath, &offset, &nestedPath, &size, this](auto &ds) {
       ds.path = existingFilePath;
       ds.offset = offset;
       ds.size = size;
@@ -193,7 +193,7 @@ public:
 
       auto fi = GetEntryIndex(id);
       {
-        char retVal = [this, &archive, &strVirtualPath, &fi]() {
+        char retVal = [this, &archive, &fi, &strVirtualPath]() {
           std::filesystem::path virtualPath(strVirtualPath);
           if (!fs_.data.empty()) {
             return archive.TryAddNested(fs_.data, fs_.offset, virtualPath, fi);
@@ -319,14 +319,13 @@ public:
     }
     return {};
   }
-  template<typename outT = std::vector<char>>
-  [[nodiscard]] outT GetEntryData(const OpenVIII::Archive::FI & fi) const
+  template<typename outT = std::vector<char>>[[nodiscard]] outT GetEntryData(const OpenVIII::Archive::FI &fi) const
   {
-    return  [this, &fi]() {
-           if(std::empty(fs_.data)) {
-             return OpenVIII::Archive::FS::GetEntry<outT>(fs_.path, fi, fs_.offset);
-           }
-           return OpenVIII::Archive::FS::GetEntry<outT>(fs_.data,fi,fs_.offset);
+    return [this, &fi]() {
+      if (std::empty(fs_.data)) {
+        return OpenVIII::Archive::FS::GetEntry<outT>(fs_.path, fi, fs_.offset);
+      }
+      return OpenVIII::Archive::FS::GetEntry<outT>(fs_.data, fi, fs_.offset);
     }();
   }
   template<typename outT = std::vector<char>>[[nodiscard]] outT GetEntryData(const std::string_view &filename) const
@@ -338,19 +337,19 @@ public:
       return OpenVIII::Archive::FL::GetEntryData(fl_.path, fl_.data, { filename }, fl_.offset, fl_.size, count_);
     }();
 
-//    const auto &fi = [this, &filename, &id]() {
-//      if (std::empty(fi_.data)) {
-//        return OpenVIII::Archive::FI(fi_.path, id, fi_.offset);
-//      }
-//      return OpenVIII::Archive::FI(fi_.data, id, fi_.offset);
-//    }();
+    //    const auto &fi = [this, &filename, &id]() {
+    //      if (std::empty(fi_.data)) {
+    //        return OpenVIII::Archive::FI(fi_.path, id, fi_.offset);
+    //      }
+    //      return OpenVIII::Archive::FI(fi_.data, id, fi_.offset);
+    //    }();
     return GetEntryData<outT>(GetEntryIndex(id));
-//    return  [this, &filename, &fi]() {
-//      if(std::empty(fs_.data)) {
-//        return OpenVIII::Archive::FS::GetEntry(fs_.path, fi, fs_.offset);
-//      }
-//      return OpenVIII::Archive::FS::GetEntry(fs_.data,fi,fs_.offset);
-//    }();
+    //    return  [this, &filename, &fi]() {
+    //      if(std::empty(fs_.data)) {
+    //        return OpenVIII::Archive::FS::GetEntry(fs_.path, fi, fs_.offset);
+    //      }
+    //      return OpenVIII::Archive::FS::GetEntry(fs_.data,fi,fs_.offset);
+    //    }();
   }
 };
 

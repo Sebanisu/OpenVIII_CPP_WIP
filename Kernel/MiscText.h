@@ -30,5 +30,5 @@ public:
     return os;
   }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_MISCTEXT_H

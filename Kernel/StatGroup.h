@@ -30,5 +30,5 @@ public:
   [[nodiscard]] T &HIT() const noexcept { return HIT_; }
   [[nodiscard]] T &LUCK() const noexcept { return LUCK_; }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_STATGROUP_H

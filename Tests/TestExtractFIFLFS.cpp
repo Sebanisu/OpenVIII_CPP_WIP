@@ -26,8 +26,7 @@ int main()
       continue;
     }
     const auto files = OpenVIII::Archive::FIFLFS<true>::GetFilesFromPath(path);
-    for(const auto & pair : files)
-    {
+    for (const auto &pair : files) {
       const auto &[name, paths] = pair;
       std::cout << paths << '\n';
       paths.Test();

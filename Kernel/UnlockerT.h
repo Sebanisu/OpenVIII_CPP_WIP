@@ -132,5 +132,5 @@ enum class UnlockerT : std::uint8_t {
   Ability21,
 
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_UNLOCKERT_H

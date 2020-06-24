@@ -142,5 +142,5 @@ public:
     return os;
   }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_MAGIC_H

@@ -50,5 +50,5 @@ public:
     return os;
   }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_BATTLECOMMANDS_H

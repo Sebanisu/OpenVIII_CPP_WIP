@@ -6,8 +6,7 @@
 #define VIIIARCHIVE_CHARACTERABILITYFLAGST_H
 #include <cstdint>
 namespace OpenVIII::Kernel {
-enum class CharacterAbilityFlagsT : std::uint32_t
-{
+enum class CharacterAbilityFlagsT : std::uint32_t {
   None = 0x0,
   Mug = 0x1,
   MedData = 0x2,

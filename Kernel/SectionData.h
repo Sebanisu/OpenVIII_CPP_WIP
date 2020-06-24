@@ -17,16 +17,17 @@ private:
 
 public:
   [[maybe_unused]] explicit SectionData(const std::string_view &span,
-                                        const std::string_view &textSpan = {},
-                                        const std::string_view &paramSpan = {})
+    const std::string_view &textSpan = {},
+    const std::string_view &paramSpan = {})
     : span_{ span }, textSpan_{ textSpan }, paramSpan_{ paramSpan }
   {}
   [[nodiscard]] size_t Count() const
   {
-    if (sizeof(spanT) == 0) {
+    if constexpr (sizeof(spanT) == 0) {
       return 0;
+    } else {
+      return std::size(span_) / sizeof(spanT);
     }
-    return std::size(span_) / sizeof(spanT);
   }
   auto GetEntry(size_t id) const
   {

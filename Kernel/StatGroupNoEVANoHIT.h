@@ -26,5 +26,5 @@ public:
   [[nodiscard]] T &SPD() const noexcept { return SPD_; }
   [[nodiscard]] T &LUCK() const noexcept { return LUCK_; }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_STATGROUPNOEVANOHIT_H

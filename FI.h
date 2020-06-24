@@ -104,14 +104,14 @@ public:
     : FI(buffer, GetStartOffset(id, offset))
   {}
 
-  [[nodiscard]] constexpr static auto GetCount(const size_t fileSize) noexcept { return fileSize / Size; }
+  [[nodiscard]] constexpr static size_t GetCount(const size_t fileSize) noexcept { return fileSize / Size; }
   // GetCount which is fileSize/Size if file doesn't exist return 0;
-  [[maybe_unused]] [[nodiscard]] auto static GetCount(const std::filesystem::path &path)
+  [[maybe_unused]] [[nodiscard]] size_t static GetCount(const std::filesystem::path &path)
   {
     if (std::filesystem::exists(path)) {
       return GetCount(std::filesystem::file_size(path));
     }
-    return static_cast<uintmax_t>(0U);
+    return {};
   }
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FI &data)

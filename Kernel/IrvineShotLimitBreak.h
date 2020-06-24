@@ -47,28 +47,28 @@ private:
   ElementT element_{};
   std::uint8_t elementAttackPercent_{};
   std::uint8_t statusAttackEnabler_{};
-  PersistentStatusesT persistentStatuses_{}; //statuses 0-7
+  PersistentStatusesT persistentStatuses_{};// statuses 0-7
   std::uint8_t usedItemIndex_{};
   std::uint8_t criticalIncrease_{};
-  BattleOnlyStatusesT battleOnlyStatuses_{}; //statuses 8-39
+  BattleOnlyStatusesT battleOnlyStatuses_{};// statuses 8-39
 public:
   [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
   [[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
-  [[nodiscard]] auto MagicID() const noexcept {return magicID_;}
-  [[nodiscard]] auto AttackType() const noexcept {return attackType_;}
-  [[nodiscard]] auto AttackPower() const noexcept {return attackPower_;}
-  [[nodiscard]] auto unknown0() const noexcept {return unknown0_;}
-  [[nodiscard]] auto unknown1() const noexcept {return unknown1_;}
-  [[nodiscard]] auto Target() const noexcept {return target_;}
-  [[nodiscard]] auto AttackFlags() const noexcept {return attackFlags_;}
-  [[nodiscard]] auto HitCount() const noexcept {return hitCount_;}
-  [[nodiscard]] auto Element() const noexcept {return element_;}
-  [[nodiscard]] auto ElementAttackPercent() const noexcept {return elementAttackPercent_;}
-  [[nodiscard]] auto StatusAttackEnabler() const noexcept {return statusAttackEnabler_;}
-  [[nodiscard]] auto PersistentStatuses() const noexcept {return persistentStatuses_;} //statuses 0-7
-  [[nodiscard]] auto UsedItemIndex() const noexcept {return usedItemIndex_;}
-  [[nodiscard]] auto CriticalIncrease() const noexcept {return criticalIncrease_;}
-  [[nodiscard]] auto BattleOnlyStatuses() const noexcept {return battleOnlyStatuses_;} //statuses 8-39
+  [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
+  [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
+  [[nodiscard]] auto AttackPower() const noexcept { return attackPower_; }
+  [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
+  [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
+  [[nodiscard]] auto Target() const noexcept { return target_; }
+  [[nodiscard]] auto AttackFlags() const noexcept { return attackFlags_; }
+  [[nodiscard]] auto HitCount() const noexcept { return hitCount_; }
+  [[nodiscard]] auto Element() const noexcept { return element_; }
+  [[nodiscard]] auto ElementAttackPercent() const noexcept { return elementAttackPercent_; }
+  [[nodiscard]] auto StatusAttackEnabler() const noexcept { return statusAttackEnabler_; }
+  [[nodiscard]] auto PersistentStatuses() const noexcept { return persistentStatuses_; }// statuses 0-7
+  [[nodiscard]] auto UsedItemIndex() const noexcept { return usedItemIndex_; }
+  [[nodiscard]] auto CriticalIncrease() const noexcept { return criticalIncrease_; }
+  [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.DecodedString(buffer);
@@ -79,25 +79,18 @@ public:
     if (!std::empty(description)) {
       os << ", " << description;
     }
-    return os
-    <<", "<<static_cast<std::uint32_t>(MagicID())
-<<", "<<static_cast<std::uint32_t>(AttackType())
-<<", "<<static_cast<std::uint32_t>(AttackPower())
-<<", "<<static_cast<std::uint32_t>(unknown0())
-<<", "<<static_cast<std::uint32_t>(unknown1())
-<<", "<<static_cast<std::uint32_t>(Target())
-<<", "<<static_cast<std::uint32_t>(AttackFlags())
-<<", "<<static_cast<std::uint32_t>(HitCount())
-<<", "<<static_cast<std::uint32_t>(Element())
-<<", "<<static_cast<std::uint32_t>(ElementAttackPercent())
-<<", "<<static_cast<std::uint32_t>(StatusAttackEnabler())
-<<", "<<static_cast<std::uint32_t>(PersistentStatuses())
-           <<", "<<static_cast<std::uint32_t>(UsedItemIndex())
-<<", "<<static_cast<std::uint32_t>(CriticalIncrease())
-<<", "<<static_cast<std::uint32_t>(BattleOnlyStatuses()) //statuses 8-39
-      
+    return os << ", " << static_cast<std::uint32_t>(MagicID()) << ", " << static_cast<std::uint32_t>(AttackType())
+              << ", " << static_cast<std::uint32_t>(AttackPower()) << ", " << static_cast<std::uint32_t>(unknown0())
+              << ", " << static_cast<std::uint32_t>(unknown1()) << ", " << static_cast<std::uint32_t>(Target()) << ", "
+              << static_cast<std::uint32_t>(AttackFlags()) << ", " << static_cast<std::uint32_t>(HitCount()) << ", "
+              << static_cast<std::uint32_t>(Element()) << ", " << static_cast<std::uint32_t>(ElementAttackPercent())
+              << ", " << static_cast<std::uint32_t>(StatusAttackEnabler()) << ", "
+              << static_cast<std::uint32_t>(PersistentStatuses()) << ", " << static_cast<std::uint32_t>(UsedItemIndex())
+              << ", " << static_cast<std::uint32_t>(CriticalIncrease()) << ", "
+              << static_cast<std::uint32_t>(BattleOnlyStatuses())// statuses 8-39
+
       ;
   }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_IRVINESHOTLIMITBREAK_H

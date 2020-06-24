@@ -48,5 +48,5 @@ public:
               << ", " << static_cast<std::uint32_t>(StartOffset()) << ", " << static_cast<std::uint32_t>(EndOffset());
   }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_MENUABILITIES_H

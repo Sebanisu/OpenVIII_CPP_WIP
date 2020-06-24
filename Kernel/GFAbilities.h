@@ -7,8 +7,7 @@
 
 #include "EncodedStringOffset.h"
 namespace OpenVIII::Kernel {
-enum class StatT : std::uint8_t
-{
+enum class StatT : std::uint8_t {
   HP,
   STR,
   VIT,
@@ -51,10 +50,10 @@ private:
   uint8_t increaseValue_{};
 
 public:
-  [[nodiscard]] const auto & NameOffset() const noexcept { return nameOffset_; }
-  [[nodiscard]] const auto & DescriptionOffset() const noexcept { return descriptionOffset_; }
+  [[nodiscard]] const auto &NameOffset() const noexcept { return nameOffset_; }
+  [[nodiscard]] const auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
   [[nodiscard]] auto APRequired() const noexcept { return apRequired_; }
-  [[nodiscard]] auto EnableBoost() const noexcept { return enableBoost_!=0; }
+  [[nodiscard]] auto EnableBoost() const noexcept { return enableBoost_ != 0; }
   [[nodiscard]] auto StatToIncrease() const noexcept { return statToIncrease_; }
   [[nodiscard]] auto IncreaseValue() const noexcept { return increaseValue_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
@@ -74,5 +73,5 @@ public:
     return os;
   }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_GFABILITIES_H

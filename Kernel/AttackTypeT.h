@@ -46,5 +46,5 @@ enum class AttackTypeT : std::uint8_t {
   OneHPDamage,
   PhysicalAttackIgnoreTargetVIT
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_ATTACKTYPET_H

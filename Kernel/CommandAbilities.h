@@ -44,9 +44,8 @@ public:
     if (!std::empty(description)) {
       os << ", " << description;
     }
-    os << ", " << static_cast<std::uint32_t>(APRequired()) << ", "
-       << static_cast<std::uint32_t>(IndexToBattleCommand()) << ", " << static_cast<std::uint32_t>(Unknown0()) << ", "
-       << static_cast<std::uint32_t>(Unknown1());
+    os << ", " << static_cast<std::uint32_t>(APRequired()) << ", " << static_cast<std::uint32_t>(IndexToBattleCommand())
+       << ", " << static_cast<std::uint32_t>(Unknown0()) << ", " << static_cast<std::uint32_t>(Unknown1());
     return os;
   }
 };
