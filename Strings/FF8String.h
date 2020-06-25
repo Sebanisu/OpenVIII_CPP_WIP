@@ -6,7 +6,7 @@
 #include <string_view>
 #include <array>
 #include <sstream>
-using namespace std::literals;
+using namespace std::string_view_literals;
 struct FF8String
 {
 private:

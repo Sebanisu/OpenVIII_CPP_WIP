@@ -48,6 +48,7 @@
 #include "RinoaLimitBreakPart1.h"
 #include "RinoaLimitBreakPart2.h"
 #include "SlotsArray.h"
+#include "SlotsSets.h"
 #include "Devour.h"
 #include "Misc.h"
 #include "MiscText.h"
@@ -145,10 +146,10 @@ public:
       return SectionData<RinoaLimitBreakPart2>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::RinoaLimitBreakPart2Text>() };
     } else if constexpr (sectionType == SectionTypesT::SlotsArray) {
-      return SectionData<SlotsArray>{ GetSpan<sectionType>(), {}, GetSpan<SectionTypesT::SlotsSets>() };
-    }
-
-    else if constexpr (sectionType == SectionTypesT::Devour) {
+      return SectionData<SlotsArray>{ GetSpan<sectionType>() };
+    } else if constexpr (sectionType == SectionTypesT::SlotsSets) {
+      return SectionData<SlotsSets>{ GetSpan<sectionType>() };
+    } else if constexpr (sectionType == SectionTypesT::Devour) {
       return SectionData<Devour>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::DevourText>() };
     } else if constexpr (sectionType == SectionTypesT::Misc) {
       return SectionData<Misc>{ GetSpan<sectionType>() };
