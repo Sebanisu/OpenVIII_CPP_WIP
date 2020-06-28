@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_BATTLECOMMANDS_H
 #define VIIIARCHIVE_BATTLECOMMANDS_H
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "TargetT.h"
 
 namespace OpenVIII::Kernel {
@@ -47,7 +47,12 @@ public:
     if (!std::empty(description)) {
       os << ", " << description;
     }
-    return os;
+    return os
+
+           << ", " << static_cast<std::uint32_t>(AbilityDataID()) << ", " << static_cast<std::uint32_t>(UnknownFlags())
+           << ", " << static_cast<std::uint32_t>(GetTarget()) << ", " << static_cast<std::uint32_t>(Unknown())
+
+      ;
   }
 };
 }// namespace OpenVIII::Kernel

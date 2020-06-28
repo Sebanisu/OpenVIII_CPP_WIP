@@ -5,6 +5,7 @@
       <w>cactuar</w>
       <w>diablos</w>
       <w>doomtrain</w>
+      <w>equipable</w>
       <w>fiflfs</w>
       <w>gunblade</w>
       <w>ifrit</w>
@@ -17,6 +18,8 @@
       <w>renzokuken</w>
       <w>rinoa</w>
       <w>tonberry</w>
+      <w>unlockable</w>
+      <w>unlocker</w>
       <w>zell</w>
     </words>
   </dictionary>

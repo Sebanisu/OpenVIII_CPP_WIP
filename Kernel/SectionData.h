@@ -5,6 +5,8 @@
 #ifndef VIIIARCHIVE_SECTIONDATA_H
 #define VIIIARCHIVE_SECTIONDATA_H
 #include <string_view>
+
+namespace OpenVIII::Kernel {
 template<typename spanT> struct SectionData
 {
 private:
@@ -42,4 +44,5 @@ public:
   auto &TextSpan() const noexcept { return textSpan_; }
   auto &ParamSpan() const noexcept { return paramSpan_; }
 };
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_SECTIONDATA_H

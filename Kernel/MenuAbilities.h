@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_MENUABILITIES_H
 #define VIIIARCHIVE_MENUABILITIES_H
 
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 namespace OpenVIII::Kernel {
 struct MenuAbilities
 {

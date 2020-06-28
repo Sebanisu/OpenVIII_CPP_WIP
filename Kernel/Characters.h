@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_CHARACTERS_H
 #define VIIIARCHIVE_CHARACTERS_H
 
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "GenderT.h"
 #include "StatGroupNoEVANoHIT.h"
 namespace OpenVIII::Kernel {
@@ -34,14 +34,14 @@ struct Characters
    * */
 private:
   EncodedStringOffset nameOffset_{};
-  std::uint8_t crisisLevelhpMultiplier;
-  GenderT Gender;
-  std::uint8_t LimitBreakID;
-  std::uint8_t LimitBreakParam;
+  std::uint8_t crisisLevelHPMultiplier_{};
+  GenderT gender_{};
+  std::uint8_t limitBreakID_{};
+  std::uint8_t limitBreakParam_{};
   //  std::uint8_t EXP0;
   //  std::uint8_t EXP1;
-  //  std::uint8_t  EXP[2];
-  std::array<std::uint8_t, 2> EXP;
+  //  std::uint8_t EXP[2];
+  std::array<std::uint8_t, 2> exp_{};
   //  std::uint8_t HP0;
   //  std::uint8_t HP1;
   //  std::uint8_t HP2;
@@ -70,17 +70,27 @@ private:
   //  std::uint8_t LUCK1;
   //  std::uint8_t LUCK2;
   //  std::uint8_t LUCK3;
-  StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> stats_;
+  StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> stats_{};
 
 public:
   [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
+  [[nodiscard]] auto CrisisLevelHPMultiplier() const noexcept { return crisisLevelHPMultiplier_; }
+  [[nodiscard]] auto Gender() const noexcept { return gender_; }
+  [[nodiscard]] auto LimitBreakID() const noexcept { return limitBreakID_; }
+  [[nodiscard]] auto LimitBreakParam() const noexcept { return limitBreakParam_; }
+  [[nodiscard]] auto EXP() const noexcept { return exp_; }
+  [[nodiscard]] auto Stats() const noexcept { return stats_; }
+  [[nodiscard]] auto operator->() const noexcept { return &stats_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.DecodedString(buffer);
     if (!std::empty(name)) {
       os << name;
     }
-    return os;
+    return os << ", " << static_cast<std::uint32_t>(CrisisLevelHPMultiplier()) << ", "
+              << static_cast<std::uint32_t>(Gender()) << ", " << static_cast<std::uint32_t>(LimitBreakID()) << ", "
+              << static_cast<std::uint32_t>(LimitBreakParam()) << ", {" << static_cast<std::uint32_t>(EXP()[0]) << ", "
+              << static_cast<std::uint32_t>(EXP()[1]) << "}, " << Stats();
   }
 };
 }// namespace OpenVIII::Kernel

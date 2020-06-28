@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_CHARACTERABILITIES_H
 #define VIIIARCHIVE_CHARACTERABILITIES_H
 
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "CharacterAbilityFlagsT.h"
 #include <cstring>
 namespace OpenVIII::Kernel {
@@ -47,15 +47,12 @@ public:
     if (!std::empty(name)) {
       os << name;
     }
-    auto size = sizeof(CharacterAbilities);
     if (!std::empty(description)) {
       os << ", " << description;
     }
-    os << ", " << size;
-    auto test = CharacterAbilityFlags();
-    os << ", " << static_cast<uint32_t>(test);
 
-    return os;
+    auto test = CharacterAbilityFlags();
+    return os << ", " << static_cast<std::uint32_t>(APRequired()) << ", " << static_cast<uint32_t>(test);
   }
 };
 }// namespace OpenVIII::Kernel

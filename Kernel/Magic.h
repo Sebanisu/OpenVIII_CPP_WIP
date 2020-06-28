@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_MAGIC_H
 #define VIIIARCHIVE_MAGIC_H
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "AttackTypeT.h"
 #include "TargetT.h"
 #include "AttackFlagsT.h"
@@ -104,16 +104,16 @@ public:
   [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
   [[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
   [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
-  [[nodiscard]] auto Unknown0() const noexcept { return unknown0_; }
+  [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
   [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
   [[nodiscard]] auto SpellPower() const noexcept { return spellPower_; }
-  [[nodiscard]] auto Unknown1() const noexcept { return unknown1_; }
+  [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
   [[nodiscard]] auto Target() const noexcept { return target_; }
   [[nodiscard]] auto AttackFlags() const noexcept { return attackFlags_; }
   [[nodiscard]] auto DrawResist() const noexcept { return drawResist_; }
   [[nodiscard]] auto HitCount() const noexcept { return hitCount_; }
   [[nodiscard]] auto Element() const noexcept { return element_; }
-  [[nodiscard]] auto Unknown2() const noexcept { return unknown2_; }
+  [[nodiscard]] auto unknown2() const noexcept { return unknown2_; }
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }
   [[nodiscard]] auto PersistentStatuses() const noexcept { return persistentStatuses_; }
   [[nodiscard]] auto StatusAttack() const noexcept { return statusAttack_; }
@@ -127,7 +127,7 @@ public:
   [[nodiscard]] auto JStatusesAttackFlag() const noexcept { return jStatusesAttackFlag_; }
   [[nodiscard]] auto JStatusesDefendFlag() const noexcept { return jStatusesDefendFlag_; }
   [[nodiscard]] auto Compatibility() const noexcept { return compatibility_; }
-  [[nodiscard]] auto Unknown3() const noexcept { return unknown3_; }
+  [[nodiscard]] auto unknown3() const noexcept { return unknown3_; }
 
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
@@ -139,7 +139,23 @@ public:
     if (!std::empty(description)) {
       os << ", " << description;
     }
-    return os;
+    return os
+
+           << ", " << static_cast<std::uint32_t>(MagicID()) << ", " << static_cast<std::uint32_t>(unknown0()) << ", "
+           << static_cast<std::uint32_t>(AttackType()) << ", " << static_cast<std::uint32_t>(SpellPower()) << ", "
+           << static_cast<std::uint32_t>(unknown1()) << ", " << static_cast<std::uint32_t>(Target()) << ", "
+           << static_cast<std::uint32_t>(AttackFlags()) << ", " << static_cast<std::uint32_t>(DrawResist()) << ", "
+           << static_cast<std::uint32_t>(HitCount()) << ", " << static_cast<std::uint32_t>(Element()) << ", "
+           << static_cast<std::uint32_t>(unknown2()) << ", " << static_cast<std::uint32_t>(BattleOnlyStatuses()) << ", "
+           << static_cast<std::uint32_t>(PersistentStatuses()) << ", " << static_cast<std::uint32_t>(StatusAttack())
+           << ", " << JunctionStats() << ", " << static_cast<std::uint32_t>(JElemAttackFlag()) << ", "
+           << static_cast<std::uint32_t>(JElemAttackValue()) << ", " << static_cast<std::uint32_t>(JElemDefenseFlag())
+           << ", " << static_cast<std::uint32_t>(JElemDefenseValue()) << ", "
+           << static_cast<std::uint32_t>(JStatusAttackValue()) << ", "
+           << static_cast<std::uint32_t>(JStatusDefenseValue()) << ", "
+           << static_cast<std::uint32_t>(JStatusesAttackFlag()) << ", "
+           << static_cast<std::uint32_t>(JStatusesDefendFlag()) << ", " << Compatibility() << ", "
+           << static_cast<std::uint32_t>(unknown3());
   }
 };
 }// namespace OpenVIII::Kernel

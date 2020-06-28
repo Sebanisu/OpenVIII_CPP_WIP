@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_NONJUNCTIONABLEGFS_H
 #define VIIIARCHIVE_NONJUNCTIONABLEGFS_H
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "ElementT.h"
 #include "PersistentStatusesT.h"
 #include "BattleOnlyStatusesT.h"

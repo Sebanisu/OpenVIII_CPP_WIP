@@ -1,6 +1,6 @@
 #ifndef VIIIARCHIVE_JUNCTIONABLEGFS_H
 #define VIIIARCHIVE_JUNCTIONABLEGFS_H
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "AttackTypeT.h"
 #include "AttackFlagsT.h"
 #include "BattleOnlyStatusesT.h"
@@ -153,29 +153,11 @@ private:
   std::uint8_t unknown7_{};
   std::uint8_t unknown8_{};
   std::uint8_t statusAttackEnabler_{};
-  UnlockableAbility unlockableAbility1_{};
-  UnlockableAbility unlockableAbility2_{};
-  UnlockableAbility unlockableAbility3_{};
-  UnlockableAbility unlockableAbility4_{};
-  UnlockableAbility unlockableAbility5_{};
-  UnlockableAbility unlockableAbility6_{};
-  UnlockableAbility unlockableAbility7_{};
-  UnlockableAbility unlockableAbility8_{};
-  UnlockableAbility unlockableAbility9_{};
-  UnlockableAbility unlockableAbility10_{};
-  UnlockableAbility unlockableAbility11_{};
-  UnlockableAbility unlockableAbility12_{};
-  UnlockableAbility unlockableAbility13_{};
-  UnlockableAbility unlockableAbility14_{};
-  UnlockableAbility unlockableAbility15_{};
-  UnlockableAbility unlockableAbility16_{};
-  UnlockableAbility unlockableAbility17_{};
-  UnlockableAbility unlockableAbility18_{};
-  UnlockableAbility unlockableAbility19_{};
-  UnlockableAbility unlockableAbility20_{};
-  UnlockableAbility unlockableAbility21_{};
+  static constexpr auto maxAbilities_ = 21U;
+  std::array<UnlockableAbility, maxAbilities_> unlockableAbilities_{};
   GFGroup<std::uint8_t> compatibility_{};
-  std::uint16_t unknown9_{};
+  std::uint8_t unknown9_{};
+  std::uint8_t unknown10_{};
   std::uint8_t powerMod_{};
   std::uint8_t levelMod_{};
 
@@ -200,29 +182,15 @@ public:
   [[nodiscard]] auto unknown7() const noexcept { return unknown7_; }
   [[nodiscard]] auto unknown8() const noexcept { return unknown8_; }
   [[nodiscard]] auto StatusAttackEnabler() const noexcept { return statusAttackEnabler_; }
-  [[nodiscard]] auto UnlockableAbility1() const noexcept { return unlockableAbility1_; }
-  [[nodiscard]] auto UnlockableAbility2() const noexcept { return unlockableAbility2_; }
-  [[nodiscard]] auto UnlockableAbility3() const noexcept { return unlockableAbility3_; }
-  [[nodiscard]] auto UnlockableAbility4() const noexcept { return unlockableAbility4_; }
-  [[nodiscard]] auto UnlockableAbility5() const noexcept { return unlockableAbility5_; }
-  [[nodiscard]] auto UnlockableAbility6() const noexcept { return unlockableAbility6_; }
-  [[nodiscard]] auto UnlockableAbility7() const noexcept { return unlockableAbility7_; }
-  [[nodiscard]] auto UnlockableAbility8() const noexcept { return unlockableAbility8_; }
-  [[nodiscard]] auto UnlockableAbility9() const noexcept { return unlockableAbility9_; }
-  [[nodiscard]] auto UnlockableAbility10() const noexcept { return unlockableAbility10_; }
-  [[nodiscard]] auto UnlockableAbility11() const noexcept { return unlockableAbility11_; }
-  [[nodiscard]] auto UnlockableAbility12() const noexcept { return unlockableAbility12_; }
-  [[nodiscard]] auto UnlockableAbility13() const noexcept { return unlockableAbility13_; }
-  [[nodiscard]] auto UnlockableAbility14() const noexcept { return unlockableAbility14_; }
-  [[nodiscard]] auto UnlockableAbility15() const noexcept { return unlockableAbility15_; }
-  [[nodiscard]] auto UnlockableAbility16() const noexcept { return unlockableAbility16_; }
-  [[nodiscard]] auto UnlockableAbility17() const noexcept { return unlockableAbility17_; }
-  [[nodiscard]] auto UnlockableAbility18() const noexcept { return unlockableAbility18_; }
-  [[nodiscard]] auto UnlockableAbility19() const noexcept { return unlockableAbility19_; }
-  [[nodiscard]] auto UnlockableAbility20() const noexcept { return unlockableAbility20_; }
-  [[nodiscard]] auto UnlockableAbility21() const noexcept { return unlockableAbility21_; }
+  template<size_t i>[[nodiscard]] const auto &UnlockableAbilities() const noexcept
+  {
+    static_assert(i < maxAbilities_);
+    return unlockableAbilities_.at(i);
+  }
+  [[nodiscard]] const auto &UnlockableAbilities() const noexcept { return unlockableAbilities_; }
   [[nodiscard]] auto Compatibility() const noexcept { return compatibility_; }
   [[nodiscard]] auto unknown9() const noexcept { return unknown9_; }
+  [[nodiscard]] auto unknown10() const noexcept { return unknown10_; }
   [[nodiscard]] auto PowerMod() const noexcept { return powerMod_; }
   [[nodiscard]] auto LevelMod() const noexcept { return levelMod_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
@@ -235,7 +203,27 @@ public:
     if (!std::empty(description)) {
       os << ", " << description;
     }
-    return os;
+    os << ", " << static_cast<std::uint32_t>(MagicID()) << ", " << static_cast<std::uint32_t>(AttackType()) << ", "
+       << static_cast<std::uint32_t>(GFPower()) << ", " << static_cast<std::uint32_t>(unknown0()) << ", "
+       << static_cast<std::uint32_t>(AttackFlags()) << ", " << static_cast<std::uint32_t>(unknown1()) << ", "
+       << static_cast<std::uint32_t>(unknown2()) << ", " << static_cast<std::uint32_t>(Element()) << ", "
+       << static_cast<std::uint32_t>(PersistentStatuses()) << ", " << static_cast<std::uint32_t>(BattleOnlyStatuses())
+       << ", " << static_cast<std::uint32_t>(GFHPModifier()) << ", " << static_cast<std::uint32_t>(unknown3()) << ", "
+       << static_cast<std::uint32_t>(unknown4()) << ", " << static_cast<std::uint32_t>(unknown5()) << ", "
+       << static_cast<std::uint32_t>(unknown6()) << ", " << static_cast<std::uint32_t>(unknown7()) << ", "
+       << static_cast<std::uint32_t>(unknown8()) << ", " << static_cast<std::uint32_t>(StatusAttackEnabler()) << ", ";
+    bool first = true;
+    for (const auto &item : UnlockableAbilities()) {
+      if (!first) {
+        os << ", ";
+      } else {
+        first = false;
+      }
+      os << item;
+    }
+    return os << ", " << Compatibility() << ", " << static_cast<std::uint32_t>(unknown9()) << ", "
+              << static_cast<std::uint32_t>(unknown10()) << ", " << static_cast<std::uint32_t>(PowerMod()) << ", "
+              << static_cast<std::uint32_t>(LevelMod());
   }
 };
 }// namespace OpenVIII::Kernel

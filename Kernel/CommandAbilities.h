@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_COMMANDABILITIES_H
 #define VIIIARCHIVE_COMMANDABILITIES_H
 
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 
 namespace OpenVIII::Kernel {
 struct CommandAbilities

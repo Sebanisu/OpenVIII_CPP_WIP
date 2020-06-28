@@ -5,30 +5,9 @@
 #ifndef VIIIARCHIVE_GFABILITIES_H
 #define VIIIARCHIVE_GFABILITIES_H
 
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
+#include "StatT.h"
 namespace OpenVIII::Kernel {
-enum class StatT : std::uint8_t {
-  HP,
-  STR,
-  VIT,
-  MAG,
-  SPR,
-  SPD,
-  EVA,
-  HIT,
-  Luck,
-  ElAtk,
-  StAtk,
-  ElDef1,
-  ElDef2,
-  ElDef3,
-  ElDef4,
-  StDef1,
-  StDef2,
-  StDef3,
-  StDef4,
-  None = 0xFF,
-};
 struct GFAbilities
 {
   /*

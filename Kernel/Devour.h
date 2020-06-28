@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_DEVOUR_H
 #define VIIIARCHIVE_DEVOUR_H
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "BattleOnlyStatusesT.h"
 #include "PersistentStatusesT.h"
 namespace OpenVIII::Kernel {

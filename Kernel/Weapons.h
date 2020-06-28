@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_WEAPONS_H
 #define VIIIARCHIVE_WEAPONS_H
 
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "AttackTypeT.h"
 #include "CharactersT.h"
 #include "RenzokukenFinishersT.h"

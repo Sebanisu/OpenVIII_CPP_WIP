@@ -6,7 +6,9 @@
 #define VIIIARCHIVE_ENCODEDSTRINGOFFSET_H
 #include <cstdint>
 #include <string_view>
-#include "../Strings/FF8String.h"
+#include "FF8String.h"
+
+namespace OpenVIII {
 struct EncodedStringOffset
 {
 private:
@@ -17,7 +19,7 @@ private:
     if (static_cast<unsigned>(offset) > std::size(buffer)) {
       return -1;
     }
-    auto first = buffer.begin() + offset;
+    auto first = buffer.begin() + offset;// clang tidy says to add * but don't do that. msvc doesn't return a pointer.
     auto last = buffer.end();
     for (intmax_t i = 0; first != last; ++first, i++) {
       if (*first == '\0') {
@@ -42,4 +44,5 @@ public:
   [[nodiscard]] auto RawBytes(const std::string_view &buffer) const { return GetStringAtOffset(buffer, offset_); }
   [[nodiscard]] auto DecodedString(const std::string_view &buffer) const { return FF8String::Decode(RawBytes(buffer)); }
 };
+}// namespace OpenVIII
 #endif// VIIIARCHIVE_ENCODEDSTRINGOFFSET_H

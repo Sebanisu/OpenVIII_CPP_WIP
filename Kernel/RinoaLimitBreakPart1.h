@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_RINOALIMITBREAKPART1_H
 #define VIIIARCHIVE_RINOALIMITBREAKPART1_H
 
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "TargetT.h"
 namespace OpenVIII::Kernel {
 struct RinoaLimitBreakPart1

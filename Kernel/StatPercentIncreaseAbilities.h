@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_STATPERCENTINCREASEABILITIES_H
 #define VIIIARCHIVE_STATPERCENTINCREASEABILITIES_H
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 namespace OpenVIII::Kernel {
 struct StatPercentIncreaseAbilities
 {
@@ -48,5 +48,5 @@ public:
               << ", " << static_cast<std::uint32_t>(unknown0());
   }
 };
-}
+}// namespace OpenVIII::Kernel
 #endif// VIIIARCHIVE_STATPERCENTINCREASEABILITIES_H

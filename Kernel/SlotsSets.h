@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_SLOTSSETS_H
 #define VIIIARCHIVE_SLOTSSETS_H
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include <cstdint>
 #include <array>
 namespace OpenVIII::Kernel {

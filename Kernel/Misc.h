@@ -4,25 +4,10 @@
 
 #ifndef VIIIARCHIVE_MISC_H
 #define VIIIARCHIVE_MISC_H
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
+#include "SequenceAndTimer.h"
 #include "CrisisLevelT.h"
 namespace OpenVIII::Kernel {
-struct SequenceAndTimer
-{
-private:
-  std::uint8_t Sequence_{};
-  std::uint8_t Timer_{};
-
-public:
-  [[nodiscard]] auto Sequence() const noexcept { return Sequence_; }
-  [[nodiscard]] auto Timer() const noexcept { return Timer_; }
-  friend std::ostream &operator<<(std::ostream &os, const SequenceAndTimer &input)
-  {
-    return os << '{' << static_cast<std::uint32_t>(input.Sequence()) << ", "
-              << static_cast<std::uint32_t>(input.Timer()) << '}';
-  }
-};
-
 struct Misc
 {
   /*

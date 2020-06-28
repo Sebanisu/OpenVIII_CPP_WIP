@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAK_H
 #define VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAK_H
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "ElementT.h"
 #include "AttackTypeT.h"
 #include "AttackFlagsT.h"

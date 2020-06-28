@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_BATTLEITEMS_H
 #define VIIIARCHIVE_BATTLEITEMS_H
 
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 #include "ElementT.h"
 #include "BattleOnlyStatusesT.h"
 #include "PersistentStatusesT.h"
@@ -83,7 +83,15 @@ public:
     if (!std::empty(description)) {
       os << ", " << description;
     }
-    return os;
+    return os << ", " << static_cast<std::uint32_t>(MagicID()) << ", " << static_cast<std::uint32_t>(AttackType())
+              << ", " << static_cast<std::uint32_t>(AttackPower()) << ", " << static_cast<std::uint32_t>(unknown0())
+              << ", " << static_cast<std::uint32_t>(Target()) << ", " << static_cast<std::uint32_t>(unknown1()) << ", "
+              << static_cast<std::uint32_t>(AttackFlags()) << ", " << static_cast<std::uint32_t>(unknown2()) << ", "
+              << static_cast<std::uint32_t>(StatusAttackEnabler()) << ", "
+              << static_cast<std::uint32_t>(PersistentStatuses())// statuses 0-7
+              << ", " << static_cast<std::uint32_t>(BattleOnlyStatuses())// statuses 8-39
+              << ", " << static_cast<std::uint32_t>(AttackParam()) << ", " << static_cast<std::uint32_t>(unknown3())
+              << ", " << static_cast<std::uint32_t>(HitCount()) << ", " << static_cast<std::uint32_t>(Element());
   }
 };
 }// namespace OpenVIII::Kernel

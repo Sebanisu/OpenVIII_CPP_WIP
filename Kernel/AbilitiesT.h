@@ -168,7 +168,7 @@ enum class AbilitiesT : std::uint16_t {
   GFHP30,
   GFHP40,
   Boost,
-  // Equippable abilities end here
+  // Equipable abilities end here
 
   // https://github.com/alexfilth/doomtrain/wiki/Menu-abilities
   Haggle,

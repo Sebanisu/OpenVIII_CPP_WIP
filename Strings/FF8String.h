@@ -6,7 +6,9 @@
 #include <string_view>
 #include <array>
 #include <sstream>
+
 using namespace std::string_view_literals;
+namespace OpenVIII {
 struct FF8String
 {
 private:
@@ -289,4 +291,5 @@ public:
     return ss.str();
   }
 };
+}// namespace OpenVIII
 #endif// VIIIARCHIVE_FF8STRING_H

@@ -10,7 +10,7 @@
 #include "AttackTypeT.h"
 #include "AttackFlagsT.h"
 #include "TargetT.h"
-#include "EncodedStringOffset.h"
+#include "../Strings/EncodedStringOffset.h"
 namespace OpenVIII::Kernel {
 struct IrvineShotLimitBreak
 {
