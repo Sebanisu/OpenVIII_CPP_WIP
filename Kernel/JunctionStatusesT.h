@@ -8,6 +8,7 @@
 #include <cstdint>
 namespace OpenVIII::Kernel {
 enum class JunctionStatusesT : std::uint16_t {
+  //https://github.com/DarkShinryu/doomtrain/wiki/Characters-J-Statuses
   None = 0x0,
   Death = 0x1,
   Poison = 0x2,

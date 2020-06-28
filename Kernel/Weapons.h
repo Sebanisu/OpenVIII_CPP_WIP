@@ -75,8 +75,12 @@ public:
     if (!std::empty(name)) {
       os << name;
     }
-    os << ", " << MeleeWeapon();
-    return os;
+    return os << ", " << static_cast<std::uint32_t>(RenzokukenFinishers()) << ", "
+              << static_cast<std::uint32_t>(unknown()) << ", " << static_cast<std::uint32_t>(CharacterID()) << ", "
+              << static_cast<std::uint32_t>(AttackType()) << ", " << static_cast<std::uint32_t>(AttackPower()) << ", "
+              << static_cast<std::uint32_t>(AttackParameter()) << ", " << static_cast<std::uint32_t>(STRBonus()) << ", "
+              << static_cast<std::uint32_t>(WeaponTier()) << ", " << static_cast<std::uint32_t>(CriticalBonus()) << ", "
+              << static_cast<std::uint32_t>(MeleeWeapon());
   }
 };
 }// namespace OpenVIII::Kernel

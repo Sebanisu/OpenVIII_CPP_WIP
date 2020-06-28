@@ -5,6 +5,7 @@
 #ifndef VIIIARCHIVE_SEQUENCEANDTIMER_H
 #define VIIIARCHIVE_SEQUENCEANDTIMER_H
 #include <cstdint>
+#include <iostream>
 namespace OpenVIII::Kernel {
 struct SequenceAndTimer
 {

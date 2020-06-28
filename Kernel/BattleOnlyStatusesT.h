@@ -7,6 +7,7 @@
 #include <cstdint>
 namespace OpenVIII::Kernel {
 enum class BattleOnlyStatusesT : std::uint32_t {
+  //https://github.com/DarkShinryu/doomtrain/wiki/Statuses-1
   None = 0x0,
   Sleep = 0x1,
   Haste = 0x2,

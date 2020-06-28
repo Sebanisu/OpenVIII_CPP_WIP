@@ -7,6 +7,7 @@
 #include <cstdint>
 namespace OpenVIII::Kernel {
 enum class PersistentStatusesT : std::uint16_t {
+  //https://github.com/DarkShinryu/doomtrain/wiki/Statuses-0
   None = 0x00,
   Death = 0x01,
   Poison = 0x02,

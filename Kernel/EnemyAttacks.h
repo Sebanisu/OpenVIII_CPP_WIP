@@ -69,8 +69,15 @@ public:
     if (!std::empty(name)) {
       os << name << ", ";
     }
-    os << cameraChange_;
-    return os;
+    return os << static_cast<std::uint32_t>(MagicID()) << ", " << CameraChange()
+              << ", " << static_cast<std::uint32_t>(unknown0()) << ", " << static_cast<std::uint32_t>(AttackType())
+              << ", " << static_cast<std::uint32_t>(attackPower()) << ", " << static_cast<std::uint32_t>(AttackFlags())
+              << ", " << static_cast<std::uint32_t>(unknown1()) << ", " << static_cast<std::uint32_t>(Element()) << ", "
+              << static_cast<std::uint32_t>(unknown2()) << ", " << static_cast<std::uint32_t>(StatusAttackEnabler())
+              << ", " << static_cast<std::uint32_t>(AttackParameter()) << ", "
+              << static_cast<std::uint32_t>(PersistentStatuses())// statuses 0-7
+              << ", " << static_cast<std::uint32_t>(BattleOnlyStatuses())// statuses 8-31
+      ;
   }
 };
 }// namespace OpenVIII::Kernel
