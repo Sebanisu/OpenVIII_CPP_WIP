@@ -279,7 +279,6 @@ public:
     }
     if (fl_.base != fs_.base || fi_.base != fs_.base) {
       if (fl_.base == fi_.base) {
-        std::cerr << "base name mismatch FS Data: " << fs_.path << "\n";
         // fs_ = {};
         exit(EXIT_FAILURE);
       }
