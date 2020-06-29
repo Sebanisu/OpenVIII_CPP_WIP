@@ -1,2 +1,3 @@
 add_subdirectory(VIIICompression)
 add_subdirectory(VIIITools)
+add_subdirectory(VIIIPaths)

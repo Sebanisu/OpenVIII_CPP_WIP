@@ -36,8 +36,3 @@ add_executable(TestExtractSingleZZZ
 set_target_properties(TestExtractSingleZZZ PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractSingleZZZ VIIIArchive VIIIPaths)
 
-##test kernel.bin
-add_executable(TestKernel
-        TestKernel.cpp TestKernel.h)
-set_target_properties(TestKernel PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestKernel VIIIArchive VIIIPaths VIIIStrings VIIIKernel)

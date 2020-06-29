@@ -4,3 +4,6 @@
 [submodule "External/VIIITools"]
 	path = External/VIIITools
 	url = https://github.com/Sebanisu/VIIITools.git
+[submodule "External/VIIIPaths"]
+	path = External/VIIIPaths
+	url = https://github.com/Sebanisu/VIIIPaths
