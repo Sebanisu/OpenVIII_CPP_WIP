@@ -24,7 +24,7 @@
 #include <optional>
 #include <cassert>
 #include <initializer_list>
-#include "External/VIIITools/Tools.h"
+#include "../../../External/VIIITools/Tools.h"
 
 namespace OpenVIII::Archive {
 // FL files contain internal file structure paths. As a flat text file.

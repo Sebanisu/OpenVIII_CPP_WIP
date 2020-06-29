@@ -22,9 +22,9 @@
 #include <iterator>
 #include <cstring>
 
-#include "External/VIIICompression/LZSS.h"
-#include "External/VIIICompression/L4Z.h"
-#include "External/VIIITools/Tools.h"
+#include "../../../External/VIIICompression/LZSS.h"
+#include "../../../External/VIIICompression/L4Z.h"
+#include "../../../External/VIIITools/Tools.h"
 
 namespace OpenVIII::Archive {
 static size_t largestCompressedBuffer{};

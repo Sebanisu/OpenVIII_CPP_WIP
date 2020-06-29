@@ -15,7 +15,7 @@
 #include <string>
 #include <map>
 #include <filesystem>
-#include "../ZZZ.h"
+#include "../src/OpenVIII/Archive/ZZZ.h"
 #include "../External/VIIITools/Tools.h"
 int main();
 

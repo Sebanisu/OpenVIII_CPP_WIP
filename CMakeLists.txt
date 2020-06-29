@@ -67,23 +67,7 @@ endif ()
 #        Libs/color.h)
 #set_target_properties(Tools PROPERTIES LINKER_LANGUAGE CXX)
 #
-add_library(Archive
-        FI.h
-        FIFLFS.h
-        FL.h
-        FS.h
-        ZZZ.h
-        FileData.h
-        Archive.h
-        Archive.cpp
-        ZZZ.cpp
-        FS.cpp
-        FL.cpp
-        FileData.cpp
-        FIFLFS.cpp
-        FI.cpp Archives.cpp Archives.h CompressionTypeT.cpp CompressionTypeT.h)
-set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(Archive VIIITools VIIICompression)
 
 
+add_subdirectory(src)
 add_subdirectory(Tests)
