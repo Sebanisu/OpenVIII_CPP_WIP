@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestExtractFIFLFS.h"
-#include "paths.h"
+#include "OpenVIII/Paths/Paths.h"
 
 int main()
 {
@@ -20,7 +20,7 @@ int main()
   //        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)",
   //        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)"});
 
-  for (auto path : Paths::get()) {
+  for (auto path : OpenVIII::Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
     if (!std::filesystem::exists(path)) {
       continue;

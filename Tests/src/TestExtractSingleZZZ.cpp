@@ -12,7 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestExtractSingleZZZ.h"
-#include "paths.h"
+#include "OpenVIII/Paths/Paths.h"
 int main()
 {
   const std::initializer_list<std::string_view> Extensions = {
@@ -26,7 +26,7 @@ int main()
     return 1;
   }
   // test ZZZ extract with FIFLFS
-  for (auto path : Paths::get()) {
+  for (auto path : OpenVIII::Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
 
     if (!std::filesystem::exists(path)) {

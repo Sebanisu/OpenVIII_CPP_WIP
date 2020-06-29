@@ -12,10 +12,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestArchives.h"
 #include "OpenVIII/Archive/Archives.h"
-#include "paths.h"
+#include "OpenVIII/Paths/Paths.h"
 int main()
 {
-  for (auto path : Paths::get()) {
+  for (auto path : OpenVIII::Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
     if (!std::filesystem::exists(path)) {
       continue;

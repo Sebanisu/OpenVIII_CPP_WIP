@@ -11,11 +11,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestExtractZZZ.h"
-#include "paths.h"
+#include "OpenVIII/Paths/Paths.h"
 int main()
 {
   // test ZZZ extract with FIFLFS
-  for (auto path : Paths::get()) {
+  for (auto path : OpenVIII::Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
 
     if (!std::filesystem::exists(path)) {

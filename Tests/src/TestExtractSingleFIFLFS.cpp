@@ -13,7 +13,7 @@
 
 #include <string>
 #include "TestExtractSingleFIFLFS.h"
-#include "paths.h"
+#include "OpenVIII/Paths/Paths.h"
 int main()
 {
   // test FIFLFS
@@ -24,7 +24,7 @@ int main()
   if (needle.empty()) {
     return 1;
   }
-  for (auto path : Paths::get()) {
+  for (auto path : OpenVIII::Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
     if (!std::filesystem::exists(path)) {
       continue;
