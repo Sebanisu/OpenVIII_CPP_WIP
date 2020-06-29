@@ -8,14 +8,14 @@ set_target_properties(paths PROPERTIES LINKER_LANGUAGE CXX)
 add_executable(TestExtractFIFLFS
         TestExtractFIFLFS.h TestExtractFIFLFS.cpp)
 set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractFIFLFS Archive paths)
+target_link_libraries(TestExtractFIFLFS VIIIArchive paths)
 #
 ##test app for trying to extract a single file from the FIFLFS archives.
 add_executable(TestExtractSingleFIFLFS
         TestExtractSingleFIFLFS.h
         TestExtractSingleFIFLFS.cpp)
 set_target_properties(TestExtractSingleFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractSingleFIFLFS Archive paths)
+target_link_libraries(TestExtractSingleFIFLFS VIIIArchive paths)
 
 #
 ##test app for trying to extract a all files from the ZZZ and FIFLFS archives.
@@ -23,14 +23,14 @@ add_executable(TestExtractZZZ
         TestExtractZZZ.h
         TestExtractZZZ.cpp)
 set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractZZZ Archive paths)
+target_link_libraries(TestExtractZZZ VIIIArchive paths)
 
 #
 ##Test Archives loading struct
 add_executable(TestArchives
         TestArchives.h TestArchives.cpp)
 set_target_properties(TestArchives PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestArchives Archive paths)
+target_link_libraries(TestArchives VIIIArchive paths)
 
 
 #
@@ -38,10 +38,10 @@ target_link_libraries(TestArchives Archive paths)
 add_executable(TestExtractSingleZZZ
         TestExtractSingleZZZ.h TestExtractSingleZZZ.cpp)
 set_target_properties(TestExtractSingleZZZ PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractSingleZZZ Archive paths)
+target_link_libraries(TestExtractSingleZZZ VIIIArchive paths)
 
 ##test kernel.bin
 add_executable(TestKernel
         TestKernel.cpp TestKernel.h)
 set_target_properties(TestKernel PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestKernel Archive paths Kernel)
+target_link_libraries(TestKernel VIIIArchive paths VIIIStrings VIIIKernel)

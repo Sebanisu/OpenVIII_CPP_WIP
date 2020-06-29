@@ -1,6 +1,6 @@
 #ifndef VIIIARCHIVE_JUNCTIONABLEGFS_H
 #define VIIIARCHIVE_JUNCTIONABLEGFS_H
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "AttackTypeT.h"
 #include "AttackFlagsT.h"
 #include "BattleOnlyStatusesT.h"

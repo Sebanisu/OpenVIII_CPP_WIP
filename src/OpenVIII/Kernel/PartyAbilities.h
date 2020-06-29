@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_PARTYABILITIES_H
 #define VIIIARCHIVE_PARTYABILITIES_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 
 namespace OpenVIII::Kernel {
 struct PartyAbilities

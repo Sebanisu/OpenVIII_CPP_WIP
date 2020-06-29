@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_ZELLDUELLIMITBREAK_H
 #define VIIIARCHIVE_ZELLDUELLIMITBREAK_H
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "ElementT.h"
 #include "BattleOnlyStatusesT.h"
 #include "PersistentStatusesT.h"

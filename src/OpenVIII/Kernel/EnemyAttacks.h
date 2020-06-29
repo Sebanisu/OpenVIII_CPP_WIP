@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_ENEMYATTACKS_H
 #define VIIIARCHIVE_ENEMYATTACKS_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "PersistentStatusesT.h"
 #include "BattleOnlyStatusesT.h"
 #include "AttackFlagsT.h"

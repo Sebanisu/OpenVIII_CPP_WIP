@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_NONBATTLEITEMS_H
 #define VIIIARCHIVE_NONBATTLEITEMS_H
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 
 namespace OpenVIII::Kernel {
 struct NonBattleItems

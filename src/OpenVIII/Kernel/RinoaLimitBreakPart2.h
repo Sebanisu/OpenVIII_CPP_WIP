@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_RINOALIMITBREAKPART2_H
 #define VIIIARCHIVE_RINOALIMITBREAKPART2_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "AttackTypeT.h"
 #include "AttackFlagsT.h"
 #include "TargetT.h"

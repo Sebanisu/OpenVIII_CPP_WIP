@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestArchives.h"
-#include "../../src/OpenVIII/Archive/Archives.h"
+#include "OpenVIII/Archive/Archives.h"
 #include "paths.h"
 int main()
 {

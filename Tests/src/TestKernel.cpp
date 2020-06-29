@@ -11,9 +11,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestKernel.h"
-#include "../../src/OpenVIII/Archive/Archives.h"
+#include "OpenVIII/Archive/Archives.h"
 #include "paths.h"
-#include "../../src/OpenVIII/Kernel/Header.h"
+#include "OpenVIII/Kernel/Header.h"
 int main()
 {
   for (auto path : Paths::get()) {

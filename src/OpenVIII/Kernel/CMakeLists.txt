@@ -1,4 +1,4 @@
-add_library(Kernel
+add_library(VIIIKernel
         AbilitiesT.cpp
         AbilitiesT.h
         AttackFlagsT.cpp
@@ -104,5 +104,5 @@ add_library(Kernel
         ZellDuelLimitBreak.cpp
         ZellDuelLimitBreak.h
         )
-set_target_properties(Kernel PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(Kernel VIIITools)
+set_target_properties(VIIIKernel PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(VIIIKernel VIIITools)

@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_TEAMLAGUNALIMITBREAKS_H
 #define VIIIARCHIVE_TEAMLAGUNALIMITBREAKS_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "AttackFlagsT.h"
 #include "AttackTypeT.h"
 #include "TargetT.h"

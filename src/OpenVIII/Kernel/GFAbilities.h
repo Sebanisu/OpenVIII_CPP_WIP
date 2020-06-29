@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_GFABILITIES_H
 #define VIIIARCHIVE_GFABILITIES_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "StatT.h"
 namespace OpenVIII::Kernel {
 struct GFAbilities

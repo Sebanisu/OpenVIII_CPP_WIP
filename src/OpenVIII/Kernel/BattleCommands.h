@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_BATTLECOMMANDS_H
 #define VIIIARCHIVE_BATTLECOMMANDS_H
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "TargetT.h"
 
 namespace OpenVIII::Kernel {

@@ -10,7 +10,7 @@
 #include "TargetT.h"
 #include "PersistentStatusesT.h"
 #include "BattleOnlyStatusesT.h"
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 
 namespace OpenVIII::Kernel {
 struct RenzokukenFinishers

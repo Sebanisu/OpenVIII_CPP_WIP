@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_MAGIC_H
 #define VIIIARCHIVE_MAGIC_H
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "AttackTypeT.h"
 #include "TargetT.h"
 #include "AttackFlagsT.h"

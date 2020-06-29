@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_MISCTEXT_H
 #define VIIIARCHIVE_MISCTEXT_H
 #include <iostream>
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 
 namespace OpenVIII::Kernel {
 struct MiscText

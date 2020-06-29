@@ -1,4 +1,4 @@
-add_library(Archive
+add_library(VIIIArchive
         FI.h
         FIFLFS.h
         FL.h
@@ -13,5 +13,5 @@ add_library(Archive
         FileData.cpp
         FIFLFS.cpp
         FI.cpp Archives.cpp Archives.h CompressionTypeT.cpp CompressionTypeT.h)
-set_target_properties(Archive PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(Archive VIIITools VIIICompression)
+set_target_properties(VIIIArchive PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(VIIIArchive VIIITools VIIICompression)

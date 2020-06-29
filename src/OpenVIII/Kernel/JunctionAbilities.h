@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_JUNCTIONABILITIES_H
 #define VIIIARCHIVE_JUNCTIONABILITIES_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include <cstring>
 #include "JunctionFlagsT.h"
 namespace OpenVIII::Kernel {

@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_CHARACTERS_H
 #define VIIIARCHIVE_CHARACTERS_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "GenderT.h"
 #include "StatGroupNoEVANoHIT.h"
 namespace OpenVIII::Kernel {

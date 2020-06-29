@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_SLOTSARRAY_H
 #define VIIIARCHIVE_SLOTSARRAY_H
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include <cstdint>
 namespace OpenVIII::Kernel {
 struct SlotsArray

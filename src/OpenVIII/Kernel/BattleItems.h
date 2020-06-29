@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_BATTLEITEMS_H
 #define VIIIARCHIVE_BATTLEITEMS_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "ElementT.h"
 #include "BattleOnlyStatusesT.h"
 #include "PersistentStatusesT.h"

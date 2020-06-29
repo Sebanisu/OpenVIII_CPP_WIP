@@ -14,7 +14,7 @@
 #define VIIIARCHIVE_ZZZ_H
 #include <string>
 #include "FI.h"
-#include "../../../External/VIIITools/Tools.h"
+#include "OpenVIII/Tools/Tools.h"
 #include <filesystem>
 #include <set>
 #include <fstream>

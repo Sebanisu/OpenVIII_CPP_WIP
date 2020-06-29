@@ -18,8 +18,7 @@ elseif (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /W4")
     # change to latest for cpp20 pre release
 endif (CMAKE_COMPILER_IS_GNUCXX)
-add_subdirectory(External/VIIICompression)
-add_subdirectory(External/VIIITools)
+add_subdirectory(External)
 find_package(Git QUIET)
 if (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     # Update submodules as needed
@@ -45,29 +44,5 @@ if (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
         #        endif ()
     endif ()
 endif ()
-
-#include_directories(External/VIIICompression)
-#include_directories(External/VIIITools)
-#add_library(lz4
-#        External/lz4/lib/lz4.h
-#        External/lz4/lib/lz4.c
-#        )
-#set_target_properties(lz4 PROPERTIES LINKER_LANGUAGE CXX)
-#
-#add_library(Compression STATIC
-#        Libs/Compression/LZSS/LZSS.h
-#        Libs/Compression/Compression.cpp
-#        Libs/Compression/L4Z/L4Z.h Libs/Compression/L4Z/L4Z.cpp)
-#set_target_properties(Compression PROPERTIES LINKER_LANGUAGE CXX)
-#target_link_libraries(Compression lz4)
-#
-#add_library(Tools STATIC
-#        Libs/Tools/Tools.h
-#        Libs/Tools/Tools.cpp
-#        Libs/color.h)
-#set_target_properties(Tools PROPERTIES LINKER_LANGUAGE CXX)
-#
-
-
 add_subdirectory(src)
 add_subdirectory(Tests)

@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_MISC_H
 #define VIIIARCHIVE_MISC_H
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "SequenceAndTimer.h"
 #include "CrisisLevelT.h"
 namespace OpenVIII::Kernel {

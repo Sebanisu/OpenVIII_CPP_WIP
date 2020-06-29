@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_COMMANDABILITIESDATA_H
 #define VIIIARCHIVE_COMMANDABILITIESDATA_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "PersistentStatusesT.h"
 #include "BattleOnlyStatusesT.h"
 #include "AttackTypeT.h"

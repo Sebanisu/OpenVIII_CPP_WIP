@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_CHARACTERABILITIES_H
 #define VIIIARCHIVE_CHARACTERABILITIES_H
 
-#include "../Strings/EncodedStringOffset.h"
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "CharacterAbilityFlagsT.h"
 #include <cstring>
 namespace OpenVIII::Kernel {
