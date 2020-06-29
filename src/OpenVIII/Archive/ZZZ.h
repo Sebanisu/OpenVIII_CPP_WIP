@@ -70,17 +70,14 @@ public:
     std::sort(data_.begin(), data_.end(), [](const FileData &left, const FileData &right) {
       const auto &rightString = right.GetPathString();
       const auto &leftString = left.GetPathString();
-      {
-        const auto &rightSize = std::size(rightString);
-        const auto &leftSize = std::size(leftString);
-        if (leftSize < rightSize) {
-          return true;
-        }
-        if (leftSize > rightSize) {
-          return false;
-        }
+      const auto &rightSize = std::size(rightString);
+      const auto &leftSize = std::size(leftString);
+      if (leftSize == rightSize) {
+        return leftString < rightString;
       }
-      return leftString < rightString;
+      else {
+        return leftSize < rightSize;
+      }
     });
     fp.close();
     data_.shrink_to_fit();

@@ -116,15 +116,7 @@ public:
     };
     // sort the strings. to make it easier to choose the correct string first.
     // shorter length and then what ever str < str2 does.
-    std::sort(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
-      if (left.second.length() < right.second.length()) {
-        return true;
-      }
-      if (left.second.length() > right.second.length()) {
-        return false;
-      }
-      return left.second < right.second;
-    });
+
 
     if (std::empty(data)) {
       auto fp = std::ifstream(path, std::ios::in);
@@ -140,7 +132,43 @@ public:
         std::cout << "\033[1;31mFL Data is null!\033[0m\n";
       }
     }
-    vector.shrink_to_fit();
+    //vector.shrink_to_fit();
+    std::sort(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
+      if(left.second.length() == right.second.length()) {
+        return left.second < right.second;
+      }
+      else {
+        return left.second.length() < right.second.length();
+      }
+//           if (left.second.length() <= right.second.length()) {
+//             return true;
+//           }
+//           else if (left.second.length() > right.second.length()) {
+//             return false;
+//           }
+//           else
+//           {
+//             return left.second < right.second;
+//           }
+    });
+    if(!std::is_sorted(vector.begin(),vector.end(), [](const auto & left, const auto & right)
+    {
+           if(left.second.length() == right.second.length()) {
+             return left.second < right.second;
+           }
+           else {
+             return left.second.length() < right.second.length();
+           }
+    }))
+    {
+
+      for(const auto & item : vector)
+      {
+        std::cout<<item.second<<'\n';
+      }
+      std::cerr << "not sorted!!!";
+      exit(1);
+    }
     return vector;
   }
   // Get all entries from the FL file sorted and cleaned.
