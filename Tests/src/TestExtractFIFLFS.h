@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <map>
-#include "../src/OpenVIII/Archive/FIFLFS.h"
-#include "../External/VIIITools/Tools.h"
+#include "../../src/OpenVIII/Archive/FIFLFS.h"
+#include "../../External/VIIITools/Tools.h"
 int main();
 #endif// VIIIARCHIVE_TESTEXTRACTFIFLFS_H

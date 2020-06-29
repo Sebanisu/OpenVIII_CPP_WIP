@@ -10,12 +10,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef VIIIARCHIVE_TESTEXTRACTZZZ_H
-#define VIIIARCHIVE_TESTEXTRACTZZZ_H
+#ifndef VIIIARCHIVE_TESTPATHS_H
+#define VIIIARCHIVE_TESTPATHS_H
+#include <array>
 #include <string>
-#include <map>
-#include <filesystem>
-#include "../src/OpenVIII/Archive/ZZZ.h"
-#include "../External/VIIITools/Tools.h"
-int main();
-#endif// VIIIARCHIVE_TESTEXTRACTZZZ_H
+struct Paths
+{
+  constexpr static auto count = 8;
+  static std::array<std::string, count> get();
+};
+#endif// VIIIARCHIVE_TESTPATHS_H

@@ -10,12 +10,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef VIIIARCHIVE_TESTPATHS_H
-#define VIIIARCHIVE_TESTPATHS_H
-#include <array>
-struct Paths
-{
-  constexpr static auto count = 8;
-  static std::array<std::string, count> get();
-};
-#endif// VIIIARCHIVE_TESTPATHS_H
+#ifndef VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_H
+#define VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_H
+#include <string>
+#include <algorithm>
+#include <filesystem>
+#include <map>
+#include "../../src/OpenVIII/Archive/FIFLFS.h"
+#include "../../External/VIIITools/Tools.h"
+int main();
+#endif// VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_H
