@@ -1,2 +1,7 @@
 add_subdirectory(OpenVIII)
+target_include_directories(VIIITools PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(VIIICompression PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(VIIIStrings PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(VIIIPaths PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(VIIIArchive PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(VIIIKernel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

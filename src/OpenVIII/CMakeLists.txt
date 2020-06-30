@@ -1,1 +1,6 @@
 add_subdirectory(Tools)
+add_subdirectory(Compression)
+add_subdirectory(Strings)
+add_subdirectory(Paths)
+add_subdirectory(Archive)
+add_subdirectory(Kernel)
