@@ -1,0 +1,1 @@
+add_library(VIIITools Tools.cpp Tools.h)
