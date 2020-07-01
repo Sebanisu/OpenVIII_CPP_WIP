@@ -27,7 +27,7 @@ struct MiscText
    */
 private:
   EncodedStringOffset nameOffset_{};
-  //EncodedStringOffset descriptionOffset_{};
+  // EncodedStringOffset descriptionOffset_{};
 
 public:
   [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
@@ -35,13 +35,13 @@ public:
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.DecodedString(buffer);
-    //auto description = descriptionOffset_.DecodedString(buffer);
+    // auto description = descriptionOffset_.DecodedString(buffer);
     if (!std::empty(name)) {
       os << name;
     }
-//    if (!std::empty(description)) {
-//      os << ", " << description;
-//    }
+    //    if (!std::empty(description)) {
+    //      os << ", " << description;
+    //    }
     return os;
   }
 };

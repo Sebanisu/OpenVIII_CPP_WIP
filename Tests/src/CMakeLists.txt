@@ -47,4 +47,4 @@ target_link_libraries(TestLZSS VIIICompression)
 add_executable(TestKernel
         TestKernel.cpp TestKernel.h)
 set_target_properties(TestKernel PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestKernel VIIIStrings VIIIKernel VIIIPaths VIIIArchive )
+target_link_libraries(TestKernel VIIIStrings VIIIKernel VIIIPaths VIIIArchive)

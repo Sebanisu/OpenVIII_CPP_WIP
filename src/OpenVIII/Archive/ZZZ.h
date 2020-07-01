@@ -74,8 +74,7 @@ public:
       const auto &leftSize = std::size(leftString);
       if (leftSize == rightSize) {
         return leftString < rightString;
-      }
-      else {
+      } else {
         return leftSize < rightSize;
       }
     });

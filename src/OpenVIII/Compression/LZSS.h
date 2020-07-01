@@ -192,7 +192,7 @@ public:
       match_length = 0;
 
       while (true) {
-        if (cmp >= 0) { //if cmp is unsigned this is always true..
+        if (cmp >= 0) {// if cmp is unsigned this is always true..
           if (rightSide.at(p) != NotUsed) {
             p = rightSide.at(p);
           } else {

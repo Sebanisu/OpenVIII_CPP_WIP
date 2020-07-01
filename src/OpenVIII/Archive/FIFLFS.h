@@ -280,19 +280,19 @@ public:
     if (fl_.base != fs_.base || fi_.base != fs_.base) {
       if (fl_.base == fi_.base) {
         std::cerr << "base name mismatch FS Data: " << fs_.path << '\n';
-        std::cerr << "not matching:"<< fl_.path <<", "<< fi_.path<<'\n';
+        std::cerr << "not matching:" << fl_.path << ", " << fi_.path << '\n';
         // fs_ = {};
         exit(EXIT_FAILURE);
       }
     } else if (fi_.base != fl_.base) {
       if (fl_.base == fs_.base) {
         std::cerr << "base name mismatch FL Data: " << fl_.path << "\n";
-        std::cerr << "not matching:"<< fl_.base <<", "<< fs_.base<<'\n';
+        std::cerr << "not matching:" << fl_.base << ", " << fs_.base << '\n';
         // fi_ = {};
         exit(EXIT_FAILURE);
       } else if (fi_.base == fs_.base) {
         std::cerr << "base name mismatch FI Data: " << fi_.path << "\n";
-        std::cerr << "not matching:"<< fi_.path <<", "<< fs_.path<<'\n';
+        std::cerr << "not matching:" << fi_.path << ", " << fs_.path << '\n';
         // fl_ = {};
         exit(EXIT_FAILURE);
       }

@@ -132,40 +132,33 @@ public:
         std::cout << "\033[1;31mFL Data is null!\033[0m\n";
       }
     }
-    //vector.shrink_to_fit();
+    // vector.shrink_to_fit();
     std::sort(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
-      if(left.second.length() == right.second.length()) {
+      if (left.second.length() == right.second.length()) {
         return left.second < right.second;
-      }
-      else {
+      } else {
         return left.second.length() < right.second.length();
       }
-//           if (left.second.length() <= right.second.length()) {
-//             return true;
-//           }
-//           else if (left.second.length() > right.second.length()) {
-//             return false;
-//           }
-//           else
-//           {
-//             return left.second < right.second;
-//           }
+      //           if (left.second.length() <= right.second.length()) {
+      //             return true;
+      //           }
+      //           else if (left.second.length() > right.second.length()) {
+      //             return false;
+      //           }
+      //           else
+      //           {
+      //             return left.second < right.second;
+      //           }
     });
-    if(!std::is_sorted(vector.begin(),vector.end(), [](const auto & left, const auto & right)
-    {
-           if(left.second.length() == right.second.length()) {
-             return left.second < right.second;
-           }
-           else {
-             return left.second.length() < right.second.length();
-           }
-    }))
-    {
+    if (!std::is_sorted(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
+          if (left.second.length() == right.second.length()) {
+            return left.second < right.second;
+          } else {
+            return left.second.length() < right.second.length();
+          }
+        })) {
 
-      for(const auto & item : vector)
-      {
-        std::cout<<item.second<<'\n';
-      }
+      for (const auto &item : vector) { std::cout << item.second << '\n'; }
       std::cerr << "not sorted!!!";
       exit(1);
     }

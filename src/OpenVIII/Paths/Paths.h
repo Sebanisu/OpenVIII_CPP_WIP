@@ -20,5 +20,5 @@ struct Paths
   constexpr static auto count = 8;
   static std::array<std::string, count> get();
 };
-}
+}// namespace OpenVIII
 #endif// VIIIARCHIVE_TESTPATHS_H
