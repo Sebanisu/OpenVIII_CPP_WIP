@@ -72,7 +72,7 @@ public:
       return nullptr;// failure
     }
     auto length = [this]() {
-      if constexpr (static_cast<int>(sectionType) >= static_cast<int>(SectionTypesT::Count) - 1) {
+      if constexpr (static_cast<int>(sectionType) >= (static_cast<int>(SectionTypesT::Count) - 1)) {
         return std::size(buffer_) - sectionOffsets_.at(static_cast<size_t>(sectionType));
       } else {
         return static_cast<size_t>(sectionOffsets_.at(static_cast<size_t>(sectionType) + 1)
