@@ -2,12 +2,14 @@ Credits:
  - https://github.com/MaKiPL
  - https://github.com/myst6re
  - https://github.com/antiquechrono
+ - https://github.com/DarkShinryu
 
 Reference:
  - http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media
  - http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
  - https://github.com/MaKiPL/OpenVIII-monogame
  - https://github.com/myst6re/deling
+ - https://github.com/DarkShinryu/doomtrain
  
 Requires:
  - cpp17
@@ -15,6 +17,4 @@ Requires:
 
 This is WIP and everything is subject to change. I plan to upgrade to cpp20 when it's more widely supported.
 
-This Libary is for handling FI FL FS and ZZZ files in a read only fashion. I may add the ability to write changes back. Though that is a bit of work. As you have to recreate the containers from scratch and readd the elements.
-
-Will have the ability to find files in the archive and extract the one you want. Unsure if we should store the filelist as a vector of strings. Depends how many times you could go through the files.
+This is a port of OpenVIII to C++. It's kinda an experiment. I want to keep is a modular as possible so you don't need to include what you don't want.

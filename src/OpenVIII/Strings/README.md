@@ -1,0 +1,1 @@
+This handles string decoding and such.
