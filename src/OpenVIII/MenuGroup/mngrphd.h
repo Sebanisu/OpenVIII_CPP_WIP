@@ -11,6 +11,8 @@
 namespace OpenVIII::MenuGroup {
 struct MenuGroupHeaderSection
 {
+  //http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrphd_bin
+  //http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrp_bin
 private:
   static constexpr std::uint32_t invalidSize_ = 0U;
   static constexpr std::uint32_t invalidFileOffset_ = 0xFFFFFFFF;

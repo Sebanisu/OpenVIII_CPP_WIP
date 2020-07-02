@@ -14,6 +14,7 @@
 #include "OpenVIII/Archive/Archives.h"
 #include "OpenVIII/Paths/Paths.h"
 #include "OpenVIII/MenuGroup/mngrphd.h"
+#include "OpenVIII/MenuGroup/tkmnmes.h"
 int main()
 {
   for (auto path : OpenVIII::Paths::get()) {
@@ -35,6 +36,24 @@ int main()
       i++;
       if(!std::empty(sectionBuffer)) {
         std::cout << i << ": {" << item.FileOffset() << ", " << sectionBuffer.size() << "}\n";
+        if(i<=3)
+        {
+          OpenVIII::MenuGroup::tkmnmes tkmnmes_{sectionBuffer};
+          std::cout << "{"<<tkmnmes_.Sections().size()<<", "<<tkmnmes_.SubSections().size() <<"},\n";
+          size_t id{};
+          for(const auto &subSectionGroup : tkmnmes_.SubSections())
+          {
+            std::cout<< "  {"<<id<<": "<< subSectionGroup.size() <<'}'<<'\n';
+            const auto offset{tkmnmes_.Sections().at(id++)};
+            size_t stringnumber{};
+            for(const auto &subSection : subSectionGroup)
+            {
+              stringnumber++;
+              std::cout <<"    " << stringnumber << ": {"<<subSection.Offset()<<"} " << subSection.DecodedString(sectionBuffer,offset) << '\n';
+            }
+          }
+          std::cout << '\n';
+        }
       }
     }
 //    [[maybe_unused]] const auto &buffer = mngrphd.Buffer();

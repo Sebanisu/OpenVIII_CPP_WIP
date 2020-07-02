@@ -28,21 +28,35 @@ private:
     }
     return static_cast<signed>(std::size(buffer)) - offset;
   }
-  [[nodiscard]] static auto GetStringAtOffset(const std::string_view &buffer, uint16_t offset)
+  [[nodiscard]] static auto GetStringAtOffset(const std::string_view &buffer, intmax_t offset)
   {
     using namespace std::literals::string_view_literals;
-    if (offset != INT16_MAX && !std::empty(buffer) && std::size(buffer) > offset) {
-      auto size = FindStringSize(buffer, static_cast<intmax_t>(offset));
-      if (size >= 0) {
-        return std::string_view(buffer.data() + offset, static_cast<size_t>(size));
+
+    if (offset>=0 && !std::empty(buffer) && std::size(buffer) > static_cast<size_t>(offset)) {
+      auto size = FindStringSize(buffer, offset);
+      if (size > 0 && std::size(buffer) > (static_cast<size_t>(offset) + static_cast<size_t>(size))) {
+        return std::string_view(buffer.data() + static_cast<size_t>(offset), static_cast<size_t>(size));
       }
     }
     return ""sv;
   }
 
 public:
-  [[nodiscard]] auto RawBytes(const std::string_view &buffer) const { return GetStringAtOffset(buffer, offset_); }
-  [[nodiscard]] auto DecodedString(const std::string_view &buffer) const { return FF8String::Decode(RawBytes(buffer)); }
+  [[nodiscard]] auto RawBytes(const std::string_view &buffer, const intmax_t offset = 0) const
+  {
+    if(offset_ == INT16_MAX)
+    {
+      return ""sv;
+    }
+          return GetStringAtOffset(buffer, static_cast<intmax_t>(offset_) + offset);
+
+  }
+  [[nodiscard]] auto DecodedString(const std::string_view &buffer, const intmax_t offset = 0) const
+  {
+    return FF8String::Decode(RawBytes(buffer, offset));
+  }
+
+[[nodiscard]] auto Offset() const noexcept {return offset_;}
 };
 }// namespace OpenVIII
 #endif// VIIIARCHIVE_ENCODEDSTRINGOFFSET_H
