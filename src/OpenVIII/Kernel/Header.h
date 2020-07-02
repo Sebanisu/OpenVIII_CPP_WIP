@@ -63,6 +63,7 @@ struct Header
 private:
   std::vector<char> buffer_{};
   std::vector<std::uint32_t> sectionOffsets_{};
+  static constexpr auto fileName_ = std::string_view{"kernel.bin"};
 
 public:
   template<SectionTypesT sectionType>[[nodiscard]] constexpr auto GetSpan() const
@@ -331,13 +332,14 @@ public:
     } else if constexpr (sectionType == SectionTypesT::MiscText) {
       constexpr auto miscText = "MiscText"sv;
       return miscText;
-    } else
+    } else {
       return ""sv;
+    }
   }
 
   template<typename mainT> explicit Header(const mainT &main)
   {
-    buffer_ = main.GetEntryData(std::string_view("kernel.bin"));
+    buffer_ = main.GetEntryData(fileName_);
     if (std::size(buffer_) < sizeof(std::uint32_t)) {
       return;
     }

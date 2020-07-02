@@ -48,3 +48,10 @@ add_executable(TestKernel
         TestKernel.cpp TestKernel.h)
 set_target_properties(TestKernel PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestKernel VIIIStrings VIIIKernel VIIIPaths VIIIArchive)
+
+
+##test mngrphd.bin and mngrp.bin
+add_executable(TestMenuGroup
+        TestMenuGroup.cpp TestMenuGroup.h)
+set_target_properties(TestMenuGroup PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestMenuGroup VIIIStrings VIIIMenuGroup VIIIPaths VIIIArchive)

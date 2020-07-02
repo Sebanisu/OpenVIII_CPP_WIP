@@ -10,6 +10,7 @@ Reference:
  - https://github.com/MaKiPL/OpenVIII-monogame
  - https://github.com/myst6re/deling
  - https://github.com/DarkShinryu/doomtrain
+ - https://github.com/DarkShinryu/doomtrain/wiki
  
 Requires:
  - cpp17
