@@ -32,7 +32,7 @@ public:
       exit(1);
     }
     ptr += sizeof(sectionCount_);
-    std::memcpy(sections_.data(), ptr, sizeof(sections_));
+    std::memcpy(sections_.data(), ptr, std::size(sections_)*sizeof(std::uint16_t));
     ptr += sizeof(sections_);
     for (size_t i = 0; i < std::size(sections_); i++) {
       //[Count of Subsections] = [Start of file] + [Section value]

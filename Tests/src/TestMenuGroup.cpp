@@ -29,55 +29,57 @@ int main()
     auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
     auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
     std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";
-    size_t i =0;
-    for(const auto & item : mngrphd.Sections())
-    {
-      const auto sectionBuffer{item.GetSectionBuffer(mngrpBuffer)};
+    size_t i = 0;
+    for (const auto &item : mngrphd.Sections()) {
+      const auto sectionBuffer{ item.GetSectionBuffer(mngrpBuffer) };
       i++;
-      if(!std::empty(sectionBuffer)) {
+      if (!std::empty(sectionBuffer)) {
         std::cout << i << ": {" << item.FileOffset() << ", " << sectionBuffer.size() << "}\n";
-        if(i<=3)
-        {
-          OpenVIII::MenuGroup::tkmnmes tkmnmes_{sectionBuffer};
-          std::cout << "{"<<tkmnmes_.Sections().size()<<", "<<tkmnmes_.SubSections().size() <<"},\n";
+        if (i <= 3) {
+          OpenVIII::MenuGroup::tkmnmes tkmnmes_{ sectionBuffer };
+          std::cout << "{" << tkmnmes_.Sections().size() << ", " << tkmnmes_.SubSections().size() << "},\n";
           size_t id{};
-          for(const auto &subSectionGroup : tkmnmes_.SubSections())
-          {
-            std::cout<< "  {"<<id<<": "<< subSectionGroup.size() <<'}'<<'\n';
-            const auto offset{tkmnmes_.Sections().at(id++)};
+          for (const auto &subSectionGroup : tkmnmes_.SubSections()) {
+            const auto offset{ tkmnmes_.Sections().at(id++) };
+            if(offset ==0) {
+              continue;
+            }
+            std::cout << "  {" << id << ": " << subSectionGroup.size() << ", "<<offset<<'}' << '\n';
             size_t stringnumber{};
-            for(const auto &subSection : subSectionGroup)
-            {
+            for (const auto &subSection : subSectionGroup) {
               stringnumber++;
-              std::cout <<"    " << stringnumber << ": {"<<subSection.Offset()<<"} " << subSection.DecodedString(sectionBuffer,offset) << '\n';
+              if (subSection.Offset() > 0) {
+                std::cout << "    " << stringnumber << ": {" << subSection.Offset() << "} "
+                          << subSection.DecodedString(sectionBuffer, offset) << '\n';
+              }
             }
           }
           std::cout << '\n';
         }
       }
     }
-//    [[maybe_unused]] const auto &buffer = mngrphd.Buffer();
-//    std::cout << "kernel.bin " << buffer.size() << " bytes; " << mngrphd.SectionCount() << " section count\n";
-//    std::cout << static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count) << std::endl;
-//    mngrphd.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypesT::First),
-//      static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
-//           std::cout << "  " << string << " - " << std::size(span) << " bytes\n";
-//
-//           return data;
-//    });
-//    mngrphd.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypesT::First),
-//      static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
-//           if constexpr (!std::is_null_pointer_v<decltype(
-//           data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
-//             std::cout << string << " ( " << std::size(span) << "bytes) has " << data.Count() << " entries\n";
-//             for (size_t i = 0; i < data.Count(); i++) {
-//               auto entry = data.GetEntry(i);
-//               std::cout << i << ": ";
-//               entry.Out(std::cout, data.TextSpan());
-//               std::cout << '\n';
-//             }
-//           }
-//    });
+    //    [[maybe_unused]] const auto &buffer = mngrphd.Buffer();
+    //    std::cout << "kernel.bin " << buffer.size() << " bytes; " << mngrphd.SectionCount() << " section count\n";
+    //    std::cout << static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count) << std::endl;
+    //    mngrphd.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypesT::First),
+    //      static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    //           std::cout << "  " << string << " - " << std::size(span) << " bytes\n";
+    //
+    //           return data;
+    //    });
+    //    mngrphd.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypesT::First),
+    //      static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    //           if constexpr (!std::is_null_pointer_v<decltype(
+    //           data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
+    //             std::cout << string << " ( " << std::size(span) << "bytes) has " << data.Count() << " entries\n";
+    //             for (size_t i = 0; i < data.Count(); i++) {
+    //               auto entry = data.GetEntry(i);
+    //               std::cout << i << ": ";
+    //               entry.Out(std::cout, data.TextSpan());
+    //               std::cout << '\n';
+    //             }
+    //           }
+    //    });
   }
   return 0;
 }
