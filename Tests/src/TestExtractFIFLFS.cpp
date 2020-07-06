@@ -20,7 +20,7 @@ int main()
   //        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)",
   //        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)"});
 
-  for (auto path : OpenVIII::Paths::get()) {
+  for (auto &path : OpenVIII::Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
     if (!std::filesystem::exists(path)) {
       continue;

@@ -80,7 +80,7 @@ private:
   {
     using namespace std::string_literals;
     using namespace std::string_view_literals;
-    assert(!std::empty(lang_));
+    //assert(!std::empty(lang_));
     path_ = path;
     const std::filesystem::path &dataPath = path_ / "Data"sv;
     if (std::filesystem::exists(dataPath)) {
@@ -89,8 +89,9 @@ private:
         static constexpr auto langStart = "lang-"sv;
         std::filesystem::path langFolderPath = path_ / langStart;
         langFolderPath = langFolderPath.string() + lang_;
-        if (!std::empty(lang_) && std::filesystem::exists(langFolderPath))
+        if (!std::empty(lang_) && std::filesystem::exists(langFolderPath)) {
           path_ = langFolderPath;
+        }
       }
     }
   }

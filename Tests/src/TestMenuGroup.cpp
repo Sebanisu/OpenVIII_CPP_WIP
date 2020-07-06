@@ -15,46 +15,73 @@
 #include "OpenVIII/Paths/Paths.h"
 #include "OpenVIII/MenuGroup/mngrphd.h"
 #include "OpenVIII/MenuGroup/tkmnmes.h"
+[[maybe_unused]] constexpr static std::array tkmnmesSections = { 0, 1, 2 };
+[[maybe_unused]] constexpr static std::array MenuStringsSections = { 87, 88, 89, 90, 95,
+  96, 97, 98, 99, 100, 101, 102,
+  103,104,105,106,107,108,109,
+  110,111,112,113,114,115,116,
+  117,118,119,120,121,122,123,
+  124,125,126,160,161,162,163,
+  164,165,166,167,204
+};
 int main()
 {
-  for (auto path : OpenVIII::Paths::get()) {
+  for (auto &path : OpenVIII::Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
     if (!std::filesystem::exists(path)) {
       continue;
     }
     std::cout << path << std::endl;
-    const auto archives = OpenVIII::Archive::Archives(path);
+    constexpr auto coo = std::string_view ("jp");
+    const auto archives = OpenVIII::Archive::Archives(path, coo);
     [[maybe_unused]] const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
     std::cout << menu << std::endl;
     auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
     auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
     std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";
     size_t i = 0;
+    size_t notSkipped = 0;
     for (const auto &item : mngrphd.Sections()) {
       const auto sectionBuffer{ item.GetSectionBuffer(mngrpBuffer) };
       i++;
       if (!std::empty(sectionBuffer)) {
-        std::cout << i << ": {" << item.FileOffset() << ", " << sectionBuffer.size() << "}\n";
+        notSkipped++;
+        std::cout << i - 1 << ":" << notSkipped - 1 << ": {" << item.FileOffset() << ", " << sectionBuffer.size()
+                  << "}\n";
         if (i <= 3) {
           OpenVIII::MenuGroup::tkmnmes tkmnmes_{ sectionBuffer };
           std::cout << "{" << tkmnmes_.Sections().size() << ", " << tkmnmes_.SubSections().size() << "},\n";
           size_t id{};
           for (const auto &subSectionGroup : tkmnmes_.SubSections()) {
             const auto offset{ tkmnmes_.Sections().at(id++) };
-            if(offset ==0) {
+            if (offset == 0) {
               continue;
             }
-            std::cout << "  {" << id << ": " << subSectionGroup.size() << ", "<<offset<<'}' << '\n';
+            std::cout << "  {" << id << ": " << subSectionGroup.size() << ", " << offset << '}' << '\n';
             size_t stringnumber{};
             for (const auto &subSection : subSectionGroup) {
               stringnumber++;
               if (subSection.Offset() > 0) {
                 std::cout << "    " << stringnumber << ": {" << subSection.Offset() << "} "
-                          << subSection.DecodedString(sectionBuffer, offset) << '\n';
+                          << subSection.DecodedString(sectionBuffer, offset,false,coo) << '\n';
               }
             }
           }
           std::cout << '\n';
+        } else if ((notSkipped >= 39 && notSkipped <= 74) || (notSkipped >= 82 && notSkipped <= 89)
+                   || (notSkipped == 117)) {
+          OpenVIII::MenuGroup::tkmnmes_subSection tkmnmes_{ sectionBuffer };
+          std::cout << "  {" << tkmnmes_.size() << "},\n";
+          size_t id{};
+          for (const auto &subSection : tkmnmes_) {
+            id++;
+            if (subSection.Offset() == 0) {
+              continue;
+            }
+            std::cout << "    " << id << ": {" << subSection.Offset() << "} "
+                      << subSection.DecodedString(sectionBuffer, 0, true,coo) << '\n';
+          }
+          //          std::cout << '\n';
         }
       }
     }

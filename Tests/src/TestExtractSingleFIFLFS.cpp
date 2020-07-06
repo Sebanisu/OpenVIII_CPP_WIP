@@ -24,7 +24,7 @@ int main()
   if (needle.empty()) {
     return 1;
   }
-  for (auto path : OpenVIII::Paths::get()) {
+  for (auto &path : OpenVIII::Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
     if (!std::filesystem::exists(path)) {
       continue;

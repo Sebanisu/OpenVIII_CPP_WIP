@@ -15,7 +15,7 @@
 int main()
 {
   // test ZZZ extract with FIFLFS
-  for (auto path : OpenVIII::Paths::get()) {
+  for (auto &path : OpenVIII::Paths::get()) {
     OpenVIII::Tools::replaceSlashes(path);
 
     if (!std::filesystem::exists(path)) {

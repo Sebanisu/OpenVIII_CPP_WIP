@@ -17,8 +17,18 @@
 namespace OpenVIII {
 struct Paths
 {
-  constexpr static auto count = 8;
-  static std::array<std::string, count> get();
+public:
+  static auto& get() {
+    using namespace std::literals::string_literals;
+    static std::array paths = { R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)"s,
+                                 R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)"s,
+                                 R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"s,
+                                 R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"s,
+                                 R"(/mnt/k/ff82000)"s,
+                                 R"(K:\ff82000)"s,
+                                 R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s,
+                                 R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s };
+    return paths;}
 };
 }// namespace OpenVIII
 #endif// VIIIARCHIVE_TESTPATHS_H
