@@ -46,6 +46,11 @@ public:
   [[nodiscard]] const auto &GFRecovRF() const noexcept { return gfRecovRF_; }
   [[nodiscard]] const auto &GFAblMedRF() const noexcept { return gfAblMedRF_; }
   [[nodiscard]] const auto &ToolRF() const noexcept { return toolRF_; }
+  [[nodiscard]] constexpr auto size()
+  {
+    return recovMedRFCount_ + stMedRFCount_ + ammoRFCount_ + forbidMedRFCount_ + gfRecovRFCount_ + gfAblMedRFCount_
+           + toolRFCount_;
+  }
 };
 }// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_M001_H

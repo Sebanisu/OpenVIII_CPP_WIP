@@ -28,6 +28,7 @@ private:
 public:
   [[nodiscard]] const auto &MidMagRF() const noexcept { return midMagRF_; }
   [[nodiscard]] const auto &HighMagRF() const noexcept { return highMagRF_; }
+  [[nodiscard]] constexpr auto size() { return midMagRFCount_ + highMagRFCount_; }
 };
 }// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_M000_H

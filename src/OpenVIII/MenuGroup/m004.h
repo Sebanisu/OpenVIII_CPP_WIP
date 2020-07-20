@@ -20,12 +20,13 @@ struct [[maybe_unused]] m004// Refine cards to items
    */
 
 private:
-  constexpr auto cardModCount = 110U;
-  std::array<mEntry<MItemID, MItemID>, cardModCount> cardMod_{};
+  constexpr auto cardModCount_ = 110U;
+  std::array<mEntry<MCardID, MItemID>, cardModCount_> cardMod_{};
 
 public:
   [[nodiscard]] const auto &CardMod() const noexcept { return cardMod_; }
   [[nodiscard]] const auto *operator->() const { return &cardMod_; }
+  [[nodiscard]] constexpr auto size() { return cardModCount_; }
 };
 }// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_M000_H

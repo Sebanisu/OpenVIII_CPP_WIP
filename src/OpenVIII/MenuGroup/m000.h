@@ -50,6 +50,11 @@ public:
   [[nodiscard]] const auto &stMagRF() const noexcept { return stMagRF_; }
   [[nodiscard]] const auto &suptRF() const noexcept { return suptRF_; }
   [[nodiscard]] const auto &forbidMagRF() const noexcept { return forbidMagRF_; }
+  [[nodiscard]] constexpr auto size()
+  {
+    return tMagRFCount_ + iMagRFCount_ + fMagRFCount_ + lMagRFCount_ + timeMagRFCount_ + stMagRFCount_ + suptRFCount_
+           + forbidMagRFCount_;
+  }
 };
 }// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_M000_H
