@@ -13,13 +13,13 @@
 #include "TestMenuGroup.h"
 #include "OpenVIII/Archive/Archives.h"
 #include "OpenVIII/Paths/Paths.h"
-#include "OpenVIII/MenuGroup/mngrphd.h"
-#include "OpenVIII/MenuGroup/tkmnmes.h"
-#include "OpenVIII/MenuGroup/m000.h"
-#include "OpenVIII/MenuGroup/m001.h"
-#include "OpenVIII/MenuGroup/m002.h"
-#include "OpenVIII/MenuGroup/m003.h"
-#include "OpenVIII/MenuGroup/m004.h"
+#include "OpenVIII/MenuGroup/MenuGroupHeader.h"
+#include "OpenVIII/MenuGroup/MenuMessages.h"
+#include "OpenVIII/MenuGroup/RefineSection000.h"
+#include "OpenVIII/MenuGroup/RefineSection001.h"
+#include "OpenVIII/MenuGroup/RefineSection002.h"
+#include "OpenVIII/MenuGroup/RefineSection003.h"
+#include "OpenVIII/MenuGroup/RefineSection004.h"
 [[maybe_unused]] constexpr static std::array tkmnmesSections = { 0, 1, 2 };
 [[maybe_unused]] constexpr static std::array MenuStringsSections = { 87,
   88,
@@ -66,12 +66,12 @@
   166,
   167,
   204 };
-[[maybe_unused]] constexpr static std::array mSections = {
-  std::make_pair(0,1),
-  std::make_pair(0,1),
-  std::make_pair(0,1),
-  std::make_pair(0,1),
-  std::make_pair(0,1)
+[[maybe_unused]] constexpr static std::array refineSections = {//188,189,190,191,192
+  std::make_pair(188U,196U),
+  std::make_pair(189U,197U),
+  std::make_pair(190U,198U),
+  std::make_pair(191U,199U),
+  std::make_pair(192U,200U)
 };
 int main()
 {
@@ -98,7 +98,7 @@ int main()
         std::cout << i - 1 << ":" << notSkipped - 1 << ": {" << item.FileOffset() << ", " << sectionBuffer.size()
                   << "}\n";
         if (i <= 3) {
-          OpenVIII::MenuGroup::tkmnmes tkmnmes_{ sectionBuffer };
+          OpenVIII::MenuGroup::MenuMessages tkmnmes_{ sectionBuffer };
           std::cout << "{" << tkmnmes_.Sections().size() << ", " << tkmnmes_.SubSections().size() << "},\n";
           size_t id{};
           for (const auto &subSectionGroup : tkmnmes_.SubSections()) {
@@ -119,7 +119,7 @@ int main()
           std::cout << '\n';
         } else if ((notSkipped >= 39 && notSkipped <= 74) || (notSkipped >= 82 && notSkipped <= 89)
                    || (notSkipped == 117)) {
-          OpenVIII::MenuGroup::tkmnmes_subSection tkmnmes_{ sectionBuffer };
+          OpenVIII::MenuGroup::MenuMessagesSection tkmnmes_{ sectionBuffer };
           std::cout << "  {" << tkmnmes_.size() << "},\n";
           size_t id{};
           for (const auto &subSection : tkmnmes_) {
@@ -132,11 +132,52 @@ int main()
           }
           //          std::cout << '\n';
         }
-        else
-        if(sectionBuffer.size() >= sizeof(OpenVIII::MenuGroup::m000))
+        else if( (notSkipped >= 107) &&  (notSkipped <= 111))
         {
-          exit(0);
+          switch (notSkipped)
+          {
+          case 107:
+          {
+            OpenVIII::MenuGroup::RefineSection000 refine{};
+            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            std::cout << refine;
+            break;
+          }
+          case 108:
+          {
+            OpenVIII::MenuGroup::RefineSection001 refine{};
+            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            std::cout << refine;
+            break;
+          }
+          case 109:
+          {
+            OpenVIII::MenuGroup::RefineSection002 refine{};
+            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            std::cout << refine;
+            break;
+          }
+          case 110:
+          {
+            OpenVIII::MenuGroup::RefineSection003 refine{};
+            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            std::cout << refine;
+            break;
+          }
+          case 111:
+          {
+            OpenVIII::MenuGroup::RefineSection004 refine{};
+            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            std::cout << refine;
+            break;
+          }
+          }
+          //std::cout<< notSkipped << "\n";
         }
+//        if(sectionBuffer.size() >= sizeof(OpenVIII::MenuGroup::RefineSection000))
+//        {
+//          //exit(0);
+//        }
       }
     }
     //    [[maybe_unused]] const auto &buffer = mngrphd.Buffer();

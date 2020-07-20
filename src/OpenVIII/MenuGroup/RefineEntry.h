@@ -12,10 +12,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-#ifndef VIIIARCHIVE_MENTRY_H
-#define VIIIARCHIVE_MENTRY_H
+#ifndef VIIIARCHIVE_RefineEntry_H
+#define VIIIARCHIVE_RefineEntry_H
 namespace OpenVIII::MenuGroup {
-template<typename inputT, typename outputT> struct mEntry
+template<typename inputT, typename outputT> struct RefineEntry
 {
   /*
    * Type	Size	Value	Description
@@ -43,6 +43,16 @@ public:
   [[nodiscard]] auto Input() const noexcept { return input_; }
   [[nodiscard]] auto AmountRequired() const noexcept { return amountRequired_; }
   [[nodiscard]] auto Output() const noexcept { return output_; }
+
+  friend std::ostream & operator <<(std::ostream & os,const RefineEntry<inputT,outputT> & input)
+  {
+      return os << static_cast<std::uint16_t>(input.AmountReceived()) << ", "
+      << static_cast<std::uint16_t>(input.unknown0()) << ", "
+      << static_cast<std::uint16_t>(input.unknown1()) << ", "
+      << static_cast<std::uint16_t>(input.Input()) << ", "
+      << static_cast<std::uint16_t>(input.AmountRequired()) << ", "
+      << static_cast<std::uint16_t>(input.Output());
+  }
 };
 }// namespace OpenVIII::MenuGroup
-#endif// VIIIARCHIVE_MENTRY_H
+#endif// VIIIARCHIVE_RefineEntry_H

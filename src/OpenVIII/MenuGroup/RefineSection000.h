@@ -11,13 +11,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_M000_H
-#define VIIIARCHIVE_M000_H
-#include "MItemID.h"
-#include "MSpellID.h"
-#include "mEntry.h"
+#ifndef VIIIARCHIVE_REFINESECTION000_H
+#define VIIIARCHIVE_REFINESECTION000_H
+#include "RefineItemID.h"
+#include "RefineSpellID.h"
+#include "RefineEntry.h"
+#include <iostream>
 namespace OpenVIII::MenuGroup {
-struct [[maybe_unused]] m000// Refine Item to Magic
+struct [[maybe_unused]] RefineSection000// Refine Item to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data
    * Ability	    # of Entries  mngrp.bin Location	        Offset	Description
@@ -39,14 +40,14 @@ private:
   static constexpr auto stMagRFCount_ = 17U;
   static constexpr auto suptRFCount_ = 20U;
   static constexpr auto forbidMagRFCount_ = 6U;
-  std::array<mEntry<MItemID, MSpellID>, tMagRFCount_> tMagRF_{};
-  std::array<mEntry<MItemID, MSpellID>, iMagRFCount_> iMagRF_{};
-  std::array<mEntry<MItemID, MSpellID>, fMagRFCount_> fMagRF_{};
-  std::array<mEntry<MItemID, MSpellID>, lMagRFCount_> lMagRF_{};
-  std::array<mEntry<MItemID, MSpellID>, timeMagRFCount_> timeMagRF_{};
-  std::array<mEntry<MItemID, MSpellID>, stMagRFCount_> stMagRF_{};
-  std::array<mEntry<MItemID, MSpellID>, suptRFCount_> suptRF_{};
-  std::array<mEntry<MItemID, MSpellID>, forbidMagRFCount_> forbidMagRF_{};
+  std::array<RefineEntry<RefineItemID, RefineSpellID>, tMagRFCount_> tMagRF_{};
+  std::array<RefineEntry<RefineItemID, RefineSpellID>, iMagRFCount_> iMagRF_{};
+  std::array<RefineEntry<RefineItemID, RefineSpellID>, fMagRFCount_> fMagRF_{};
+  std::array<RefineEntry<RefineItemID, RefineSpellID>, lMagRFCount_> lMagRF_{};
+  std::array<RefineEntry<RefineItemID, RefineSpellID>, timeMagRFCount_> timeMagRF_{};
+  std::array<RefineEntry<RefineItemID, RefineSpellID>, stMagRFCount_> stMagRF_{};
+  std::array<RefineEntry<RefineItemID, RefineSpellID>, suptRFCount_> suptRF_{};
+  std::array<RefineEntry<RefineItemID, RefineSpellID>, forbidMagRFCount_> forbidMagRF_{};
 
 public:
   [[nodiscard]] const auto &tMagRF() const noexcept { return tMagRF_; }
@@ -62,6 +63,32 @@ public:
     return tMagRFCount_ + iMagRFCount_ + fMagRFCount_ + lMagRFCount_ + timeMagRFCount_ + stMagRFCount_ + suptRFCount_
            + forbidMagRFCount_;
   }
+  friend std::ostream & operator <<(std::ostream & os,const RefineSection000 & input)
+  {
+    const auto outArray = [&os](const auto & arr){
+    for(const auto item : arr)
+    {
+      os << item << '\n';
+    }
+    };
+    os << "tMagRF:\n";
+    outArray(input.tMagRF_);
+    os << "iMagRF:\n";
+    outArray(input.iMagRF_);
+    os << "fMagRF:\n";
+    outArray(input.fMagRF_);
+    os << "lMagRF:\n";
+    outArray(input.lMagRF_);
+    os << "timeMagRF:\n";
+    outArray(input.timeMagRF_);
+    os << "stMagRF:\n";
+    outArray(input.stMagRF_);
+    os << "suptMagRF:\n";
+    outArray(input.suptRF_);
+    os << "forbidMagRF:\n";
+    outArray(input.forbidMagRF_);
+    return os;
+  }
 };
 }// namespace OpenVIII::MenuGroup
-#endif// VIIIARCHIVE_M000_H
+#endif// VIIIARCHIVE_REFINESECTION000_H

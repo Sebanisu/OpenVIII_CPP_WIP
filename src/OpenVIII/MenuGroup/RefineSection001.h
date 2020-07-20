@@ -11,13 +11,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_M001_H
-#define VIIIARCHIVE_M001_H
-#include "MItemID.h"
-#include "mEntry.h"
+#ifndef VIIIARCHIVE_REFINESECTION001_H
+#define VIIIARCHIVE_REFINESECTION001_H
+#include "RefineItemID.h"
+#include "RefineEntry.h"
 #include <array>
+#include <iostream>
 namespace OpenVIII::MenuGroup {
-struct [[maybe_unused]] m001// Item to Item
+struct [[maybe_unused]] RefineSection001// Item to Item
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_2
    * Ability	    # of Entries  mngrp.bin Location	        Offset  Description
@@ -37,13 +38,13 @@ private:
   static constexpr auto gfRecovRFCount_ = 12U;
   static constexpr auto gfAblMedRFCount_ = 42U;
   static constexpr auto toolRFCount_ = 32U;
-  std::array<mEntry<MItemID, MItemID>, recovMedRFCount_> recovMedRF_{};
-  std::array<mEntry<MItemID, MItemID>, stMedRFCount_> stMedRF_{};
-  std::array<mEntry<MItemID, MItemID>, ammoRFCount_> ammoRF_{};
-  std::array<mEntry<MItemID, MItemID>, forbidMedRFCount_> forbidMedRF_{};
-  std::array<mEntry<MItemID, MItemID>, gfRecovRFCount_> gfRecovRF_{};
-  std::array<mEntry<MItemID, MItemID>, gfAblMedRFCount_> gfAblMedRF_{};
-  std::array<mEntry<MItemID, MItemID>, toolRFCount_> toolRF_{};
+  std::array<RefineEntry<RefineItemID, RefineItemID>, recovMedRFCount_> recovMedRF_{};
+  std::array<RefineEntry<RefineItemID, RefineItemID>, stMedRFCount_> stMedRF_{};
+  std::array<RefineEntry<RefineItemID, RefineItemID>, ammoRFCount_> ammoRF_{};
+  std::array<RefineEntry<RefineItemID, RefineItemID>, forbidMedRFCount_> forbidMedRF_{};
+  std::array<RefineEntry<RefineItemID, RefineItemID>, gfRecovRFCount_> gfRecovRF_{};
+  std::array<RefineEntry<RefineItemID, RefineItemID>, gfAblMedRFCount_> gfAblMedRF_{};
+  std::array<RefineEntry<RefineItemID, RefineItemID>, toolRFCount_> toolRF_{};
 
 public:
   [[nodiscard]] const auto &RecovMedRF() const noexcept { return recovMedRF_; }
@@ -58,6 +59,30 @@ public:
     return recovMedRFCount_ + stMedRFCount_ + ammoRFCount_ + forbidMedRFCount_ + gfRecovRFCount_ + gfAblMedRFCount_
            + toolRFCount_;
   }
+  friend std::ostream & operator <<(std::ostream & os,const RefineSection001 & input)
+  {
+    const auto outArray = [&os](const auto & arr){
+           for(const auto item : arr)
+           {
+             os << item << '\n';
+           }
+    };
+    os << "recovMedRF:\n";
+    outArray(input.recovMedRF_);
+    os << "stMedRF:\n";
+    outArray(input.stMedRF_);
+    os << "ammoRF:\n";
+    outArray(input.ammoRF_);
+    os << "forbidMedRF:\n";
+    outArray(input.forbidMedRF_);
+    os << "gfRecovRF:\n";
+    outArray(input.gfRecovRF_);
+    os << "gfAblMedRF:\n";
+    outArray(input.gfAblMedRF_);
+    os << "toolRF:\n";
+    outArray(input.toolRF_);
+    return os;
+  }
 };
 }// namespace OpenVIII::MenuGroup
-#endif// VIIIARCHIVE_M001_H
+#endif// VIIIARCHIVE_REFINESECTION001_H

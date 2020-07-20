@@ -11,12 +11,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_M002_H
-#define VIIIARCHIVE_M002_H
-#include "MSpellID.h"
-#include "mEntry.h"
+#ifndef VIIIARCHIVE_REFINESECTION002_H
+#define VIIIARCHIVE_REFINESECTION002_H
+#include "RefineSpellID.h"
+#include "RefineEntry.h"
+#include <iostream>
 namespace OpenVIII::MenuGroup {
-struct [[maybe_unused]] m002// Refine Magic to Magic
+struct [[maybe_unused]] RefineSection002// Refine Magic to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_3
    * Ability	        # of Entries	mngrp.bin Location	        Offset	Description
@@ -28,14 +29,28 @@ struct [[maybe_unused]] m002// Refine Magic to Magic
 private:
   static constexpr auto midMagRFCount_ = 4U;
   static constexpr auto highMagRFCount_ = 6U;
-  std::array<mEntry<MSpellID, MSpellID>, midMagRFCount_> midMagRF_{};
-  std::array<mEntry<MSpellID, MSpellID>, highMagRFCount_> highMagRF_{};
+  std::array<RefineEntry<RefineSpellID, RefineSpellID>, midMagRFCount_> midMagRF_{};
+  std::array<RefineEntry<RefineSpellID, RefineSpellID>, highMagRFCount_> highMagRF_{};
 
 
 public:
   [[nodiscard]] const auto &MidMagRF() const noexcept { return midMagRF_; }
   [[nodiscard]] const auto &HighMagRF() const noexcept { return highMagRF_; }
   [[nodiscard]] static constexpr auto size() { return midMagRFCount_ + highMagRFCount_; }
+  friend std::ostream & operator <<(std::ostream & os,const RefineSection002 & input)
+  {
+    const auto outArray = [&os](const auto & arr){
+           for(const auto item : arr)
+           {
+             os << item << '\n';
+           }
+    };
+    os << "midMagRF_:\n";
+    outArray(input.midMagRF_);
+    os << "highMagRF_:\n";
+    outArray(input.highMagRF_);
+    return os;
+  }
 };
 }// namespace OpenVIII::MenuGroup
-#endif// VIIIARCHIVE_M002_H
+#endif// VIIIARCHIVE_REFINESECTION002_H

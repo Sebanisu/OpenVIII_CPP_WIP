@@ -11,13 +11,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_M003_H
-#define VIIIARCHIVE_M003_H
-#include "MItemID.h"
-#include "mEntry.h"
+#ifndef VIIIARCHIVE_REFINESECTION003_H
+#define VIIIARCHIVE_REFINESECTION003_H
+#include "RefineItemID.h"
+#include "RefineEntry.h"
 #include <array>
+#include <iostream>
 namespace OpenVIII::MenuGroup {
-struct [[maybe_unused]] m003// Refine items to items
+struct [[maybe_unused]] RefineSection003// Refine items to items
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_3
    * Ability	        # of Entries	mngrp.bin Location	        Offset	Description
@@ -27,12 +28,25 @@ struct [[maybe_unused]] m003// Refine items to items
 
 private:
   static constexpr auto medLVUPCount_ = 12U;
-  std::array<mEntry<MItemID, MItemID>, medLVUPCount_> medLVUP_{};
+  std::array<RefineEntry<RefineItemID, RefineItemID>, medLVUPCount_> medLVUP_{};
 
 public:
   [[nodiscard]] const auto &MedLVUP() const noexcept { return medLVUP_; }
   [[nodiscard]] const auto *operator->() const { return &medLVUP_; }
   [[nodiscard]] static constexpr auto size() { return medLVUPCount_; }
+
+  friend std::ostream & operator <<(std::ostream & os,const RefineSection003 & input)
+  {
+    const auto outArray = [&os](const auto & arr){
+           for(const auto item : arr)
+           {
+             os << item << '\n';
+           }
+    };
+    os << "medLVUP:\n";
+    outArray(input.medLVUP_);
+    return os;
+  }
 };
 }// namespace OpenVIII::MenuGroup
-#endif// VIIIARCHIVE_M003_H
+#endif// VIIIARCHIVE_REFINESECTION003_H

@@ -11,10 +11,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_MITEMID_H
-#define VIIIARCHIVE_MITEMID_H
+#ifndef VIIIARCHIVE_REFINECARDID_H
+#define VIIIARCHIVE_REFINECARDID_H
+
 #include "cstdint"
 namespace OpenVIII::MenuGroup {
-using MItemID = std::uint8_t;
+using RefineCardID = std::uint8_t;
 }
-#endif// VIIIARCHIVE_MITEMID_H
+#endif// VIIIARCHIVE_REFINECARDID_H

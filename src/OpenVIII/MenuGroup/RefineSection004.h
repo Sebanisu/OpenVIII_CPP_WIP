@@ -11,14 +11,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_M004_H
-#define VIIIARCHIVE_M004_H
-#include "MItemID.h"
-#include "mEntry.h"
-#include "MCardID.h"
+#ifndef VIIIARCHIVE_REFINESECTION004_H
+#define VIIIARCHIVE_REFINESECTION004_H
+#include "RefineItemID.h"
+#include "RefineEntry.h"
+#include "RefineCardID.h"
 #include <array>
+#include <iostream>
 namespace OpenVIII::MenuGroup {
-struct [[maybe_unused]] m004// Refine cards to items
+struct [[maybe_unused]] RefineSection004// Refine cards to items
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_5
    * Ability	        # of Entries	mngrp.bin Location	        Offset	Description
@@ -28,12 +29,24 @@ struct [[maybe_unused]] m004// Refine cards to items
 
 private:
   static constexpr auto cardModCount_ = 110U;
-  std::array<mEntry<MCardID, MItemID>, cardModCount_> cardMod_{};
+  std::array<RefineEntry<RefineCardID, RefineItemID>, cardModCount_> cardMod_{};
 
 public:
   [[nodiscard]] const auto &CardMod() const noexcept { return cardMod_; }
   [[nodiscard]] const auto *operator->() const { return &cardMod_; }
   [[nodiscard]] static constexpr auto size() { return cardModCount_; }
+  friend std::ostream & operator <<(std::ostream & os,const RefineSection004 & input)
+  {
+    const auto outArray = [&os](const auto & arr){
+           for(const auto item : arr)
+           {
+             os << item << '\n';
+           }
+    };
+    os << "cardMod:\n";
+    outArray(input.cardMod_);
+    return os;
+  }
 };
 }// namespace OpenVIII::MenuGroup
-#endif// VIIIARCHIVE_M004_H
+#endif// VIIIARCHIVE_REFINESECTION004_H

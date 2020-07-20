@@ -11,11 +11,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_MSPELLID_H
-#define VIIIARCHIVE_MSPELLID_H
-
+#ifndef VIIIARCHIVE_REFINEITEMID_H
+#define VIIIARCHIVE_REFINEITEMID_H
 #include "cstdint"
 namespace OpenVIII::MenuGroup {
-using MSpellID = std::uint8_t;
+using RefineItemID = std::uint8_t;
 }
-#endif// VIIIARCHIVE_MSPELLID_H
+#endif// VIIIARCHIVE_REFINEITEMID_H
