@@ -182,7 +182,7 @@ public:
   [[nodiscard]] auto unknown7() const noexcept { return unknown7_; }
   [[nodiscard]] auto unknown8() const noexcept { return unknown8_; }
   [[nodiscard]] auto StatusAttackEnabler() const noexcept { return statusAttackEnabler_; }
-  template<size_t i>[[nodiscard]] const auto &UnlockableAbilities() const noexcept
+  template<size_t i> [[nodiscard]] const auto &UnlockableAbilities() const noexcept
   {
     static_assert(i < maxAbilities_);
     return unlockableAbilities_.at(i);

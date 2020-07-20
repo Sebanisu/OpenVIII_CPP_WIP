@@ -4,8 +4,7 @@
 
 #ifndef VIIIARCHIVE_MENTRY_H
 #define VIIIARCHIVE_MENTRY_H
-template<typename inputT,typename outputT>
-struct mEntry
+template<typename inputT, typename outputT> struct mEntry
 {
   /*
    * Type	Size	Value	Description

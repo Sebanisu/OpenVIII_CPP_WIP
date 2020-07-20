@@ -322,7 +322,7 @@ public:
     }
     return {};
   }
-  template<typename outT = std::vector<char>>[[nodiscard]] outT GetEntryData(const OpenVIII::Archive::FI &fi) const
+  template<typename outT = std::vector<char>> [[nodiscard]] outT GetEntryData(const OpenVIII::Archive::FI &fi) const
   {
     return [this, &fi]() {
       if (std::empty(fs_.data)) {
@@ -331,7 +331,7 @@ public:
       return OpenVIII::Archive::FS::GetEntry<outT>(fs_.data, fi, fs_.offset);
     }();
   }
-  template<typename outT = std::vector<char>>[[nodiscard]] outT GetEntryData(const std::string_view &filename) const
+  template<typename outT = std::vector<char>> [[nodiscard]] outT GetEntryData(const std::string_view &filename) const
   {
     const auto &[id, path] = [this, &filename]() {
       if (std::empty(fl_.data)) {

@@ -33,7 +33,7 @@ public:
     size_ = size;
   }
   bool empty() const noexcept { return size_ == 0 || filename_.empty(); }
-  FileData(std::ifstream & fp)
+  FileData(std::ifstream &fp)
   {
     if (!fp.is_open()) {
       return;

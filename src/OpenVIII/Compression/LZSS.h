@@ -154,7 +154,7 @@ public:
    * Porting to STL - sebanisu.
    * */
 
-  template<typename srcT = std::vector<char>>[[nodiscard]] [[maybe_unused]] static auto Compress(const srcT &src)
+  template<typename srcT = std::vector<char>> [[nodiscard]] [[maybe_unused]] static auto Compress(const srcT &src)
   {
     // todo pass a std::span in cpp 20 instead of vector.
 

@@ -9,7 +9,8 @@
 #include "MItemID.h"
 #include "mEntry.h"
 #include <array>
-struct m001 // Item to Item
+namespace OpenVIII::MenuGroup {
+struct [[maybe_unused]] m001// Item to Item
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_2
    * Ability	    # of Entries  mngrp.bin Location	        Offset  Description
@@ -29,22 +30,22 @@ private:
   constexpr auto gfRecovRFCount_ = 12U;
   constexpr auto gfAblMedRFCount_ = 42U;
   constexpr auto toolRFCount_ = 32U;
-  std::array<mEntry<MItemID,MItemID>, recovMedRFCount_> recovMedRF_{};
-  std::array<mEntry<MItemID,MItemID>, stMedRFCount_> stMedRF_{};
-  std::array<mEntry<MItemID,MItemID>, ammoRFCount_> ammoRF_{};
-  std::array<mEntry<MItemID,MItemID>, forbidMedRFCount_> forbidMedRF_{};
-  std::array<mEntry<MItemID,MItemID>, gfRecovRFCount_> gfRecovRF_{};
-  std::array<mEntry<MItemID,MItemID>, gfAblMedRFCount_> gfAblMedRF_{};
-  std::array<mEntry<MItemID,MItemID>, toolRFCount_> toolRF_{};
+  std::array<mEntry<MItemID, MItemID>, recovMedRFCount_> recovMedRF_{};
+  std::array<mEntry<MItemID, MItemID>, stMedRFCount_> stMedRF_{};
+  std::array<mEntry<MItemID, MItemID>, ammoRFCount_> ammoRF_{};
+  std::array<mEntry<MItemID, MItemID>, forbidMedRFCount_> forbidMedRF_{};
+  std::array<mEntry<MItemID, MItemID>, gfRecovRFCount_> gfRecovRF_{};
+  std::array<mEntry<MItemID, MItemID>, gfAblMedRFCount_> gfAblMedRF_{};
+  std::array<mEntry<MItemID, MItemID>, toolRFCount_> toolRF_{};
 
 public:
-[[nodiscard]] auto RecovMedRF() const noexcept {return recovMedRF_;}
-[[nodiscard]] auto STMedRF() const noexcept {return stMedRF_;}
-[[nodiscard]] auto AmmoRF() const noexcept {return ammoRF_;}
-[[nodiscard]] auto ForbidMedRF() const noexcept {return forbidMedRF_;}
-[[nodiscard]] auto GFRecovRF() const noexcept {return gfRecovRF_;}
-[[nodiscard]] auto GFAblMedRF() const noexcept {return gfAblMedRF_;}
-[[nodiscard]] auto ToolRF() const noexcept {return toolRF_;}
-
+  [[nodiscard]] const auto &RecovMedRF() const noexcept { return recovMedRF_; }
+  [[nodiscard]] const auto &STMedRF() const noexcept { return stMedRF_; }
+  [[nodiscard]] const auto &AmmoRF() const noexcept { return ammoRF_; }
+  [[nodiscard]] const auto &ForbidMedRF() const noexcept { return forbidMedRF_; }
+  [[nodiscard]] const auto &GFRecovRF() const noexcept { return gfRecovRF_; }
+  [[nodiscard]] const auto &GFAblMedRF() const noexcept { return gfAblMedRF_; }
+  [[nodiscard]] const auto &ToolRF() const noexcept { return toolRF_; }
 };
+}// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_M001_H

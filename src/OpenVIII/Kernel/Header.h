@@ -63,10 +63,10 @@ struct Header
 private:
   std::vector<char> buffer_{};
   std::vector<std::uint32_t> sectionOffsets_{};
-  static constexpr auto fileName_ = std::string_view{"kernel.bin"};
+  static constexpr auto fileName_ = std::string_view{ "kernel.bin" };
 
 public:
-  template<SectionTypesT sectionType>[[nodiscard]] constexpr auto GetSpan() const
+  template<SectionTypesT sectionType> [[nodiscard]] constexpr auto GetSpan() const
   {
     if constexpr (static_cast<int>(sectionType) >= static_cast<int>(SectionTypesT::Count)
                   || static_cast<int>(sectionType) < 0) {
@@ -82,7 +82,7 @@ public:
     }();
     return std::string_view(buffer_.data() + sectionOffsets_.at(static_cast<size_t>(sectionType)), length);
   }
-  template<SectionTypesT sectionType>[[nodiscard]] auto GetSectionData() const
+  template<SectionTypesT sectionType> [[nodiscard]] auto GetSectionData() const
   {
     using namespace std::string_literals;
     if constexpr (sectionType == SectionTypesT::BattleCommands) {
@@ -161,7 +161,7 @@ public:
     }
   }
 
-  template<SectionTypesT sectionType>[[nodiscard]] constexpr std::string_view GetSectionName() const
+  template<SectionTypesT sectionType> [[nodiscard]] constexpr std::string_view GetSectionName() const
   {
     using namespace std::string_view_literals;
     if constexpr (sectionType == SectionTypesT::BattleCommands) {

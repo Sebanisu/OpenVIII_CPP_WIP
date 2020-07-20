@@ -10,7 +10,7 @@
 #include "MSpellID.h"
 #include "mEntry.h"
 namespace OpenVIII::MenuGroup {
-struct [[maybe_unused]] m000 //Refine Item to Magic
+struct [[maybe_unused]] m000// Refine Item to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data
    * Ability	    # of Entries  mngrp.bin Location	        Offset	Description
@@ -32,24 +32,24 @@ private:
   constexpr auto stMagRFCount_ = 17U;
   constexpr auto suptRFCount_ = 20U;
   constexpr auto forbidMagRFCount_ = 6U;
-  std::array<mEntry<MItemID,MSpellID>, tMagRFCount_> tMagRF_{};
-  std::array<mEntry<MItemID,MSpellID>, iMagRFCount_> iMagRF_{};
-  std::array<mEntry<MItemID,MSpellID>, fMagRFCount_> fMagRF_{};
-  std::array<mEntry<MItemID,MSpellID>, lMagRFCount_> lMagRF_{};
-  std::array<mEntry<MItemID,MSpellID>, timeMagRFCount_> timeMagRF_{};
-  std::array<mEntry<MItemID,MSpellID>, stMagRFCount_> stMagRF_{};
-  std::array<mEntry<MItemID,MSpellID>, suptRFCount_> suptRF_{};
-  std::array<mEntry<MItemID,MSpellID>, forbidMagRFCount_> forbidMagRF_{};
+  std::array<mEntry<MItemID, MSpellID>, tMagRFCount_> tMagRF_{};
+  std::array<mEntry<MItemID, MSpellID>, iMagRFCount_> iMagRF_{};
+  std::array<mEntry<MItemID, MSpellID>, fMagRFCount_> fMagRF_{};
+  std::array<mEntry<MItemID, MSpellID>, lMagRFCount_> lMagRF_{};
+  std::array<mEntry<MItemID, MSpellID>, timeMagRFCount_> timeMagRF_{};
+  std::array<mEntry<MItemID, MSpellID>, stMagRFCount_> stMagRF_{};
+  std::array<mEntry<MItemID, MSpellID>, suptRFCount_> suptRF_{};
+  std::array<mEntry<MItemID, MSpellID>, forbidMagRFCount_> forbidMagRF_{};
 
 public:
-  [[nodiscard]] auto tMagRF() const noexcept { return tMagRF_; }
-  [[nodiscard]] auto iMagRF() const noexcept { return iMagRF_; }
-  [[nodiscard]] auto fMagRF() const noexcept { return fMagRF_; }
-  [[nodiscard]] auto lMagRF() const noexcept { return lMagRF_; }
-  [[nodiscard]] auto timeMagRF() const noexcept { return timeMagRF_; }
-  [[nodiscard]] auto stMagRF() const noexcept { return stMagRF_; }
-  [[nodiscard]] auto suptRF() const noexcept { return suptRF_; }
-  [[nodiscard]] auto forbidMagRF() const noexcept { return forbidMagRF_; }
+  [[nodiscard]] const auto &tMagRF() const noexcept { return tMagRF_; }
+  [[nodiscard]] const auto &iMagRF() const noexcept { return iMagRF_; }
+  [[nodiscard]] const auto &fMagRF() const noexcept { return fMagRF_; }
+  [[nodiscard]] const auto &lMagRF() const noexcept { return lMagRF_; }
+  [[nodiscard]] const auto &timeMagRF() const noexcept { return timeMagRF_; }
+  [[nodiscard]] const auto &stMagRF() const noexcept { return stMagRF_; }
+  [[nodiscard]] const auto &suptRF() const noexcept { return suptRF_; }
+  [[nodiscard]] const auto &forbidMagRF() const noexcept { return forbidMagRF_; }
 };
 }// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_M000_H
