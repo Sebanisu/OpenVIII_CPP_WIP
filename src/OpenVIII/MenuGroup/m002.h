@@ -2,10 +2,8 @@
 // Created by pcvii on 7/6/2020.
 //
 
-#ifndef VIIIARCHIVE_M000_H
-#define VIIIARCHIVE_M000_H
-#include <cstdint>
-#include "OpenVIII/Strings/EncodedStringOffset.h"
+#ifndef VIIIARCHIVE_M002_H
+#define VIIIARCHIVE_M002_H
 #include "MSpellID.h"
 #include "mEntry.h"
 namespace OpenVIII::MenuGroup {
@@ -19,8 +17,8 @@ struct [[maybe_unused]] m002// Refine Magic to Magic
    */
 
 private:
-  constexpr auto midMagRFCount_ = 4U;
-  constexpr auto highMagRFCount_ = 6U;
+  static constexpr auto midMagRFCount_ = 4U;
+  static constexpr auto highMagRFCount_ = 6U;
   std::array<mEntry<MSpellID, MSpellID>, midMagRFCount_> midMagRF_{};
   std::array<mEntry<MSpellID, MSpellID>, highMagRFCount_> highMagRF_{};
 
@@ -28,7 +26,7 @@ private:
 public:
   [[nodiscard]] const auto &MidMagRF() const noexcept { return midMagRF_; }
   [[nodiscard]] const auto &HighMagRF() const noexcept { return highMagRF_; }
-  [[nodiscard]] constexpr auto size() { return midMagRFCount_ + highMagRFCount_; }
+  [[nodiscard]] static constexpr auto size() { return midMagRFCount_ + highMagRFCount_; }
 };
 }// namespace OpenVIII::MenuGroup
-#endif// VIIIARCHIVE_M000_H
+#endif// VIIIARCHIVE_M002_H

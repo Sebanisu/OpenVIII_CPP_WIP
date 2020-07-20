@@ -2,8 +2,10 @@
 // Created by pcvii on 7/13/2020.
 //
 
+#include "OpenVIII/Strings/EncodedStringOffset.h"
 #ifndef VIIIARCHIVE_MENTRY_H
 #define VIIIARCHIVE_MENTRY_H
+namespace OpenVIII::MenuGroup {
 template<typename inputT, typename outputT> struct mEntry
 {
   /*
@@ -33,4 +35,5 @@ public:
   [[nodiscard]] auto AmountRequired() const noexcept { return amountRequired_; }
   [[nodiscard]] auto Output() const noexcept { return output_; }
 };
+}// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_MENTRY_H

@@ -15,6 +15,11 @@
 #include "OpenVIII/Paths/Paths.h"
 #include "OpenVIII/MenuGroup/mngrphd.h"
 #include "OpenVIII/MenuGroup/tkmnmes.h"
+#include "OpenVIII/MenuGroup/m000.h"
+#include "OpenVIII/MenuGroup/m001.h"
+#include "OpenVIII/MenuGroup/m002.h"
+#include "OpenVIII/MenuGroup/m003.h"
+#include "OpenVIII/MenuGroup/m004.h"
 [[maybe_unused]] constexpr static std::array tkmnmesSections = { 0, 1, 2 };
 [[maybe_unused]] constexpr static std::array MenuStringsSections = { 87,
   88,
@@ -61,6 +66,13 @@
   166,
   167,
   204 };
+[[maybe_unused]] constexpr static std::array mSections = {
+  std::make_pair(0,1),
+  std::make_pair(0,1),
+  std::make_pair(0,1),
+  std::make_pair(0,1),
+  std::make_pair(0,1)
+};
 int main()
 {
   for (auto &path : OpenVIII::Paths::get()) {
@@ -119,6 +131,11 @@ int main()
                       << subSection.DecodedString(sectionBuffer, 0, true, coo) << '\n';
           }
           //          std::cout << '\n';
+        }
+        else
+        if(sectionBuffer.size() >= sizeof(OpenVIII::MenuGroup::m000))
+        {
+          exit(0);
         }
       }
     }

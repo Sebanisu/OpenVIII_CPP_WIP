@@ -4,8 +4,6 @@
 
 #ifndef VIIIARCHIVE_M000_H
 #define VIIIARCHIVE_M000_H
-#include <cstdint>
-#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "MItemID.h"
 #include "MSpellID.h"
 #include "mEntry.h"
@@ -24,14 +22,14 @@ struct [[maybe_unused]] m000// Refine Item to Magic
    * Forbid Mag-RF  6 entries	  (mngrp.bin loc: 0x21F300)	0x300	Items to Forbidden Magic
    */
 private:
-  constexpr auto tMagRFCount_ = 7U;
-  constexpr auto iMagRFCount_ = 7U;
-  constexpr auto fMagRFCount_ = 10U;
-  constexpr auto lMagRFCount_ = 21U;
-  constexpr auto timeMagRFCount_ = 14U;
-  constexpr auto stMagRFCount_ = 17U;
-  constexpr auto suptRFCount_ = 20U;
-  constexpr auto forbidMagRFCount_ = 6U;
+  static constexpr auto tMagRFCount_ = 7U;
+  static constexpr auto iMagRFCount_ = 7U;
+  static constexpr auto fMagRFCount_ = 10U;
+  static constexpr auto lMagRFCount_ = 21U;
+  static constexpr auto timeMagRFCount_ = 14U;
+  static constexpr auto stMagRFCount_ = 17U;
+  static constexpr auto suptRFCount_ = 20U;
+  static constexpr auto forbidMagRFCount_ = 6U;
   std::array<mEntry<MItemID, MSpellID>, tMagRFCount_> tMagRF_{};
   std::array<mEntry<MItemID, MSpellID>, iMagRFCount_> iMagRF_{};
   std::array<mEntry<MItemID, MSpellID>, fMagRFCount_> fMagRF_{};
@@ -50,7 +48,7 @@ public:
   [[nodiscard]] const auto &stMagRF() const noexcept { return stMagRF_; }
   [[nodiscard]] const auto &suptRF() const noexcept { return suptRF_; }
   [[nodiscard]] const auto &forbidMagRF() const noexcept { return forbidMagRF_; }
-  [[nodiscard]] constexpr auto size()
+  [[nodiscard]] static constexpr auto size()
   {
     return tMagRFCount_ + iMagRFCount_ + fMagRFCount_ + lMagRFCount_ + timeMagRFCount_ + stMagRFCount_ + suptRFCount_
            + forbidMagRFCount_;

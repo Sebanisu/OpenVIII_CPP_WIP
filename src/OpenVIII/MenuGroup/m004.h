@@ -2,10 +2,8 @@
 // Created by pcvii on 7/6/2020.
 //
 
-#ifndef VIIIARCHIVE_M000_H
-#define VIIIARCHIVE_M000_H
-#include <cstdint>
-#include "OpenVIII/Strings/EncodedStringOffset.h"
+#ifndef VIIIARCHIVE_M004_H
+#define VIIIARCHIVE_M004_H
 #include "MItemID.h"
 #include "mEntry.h"
 #include "MCardID.h"
@@ -20,13 +18,13 @@ struct [[maybe_unused]] m004// Refine cards to items
    */
 
 private:
-  constexpr auto cardModCount_ = 110U;
+  static constexpr auto cardModCount_ = 110U;
   std::array<mEntry<MCardID, MItemID>, cardModCount_> cardMod_{};
 
 public:
   [[nodiscard]] const auto &CardMod() const noexcept { return cardMod_; }
   [[nodiscard]] const auto *operator->() const { return &cardMod_; }
-  [[nodiscard]] constexpr auto size() { return cardModCount_; }
+  [[nodiscard]] static constexpr auto size() { return cardModCount_; }
 };
 }// namespace OpenVIII::MenuGroup
-#endif// VIIIARCHIVE_M000_H
+#endif// VIIIARCHIVE_M004_H

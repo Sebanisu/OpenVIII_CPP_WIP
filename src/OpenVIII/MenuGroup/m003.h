@@ -2,10 +2,8 @@
 // Created by pcvii on 7/6/2020.
 //
 
-#ifndef VIIIARCHIVE_M000_H
-#define VIIIARCHIVE_M000_H
-#include <cstdint>
-#include "OpenVIII/Strings/EncodedStringOffset.h"
+#ifndef VIIIARCHIVE_M003_H
+#define VIIIARCHIVE_M003_H
 #include "MItemID.h"
 #include "mEntry.h"
 #include <array>
@@ -19,13 +17,13 @@ struct [[maybe_unused]] m003// Refine items to items
    */
 
 private:
-  constexpr auto medLVUPCount_ = 12U;
+  static constexpr auto medLVUPCount_ = 12U;
   std::array<mEntry<MItemID, MItemID>, medLVUPCount_> medLVUP_{};
 
 public:
   [[nodiscard]] const auto &MedLVUP() const noexcept { return medLVUP_; }
   [[nodiscard]] const auto *operator->() const { return &medLVUP_; }
-  [[nodiscard]] constexpr auto size() { return medLVUPCount_; }
+  [[nodiscard]] static constexpr auto size() { return medLVUPCount_; }
 };
 }// namespace OpenVIII::MenuGroup
-#endif// VIIIARCHIVE_M000_H
+#endif// VIIIARCHIVE_M003_H

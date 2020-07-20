@@ -4,8 +4,6 @@
 
 #ifndef VIIIARCHIVE_M001_H
 #define VIIIARCHIVE_M001_H
-#include <cstdint>
-#include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "MItemID.h"
 #include "mEntry.h"
 #include <array>
@@ -23,13 +21,13 @@ struct [[maybe_unused]] m001// Item to Item
    * Tool-RF	    32 Entries	  (mngrp.bin loc: 0x21FB78)	0x378	Item to Tool Items
    * */
 private:
-  constexpr auto recovMedRFCount_ = 9U;
-  constexpr auto stMedRFCount_ = 12U;
-  constexpr auto ammoRFCount_ = 16U;
-  constexpr auto forbidMedRFCount_ = 20U;
-  constexpr auto gfRecovRFCount_ = 12U;
-  constexpr auto gfAblMedRFCount_ = 42U;
-  constexpr auto toolRFCount_ = 32U;
+  static constexpr auto recovMedRFCount_ = 9U;
+  static constexpr auto stMedRFCount_ = 12U;
+  static constexpr auto ammoRFCount_ = 16U;
+  static constexpr auto forbidMedRFCount_ = 20U;
+  static constexpr auto gfRecovRFCount_ = 12U;
+  static constexpr auto gfAblMedRFCount_ = 42U;
+  static constexpr auto toolRFCount_ = 32U;
   std::array<mEntry<MItemID, MItemID>, recovMedRFCount_> recovMedRF_{};
   std::array<mEntry<MItemID, MItemID>, stMedRFCount_> stMedRF_{};
   std::array<mEntry<MItemID, MItemID>, ammoRFCount_> ammoRF_{};
@@ -46,7 +44,7 @@ public:
   [[nodiscard]] const auto &GFRecovRF() const noexcept { return gfRecovRF_; }
   [[nodiscard]] const auto &GFAblMedRF() const noexcept { return gfAblMedRF_; }
   [[nodiscard]] const auto &ToolRF() const noexcept { return toolRF_; }
-  [[nodiscard]] constexpr auto size()
+  [[nodiscard]] static constexpr auto size()
   {
     return recovMedRFCount_ + stMedRFCount_ + ammoRFCount_ + forbidMedRFCount_ + gfRecovRFCount_ + gfAblMedRFCount_
            + toolRFCount_;
