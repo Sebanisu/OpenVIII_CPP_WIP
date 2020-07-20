@@ -105,8 +105,9 @@ private:
 
 public:
   constexpr const static auto lshift = lshift_;
-  constexpr const static size_t rshift{ (bits < bit8) ? bit8 - bits
-                                                      : (bits > bit8 && bits < bit16) ? bit16 - bits : 0U };
+  constexpr const static size_t rshift{ (bits < bit8)                   ? bit8 - bits
+                                        : (bits > bit8 && bits < bit16) ? bit16 - bits
+                                                                        : 0U };
   constexpr colorPart() = default;
 
   constexpr const static auto MaxValue = get_power<2, bits>::value - 1;

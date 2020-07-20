@@ -16,14 +16,51 @@
 #include "OpenVIII/MenuGroup/mngrphd.h"
 #include "OpenVIII/MenuGroup/tkmnmes.h"
 [[maybe_unused]] constexpr static std::array tkmnmesSections = { 0, 1, 2 };
-[[maybe_unused]] constexpr static std::array MenuStringsSections = { 87, 88, 89, 90, 95,
-  96, 97, 98, 99, 100, 101, 102,
-  103,104,105,106,107,108,109,
-  110,111,112,113,114,115,116,
-  117,118,119,120,121,122,123,
-  124,125,126,160,161,162,163,
-  164,165,166,167,204
-};
+[[maybe_unused]] constexpr static std::array MenuStringsSections = { 87,
+  88,
+  89,
+  90,
+  95,
+  96,
+  97,
+  98,
+  99,
+  100,
+  101,
+  102,
+  103,
+  104,
+  105,
+  106,
+  107,
+  108,
+  109,
+  110,
+  111,
+  112,
+  113,
+  114,
+  115,
+  116,
+  117,
+  118,
+  119,
+  120,
+  121,
+  122,
+  123,
+  124,
+  125,
+  126,
+  160,
+  161,
+  162,
+  163,
+  164,
+  165,
+  166,
+  167,
+  204 };
 int main()
 {
   for (auto &path : OpenVIII::Paths::get()) {
@@ -32,7 +69,7 @@ int main()
       continue;
     }
     std::cout << path << std::endl;
-    constexpr auto coo = std::string_view ("jp");
+    constexpr auto coo = std::string_view("jp");
     const auto archives = OpenVIII::Archive::Archives(path, coo);
     [[maybe_unused]] const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
     std::cout << menu << std::endl;
@@ -63,7 +100,7 @@ int main()
               stringnumber++;
               if (subSection.Offset() > 0) {
                 std::cout << "    " << stringnumber << ": {" << subSection.Offset() << "} "
-                          << subSection.DecodedString(sectionBuffer, offset,false,coo) << '\n';
+                          << subSection.DecodedString(sectionBuffer, offset, false, coo) << '\n';
               }
             }
           }
@@ -79,7 +116,7 @@ int main()
               continue;
             }
             std::cout << "    " << id << ": {" << subSection.Offset() << "} "
-                      << subSection.DecodedString(sectionBuffer, 0, true,coo) << '\n';
+                      << subSection.DecodedString(sectionBuffer, 0, true, coo) << '\n';
           }
           //          std::cout << '\n';
         }
