@@ -7,6 +7,6 @@
 
 #include "cstdint"
 namespace OpenVIII::MenuGroup {
-using MCardID = std::int8_t;
+using MCardID = std::uint8_t;
 }
 #endif// VIIIARCHIVE_MCARDID_H

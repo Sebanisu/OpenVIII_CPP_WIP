@@ -6,6 +6,6 @@
 #define VIIIARCHIVE_MITEMID_H
 #include "cstdint"
 namespace OpenVIII::MenuGroup {
-using MItemID = std::int8_t;
+using MItemID = std::uint8_t;
 }
 #endif// VIIIARCHIVE_MITEMID_H

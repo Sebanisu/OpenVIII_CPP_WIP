@@ -7,6 +7,6 @@
 
 #include "cstdint"
 namespace OpenVIII::MenuGroup {
-using MSpellID = std::int8_t;
+using MSpellID = std::uint8_t;
 }
 #endif// VIIIARCHIVE_MSPELLID_H
