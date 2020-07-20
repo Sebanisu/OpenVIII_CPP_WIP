@@ -8,11 +8,11 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
 namespace OpenVIII::MenuGroup {
-struct m000
+struct [[maybe_unused]] m000 //Refine Item to Magic
 {
+
   struct Entry
   {
-  private:
     /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Entry
      * Type	Size	Value	Description
      * UInt16	2	Offset	Text Offset (little-endian)
@@ -22,20 +22,23 @@ struct m000
      * Byte	1	Required	Amount needed
      * Byte	1	Output_Spell_ID	Output: Spell id value (0x01-0x38)
      */
+  private:
     EncodedStringOffset offset_{};
     std::uint8_t amountReceived_{};
-    std::uint16_t unknown0_{};
+    std::uint8_t unknown0_{};
+    std::uint8_t unknown1_{};
     std::uint8_t itemID_{};
     std::uint8_t amountRequired_{};
     std::uint8_t spellID_{};
 
   public:
-    [[nodiscard]] auto Offset() const noexcept {return offset_;}
-[[nodiscard]] auto AmountReceived() const noexcept {return amountReceived_;}
-[[nodiscard]] auto unknown0() const noexcept {return unknown0_;}
-[[nodiscard]] auto ItemID() const noexcept {return itemID_;}
-[[nodiscard]] auto AmountRequired() const noexcept {return amountRequired_;}
-[[nodiscard]] auto SpellID() const noexcept {return spellID_;}
+    [[nodiscard]] auto Offset() const noexcept { return offset_; }
+    [[nodiscard]] auto AmountReceived() const noexcept { return amountReceived_; }
+    [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
+    [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
+    [[nodiscard]] auto ItemID() const noexcept { return itemID_; }
+    [[nodiscard]] auto AmountRequired() const noexcept { return amountRequired_; }
+    [[nodiscard]] auto SpellID() const noexcept { return spellID_; }
   };
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data
    * Ability	    # of Entries  mngrp.bin Location	        Offset	Description
@@ -48,15 +51,33 @@ struct m000
    * Supt Mag-RF    20 entries	  (mngrp.bin loc: 0x21F260)	0x260	Items to Support Magic
    * Forbid Mag-RF  6 entries	  (mngrp.bin loc: 0x21F300)	0x300	Items to Forbidden Magic
    */
-  std::array <Entry,7> tMagRF_{};
-  std::array <Entry,7> iMagRF_{};
-  std::array <Entry,10> fMagRF_{};
-  std::array <Entry,21> lMagRF_{};
-  std::array <Entry,14> timeMagRF_{};
-  std::array <Entry,17> stMagRF_{};
-  std::array <Entry,20> suptRF_{};
-  std::array <Entry,6> forbidMagRF_{};
+private:
+  constexpr auto tMagRFCount_ = 7U;
+  constexpr auto iMagRFCount_ = 7U;
+  constexpr auto fMagRFCount_ = 10U;
+  constexpr auto lMagRFCount_ = 21U;
+  constexpr auto timeMagRFCount_ = 14U;
+  constexpr auto stMagRFCount_ = 17U;
+  constexpr auto suptRFCount_ = 20U;
+  constexpr auto forbidMagRFCount_ = 6U;
+  std::array<Entry, tMagRFCount_> tMagRF_{};
+  std::array<Entry, iMagRFCount_> iMagRF_{};
+  std::array<Entry, fMagRFCount_> fMagRF_{};
+  std::array<Entry, lMagRFCount_> lMagRF_{};
+  std::array<Entry, timeMagRFCount_> timeMagRF_{};
+  std::array<Entry, stMagRFCount_> stMagRF_{};
+  std::array<Entry, suptRFCount_> suptRF_{};
+  std::array<Entry, forbidMagRFCount_> forbidMagRF_{};
 
+public:
+  [[nodiscard]] auto tMagRF() const noexcept { return tMagRF_; }
+  [[nodiscard]] auto iMagRF() const noexcept { return iMagRF_; }
+  [[nodiscard]] auto fMagRF() const noexcept { return fMagRF_; }
+  [[nodiscard]] auto lMagRF() const noexcept { return lMagRF_; }
+  [[nodiscard]] auto timeMagRF() const noexcept { return timeMagRF_; }
+  [[nodiscard]] auto stMagRF() const noexcept { return stMagRF_; }
+  [[nodiscard]] auto suptRF() const noexcept { return suptRF_; }
+  [[nodiscard]] auto forbidMagRF() const noexcept { return forbidMagRF_; }
 };
-}
+}// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_M000_H

@@ -1,5 +1,3 @@
 ##define array with path info.
-add_library(VIIIPaths
-        Paths.cpp
-        Paths.h)
-set_target_properties(VIIIPaths PROPERTIES LINKER_LANGUAGE CXX)
+add_library(VIIIPaths INTERFACE)
+target_link_libraries(VIIIPaths INTERFACE)

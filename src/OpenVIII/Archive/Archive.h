@@ -17,4 +17,5 @@
 #include "FS.h"
 #include "ZZZ.h"
 #include "FIFLFS.h"
+#include "Archives.h"
 #endif// VIIIARCHIVE_ARCHIVE_H

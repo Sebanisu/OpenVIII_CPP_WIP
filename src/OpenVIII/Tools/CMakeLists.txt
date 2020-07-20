@@ -1,1 +1,2 @@
-add_library(VIIITools Tools.cpp Tools.h)
+add_library(VIIITools INTERFACE)
+target_link_libraries(VIIITools INTERFACE)
