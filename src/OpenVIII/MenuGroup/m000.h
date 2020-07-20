@@ -6,40 +6,12 @@
 #define VIIIARCHIVE_M000_H
 #include <cstdint>
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-
+#include "MItemID.h"
+#include "MSpellID.h"
+#include "mEntry.h"
 namespace OpenVIII::MenuGroup {
 struct [[maybe_unused]] m000 //Refine Item to Magic
 {
-
-  struct Entry
-  {
-    /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Entry
-     * Type	Size	Value	Description
-     * UInt16	2	Offset	Text Offset (little-endian)
-     * Byte	1	Received	Amount received
-     * UInt16	2	UNK	{0x0001}
-     * Byte	1	Input_Item_ID	Input: Item id value (0x00-0xC6)
-     * Byte	1	Required	Amount needed
-     * Byte	1	Output_Spell_ID	Output: Spell id value (0x01-0x38)
-     */
-  private:
-    EncodedStringOffset offset_{};
-    std::uint8_t amountReceived_{};
-    std::uint8_t unknown0_{};
-    std::uint8_t unknown1_{};
-    std::uint8_t itemID_{};
-    std::uint8_t amountRequired_{};
-    std::uint8_t spellID_{};
-
-  public:
-    [[nodiscard]] auto Offset() const noexcept { return offset_; }
-    [[nodiscard]] auto AmountReceived() const noexcept { return amountReceived_; }
-    [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
-    [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
-    [[nodiscard]] auto ItemID() const noexcept { return itemID_; }
-    [[nodiscard]] auto AmountRequired() const noexcept { return amountRequired_; }
-    [[nodiscard]] auto SpellID() const noexcept { return spellID_; }
-  };
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data
    * Ability	    # of Entries  mngrp.bin Location	        Offset	Description
    * T Mag-RF	    7 entries	  (mngrp.bin loc: 0x21F000)	0x0	Item to Thunder/Wind Magic
@@ -60,14 +32,14 @@ private:
   constexpr auto stMagRFCount_ = 17U;
   constexpr auto suptRFCount_ = 20U;
   constexpr auto forbidMagRFCount_ = 6U;
-  std::array<Entry, tMagRFCount_> tMagRF_{};
-  std::array<Entry, iMagRFCount_> iMagRF_{};
-  std::array<Entry, fMagRFCount_> fMagRF_{};
-  std::array<Entry, lMagRFCount_> lMagRF_{};
-  std::array<Entry, timeMagRFCount_> timeMagRF_{};
-  std::array<Entry, stMagRFCount_> stMagRF_{};
-  std::array<Entry, suptRFCount_> suptRF_{};
-  std::array<Entry, forbidMagRFCount_> forbidMagRF_{};
+  std::array<mEntry<MItemID,MSpellID>, tMagRFCount_> tMagRF_{};
+  std::array<mEntry<MItemID,MSpellID>, iMagRFCount_> iMagRF_{};
+  std::array<mEntry<MItemID,MSpellID>, fMagRFCount_> fMagRF_{};
+  std::array<mEntry<MItemID,MSpellID>, lMagRFCount_> lMagRF_{};
+  std::array<mEntry<MItemID,MSpellID>, timeMagRFCount_> timeMagRF_{};
+  std::array<mEntry<MItemID,MSpellID>, stMagRFCount_> stMagRF_{};
+  std::array<mEntry<MItemID,MSpellID>, suptRFCount_> suptRF_{};
+  std::array<mEntry<MItemID,MSpellID>, forbidMagRFCount_> forbidMagRF_{};
 
 public:
   [[nodiscard]] auto tMagRF() const noexcept { return tMagRF_; }

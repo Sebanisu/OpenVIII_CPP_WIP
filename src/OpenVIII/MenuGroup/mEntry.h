@@ -30,8 +30,8 @@ public:
   [[nodiscard]] auto AmountReceived() const noexcept { return amountReceived_; }
   [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
   [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
-  [[nodiscard]] auto ItemID() const noexcept { return input_; }
+  [[nodiscard]] auto Input() const noexcept { return input_; }
   [[nodiscard]] auto AmountRequired() const noexcept { return amountRequired_; }
-  [[nodiscard]] auto SpellID() const noexcept { return output_; }
+  [[nodiscard]] auto Output() const noexcept { return output_; }
 };
 #endif// VIIIARCHIVE_MENTRY_H
