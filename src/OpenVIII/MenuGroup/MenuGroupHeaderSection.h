@@ -29,5 +29,5 @@ public:
     return { std::data(fileBuffer) + FileOffset(), Size() };
   }
 };
-}
+}// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_MENUGROUPHEADERSECTION_H

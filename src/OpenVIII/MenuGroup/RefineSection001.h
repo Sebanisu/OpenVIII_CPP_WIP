@@ -59,13 +59,10 @@ public:
     return recovMedRFCount_ + stMedRFCount_ + ammoRFCount_ + forbidMedRFCount_ + gfRecovRFCount_ + gfAblMedRFCount_
            + toolRFCount_;
   }
-  friend std::ostream & operator <<(std::ostream & os,const RefineSection001 & input)
+  friend std::ostream &operator<<(std::ostream &os, const RefineSection001 &input)
   {
-    const auto outArray = [&os](const auto & arr){
-           for(const auto item : arr)
-           {
-             os << item << '\n';
-           }
+    const auto outArray = [&os](const auto &arr) {
+      for (const auto item : arr) { os << item << '\n'; }
     };
     os << "recovMedRF:\n";
     outArray(input.recovMedRF_);

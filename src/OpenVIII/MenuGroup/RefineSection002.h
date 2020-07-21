@@ -37,13 +37,10 @@ public:
   [[nodiscard]] const auto &MidMagRF() const noexcept { return midMagRF_; }
   [[nodiscard]] const auto &HighMagRF() const noexcept { return highMagRF_; }
   [[nodiscard]] static constexpr auto size() { return midMagRFCount_ + highMagRFCount_; }
-  friend std::ostream & operator <<(std::ostream & os,const RefineSection002 & input)
+  friend std::ostream &operator<<(std::ostream &os, const RefineSection002 &input)
   {
-    const auto outArray = [&os](const auto & arr){
-           for(const auto item : arr)
-           {
-             os << item << '\n';
-           }
+    const auto outArray = [&os](const auto &arr) {
+      for (const auto item : arr) { os << item << '\n'; }
     };
     os << "midMagRF_:\n";
     outArray(input.midMagRF_);

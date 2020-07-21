@@ -44,14 +44,19 @@ public:
   [[nodiscard]] auto AmountRequired() const noexcept { return amountRequired_; }
   [[nodiscard]] auto Output() const noexcept { return output_; }
 
-  friend std::ostream & operator <<(std::ostream & os,const RefineEntry<inputT,outputT> & input)
+  std::ostream &out(std::ostream &os, const std::string_view &buffer = ""sv,
+                    const intmax_t offset = 0,
+                    bool skipFirstNull = false,
+                    const std::string_view &coo = "en"sv) const
   {
-      return os << static_cast<std::uint16_t>(input.AmountReceived()) << ", "
-      << static_cast<std::uint16_t>(input.unknown0()) << ", "
-      << static_cast<std::uint16_t>(input.unknown1()) << ", "
-      << static_cast<std::uint16_t>(input.Input()) << ", "
-      << static_cast<std::uint16_t>(input.AmountRequired()) << ", "
-      << static_cast<std::uint16_t>(input.Output());
+    return os << '"' << offset_.DecodedString(buffer,offset,skipFirstNull,coo) << "'" << static_cast<std::uint16_t>(AmountReceived()) << ", "
+              << static_cast<std::uint16_t>(unknown0()) << ", " << static_cast<std::uint16_t>(unknown1()) << ", "
+              << static_cast<std::uint16_t>(Input()) << ", " << static_cast<std::uint16_t>(AmountRequired()) << ", "
+              << static_cast<std::uint16_t>(Output());
+  }
+  friend std::ostream &operator<<(std::ostream &os, const RefineEntry<inputT, outputT> &input)
+  {
+    return input.out(os);
   }
 };
 }// namespace OpenVIII::MenuGroup

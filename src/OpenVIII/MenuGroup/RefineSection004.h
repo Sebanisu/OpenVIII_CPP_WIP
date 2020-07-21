@@ -35,17 +35,23 @@ public:
   [[nodiscard]] const auto &CardMod() const noexcept { return cardMod_; }
   [[nodiscard]] const auto *operator->() const { return &cardMod_; }
   [[nodiscard]] static constexpr auto size() { return cardModCount_; }
-  friend std::ostream & operator <<(std::ostream & os,const RefineSection004 & input)
+  std::ostream &out(std::ostream &os, const std::string_view &buffer = ""sv,
+                    const intmax_t offset = 0,
+                    bool skipFirstNull = false,
+                    const std::string_view &coo = "en"sv) const
+
   {
-    const auto outArray = [&os](const auto & arr){
-           for(const auto item : arr)
-           {
-             os << item << '\n';
-           }
+    const auto outArray = [&os, &buffer, &offset, &skipFirstNull, &coo](const auto &arr) {
+      for (const auto item : arr) { item.out(os, buffer, offset, skipFirstNull, coo) << '\n'; }
     };
+
     os << "cardMod:\n";
-    outArray(input.cardMod_);
+    outArray(cardMod());
     return os;
+  }
+  friend std::ostream &operator<<(std::ostream &os, const RefineSection004 &input)
+  {
+    return input.out(os);
   }
 };
 }// namespace OpenVIII::MenuGroup

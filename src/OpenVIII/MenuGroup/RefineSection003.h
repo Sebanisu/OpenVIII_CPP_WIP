@@ -34,18 +34,22 @@ public:
   [[nodiscard]] const auto &MedLVUP() const noexcept { return medLVUP_; }
   [[nodiscard]] const auto *operator->() const { return &medLVUP_; }
   [[nodiscard]] static constexpr auto size() { return medLVUPCount_; }
+  std::ostream &out(std::ostream &os, const std::string_view &buffer = ""sv,
+                    const intmax_t offset = 0,
+                    bool skipFirstNull = false,
+                    const std::string_view &coo = "en"sv) const
 
-  friend std::ostream & operator <<(std::ostream & os,const RefineSection003 & input)
   {
-    const auto outArray = [&os](const auto & arr){
-           for(const auto item : arr)
-           {
-             os << item << '\n';
-           }
+    const auto outArray = [&os, &buffer, &offset, &skipFirstNull, &coo](const auto &arr) {
+      for (const auto item : arr) { item.out(os, buffer, offset, skipFirstNull, coo) << '\n'; }
     };
-    os << "medLVUP:\n";
-    outArray(input.medLVUP_);
+    os << "MedLVUP:\n";
+    outArray(MedLVUP());
     return os;
+  }
+  friend std::ostream &operator<<(std::ostream &os, const RefineSection003 &input)
+  {
+    return input.out(os);
   }
 };
 }// namespace OpenVIII::MenuGroup

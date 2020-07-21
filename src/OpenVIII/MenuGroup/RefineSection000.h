@@ -21,8 +21,8 @@ namespace OpenVIII::MenuGroup {
 struct [[maybe_unused]] RefineSection000// Refine Item to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data
-   * Ability	    # of Entries  mngrp.bin Location	        Offset	Description
-   * T Mag-RF	    7 entries	  (mngrp.bin loc: 0x21F000)	0x0	Item to Thunder/Wind Magic
+   * Ability	    # of Entries  mngrp.bin Location	    Offset	Description
+   * T Mag-RF	    7 entries	  (mngrp.bin loc: 0x21F000)	0x0	    Item to Thunder/Wind Magic
    * I Mag-RF	    7 entries	  (mngrp.bin loc: 0x21F038)	0x38	Item to Ice/Water Magic
    * F Mag-RF	    10 entries	  (mngrp.bin loc: 0x21F070)	0x70	Item to Fire/Flare Magic
    * L Mag-RF	    21 entries	  (mngrp.bin loc: 0x21F0C0)	0xC0	Item to Life Magic
@@ -63,32 +63,36 @@ public:
     return tMagRFCount_ + iMagRFCount_ + fMagRFCount_ + lMagRFCount_ + timeMagRFCount_ + stMagRFCount_ + suptRFCount_
            + forbidMagRFCount_;
   }
-  friend std::ostream & operator <<(std::ostream & os,const RefineSection000 & input)
+  std::ostream &out(std::ostream &os, const std::string_view &buffer = ""sv,
+                    const intmax_t offset = 0,
+                    bool skipFirstNull = false,
+                    const std::string_view &coo = "en"sv) const
+
   {
-    const auto outArray = [&os](const auto & arr){
-    for(const auto item : arr)
-    {
-      os << item << '\n';
-    }
+    const auto outArray = [&os, &buffer,&offset,&skipFirstNull,&coo](const auto &arr) {
+      for (const auto item : arr) { item.out(os,buffer,offset,skipFirstNull,coo) << '\n'; }
     };
     os << "tMagRF:\n";
-    outArray(input.tMagRF_);
+    outArray(tMagRF());
     os << "iMagRF:\n";
-    outArray(input.iMagRF_);
+    outArray(iMagRF());
     os << "fMagRF:\n";
-    outArray(input.fMagRF_);
+    outArray(fMagRF());
     os << "lMagRF:\n";
-    outArray(input.lMagRF_);
+    outArray(lMagRF());
     os << "timeMagRF:\n";
-    outArray(input.timeMagRF_);
+    outArray(timeMagRF());
     os << "stMagRF:\n";
-    outArray(input.stMagRF_);
+    outArray(stMagRF());
     os << "suptMagRF:\n";
-    outArray(input.suptRF_);
+    outArray(suptRF());
     os << "forbidMagRF:\n";
-    outArray(input.forbidMagRF_);
+    outArray(forbidMagRF());
     return os;
   }
+  friend std::ostream &operator<<(std::ostream &os, const RefineSection000 &input) {
+    using namespace std::literals;
+    return input.out(os, ""sv); }
 };
 }// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_REFINESECTION000_H

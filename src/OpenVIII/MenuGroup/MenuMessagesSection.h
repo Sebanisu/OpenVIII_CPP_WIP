@@ -52,5 +52,5 @@ public:
     //[Start of string location] = [Start of file] + [Section value] + [Subsection value]
   }
 };
-}
+}// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_MENUMESSAGESSECTION_H
