@@ -63,36 +63,43 @@ public:
     return tMagRFCount_ + iMagRFCount_ + fMagRFCount_ + lMagRFCount_ + timeMagRFCount_ + stMagRFCount_ + suptRFCount_
            + forbidMagRFCount_;
   }
-  std::ostream &out(std::ostream &os, const std::string_view &buffer = ""sv,
-                    const intmax_t offset = 0,
-                    bool skipFirstNull = false,
-                    const std::string_view &coo = "en"sv) const
+  template<LangT langVal, typename T>
+  std::ostream &outArray(const T &arr,
+    std::ostream &os,
+    const std::string_view &buffer = ""sv,
+    const intmax_t offset = 0,
+    bool skipFirstNull = false) const
 
   {
-    const auto outArray = [&os, &buffer,&offset,&skipFirstNull,&coo](const auto &arr) {
-      for (const auto item : arr) { item.out(os,buffer,offset,skipFirstNull,coo) << '\n'; }
-    };
-    os << "tMagRF:\n";
-    outArray(tMagRF());
-    os << "iMagRF:\n";
-    outArray(iMagRF());
-    os << "fMagRF:\n";
-    outArray(fMagRF());
-    os << "lMagRF:\n";
-    outArray(lMagRF());
-    os << "timeMagRF:\n";
-    outArray(timeMagRF());
-    os << "stMagRF:\n";
-    outArray(stMagRF());
-    os << "suptMagRF:\n";
-    outArray(suptRF());
-    os << "forbidMagRF:\n";
-    outArray(forbidMagRF());
+    for (const auto item : arr) { item.template out<langVal>(os, buffer, offset, skipFirstNull);
+      os << '\n'; }
     return os;
   }
-  friend std::ostream &operator<<(std::ostream &os, const RefineSection000 &input) {
-    using namespace std::literals;
-    return input.out(os, ""sv); }
+  template<LangT langVal>
+  std::ostream &out(std::ostream &os,
+    const std::string_view &buffer = ""sv,
+    const intmax_t offset = 0,
+    bool skipFirstNull = false) const
+
+  {
+    os << "tMagRF:\n";
+    outArray<langVal>(tMagRF_, os, buffer, offset, skipFirstNull);
+    os << "iMagRF:\n";
+    outArray<langVal>(iMagRF_, os, buffer, offset, skipFirstNull);
+    os << "fMagRF:\n";
+    outArray<langVal>(fMagRF_, os, buffer, offset, skipFirstNull);
+    os << "lMagRF:\n";
+    outArray<langVal>(lMagRF_, os, buffer, offset, skipFirstNull);
+    os << "timeMagRF:\n";
+    outArray<langVal>(timeMagRF_, os, buffer, offset, skipFirstNull);
+    os << "stMagRF:\n";
+    outArray<langVal>(stMagRF_, os, buffer, offset, skipFirstNull);
+    os << "suptMagRF:\n";
+    outArray<langVal>(suptRF_, os, buffer, offset, skipFirstNull);
+    os << "forbidMagRF:\n";
+    outArray<langVal>(forbidMagRF_, os, buffer, offset, skipFirstNull);
+    return os;
+  }
 };
 }// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_REFINESECTION000_H

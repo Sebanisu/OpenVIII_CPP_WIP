@@ -15,9 +15,11 @@
 #include <string_view>
 #include <array>
 #include <sstream>
+#include "LangT.h"
 
 using namespace std::string_view_literals;
 namespace OpenVIII {
+template<LangT langVal>
 struct FF8String
 {
 private:
@@ -536,25 +538,22 @@ private:
     u8"ー"sv };
 
 public:
-  static constexpr std::array LangCodes = { "en"sv, "fr"sv, "es"sv, "it"sv, "de"sv, "jp"sv };
-  static constexpr auto &GetCodePage(const std::string_view &co = "en"sv)
+  //static constexpr std::array LangCodes = { "en"sv, "fr"sv, "es"sv, "it"sv, "de"sv, "jp"sv };
+
+  static constexpr auto &GetCodePage()
   {
-    for (const auto &item : LangCodes) {
-      if (item == co) {
-        if (item == "jp"sv) {
-          return jpCodePage;
-        }
-        break;
-      }
+    if constexpr (langVal == LangT::JP) {
+      return jpCodePage;
     }
-    return euCodePage;
+    else {
+      return euCodePage;
+    }
   }
-  [[nodiscard]] auto static Decode(uint8_t key, const std::string_view &co = "en"sv) noexcept
+  [[nodiscard]] auto static Decode(uint8_t key) noexcept
   {
-    using namespace std::literals;
-    return GetCodePage(co).at(key);
+    return GetCodePage().at(key);
   }
-  [[nodiscard]] auto static Decode(const std::string_view &buffer, const std::string_view &co = "en"sv)
+  [[nodiscard]] auto static Decode(const std::string_view &buffer)
   {
     if (std::empty(buffer)) {
       return std::string{};
@@ -563,7 +562,7 @@ public:
     //    {return Decode(static_cast<uint8_t>(key));},[](auto a, auto b)){});
     std::stringstream ss{};
     for (auto key : buffer) {
-      const auto value = Decode(static_cast<uint8_t>(key), co);
+      const auto value = Decode(static_cast<uint8_t>(key));
       ss << value;
     }
     return ss.str();

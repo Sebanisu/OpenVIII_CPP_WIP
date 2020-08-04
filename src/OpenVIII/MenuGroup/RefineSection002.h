@@ -37,15 +37,28 @@ public:
   [[nodiscard]] const auto &MidMagRF() const noexcept { return midMagRF_; }
   [[nodiscard]] const auto &HighMagRF() const noexcept { return highMagRF_; }
   [[nodiscard]] static constexpr auto size() { return midMagRFCount_ + highMagRFCount_; }
-  friend std::ostream &operator<<(std::ostream &os, const RefineSection002 &input)
+  template<LangT langVal, typename T>
+  std::ostream &outArray(const T &arr,
+                         std::ostream &os,
+                         const std::string_view &buffer = ""sv,
+                         const intmax_t offset = 0,
+                         bool skipFirstNull = false) const
+
   {
-    const auto outArray = [&os](const auto &arr) {
-      for (const auto item : arr) { os << item << '\n'; }
-    };
+    for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skipFirstNull)) << '\n'; }
+    return os;
+  }
+  template<LangT langVal>
+  std::ostream &out(std::ostream &os,
+                    const std::string_view &buffer = ""sv,
+                    const intmax_t offset = 0,
+                    bool skipFirstNull = false) const
+
+  {
     os << "midMagRF_:\n";
-    outArray(input.midMagRF_);
+    outArray<langVal>(midMagRF_, os, buffer, offset, skipFirstNull);
     os << "highMagRF_:\n";
-    outArray(input.highMagRF_);
+    outArray<langVal>(highMagRF_, os, buffer, offset, skipFirstNull);
     return os;
   }
 };

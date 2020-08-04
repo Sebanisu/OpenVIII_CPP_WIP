@@ -35,23 +35,27 @@ public:
   [[nodiscard]] const auto &CardMod() const noexcept { return cardMod_; }
   [[nodiscard]] const auto *operator->() const { return &cardMod_; }
   [[nodiscard]] static constexpr auto size() { return cardModCount_; }
-  std::ostream &out(std::ostream &os, const std::string_view &buffer = ""sv,
-                    const intmax_t offset = 0,
-                    bool skipFirstNull = false,
-                    const std::string_view &coo = "en"sv) const
+  template<LangT langVal, typename T>
+  std::ostream &outArray(const T &arr,
+                         std::ostream &os,
+                         const std::string_view &buffer = ""sv,
+                         const intmax_t offset = 0,
+                         bool skipFirstNull = false) const
 
   {
-    const auto outArray = [&os, &buffer, &offset, &skipFirstNull, &coo](const auto &arr) {
-      for (const auto item : arr) { item.out(os, buffer, offset, skipFirstNull, coo) << '\n'; }
-    };
-
-    os << "cardMod:\n";
-    outArray(cardMod());
+    for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skipFirstNull)) << '\n'; }
     return os;
   }
-  friend std::ostream &operator<<(std::ostream &os, const RefineSection004 &input)
+  template<LangT langVal>
+  std::ostream &out(std::ostream &os,
+                    const std::string_view &buffer = ""sv,
+                    const intmax_t offset = 0,
+                    bool skipFirstNull = false) const
+
   {
-    return input.out(os);
+    os << "cardMod:\n";
+    outArray<langVal>(cardMod_, os, buffer, offset, skipFirstNull);
+    return os;
   }
 };
 }// namespace OpenVIII::MenuGroup

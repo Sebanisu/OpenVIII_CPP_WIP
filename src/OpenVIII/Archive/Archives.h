@@ -10,14 +10,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#ifndef VIIIARCHIVE_ARCHIVES_H
+#define VIIIARCHIVE_ARCHIVES_H
 #include "FIFLFS.h"
 #include "ZZZ.h"
 #include <type_traits>
 #include <string_view>
-#ifndef VIIIARCHIVE_ARCHIVES_H
-#define VIIIARCHIVE_ARCHIVES_H
+#include "OpenVIII/Strings/LangT.h"
 namespace OpenVIII::Archive {
 // There are 6 main FIFLFS archives and 2 main zzz archives for ff8 and ff8 remaster.
+
 enum class ArchiveTypeT : std::int8_t {
   Battle,
   Field,
@@ -28,11 +30,12 @@ enum class ArchiveTypeT : std::int8_t {
   ZZZMain,
   ZZZOther,
 };
+template<LangT langVal>
 struct Archives
 {
 private:
   std::filesystem::path path_{};
-  std::string lang_{};
+  std::string lang_{LangCommon::ToString<langVal>()};
   FIFLFS<false> battle_{};
   FIFLFS<true> field_{};
   FIFLFS<false> magic_{};
@@ -49,14 +52,19 @@ private:
       static_for<First + 1, Last>(f);
     }
   }
-  void SetLang(const std::filesystem::path &path, const std::string_view &lang)
+
+  void SetLang()
   {
-    lang_ = lang;
+    lang_ = LangCommon::ToString<langVal>();
+  }
+  void SetLang(const std::filesystem::path &path)
+  {
     using namespace std::string_literals;
-    if (std::empty(lang)) {
+    if (std::empty(lang_)) {
       lang_ = [this, &path]() {
         {
           // try to read lang.dat from ff8 steam folder
+          // lang.dat overrides the explictly set one.
           const std::filesystem::path &langDatPath = path / "lang.dat";
           if (std::filesystem::exists(langDatPath)) {
             std::ifstream fp = std::ifstream(langDatPath, std::ios::in);
@@ -80,8 +88,11 @@ private:
         // will probably need a c# launcher to pass the lang code to this. As .Net has a standard cross platform
         // way to get the documents folder.
         // Documents\My Games\FINAL FANTASY VIII Remastered\Steam\(\d+)\config.txt
-        return "en"s;// defaulting to english
+        return ""s;// defaulting to english
       }();
+    }
+    if (std::empty(lang_)) {
+      SetLang();
     }
     std::cout << "lang = " << lang_ << '\n';
   }
@@ -232,9 +243,9 @@ public:
     }
   }
   Archives() = default;
-  explicit Archives(const std::filesystem::path &path, const std::string_view &lang = "")
+  explicit Archives(const std::filesystem::path &path)
   {
-    SetLang(path, lang);
+    SetLang(path);
     SetPath(path);
 
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
