@@ -21,8 +21,7 @@
 #include "AttackTypeT.h"
 #include "ElementT.h"
 #include "CameraChangeT.h"
-namespace OpenVIII::Kernel {
-struct EnemyAttacks
+namespace OpenVIII::Kernel { template <LangT langVal> struct EnemyAttacks
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Enemy-attacks
    * Offset	Length	Description
@@ -74,7 +73,7 @@ public:
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-31
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name << ", ";
     }

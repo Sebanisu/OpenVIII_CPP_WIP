@@ -16,8 +16,7 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "TargetT.h"
-namespace OpenVIII::Kernel {
-struct RinoaLimitBreakPart1
+namespace OpenVIII::Kernel { template <LangT langVal> struct RinoaLimitBreakPart1
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Rinoa-limit-breaks-(part-1)
@@ -46,8 +45,8 @@ public:
   [[nodiscard]] auto Unknown0() const noexcept { return unknown0_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

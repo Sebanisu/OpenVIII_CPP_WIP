@@ -16,8 +16,7 @@
 #include <iostream>
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel {
-struct MiscText
+namespace OpenVIII::Kernel { template <LangT langVal> struct MiscText
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Misc-text-pointers
@@ -34,8 +33,8 @@ public:
   //[[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    // auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    // auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

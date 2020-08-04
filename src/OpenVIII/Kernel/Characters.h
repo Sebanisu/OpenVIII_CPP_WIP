@@ -17,8 +17,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "GenderT.h"
 #include "StatGroupNoEVANoHIT.h"
-namespace OpenVIII::Kernel {
-struct Characters
+namespace OpenVIII::Kernel { template <LangT langVal> struct Characters
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Characters
@@ -92,7 +91,7 @@ public:
   [[nodiscard]] auto operator->() const noexcept { return &stats_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

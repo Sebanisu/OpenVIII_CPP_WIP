@@ -44,6 +44,7 @@ enum class DevourStatFlagT : std::uint8_t {
   SPR = 0x08,
   SPD = 0x10,
 };
+template <LangT langVal>
 struct Devour
 {
   /*
@@ -121,7 +122,7 @@ public:
   [[nodiscard]] auto RaisedStatHPQuantity() const noexcept { return raisedStatHPQuantity_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(description)) {
       os << description;
     }

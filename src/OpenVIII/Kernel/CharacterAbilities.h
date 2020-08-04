@@ -17,8 +17,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "CharacterAbilityFlagsT.h"
 #include <cstring>
-namespace OpenVIII::Kernel {
-struct CharacterAbilities
+namespace OpenVIII::Kernel { template <LangT langVal> struct CharacterAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Character-abilities
@@ -51,8 +50,8 @@ public:
   }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

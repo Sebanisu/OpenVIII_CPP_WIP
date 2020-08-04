@@ -20,8 +20,7 @@
 #include "AttackTypeT.h"
 #include "AttackFlagsT.h"
 #include "ElementT.h"
-namespace OpenVIII::Kernel {
-struct CommandAbilitiesData
+namespace OpenVIII::Kernel { template <LangT langVal> struct CommandAbilitiesData
 {
 
   /*

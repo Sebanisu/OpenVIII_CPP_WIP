@@ -21,7 +21,7 @@ int main()
       continue;
     }
     std::cout << path << std::endl;
-    const auto archives = OpenVIII::Archive::Archives(path);
+    const auto archives = OpenVIII::Archive::Archives<OpenVIII::LangT::EN>(path);
     [[maybe_unused]] const auto &battle = archives.Get<OpenVIII::Archive::ArchiveTypeT::Battle>();
     std::cout << battle << std::endl;
     [[maybe_unused]] const auto &field = archives.Get<OpenVIII::Archive::ArchiveTypeT::Field>();

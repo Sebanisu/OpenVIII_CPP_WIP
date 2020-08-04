@@ -17,6 +17,7 @@
 #include "TargetT.h"
 
 namespace OpenVIII::Kernel {
+template <LangT langVal>
 struct BattleCommands
 {
   /*
@@ -48,8 +49,8 @@ public:
 
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

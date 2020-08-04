@@ -21,8 +21,7 @@
 #include "AttackFlagsT.h"
 #include "AttackTypeT.h"
 #include "TargetT.h"
-namespace OpenVIII::Kernel {
-struct BattleItems
+namespace OpenVIII::Kernel { template <LangT langVal> struct BattleItems
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Battle-items
@@ -84,8 +83,8 @@ public:
   [[nodiscard]] auto Element() const noexcept { return element_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

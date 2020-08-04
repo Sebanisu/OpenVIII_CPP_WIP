@@ -18,8 +18,7 @@
 #include "PersistentStatusesT.h"
 #include "BattleOnlyStatusesT.h"
 #include "AttackTypeT.h"
-namespace OpenVIII::Kernel {
-struct NonJunctionableGFs
+namespace OpenVIII::Kernel { template <LangT langVal> struct NonJunctionableGFs
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Non-junctionable-GF-attacks
    * Offset	Length	Description
@@ -129,7 +128,7 @@ public:
   [[nodiscard]] auto LevelMod() const noexcept { return levelMod_; }// (used in damage formula)
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

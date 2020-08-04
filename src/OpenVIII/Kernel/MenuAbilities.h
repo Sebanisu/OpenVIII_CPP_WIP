@@ -15,8 +15,7 @@
 #define VIIIARCHIVE_MENUABILITIES_H
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-namespace OpenVIII::Kernel {
-struct MenuAbilities
+namespace OpenVIII::Kernel { template <LangT langVal> struct MenuAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Menu-abilities
@@ -45,8 +44,8 @@ public:
   [[nodiscard]] auto EndOffset() const noexcept { return EndOffset_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

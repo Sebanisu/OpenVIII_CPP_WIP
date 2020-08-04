@@ -56,7 +56,7 @@
 // will be moving kernel into it"s own project once it"svs more fully baked.
 namespace OpenVIII::Kernel {
 
-
+template <LangT langVal>
 struct Header
 {
   // https://github.com/alexfilth/doomtrain/wiki/Header
@@ -86,76 +86,76 @@ public:
   {
     using namespace std::string_literals;
     if constexpr (sectionType == SectionTypesT::BattleCommands) {
-      return SectionData<BattleCommands>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::BattleCommandsText>() };
+      return SectionData<BattleCommands<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::BattleCommandsText>() };
     } else if constexpr (sectionType == SectionTypesT::Magic) {
-      return SectionData<Magic>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MagicText>() };
+      return SectionData<Magic<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MagicText>() };
     } else if constexpr (sectionType == SectionTypesT::JunctionableGFs) {
-      return SectionData<JunctionableGFs>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::JunctionableGFsText>() };
+      return SectionData<JunctionableGFs<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::JunctionableGFsText>() };
     } else if constexpr (sectionType == SectionTypesT::EnemyAttacks) {
-      return SectionData<EnemyAttacks>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::EnemyAttacksText>() };
+      return SectionData<EnemyAttacks<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::EnemyAttacksText>() };
     } else if constexpr (sectionType == SectionTypesT::Weapons) {
-      return SectionData<Weapons>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::WeaponsText>() };
+      return SectionData<Weapons<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::WeaponsText>() };
     } else if constexpr (sectionType == SectionTypesT::RenzokukenFinishers) {
-      return SectionData<RenzokukenFinishers>{ GetSpan<sectionType>(),
+      return SectionData<RenzokukenFinishers<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::RenzokukenFinishersText>() };
     } else if constexpr (sectionType == SectionTypesT::Characters) {
-      return SectionData<Characters>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::CharactersText>() };
+      return SectionData<Characters<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::CharactersText>() };
     } else if constexpr (sectionType == SectionTypesT::BattleItems) {
-      return SectionData<BattleItems>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::BattleItemsText>() };
+      return SectionData<BattleItems<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::BattleItemsText>() };
     } else if constexpr (sectionType == SectionTypesT::NonBattleItems) {
-      return SectionData<NonBattleItems>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::NonBattleItemsText>() };
+      return SectionData<NonBattleItems<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::NonBattleItemsText>() };
     } else if constexpr (sectionType == SectionTypesT::NonJunctionableGFs) {
-      return SectionData<NonJunctionableGFs>{ GetSpan<sectionType>(),
+      return SectionData<NonJunctionableGFs<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::NonJunctionableGFsText>() };
     } else if constexpr (sectionType == SectionTypesT::CommandAbilitiesData) {
-      return SectionData<CommandAbilitiesData>{ GetSpan<sectionType>() };
+      return SectionData<CommandAbilitiesData<langVal>>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::JunctionAbilities) {
-      return SectionData<JunctionAbilities>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::JunctionAbilitiesText>() };
+      return SectionData<JunctionAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::JunctionAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::CommandAbilities) {
-      return SectionData<CommandAbilities>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::CommandAbilitiesText>() };
+      return SectionData<CommandAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::CommandAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::StatPercentIncreaseAbilities) {
-      return SectionData<StatPercentIncreaseAbilities>{ GetSpan<sectionType>(),
+      return SectionData<StatPercentIncreaseAbilities<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::StatPercentIncreaseAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::CharacterAbilities) {
-      return SectionData<CharacterAbilities>{ GetSpan<sectionType>(),
+      return SectionData<CharacterAbilities<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::CharacterAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::PartyAbilities) {
-      return SectionData<PartyAbilities>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::PartyAbilitiesText>() };
+      return SectionData<PartyAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::PartyAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::GFAbilities) {
-      return SectionData<GFAbilities>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::GFAbilitiesText>() };
+      return SectionData<GFAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::GFAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::MenuAbilities) {
-      return SectionData<MenuAbilities>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MenuAbilitiesText>() };
+      return SectionData<MenuAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MenuAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::TeamLagunaLimitBreaks) {
-      return SectionData<TeamLagunaLimitBreaks>{ GetSpan<sectionType>(),
+      return SectionData<TeamLagunaLimitBreaks<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::TeamLagunaLimitBreaksText>() };
     } else if constexpr (sectionType == SectionTypesT::QuistisBlueMagicLimitBreak) {
-      return SectionData<QuistisBlueMagicLimitBreak>{ GetSpan<sectionType>(),
+      return SectionData<QuistisBlueMagicLimitBreak<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::QuistisBlueMagicLimitBreakText>() };
     } else if constexpr (sectionType == SectionTypesT::QuistisBlueMagicLimitBreakParams) {
       return SectionData<QuistisBlueMagicLimitBreakParams>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::IrvineShotLimitBreak) {
-      return SectionData<IrvineShotLimitBreak>{ GetSpan<sectionType>(),
+      return SectionData<IrvineShotLimitBreak<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::IrvineShotLimitBreakText>() };
     } else if constexpr (sectionType == SectionTypesT::ZellDuelLimitBreak) {
-      return SectionData<ZellDuelLimitBreak>{ GetSpan<sectionType>(),
+      return SectionData<ZellDuelLimitBreak<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::ZellDuelLimitBreakText>(),
         GetSpan<SectionTypesT::ZellDuelLimitBreakParams>() };
     } else if constexpr (sectionType == SectionTypesT::RinoaLimitBreakPart1) {
-      return SectionData<RinoaLimitBreakPart1>{ GetSpan<sectionType>(),
+      return SectionData<RinoaLimitBreakPart1<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::RinoaLimitBreakPart1Text>() };
     } else if constexpr (sectionType == SectionTypesT::RinoaLimitBreakPart2) {
-      return SectionData<RinoaLimitBreakPart2>{ GetSpan<sectionType>(),
+      return SectionData<RinoaLimitBreakPart2<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::RinoaLimitBreakPart2Text>() };
     } else if constexpr (sectionType == SectionTypesT::SlotsArray) {
       return SectionData<SlotsArray>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::SlotsSets) {
       return SectionData<SlotsSets>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::Devour) {
-      return SectionData<Devour>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::DevourText>() };
+      return SectionData<Devour<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::DevourText>() };
     } else if constexpr (sectionType == SectionTypesT::Misc) {
-      return SectionData<Misc>{ GetSpan<sectionType>() };
+      return SectionData<Misc<langVal>>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::MiscTextPointers) {
-      return SectionData<MiscText>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MiscText>() };
+      return SectionData<MiscText<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MiscText>() };
     } else {
       return nullptr;
     }

@@ -14,8 +14,7 @@
 #ifndef VIIIARCHIVE_STATPERCENTINCREASEABILITIES_H
 #define VIIIARCHIVE_STATPERCENTINCREASEABILITIES_H
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-namespace OpenVIII::Kernel {
-struct StatPercentIncreaseAbilities
+namespace OpenVIII::Kernel { template <LangT langVal> struct StatPercentIncreaseAbilities
 {
 private:
   /*
@@ -44,8 +43,8 @@ public:
   [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

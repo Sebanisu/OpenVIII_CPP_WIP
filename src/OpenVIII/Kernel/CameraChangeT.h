@@ -15,8 +15,7 @@
 #define VIIIARCHIVE_CAMERACHANGET_H
 #include <cstdint>
 #include <iostream>
-namespace OpenVIII::Kernel {
-struct CameraChangeT
+namespace OpenVIII::Kernel {struct CameraChangeT
 {
 private:
   static constexpr std::uint8_t highBitMask_ = 0x80U;

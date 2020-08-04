@@ -15,8 +15,7 @@
 #define VIIIARCHIVE_NONBATTLEITEMS_H
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel {
-struct NonBattleItems
+namespace OpenVIII::Kernel { template <LangT langVal> struct NonBattleItems
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Non-battle-item-name-and-description-offsets
@@ -32,8 +31,8 @@ public:
   [[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

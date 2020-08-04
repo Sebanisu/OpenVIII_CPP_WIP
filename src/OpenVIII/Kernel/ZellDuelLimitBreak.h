@@ -39,7 +39,7 @@ enum class ButtonFlagT : std::uint16_t {
   Square = 0x8000,
   None = 0xFFFF,
 };
-
+template <LangT langVal>
 struct ZellDuelLimitBreak
 { /*
    * Offset	Length	Description
@@ -119,8 +119,8 @@ public:
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

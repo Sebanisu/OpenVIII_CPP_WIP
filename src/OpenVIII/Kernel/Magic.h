@@ -23,8 +23,7 @@
 #include "StatGroup.h"
 #include "JunctionStatusesT.h"
 #include "GFGroup.h"
-namespace OpenVIII::Kernel {
-struct Magic
+namespace OpenVIII::Kernel { template <LangT langVal> struct Magic
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Magic-data
@@ -140,8 +139,8 @@ public:
 
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

@@ -16,8 +16,7 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "StatT.h"
-namespace OpenVIII::Kernel {
-struct GFAbilities
+namespace OpenVIII::Kernel { template <LangT langVal> struct GFAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/GF-abilities
@@ -46,8 +45,8 @@ public:
   [[nodiscard]] auto IncreaseValue() const noexcept { return increaseValue_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

@@ -22,8 +22,7 @@
 #include "PersistentStatusesT.h"
 #include "ElementT.h"
 
-namespace OpenVIII::Kernel {
-struct RinoaLimitBreakPart2
+namespace OpenVIII::Kernel { template <LangT langVal> struct RinoaLimitBreakPart2
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Rinoa-limit-breaks-(part-2)
@@ -76,7 +75,7 @@ public:
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

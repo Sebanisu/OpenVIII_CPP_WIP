@@ -20,8 +20,7 @@
 #include "RenzokukenFinishersT.h"
 #include <cstdint>
 
-namespace OpenVIII::Kernel {
-struct Weapons
+namespace OpenVIII::Kernel { template <LangT langVal> struct Weapons
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Weapons
    * Section Structure
@@ -80,7 +79,7 @@ public:
   [[nodiscard]] auto MeleeWeapon() const noexcept { return meleeWeapon_ != 0; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

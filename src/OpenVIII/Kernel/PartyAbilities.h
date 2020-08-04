@@ -16,8 +16,7 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel {
-struct PartyAbilities
+namespace OpenVIII::Kernel { template <LangT langVal> struct PartyAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Party-abilities
@@ -46,8 +45,8 @@ public:
   [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

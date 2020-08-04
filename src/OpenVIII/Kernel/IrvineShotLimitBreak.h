@@ -20,8 +20,7 @@
 #include "AttackFlagsT.h"
 #include "TargetT.h"
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-namespace OpenVIII::Kernel {
-struct IrvineShotLimitBreak
+namespace OpenVIII::Kernel { template <LangT langVal> struct IrvineShotLimitBreak
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Shot-(Irvine-limit-break)
    * Offset	Length	Description
@@ -80,8 +79,8 @@ public:
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

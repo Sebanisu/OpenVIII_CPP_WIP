@@ -15,8 +15,7 @@
 #define VIIIARCHIVE_SLOTSARRAY_H
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include <cstdint>
-namespace OpenVIII::Kernel {
-struct SlotsArray
+namespace OpenVIII::Kernel { struct SlotsArray
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Slot-array

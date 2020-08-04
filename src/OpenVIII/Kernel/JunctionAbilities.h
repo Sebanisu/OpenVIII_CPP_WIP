@@ -17,8 +17,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include <cstring>
 #include "JunctionFlagsT.h"
-namespace OpenVIII::Kernel {
-struct JunctionAbilities
+namespace OpenVIII::Kernel { template <LangT langVal> struct JunctionAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Junction-abilities
@@ -45,8 +44,8 @@ public:
   }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString(buffer);
-    auto description = descriptionOffset_.DecodedString(buffer);
+    auto name = nameOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
       os << name;
     }

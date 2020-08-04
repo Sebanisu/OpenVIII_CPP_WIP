@@ -22,10 +22,11 @@ int main()
       continue;
     }
     std::cout << path << std::endl;
-    const auto archives = OpenVIII::Archive::Archives(path);
+    const auto coo = OpenVIII::LangT::DE;
+    const auto archives = OpenVIII::Archive::Archives<coo>(path);
     [[maybe_unused]] const auto &main = archives.Get<OpenVIII::Archive::ArchiveTypeT::Main>();
     std::cout << main << std::endl;
-    auto kernel = OpenVIII::Kernel::Header{ main };
+    auto kernel = OpenVIII::Kernel::Header<coo>{ main };
     [[maybe_unused]] const auto &buffer = kernel.Buffer();
     std::cout << "kernel.bin " << buffer.size() << " bytes; " << kernel.SectionCount() << " section count\n";
     std::cout << static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count) << std::endl;
