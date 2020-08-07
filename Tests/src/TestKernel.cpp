@@ -43,9 +43,9 @@ int main()
       static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
       if constexpr (!std::is_null_pointer_v<decltype(
                       data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
-        std::cout << string << " ( " << std::size(span) << "bytes) has " << data.Count() << " entries\n";
-        for (size_t i = 0; i < data.Count(); i++) {
-          auto entry = data.GetEntry(i);
+        std::cout << string << " ( " << std::size(span) << "bytes) has " << data.size() << " entries\n";
+        for (size_t i = 0; i < data.size(); i++) {
+          auto entry = data.at(i);
           std::cout << i << ": ";
           entry.Out(std::cout, data.TextSpan());
           std::cout << '\n';
@@ -58,7 +58,7 @@ int main()
     //      std::cout << kernel.GetSectionName<OpenVIII::Kernel::SectionTypes::First>() << " has " << data.Count()
     //                << " entries\n";
     //      for (size_t i = 0; i < data.Count(); i++) {
-    //        auto entry = data.GetEntry(i);
+    //        auto entry = data.at(i);
     //        std::cout<< i<<": ";
     //        auto name = entry.DecodedName(data.TextSpan());
     //        auto description = entry.DecodedDescription(data.TextSpan());

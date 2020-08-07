@@ -22,7 +22,7 @@
 #include <iostream>
 #include <algorithm>
 #include "SectionTypesT.h"
-#include "SectionData.h"
+#include "OpenVIII/SectionData.h"
 #include "BattleCommands.h"
 #include "Magic.h"
 #include "JunctionableGFs.h"

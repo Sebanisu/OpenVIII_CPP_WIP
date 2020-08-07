@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_SECTIONDATA_H
 #include <string_view>
 
-namespace OpenVIII::Kernel {
+namespace OpenVIII {
 template<typename spanT> struct SectionData
 {
 private:
@@ -32,7 +32,7 @@ public:
     const std::string_view &paramSpan = {})
     : span_{ span }, textSpan_{ textSpan }, paramSpan_{ paramSpan }
   {}
-  [[nodiscard]] size_t Count() const
+  [[nodiscard]] size_t size() const
   {
     if constexpr (sizeof(spanT) == 0) {
       return 0;
@@ -40,18 +40,30 @@ public:
       return std::size(span_) / sizeof(spanT);
     }
   }
-  auto GetEntry(size_t id) const
+  auto at(size_t id) const
   {
-    if (id < Count()) {
+    if (id < size()) {
       auto r = spanT{};
       memcpy(&r, span_.data() + (id * sizeof(spanT)), sizeof(spanT));
       return r;
     }
     return spanT{};
   }
+  auto operator[](size_t id) const
+  {
+    return at(id);
+  }
+//  auto &begin() const
+//  {
+//    return at(0);
+//  }
+//  auto &end() const
+//  {
+//    return at(size()-1);
+//  }
   auto &Span() const noexcept { return span_; }
   auto &TextSpan() const noexcept { return textSpan_; }
   auto &ParamSpan() const noexcept { return paramSpan_; }
 };
-}// namespace OpenVIII::Kernel
+}// namespace OpenVIII
 #endif// VIIIARCHIVE_SECTIONDATA_H

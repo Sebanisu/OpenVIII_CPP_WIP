@@ -108,6 +108,16 @@ struct [[maybe_unused]] Tools
     std::transform(haystack.begin(), haystack.end(), haystack.begin(), replace);
   }
 
+  template<typename T, typename T2>
+  [[maybe_unused]] constexpr static bool findInContainer(const T & needle, const T2 & haystack)
+  {
+    for(const auto i : haystack) {
+      if (i == needle) {
+        return true;
+      }
+    }
+    return false;
+  }
   [[maybe_unused]] constexpr static void replaceSlashes(std::string &haystack)
   {
     replaceAll(haystack, '\\', std::filesystem::path::preferred_separator);
