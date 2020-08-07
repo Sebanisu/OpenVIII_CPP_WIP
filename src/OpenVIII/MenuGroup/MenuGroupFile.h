@@ -15,6 +15,10 @@ struct MenuGroupFile
 private:
   MenuGroupHeader menuGroupHeader_{};
   std::vector<char> dataBuffer_{};
+  std::string_view ToStringView()
+  {
+    return {dataBuffer_.data(),dataBuffer_.size()};
+  }
   template<MenuGroupSectionT sectionT> auto GetSectionInternal() const
   {
     if constexpr (static_cast<size_t>(sectionT) < MenuGroupHeader::size()) {
@@ -76,13 +80,21 @@ private:
     return OpenVIII::SectionData<refineT>(
       sectionBuffer, GetSectionInternal<textSectionT>().GetSectionBuffer(dataBuffer_));
   }
+  template<size_t i, size_t count, typename T> constexpr void static_for(const T t)
+  {
+    if constexpr (i < count) {
+      constexpr auto val{ mesValueArray[i] };
+      t(GetSection<val>());
+      static_for<i + 1U, count>(t);
+    }
+  }
 
 public:
   explicit MenuGroupFile(const OpenVIII::Archive::FIFLFS<false> &menuArchive)
     : menuGroupHeader_(menuArchive), dataBuffer_(menuArchive.GetEntryData("mngrp.bin"))
   {}
 
-  template<MenuGroupSectionT sectionT> auto GetSection() const
+  template<MenuGroupSectionT sectionT> [[nodiscard]] auto GetSection() const
   {
     [[maybe_unused]] auto section{ GetSectionInternal<sectionT>() };
     if constexpr (std::is_null_pointer_v<decltype(section)>) {
@@ -91,10 +103,9 @@ public:
 
       [[maybe_unused]] const auto sectionBuffer{ section.GetSectionBuffer(dataBuffer_) };
       if constexpr (sectionT == MenuGroupSectionT::tkmnmes1 || sectionT == MenuGroupSectionT::tkmnmes2
-                    || sectionT == MenuGroupSectionT::tkmnmes3)
-      {
+                    || sectionT == MenuGroupSectionT::tkmnmes3) {
         return MenuMessages(sectionBuffer);
-      } else if constexpr (Tools::findInContainer(sectionT, mesValueArray)) {
+      } else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
         return MenuMessagesSection(sectionBuffer);
       } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
         return getRefine<OpenVIII::MenuGroup::RefineSection000, MenuGroupSectionT::refineText0>(sectionBuffer);
@@ -108,6 +119,23 @@ public:
         return getRefine<OpenVIII::MenuGroup::RefineSection004, MenuGroupSectionT::refineText4>(sectionBuffer);
       }
     }
+  }
+  template<LangT langVal>
+  constexpr bool TestMes()
+  {
+    static_for<0U, mesValueArray.size()>([&, this]([[maybe_unused]] MenuMessagesSection tkmnmes_) {
+              std::cout << "  {" << tkmnmes_.size() << "},\n";
+        size_t id{};
+        for (const auto &subSection : tkmnmes_) {
+            id++;
+            if (subSection.Offset() == 0) {
+                continue;
+            }
+            std::cout << "    " << id << ": {" << subSection.Offset() << "} "
+                      << subSection.DecodedString<langVal>(ToStringView(), 0, true) << '\n';
+        }
+    });
+    return true;
   }
 };
 }// namespace OpenVIII::MenuGroup

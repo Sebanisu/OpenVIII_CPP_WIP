@@ -88,6 +88,8 @@ int main()
     [[maybe_unused]] const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
     std::cout << menu << std::endl;
     auto mngrpfile = OpenVIII::MenuGroup::MenuGroupFile{menu};
+    mngrpfile.TestMes<coo>();
+    return 0;
     auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
     auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
     std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";

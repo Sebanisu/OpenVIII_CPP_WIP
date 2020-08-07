@@ -109,9 +109,9 @@ struct [[maybe_unused]] Tools
   }
 
   template<typename T, typename T2>
-  [[maybe_unused]] constexpr static bool findInContainer(const T & needle, const T2 & haystack)
+  [[maybe_unused]] constexpr static bool any_of(const T & needle, const T2 & haystack)
   {
-    for(const auto i : haystack) {
+    for(const auto i : haystack) { // in cpp 20 std::any_of can be used instead.
       if (i == needle) {
         return true;
       }
