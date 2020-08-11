@@ -17,7 +17,8 @@
 #include "ElementT.h"
 #include "AttackTypeT.h"
 #include "AttackFlagsT.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct QuistisBlueMagicLimitBreak
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct QuistisBlueMagicLimitBreak
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Blue-magic-(Quistis-limit-break)
    * 0x0000	2 bytes	Offset to limit name

@@ -17,7 +17,8 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include <cstring>
 #include "JunctionFlagsT.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct JunctionAbilities
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct JunctionAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Junction-abilities

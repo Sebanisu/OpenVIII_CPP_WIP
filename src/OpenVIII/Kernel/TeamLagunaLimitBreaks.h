@@ -22,7 +22,8 @@
 #include "BattleOnlyStatusesT.h"
 #include "PersistentStatusesT.h"
 
-namespace OpenVIII::Kernel { template <LangT langVal> struct TeamLagunaLimitBreaks
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct TeamLagunaLimitBreaks
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Temporary-character-limit-breaks

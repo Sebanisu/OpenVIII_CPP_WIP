@@ -71,8 +71,10 @@ public:
     bool skipFirstNull = false) const
 
   {
-    for (const auto item : arr) { item.template out<langVal>(os, buffer, offset, skipFirstNull);
-      os << '\n'; }
+    for (const auto item : arr) {
+      item.template out<langVal>(os, buffer, offset, skipFirstNull);
+      os << '\n';
+    }
     return os;
   }
   template<LangT langVal>

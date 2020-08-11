@@ -16,7 +16,8 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "TargetT.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct RinoaLimitBreakPart1
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct RinoaLimitBreakPart1
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Rinoa-limit-breaks-(part-1)

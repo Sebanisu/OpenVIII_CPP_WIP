@@ -15,7 +15,8 @@
 #define VIIIARCHIVE_SEQUENCEANDTIMER_H
 #include <cstdint>
 #include <iostream>
-namespace OpenVIII::Kernel { struct SequenceAndTimer
+namespace OpenVIII::Kernel {
+struct SequenceAndTimer
 {
 private:
   std::uint8_t Sequence_{};

@@ -20,7 +20,8 @@
 #include "AttackFlagsT.h"
 #include "TargetT.h"
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct IrvineShotLimitBreak
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct IrvineShotLimitBreak
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Shot-(Irvine-limit-break)
    * Offset	Length	Description

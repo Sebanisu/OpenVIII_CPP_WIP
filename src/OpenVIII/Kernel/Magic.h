@@ -23,7 +23,8 @@
 #include "StatGroup.h"
 #include "JunctionStatusesT.h"
 #include "GFGroup.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct Magic
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct Magic
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Magic-data

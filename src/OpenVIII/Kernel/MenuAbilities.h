@@ -15,7 +15,8 @@
 #define VIIIARCHIVE_MENUABILITIES_H
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct MenuAbilities
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct MenuAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Menu-abilities

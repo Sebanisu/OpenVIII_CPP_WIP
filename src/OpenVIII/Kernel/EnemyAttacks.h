@@ -21,7 +21,8 @@
 #include "AttackTypeT.h"
 #include "ElementT.h"
 #include "CameraChangeT.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct EnemyAttacks
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct EnemyAttacks
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Enemy-attacks
    * Offset	Length	Description

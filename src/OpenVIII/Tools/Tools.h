@@ -108,10 +108,9 @@ struct [[maybe_unused]] Tools
     std::transform(haystack.begin(), haystack.end(), haystack.begin(), replace);
   }
 
-  template<typename T, typename T2>
-  [[maybe_unused]] constexpr static bool any_of(const T & needle, const T2 & haystack)
+  template<typename T, typename T2> [[maybe_unused]] constexpr static bool any_of(const T &needle, const T2 &haystack)
   {
-    for(const auto i : haystack) { // in cpp 20 std::any_of can be used instead.
+    for (const auto i : haystack) {// in cpp 20 std::any_of can be used instead.
       if (i == needle) {
         return true;
       }

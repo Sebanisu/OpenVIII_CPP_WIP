@@ -26,6 +26,7 @@ public:
     if (Size() == invalidSize_ || fileOffset_ == invalidFileOffset_ || FileOffset() + Size() > std::size(fileBuffer)) {
       return {};// returns empty buffer if invalid or error.
     }
+    std::cout << '<' << FileOffset() << ',' << Size() << ">\n";
     return { std::data(fileBuffer) + FileOffset(), Size() };
   }
 };

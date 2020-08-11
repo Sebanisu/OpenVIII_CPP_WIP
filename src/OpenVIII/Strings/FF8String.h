@@ -19,8 +19,7 @@
 
 using namespace std::string_view_literals;
 namespace OpenVIII {
-template<LangT langVal>
-struct FF8String
+template<LangT langVal> struct FF8String
 {
 private:
   static constexpr std::array euCodePage = { "\x00"sv,
@@ -538,21 +537,17 @@ private:
     u8"ー"sv };
 
 public:
-  //static constexpr std::array LangCodes = { "en"sv, "fr"sv, "es"sv, "it"sv, "de"sv, "jp"sv };
+  // static constexpr std::array LangCodes = { "en"sv, "fr"sv, "es"sv, "it"sv, "de"sv, "jp"sv };
 
   static constexpr auto &GetCodePage()
   {
     if constexpr (langVal == LangT::JP) {
       return jpCodePage;
-    }
-    else {
+    } else {
       return euCodePage;
     }
   }
-  [[nodiscard]] auto static Decode(uint8_t key) noexcept
-  {
-    return GetCodePage().at(key);
-  }
+  [[nodiscard]] auto static Decode(uint8_t key) noexcept { return GetCodePage().at(key); }
   [[nodiscard]] auto static Decode(const std::string_view &buffer)
   {
     if (std::empty(buffer)) {

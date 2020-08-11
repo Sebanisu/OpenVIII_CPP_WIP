@@ -16,7 +16,8 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel { template <LangT langVal> struct CommandAbilities
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct CommandAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Command-abilities

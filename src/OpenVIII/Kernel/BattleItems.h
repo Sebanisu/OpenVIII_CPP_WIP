@@ -21,7 +21,8 @@
 #include "AttackFlagsT.h"
 #include "AttackTypeT.h"
 #include "TargetT.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct BattleItems
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct BattleItems
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Battle-items

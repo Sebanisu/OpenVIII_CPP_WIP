@@ -45,19 +45,20 @@ public:
   [[nodiscard]] auto Output() const noexcept { return output_; }
 
   template<LangT langVal>
-  std::ostream &out(std::ostream &os, const std::string_view &buffer = ""sv,
-                    const intmax_t offset = 0,
-                    bool skipFirstNull = false) const
+  std::ostream &out(std::ostream &os,
+    const std::string_view &buffer = ""sv,
+    const intmax_t offset = 0,
+    bool skipFirstNull = false) const
   {
-    return os << '"' << offset_.DecodedString<langVal>(buffer,offset,skipFirstNull) << "\", " << static_cast<std::uint16_t>(AmountReceived()) << ", "
-              << static_cast<std::uint16_t>(unknown0()) << ", " << static_cast<std::uint16_t>(unknown1()) << ", "
-              << static_cast<std::uint16_t>(Input()) << ", " << static_cast<std::uint16_t>(AmountRequired()) << ", "
-              << static_cast<std::uint16_t>(Output());
+    return os << '"' << offset_.DecodedString<langVal>(buffer, offset, skipFirstNull) << "\", "
+              << static_cast<std::uint16_t>(AmountReceived()) << ", " << static_cast<std::uint16_t>(unknown0()) << ", "
+              << static_cast<std::uint16_t>(unknown1()) << ", " << static_cast<std::uint16_t>(Input()) << ", "
+              << static_cast<std::uint16_t>(AmountRequired()) << ", " << static_cast<std::uint16_t>(Output());
   }
-//  friend std::ostream &operator<<(std::ostream &os, const RefineEntry<inputT, outputT> &input)
-//  {
-//    return input.out(os);
-//  }
+  //  friend std::ostream &operator<<(std::ostream &os, const RefineEntry<inputT, outputT> &input)
+  //  {
+  //    return input.out(os);
+  //  }
 };
 }// namespace OpenVIII::MenuGroup
 #endif// VIIIARCHIVE_RefineEntry_H

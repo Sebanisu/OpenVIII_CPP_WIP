@@ -22,59 +22,59 @@
 #include "OpenVIII/MenuGroup/RefineSection003.h"
 #include "OpenVIII/MenuGroup/RefineSection004.h"
 #include "OpenVIII/MenuGroup/MenuGroupFile.h"
-[[maybe_unused]] constexpr static std::array tkmnmesSections = { 0, 1, 2 };
-[[maybe_unused]] constexpr static std::array MenuStringsSections = { 87,
-  88,
-  89,
-  90,
-  95,
-  96,
-  97,
-  98,
-  99,
-  100,
-  101,
-  102,
-  103,
-  104,
-  105,
-  106,
-  107,
-  108,
-  109,
-  110,
-  111,
-  112,
-  113,
-  114,
-  115,
-  116,
-  117,
-  118,
-  119,
-  120,
-  121,
-  122,
-  123,
-  124,
-  125,
-  126,
-  160,
-  161,
-  162,
-  163,
-  164,
-  165,
-  166,
-  167,
-  204 };
-[[maybe_unused]] constexpr static std::array refineSections = {//188,189,190,191,192
-  std::make_pair(188U,196U),
-  std::make_pair(189U,197U),
-  std::make_pair(190U,198U),
-  std::make_pair(191U,199U),
-  std::make_pair(192U,200U)
-};
+//[[maybe_unused]] constexpr static std::array tkmnmesSections = { 0, 1, 2 };
+//[[maybe_unused]] constexpr static std::array MenuStringsSections = { 87,
+//  88,
+//  89,
+//  90,
+//  95,
+//  96,
+//  97,
+//  98,
+//  99,
+//  100,
+//  101,
+//  102,
+//  103,
+//  104,
+//  105,
+//  106,
+//  107,
+//  108,
+//  109,
+//  110,
+//  111,
+//  112,
+//  113,
+//  114,
+//  115,
+//  116,
+//  117,
+//  118,
+//  119,
+//  120,
+//  121,
+//  122,
+//  123,
+//  124,
+//  125,
+//  126,
+//  160,
+//  161,
+//  162,
+//  163,
+//  164,
+//  165,
+//  166,
+//  167,
+//  204 };
+//[[maybe_unused]] constexpr static std::array refineSections = {//188,189,190,191,192
+//  std::make_pair(188U,196U),
+//  std::make_pair(189U,197U),
+//  std::make_pair(190U,198U),
+//  std::make_pair(191U,199U),
+//  std::make_pair(192U,200U)
+//};
 int main()
 {
   for (auto &path : OpenVIII::Paths::get()) {
@@ -87,18 +87,17 @@ int main()
     const auto archives = OpenVIII::Archive::Archives<coo>(path);
     [[maybe_unused]] const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
     std::cout << menu << std::endl;
-    auto mngrpfile = OpenVIII::MenuGroup::MenuGroupFile{menu};
-    mngrpfile.TestMes<coo>();
+    auto mngrpfile = OpenVIII::MenuGroup::MenuGroupFile{ menu };
+
+    mngrpfile.TestTkMnMes<coo>();
+    // mngrpfile.TestMes<coo>();
     return 0;
     auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
     auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
     std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";
     size_t i = 0;
     size_t notSkipped = 0;
-    const auto GetSection = [&](std::size_t id)
-    {
-           return mngrphd.Sections().at(id).GetSectionBuffer(mngrpBuffer);
-    };
+    const auto GetSection = [&](std::size_t id) { return mngrphd.Sections().at(id).GetSectionBuffer(mngrpBuffer); };
     for (const auto &item : mngrphd.Sections()) {
       const auto sectionBuffer{ item.GetSectionBuffer(mngrpBuffer) };
       i++;
@@ -115,7 +114,7 @@ int main()
             if (offset == 0) {
               continue;
             }
-            std::cout << "  {" << id << ": " << subSectionGroup.size() << ", " << offset << '}' << '\n';
+            std::cout << "  {" << id - 1 << ": " << subSectionGroup.size() << ", " << offset << '}' << '\n';
             size_t stringnumber{};
             for (const auto &subSection : subSectionGroup) {
               stringnumber++;
@@ -140,63 +139,65 @@ int main()
                       << subSection.DecodedString<coo>(sectionBuffer, 0, true) << '\n';
           }
           //          std::cout << '\n';
+        } else if ((notSkipped >= 107) && (notSkipped <= 111)) {
+          switch (i) {
+          case 189:// 107
+          {
+            const auto refine =
+              OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection000>(sectionBuffer.data(), GetSection(196));
+            refine.at(0).out<coo>(std::cout, refine.TextSpan());
+            //            OpenVIII::MenuGroup::RefineSection000 refine{};
+            //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            //            refine.out<coo>(std::cout,GetSection(196));
+            break;
+          }
+          case 190:// 108
+          {
+            const auto refine =
+              OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection001>(sectionBuffer.data(), GetSection(197));
+            refine.at(0).out<coo>(std::cout, refine.TextSpan());
+            //            OpenVIII::MenuGroup::RefineSection001 refine{};
+            //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            //            refine.out<coo>(std::cout,GetSection(197));
+            break;
+          }
+          case 191:// 109
+          {
+            const auto refine =
+              OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection002>(sectionBuffer.data(), GetSection(198));
+            refine.at(0).out<coo>(std::cout, refine.TextSpan());
+            //            OpenVIII::MenuGroup::RefineSection002 refine{};
+            //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            //            refine.out<coo>(std::cout,GetSection(198));
+            break;
+          }
+          case 192:// 110
+          {
+            const auto refine =
+              OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection003>(sectionBuffer.data(), GetSection(199));
+            refine.at(0).out<coo>(std::cout, refine.TextSpan());
+            //            OpenVIII::MenuGroup::RefineSection003 refine{};
+            //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            //            refine.out<coo>(std::cout,GetSection(199));
+            break;
+          }
+          case 193:// 111
+          {
+            const auto refine =
+              OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection004>(sectionBuffer.data(), GetSection(200));
+            refine.at(0).out<coo>(std::cout, refine.TextSpan());
+            //            OpenVIII::MenuGroup::RefineSection004 refine{};
+            //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
+            //            refine.out<coo>(std::cout,GetSection(200));
+            break;
+          }
+          }
+          // std::cout<< notSkipped << "\n";
         }
-        else if( (notSkipped >= 107) &&  (notSkipped <= 111))
-        {
-          switch (i)
-          {
-          case 189: //107
-          {
-            const auto refine = OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection000>(sectionBuffer.data(),GetSection(196));
-            refine.at(0).out<coo>(std::cout,refine.TextSpan());
-//            OpenVIII::MenuGroup::RefineSection000 refine{};
-//            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
-//            refine.out<coo>(std::cout,GetSection(196));
-            break;
-          }
-          case 190: //108
-          {
-            const auto refine = OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection001>(sectionBuffer.data(),GetSection(197));
-            refine.at(0).out<coo>(std::cout,refine.TextSpan());
-//            OpenVIII::MenuGroup::RefineSection001 refine{};
-//            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
-//            refine.out<coo>(std::cout,GetSection(197));
-            break;
-          }
-          case 191: //109
-          {
-            const auto refine = OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection002>(sectionBuffer.data(),GetSection(198));
-            refine.at(0).out<coo>(std::cout,refine.TextSpan());
-//            OpenVIII::MenuGroup::RefineSection002 refine{};
-//            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
-//            refine.out<coo>(std::cout,GetSection(198));
-            break;
-          }
-          case 192: //110
-          {
-            const auto refine = OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection003>(sectionBuffer.data(),GetSection(199));
-            refine.at(0).out<coo>(std::cout,refine.TextSpan());
-//            OpenVIII::MenuGroup::RefineSection003 refine{};
-//            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
-//            refine.out<coo>(std::cout,GetSection(199));
-            break;
-          }
-          case 193: //111
-          {
-            const auto refine = OpenVIII::SectionData<OpenVIII::MenuGroup::RefineSection004>(sectionBuffer.data(),GetSection(200));
-            refine.at(0).out<coo>(std::cout,refine.TextSpan());
-//            OpenVIII::MenuGroup::RefineSection004 refine{};
-//            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
-//            refine.out<coo>(std::cout,GetSection(200));
-            break;
-          }
-          }
-          //std::cout<< notSkipped << "\n";
-        }
-//        if(sectionBuffer.size() >= sizeof(OpenVIII::MenuGroup::RefineSection000))
-//        {
-//          //exit(0);
-//        }
+        //        if(sectionBuffer.size() >= sizeof(OpenVIII::MenuGroup::RefineSection000))
+        //        {
+        //          //exit(0);
+        //        }
       }
     }
     //    [[maybe_unused]] const auto &buffer = mngrphd.Buffer();

@@ -21,7 +21,8 @@
 #include "BattleOnlyStatusesT.h"
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel { template <LangT langVal> struct RenzokukenFinishers
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct RenzokukenFinishers
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Renzokuken-finishers
    * 0x0000	2 bytes	Offset to limit name

@@ -23,14 +23,10 @@ private:
   std::string_view span_{};
   // strings
   std::string_view textSpan_{};
-  // extra data
-  std::string_view paramSpan_{};
 
 public:
-  [[maybe_unused]] explicit SectionData(const std::string_view &span,
-    const std::string_view &textSpan = {},
-    const std::string_view &paramSpan = {})
-    : span_{ span }, textSpan_{ textSpan }, paramSpan_{ paramSpan }
+  [[maybe_unused]] explicit SectionData(const std::string_view &span, const std::string_view &textSpan = {})
+    : span_{ span }, textSpan_{ textSpan }
   {}
   [[nodiscard]] size_t size() const
   {
@@ -43,27 +39,28 @@ public:
   auto at(size_t id) const
   {
     if (id < size()) {
-      auto r = spanT{};
-      memcpy(&r, span_.data() + (id * sizeof(spanT)), sizeof(spanT));
-      return r;
+      return operator[](id);
     }
+    using namespace std::string_literals;
+    throw std::out_of_range("SectionData index out of range: "s + std::to_string(id) + "//"s + std::to_string(size()));
     return spanT{};
   }
-  auto operator[](size_t id) const
+  auto operator[](size_t id) const noexcept
   {
-    return at(id);
+    auto r = spanT{};
+    memcpy(&r, span_.data() + (id * sizeof(spanT)), sizeof(spanT));
+    return r;
   }
-//  auto &begin() const
-//  {
-//    return at(0);
-//  }
-//  auto &end() const
-//  {
-//    return at(size()-1);
-//  }
-  auto &Span() const noexcept { return span_; }
+  //  auto &begin() const
+  //  {
+  //    return at(0);
+  //  }
+  //  auto &end() const
+  //  {
+  //    return at(size()-1);
+  //  }
+  [[maybe_unused]] auto &Span() const noexcept { return span_; }
   auto &TextSpan() const noexcept { return textSpan_; }
-  auto &ParamSpan() const noexcept { return paramSpan_; }
 };
 }// namespace OpenVIII
 #endif// VIIIARCHIVE_SECTIONDATA_H

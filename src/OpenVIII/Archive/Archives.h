@@ -30,12 +30,11 @@ enum class ArchiveTypeT : std::int8_t {
   ZZZMain,
   ZZZOther,
 };
-template<LangT langVal>
-struct Archives
+template<LangT langVal> struct Archives
 {
 private:
   std::filesystem::path path_{};
-  std::string lang_{LangCommon::ToString<langVal>()};
+  std::string lang_{ LangCommon::ToString<langVal>() };
   FIFLFS<false> battle_{};
   FIFLFS<true> field_{};
   FIFLFS<false> magic_{};
@@ -53,10 +52,7 @@ private:
     }
   }
 
-  void SetLang()
-  {
-    lang_ = LangCommon::ToString<langVal>();
-  }
+  void SetLang() { lang_ = LangCommon::ToString<langVal>(); }
   void SetLang(const std::filesystem::path &path)
   {
     using namespace std::string_literals;

@@ -16,7 +16,8 @@
 #include <iostream>
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel { template <LangT langVal> struct MiscText
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct MiscText
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Misc-text-pointers

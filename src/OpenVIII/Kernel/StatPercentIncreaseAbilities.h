@@ -14,7 +14,8 @@
 #ifndef VIIIARCHIVE_STATPERCENTINCREASEABILITIES_H
 #define VIIIARCHIVE_STATPERCENTINCREASEABILITIES_H
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct StatPercentIncreaseAbilities
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct StatPercentIncreaseAbilities
 {
 private:
   /*

@@ -16,7 +16,8 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel { template <LangT langVal> struct PartyAbilities
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct PartyAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Party-abilities

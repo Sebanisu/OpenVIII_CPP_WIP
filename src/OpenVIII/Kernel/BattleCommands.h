@@ -17,8 +17,7 @@
 #include "TargetT.h"
 
 namespace OpenVIII::Kernel {
-template <LangT langVal>
-struct BattleCommands
+template<LangT langVal> struct BattleCommands
 {
   /*
    * https://github.com/alexfilth/doomtrain/wiki/Battle-commands

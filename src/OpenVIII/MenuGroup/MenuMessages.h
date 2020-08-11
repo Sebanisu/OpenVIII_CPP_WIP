@@ -23,27 +23,32 @@ struct MenuMessages
 {
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_tkmnmes
 private:
-  static constexpr std::uint16_t defaultSectionCount_{ 16U };
-  std::uint16_t sectionCount_{ defaultSectionCount_ };
-  std::array<std::uint16_t, defaultSectionCount_> sections_{};
-  std::array<MenuMessagesSection, defaultSectionCount_> subSections_{};
+  static constexpr std::uint16_t defaultSize_{ 16U };
+  std::uint16_t size_{ defaultSize_ };
+  std::array<std::uint16_t, defaultSize_> sections_{};
+  std::array<MenuMessagesSection, defaultSize_> subSections_{};
 
 public:
-  [[nodiscard]] auto SectionCount() const noexcept { return sectionCount_; }
+  [[nodiscard]] auto size() const noexcept { return size_; }
   [[nodiscard]] auto Sections() const noexcept { return sections_; }
   [[nodiscard]] auto SubSections() const noexcept { return subSections_; }
+  [[nodiscard]] auto begin() const noexcept { return subSections_.begin(); }
+  [[nodiscard]] auto end() const noexcept { return subSections_.end(); }
   template<typename T = std::vector<char>> explicit MenuMessages(const T &buffer)
   {
     auto *ptr = buffer.data();
-    std::memcpy(&sectionCount_, ptr, sizeof(sectionCount_));
-    if (sectionCount_ != defaultSectionCount_) {
+    std::memcpy(&size_, ptr, sizeof(size_));
+    if (size_ != defaultSize_) {
       exit(1);
     }
-    ptr += sizeof(sectionCount_);
+    ptr += sizeof(size_);
     std::memcpy(sections_.data(), ptr, std::size(sections_) * sizeof(std::uint16_t));
     ptr += sizeof(sections_);
     for (size_t i = 0; i < std::size(sections_); i++) {
       //[Count of Subsections] = [Start of file] + [Section value]
+      if (sections_.at(i) == 0U) {
+        continue;
+      }
       ptr = buffer.data() + sections_.at(i);
       std::uint16_t subSectionCount{};
       std::memcpy(&subSectionCount, ptr, sizeof(subSectionCount));

@@ -16,7 +16,8 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "StatT.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct GFAbilities
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct GFAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/GF-abilities

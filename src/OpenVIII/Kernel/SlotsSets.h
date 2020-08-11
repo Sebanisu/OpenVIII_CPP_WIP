@@ -16,7 +16,8 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include <cstdint>
 #include <array>
-namespace OpenVIII::Kernel { struct Slot
+namespace OpenVIII::Kernel {
+struct Slot
 {
 private:
   std::uint8_t magicID_{};

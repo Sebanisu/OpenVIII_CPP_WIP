@@ -64,9 +64,8 @@ public:
     return GetStringAtOffset(buffer, static_cast<intmax_t>(offset_) + offset, skipFirstNull);
   }
   template<LangT langVal>
-  [[nodiscard]] auto DecodedString(const std::string_view &buffer,
-    const intmax_t offset = 0,
-    bool skipFirstNull = false) const
+  [[nodiscard]] auto
+    DecodedString(const std::string_view &buffer, const intmax_t offset = 0, bool skipFirstNull = false) const
   {
     return FF8String<langVal>::Decode(RawBytes(buffer, offset, skipFirstNull));
   }

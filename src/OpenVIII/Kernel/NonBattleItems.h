@@ -15,7 +15,8 @@
 #define VIIIARCHIVE_NONBATTLEITEMS_H
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel { template <LangT langVal> struct NonBattleItems
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct NonBattleItems
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Non-battle-item-name-and-description-offsets

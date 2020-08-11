@@ -17,7 +17,8 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "GenderT.h"
 #include "StatGroupNoEVANoHIT.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct Characters
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct Characters
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Characters

@@ -18,7 +18,8 @@
 #include "PersistentStatusesT.h"
 #include "BattleOnlyStatusesT.h"
 #include "AttackTypeT.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct NonJunctionableGFs
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct NonJunctionableGFs
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Non-junctionable-GF-attacks
    * Offset	Length	Description

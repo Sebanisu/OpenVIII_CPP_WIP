@@ -22,7 +22,8 @@
 #include "PersistentStatusesT.h"
 #include "ElementT.h"
 
-namespace OpenVIII::Kernel { template <LangT langVal> struct RinoaLimitBreakPart2
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct RinoaLimitBreakPart2
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Rinoa-limit-breaks-(part-2)

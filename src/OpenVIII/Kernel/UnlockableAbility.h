@@ -17,7 +17,8 @@
 #include <iostream>
 #include "AbilitiesT.h"
 #include "UnlockerT.h"
-namespace OpenVIII::Kernel { struct UnlockableAbility
+namespace OpenVIII::Kernel {
+struct UnlockableAbility
 {
 private:
   UnlockerT unlocker_{};

@@ -16,7 +16,8 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "SequenceAndTimer.h"
 #include "CrisisLevelT.h"
-namespace OpenVIII::Kernel { template <LangT langVal> struct Misc
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct Misc
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Misc-section

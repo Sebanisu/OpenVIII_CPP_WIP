@@ -17,7 +17,8 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "CharacterAbilityFlagsT.h"
 #include <cstring>
-namespace OpenVIII::Kernel { template <LangT langVal> struct CharacterAbilities
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct CharacterAbilities
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Character-abilities

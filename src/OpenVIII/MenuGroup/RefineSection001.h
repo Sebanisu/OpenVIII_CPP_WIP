@@ -62,10 +62,10 @@ public:
 
   template<LangT langVal, typename T>
   std::ostream &outArray(const T &arr,
-                         std::ostream &os,
-                         const std::string_view &buffer = ""sv,
-                         const intmax_t offset = 0,
-                         bool skipFirstNull = false) const
+    std::ostream &os,
+    const std::string_view &buffer = ""sv,
+    const intmax_t offset = 0,
+    bool skipFirstNull = false) const
 
   {
     for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skipFirstNull)) << '\n'; }
@@ -73,9 +73,9 @@ public:
   }
   template<LangT langVal>
   std::ostream &out(std::ostream &os,
-                    const std::string_view &buffer = ""sv,
-                    const intmax_t offset = 0,
-                    bool skipFirstNull = false) const
+    const std::string_view &buffer = ""sv,
+    const intmax_t offset = 0,
+    bool skipFirstNull = false) const
 
   {
     os << "recovMedRF:\n";

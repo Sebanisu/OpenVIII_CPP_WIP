@@ -17,7 +17,8 @@
 #include "PersistentStatusesT.h"
 #include <array>
 #include <iostream>
-namespace OpenVIII::Kernel { struct QuistisBlueMagicLimitBreakParam
+namespace OpenVIII::Kernel {
+struct QuistisBlueMagicLimitBreakParam
 {
 
   /*

@@ -23,8 +23,7 @@ struct LangCommon
   static constexpr std::string_view it_{ "it" };
   static constexpr std::string_view jp_{ "jp" };
   static constexpr std::string_view empty_{ "" };
-  template<LangT langVal>
-  [[nodiscard]] static constexpr std::string_view ToString() noexcept
+  template<LangT langVal> [[nodiscard]] static constexpr std::string_view ToString() noexcept
   {
     if constexpr (langVal == LangT::EN) {
       return en_;

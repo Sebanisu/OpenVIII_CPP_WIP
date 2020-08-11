@@ -20,7 +20,8 @@
 #include "RenzokukenFinishersT.h"
 #include <cstdint>
 
-namespace OpenVIII::Kernel { template <LangT langVal> struct Weapons
+namespace OpenVIII::Kernel {
+template<LangT langVal> struct Weapons
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Weapons
    * Section Structure

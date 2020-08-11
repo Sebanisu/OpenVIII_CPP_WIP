@@ -44,8 +44,7 @@ enum class DevourStatFlagT : std::uint8_t {
   SPR = 0x08,
   SPD = 0x10,
 };
-template <LangT langVal>
-struct Devour
+template<LangT langVal> struct Devour
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Devour

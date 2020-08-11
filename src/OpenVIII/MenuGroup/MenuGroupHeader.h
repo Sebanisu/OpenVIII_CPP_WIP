@@ -27,7 +27,7 @@ private:
   std::array<MenuGroupHeaderSection, count_> sections_{};
 
 public:
-  static constexpr auto size() {return count_;}
+  static constexpr auto size() { return count_; }
   static constexpr auto FileName = std::string_view{ "mngrphd.bin" };
   [[nodiscard]] const auto &Sections() const { return sections_; }
 
