@@ -22,7 +22,7 @@
 #include <iostream>
 #include <algorithm>
 #include "SectionTypesT.h"
-#include "OpenVIII/SectionData.h"
+#include "OpenVIII/BulkSectionData.h"
 #include "BattleCommands.h"
 #include "Magic.h"
 #include "JunctionableGFs.h"
@@ -86,83 +86,83 @@ public:
   {
     using namespace std::string_literals;
     if constexpr (sectionType == SectionTypesT::BattleCommands) {
-      return SectionData<BattleCommands<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<BattleCommands<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::BattleCommandsText>() };
     } else if constexpr (sectionType == SectionTypesT::Magic) {
-      return SectionData<Magic<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MagicText>() };
+      return BulkSectionData<Magic<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MagicText>() };
     } else if constexpr (sectionType == SectionTypesT::JunctionableGFs) {
-      return SectionData<JunctionableGFs<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<JunctionableGFs<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::JunctionableGFsText>() };
     } else if constexpr (sectionType == SectionTypesT::EnemyAttacks) {
-      return SectionData<EnemyAttacks<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::EnemyAttacksText>() };
+      return BulkSectionData<EnemyAttacks<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::EnemyAttacksText>() };
     } else if constexpr (sectionType == SectionTypesT::Weapons) {
-      return SectionData<Weapons<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::WeaponsText>() };
+      return BulkSectionData<Weapons<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::WeaponsText>() };
     } else if constexpr (sectionType == SectionTypesT::RenzokukenFinishers) {
-      return SectionData<RenzokukenFinishers<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<RenzokukenFinishers<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::RenzokukenFinishersText>() };
     } else if constexpr (sectionType == SectionTypesT::Characters) {
-      return SectionData<Characters<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::CharactersText>() };
+      return BulkSectionData<Characters<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::CharactersText>() };
     } else if constexpr (sectionType == SectionTypesT::BattleItems) {
-      return SectionData<BattleItems<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::BattleItemsText>() };
+      return BulkSectionData<BattleItems<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::BattleItemsText>() };
     } else if constexpr (sectionType == SectionTypesT::NonBattleItems) {
-      return SectionData<NonBattleItems<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<NonBattleItems<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::NonBattleItemsText>() };
     } else if constexpr (sectionType == SectionTypesT::NonJunctionableGFs) {
-      return SectionData<NonJunctionableGFs<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<NonJunctionableGFs<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::NonJunctionableGFsText>() };
     } else if constexpr (sectionType == SectionTypesT::CommandAbilitiesData) {
-      return SectionData<CommandAbilitiesData<langVal>>{ GetSpan<sectionType>() };
+      return BulkSectionData<CommandAbilitiesData<langVal>>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::JunctionAbilities) {
-      return SectionData<JunctionAbilities<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<JunctionAbilities<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::JunctionAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::CommandAbilities) {
-      return SectionData<CommandAbilities<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<CommandAbilities<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::CommandAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::StatPercentIncreaseAbilities) {
-      return SectionData<StatPercentIncreaseAbilities<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<StatPercentIncreaseAbilities<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::StatPercentIncreaseAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::CharacterAbilities) {
-      return SectionData<CharacterAbilities<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<CharacterAbilities<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::CharacterAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::PartyAbilities) {
-      return SectionData<PartyAbilities<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<PartyAbilities<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::PartyAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::GFAbilities) {
-      return SectionData<GFAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::GFAbilitiesText>() };
+      return BulkSectionData<GFAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::GFAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::MenuAbilities) {
-      return SectionData<MenuAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MenuAbilitiesText>() };
+      return BulkSectionData<MenuAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MenuAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::TeamLagunaLimitBreaks) {
-      return SectionData<TeamLagunaLimitBreaks<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<TeamLagunaLimitBreaks<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::TeamLagunaLimitBreaksText>() };
     } else if constexpr (sectionType == SectionTypesT::QuistisBlueMagicLimitBreak) {
-      return SectionData<QuistisBlueMagicLimitBreak<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<QuistisBlueMagicLimitBreak<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::QuistisBlueMagicLimitBreakText>() };
     } else if constexpr (sectionType == SectionTypesT::QuistisBlueMagicLimitBreakParams) {
-      return SectionData<QuistisBlueMagicLimitBreakParams>{ GetSpan<sectionType>() };
+      return BulkSectionData<QuistisBlueMagicLimitBreakParams>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::IrvineShotLimitBreak) {
-      return SectionData<IrvineShotLimitBreak<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<IrvineShotLimitBreak<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::IrvineShotLimitBreakText>() };
     } else if constexpr (sectionType == SectionTypesT::ZellDuelLimitBreak) {
-      return SectionData<ZellDuelLimitBreak<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<ZellDuelLimitBreak<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::ZellDuelLimitBreakText>() };
     } else if constexpr (sectionType == SectionTypesT::ZellDuelLimitBreakParams) {
-      return SectionData<ZellDuelLimitBreakParams>{ GetSpan<sectionType>() };
+      return BulkSectionData<ZellDuelLimitBreakParams>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::RinoaLimitBreakPart1) {
-      return SectionData<RinoaLimitBreakPart1<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<RinoaLimitBreakPart1<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::RinoaLimitBreakPart1Text>() };
     } else if constexpr (sectionType == SectionTypesT::RinoaLimitBreakPart2) {
-      return SectionData<RinoaLimitBreakPart2<langVal>>{ GetSpan<sectionType>(),
+      return BulkSectionData<RinoaLimitBreakPart2<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::RinoaLimitBreakPart2Text>() };
     } else if constexpr (sectionType == SectionTypesT::SlotsArray) {
-      return SectionData<SlotsArray>{ GetSpan<sectionType>() };
+      return BulkSectionData<SlotsArray>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::SlotsSets) {
-      return SectionData<SlotsSets>{ GetSpan<sectionType>() };
+      return BulkSectionData<SlotsSets>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::Devour) {
-      return SectionData<Devour<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::DevourText>() };
+      return BulkSectionData<Devour<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::DevourText>() };
     } else if constexpr (sectionType == SectionTypesT::Misc) {
-      return SectionData<Misc<langVal>>{ GetSpan<sectionType>() };
+      return BulkSectionData<Misc<langVal>>{ GetSpan<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::MiscTextPointers) {
-      return SectionData<MiscText<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MiscText>() };
+      return BulkSectionData<MiscText<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MiscText>() };
     } else {
       return nullptr;
     }

@@ -9,13 +9,14 @@
 #include "OpenVIII/Tools/Tools.h"
 #include "MenuGroupSectionT.h"
 #include "MenuMessages.h"
+#include "OpenVIII/SectionData.h"
 namespace OpenVIII::MenuGroup {
 struct MenuGroupFile
 {
 private:
   MenuGroupHeader menuGroupHeader_{};
   std::vector<char> dataBuffer_{};
-  std::string_view ToStringView() { return { dataBuffer_.data(), dataBuffer_.size() }; }
+  //std::string_view ToStringView() { return { dataBuffer_.data(), dataBuffer_.size() }; }
   template<MenuGroupSectionT sectionT> auto GetSectionInternal() const
   {
     if constexpr (static_cast<size_t>(sectionT) < MenuGroupHeader::size()) {
@@ -84,9 +85,9 @@ private:
     MenuGroupSectionT::mes45,
   };
   template<typename refineT, MenuGroupSectionT textSectionT, typename sectionBufferT>
-  auto getRefine(const sectionBufferT sectionBuffer)
+  auto getRefine(const sectionBufferT & sectionBuffer) const
   {
-    return OpenVIII::SectionData<refineT>(
+    return OpenVIII::BulkSectionData<refineT,1U>(
       sectionBuffer, GetSectionInternal<textSectionT>().GetSectionBuffer(dataBuffer_));
   }
   template<size_t i, size_t count, typename T> constexpr void static_for_mes(const T t)
@@ -97,6 +98,17 @@ private:
       static_for_mes<i + 1U, count>(t);
     }
   }
+
+
+  template<size_t i, size_t count, typename T> constexpr void static_for_refine(const T t)
+  {
+    if constexpr (i < count && i < refineValueArray.size()) {
+      constexpr auto val{ refineValueArray[i] };
+      t(val, GetSection<val>());
+      static_for_refine<i + 1U, count>(t);
+    }
+  }
+
   template<size_t i, size_t count, typename T> constexpr void static_for_tkmnmes(const T t)
   {
     if constexpr (i < count && i < tkmnmesValueArray.size()) {
@@ -121,9 +133,9 @@ public:
       [[maybe_unused]] const auto sectionBuffer{ section.GetSectionBuffer(dataBuffer_) };
       if constexpr (sectionT == MenuGroupSectionT::tkmnmes1 || sectionT == MenuGroupSectionT::tkmnmes2
                     || sectionT == MenuGroupSectionT::tkmnmes3) {
-        return std::pair<MenuMessages, std::string_view>(MenuMessages{ sectionBuffer }, sectionBuffer);
+        return SectionData<MenuMessages>(MenuMessages{ sectionBuffer }, sectionBuffer);
       } else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
-        return std::make_pair(MenuMessagesSection(sectionBuffer), sectionBuffer);
+        return SectionData<MenuMessagesSection>(MenuMessagesSection{ sectionBuffer }, sectionBuffer);
       } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
         return getRefine<OpenVIII::MenuGroup::RefineSection000, MenuGroupSectionT::refineText0>(sectionBuffer);
       } else if constexpr (sectionT == MenuGroupSectionT::refine1) {
@@ -139,42 +151,74 @@ public:
   }
   template<LangT langVal> constexpr bool TestMes()
   {
-    static_for_mes<0U, mesValueArray.size()>(
-      [&, this](const auto &sectionID, [[maybe_unused]] const MenuMessagesSection &mes) {
-        std::cout << ':' << static_cast<size_t>(sectionID) << ":  {" << mes.size() << "},\n";
-        size_t id{};
-        for (const auto &subSection : mes) {
-          id++;
-          if (subSection.Offset() == 0) {
-            continue;
-          }
-          std::cout << "    " << id - 1 << ": {" << subSection.Offset() << "} "
-                    << subSection.DecodedString<langVal>(ToStringView(), 0, true) << '\n';
+    static_for_mes<0U, mesValueArray.size()>([&, this](const auto &sectionID, [[maybe_unused]] const auto &mes) {
+      std::cout << ':' << static_cast<size_t>(sectionID) << ":  {" << mes.size() << "},\n";
+      size_t id = 0;
+      for (const auto &subSection : mes) {
+        id++;
+        if (subSection.Offset() == 0) {
+          continue;
         }
-      });
+
+        std::cout << "    " << id - 1 << ": {" << subSection.Offset() << "} "
+                  << subSection.template DecodedString<langVal>(mes.TextSpan(), 0, true) << '\n';
+      }
+    });
     return true;
   }
   template<LangT langVal> constexpr bool TestTkMnMes()
   {
-    const auto start = 1U;
+    constexpr auto start = 0U;
     static_for_tkmnmes<start, mesValueArray.size() - start>(
-      [&, this](const auto &sectionID, [[maybe_unused]] const std::pair<MenuMessages, std::string_view> &tkmnmesPair) {
-        const MenuMessages &tkmnmes = tkmnmesPair.first;
-        const std::string_view &sectionBuffer = tkmnmesPair.second;
-        std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << tkmnmes.Sections().size() << ", "
-                  << tkmnmes.SubSections().size() << "},\n";
-        for (size_t id = 0; id < tkmnmes.Sections().size() && id < tkmnmes.SubSections().size(); id++) {
-          [[maybe_unused]] const auto offset = tkmnmes.Sections().at(id);
-          const auto subSectionGroup = tkmnmes.SubSections().at(id);
+      [&, this](const auto &sectionID, [[maybe_unused]] const auto &tkmnmesPair) {
+        std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << tkmnmesPair->Sections().size() << ", "
+                  << tkmnmesPair->SubSections().size() << "},\n";
+        for (size_t id = 0; id < tkmnmesPair->Sections().size() && id < tkmnmesPair->SubSections().size(); id++) {
+          [[maybe_unused]] const auto offset = tkmnmesPair->Sections().at(id);
+          const auto subSectionGroup = tkmnmesPair->SubSections().at(id);
           [[maybe_unused]] size_t stringNumber{};
           for (const auto &subSection : subSectionGroup) {
             if (subSection.Offset() == 0) {
               continue;
             }
             std::cout << "    " << stringNumber++ << ": {" << subSection.Offset() << "} "
-                      << subSection.DecodedString<langVal>(sectionBuffer, offset, true) << '\n';
+                      << subSection.template DecodedString<langVal>(tkmnmesPair.TextSpan(), offset, true) << '\n';
           }
         }
+      });
+    return true;
+  }
+
+
+  template<LangT langVal> constexpr bool TestRefine()
+  {
+    constexpr auto start = 0U;
+    static_for_refine<start, refineValueArray.size() - start>(
+      [&, this](const auto &sectionID, [[maybe_unused]] const auto &refineBulkSectionData) {
+             std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << refineBulkSectionData.size() << "},\n";
+//             refineBulkSectionData[0].
+//             static_for([&, this]( [[maybe_unused]]const size_t & id, [[maybe_unused]]const auto & sectionData){
+//
+//                                                     //sectionData.template out<langVal>(std::cout,refineBulkSectionData.TextSpan());
+//               });
+
+             for(size_t id = 0U; id < 1U;id++)
+             {
+               refineBulkSectionData.at(id).template out<langVal>(std::cout,refineBulkSectionData.TextSpan());
+             }
+
+//             for (size_t id = 0; id < tkmnmesPair->Sections().size() && id < tkmnmesPair->SubSections().size(); id++) {
+//               [[maybe_unused]] const auto offset = tkmnmesPair->Sections().at(id);
+//               const auto subSectionGroup = tkmnmesPair->SubSections().at(id);
+//               [[maybe_unused]] size_t stringNumber{};
+//               for (const auto &subSection : subSectionGroup) {
+//                 if (subSection.Offset() == 0) {
+//                   continue;
+//                 }
+//                 std::cout << "    " << stringNumber++ << ": {" << subSection.Offset() << "} "
+//                           << subSection.template DecodedString<langVal>(tkmnmesPair.TextSpan(), offset, true) << '\n';
+//               }
+             //}
       });
     return true;
   }

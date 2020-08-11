@@ -18,6 +18,19 @@
 #include "RefineEntry.h"
 #include <iostream>
 namespace OpenVIII::MenuGroup {
+// enum struct Refine000T
+//{
+//  tMagRF,
+//  iMagRF,
+//  fMagRF,
+//  lMagRF,
+//  timeMagRF,
+//  stMagRF,
+//  suptRF,
+//  forbidMagRF,
+//  count,
+//};
+
 struct [[maybe_unused]] RefineSection000// Refine Item to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data
@@ -50,14 +63,54 @@ private:
   std::array<RefineEntry<RefineItemID, RefineSpellID>, forbidMagRFCount_> forbidMagRF_{};
 
 public:
-  [[nodiscard]] const auto &tMagRF() const noexcept { return tMagRF_; }
-  [[nodiscard]] const auto &iMagRF() const noexcept { return iMagRF_; }
-  [[nodiscard]] const auto &fMagRF() const noexcept { return fMagRF_; }
-  [[nodiscard]] const auto &lMagRF() const noexcept { return lMagRF_; }
-  [[nodiscard]] const auto &timeMagRF() const noexcept { return timeMagRF_; }
-  [[nodiscard]] const auto &stMagRF() const noexcept { return stMagRF_; }
-  [[nodiscard]] const auto &suptRF() const noexcept { return suptRF_; }
-  [[nodiscard]] const auto &forbidMagRF() const noexcept { return forbidMagRF_; }
+  // template<const Refine000T i>
+  //  [[nodiscard]] const auto & at()
+  //  {
+  //    if constexpr (i == Refine000T::tMagRF) {
+  //      return tMagRF();
+  //    }
+  //    else if constexpr (i == Refine000T::iMagRF){
+  //      return iMagRF();
+  //    }
+  //    else if constexpr (i == Refine000T::fMagRF){
+  //      return fMagRF();
+  //    }
+  //    else if constexpr (i == Refine000T::lMagRF){
+  //      return lMagRF();
+  //    }
+  //    else if constexpr (i == Refine000T::timeMagRF){
+  //      return timeMagRF();
+  //    }
+  //    else if constexpr (i == Refine000T::stMagRF){
+  //      return stMagRF();
+  //    }
+  //    else if constexpr (i == Refine000T::suptRF){
+  //      return suptRF();
+  //    }
+  //    else if constexpr (i == Refine000T::forbidMagRF){
+  //      return forbidMagRF();
+  //    }
+  //    else
+  //    {
+  //      return nullptr;
+  //    }
+  //  }
+  //  template<std::size_t i=0, std::size_t count=SIZE_MAX, typename fT> void static_for([[maybe_unused]]const fT & f)
+  //  {
+  //    if constexpr (i<count && i<static_cast<size_t>(Refine000T::count))
+  //    {
+  //      f(i,at<static_cast<Refine000T>(i)>());
+  //      static_for<i+1U,count>(f);
+  //    }
+  //  }
+  [[maybe_unused]] [[nodiscard]] const auto &tMagRF() const noexcept { return tMagRF_; }
+  [[maybe_unused]] [[nodiscard]] const auto &iMagRF() const noexcept { return iMagRF_; }
+  [[maybe_unused]] [[nodiscard]] const auto &fMagRF() const noexcept { return fMagRF_; }
+  [[maybe_unused]] [[nodiscard]] const auto &lMagRF() const noexcept { return lMagRF_; }
+  [[maybe_unused]] [[nodiscard]] const auto &timeMagRF() const noexcept { return timeMagRF_; }
+  [[maybe_unused]] [[nodiscard]] const auto &stMagRF() const noexcept { return stMagRF_; }
+  [[maybe_unused]] [[nodiscard]] const auto &suptRF() const noexcept { return suptRF_; }
+  [[maybe_unused]] [[nodiscard]] const auto &forbidMagRF() const noexcept { return forbidMagRF_; }
   [[nodiscard]] static constexpr auto size()
   {
     return tMagRFCount_ + iMagRFCount_ + fMagRFCount_ + lMagRFCount_ + timeMagRFCount_ + stMagRFCount_ + suptRFCount_

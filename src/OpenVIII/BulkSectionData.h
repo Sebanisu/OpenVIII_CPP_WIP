@@ -11,49 +11,51 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_SECTIONDATA_H
-#define VIIIARCHIVE_SECTIONDATA_H
+#ifndef VIIIARCHIVE_BULKSECTIONDATA_H
+#define VIIIARCHIVE_BULKSECTIONDATA_H
 #include <string_view>
 
 namespace OpenVIII {
-template<typename spanT> struct SectionData
+template<typename spanT, size_t max = 0U> struct BulkSectionData
 {
 private:
   // data
-  spanT span_{};
+  std::string_view span_{};
   // strings
   std::string_view textSpan_{};
 
 public:
-  [[maybe_unused]] explicit SectionData(const spanT &span, const std::string_view &textSpan = {})
+  [[maybe_unused]] explicit BulkSectionData(const std::string_view &span, const std::string_view &textSpan = {})
     : span_{ span }, textSpan_{ textSpan }
   {}
-  [[nodiscard]] auto begin()  const { return span_.begin(); }
-  [[nodiscard]] auto end()  const { return span_.end(); }
   [[nodiscard]] size_t size() const
   {
     if constexpr (sizeof(spanT) == 0) {
       return 0;
     } else {
-      return std::size(span_) / sizeof(spanT);
+      size_t calcSize = std::size(span_) / sizeof(spanT);
+      if (max == 0U || max > calcSize) {
+        return calcSize;
+      }
+      return max;
     }
   }
-  const auto *operator->() const { return &span_; }
-  //  auto at(size_t id) const
-  //  {
-  //    if (id < size()) {
-  //      return operator[](id);
-  //    }
-  //    using namespace std::string_literals;
-  //    throw std::out_of_range("BulkSectionData index out of range: "s + std::to_string(id) + "//"s +
-  //    std::to_string(size())); return spanT{};
-  //  }
-  //  auto operator[](size_t id) const noexcept
-  //  {
-  //    auto r = spanT{};
-  //    memcpy(&r, span_.data() + (id * sizeof(spanT)), sizeof(spanT));
-  //    return r;
-  //  }
+  auto at(size_t id) const
+  {
+    if (id < size()) {
+      return operator[](id);
+    }
+    using namespace std::string_literals;
+    throw std::out_of_range(
+      "BulkSectionData index out of range: "s + std::to_string(id) + "//"s + std::to_string(size()));
+    // return spanT{};
+  }
+  auto operator[](size_t id) const noexcept
+  {
+    auto r = spanT{};
+    memcpy(&r, span_.data() + (id * sizeof(spanT)), sizeof(spanT));
+    return r;
+  }
   //  auto &begin() const
   //  {
   //    return at(0);
@@ -66,4 +68,4 @@ public:
   auto &TextSpan() const noexcept { return textSpan_; }
 };
 }// namespace OpenVIII
-#endif// VIIIARCHIVE_SECTIONDATA_H
+#endif// VIIIARCHIVE_BULKSECTIONDATA_H
