@@ -16,7 +16,7 @@ struct MenuGroupFile
 private:
   MenuGroupHeader menuGroupHeader_{};
   std::vector<char> dataBuffer_{};
-  //std::string_view ToStringView() { return { dataBuffer_.data(), dataBuffer_.size() }; }
+  // std::string_view ToStringView() { return { dataBuffer_.data(), dataBuffer_.size() }; }
   template<MenuGroupSectionT sectionT> auto GetSectionInternal() const
   {
     if constexpr (static_cast<size_t>(sectionT) < MenuGroupHeader::size()) {
@@ -85,9 +85,9 @@ private:
     MenuGroupSectionT::mes45,
   };
   template<typename refineT, MenuGroupSectionT textSectionT, typename sectionBufferT>
-  auto getRefine(const sectionBufferT & sectionBuffer) const
+  auto getRefine(const sectionBufferT &sectionBuffer) const
   {
-    return OpenVIII::BulkSectionData<refineT,1U>(
+    return OpenVIII::BulkSectionData<refineT, 1U>(
       sectionBuffer, GetSectionInternal<textSectionT>().GetSectionBuffer(dataBuffer_));
   }
   template<size_t i, size_t count, typename T> constexpr void static_for_mes(const T t)
@@ -195,30 +195,33 @@ public:
     constexpr auto start = 0U;
     static_for_refine<start, refineValueArray.size() - start>(
       [&, this](const auto &sectionID, [[maybe_unused]] const auto &refineBulkSectionData) {
-             std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << refineBulkSectionData.size() << "},\n";
-//             refineBulkSectionData[0].
-//             static_for([&, this]( [[maybe_unused]]const size_t & id, [[maybe_unused]]const auto & sectionData){
-//
-//                                                     //sectionData.template out<langVal>(std::cout,refineBulkSectionData.TextSpan());
-//               });
+        std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << refineBulkSectionData.size() << "},\n";
+        //             refineBulkSectionData[0].
+        //             static_for([&, this]( [[maybe_unused]]const size_t & id, [[maybe_unused]]const auto &
+        //             sectionData){
+        //
+        //                                                     //sectionData.template
+        //                                                     out<langVal>(std::cout,refineBulkSectionData.TextSpan());
+        //               });
 
-             for(size_t id = 0U; id < 1U;id++)
-             {
-               refineBulkSectionData.at(id).template out<langVal>(std::cout,refineBulkSectionData.TextSpan());
-             }
+        for (size_t id = 0U; id < 1U; id++) {
+          refineBulkSectionData.at(id).template out<langVal>(std::cout, refineBulkSectionData.TextSpan());
+        }
 
-//             for (size_t id = 0; id < tkmnmesPair->Sections().size() && id < tkmnmesPair->SubSections().size(); id++) {
-//               [[maybe_unused]] const auto offset = tkmnmesPair->Sections().at(id);
-//               const auto subSectionGroup = tkmnmesPair->SubSections().at(id);
-//               [[maybe_unused]] size_t stringNumber{};
-//               for (const auto &subSection : subSectionGroup) {
-//                 if (subSection.Offset() == 0) {
-//                   continue;
-//                 }
-//                 std::cout << "    " << stringNumber++ << ": {" << subSection.Offset() << "} "
-//                           << subSection.template DecodedString<langVal>(tkmnmesPair.TextSpan(), offset, true) << '\n';
-//               }
-             //}
+        //             for (size_t id = 0; id < tkmnmesPair->Sections().size() && id <
+        //             tkmnmesPair->SubSections().size(); id++) {
+        //               [[maybe_unused]] const auto offset = tkmnmesPair->Sections().at(id);
+        //               const auto subSectionGroup = tkmnmesPair->SubSections().at(id);
+        //               [[maybe_unused]] size_t stringNumber{};
+        //               for (const auto &subSection : subSectionGroup) {
+        //                 if (subSection.Offset() == 0) {
+        //                   continue;
+        //                 }
+        //                 std::cout << "    " << stringNumber++ << ": {" << subSection.Offset() << "} "
+        //                           << subSection.template DecodedString<langVal>(tkmnmesPair.TextSpan(), offset, true)
+        //                           << '\n';
+        //               }
+        //}
       });
     return true;
   }

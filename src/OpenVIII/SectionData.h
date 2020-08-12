@@ -28,8 +28,8 @@ public:
   [[maybe_unused]] explicit SectionData(const spanT &span, const std::string_view &textSpan = {})
     : span_{ span }, textSpan_{ textSpan }
   {}
-  [[nodiscard]] auto begin()  const { return span_.begin(); }
-  [[nodiscard]] auto end()  const { return span_.end(); }
+  [[nodiscard]] auto begin() const { return span_.begin(); }
+  [[nodiscard]] auto end() const { return span_.end(); }
   [[nodiscard]] size_t size() const
   {
     if constexpr (sizeof(spanT) == 0) {

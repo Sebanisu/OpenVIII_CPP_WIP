@@ -13,6 +13,7 @@ private:
   std::vector<EncodedStringOffset> data_{};
 
   [[nodiscard]] auto *data() { return data_.data(); }
+
 public:
   MenuMessagesSection() = default;
   //  explicit MenuMessagesSection(const size_t & count)
@@ -23,10 +24,10 @@ public:
   [[nodiscard]] auto begin() const { return data_.begin(); }
   [[nodiscard]] auto end() const { return data_.end(); }
   [[nodiscard]] auto size() const { return data_.size(); }
-//  [[nodiscard]] auto & at(const size_t & index)
-//  {
-//    return data_.at(index);
-//  }
+  //  [[nodiscard]] auto & at(const size_t & index)
+  //  {
+  //    return data_.at(index);
+  //  }
   template<typename T = std::vector<char>> void SetData(const T &buffer, const size_t &count)
   {
     //[Count of Subsections] = [Start of file] + [Section value]

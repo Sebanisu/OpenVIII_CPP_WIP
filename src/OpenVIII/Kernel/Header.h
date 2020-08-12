@@ -94,7 +94,8 @@ public:
       return BulkSectionData<JunctionableGFs<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::JunctionableGFsText>() };
     } else if constexpr (sectionType == SectionTypesT::EnemyAttacks) {
-      return BulkSectionData<EnemyAttacks<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::EnemyAttacksText>() };
+      return BulkSectionData<EnemyAttacks<langVal>>{ GetSpan<sectionType>(),
+        GetSpan<SectionTypesT::EnemyAttacksText>() };
     } else if constexpr (sectionType == SectionTypesT::Weapons) {
       return BulkSectionData<Weapons<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::WeaponsText>() };
     } else if constexpr (sectionType == SectionTypesT::RenzokukenFinishers) {
@@ -130,7 +131,8 @@ public:
     } else if constexpr (sectionType == SectionTypesT::GFAbilities) {
       return BulkSectionData<GFAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::GFAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::MenuAbilities) {
-      return BulkSectionData<MenuAbilities<langVal>>{ GetSpan<sectionType>(), GetSpan<SectionTypesT::MenuAbilitiesText>() };
+      return BulkSectionData<MenuAbilities<langVal>>{ GetSpan<sectionType>(),
+        GetSpan<SectionTypesT::MenuAbilitiesText>() };
     } else if constexpr (sectionType == SectionTypesT::TeamLagunaLimitBreaks) {
       return BulkSectionData<TeamLagunaLimitBreaks<langVal>>{ GetSpan<sectionType>(),
         GetSpan<SectionTypesT::TeamLagunaLimitBreaksText>() };
