@@ -38,13 +38,13 @@ private:
   static constexpr auto gfRecovRFCount_ = 12U;
   static constexpr auto gfAblMedRFCount_ = 42U;
   static constexpr auto toolRFCount_ = 32U;
-  std::array<RefineEntry<RefineItemID, ItemID>, recovMedRFCount_> recovMedRF_{};
-  std::array<RefineEntry<RefineItemID, ItemID>, stMedRFCount_> stMedRF_{};
-  std::array<RefineEntry<RefineItemID, ItemID>, ammoRFCount_> ammoRF_{};
-  std::array<RefineEntry<RefineItemID, ItemID>, forbidMedRFCount_> forbidMedRF_{};
-  std::array<RefineEntry<RefineItemID, ItemID>, gfRecovRFCount_> gfRecovRF_{};
-  std::array<RefineEntry<RefineItemID, ItemID>, gfAblMedRFCount_> gfAblMedRF_{};
-  std::array<RefineEntry<RefineItemID, ItemID>, toolRFCount_> toolRF_{};
+  std::array<RefineEntry<ItemID, ItemID>, recovMedRFCount_> recovMedRF_{};
+  std::array<RefineEntry<ItemID, ItemID>, stMedRFCount_> stMedRF_{};
+  std::array<RefineEntry<ItemID, ItemID>, ammoRFCount_> ammoRF_{};
+  std::array<RefineEntry<ItemID, ItemID>, forbidMedRFCount_> forbidMedRF_{};
+  std::array<RefineEntry<ItemID, ItemID>, gfRecovRFCount_> gfRecovRF_{};
+  std::array<RefineEntry<ItemID, ItemID>, gfAblMedRFCount_> gfAblMedRF_{};
+  std::array<RefineEntry<ItemID, ItemID>, toolRFCount_> toolRF_{};
 
 public:
   [[nodiscard]] const auto &RecovMedRF() const noexcept { return recovMedRF_; }

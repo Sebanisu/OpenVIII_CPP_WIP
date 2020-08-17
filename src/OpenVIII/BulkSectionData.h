@@ -14,6 +14,9 @@
 #ifndef VIIIARCHIVE_BULKSECTIONDATA_H
 #define VIIIARCHIVE_BULKSECTIONDATA_H
 #include <string_view>
+#include "OpenVIII/ItemID.h"
+#include "OpenVIII/Kernel/BattleItems.h"
+#include "OpenVIII/Kernel/NonBattleItems.h"
 
 namespace OpenVIII {
 template<typename spanT, size_t max = 0U> struct BulkSectionData
@@ -40,15 +43,37 @@ public:
       return max;
     }
   }
-  auto at(size_t id) const
+  template<typename T = std::size_t>
+  auto at(const T id_v) const
   {
-    if (id < size()) {
-      return operator[](id);
+    if(id_v < 0)
+    {
+      throw(std::invalid_argument("Index should be >= 0"));
     }
-    using namespace std::string_literals;
-    throw std::out_of_range(
-      "BulkSectionData index out of range: "s + std::to_string(id) + "//"s + std::to_string(size()));
-    // return spanT{};
+    auto id = static_cast<size_t>(id_v);
+    if constexpr (std::is_same_v<T,ItemID>)
+    {
+      if constexpr (std::is_same_v<spanT,Kernel::BattleItems>)
+      {
+      }
+      else if constexpr (std::is_same_v<spanT,Kernel::NonBattleItems>)
+      {
+        static constexpr auto battleItemsCount = 33U;
+        id -= battleItemsCount;
+      }
+      else
+      {
+        throw(std::invalid_argument{"ItemID used in wrong place!"});
+      }
+    }
+
+    if (id > size()) {
+      using namespace std::string_literals;
+      throw std::out_of_range(
+        "BulkSectionData index out of range: "s + std::to_string(id) + "//"s + std::to_string(size()));
+      // return spanT{};
+    }
+    return operator[](id);
   }
   auto operator[](size_t id) const noexcept
   {
@@ -56,6 +81,7 @@ public:
     memcpy(&r, span_.data() + (id * sizeof(spanT)), sizeof(spanT));
     return r;
   }
+
   //  auto &begin() const
   //  {
   //    return at(0);

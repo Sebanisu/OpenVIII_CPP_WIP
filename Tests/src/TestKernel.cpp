@@ -22,7 +22,7 @@ int main()
       continue;
     }
     std::cout << path << std::endl;
-    const auto coo = OpenVIII::LangT::DE;
+    const auto coo = OpenVIII::LangT::EN;
     const auto archives = OpenVIII::Archive::Archives<coo>(path);
     [[maybe_unused]] const auto &main = archives.Get<OpenVIII::Archive::ArchiveTypeT::Main>();
     std::cout << main << std::endl;
