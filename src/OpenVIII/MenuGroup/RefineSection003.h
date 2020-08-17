@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION003_H
 #define VIIIARCHIVE_REFINESECTION003_H
-#include "RefineItemID.h"
+#include "ItemID.h"
 #include "RefineEntry.h"
 #include <array>
 #include <iostream>
@@ -28,7 +28,7 @@ struct [[maybe_unused]] RefineSection003// Refine items to items
 
 private:
   static constexpr auto medLVUPCount_ = 12U;
-  std::array<RefineEntry<RefineItemID, RefineItemID>, medLVUPCount_> medLVUP_{};
+  std::array<RefineEntry<RefineItemID, ItemID>, medLVUPCount_> medLVUP_{};
 
 public:
   [[nodiscard]] const auto &MedLVUP() const noexcept { return medLVUP_; }

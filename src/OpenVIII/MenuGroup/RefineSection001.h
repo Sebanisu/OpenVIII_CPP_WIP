@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION001_H
 #define VIIIARCHIVE_REFINESECTION001_H
-#include "RefineItemID.h"
+#include "ItemID.h"
 #include "RefineEntry.h"
 #include <array>
 #include <iostream>
@@ -38,13 +38,13 @@ private:
   static constexpr auto gfRecovRFCount_ = 12U;
   static constexpr auto gfAblMedRFCount_ = 42U;
   static constexpr auto toolRFCount_ = 32U;
-  std::array<RefineEntry<RefineItemID, RefineItemID>, recovMedRFCount_> recovMedRF_{};
-  std::array<RefineEntry<RefineItemID, RefineItemID>, stMedRFCount_> stMedRF_{};
-  std::array<RefineEntry<RefineItemID, RefineItemID>, ammoRFCount_> ammoRF_{};
-  std::array<RefineEntry<RefineItemID, RefineItemID>, forbidMedRFCount_> forbidMedRF_{};
-  std::array<RefineEntry<RefineItemID, RefineItemID>, gfRecovRFCount_> gfRecovRF_{};
-  std::array<RefineEntry<RefineItemID, RefineItemID>, gfAblMedRFCount_> gfAblMedRF_{};
-  std::array<RefineEntry<RefineItemID, RefineItemID>, toolRFCount_> toolRF_{};
+  std::array<RefineEntry<RefineItemID, ItemID>, recovMedRFCount_> recovMedRF_{};
+  std::array<RefineEntry<RefineItemID, ItemID>, stMedRFCount_> stMedRF_{};
+  std::array<RefineEntry<RefineItemID, ItemID>, ammoRFCount_> ammoRF_{};
+  std::array<RefineEntry<RefineItemID, ItemID>, forbidMedRFCount_> forbidMedRF_{};
+  std::array<RefineEntry<RefineItemID, ItemID>, gfRecovRFCount_> gfRecovRF_{};
+  std::array<RefineEntry<RefineItemID, ItemID>, gfAblMedRFCount_> gfAblMedRF_{};
+  std::array<RefineEntry<RefineItemID, ItemID>, toolRFCount_> toolRF_{};
 
 public:
   [[nodiscard]] const auto &RecovMedRF() const noexcept { return recovMedRF_; }

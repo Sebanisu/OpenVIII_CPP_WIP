@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION000_H
 #define VIIIARCHIVE_REFINESECTION000_H
-#include "RefineItemID.h"
+#include "ItemID.h"
 #include "RefineSpellID.h"
 #include "RefineEntry.h"
 #include <iostream>
@@ -53,14 +53,14 @@ private:
   static constexpr auto stMagRFCount_ = 17U;
   static constexpr auto suptRFCount_ = 20U;
   static constexpr auto forbidMagRFCount_ = 6U;
-  std::array<RefineEntry<RefineItemID, RefineSpellID>, tMagRFCount_> tMagRF_{};
-  std::array<RefineEntry<RefineItemID, RefineSpellID>, iMagRFCount_> iMagRF_{};
-  std::array<RefineEntry<RefineItemID, RefineSpellID>, fMagRFCount_> fMagRF_{};
-  std::array<RefineEntry<RefineItemID, RefineSpellID>, lMagRFCount_> lMagRF_{};
-  std::array<RefineEntry<RefineItemID, RefineSpellID>, timeMagRFCount_> timeMagRF_{};
-  std::array<RefineEntry<RefineItemID, RefineSpellID>, stMagRFCount_> stMagRF_{};
-  std::array<RefineEntry<RefineItemID, RefineSpellID>, suptRFCount_> suptRF_{};
-  std::array<RefineEntry<RefineItemID, RefineSpellID>, forbidMagRFCount_> forbidMagRF_{};
+  std::array<RefineEntry<ItemID, RefineSpellID>, tMagRFCount_> tMagRF_{};
+  std::array<RefineEntry<ItemID, RefineSpellID>, iMagRFCount_> iMagRF_{};
+  std::array<RefineEntry<ItemID, RefineSpellID>, fMagRFCount_> fMagRF_{};
+  std::array<RefineEntry<ItemID, RefineSpellID>, lMagRFCount_> lMagRF_{};
+  std::array<RefineEntry<ItemID, RefineSpellID>, timeMagRFCount_> timeMagRF_{};
+  std::array<RefineEntry<ItemID, RefineSpellID>, stMagRFCount_> stMagRF_{};
+  std::array<RefineEntry<ItemID, RefineSpellID>, suptRFCount_> suptRF_{};
+  std::array<RefineEntry<ItemID, RefineSpellID>, forbidMagRFCount_> forbidMagRF_{};
 
 public:
   // template<const Refine000T i>

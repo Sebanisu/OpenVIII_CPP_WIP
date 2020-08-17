@@ -11,11 +11,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_REFINEITEMID_H
-#define VIIIARCHIVE_REFINEITEMID_H
+#ifndef VIIIARCHIVE_ITEMID_H
+#define VIIIARCHIVE_ITEMID_H
 #include "cstdint"
 namespace OpenVIII::MenuGroup {
-enum struct [[maybe_unused]] RefineItemID : std::uint8_t {
+enum struct [[maybe_unused]] ItemID : std::uint8_t {
   None = 0x00,
   Potion = 0x01,
   Potion_Plus = 0x02,
@@ -217,4 +217,4 @@ enum struct [[maybe_unused]] RefineItemID : std::uint8_t {
   OccultFanIV = 0xC6,
 };
 }
-#endif// VIIIARCHIVE_REFINEITEMID_H
+#endif// VIIIARCHIVE_ITEMID_H
