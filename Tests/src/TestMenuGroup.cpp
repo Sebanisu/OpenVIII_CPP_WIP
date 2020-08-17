@@ -89,10 +89,10 @@ int main()
     std::cout << menu << std::endl;
     auto mngrpfile = OpenVIII::MenuGroup::MenuGroupFile{ menu };
 
-    mngrpfile.GetSection<MenuGroupSectionT::refine0>()
-//    mngrpfile.TestTkMnMes<coo>();
-//    mngrpfile.TestMes<coo>();
-//    mngrpfile.TestRefine<coo>();
+
+    mngrpfile.TestTkMnMes<coo>();
+    mngrpfile.TestMes<coo>();
+    mngrpfile.TestRefine<coo>();
     return 0;
     //    auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
     //    auto mngrpBuffer = menu.GetEntryData("mngrp.bin");

@@ -46,9 +46,12 @@ public:
   template<typename T = std::size_t>
   auto at(const T id_v) const
   {
-    if(id_v < 0)
-    {
-      throw(std::invalid_argument("Index should be >= 0"));
+    static_assert(std::is_integral_v<T>);
+    if constexpr (std::is_signed_v<T>) {
+      if (id_v < 0)
+      {
+        throw(std::invalid_argument("Index should be >= 0"));
+      }
     }
     auto id = static_cast<size_t>(id_v);
     if constexpr (std::is_same_v<T,ItemID>)
