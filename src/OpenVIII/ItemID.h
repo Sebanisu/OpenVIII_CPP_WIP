@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_ITEMID_H
 #define VIIIARCHIVE_ITEMID_H
 #include "cstdint"
-namespace OpenVIII::MenuGroup {
+namespace OpenVIII {
 enum struct [[maybe_unused]] ItemID : std::uint8_t {
   None = 0x00,
   Potion = 0x01,

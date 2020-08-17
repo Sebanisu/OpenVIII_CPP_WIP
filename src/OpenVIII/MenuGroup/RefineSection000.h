@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION000_H
 #define VIIIARCHIVE_REFINESECTION000_H
-#include "ItemID.h"
+#include "OpenVIII/ItemID.h"
 #include "RefineSpellID.h"
 #include "RefineEntry.h"
 #include <iostream>
