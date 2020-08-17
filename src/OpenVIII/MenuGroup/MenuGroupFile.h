@@ -37,16 +37,26 @@ private:
     MenuGroupSectionT::refine3,
     MenuGroupSectionT::refine4,
   };
+
+  static constexpr std::array complexValueArray = {
+    MenuGroupSectionT::complex01,
+    MenuGroupSectionT::complex02,
+    MenuGroupSectionT::complex03,
+    MenuGroupSectionT::complex04,
+    MenuGroupSectionT::complex05,
+    MenuGroupSectionT::complex06,
+  };
+
   static constexpr std::array mesValueArray = {
-    MenuGroupSectionT::mes1,
-    MenuGroupSectionT::mes2,
-    MenuGroupSectionT::mes3,
-    MenuGroupSectionT::mes4,
-    MenuGroupSectionT::mes5,
-    MenuGroupSectionT::mes6,
-    MenuGroupSectionT::mes7,
-    MenuGroupSectionT::mes8,
-    MenuGroupSectionT::mes9,
+    MenuGroupSectionT::mes01,
+    MenuGroupSectionT::mes02,
+    MenuGroupSectionT::mes03,
+    MenuGroupSectionT::mes04,
+    MenuGroupSectionT::mes05,
+    MenuGroupSectionT::mes06,
+    MenuGroupSectionT::mes07,
+    MenuGroupSectionT::mes08,
+    MenuGroupSectionT::mes09,
     MenuGroupSectionT::mes10,
     MenuGroupSectionT::mes11,
     MenuGroupSectionT::mes12,
