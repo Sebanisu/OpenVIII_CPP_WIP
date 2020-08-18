@@ -10,6 +10,7 @@
 #include "MenuGroupSectionT.h"
 #include "MenuMessages.h"
 #include "OpenVIII/SectionData.h"
+#include "ComplexStringSection.h"
 namespace OpenVIII::MenuGroup {
 struct MenuGroupFile
 {
@@ -17,7 +18,7 @@ private:
   MenuGroupHeader menuGroupHeader_{};
   std::vector<char> dataBuffer_{};
   // std::string_view ToStringView() { return { dataBuffer_.data(), dataBuffer_.size() }; }
-  template<MenuGroupSectionT sectionT> auto GetSectionInternal() const
+  template<MenuGroupSectionT sectionT> [[nodiscard]] auto GetSectionInternal() const
   {
     if constexpr (static_cast<size_t>(sectionT) < MenuGroupHeader::size()) {
       return menuGroupHeader_.Sections().at(static_cast<size_t>(sectionT));
@@ -100,7 +101,7 @@ private:
     return OpenVIII::BulkSectionData<refineT, 1U>(
       sectionBuffer, GetSectionInternal<textSectionT>().GetSectionBuffer(dataBuffer_));
   }
-  template<size_t i, size_t count, typename T> constexpr void static_for_mes(const T t)
+  template<size_t i, size_t count, typename T> constexpr void static_for_mes(const T t) const
   {
     if constexpr (i < count && i < mesValueArray.size()) {
       constexpr auto val{ mesValueArray[i] };
@@ -110,7 +111,7 @@ private:
   }
 
 
-  template<size_t i, size_t count, typename T> constexpr void static_for_refine(const T t)
+  template<size_t i, size_t count, typename T> constexpr void static_for_refine(const T t) const
   {
     if constexpr (i < count && i < refineValueArray.size()) {
       constexpr auto val{ refineValueArray[i] };
@@ -119,7 +120,7 @@ private:
     }
   }
 
-  template<size_t i, size_t count, typename T> constexpr void static_for_tkmnmes(const T t)
+  template<size_t i, size_t count, typename T> constexpr void static_for_tkmnmes(const T t) const
   {
     if constexpr (i < count && i < tkmnmesValueArray.size()) {
       constexpr auto val{ tkmnmesValueArray[i] };
@@ -133,33 +134,57 @@ public:
     : menuGroupHeader_(menuArchive), dataBuffer_(menuArchive.GetEntryData("mngrp.bin"))
   {}
 
-  template<MenuGroupSectionT sectionT> [[nodiscard]] auto GetSection() const
+  template<std::size_t sectionTnum> [[nodiscard]] auto GetSectionBuffer() const
   {
-    [[maybe_unused]] auto section{ GetSectionInternal<sectionT>() };
+    constexpr auto sectionT = static_cast<MenuGroupSectionT>(sectionTnum);
+    [[maybe_unused]] const auto section{ GetSectionInternal<sectionT>() };
     if constexpr (std::is_null_pointer_v<decltype(section)>) {
       return nullptr;
+    }
+    else
+    {
+      return section.GetSectionBuffer(dataBuffer_);
+    }
+  }
+  template<MenuGroupSectionT sectionT> [[nodiscard]] auto GetSection() const
+  {
+    if constexpr (Tools::any_of(sectionT, complexValueArray) || sectionT == MenuGroupSectionT::complexMap) {
+
+      const auto map{ GetSectionInternal<MenuGroupSectionT::complexMap>().GetSectionBuffer(dataBuffer_) };
+      const std::array data = { GetSectionInternal<MenuGroupSectionT::complex01>().GetSectionBuffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex02>().GetSectionBuffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex03>().GetSectionBuffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex04>().GetSectionBuffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex05>().GetSectionBuffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex06>().GetSectionBuffer(dataBuffer_) };
+      return ComplexStringSection(map, data);
     } else {
-      // return mngrphd.Sections().at(id).GetSectionBuffer(mngrpBuffer);
-      [[maybe_unused]] const auto sectionBuffer{ section.GetSectionBuffer(dataBuffer_) };
-      if constexpr (sectionT == MenuGroupSectionT::tkmnmes1 || sectionT == MenuGroupSectionT::tkmnmes2
-                    || sectionT == MenuGroupSectionT::tkmnmes3) {
-        return SectionData<MenuMessages>(MenuMessages{ sectionBuffer }, sectionBuffer);
-      } else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
-        return SectionData<MenuMessagesSection>(MenuMessagesSection{ sectionBuffer }, sectionBuffer);
-      } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
-        return getRefine<OpenVIII::MenuGroup::RefineSection000, MenuGroupSectionT::refineText0>(sectionBuffer);
-      } else if constexpr (sectionT == MenuGroupSectionT::refine1) {
-        return getRefine<OpenVIII::MenuGroup::RefineSection001, MenuGroupSectionT::refineText1>(sectionBuffer);
-      } else if constexpr (sectionT == MenuGroupSectionT::refine2) {
-        return getRefine<OpenVIII::MenuGroup::RefineSection002, MenuGroupSectionT::refineText2>(sectionBuffer);
-      } else if constexpr (sectionT == MenuGroupSectionT::refine3) {
-        return getRefine<OpenVIII::MenuGroup::RefineSection003, MenuGroupSectionT::refineText3>(sectionBuffer);
-      } else if constexpr (sectionT == MenuGroupSectionT::refine4) {
-        return getRefine<OpenVIII::MenuGroup::RefineSection004, MenuGroupSectionT::refineText4>(sectionBuffer);
+      [[maybe_unused]] auto section{ GetSectionInternal<sectionT>() };
+      if constexpr (std::is_null_pointer_v<decltype(section)>) {
+        return nullptr;
+      } else {
+        // return mngrphd.Sections().at(id).GetSectionBuffer(mngrpBuffer);
+        [[maybe_unused]] const auto sectionBuffer{ section.GetSectionBuffer(dataBuffer_) };
+        if constexpr (sectionT == MenuGroupSectionT::tkmnmes1 || sectionT == MenuGroupSectionT::tkmnmes2
+                      || sectionT == MenuGroupSectionT::tkmnmes3) {
+          return SectionData<MenuMessages>(MenuMessages{ sectionBuffer }, sectionBuffer);
+        } else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
+          return SectionData<MenuMessagesSection>(MenuMessagesSection{ sectionBuffer }, sectionBuffer);
+        } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
+          return getRefine<OpenVIII::MenuGroup::RefineSection000, MenuGroupSectionT::refineText0>(sectionBuffer);
+        } else if constexpr (sectionT == MenuGroupSectionT::refine1) {
+          return getRefine<OpenVIII::MenuGroup::RefineSection001, MenuGroupSectionT::refineText1>(sectionBuffer);
+        } else if constexpr (sectionT == MenuGroupSectionT::refine2) {
+          return getRefine<OpenVIII::MenuGroup::RefineSection002, MenuGroupSectionT::refineText2>(sectionBuffer);
+        } else if constexpr (sectionT == MenuGroupSectionT::refine3) {
+          return getRefine<OpenVIII::MenuGroup::RefineSection003, MenuGroupSectionT::refineText3>(sectionBuffer);
+        } else if constexpr (sectionT == MenuGroupSectionT::refine4) {
+          return getRefine<OpenVIII::MenuGroup::RefineSection004, MenuGroupSectionT::refineText4>(sectionBuffer);
+        }
       }
     }
   }
-  template<LangT langVal> constexpr bool TestMes()
+  template<LangT langVal> void TestMes() const
   {
     static_for_mes<0U, mesValueArray.size()>([&, this](const auto &sectionID, [[maybe_unused]] const auto &mes) {
       std::cout << ':' << static_cast<size_t>(sectionID) << ":  {" << mes.size() << "},\n";
@@ -174,9 +199,8 @@ public:
                   << subSection.template DecodedString<langVal>(mes.TextSpan(), 0, true) << '\n';
       }
     });
-    return true;
   }
-  template<LangT langVal> constexpr bool TestTkMnMes()
+  template<LangT langVal> void TestTkMnMes() const
   {
     constexpr auto start = 0U;
     static_for_tkmnmes<start, mesValueArray.size() - start>(
@@ -196,11 +220,21 @@ public:
           }
         }
       });
-    return true;
   }
 
+  template<LangT langVal> void TestComplex() const
+  {
+    const auto complex = GetSection<MenuGroupSectionT::complexMap>();
+    for (size_t i{}; i < complex.size(); i++) { [[maybe_unused]] const auto data = complex.at(i);
 
-  template<LangT langVal> constexpr bool TestRefine()
+      [[maybe_unused]] const auto entry {complex.at(data)};
+      std::cout << data << ' ';
+      entry.out<langVal>(std::cout);
+      std::cout<<'\n';
+    }
+
+  }
+  template<LangT langVal> void TestRefine() const
   {
     constexpr auto start = 0U;
     static_for_refine<start, refineValueArray.size() - start>(
@@ -233,7 +267,6 @@ public:
         //               }
         //}
       });
-    return true;
   }
 };
 }// namespace OpenVIII::MenuGroup

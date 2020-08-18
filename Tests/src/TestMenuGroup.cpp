@@ -22,6 +22,7 @@
 #include "OpenVIII/MenuGroup/RefineSection003.h"
 #include "OpenVIII/MenuGroup/RefineSection004.h"
 #include "OpenVIII/MenuGroup/MenuGroupFile.h"
+
 //[[maybe_unused]] constexpr static std::array tkmnmesSections = { 0, 1, 2 };
 //[[maybe_unused]] constexpr static std::array MenuStringsSections = { 87,
 //  88,
@@ -88,12 +89,20 @@ int main()
     [[maybe_unused]] const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
     std::cout << menu << std::endl;
     auto mngrpfile = OpenVIII::MenuGroup::MenuGroupFile{ menu };
-
-
+    auto buffer = mngrpfile.GetSectionBuffer<3>();
+    std::ofstream ofs{};
+    ofs.open("4.bin",std::ios::binary|std::ios::out);
+    if(ofs.is_open())
+    {
+      ofs.write(buffer.data(),static_cast<long>(buffer.size()));
+      ofs.close();
+    }
+    return 0;
+    mngrpfile.TestComplex<coo>();
     mngrpfile.TestTkMnMes<coo>();
     mngrpfile.TestMes<coo>();
     mngrpfile.TestRefine<coo>();
-    //return 0;
+
         auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
         auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
         std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";
