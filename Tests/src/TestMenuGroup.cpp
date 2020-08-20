@@ -89,21 +89,21 @@ int main()
     [[maybe_unused]] const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
     std::cout << menu << std::endl;
     auto mngrpfile = OpenVIII::MenuGroup::MenuGroupFile{ menu };
-    auto buffer = mngrpfile.GetSectionBuffer<3>();
-    std::ofstream ofs{};
-    ofs.open("4.bin",std::ios::binary|std::ios::out);
-    if(ofs.is_open())
-    {
-      ofs.write(buffer.data(),static_cast<long>(buffer.size()));
-      ofs.close();
-      std::cout << std::filesystem::current_path().c_str() << "4.bin";
-    }
-    return 0;
+//    auto buffer = mngrpfile.GetSectionBuffer<3>();
+//    std::ofstream ofs{};
+//    ofs.open("4.bin",std::ios::binary|std::ios::out);
+//    if(ofs.is_open())
+//    {
+//      ofs.write(buffer.data(),static_cast<long>(buffer.size()));
+//      ofs.close();
+//      std::cout << std::filesystem::current_path().c_str() << "4.bin";
+//    }
+
     mngrpfile.TestComplex<coo>();
     mngrpfile.TestTkMnMes<coo>();
     mngrpfile.TestMes<coo>();
     mngrpfile.TestRefine<coo>();
-
+    continue;
         auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
         auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
         std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";
