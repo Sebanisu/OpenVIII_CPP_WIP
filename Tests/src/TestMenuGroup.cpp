@@ -96,6 +96,7 @@ int main()
     {
       ofs.write(buffer.data(),static_cast<long>(buffer.size()));
       ofs.close();
+      std::cout << std::filesystem::current_path().c_str() << "4.bin";
     }
     return 0;
     mngrpfile.TestComplex<coo>();
