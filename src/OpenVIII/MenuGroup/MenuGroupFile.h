@@ -11,6 +11,7 @@
 #include "MenuMessages.h"
 #include "OpenVIII/SectionData.h"
 #include "ComplexStringSection.h"
+#include "OpenVIII/Graphics/tim.h"
 namespace OpenVIII::MenuGroup {
 struct MenuGroupFile
 {
