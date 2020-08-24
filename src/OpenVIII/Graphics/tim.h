@@ -311,6 +311,10 @@ public:
     getValue(timImageHeader_);
     setData(timImageData_, timImageHeader_.dataSize());
   }
+  [[nodiscard]] bool Check() const
+  {
+    return timHeader_.Check() && ((static_cast<size_t>(timHeader_.BPP()) & static_cast<size_t>(BPPT::CLP)) == 0U||timClutHeader_.Check())
+  }
   [[nodiscard]] auto Width() const
   {
     static constexpr auto _4bpp_step{ 4 };
