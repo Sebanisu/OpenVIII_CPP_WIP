@@ -49,6 +49,44 @@ private:
     MenuGroupSectionT::complex06,
   };
 
+  static constexpr std::array timValueArray = {
+    MenuGroupSectionT::tim0,
+    MenuGroupSectionT::tim1,
+    MenuGroupSectionT::tim2,
+    MenuGroupSectionT::tim3,
+    MenuGroupSectionT::tim4,
+    MenuGroupSectionT::tim5,
+    MenuGroupSectionT::tim6,
+    MenuGroupSectionT::tim7,
+    MenuGroupSectionT::tim8,
+    MenuGroupSectionT::tim9,
+    MenuGroupSectionT::tim10,
+    MenuGroupSectionT::tim11,
+    MenuGroupSectionT::tim12,
+    MenuGroupSectionT::tim13,
+    MenuGroupSectionT::tim14,
+    MenuGroupSectionT::tim15,
+    MenuGroupSectionT::tim16,
+    MenuGroupSectionT::tim17,
+    MenuGroupSectionT::tim18,
+    MenuGroupSectionT::tim19,
+    MenuGroupSectionT::tim20,
+    MenuGroupSectionT::tim21,
+    MenuGroupSectionT::tim22,
+    MenuGroupSectionT::tim23,
+    MenuGroupSectionT::tim24,
+    MenuGroupSectionT::tim25,
+    MenuGroupSectionT::tim26,
+    MenuGroupSectionT::tim27,
+    MenuGroupSectionT::tim28,
+    MenuGroupSectionT::tim29,
+    MenuGroupSectionT::tim30,
+    MenuGroupSectionT::tim31,
+    MenuGroupSectionT::tim32,
+    MenuGroupSectionT::tim33,
+    MenuGroupSectionT::tim34,
+    MenuGroupSectionT::tim35,
+  };
   static constexpr std::array mesValueArray = {
     MenuGroupSectionT::mes01,
     MenuGroupSectionT::mes02,
@@ -169,7 +207,10 @@ public:
         if constexpr (sectionT == MenuGroupSectionT::tkmnmes1 || sectionT == MenuGroupSectionT::tkmnmes2
                       || sectionT == MenuGroupSectionT::tkmnmes3) {
           return SectionData<MenuMessages>(MenuMessages{ sectionBuffer }, sectionBuffer);
-        } else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
+        } else if constexpr (Tools::any_of(sectionT, timValueArray)) {
+          return Graphics::tim(sectionBuffer);
+        }
+        else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
           return SectionData<MenuMessagesSection>(MenuMessagesSection{ sectionBuffer }, sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
           return getRefine<OpenVIII::MenuGroup::RefineSection000, MenuGroupSectionT::refineText0>(sectionBuffer);

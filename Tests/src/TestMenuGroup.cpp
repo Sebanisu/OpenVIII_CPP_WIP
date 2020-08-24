@@ -103,7 +103,7 @@ int main()
     mngrpfile.TestTkMnMes<coo>();
     mngrpfile.TestMes<coo>();
     mngrpfile.TestRefine<coo>();
-    continue;
+    //continue;
         auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
         auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
         std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";
@@ -215,6 +215,11 @@ int main()
             //        {
             //          //exit(0);
             //        }
+
+            if(sectionBuffer.at(0) == 0x10 && sectionBuffer.at(1) == 0)
+            {
+              std::cout<< "TIM?" << "\n";
+            }
           }
         }
         //    [[maybe_unused]] const auto &buffer = mngrphd.Buffer();
