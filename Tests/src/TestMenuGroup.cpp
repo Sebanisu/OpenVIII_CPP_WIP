@@ -103,7 +103,8 @@ int main()
     mngrpfile.TestTkMnMes<coo>();
     mngrpfile.TestMes<coo>();
     mngrpfile.TestRefine<coo>();
-    //continue;
+    mngrpfile.TestTim();
+    continue;
         auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
         auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
         std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";

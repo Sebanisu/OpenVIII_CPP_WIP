@@ -86,6 +86,8 @@ private:
     MenuGroupSectionT::tim33,
     MenuGroupSectionT::tim34,
     MenuGroupSectionT::tim35,
+    MenuGroupSectionT::tim36,
+    MenuGroupSectionT::tim37,
   };
   static constexpr std::array mesValueArray = {
     MenuGroupSectionT::mes01,
@@ -140,6 +142,15 @@ private:
     return OpenVIII::BulkSectionData<refineT, 1U>(
       sectionBuffer, GetSectionInternal<textSectionT>().GetSectionBuffer(dataBuffer_));
   }
+
+  template<size_t i, size_t count, typename T> constexpr void static_for_tim(const T t) const
+  {
+    if constexpr (i < count && i < mesValueArray.size()) {
+      constexpr auto val{ timValueArray[i] };
+      t(val, GetSection<val>());
+      static_for_tim<i + 1U, count>(t);
+    }
+  }
   template<size_t i, size_t count, typename T> constexpr void static_for_mes(const T t) const
   {
     if constexpr (i < count && i < mesValueArray.size()) {
@@ -179,9 +190,7 @@ public:
     [[maybe_unused]] const auto section{ GetSectionInternal<sectionT>() };
     if constexpr (std::is_null_pointer_v<decltype(section)>) {
       return nullptr;
-    }
-    else
-    {
+    } else {
       return section.GetSectionBuffer(dataBuffer_);
     }
   }
@@ -209,8 +218,7 @@ public:
           return SectionData<MenuMessages>(MenuMessages{ sectionBuffer }, sectionBuffer);
         } else if constexpr (Tools::any_of(sectionT, timValueArray)) {
           return Graphics::tim(sectionBuffer);
-        }
-        else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
+        } else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
           return SectionData<MenuMessagesSection>(MenuMessagesSection{ sectionBuffer }, sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
           return getRefine<OpenVIII::MenuGroup::RefineSection000, MenuGroupSectionT::refineText0>(sectionBuffer);
@@ -225,6 +233,24 @@ public:
         }
       }
     }
+  }
+
+  void TestTim() const
+  {
+    static_for_tim<0U, timValueArray.size()>([&, this](const auto &sectionID, [[maybe_unused]] const auto &tim) {
+      std::cout << ':' << static_cast<size_t>(sectionID) << ":  {" << tim.size() << " bytes},\n";
+      std::cout << tim << '\n';
+      // size_t id = 0;
+      //           for (const auto &subSection : tim) {
+      //             id++;
+      //             if (subSection.Offset() == 0) {
+      //               continue;
+      //             }
+      //
+      ////             std::cout << "    " << id - 1 << ": {" << subSection.Offset() << "} "
+      ////                       << subSection.template DecodedString<langVal>(tim.TextSpan(), 0, true) << '\n';
+      //           }
+    });
   }
   template<LangT langVal> void TestMes() const
   {
@@ -267,14 +293,14 @@ public:
   template<LangT langVal> void TestComplex() const
   {
     const auto complex = GetSection<MenuGroupSectionT::complexMap>();
-    for (size_t i{}; i < complex.size(); i++) { [[maybe_unused]] const auto data = complex.at(i);
+    for (size_t i{}; i < complex.size(); i++) {
+      [[maybe_unused]] const auto data = complex.at(i);
 
-      [[maybe_unused]] const auto entry {complex.at(data)};
+      [[maybe_unused]] const auto entry{ complex.at(data) };
       std::cout << data << ' ';
       entry.out<langVal>(std::cout);
-      std::cout<<'\n';
+      std::cout << '\n';
     }
-
   }
   template<LangT langVal> void TestRefine() const
   {
