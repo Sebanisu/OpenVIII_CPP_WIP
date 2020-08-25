@@ -9,6 +9,8 @@
 #include <string_view>
 #include "OpenVIII/Tools/Tools.h"
 #include <iostream>
+#include "color.h"
+#include <vector>
 namespace OpenVIII::Graphics {
 
 /**
@@ -298,7 +300,8 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const timHeader &input)
   {
     //[[maybe_unused]]static constexpr auto size_ = sizeof(input);
-    return os << "{ Tag: " << static_cast<uint32_t>(input.tag_) << ", Version: " << static_cast<uint32_t>(input.version_) << ", " << input.bpp_ << '}';
+    return os << "{ Tag: " << static_cast<uint32_t>(input.tag_)
+              << ", Version: " << static_cast<uint32_t>(input.version_) << ", " << input.bpp_ << '}';
   }
 };
 
@@ -400,6 +403,46 @@ private:
   timImageHeader timImageHeader_{};
   std::string_view timImageData_{};
 
+  color16 getColor(std::uint16_t row, std::uint8_t colorkey) const
+  {
+    if (timClutHeader_.Rectangle().Height() == 0) {
+      return {};
+    }
+    if (row > timClutHeader_.Rectangle().Height()) {
+      row = 0;
+    }
+    std::size_t index = (colorkey * 2U) + (row * timClutHeader_.Rectangle().Width());
+    if (index >= timClutData_.size()) {
+      return {};
+    }
+    color16 rv{};
+    memcpy(&rv, timClutData_.data() + index, sizeof(rv));
+    return rv;
+  }
+
+  color16 getColor16(std::size_t index) const
+  {
+    index *= 2U;
+    if (index >= timImageData_.size()) {
+      return {};
+    }
+    color16 rv{};
+    memcpy(&rv, timImageData_.data() + index, sizeof(rv));
+    return rv;
+  }
+
+
+  color24<2, 1, 0> getColor24(std::size_t index) const
+  {
+    index *= 2U;
+    if (index >= timImageData_.size()) {
+      return {};
+    }
+    color24<2, 1, 0> rv{};
+    memcpy(&rv, timImageData_.data() + index, sizeof(rv));
+    return rv;
+  }
+
 public:
   explicit tim(const std::string_view &buffer)
   {
@@ -459,9 +502,49 @@ public:
   [[nodiscard]] auto ClutX() const { return timClutHeader_.Rectangle().X(); }
   [[nodiscard]] auto ClutY() const { return timClutHeader_.Rectangle().Y(); }
   [[nodiscard]] auto size() const { return sizeof(timHeader_) + timClutHeader_.size() + timImageHeader_.size(); }
+  [[nodiscard]] auto ClutRows() const { return timClutHeader_.Rectangle().Height(); }
+  [[nodiscard]] auto ClutColors() const { return timClutHeader_.Rectangle().Width(); }
   friend std::ostream &operator<<(std::ostream &os, const tim &input)
   {
-    return os << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", " << input.timImageHeader_ << ", Corrected Width: " << input.Width() <<'}';
+    return os << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", " << input.timImageHeader_
+              << ", Corrected Width: " << input.Width() << '}';
+  }
+  [[nodiscard]] std::vector<color32<>> GetColors([[maybe_unused]] std::uint16_t row = 0U) const
+  {
+
+    std::vector<color32<>> output{};
+    output.reserve(Width()*Height());
+    switch (static_cast<int>(timHeader_.BPP())) {
+
+    case 4U: {
+      for (size_t i{}; i < output.capacity(); i++) {
+        std::bitset<8> bs{ static_cast<std::uint8_t>(timImageData_.at(i / 2U)) };
+        static constexpr std::bitset<8> oct1{ 0xF };
+        static constexpr std::bitset<8> oct2{ 0xF0 };
+        if (i % 2 == 0) {
+          output.emplace_back(getColor(row, static_cast<std::uint8_t>((bs & oct1).to_ulong())));
+        } else {
+          output.emplace_back(getColor(row, static_cast<std::uint8_t>(((bs & oct2) >> 4U).to_ulong())));
+        }
+      }
+      break;
+    }
+    case 8U: {
+      for (size_t i{}; i < output.capacity(); i++) {
+        output.emplace_back(getColor(row, static_cast<std::uint8_t>(timImageData_.at(i))));
+      }
+      break;
+    }
+    case 16U: {
+      for (size_t i{}; i < output.capacity(); i++) { output.emplace_back(getColor16(i)); }
+      break;
+    }
+    case 24U: {
+      for (size_t i{}; i < output.capacity(); i++) { output.emplace_back(getColor24(i)); }
+      break;
+    }
+    }
+    return output;
   }
 };
 

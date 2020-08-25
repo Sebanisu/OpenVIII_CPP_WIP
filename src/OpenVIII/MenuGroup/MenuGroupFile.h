@@ -12,6 +12,9 @@
 #include "OpenVIII/SectionData.h"
 #include "ComplexStringSection.h"
 #include "OpenVIII/Graphics/tim.h"
+#include "OpenVIII/Graphics/ppm.h"
+#include <sstream>
+#include <vector>
 namespace OpenVIII::MenuGroup {
 struct MenuGroupFile
 {
@@ -237,9 +240,34 @@ public:
 
   void TestTim() const
   {
-    static_for_tim<0U, timValueArray.size()>([&, this](const auto &sectionID, [[maybe_unused]] const auto &tim) {
-      std::cout << ':' << static_cast<size_t>(sectionID) << ":  {" << tim.size() << " bytes},\n";
+    static_for_tim<0U, timValueArray.size()>([&, this](const auto &sectionID, [[maybe_unused]] const Graphics::tim &tim) {
+
+        std::stringstream so{};
+      std::cout << ':' << static_cast<std::size_t>(sectionID) << ":  {" << tim.size() << " bytes},\n";
       std::cout << tim << '\n';
+      std::cout << tim.Check();
+      so << "MenuGroupTim_" << static_cast<std::size_t>(sectionID);
+      const auto colorsDump = [&tim, &so](const std::vector<Graphics::color32<>> &colors,std::uint16_t num =0)
+      {
+        std::cout << '\n';
+        std::stringstream fn{};
+        fn << so.str() << "_" << static_cast<std::size_t>(num) << ".ppm";
+
+        std::cout << "Saved: "<< fn.str() <<"\n";
+        Graphics::ppm::save(colors,tim.Width(),tim.Height(), fn.str());
+//        for( const auto &color : colors)
+//        {
+//          std::cout << color;
+//        }
+//        std::cout << '\n';
+      };
+      if(tim.ClutRows() >0) {
+        for (std::uint16_t i = 0; i < tim.ClutRows(); i++) { colorsDump(tim.GetColors(i),i); }
+      }
+      else
+      {
+        colorsDump(tim.GetColors());
+      }
       // size_t id = 0;
       //           for (const auto &subSection : tim) {
       //             id++;
