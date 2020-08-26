@@ -5,7 +5,11 @@
 #ifndef VIIIARCHIVE_TIMIMAGEHEADER_H
 #define VIIIARCHIVE_TIMIMAGEHEADER_H
 #include "OpenVIII/Graphics/rectangle.h"
+#include <cstdint>
 namespace OpenVIII::Graphics {
+/**
+ * Base Header for the following raw 16bit color image data.
+ */
 struct timImageHeader
 {
 private:

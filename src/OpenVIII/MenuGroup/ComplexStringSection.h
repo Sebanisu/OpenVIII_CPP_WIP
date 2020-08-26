@@ -27,10 +27,9 @@ public:
     std::memcpy(&length_, buffer.data() + sizeof(unknown_), sizeof(length_));
     buffer_ = std::string_view{ buffer.data() + sizeof(unknown_) + sizeof(length_), length_ };
   }
-  template<LangT langVal>
-  std::ostream & out(std::ostream & os) const
+  template<LangT langVal> std::ostream &out(std::ostream &os) const
   {
-    return os<<FF8String<langVal>::Decode(buffer_);
+    return os << FF8String<langVal>::Decode(buffer_);
   }
 };
 struct ComplexStringSectionOffsets
@@ -80,7 +79,8 @@ public:
   [[nodiscard]] auto at(const ComplexStringSectionOffsets &offsets) const
   {
     const auto temp = data_.at(offsets.index());
-    return ComplexStringSectionEntry{ std::string_view {temp.data()+offsets.offset(),temp.size()-offsets.offset()}};
+    return ComplexStringSectionEntry{ std::string_view{
+      temp.data() + offsets.offset(), temp.size() - offsets.offset() } };
   }
 };
 }// namespace OpenVIII::MenuGroup

@@ -4,9 +4,9 @@
 
 #ifndef VIIIARCHIVE_TIM_H
 #define VIIIARCHIVE_TIM_H
-#include "BPPT.h"
-#include "timHeader.h"
-#include "timClutHeader.h"
+#include "OpenVIII/Graphics/tim/BPPT.h"
+#include "OpenVIII/Graphics/tim/timHeader.h"
+#include "OpenVIII/Graphics/tim/timClutHeader.h"
 #include "OpenVIII/Graphics/color.h"
 namespace OpenVIII::Graphics {
 struct tim
@@ -18,23 +18,23 @@ private:
   timImageHeader timImageHeader_{};
   std::string_view timImageData_{};
 
-  [[nodiscard]] color16 getColor(std::uint16_t row, std::uint8_t colorkey) const
+  [[nodiscard]] color16 getColor([[maybe_unused]] std::uint16_t row, [[maybe_unused]] std::uint8_t colorKey) const
   {
-    if (timClutHeader_.Rectangle().Height() == 0) {
-      return {};
-    }
-    if (row > timClutHeader_.Rectangle().Height()) {
-      row = 0;
-    }
-    std::size_t index = (colorkey * 2U) + (row * timClutHeader_.Rectangle().Width());
-    if (index >= timClutData_.size()) {
-      return {};
-    }
+    // clangTidy says this function can be static which it cannot be static.
     color16 rv{};
-    memcpy(&rv, timClutData_.data() + index, sizeof(rv));
+    if (timClutHeader_.Rectangle().Height() != 0) {
+
+      if (row > timClutHeader_.Rectangle().Height()) {
+        row = 0;
+      }
+      [[maybe_unused]] const auto index{ (colorKey * 2U) + (row * timClutHeader_.Rectangle().Width()) };
+      if (index < timClutData_.size()) {
+
+        memcpy(&rv, timClutData_.data() + index, sizeof(rv));
+      }
+    }
     return rv;
   }
-
   [[nodiscard]] color16 getColor16(std::size_t index) const
   {
     index *= 2U;
@@ -114,11 +114,11 @@ public:
   [[nodiscard]] auto X() const { return timImageHeader_.Rectangle().X(); }
   [[nodiscard]] auto Y() const { return timImageHeader_.Rectangle().Y(); }
 
-  [[nodiscard]] auto ClutX() const { return timClutHeader_.Rectangle().X(); }
-  [[nodiscard]] auto ClutY() const { return timClutHeader_.Rectangle().Y(); }
+  [[maybe_unused]] [[nodiscard]] auto ClutX() const { return timClutHeader_.Rectangle().X(); }
+  [[maybe_unused]] [[nodiscard]] auto ClutY() const { return timClutHeader_.Rectangle().Y(); }
   [[nodiscard]] auto size() const { return sizeof(timHeader_) + timClutHeader_.size() + timImageHeader_.size(); }
   [[nodiscard]] auto ClutRows() const { return timClutHeader_.Rectangle().Height(); }
-  [[nodiscard]] auto ClutColors() const { return timClutHeader_.Rectangle().Width(); }
+  [[maybe_unused]] [[nodiscard]] auto ClutColors() const { return timClutHeader_.Rectangle().Width(); }
   friend std::ostream &operator<<(std::ostream &os, const tim &input)
   {
     return os << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", " << input.timImageHeader_
@@ -128,7 +128,7 @@ public:
   {
 
     std::vector<color32<>> output{};
-    output.reserve(Width() * Height());
+    output.reserve(static_cast<std::size_t>(Width()) * static_cast<std::size_t>(Height()));
     switch (static_cast<int>(timHeader_.BPP())) {
 
     case 4U: {

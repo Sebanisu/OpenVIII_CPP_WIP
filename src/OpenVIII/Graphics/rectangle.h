@@ -5,6 +5,7 @@
 #ifndef VIIIARCHIVE_RECTANGLE_H
 #define VIIIARCHIVE_RECTANGLE_H
 #include "OpenVIII/Graphics/point.h"
+#include <iostream>
 namespace OpenVIII::Graphics {
 /**
  * @struct OpenVIII::Graphics::rectangle

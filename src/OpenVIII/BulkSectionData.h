@@ -36,37 +36,35 @@ public:
     if constexpr (sizeof(spanT) == 0) {
       return 0;
     } else {
-      size_t calcSize = std::size(span_) / sizeof(spanT);
-      if (max == 0U || max > calcSize) {
-        return calcSize;
+
+      const auto calcSize = [this]() { return std::size(span_) / sizeof(spanT); };
+      if constexpr (max == 0U) {
+        return calcSize();
+      } else {
+        const auto c = calcSize();
+        if (max > c) {
+          return c;
+        }
+        return max;
       }
-      return max;
     }
   }
-  template<typename T = std::size_t>
-  auto at(const T id_v) const
+  template<typename T = std::size_t> auto at(const T id_v) const
   {
     static_assert(std::is_integral_v<T>);
     if constexpr (std::is_signed_v<T>) {
-      if (id_v < 0)
-      {
+      if (id_v < 0) {
         throw(std::invalid_argument("Index should be >= 0"));
       }
     }
     auto id = static_cast<size_t>(id_v);
-    if constexpr (std::is_same_v<T,ItemID>)
-    {
-      if constexpr (std::is_same_v<spanT,Kernel::BattleItems>)
-      {
-      }
-      else if constexpr (std::is_same_v<spanT,Kernel::NonBattleItems>)
-      {
+    if constexpr (std::is_same_v<T, ItemID>) {
+      if constexpr (std::is_same_v<spanT, Kernel::BattleItems>) {
+      } else if constexpr (std::is_same_v<spanT, Kernel::NonBattleItems>) {
         static constexpr auto battleItemsCount = 33U;
         id -= battleItemsCount;
-      }
-      else
-      {
-        throw(std::invalid_argument{"ItemID used in wrong place!"});
+      } else {
+        throw(std::invalid_argument{ "ItemID used in wrong place!" });
       }
     }
 

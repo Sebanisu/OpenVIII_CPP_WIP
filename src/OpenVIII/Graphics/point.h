@@ -4,6 +4,8 @@
 
 #ifndef VIIIARCHIVE_POINT_H
 #define VIIIARCHIVE_POINT_H
+#include <iostream>
+
 namespace OpenVIII::Graphics {
 template<typename dimT> struct point
 {

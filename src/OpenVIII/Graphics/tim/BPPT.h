@@ -4,6 +4,7 @@
 
 #ifndef VIIIARCHIVE_BPPT_H
 #define VIIIARCHIVE_BPPT_H
+#include <iostream>
 namespace OpenVIII::Graphics {
 /**
  * @enum OpenVIII::Graphics::BPPT
@@ -29,7 +30,7 @@ public:
     : _8bpp_{ false }, _16bpp_{ false }, unused1{ false },
       colorLookupTablePresent_{ false }, unused2{ false }, unused3{ false }, unused4{ false }, unused5{ false }
   {}
-  [[nodiscard]] bool unused() const { return unused1 && unused2 && unused2 && unused3 && unused4 && unused5; }
+  [[nodiscard]] bool unused() const { return unused1 && unused2 && unused3 && unused4 && unused5; }
   /**
    * Test bits to check if color lookup table is present and 8bpp and 16bpp are not set;
    * @return true if 4bpp

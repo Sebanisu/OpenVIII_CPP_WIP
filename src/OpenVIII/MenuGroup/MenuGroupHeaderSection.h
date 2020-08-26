@@ -5,6 +5,8 @@
 #ifndef VIIIARCHIVE_MENUGROUPHEADERSECTION_H
 #define VIIIARCHIVE_MENUGROUPHEADERSECTION_H
 #include <cstring>
+#include <cstdint>
+#include <string_view>
 namespace OpenVIII::MenuGroup {
 struct MenuGroupHeaderSection
 {
@@ -23,7 +25,8 @@ public:
   template<typename charContainer = std::string_view>
   [[nodiscard]] std::string_view GetSectionBuffer(const charContainer &fileBuffer) const
   {
-    if (Size() == invalidSize_ || fileOffset_ == invalidFileOffset_ || FileOffset() + Size() > std::size(fileBuffer)) {
+    if (Size() == invalidSize_ || fileOffset_ == invalidFileOffset_
+        || static_cast<std::size_t>(FileOffset()) + static_cast<std::size_t>(Size()) > std::size(fileBuffer)) {
       return {};// returns empty buffer if invalid or error.
     }
     std::cout << '<' << FileOffset() << ',' << Size() << ">\n";
