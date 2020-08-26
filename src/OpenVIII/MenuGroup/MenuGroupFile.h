@@ -11,7 +11,7 @@
 #include "MenuMessages.h"
 #include "OpenVIII/SectionData.h"
 #include "ComplexStringSection.h"
-#include "OpenVIII/Graphics/tim.h"
+#include "OpenVIII/Graphics/tim/tim.h"
 #include "OpenVIII/Graphics/ppm.h"
 #include <sstream>
 #include <vector>

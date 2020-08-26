@@ -1,0 +1,2 @@
+add_library(VIIIGraphicsColor INTERFACE)
+target_link_libraries(VIIIGraphicsColor INTERFACE)

@@ -1,0 +1,2 @@
+add_library(VIIIGraphicsTim INTERFACE)
+target_link_libraries(VIIIGraphicsTim INTERFACE)
