@@ -24,6 +24,14 @@
 namespace OpenVIII {
 struct [[maybe_unused]] Tools
 {
+  static std::string_view u8tosv(const std::u8string_view & s8)
+  {
+    return {reinterpret_cast<const char *>(s8.data()),s8.size()};
+  }
+  static std::string u8tos(const std::u8string_view & s8)
+  { auto sv = u8tosv(s8);
+    return {sv.begin(),sv.end()};
+  }
   template<typename trivialType> [[maybe_unused]] static void ReadVal(std::istream &fp, trivialType &item)
   {
     static_assert(std::is_trivial_v<trivialType>);

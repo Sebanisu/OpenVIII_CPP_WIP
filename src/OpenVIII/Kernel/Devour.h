@@ -123,7 +123,7 @@ public:
   {
     auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(description)) {
-      os << description;
+      os << Tools::u8tosv(description);
     }
     return os << ", " << static_cast<std::uint32_t>(DamageOrHeal()) << ", " << PercentQuantity() << ", "
               << static_cast<std::uint32_t>(BattleOnlyStatuses()) << ", "

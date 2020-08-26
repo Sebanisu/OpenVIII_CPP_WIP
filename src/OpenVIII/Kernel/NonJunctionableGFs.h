@@ -131,7 +131,7 @@ public:
   {
     auto name = nameOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
-      os << name;
+      os << Tools::u8tosv(name);
     }
     return os << ", " << static_cast<std::uint32_t>(MagicID()) << ", " << static_cast<std::uint32_t>(AttackType())
               << ", " << static_cast<std::uint32_t>(GFPower())// (used in damage formula)

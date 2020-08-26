@@ -24,7 +24,6 @@
 #include "FIFLFS.h"
 #include "FileData.h"
 namespace OpenVIII::Archive {
-
 struct [[maybe_unused]] ZZZ
 {
 

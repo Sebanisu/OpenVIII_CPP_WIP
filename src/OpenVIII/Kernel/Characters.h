@@ -94,7 +94,7 @@ public:
   {
     auto name = nameOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
-      os << name;
+      os << Tools::u8tosv(name);
     }
     return os << ", " << static_cast<std::uint32_t>(CrisisLevelHPMultiplier()) << ", "
               << static_cast<std::uint32_t>(Gender()) << ", " << static_cast<std::uint32_t>(LimitBreakID()) << ", "

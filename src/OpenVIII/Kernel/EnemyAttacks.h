@@ -76,7 +76,7 @@ public:
   {
     auto name = nameOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
-      os << name << ", ";
+      os << Tools::u8tosv(name) << ", ";
     }
     return os << static_cast<std::uint32_t>(MagicID()) << ", " << CameraChange() << ", "
               << static_cast<std::uint32_t>(unknown0()) << ", " << static_cast<std::uint32_t>(AttackType()) << ", "

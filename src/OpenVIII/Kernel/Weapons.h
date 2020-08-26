@@ -82,7 +82,7 @@ public:
   {
     auto name = nameOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
-      os << name;
+      os << Tools::u8tosv(name);
     }
     return os << ", " << static_cast<std::uint32_t>(RenzokukenFinishers()) << ", "
               << static_cast<std::uint32_t>(unknown()) << ", " << static_cast<std::uint32_t>(CharacterID()) << ", "

@@ -119,6 +119,7 @@ public:
   [[nodiscard]] auto size() const { return sizeof(timHeader_) + timClutHeader_.size() + timImageHeader_.size(); }
   [[nodiscard]] auto ClutRows() const { return timClutHeader_.Rectangle().Height(); }
   [[maybe_unused]] [[nodiscard]] auto ClutColors() const { return timClutHeader_.Rectangle().Width(); }
+
   friend std::ostream &operator<<(std::ostream &os, const tim &input)
   {
     return os << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", " << input.timImageHeader_

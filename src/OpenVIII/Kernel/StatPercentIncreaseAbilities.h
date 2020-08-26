@@ -47,10 +47,10 @@ public:
     auto name = nameOffset_.DecodedString<langVal>(buffer);
     auto description = descriptionOffset_.DecodedString<langVal>(buffer);
     if (!std::empty(name)) {
-      os << name;
+      os << Tools::u8tosv(name);
     }
     if (!std::empty(description)) {
-      os << ", " << description;
+      os << ", " << Tools::u8tosv(description);
     }
     return os << ", " << static_cast<std::uint32_t>(APRequired()) << ", "
               << static_cast<std::uint32_t>(StatToIncrease()) << ", " << static_cast<std::uint32_t>(IncreasedValue())
