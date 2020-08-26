@@ -186,17 +186,17 @@ public:
   explicit MenuGroupFile(const OpenVIII::Archive::FIFLFS<false> &menuArchive)
     : menuGroupHeader_(menuArchive), dataBuffer_(menuArchive.GetEntryData("mngrp.bin"))
   {}
-
-  template<std::size_t sectionTnum> [[nodiscard]] auto GetSectionBuffer() const
-  {
-    constexpr auto sectionT = static_cast<MenuGroupSectionT>(sectionTnum);
-    [[maybe_unused]] const auto section{ GetSectionInternal<sectionT>() };
-    if constexpr (std::is_null_pointer_v<decltype(section)>) {
-      return nullptr;
-    } else {
-      return section.GetSectionBuffer(dataBuffer_);
-    }
-  }
+//
+//  template<std::size_t sectionTnum> [[nodiscard]] auto GetSectionBuffer() const
+//  {
+//    constexpr auto sectionT = static_cast<MenuGroupSectionT>(sectionTnum);
+//    [[maybe_unused]] const auto section{ GetSectionInternal<sectionT>() };
+//    if constexpr (std::is_null_pointer_v<decltype(section)>) {
+//      return nullptr;
+//    } else {
+//      return section.GetSectionBuffer(dataBuffer_);
+//    }
+//  }
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto GetSection() const
   {
     if constexpr (Tools::any_of(sectionT, complexValueArray) || sectionT == MenuGroupSectionT::complexMap) {
@@ -255,11 +255,6 @@ public:
 
         std::cout << "Saved: "<< fn.str() <<"\n";
         Graphics::ppm::save(colors,tim.Width(),tim.Height(), fn.str());
-//        for( const auto &color : colors)
-//        {
-//          std::cout << color;
-//        }
-//        std::cout << '\n';
       };
       if(tim.ClutRows() >0) {
         for (std::uint16_t i = 0; i < tim.ClutRows(); i++) { colorsDump(tim.GetColors(i),i); }
@@ -268,16 +263,6 @@ public:
       {
         colorsDump(tim.GetColors());
       }
-      // size_t id = 0;
-      //           for (const auto &subSection : tim) {
-      //             id++;
-      //             if (subSection.Offset() == 0) {
-      //               continue;
-      //             }
-      //
-      ////             std::cout << "    " << id - 1 << ": {" << subSection.Offset() << "} "
-      ////                       << subSection.template DecodedString<langVal>(tim.TextSpan(), 0, true) << '\n';
-      //           }
     });
   }
   template<LangT langVal> void TestMes() const
@@ -336,32 +321,10 @@ public:
     static_for_refine<start, refineValueArray.size() - start>(
       [&, this](const auto &sectionID, [[maybe_unused]] const auto &refineBulkSectionData) {
         std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << refineBulkSectionData.size() << "},\n";
-        //             refineBulkSectionData[0].
-        //             static_for([&, this]( [[maybe_unused]]const size_t & id, [[maybe_unused]]const auto &
-        //             sectionData){
-        //
-        //                                                     //sectionData.template
-        //                                                     out<langVal>(std::cout,refineBulkSectionData.TextSpan());
-        //               });
 
         for (size_t id = 0U; id < 1U; id++) {
           refineBulkSectionData.at(id).template out<langVal>(std::cout, refineBulkSectionData.TextSpan());
         }
-
-        //             for (size_t id = 0; id < tkmnmesPair->Sections().size() && id <
-        //             tkmnmesPair->SubSections().size(); id++) {
-        //               [[maybe_unused]] const auto offset = tkmnmesPair->Sections().at(id);
-        //               const auto subSectionGroup = tkmnmesPair->SubSections().at(id);
-        //               [[maybe_unused]] size_t stringNumber{};
-        //               for (const auto &subSection : subSectionGroup) {
-        //                 if (subSection.Offset() == 0) {
-        //                   continue;
-        //                 }
-        //                 std::cout << "    " << stringNumber++ << ": {" << subSection.Offset() << "} "
-        //                           << subSection.template DecodedString<langVal>(tkmnmesPair.TextSpan(), offset, true)
-        //                           << '\n';
-        //               }
-        //}
       });
   }
 };

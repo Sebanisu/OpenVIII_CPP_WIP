@@ -54,4 +54,4 @@ target_link_libraries(TestKernel VIIIStrings VIIIKernel VIIIPaths VIIIArchive)
 add_executable(TestMenuGroup
         TestMenuGroup.cpp TestMenuGroup.h)
 set_target_properties(TestMenuGroup PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestMenuGroup VIIIStrings VIIIMenuGroup VIIIPaths VIIIArchive)
+target_link_libraries(TestMenuGroup VIIIStrings VIIIMenuGroup VIIIPaths VIIIArchive VIIIGraphics)
