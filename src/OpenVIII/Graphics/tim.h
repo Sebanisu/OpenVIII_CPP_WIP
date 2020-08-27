@@ -8,7 +8,22 @@
 #include "OpenVIII/Graphics/tim/timHeader.h"
 #include "OpenVIII/Graphics/tim/timClutHeader.h"
 #include "OpenVIII/Graphics/color.h"
+#include <sstream>
 namespace OpenVIII::Graphics {
+/**
+ * TIM, or PSX TIM, is an uncompressed raster image file format associated with the Sony PlayStation family of video
+ * game consoles. It supports 4- and 8-bit paletted images, and 15- and 24-bit full color images.
+ * @see https://github.com/myst6re/vincent-tim
+ * @see https://github.com/myst6re/deling/blob/master/FF8Image.cpp#L30
+ * @see http://www.raphnet.net/electronique/psx_adaptor/Playstation.txt
+ * @see http://www.psxdev.net/forum/viewtopic.php?t=109
+ * @see https://mrclick.zophar.net/TilEd/download/timgfx.txt
+ * @see http://www.elisanet.fi/6581/PSX/doc/Playstation_Hardware.pdf
+ * @see http://www.elisanet.fi/6581/PSX/doc/psx.pdf
+ * @see http://www.romhacking.net/documents/31/
+ * @see http://mrclick.zophar.net/TilEd/download/timgfx.txt
+ * @see http://fileformats.archiveteam.org/wiki/TIM_(PlayStation_graphics)
+ */
 struct tim
 {
 private:
@@ -35,46 +50,30 @@ private:
     }
     return rv;
   }
-  [[nodiscard]] color16 getColor16(std::size_t index) const
+  template<typename dstT> [[nodiscard]] dstT getColorT(std::size_t index) const
   {
-    index *= 2U;
-    if (index >= timImageData_.size()) {
+    dstT rv{};
+    index *= sizeof(rv);
+    if (index + sizeof(rv) >= timImageData_.size()) {
       return {};
     }
-    color16 rv{};
-    memcpy(&rv, timImageData_.data() + index, sizeof(rv));
-    return rv;
-  }
-
-
-  [[nodiscard]] color24<2, 1, 0> getColor24(std::size_t index) const
-  {
-    index *= 2U;
-    if (index >= timImageData_.size()) {
-      return {};
-    }
-    color24<2, 1, 0> rv{};
     memcpy(&rv, timImageData_.data() + index, sizeof(rv));
     return rv;
   }
 
 public:
-  explicit tim(const std::string_view &buffer)
+  explicit tim(std::span<const char> buffer)
   {
     if (std::size(buffer) == 0) {
       return;
     }
-    auto ptr_ = buffer.data();
-    auto size_ = buffer.size();
-    const auto setData = [&ptr_, &size_, &buffer](std::string_view &item, const auto &bytes) {
-      item = std::string_view{ ptr_, bytes };
-      ptr_ += bytes;
-      size_ -= bytes;
+    const auto setData = [&buffer](std::string_view &item, const auto &bytes) {
+      item = std::string_view{ std::ranges::data(buffer), bytes };
+      buffer = buffer.subspan(bytes);
     };
-    const auto getValue = [&ptr_, &size_, &buffer](auto &item) {
-      memcpy(&item, ptr_, sizeof(item));
-      ptr_ += sizeof(item);
-      size_ -= sizeof(item);
+    const auto getValue = [&buffer](auto &item) {
+      memcpy(&item, std::ranges::data(buffer), sizeof(item));
+      buffer = buffer.subspan(sizeof(item));
     };
     getValue(timHeader_);
     if (timHeader_.BPP().ColorLookupTablePresent()) {
@@ -125,15 +124,21 @@ public:
     return os << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", " << input.timImageHeader_
               << ", Corrected Width: " << input.Width() << '}';
   }
-  [[nodiscard]] std::vector<color32<>> GetColors([[maybe_unused]] std::uint16_t row = 0U) const
+  template<typename dstT = color32<>>
+  [[nodiscard]] std::vector<dstT> GetColors([[maybe_unused]] std::uint16_t row = 0U) const
   {
-
-    std::vector<color32<>> output{};
-    output.reserve(static_cast<std::size_t>(Width()) * static_cast<std::size_t>(Height()));
+    static constexpr auto bpp4 = 4U;
+    static constexpr auto bpp8 = 8U;
+    static constexpr auto bpp16 = 16U;
+    static constexpr auto bpp24 = 24U;
+    std::vector<dstT> output{};
+    const auto outSize = static_cast<std::size_t>(Width()) * static_cast<std::size_t>(Height());
+    output.reserve(outSize);
     switch (static_cast<int>(timHeader_.BPP())) {
 
-    case 4U: {
-      for (size_t i{}; i < output.capacity(); i++) {
+    case bpp4: {
+      // break;
+      for (size_t i{}; i < outSize; i++) {
         std::bitset<8> bs{ static_cast<std::uint8_t>(timImageData_.at(i / 2U)) };
         static constexpr std::bitset<8> oct1{ 0xF };
         static constexpr std::bitset<8> oct2{ 0xF0 };
@@ -145,22 +150,39 @@ public:
       }
       break;
     }
-    case 8U: {
-      for (size_t i{}; i < output.capacity(); i++) {
+    case bpp8: {
+      // break;
+      for (size_t i{}; i < outSize; i++) {
         output.emplace_back(getColor(row, static_cast<std::uint8_t>(timImageData_.at(i))));
       }
       break;
     }
-    case 16U: {
-      for (size_t i{}; i < output.capacity(); i++) { output.emplace_back(getColor16(i)); }
+    case bpp16: {
+      for (size_t i{}; i < std::min(outSize, timImageData_.size() / sizeof(color16)); i++) {
+        output.emplace_back(getColorT<color16>(i));
+      }
       break;
     }
-    case 24U: {
-      for (size_t i{}; i < output.capacity(); i++) { output.emplace_back(getColor24(i)); }
+    case bpp24: {
+      for (size_t i{}; i < outSize; i++) { output.emplace_back(getColorT<color24<2, 1, 0>>(i)); }
       break;
     }
     }
     return output;
+  }
+
+  [[maybe_unused]] void Save(std::string_view filename) const
+  {
+    if (ClutRows() == 0) {
+      ppm::save(GetColors<color16>(), Width(), Height(), filename);
+    } else {
+      auto path = std::filesystem::path(filename);
+      for (std::uint16_t i = 0; i < ClutRows(); i++) {
+        auto ss = std::stringstream{};
+        ss << (path.parent_path() / path.stem()).string() << '_' << i << path.extension().string();
+        ppm::save(GetColors<color16>(i), Width(), Height(), ss.str());
+      }
+    }
   }
 };
 

@@ -25,12 +25,14 @@
 #include <set>
 #include <map>
 #include <iterator>
+#include "OpenVIII/Graphics/lzs.h"
+#include "OpenVIII/Graphics/tim.h"
 
 namespace OpenVIII::Archive {
 template<bool HasNested = false> struct FIFLFS
 {
 private:
-  template<typename T> struct Grouping
+  template<std::ranges::range T> struct [[maybe_unused]] Grouping
   {
   public:
     mutable std::filesystem::path path{};
@@ -71,7 +73,7 @@ public:
 
   [[maybe_unused]] [[nodiscard]] const auto &FS() const noexcept { return fs_; }
 
-  [[nodiscard]] const auto &FL() const noexcept { return fl_; }
+  [[maybe_unused]] [[nodiscard]] const auto &FL() const noexcept { return fl_; }
 
 
   [[nodiscard]] bool AllSet() const { return fi_ && fs_ && fl_; }
@@ -122,30 +124,30 @@ public:
         ds.GetBaseName();
       }
     };
-    switch (nestedPath.has_extension() ? CheckExtension(nestedPath) : CheckExtension(existingFilePath)) {
-    case 1: {
-      set(fl_);
+    const auto i = nestedPath.has_extension() ? CheckExtension(nestedPath) : CheckExtension(existingFilePath);
+    if (i >= 1 && i <= 3) {
+      switch (i) {
+      case 1: {
+        set(fl_);
+        break;
+      }
+      case 2: {
+        set(fs_);
+        break;
+      }
+      case 3: {
+        set(fi_);
+        GetCount();
+        break;
+      }
+      }
       compareBaseNames();
       return AllSet() ? 2 : 1;
-    }
-    case 2: {
-      set(fs_);
-      compareBaseNames();
-      return AllSet() ? 2 : 1;
-    }
-    case 3: {
-      set(fi_);
-      GetCount();
-      compareBaseNames();
-      return AllSet() ? 2 : 1;
-    }
-    default:
-      break;
     }
 
     return 0;
   }
-  template<typename srcT = std::vector<char>, typename datT = Archive::FI>
+  template<std::ranges::range srcT = std::vector<char>, typename datT = Archive::FI>
   char
     TryAddNested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi) const
   {
@@ -155,29 +157,49 @@ public:
       ds.offset = 0U;// the offset is 0 because we are getting the truncated data below.
       ds.GetBaseName();
     };
-    switch (CheckExtension(fileEntry)) {
-    case 1:
-      set(fl_);
-      fl_.data = FS::GetEntry<decltype(fl_.data)>(src, fi, srcOffset);
-      FL::CleanBuffer(fl_.data);
+    const auto i = CheckExtension(fileEntry);
+    if (i >= 1 && i <= 3) {
+      switch (i) {
+      case 1: {
+        set(fl_);
+        fl_.data = FS::GetEntry<decltype(fl_.data)>(src, fi, srcOffset);
+        FL::CleanBuffer(fl_.data);
+        break;
+      }
+      case 2: {
+        set(fs_);
+        fs_.data = FS::GetEntry(src, fi, srcOffset);
+        break;
+      }
+
+      case 3: {
+        set(fi_);
+        fi_.data = FS::GetEntry(src, fi, srcOffset);
+        GetCount();
+        break;
+      }
+      }
       compareBaseNames();
       return AllSet() ? 2 : 1;
-    case 2:
-      set(fs_);
-      fs_.data = FS::GetEntry(src, fi, srcOffset);
-      compareBaseNames();
-      return AllSet() ? 2 : 1;
-    case 3:
-      set(fi_);
-      fi_.data = FS::GetEntry(src, fi, srcOffset);
-      GetCount();
-      compareBaseNames();
-      return AllSet() ? 2 : 1;
-    default:
-      break;
     }
     return 0;
   }
+  void saveIMG(const std::vector<char> &buffer, const std::string_view &path, const std::string_view &root = "tmp") const
+  {
+    if (std::ranges::size(buffer) > 0) {
+      auto dir = std::filesystem::path(root);
+      auto filename = dir / path;
+      if (filename.has_extension()) {
+        if (Tools::iEquals(filename.extension().string(), ".lzs")) {
+          Graphics::lzs(buffer).Save(filename.string() + ".ppm");
+        }
+
+        if (Tools::iEquals(filename.extension().string(), ".tim")) {
+          Graphics::tim(buffer).Save(filename.string() + ".ppm");
+        }
+      }
+    }
+  };
   void Test() const
   {
     if (!std::filesystem::exists(fl_.path)) {
@@ -237,6 +259,7 @@ public:
         }
         std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
         Tools::WriteBuffer(buffer, strVirtualPath);
+        saveIMG(buffer,strVirtualPath);
       }
     }
   }
@@ -254,9 +277,9 @@ public:
         if (archive.AllSet()) {// todo confirm basename matches right now i'm assuming the 3 files are together.
           // todo check for language codes to choose correct files
           // auto key = archive.GetBaseName();
-          tmp.emplace_back(std::piecewise_construct,
-            std::forward_as_tuple(archive.GetBaseName()),
-            std::forward_as_tuple(std::move(archive)));
+          auto bn = archive.GetBaseName();
+          tmp.emplace_back(
+            std::piecewise_construct, std::forward_as_tuple(std::move(bn)), std::forward_as_tuple(std::move(archive)));
           archive = {};
         }
       }

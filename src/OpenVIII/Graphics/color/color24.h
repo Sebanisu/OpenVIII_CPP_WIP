@@ -14,7 +14,7 @@ namespace OpenVIII::Graphics {
 template<size_t r_ = 2U, size_t g_ = 1U, size_t b_ = 0U> struct color24
 {
 private:
-  mutable std::array<std::uint8_t, 3> parts;
+  mutable std::array<std::uint8_t, 3> parts{};
   template<size_t index, std::integral T> std::uint8_t set(T value) const
   {
     return parts[index] = static_cast<std::uint8_t>(Tools::clamp(value, 0, UINT8_MAX));
@@ -38,6 +38,14 @@ public:
     return UINT8_MAX;
   }
 
+  color24() = default;
+  template<Color cT>
+  explicit color24(cT color)
+  {
+    R(color.R());
+    G(color.G());
+    B(color.B());
+  }
   friend std::ostream &operator<<(std::ostream &os, const color24<r_, g_, b_> &color)
   {
     return os << std::uppercase << std::hex << '{' << static_cast<std::size_t>(color.R()) << ", "

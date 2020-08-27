@@ -14,6 +14,7 @@
 namespace OpenVIII::Graphics {
 /**
  * lzs images are LZSS images with a small header (X,Y,H,W) and 16bit colors.
+ * @see https://github.com/myst6re/deling/blob/master/FF8Image.cpp#L30
  */
 struct [[maybe_unused]] lzs
 {
@@ -24,15 +25,29 @@ private:
 public:
   [[maybe_unused]] explicit lzs(std::span<const char> buffer)
   {
+    std::uint32_t compSize{};
+    std::memcpy(&compSize, std::ranges::data(buffer), sizeof(std::uint32_t));
+    if (compSize + sizeof(std::uint32_t) != std::ranges::size(buffer)) {
+      std::cout << "wrong size: " << compSize << ", " << std::ranges::size(buffer) << '\n';
+    }
+    buffer = buffer.subspan(sizeof(std::uint32_t), compSize);// skip the size value.
+    [[maybe_unused]] auto size = std::size(buffer);
     auto uncompressed = Compression::LZSS::Decompress(buffer);
     std::span<const char> adj = uncompressed;
     std::memcpy(&rectangle_, std::ranges::data(adj), sizeof(rectangle_));
-    adj = adj.subspan(
-      sizeof(rectangle_), static_cast<std::size_t>(rectangle_.Width()) * static_cast<std::size_t>(rectangle_.Height()));
-    colors.resize(std::ranges::size(adj));
-    std::memcpy(std::ranges::data(colors), std::ranges::data(adj), std::ranges::size(adj));
+    std::cout << "size of uncompressed before: " << std::ranges::size(adj) << ", new size: ";
+    adj = adj.subspan(sizeof(rectangle_));// static_cast<std::size_t>(rectangle_.Width()) *
+                                          // static_cast<std::size_t>(rectangle_.Height())*sizeof(color16)
+    std::cout << std::ranges::size(adj) << '\n';
+    std::cout << rectangle_ <<'\n';
+    std::cout << sizeof(color16) << '\n';
+    colors.resize(rectangle_.Height() * rectangle_.Width());
+    std::cout << std::ranges::size(colors) <<", " <<std::ranges::size(adj)/sizeof(color16)<< '\n';
+    std::memcpy(std::ranges::data(colors),
+      std::ranges::data(adj),
+      std::min(std::ranges::size(colors) * sizeof(color16), std::ranges::size(adj)));
   }
-  [[maybe_unused]] void Save(std::string_view filename)
+  [[maybe_unused]] void Save(std::string_view filename) const
   {
     ppm::save(colors, rectangle_.Width(), rectangle_.Height(), filename);
   }

@@ -66,9 +66,8 @@ struct [[maybe_unused]] Tools
     return buf;
   }
 
-  template<typename srcT = std::vector<char>>
   [[maybe_unused]] static bool
-    WriteBuffer(const srcT &buffer, const std::string_view &path, const std::string_view &root = "tmp")
+    WriteBuffer(const std::span<const char> &buffer, const std::string_view &path, const std::string_view &root = "tmp")
   {
     // todo make buffer a std::span
     if (std::empty(buffer)) {
