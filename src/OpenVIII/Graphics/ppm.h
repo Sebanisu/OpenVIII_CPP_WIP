@@ -22,7 +22,14 @@ struct ppm
     fs.open(filename.data(), std::ios::binary | std::ios::out);
     if (fs.is_open()) {
       fs << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
-      for (const Color auto &color : data) { fs << color.R() << color.G() << color.B(); }
+      std::vector<char> outBuffer{};
+      outBuffer.reserve(std::ranges::size(data)*3U);
+      for (const Color auto &color : data) { //organize the data in ram first then write all at once.
+        outBuffer.emplace_back(static_cast<char>(color.R()));
+        outBuffer.emplace_back(static_cast<char>(color.G()));
+        outBuffer.emplace_back(static_cast<char>(color.B()));
+      }
+      fs.write(outBuffer.data(),static_cast<long>(outBuffer.size()));
     }
   }
 };
