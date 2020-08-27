@@ -16,6 +16,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <span>
 #include <filesystem>
 #include <cstring>
 #include <iterator>
@@ -24,6 +25,9 @@
 #include "OpenVIII/Tools/Tools.h"
 #include "CompressionTypeT.h"
 namespace OpenVIII::Archive {
+/**
+ * FI is the file index for the FL and FS files.
+ */
 struct FI
 {
   // changed to int because libraries require casting to int anyway.
@@ -59,7 +63,7 @@ public:
     compressionType_ = compressionType;
   }
 
-  FI(std::ifstream &&fp, const long &startOffset = 0, bool close = false)
+  explicit FI(std::ifstream &&fp, const long &startOffset = 0, bool close = false)
   {
     // unsure if this is correct but passing from ifstream is an rvalue
     // so umm it won't let me use a normal reference unless it's const.
@@ -85,18 +89,19 @@ public:
     : FI(std::ifstream(path, std::ios::in | std::ios::binary), static_cast<long>(GetStartOffset(id, offset)), true)
   {}
 
-  FI(const std::vector<char> &buffer, const size_t &startOffset = 0U)
+  explicit FI(std::span<const char> buffer, const size_t &startOffset = 0U)
   {
-    auto bufferPointer = buffer.data();
-    if (bufferPointer + startOffset + Size > bufferPointer + buffer.size())
+    if (startOffset + Size > std::ranges::size(buffer)) {
       return;
-    bufferPointer += startOffset;
-    std::memcpy(&uncompressedSize_, bufferPointer, sizeof(uncompressedSize_));
+    }
+    buffer = buffer.subspan(startOffset, Size);
+
+    std::memcpy(&uncompressedSize_, std::ranges::data(buffer), sizeof(uncompressedSize_));
     if (uncompressedSize_ > 0) {// if size is 0 than no point in reading more.
-      bufferPointer += sizeof(uncompressedSize_);
-      std::memcpy(&offset_, bufferPointer, sizeof(offset_));
-      bufferPointer += sizeof(offset_);
-      std::memcpy(&compressionType_, bufferPointer, sizeof(compressionType_));
+      buffer = buffer.subspan(sizeof(uncompressedSize_));
+      std::memcpy(&offset_, std::ranges::data(buffer), sizeof(offset_));
+      buffer = buffer.subspan(sizeof(offset_));
+      std::memcpy(&compressionType_, std::ranges::data(buffer), sizeof(compressionType_));
     }
   }
 

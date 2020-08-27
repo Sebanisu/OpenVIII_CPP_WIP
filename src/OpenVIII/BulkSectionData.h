@@ -19,7 +19,7 @@
 #include "OpenVIII/Kernel/NonBattleItems.h"
 
 namespace OpenVIII {
-template<typename spanT, size_t max = 0U> struct BulkSectionData
+template<typename spanT, size_t max = 0U> requires(sizeof(spanT) > 0U) struct BulkSectionData
 {
 private:
   // data
@@ -33,30 +33,20 @@ public:
   {}
   [[nodiscard]] size_t size() const
   {
-    if constexpr (sizeof(spanT) == 0) {
-      return 0;
+    const auto calcSize = [this]() { return std::size(span_) / sizeof(spanT); };
+    if constexpr (max == 0U) {
+      return calcSize();
     } else {
-
-      const auto calcSize = [this]() { return std::size(span_) / sizeof(spanT); };
-      if constexpr (max == 0U) {
-        return calcSize();
-      } else {
-        const auto c = calcSize();
-        if (max > c) {
-          return c;
-        }
-        return max;
+      const auto c = calcSize();
+      if (max > c) {
+        return c;
       }
+      return max;
     }
   }
-  template<typename T = std::size_t> auto at(const T id_v) const
+
+  template<typename T = std::size_t> requires(std::integral<T> && !std::signed_integral<T>) auto at(const T id_v) const
   {
-    static_assert(std::is_integral_v<T>);
-    if constexpr (std::is_signed_v<T>) {
-      if (id_v < 0) {
-        throw(std::invalid_argument("Index should be >= 0"));
-      }
-    }
     auto id = static_cast<size_t>(id_v);
     if constexpr (std::is_same_v<T, ItemID>) {
       if constexpr (std::is_same_v<spanT, Kernel::BattleItems>) {
@@ -92,7 +82,7 @@ public:
   //    return at(size()-1);
   //  }
   [[maybe_unused]] auto &Span() const noexcept { return span_; }
-  auto &TextSpan() const noexcept { return textSpan_; }
+  [[maybe_unused]] auto &TextSpan() const noexcept { return textSpan_; }
 };
 }// namespace OpenVIII
 #endif// VIIIARCHIVE_BULKSECTIONDATA_H

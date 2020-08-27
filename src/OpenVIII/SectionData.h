@@ -16,7 +16,7 @@
 #include <string_view>
 
 namespace OpenVIII {
-template<typename spanT> struct SectionData
+template<typename spanT> requires(sizeof(spanT) > 0U) struct SectionData
 {
 private:
   // data
@@ -30,38 +30,8 @@ public:
   {}
   [[nodiscard]] auto begin() const { return span_.begin(); }
   [[nodiscard]] auto end() const { return span_.end(); }
-  [[nodiscard]] size_t size() const
-  {
-    if constexpr (sizeof(spanT) == 0) {
-      return 0;
-    } else {
-      return std::size(span_) / sizeof(spanT);
-    }
-  }
+  [[nodiscard]] size_t size() const { return std::size(span_) / sizeof(spanT); }
   const auto *operator->() const { return &span_; }
-  //  auto at(size_t id) const
-  //  {
-  //    if (id < size()) {
-  //      return operator[](id);
-  //    }
-  //    using namespace std::string_literals;
-  //    throw std::out_of_range("BulkSectionData index out of range: "s + std::to_string(id) + "//"s +
-  //    std::to_string(size())); return spanT{};
-  //  }
-  //  auto operator[](size_t id) const noexcept
-  //  {
-  //    auto r = spanT{};
-  //    memcpy(&r, span_.data() + (id * sizeof(spanT)), sizeof(spanT));
-  //    return r;
-  //  }
-  //  auto &begin() const
-  //  {
-  //    return at(0);
-  //  }
-  //  auto &end() const
-  //  {
-  //    return at(size()-1);
-  //  }
   [[maybe_unused]] auto &Span() const noexcept { return span_; }
   auto &TextSpan() const noexcept { return textSpan_; }
 };

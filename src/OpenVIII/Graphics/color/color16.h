@@ -7,6 +7,8 @@
 
 #include <cstdint>
 #include <bitset>
+#include "OpenVIII/concepts.h"
+#include "OpenVIII/Tools/Tools.h"
 namespace OpenVIII::Graphics {
 struct color16
 {
@@ -31,32 +33,19 @@ private:
     return static_cast<std::uint8_t>(((temp << ConvertShift) | temp >> GetHighBitShift).to_ulong());
   }
 
-  template<typename number> void set(number input, std::bitset<bits> &mask, const std::uint_fast8_t &shift) const
+  template<std::floating_point T> void set(T input, std::bitset<bits> &mask, const std::uint_fast8_t &shift) const
   {
-    static_assert(std::is_integral_v<number> || std::is_floating_point_v<number>);
-    if constexpr (std::is_integral_v<number>) {
-      if (input > UINT8_MAX) {
-        input = UINT8_MAX;
-      }
-      if (input < 0) {
-        input = 0;
-      }
-      std::bitset<bits> val{ static_cast<std::uint_fast8_t>(input) };
-      val >>= ConvertShift;
-      val <<= shift;
-      value = (value & mask.flip()) | val;
-    } else if constexpr (std::is_floating_point_v<number>) {
-      if (input > 1.0F) {
-        input = 1.0F;
-      }
-      if (input < 0.0F) {
-        input = 0.0F;
-      }
+    std::bitset<bits> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0.0F, 1.0F) * largest5BitValue) };
+    val <<= shift;
+    value = (value & mask.flip()) | val;
+  }
 
-      std::bitset<bits> val{ static_cast<std::uint_fast8_t>(input * largest5BitValue) };
-      val <<= shift;
-      value = (value & mask.flip()) | val;
-    }
+  template<std::integral T> void set(T input, std::bitset<bits> &mask, const std::uint_fast8_t &shift) const
+  {
+    std::bitset<bits> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0, UINT8_MAX)) };
+    val >>= ConvertShift;
+    val <<= shift;
+    value = (value & mask.flip()) | val;
   }
 
 public:
@@ -84,10 +73,10 @@ public:
   /**
    * Color Blue stored as 5 bit.
    * @return 8 bit color value.
-   * @tparam number is an integral value. Clamped to 0-255.
+   * @tparam T is an integral value. Clamped to 0-255.
    * @param b is a new blue value.
    */
-  template<typename number> std::uint8_t B(const number &b) const
+  template<Number T> [[maybe_unused]] std::uint8_t B(const T &b) const
   {
     set(b, BlueMask, BlueShift);
     return B();
@@ -95,10 +84,10 @@ public:
   /**
    * Color Green stored as 5 bit.
    * @return 8 bit color value.
-   * @tparam number is an integral value. Clamped to 0-255.
+   * @tparam T is an integral value. Clamped to 0-255.
    * @param g is a new blue value.
    */
-  template<typename number> std::uint8_t G(const number &g) const
+  template<Number T> [[maybe_unused]] std::uint8_t G(const T &g) const
   {
     set(g, GreenMask, GreenShift);
     return G();
@@ -106,10 +95,10 @@ public:
   /**
    * Color Red stored as 5 bit.
    * @return 8 bit color value.
-   * @tparam number is an integral value. Clamped to 0-255.
+   * @tparam T is an integral value. Clamped to 0-255.
    * @param r is a new blue value.
    */
-  template<typename number> std::uint8_t R(const number &r) const
+  template<Number T> [[maybe_unused]] std::uint8_t R(const T &r) const
   {
     set(r, RedMask, RedShift);
     return R();
@@ -128,7 +117,7 @@ public:
   /**
    * @return true if color is transparent Black. all bits are 0.
    */
-  [[nodiscard]] bool isTransparentBlack() const { return value.none(); }
+  [[nodiscard]] [[maybe_unused]] bool isTransparentBlack() const { return value.none(); }
   [[nodiscard]] std::uint8_t A() const
   {
     if (isBlack()) {

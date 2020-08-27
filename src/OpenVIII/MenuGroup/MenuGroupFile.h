@@ -293,7 +293,8 @@ public:
               continue;
             }
             std::cout << "    " << stringNumber++ << ": {" << subSection.Offset() << "} "
-                      << Tools::u8tosv(subSection.template DecodedString<langVal>(tkmnmesPair.TextSpan(), offset, true)) << '\n';
+                      << Tools::u8tosv(subSection.template DecodedString<langVal>(tkmnmesPair.TextSpan(), offset, true))
+                      << '\n';
           }
         }
       });

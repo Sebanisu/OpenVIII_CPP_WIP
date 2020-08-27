@@ -16,6 +16,7 @@
 
 #include <vector>
 #include <array>
+#include <span>
 #include <algorithm>
 namespace OpenVIII::Compression {
 struct LZSS
@@ -63,8 +64,8 @@ public:
   // https://github.com/niemasd/PyFF7/blob/master/PyFF7/lzss.py
   // http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
 
-  template<typename dstT = std::vector<char>, typename srcT = std::vector<char>>
-  [[nodiscard]] static dstT Decompress(const srcT &src, size_t dstSize = 0)
+  template<typename dstT = std::vector<char>>
+  [[nodiscard]] static dstT Decompress(std::span<const char> src, size_t dstSize = 0)
   {
     // todo replace src type with a std::span so you can pass any container.
     // string view might work if nulls aren't detected as end and size is respected.
@@ -154,7 +155,7 @@ public:
    * Porting to STL - sebanisu.
    * */
 
-  template<typename srcT = std::vector<char>> [[nodiscard]] [[maybe_unused]] static auto Compress(const srcT &src)
+  [[nodiscard]] [[maybe_unused]] static auto Compress(std::span<const char> src)
   {
     // todo pass a std::span in cpp 20 instead of vector.
 
@@ -177,16 +178,22 @@ public:
 
     auto result = std::vector<char>();
     result.reserve(sizeAlloc);
+    /**
+     * Inserts string of length 18, text_buf[item..item+18-1], into one of the trees (text_buf.at(item)'th tree) and
+     * returns the longest-match position and length via the global variables match_position and match_length. If
+     * match_length = 18, then removes the old node in favor of the new one, because the old one will be deleted sooner.
+     * Note item plays double role, as tree node and position in buffer.
+     */
     const auto InsertNode = [&text_buf, &rightSide, &leftSide, &match_length, &parent, &match_position](
-                              const auto &item) {
-      /* Inserts string of length 18, text_buf[item..item+18-1], into one of the trees (text_buf.at(item)'th tree) and
-       * returns the longest-match position and length via the global variables match_position and match_length. If
-       * match_length = 18, then removes the old node in favor of the new one, because the old one will be deleted
-       * sooner. Note item plays double role, as tree node and position in buffer. */
+                              const unsigned int &item) {
+      /*  */
 
       int cmp = 1U;
-      auto key = text_buf.begin() + item;// todo replace with std::span.
-      unsigned int p = pOffset + *key;
+      auto key = std::span<unsigned char>(text_buf);
+      key = key.subspan(item);
+
+      // auto key = text_buf.begin() + item;// todo replace with std::span.
+      unsigned int p = pOffset + key[0];
 
       rightSide.at(item) = leftSide.at(item) = NotUsed;
       match_length = 0;
@@ -211,7 +218,7 @@ public:
         }
         unsigned int nodeIndex = 1;
         for (; nodeIndex < nodeSize; nodeIndex++) {
-          if ((cmp = *(key + nodeIndex) - (text_buf.at(p + nodeIndex))) != 0) {
+          if ((cmp = key.subspan(nodeIndex)[0] - (text_buf.at(p + nodeIndex))) != 0) {
             break;
           }// todo need std::span to remove pointer math.
         }

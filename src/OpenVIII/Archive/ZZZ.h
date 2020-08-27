@@ -73,9 +73,8 @@ public:
       const auto &leftSize = std::size(leftString);
       if (leftSize == rightSize) {
         return leftString < rightString;
-      } else {
-        return leftSize < rightSize;
       }
+      return leftSize < rightSize;
     });
     fp.close();
     data_.shrink_to_fit();

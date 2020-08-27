@@ -35,10 +35,10 @@ struct L4Z
     return dst;
   }
 
-  template<typename dstT = std::vector<char>, typename srcT = std::vector<char>>
+  template<typename dstT = std::vector<char>, std::ranges::range srcT = std::vector<char>>
   [[nodiscard]] [[maybe_unused]] static dstT Decompress(const srcT &src, const size_t &dstSize = 0)
   {// todo replace with std::span.
-    Decompress<dstT>(src.data(), src.size(), dstSize);
+    return Decompress<dstT>(std::ranges::data(src), std::ranges::size(src), dstSize);
   }
 };
 }// namespace OpenVIII::Compression

@@ -15,21 +15,17 @@ namespace OpenVIII::Graphics {
 struct BPPT
 {
 private:
-  bool _8bpp_ : 1;
-  bool _16bpp_ : 1;
-  bool unused1 : 1;
-  bool colorLookupTablePresent_ : 1;
+  bool _8bpp_ : 1 { false };
+  bool _16bpp_ : 1 { false };
+  bool unused1 : 1 { false };
+  bool colorLookupTablePresent_ : 1 { false };
 
-  bool unused2 : 1;
-  bool unused3 : 1;
-  bool unused4 : 1;
-  bool unused5 : 1;
+  bool unused2 : 1 { false };
+  bool unused3 : 1 { false };
+  bool unused4 : 1 { false };
+  bool unused5 : 1 { false };
 
 public:
-  BPPT()
-    : _8bpp_{ false }, _16bpp_{ false }, unused1{ false },
-      colorLookupTablePresent_{ false }, unused2{ false }, unused3{ false }, unused4{ false }, unused5{ false }
-  {}
   [[nodiscard]] bool unused() const { return unused1 && unused2 && unused3 && unused4 && unused5; }
   /**
    * Test bits to check if color lookup table is present and 8bpp and 16bpp are not set;

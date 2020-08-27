@@ -20,17 +20,32 @@
 #include <istream>
 #include <filesystem>
 #include <cassert>
-
+#include <ranges>
+#include "OpenVIII/concepts.h"
 namespace OpenVIII {
 struct [[maybe_unused]] Tools
 {
-  static std::string_view u8tosv(const std::u8string_view & s8)
+
+  template<Number T, Number rT> static constexpr T clamp(const T &input, const rT &min, const rT &max)
   {
-    return {reinterpret_cast<const char *>(s8.data()),s8.size()};
+    static_assert((std::is_integral_v<T> && std::is_integral_v<rT>)
+                  || (std::is_floating_point_v<T> && std::is_floating_point_v<rT>));
+    if (input > max) {
+      return static_cast<T>(max);
+    }
+    if (input < min) {
+      return static_cast<T>(min);
+    }
+    return input;
   }
-  static std::string u8tos(const std::u8string_view & s8)
-  { auto sv = u8tosv(s8);
-    return {sv.begin(),sv.end()};
+  static std::string_view u8tosv(const std::u8string_view &s8)
+  {
+    return { reinterpret_cast<const char *>(s8.data()), s8.size() };
+  }
+  [[maybe_unused]] static std::string u8tos(const std::u8string_view &s8)
+  {
+    auto sv = u8tosv(s8);
+    return { sv.begin(), sv.end() };
   }
   template<typename trivialType> [[maybe_unused]] static void ReadVal(std::istream &fp, trivialType &item)
   {

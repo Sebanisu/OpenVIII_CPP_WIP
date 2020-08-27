@@ -36,7 +36,6 @@ public:
 
   friend std::ostream &operator<<(std::ostream &os, const timImageHeader &input)
   {
-    //[[maybe_unused]]static constexpr auto sizev_ = sizeof(input);
     return os << '{' << input.size() << " bytes, " << input.rectangle_ << '}';
   }
 };

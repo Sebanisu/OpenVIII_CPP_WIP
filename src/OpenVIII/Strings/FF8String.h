@@ -22,7 +22,7 @@ namespace OpenVIII {
 template<LangT langVal> struct FF8String
 {
 private:
-  static constexpr std::array<std::u8string_view,256> euCodePage { u8"\x00"sv,
+  static constexpr std::array<std::u8string_view, 256> euCodePage{ u8"\x00"sv,
     u8"\x01"sv,
     u8"\n"sv,
     u8"\x03"sv,
@@ -279,7 +279,7 @@ private:
     u8" S"sv,
     u8"ag" };
 
-  static constexpr std::array<std::u8string_view,256> jpCodePage = { u8"\x00"sv,
+  static constexpr std::array<std::u8string_view, 256> jpCodePage = { u8"\x00"sv,
     u8"\x01"sv,
     u8"\n"sv,
     u8"\x03"sv,
@@ -550,7 +550,7 @@ public:
   [[nodiscard]] auto static Decode(uint8_t key) noexcept { return GetCodePage().at(key); }
   [[nodiscard]] auto static Decode(const std::string_view &buffer)
   {
-    using u8stringstream = std::basic_stringstream<char8_t,std::char_traits<char8_t>>;
+    using u8stringstream = std::basic_stringstream<char8_t, std::char_traits<char8_t>>;
     if (std::empty(buffer)) {
       return std::u8string{};
     }

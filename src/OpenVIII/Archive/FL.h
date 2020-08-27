@@ -12,7 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FL_H
 #define VIIIARCHIVE_FL_H
-
+#include <ranges>
 #include <set>
 #include <string>
 #include <filesystem>
@@ -27,16 +27,22 @@
 #include "OpenVIII/Tools/Tools.h"
 
 namespace OpenVIII::Archive {
-// FL files contain internal file structure paths. As a flat text file.
-// This class is used to search the strings for a filename or
-// grab all the entries. The entry will be a string paired with an int
-// that is the line number. This is used to ID the FI entries.
+//
+/**
+ * FL files contain internal file structure paths. As a flat text file. This class is used to search the strings for a
+ * filename or grab all the entries. The entry will be a string paired with an int that is the line number. This is used
+ * to ID the FI entries.
+ */
 struct FL
 {
 private:
-  // Remove the C:\ from the start, remove the \r from the end,
-  // and change \ to the correct slash.
-  // added skipFixed if data is set then i probably fixed slashes already.
+  /**
+   * Remove the C:\ from the start, remove the \r from the end, and change \ to the correct slash. added skipFixed if
+   * data is set then i probably fixed slashes already.
+   * @param input updates this string
+   * @param skipFixed if false skip removing the \r from end and skip replacing slashes.
+   * @return void
+   */
   constexpr static void CleanString(std::string &input, const bool &skipFixed = true) noexcept
   {
     if (std::size(input) > 4) {
@@ -56,14 +62,23 @@ private:
 public:
   constexpr const static auto Ext = std::string_view(".FL");
 
-  // Get All entries sorted from file or data buffer.
+  /**
+   * Get All entries sorted from file or data buffer.
+   * @param path filename path.
+   * @param data buffer of bytes.
+   * @param offset bytes from start of data to start looking.
+   * @param size number of bytes?; 0 == unlimited
+   * @param count expected number of matches?; 0 == unlimited
+   * @param needle possible string matches; {} == all
+   * @param limit max matches; 0 == unlimited
+   * @return matches
+   */
   [[nodiscard]] static auto GetAllEntriesData(const std::filesystem::path &path,
     const std::string &data,
     const size_t &offset,
-
     const size_t &size = 0U,
     const size_t &count = 0U,
-    const std::initializer_list<std::string_view> needle = {},
+    const std::initializer_list<std::string_view> &needle = {},
     const size_t &limit = 0U)
   {
     auto vector = std::vector<std::pair<unsigned int, std::string>>();
@@ -109,7 +124,7 @@ public:
               .emplace_back(
                 std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(std::move(innerPath)))
               .second,
-            data.empty());
+            std::empty(data));
           innerPath = {};
         }
       }
@@ -118,44 +133,29 @@ public:
     // shorter length and then what ever str < str2 does.
 
 
-    if (std::empty(data)) {
+    if (std::empty(data) || (std::size(data) == 1U && data[0] == '\0')) {
       auto fp = std::ifstream(path, std::ios::in);
       if (fp.is_open()) {
         process(fp);
         fp.close();
       }
+    } else if (data[0] != '\0') {
+      auto ss = std::stringstream(data);
+      process(ss);
     } else {
-      if (data[0] != '\0') {
-        auto ss = std::stringstream(data);
-        process(ss);
-      } else {
-        std::cout << "\033[1;31mFL Data is null!\033[0m\n";
-      }
+      std::cout << "\033[1;31mFL Data is null!\033[0m\n";
     }
-    // vector.shrink_to_fit();
     std::sort(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
       if (left.second.length() == right.second.length()) {
         return left.second < right.second;
-      } else {
-        return left.second.length() < right.second.length();
       }
-      //           if (left.second.length() <= right.second.length()) {
-      //             return true;
-      //           }
-      //           else if (left.second.length() > right.second.length()) {
-      //             return false;
-      //           }
-      //           else
-      //           {
-      //             return left.second < right.second;
-      //           }
+      return left.second.length() < right.second.length();
     });
     if (!std::is_sorted(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
           if (left.second.length() == right.second.length()) {
             return left.second < right.second;
-          } else {
-            return left.second.length() < right.second.length();
           }
+          return left.second.length() < right.second.length();
         })) {
 
       for (const auto &item : vector) { std::cout << item.second << '\n'; }
@@ -169,16 +169,26 @@ public:
     const size_t &offset,
     const size_t &size = 0,
     const size_t &count = 0,
-    const std::initializer_list<std::string_view> needle = {})
+    const std::initializer_list<std::string_view> &needle = {})
   {
     auto tmp = std::string();
     return GetAllEntriesData(path, tmp, offset, size, count, needle);
   }
 
-  // Get a single entry that is the first match for needle.
-  template<typename srcT>
+  /**
+   * Get a single entry that is the first match for needle.
+   * @param path contains path to file
+   * @param data contains buffer of chars //required to be strings for stringstream
+   * @param needle is a group of strings to filter the output with.
+   * @param offset is the number of bytes to skip.
+   * @param size is max number of bytes. 0 is unlimited.
+   * @param count is max results returned. 0 is unlimited.
+   * @return
+   */
+
+
   [[nodiscard]] static auto GetEntryData(const std::filesystem::path &path,
-    const srcT &data,
+    const std::string &data,
     const std::initializer_list<std::string_view> &needle,
     const size_t &offset = 0U,
     const size_t &size = 0U,
@@ -186,8 +196,9 @@ public:
   {// Maybe should search all entries instead of using this because this is not sorted. Sorting matters when the
     // strings are similar. Though this might be faster if only getting a few files from an archive.
     auto buffer = GetAllEntriesData(path, data, offset, size, count, needle, 1);
-    if (std::empty(buffer))
+    if (std::empty(buffer)) {
       return std::make_pair(0U, std::string(""));
+    }
     return buffer.at(0);
   }
   // Get a single entry that is the first match for needle.
@@ -199,37 +210,10 @@ public:
   {// Maybe should search all entries instead of using this because this is not sorted. Sorting matters when the
    // strings are similar. Though this might be faster if only getting a few files from an archive.
     auto data = GetAllEntriesData(path, "", offset, size, count, needle, 1);
-    if (std::empty(data))
+    if (std::empty(data)) {
       return std::make_pair(0U, std::string(""));
+    }
     return data.at(0);
-    //    std::ifstream fp = std::ifstream(path, std::ios::in);
-    //
-    //    fp.seekg(static_cast<long>(offset));
-    //    std::string innerPath;
-    //    fp.seekg(3, std::ios::cur);
-    //    for (unsigned int i = 0; (count == 0U || i < count) && (size == 0U || fp.tellg() < static_cast<long>(size +
-    //    offset))
-    //                               && [&innerPath, &fp]() -> bool {
-    //           if (fp.seekg(3, std::ios::cur)) {
-    //             /* skip c:\ */
-    //             return static_cast<bool>(std::getline(fp, innerPath));
-    //           }
-    //           return false;
-    //         }();
-    //
-    //         i++) {
-    //      if (!std::empty(needle)
-    //          && std::any_of(needle.begin(), needle.end(), [&innerPath](const std::string_view &innerNeedle) {
-    //               return !innerPath.empty() && Tools::iFind(innerPath, innerNeedle);
-    //             })) {
-    //        CleanString(innerPath);
-    //        fp.close();
-    //        return (std::make_pair(i, std::move(innerPath)));
-    //      }
-    //      i++;
-    //    }
-    //    fp.close();
-    //    return std::make_pair(0U, std::string(""));
   }
   static void CleanBuffer(std::string &buffer)
   {
@@ -238,7 +222,6 @@ public:
     // change slashes to preferred
     Tools::replaceSlashes(buffer);
   }
-};// namespace OpenVIII::Archive
-// namespace OpenVIII::Archive
+};
 }// namespace OpenVIII::Archive
 #endif// !VIIIARCHIVE_FL_H

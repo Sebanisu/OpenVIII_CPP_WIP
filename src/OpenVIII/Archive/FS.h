@@ -21,7 +21,7 @@
 #include <utility>
 #include <iterator>
 #include <cstring>
-
+#include <span>
 #include "OpenVIII/Compression/LZSS.h"
 #include "OpenVIII/Compression/L4Z.h"
 #include "OpenVIII/Tools/Tools.h"
@@ -31,7 +31,7 @@ static size_t largestCompressedBuffer{};
 struct FS
 {
 public:
-  static constexpr const auto Ext = std::string_view(".FS");
+  static constexpr auto Ext = std::string_view(".FS");
 
   template<typename dstT = std::vector<char>, typename datT = OpenVIII::Archive::FI>
   static dstT GetEntry(const std::filesystem::path &path, const datT &fi, const size_t &offset)
@@ -66,8 +66,9 @@ public:
     case CompressionTypeT::LZSS: {
       unsigned int compSize{ 0 };
       Tools::ReadVal(fp, compSize);
-      if (compSize > largestCompressedBuffer)
+      if (compSize > largestCompressedBuffer) {
         largestCompressedBuffer = compSize;
+      }
       dstT buffer = Tools::ReadBuffer<dstT>(fp, compSize);
       return Compression::LZSS::Decompress<dstT>(buffer, fi.UncompressedSize());
     }
@@ -91,7 +92,7 @@ public:
     return {};
   }
   template<typename dstT = std::vector<char>>
-  static dstT GetEntry(const std::vector<char> &data, const OpenVIII::Archive::FI &fi, const size_t &offset)
+  static dstT GetEntry(std::span<const char> data, const OpenVIII::Archive::FI &fi, const size_t &offset)
   {
     // it shouldn't be empty
     if (data.empty()) {
@@ -102,61 +103,53 @@ public:
     if (fi.UncompressedSize() == 0) {
       return {};
     }
+    data = data.subspan(fi.Offset() + offset);
 
-    auto iterator = data.begin() + fi.Offset() + static_cast<long>(offset);
-    auto ptr = data.data() + fi.Offset() + static_cast<long>(offset);
     // ptr and iterator.base() would be the same. sadly msvc doesn't have a .base()
     // todo usages of memcpy can be replaced with std::bitcast in cpp20
 
     switch (fi.CompressionType()) {
     case CompressionTypeT::None: {
-      if (iterator + fi.UncompressedSize() > data.end()) {
+      if (fi.UncompressedSize() > std::ranges::size(data)) {
         break;
       }
       // dstT dst = {};
       // dst.reserve(fi.UncompressedSize());
       // std::copy(iterator, iterator + fi.UncompressedSize(), std::back_inserter(dst)); //todo do I need this copy?
-      return { iterator, iterator + fi.UncompressedSize() };
+      return { data.begin(), data.begin() + fi.UncompressedSize() };
     }
     case CompressionTypeT::LZSS: {
       unsigned int compSize{ 0 };
-      if (iterator + sizeof(compSize) > data.end()) {
+      if (sizeof(compSize) > std::ranges::size(data)) {
         break;
       }
-      std::memcpy(&compSize, ptr, sizeof(compSize));
+      std::memcpy(&compSize, data.data(), sizeof(compSize));
       if (compSize > largestCompressedBuffer) {
         largestCompressedBuffer = compSize;
       }
-      iterator += sizeof(compSize);
-      if (iterator + compSize > data.end()) {
+      if (compSize + sizeof(compSize) > std::ranges::size(data)) {
         break;
       }
-      ptr += sizeof(compSize);
-      std::string_view span(
-        ptr, compSize);// i think this works then I don't need to copy the data from one vector to another.
-      // buffer.reserve(compSize);
-      // std::copy(iterator, iterator + compSize, std::back_inserter(buffer));// todo replace with std::span in cpp20.
-      return Compression::LZSS::Decompress<dstT>(span, fi.UncompressedSize());
+      return Compression::LZSS::Decompress<dstT>(data.subspan(sizeof(compSize), compSize), fi.UncompressedSize());
     }
     case CompressionTypeT::LZ4: {
-      unsigned int sectSize{ 0 };
+      std::uint32_t sectSize{ 0 };
       // L4Z header contains size of total section as uint32, 4 byte string and another uint32.
       // the size of the compressed data is the first value minus 8. the second value is something i'm unsure of
-      if (iterator + sizeof(sectSize) > data.end()) {
+      if (sizeof(sectSize) > std::ranges::size(data)) {
         break;
       }
-      std::memcpy(&sectSize, ptr, sizeof(sectSize));
-      ptr += sizeof(sectSize);
-      if (iterator + sectSize + sizeof(sectSize) > data.end()) {
+      std::memcpy(&sectSize, std::ranges::data(data), sizeof(sectSize));
+      if (sectSize > std::ranges::size(data)) {
         break;
       }
       constexpr static auto skipBytes = 8U;
-      ptr += skipBytes;
       const auto compSize = sectSize - skipBytes;
+      data = data.subspan(sizeof(sectSize) + skipBytes, compSize);
       if (compSize > largestCompressedBuffer) {
         largestCompressedBuffer = compSize;
       }
-      return Compression::L4Z::Decompress<dstT>(ptr, compSize, fi.UncompressedSize());
+      return Compression::L4Z::Decompress<dstT>(data, fi.UncompressedSize());
     }
     }
     return {};

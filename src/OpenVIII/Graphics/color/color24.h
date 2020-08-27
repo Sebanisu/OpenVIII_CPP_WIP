@@ -7,29 +7,22 @@
 
 #include <cstdint>
 #include <bitset>
+#include "OpenVIII/concepts.h"
+#include "OpenVIII/Tools/Tools.h"
 namespace OpenVIII::Graphics {
 
 template<size_t r_ = 2U, size_t g_ = 1U, size_t b_ = 0U> struct color24
 {
 private:
   mutable std::array<std::uint8_t, 3> parts;
-  template<size_t index, typename number> std::uint8_t set(number value) const
+  template<size_t index, std::integral T> std::uint8_t set(T value) const
   {
-    if constexpr (std::is_integral_v<number>) {
-      if (value > UINT8_MAX) {
-        value = UINT8_MAX;
-      } else if (value < 0) {
-        value = 0;
-      }
-      return parts[index] = static_cast<std::uint8_t>(value);
-    } else if constexpr (std::is_floating_point_v<number>) {
-      if (value > 1.0F) {
-        value = 1.0F;
-      } else if (value < 0.0F) {
-        value = 0.0F;
-      }
-      return parts[index] = static_cast<std::uint8_t>(value * UINT8_MAX);
-    }
+    return parts[index] = static_cast<std::uint8_t>(Tools::clamp(value, 0, UINT8_MAX));
+  }
+
+  template<size_t index, std::floating_point T> std::uint8_t set(T value) const
+  {
+    return parts[index] = static_cast<std::uint8_t>(Tools::clamp(value, 0.0F, 1.0F) * UINT8_MAX);
   }
 
 public:
@@ -37,11 +30,13 @@ public:
   [[nodiscard]] std::uint8_t G() const { return parts.at(g_); }
   [[nodiscard]] std::uint8_t B() const { return parts.at(b_); }
   [[nodiscard]] std::uint8_t A() const { return UINT8_MAX; }
-
-  template<typename number> [[nodiscard]] std::uint8_t R(const number &value) const { return set<r_, number>(value); }
-  template<typename number> [[nodiscard]] std::uint8_t G(const number &value) const { return set<g_, number>(value); }
-  template<typename number> [[nodiscard]] std::uint8_t B(const number &value) const { return set<b_, number>(value); }
-  template<typename number> [[nodiscard]] std::uint8_t A(number) const { return UINT8_MAX; }
+  template<Number T> [[nodiscard]] std::uint8_t R(const T &value) const { return set<r_, T>(value); }
+  template<Number T> [[nodiscard]] std::uint8_t G(const T &value) const { return set<g_, T>(value); }
+  template<Number T> [[nodiscard]] std::uint8_t B(const T &value) const { return set<b_, T>(value); }
+  template<Number T> [[maybe_unused]] [[nodiscard]] std::uint8_t A([[maybe_unused]] const T &unused) const
+  {
+    return UINT8_MAX;
+  }
 
   friend std::ostream &operator<<(std::ostream &os, const color24<r_, g_, b_> &color)
   {
