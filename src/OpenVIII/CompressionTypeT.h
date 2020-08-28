@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_COMPRESSIONTYPET_H
 #define VIIIARCHIVE_COMPRESSIONTYPET_H
 #include <cstdint>
-namespace OpenVIII::Archive {
+namespace OpenVIII {
 enum class CompressionTypeT : std::uint32_t {
   None = 0,
   LZSS = 1,

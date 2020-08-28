@@ -25,6 +25,7 @@
 #include <set>
 #include <map>
 #include <iterator>
+#include <ranges>
 #include "OpenVIII/Graphics/lzs.h"
 #include "OpenVIII/Graphics/tim.h"
 
@@ -32,7 +33,7 @@ namespace OpenVIII::Archive {
 template<bool HasNested = false> struct FIFLFS
 {
 private:
-  template<std::ranges::range T> struct [[maybe_unused]] Grouping
+  template<std::ranges::contiguous_range T> struct [[maybe_unused]] Grouping
   {
   public:
     mutable std::filesystem::path path{};
@@ -147,9 +148,23 @@ public:
 
     return 0;
   }
-  template<std::ranges::range srcT = std::vector<char>, typename datT = Archive::FI>
-  char
-    TryAddNested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi) const
+  /**
+   * Try and Add Nested data. There are 3 parts to an Archive so it this adds one and goes to next one till all 3 are
+   * added.
+   * @tparam srcT Can be an container of data, or it will be a filesystem path to a file with the data.
+   * @tparam datT Data struct with offset, size and compression type.
+   * @param src The data or path.
+   * @param srcOffset Bytes skipped at the beginning of data or file.
+   * @param fileEntry
+   * @param fi The Data struct.
+   * @return char of 0,1,2,3, 0 being all loaded. 1,2,3 is one of the 3 types. (fl,fs,fi);
+   */
+  template<typename srcT, FI_Like datT = Archive::FI>
+  requires(std::convertible_to<srcT, std::filesystem::path> || std::ranges::contiguous_range<srcT>) char TryAddNested(
+    const srcT &src,
+    const size_t srcOffset,
+    const std::filesystem::path &fileEntry,
+    const datT &fi) const
   {
 
     const auto set = [&fileEntry, &srcOffset](auto &ds) {
@@ -184,7 +199,8 @@ public:
     }
     return 0;
   }
-  void saveIMG(const std::vector<char> &buffer, const std::string_view &path, const std::string_view &root = "tmp") const
+  void
+    saveIMG(const std::vector<char> &buffer, const std::string_view &path, const std::string_view &root = "tmp") const
   {
     if (std::ranges::size(buffer) > 0) {
       auto dir = std::filesystem::path(root);
@@ -213,7 +229,7 @@ public:
       const auto &[id, strVirtualPath] = item;
       // std::cout << "TryAddNested: {" << id << ", " << strVirtualPath << "}\n";
 
-      auto fi = GetEntryIndex(id);
+      FI_Like auto fi = GetEntryIndex(id);
       {
         char retVal = [this, &archive, &fi, &strVirtualPath]() {
           std::filesystem::path virtualPath(strVirtualPath);
@@ -221,14 +237,15 @@ public:
             return archive.TryAddNested(fs_.data, fs_.offset, virtualPath, fi);
           }
 
-          if (fi.CompressionType() == Archive::CompressionTypeT::None) {
+          if (fi.CompressionType() == CompressionTypeT::None) {
             auto localRetVal = archive.TryAdd(fs_.path, virtualPath, fs_.offset + fi.Offset(), fi.UncompressedSize());
             if (localRetVal != 0) {
               std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
             }
             return localRetVal;
           }
-          return archive.TryAddNested(fs_.path, fs_.offset, virtualPath, fi);
+          return archive.TryAddNested(
+            fs_.path, fs_.offset, virtualPath, fi);// when path is sent a different function is used later.
         }();
         if (retVal == 1) {
           continue;
@@ -250,7 +267,7 @@ public:
           std::cout << '{' << id << ", "
                     << "Empty!"
                     << ", " << strVirtualPath << "}" << fi << std::endl;
-          if (!(fi.UncompressedSize() == 0 && fi.CompressionType() == Archive::CompressionTypeT::None)) {
+          if (!(fi.UncompressedSize() == 0 && fi.CompressionType() == CompressionTypeT::None)) {
             exit(EXIT_FAILURE);
           }
         }
@@ -259,7 +276,7 @@ public:
         }
         std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
         Tools::WriteBuffer(buffer, strVirtualPath);
-        saveIMG(buffer,strVirtualPath);
+        saveIMG(buffer, strVirtualPath);
       }
     }
   }
@@ -345,7 +362,7 @@ public:
     }
     return {};
   }
-  template<typename outT = std::vector<char>> [[nodiscard]] outT GetEntryData(const OpenVIII::Archive::FI &fi) const
+  template<typename outT = std::vector<char>, FI_Like fiT> [[nodiscard]] outT GetEntryData(const fiT &fi) const
   {
     return [this, &fi]() {
       if (std::empty(fs_.data)) {

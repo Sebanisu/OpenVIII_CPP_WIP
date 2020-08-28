@@ -35,7 +35,7 @@ struct L4Z
     return dst;
   }
 
-  template<typename dstT = std::vector<char>, std::ranges::range srcT = std::vector<char>>
+  template<typename dstT = std::vector<char>, std::ranges::contiguous_range srcT = std::vector<char>>
   [[nodiscard]] [[maybe_unused]] static dstT Decompress(const srcT &src, const size_t &dstSize = 0)
   {// todo replace with std::span.
     return Decompress<dstT>(std::ranges::data(src), std::ranges::size(src), dstSize);

@@ -5,6 +5,7 @@
 #ifndef VIIIARCHIVE_CONCEPTS_H
 #define VIIIARCHIVE_CONCEPTS_H
 #include <concepts>
+#include "CompressionTypeT.h"
 namespace OpenVIII {
 
 template<typename T> concept Number = std::floating_point<T> || std::integral<T>;
@@ -42,5 +43,29 @@ template<typename T> concept Color_A = requires(T a)
 template<typename T> concept Color = Color_A<T> &&Color_B<T> &&Color_G<T> &&Color_R<T>;
 
 
+template<typename T> concept FI_Like_UncompressedSize = requires(T a)
+{
+  {
+    a.UncompressedSize()
+  }
+  ->std::integral;
+};
+template<typename T> concept FI_Like_Offset = requires(T a)
+{
+  {
+    a.Offset()
+  }
+  ->std::integral;
+};
+
+template<typename T> concept FI_Like_CompressionType = requires(T a)
+{
+  {
+    a.CompressionType()
+  }
+  ->std::convertible_to<CompressionTypeT>;
+};
+
+template<typename T> concept FI_Like = FI_Like_CompressionType<T> &&FI_Like_Offset<T> &&FI_Like_UncompressedSize<T>;
 }// namespace OpenVIII
 #endif// VIIIARCHIVE_CONCEPTS_H

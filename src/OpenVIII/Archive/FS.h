@@ -33,7 +33,7 @@ struct FS
 public:
   static constexpr auto Ext = std::string_view(".FS");
 
-  template<typename dstT = std::vector<char>, typename datT = OpenVIII::Archive::FI>
+  template<typename dstT = std::vector<char>, FI_Like datT = OpenVIII::Archive::FI>
   static dstT GetEntry(const std::filesystem::path &path, const datT &fi, const size_t &offset)
   {
     if (fi.UncompressedSize() == 0) {
@@ -91,8 +91,8 @@ public:
     fp.close();
     return {};
   }
-  template<typename dstT = std::vector<char>>
-  static dstT GetEntry(std::span<const char> data, const OpenVIII::Archive::FI &fi, const size_t &offset)
+  template<typename dstT = std::vector<char>, FI_Like fiT>
+  static dstT GetEntry(std::span<const char> data, const fiT &fi, const size_t &offset)
   {
     // it shouldn't be empty
     if (data.empty()) {

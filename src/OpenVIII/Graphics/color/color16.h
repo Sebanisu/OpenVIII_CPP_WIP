@@ -31,28 +31,22 @@ private:
   static constexpr std::uint_fast8_t ConvertShift = { 3U };
   static constexpr std::uint_fast8_t GetHighBitShift = { 2U };
   static constexpr std::uint_fast8_t largest5BitValue{ 0b0001'1111 };
-  [[nodiscard]] std::bitset<bits> valueBit()const
-  {
-    return std::bitset<bits>{value};
-  }
-  void valueBit(const std::bitset<bits> & newValue)const
-  {
-    value = static_cast<std::uint16_t>(newValue.to_ulong());
-  }
+  [[nodiscard]] std::bitset<bits> valueBit() const { return std::bitset<bits>{ value }; }
+  void valueBit(const std::bitset<bits> &newValue) const { value = static_cast<std::uint16_t>(newValue.to_ulong()); }
   [[nodiscard]] std::uint8_t convert(const std::bitset<bits> &mask, const std::uint_fast8_t &shift) const
   {
     auto temp = ((valueBit() & mask) >> shift);
     return static_cast<std::uint8_t>(((temp << ConvertShift) | temp >> GetHighBitShift).to_ulong());
   }
 
-  template<std::floating_point T> void set(T input,std::bitset<bits> mask, const std::uint_fast8_t &shift) const
+  template<std::floating_point T> void set(T input, std::bitset<bits> mask, const std::uint_fast8_t &shift) const
   {
     std::bitset<bits> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0.0F, 1.0F) * largest5BitValue) };
     val <<= shift;
     valueBit((valueBit() & mask.flip()) | val);
   }
 
-  template<std::integral T> void set(T input, std::bitset<bits>mask, const std::uint_fast8_t &shift) const
+  template<std::integral T> void set(T input, std::bitset<bits> mask, const std::uint_fast8_t &shift) const
   {
     std::bitset<bits> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0, UINT8_MAX)) };
     val >>= ConvertShift;
@@ -61,25 +55,17 @@ private:
   }
 
 public:
-
-
   color16() = default;
-  explicit color16(std::uint16_t rawColor)
-  :value(rawColor)
-  {
-  }
-  template<Color cT>
-  explicit color16(cT color)
+  explicit color16(std::uint16_t rawColor) : value(rawColor) {}
+  template<Color cT> explicit color16(cT color)
   {
     R(color.R());
     G(color.G());
     B(color.B());
-    //pass stp bit? assuming alpha is 100% *shrugs*
-    if(value == 0) {
+    // pass stp bit? assuming alpha is 100% *shrugs*
+    if (value == 0) {
       stp(true);
-    }
-    else
-    {
+    } else {
       stp(false);
     }
   }
@@ -147,13 +133,11 @@ public:
    * Special transparency bit
    * @return true or false
    */
-  [[maybe_unused]] bool stp(bool enabled) const {
-    if(enabled)
-    {
+  [[maybe_unused]] bool stp(bool enabled) const
+  {
+    if (enabled) {
       valueBit(valueBit() | STPMask);
-    }
-    else
-    {
+    } else {
       valueBit(valueBit() & AllColorMask);
     }
     return enabled;

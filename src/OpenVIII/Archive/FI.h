@@ -23,7 +23,7 @@
 #include <array>
 #include <algorithm>
 #include "OpenVIII/Tools/Tools.h"
-#include "CompressionTypeT.h"
+#include "OpenVIII/CompressionTypeT.h"
 namespace OpenVIII::Archive {
 /**
  * FI is the file index for the FL and FS files.
@@ -54,6 +54,12 @@ public:
 
   constexpr FI() noexcept = default;
 
+  template<FI_Like fiT> constexpr explicit FI(const fiT &fi)
+  {
+    uncompressedSize_ = static_cast<decltype(uncompressedSize_)>(fi.UncompressedSize());
+    offset_ = static_cast<decltype(offset_)>(fi.Offset());
+    compressionType_ = static_cast<decltype(compressionType_)>(fi.CompressionType());
+  }
   constexpr FI(const unsigned int &uncompressedSize,
     const unsigned int &offset,
     const CompressionTypeT &compressionType = CompressionTypeT::None) noexcept

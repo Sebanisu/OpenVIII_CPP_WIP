@@ -39,10 +39,10 @@ public:
     adj = adj.subspan(sizeof(rectangle_));// static_cast<std::size_t>(rectangle_.Width()) *
                                           // static_cast<std::size_t>(rectangle_.Height())*sizeof(color16)
     std::cout << std::ranges::size(adj) << '\n';
-    std::cout << rectangle_ <<'\n';
+    std::cout << rectangle_ << '\n';
     std::cout << sizeof(color16) << '\n';
     colors.resize(rectangle_.Height() * rectangle_.Width());
-    std::cout << std::ranges::size(colors) <<", " <<std::ranges::size(adj)/sizeof(color16)<< '\n';
+    std::cout << std::ranges::size(colors) << ", " << std::ranges::size(adj) / sizeof(color16) << '\n';
     std::memcpy(std::ranges::data(colors),
       std::ranges::data(adj),
       std::min(std::ranges::size(colors) * sizeof(color16), std::ranges::size(adj)));

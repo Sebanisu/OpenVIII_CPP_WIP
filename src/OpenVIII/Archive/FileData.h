@@ -77,7 +77,7 @@ public:
   [[maybe_unused]] [[nodiscard]] constexpr auto Size() const noexcept { return size_; }
   [[maybe_unused]] [[nodiscard]] constexpr auto CompressionType() const noexcept
   {
-    return Archive::CompressionTypeT::None;
+    return CompressionTypeT::None;
   }
   // alias for Size that should mirror FI
   [[maybe_unused]] [[nodiscard]] constexpr auto UncompressedSize() const noexcept { return size_; }

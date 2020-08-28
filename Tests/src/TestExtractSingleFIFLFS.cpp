@@ -53,9 +53,9 @@ int main()
               {
                 auto extNum = OpenVIII::Archive::FIFLFS<true>::CheckExtension(p);
                 if (extNum == 1) {
-                  const auto &parent_fi = fiflfs.FI();
+                  const FI_Like auto &parent_fi = fiflfs.FI();
                   const auto &parent_fs = fiflfs.FS();
-                  const auto fi = [&parent_fi, &id]() {
+                  const FI_Like auto fi = [&parent_fi, &id]() {
                     if (std::empty(parent_fi.data)) {
                       return OpenVIII::Archive::FI(parent_fi.path, id, parent_fi.offset);
                     }

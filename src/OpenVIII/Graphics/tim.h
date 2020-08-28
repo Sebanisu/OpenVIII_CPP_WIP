@@ -186,5 +186,5 @@ public:
   }
 };
 
+}// namespace OpenVIII::Graphics
 #endif// VIIIARCHIVE_TIM_H
-}

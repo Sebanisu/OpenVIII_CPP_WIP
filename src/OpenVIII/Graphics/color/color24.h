@@ -39,8 +39,7 @@ public:
   }
 
   color24() = default;
-  template<Color cT>
-  explicit color24(cT color)
+  template<Color cT> explicit color24(cT color)
   {
     R(color.R());
     G(color.G());
