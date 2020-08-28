@@ -211,9 +211,11 @@ public:
           Graphics::lzs(buffer).Save(filename.string() + ".ppm");
         }
 
-//        if (Tools::iEquals(filename.extension().string(), ".tim")) {
-//          Graphics::tim(buffer).Save(filename.string() + ".ppm");
-//        }
+        if (Tools::iEquals(filename.extension().string(), ".tim")) {
+          const auto timV = Graphics::tim(buffer);
+          std::cout<<timV;
+            timV.Save(filename.string() + ".ppm");
+        }
 
         if (Tools::iEquals(filename.extension().string(), ".tex")) {
           Graphics::tex(buffer).Save(filename.string() + ".ppm");
@@ -230,7 +232,7 @@ public:
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
     FIFLFS archive{};
     using namespace std::string_view_literals;
-    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_,{/*FS::Ext,FL::Ext,FI::Ext,*/".tex"sv});
+    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_,{/*FS::Ext,FL::Ext,FI::Ext,*/".tim"sv});
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
       // std::cout << "TryAddNested: {" << id << ", " << strVirtualPath << "}\n";

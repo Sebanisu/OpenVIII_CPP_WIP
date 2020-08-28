@@ -35,20 +35,25 @@ private:
 
   [[nodiscard]] color16 getColor([[maybe_unused]] std::uint16_t row, [[maybe_unused]] std::uint8_t colorKey) const
   {
-    // clangTidy says this function can be static which it cannot be static.
-    color16 rv{};
-    if (timClutHeader_.Rectangle().Height() != 0) {
+    //    // clangTidy says this function can be static which it cannot be static.
+    //    color16 rv{};
+    //    if (timClutHeader_.Rectangle().Height() != 0) {
+    //
+    //      if (row > timClutHeader_.Rectangle().Height()) {
+    //        row = 0;
+    //      }
+    //      [[maybe_unused]] const auto index{ (colorKey * 2U) + (row * timClutHeader_.Rectangle().Width()) };
+    //      if (index < timClutData_.size()) {
+    //
+    //        memcpy(&rv, timClutData_.data() + index, sizeof(rv));
+    //      }
+    //    }
+    //    return rv;
 
-      if (row > timClutHeader_.Rectangle().Height()) {
-        row = 0;
-      }
-      [[maybe_unused]] const auto index{ (colorKey * 2U) + (row * timClutHeader_.Rectangle().Width()) };
-      if (index < timClutData_.size()) {
-
-        memcpy(&rv, timClutData_.data() + index, sizeof(rv));
-      }
-    }
-    return rv;
+    const auto paletteSpan = std::span(reinterpret_cast<const color16 *>(std::ranges::data(timClutData_)),
+      timClutHeader_.Rectangle().Width() * timClutHeader_.Rectangle().Height())
+                               .subspan(row * timClutHeader_.Rectangle().Width());
+    return paletteSpan[colorKey];
   }
   template<typename dstT> [[nodiscard]] dstT getColorT(std::size_t index) const
   {
@@ -60,11 +65,17 @@ private:
     memcpy(&rv, timImageData_.data() + index, sizeof(rv));
     return rv;
   }
+  struct _4bitValues
+  {
+  public:
+    std::uint8_t first : 4U {};
+    std::uint8_t second : 4U {};
+  };
 
 public:
-  explicit tim(std::span<const char> buffer)
+  explicit tim([[maybe_unused]] std::span<const char> buffer)
   {
-    if (std::size(buffer) == 0) {
+    if (std::ranges::size(buffer) == 0) {
       return;
     }
     const auto setData = [&buffer](std::string_view &item, const auto &bytes) {
@@ -110,8 +121,8 @@ public:
     return static_cast<decltype(timImageHeader_.Rectangle().Width())>(0);// invalid value
   }
   [[nodiscard]] auto Height() const { return timImageHeader_.Rectangle().Height(); }
-  [[nodiscard]] auto X() const { return timImageHeader_.Rectangle().X(); }
-  [[nodiscard]] auto Y() const { return timImageHeader_.Rectangle().Y(); }
+  [[maybe_unused]] [[nodiscard]] auto X() const { return timImageHeader_.Rectangle().X(); }
+  [[maybe_unused]] [[nodiscard]] auto Y() const { return timImageHeader_.Rectangle().Y(); }
 
   [[maybe_unused]] [[nodiscard]] auto ClutX() const { return timClutHeader_.Rectangle().X(); }
   [[maybe_unused]] [[nodiscard]] auto ClutY() const { return timClutHeader_.Rectangle().Y(); }
@@ -121,8 +132,8 @@ public:
 
   friend std::ostream &operator<<(std::ostream &os, const tim &input)
   {
-    return os << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", " << input.timImageHeader_
-              << ", Corrected Width: " << input.Width() << '}';
+    return os << sizeof(_4bitValues) << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", "
+              << input.timImageHeader_ << ", Corrected Width: " << input.Width() << '}';
   }
   template<typename dstT = color32<>>
   [[nodiscard]] std::vector<dstT> GetColors([[maybe_unused]] std::uint16_t row = 0U) const
@@ -137,16 +148,22 @@ public:
     switch (static_cast<int>(timHeader_.BPP())) {
 
     case bpp4: {
+
+      const auto s = std::span(
+        reinterpret_cast<const _4bitValues *>(std::ranges::data(timImageData_)), std::ranges::size(timImageData_));
       // break;
-      for (size_t i{}; i < outSize; i++) {
-        std::bitset<8> bs{ static_cast<std::uint8_t>(timImageData_.at(i / 2U)) };
-        static constexpr std::bitset<8> oct1{ 0xF };
-        static constexpr std::bitset<8> oct2{ 0xF0 };
-        if (i % 2 == 0) {
-          output.emplace_back(getColor(row, static_cast<std::uint8_t>((bs & oct1).to_ulong())));
-        } else {
-          output.emplace_back(getColor(row, static_cast<std::uint8_t>(((bs & oct2) >> 4U).to_ulong())));
-        }
+      for (size_t i{}; i < outSize / 2; i++) {
+        // std::bitset<8> bs{ static_cast<std::uint8_t>(timImageData_.at(i / 2U)) };
+        // static constexpr std::bitset<8> oct1{ 0xF };
+        // static constexpr std::bitset<8> oct2{ 0xF0 };
+        //        if (i % 2 == 0) {
+        //          output.emplace_back(getColor(row, static_cast<std::uint8_t>((bs & oct1).to_ulong())));
+        //        } else {
+        //          output.emplace_back(getColor(row, static_cast<std::uint8_t>(((bs & oct2) >> 4U).to_ulong())));
+        //        }
+        const auto values = s[i];
+        output.emplace_back(getColor(row, values.first));
+        output.emplace_back(getColor(row, values.second));
       }
       break;
     }
@@ -158,9 +175,13 @@ public:
       break;
     }
     case bpp16: {
-      for (size_t i{}; i < std::min(outSize, timImageData_.size() / sizeof(color16)); i++) {
-        output.emplace_back(getColorT<color16>(i));
-      }
+      const auto sz = std::ranges::size(timImageData_) / sizeof(color16);
+      const auto s = std::span(reinterpret_cast<const color16 *>(std::ranges::data(timImageData_)), sz);
+
+      for (const Color auto i : s) { output.emplace_back(i); }
+      //      for (size_t i{}; i < std::min(outSize, timImageData_.size() / sizeof(color16)); i++) {
+      //        output.emplace_back(getColorT<color16>(i));
+      //      }
       break;
     }
     case bpp24: {
