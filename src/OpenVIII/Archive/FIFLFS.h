@@ -28,6 +28,7 @@
 #include <ranges>
 #include "OpenVIII/Graphics/lzs.h"
 #include "OpenVIII/Graphics/tim.h"
+#include "OpenVIII/Graphics/tdw.h"
 #include "OpenVIII/Graphics/tex.h"
 
 namespace OpenVIII::Archive {
@@ -216,6 +217,11 @@ public:
           std::cout<<timV;
             timV.Save(filename.string() + ".ppm");
         }
+        if (Tools::iEquals(filename.extension().string(), ".tdw")) {
+          const auto timV = Graphics::tdw(buffer);
+          std::cout<<timV.TIM();
+          timV.TIM().Save(filename.string() + ".ppm");
+        }
 
         if (Tools::iEquals(filename.extension().string(), ".tex")) {
           Graphics::tex(buffer).Save(filename.string() + ".ppm");
@@ -232,7 +238,7 @@ public:
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
     FIFLFS archive{};
     using namespace std::string_view_literals;
-    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_,{/*FS::Ext,FL::Ext,FI::Ext,*/".tim"sv});
+    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_,{FS::Ext,FL::Ext,FI::Ext,".tdw"sv});
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
       // std::cout << "TryAddNested: {" << id << ", " << strVirtualPath << "}\n";

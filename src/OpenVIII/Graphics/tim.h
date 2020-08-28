@@ -9,6 +9,7 @@
 #include "OpenVIII/Graphics/tim/timClutHeader.h"
 #include "OpenVIII/Graphics/color.h"
 #include <sstream>
+#include "_4bitValues.h"
 namespace OpenVIII::Graphics {
 /**
  * TIM, or PSX TIM, is an uncompressed raster image file format associated with the Sony PlayStation family of video
@@ -65,14 +66,9 @@ private:
     memcpy(&rv, timImageData_.data() + index, sizeof(rv));
     return rv;
   }
-  struct _4bitValues
-  {
-  public:
-    std::uint8_t first : 4U {};
-    std::uint8_t second : 4U {};
-  };
 
 public:
+  tim() = default;
   explicit tim([[maybe_unused]] std::span<const char> buffer)
   {
     if (std::ranges::size(buffer) == 0) {
