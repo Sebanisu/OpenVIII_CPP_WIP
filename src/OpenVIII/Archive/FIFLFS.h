@@ -28,6 +28,7 @@
 #include <ranges>
 #include "OpenVIII/Graphics/lzs.h"
 #include "OpenVIII/Graphics/tim.h"
+#include "OpenVIII/Graphics/tex.h"
 
 namespace OpenVIII::Archive {
 template<bool HasNested = false> struct FIFLFS
@@ -210,8 +211,12 @@ public:
           Graphics::lzs(buffer).Save(filename.string() + ".ppm");
         }
 
-        if (Tools::iEquals(filename.extension().string(), ".tim")) {
-          Graphics::tim(buffer).Save(filename.string() + ".ppm");
+//        if (Tools::iEquals(filename.extension().string(), ".tim")) {
+//          Graphics::tim(buffer).Save(filename.string() + ".ppm");
+//        }
+
+        if (Tools::iEquals(filename.extension().string(), ".tex")) {
+          Graphics::tex(buffer).Save(filename.string() + ".ppm");
         }
       }
     }
@@ -224,7 +229,8 @@ public:
     std::cout << *this << std::endl;
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
     FIFLFS archive{};
-    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_);
+    using namespace std::string_view_literals;
+    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_,{/*FS::Ext,FL::Ext,FI::Ext,*/".tex"sv});
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
       // std::cout << "TryAddNested: {" << id << ", " << strVirtualPath << "}\n";
@@ -275,7 +281,7 @@ public:
           exit(EXIT_FAILURE);
         }
         std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
-        Tools::WriteBuffer(buffer, strVirtualPath);
+        //Tools::WriteBuffer(buffer, strVirtualPath);
         saveIMG(buffer, strVirtualPath);
       }
     }
