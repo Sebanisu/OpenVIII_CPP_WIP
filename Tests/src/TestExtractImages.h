@@ -1,0 +1,8 @@
+//
+// Created by pcvii on 8/29/2020.
+//
+
+#ifndef VIIIARCHIVE_TESTEXTRACTIMAGES_H
+#define VIIIARCHIVE_TESTEXTRACTIMAGES_H
+int main();
+#endif// VIIIARCHIVE_TESTEXTRACTIMAGES_H

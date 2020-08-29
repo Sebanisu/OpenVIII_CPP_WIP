@@ -119,8 +119,9 @@ private:
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
     // returns nullptr on failure.
 
-    const auto tryAddToFIFLFS = [&path, &nestedPath, &offset, &size](
-                                  auto &archive) { return archive.TryAdd(path, nestedPath, offset, size) != 0; };
+    const auto tryAddToFIFLFS = [&path, &nestedPath, &offset, &size](auto &archive) {
+      return archive.TryAdd(path, nestedPath, offset, size) != TryAddT::NotPartOfArchive;
+    };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
       if (path.has_extension() && Tools::iEquals(path.extension().string(), ZZZ::Ext)) {
         archive.emplace(path);
@@ -160,10 +161,6 @@ private:
                 && !Tools::iStartsWith(pathString, langStarting.string())) {
               continue;
             }
-            //            std::cout<< pathString << '\n';
-            //            std::cout << "  " << path << '\n';
-            //            std::cout << "  " << dataItem.Offset() << '\n';
-            //            std::cout << "  " << dataItem.UncompressedSize() << '\n';
             auto localPath = std::filesystem::path(pathString);
             static_for<static_cast<int>(ArchiveTypeT::Battle), static_cast<int>(ArchiveTypeT::World)>(
               [&localPath, &dataItem, &path, this](const ArchiveTypeT &test, const auto &stem) {
@@ -236,6 +233,15 @@ public:
       return zzzOther_;
     } else {
       return nullptr;
+    }
+  }
+
+  template<ArchiveTypeT archiveType_> auto Get(const std::string_view &nestedArchive) const noexcept
+  {
+    if constexpr (archiveType_ == ArchiveTypeT::Field) {
+      return field_.GetFIFLFSEntries(nestedArchive);
+    } else {
+      return Get<archiveType_>();
     }
   }
   Archives() = default;

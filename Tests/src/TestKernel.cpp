@@ -52,25 +52,6 @@ int main()
         }
       }
     });
-    //    {
-    //
-    //      auto data = kernel.GetSectionData<OpenVIII::Kernel::SectionTypes::First>();
-    //      std::cout << kernel.GetSectionName<OpenVIII::Kernel::SectionTypes::First>() << " has " << data.Count()
-    //                << " entries\n";
-    //      for (size_t i = 0; i < data.Count(); i++) {
-    //        auto entry = data.at(i);
-    //        std::cout<< i<<": ";
-    //        auto name = entry.DecodedName(data.TextSpan());
-    //        auto description = entry.DecodedDescription(data.TextSpan());
-    //        if(!std::empty(name)) {
-    //          std::cout << name;
-    //        }
-    //        if(!std::empty(description)) {
-    //          std::cout << ", " << description;
-    //        }
-    //        std::cout<< '\n';
-    //      }
-    //    }
   }
   return 0;
 }

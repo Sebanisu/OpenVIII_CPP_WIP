@@ -32,6 +32,8 @@
 #include "OpenVIII/Graphics/tex.h"
 
 namespace OpenVIII::Archive {
+
+enum class TryAddT { NotPartOfArchive, AddedToArchive, ArchiveFull };
 template<bool HasNested = false> struct FIFLFS
 {
 private:
@@ -111,7 +113,7 @@ public:
    * 2 = added and all set
    * */
 
-  char TryAdd(const std::filesystem::path &existingFilePath,
+  TryAddT TryAdd(const std::filesystem::path &existingFilePath,
     const std::filesystem::path &nestedPath = "",
     size_t offset = 0U,
     size_t size = 0U) const
@@ -145,10 +147,10 @@ public:
       }
       }
       compareBaseNames();
-      return AllSet() ? 2 : 1;
+      return AllSet() ? TryAddT::ArchiveFull : TryAddT::AddedToArchive;
     }
 
-    return 0;
+    return TryAddT::NotPartOfArchive;
   }
   /**
    * Try and Add Nested data. There are 3 parts to an Archive so it this adds one and goes to next one till all 3 are
@@ -159,14 +161,11 @@ public:
    * @param srcOffset Bytes skipped at the beginning of data or file.
    * @param fileEntry
    * @param fi The Data struct.
-   * @return char of 0,1,2,3, 0 being all loaded. 1,2,3 is one of the 3 types. (fl,fs,fi);
+   * @return char of 0,1,2, 0 not part of archive, 1 part added, 2 being archive full.;
    */
   template<typename srcT, FI_Like datT = Archive::FI>
-  requires(std::convertible_to<srcT, std::filesystem::path> || std::ranges::contiguous_range<srcT>) char TryAddNested(
-    const srcT &src,
-    const size_t srcOffset,
-    const std::filesystem::path &fileEntry,
-    const datT &fi) const
+  requires(std::convertible_to<srcT, std::filesystem::path> || std::ranges::contiguous_range<srcT>) TryAddT
+    TryAddNested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi) const
   {
 
     const auto set = [&fileEntry, &srcOffset](auto &ds) {
@@ -197,9 +196,9 @@ public:
       }
       }
       compareBaseNames();
-      return AllSet() ? 2 : 1;
+      return AllSet() ? TryAddT::ArchiveFull : TryAddT::AddedToArchive;
     }
-    return 0;
+    return TryAddT::NotPartOfArchive;
   }
   void
     saveIMG(const std::vector<char> &buffer, const std::string_view &path, const std::string_view &root = "tmp") const
@@ -246,7 +245,7 @@ public:
 
       FI_Like auto fi = GetEntryIndex(id);
       {
-        char retVal = [this, &archive, &fi, &strVirtualPath]() {
+        TryAddT retVal = [this, &archive, &fi, &strVirtualPath]() {
           std::filesystem::path virtualPath(strVirtualPath);
           if (!fs_.data.empty()) {
             return archive.TryAddNested(fs_.data, fs_.offset, virtualPath, fi);
@@ -254,7 +253,7 @@ public:
 
           if (fi.CompressionType() == CompressionTypeT::None) {
             auto localRetVal = archive.TryAdd(fs_.path, virtualPath, fs_.offset + fi.Offset(), fi.UncompressedSize());
-            if (localRetVal != 0) {
+            if (localRetVal != TryAddT::NotPartOfArchive) {
               std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
             }
             return localRetVal;
@@ -262,10 +261,10 @@ public:
           return archive.TryAddNested(
             fs_.path, fs_.offset, virtualPath, fi);// when path is sent a different function is used later.
         }();
-        if (retVal == 1) {
+        if (retVal == TryAddT::AddedToArchive) {
           continue;
         }
-        if (retVal == 2) {
+        if (retVal == TryAddT::ArchiveFull) {
           archive.Test();
           archive = {};
           continue;
@@ -305,7 +304,7 @@ public:
     tmp.reserve(defaultSize);
     auto archive = OpenVIII::Archive::FIFLFS<true>();
     for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
-      if (archive.TryAdd(fileEntry) != 0) {
+      if (archive.TryAdd(fileEntry) != TryAddT::NotPartOfArchive) {
         if (archive.AllSet()) {// todo confirm basename matches right now i'm assuming the 3 files are together.
           // todo check for language codes to choose correct files
           // auto key = archive.GetBaseName();
@@ -377,7 +376,8 @@ public:
     }
     return {};
   }
-  template<typename outT = std::vector<char>, FI_Like fiT> [[nodiscard]] outT GetEntryData(const fiT &fi) const
+  template<std::ranges::contiguous_range outT = std::vector<char>, FI_Like fiT>
+  [[nodiscard]] outT GetEntryData(const fiT &fi) const
   {
     return [this, &fi]() {
       if (std::empty(fs_.data)) {
@@ -394,20 +394,47 @@ public:
       }
       return OpenVIII::Archive::FL::GetEntryData(fl_.path, fl_.data, { filename }, fl_.offset, fl_.size, count_);
     }();
-
-    //    const auto &fi = [this, &filename, &id]() {
-    //      if (std::empty(fi_.data)) {
-    //        return OpenVIII::Archive::FI(fi_.path, id, fi_.offset);
-    //      }
-    //      return OpenVIII::Archive::FI(fi_.data, id, fi_.offset);
-    //    }();
     return GetEntryData<outT>(GetEntryIndex(id));
-    //    return  [this, &filename, &fi]() {
-    //      if(std::empty(fs_.data)) {
-    //        return OpenVIII::Archive::FS::GetEntry(fs_.path, fi, fs_.offset);
-    //      }
-    //      return OpenVIII::Archive::FS::GetEntry(fs_.data,fi,fs_.offset);
-    //    }();
+  }
+
+  [[nodiscard]] std::vector<FIFLFS> GetFIFLFSEntries(const std::string_view &filename) const
+  {
+    std::vector<FIFLFS> out{};
+    FIFLFS archive{};
+
+    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, { filename });
+    for (const auto &item : items) {
+      const auto &[id, strVirtualPath] = item;
+
+      FI_Like auto fi = GetEntryIndex(id);
+      {
+        TryAddT retVal = [this, &archive, &fi, &strVirtualPath]() {
+          std::filesystem::path virtualPath(strVirtualPath);
+          if (!fs_.data.empty()) {
+            return archive.TryAddNested(fs_.data, fs_.offset, virtualPath, fi);
+          }
+
+          if (fi.CompressionType() == CompressionTypeT::None) {
+            auto localRetVal = archive.TryAdd(fs_.path, virtualPath, fs_.offset + fi.Offset(), fi.UncompressedSize());
+            if (localRetVal != TryAddT::NotPartOfArchive) {
+              std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
+            }
+            return localRetVal;
+          }
+          return archive.TryAddNested(
+            fs_.path, fs_.offset, virtualPath, fi);// when path is sent a different function is used later.
+        }();
+        if (retVal == TryAddT::AddedToArchive) {
+          continue;
+        }
+        if (retVal == TryAddT::ArchiveFull) {
+          out.emplace_back(std::move(archive));
+          archive = {};
+          continue;
+        }
+      }
+    }
+    return out;
   }
 };
 

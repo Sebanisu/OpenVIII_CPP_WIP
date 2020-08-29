@@ -26,6 +26,11 @@ int main()
     std::cout << battle << std::endl;
     [[maybe_unused]] const auto &field = archives.Get<OpenVIII::Archive::ArchiveTypeT::Field>();
     std::cout << field << std::endl;
+    [[maybe_unused]] const auto &nestedField = archives.Get<OpenVIII::Archive::ArchiveTypeT::Field>({});
+    for(const auto & nested : nestedField)
+    {
+      std::cout << nested << std::endl;
+    }
     [[maybe_unused]] const auto &magic = archives.Get<OpenVIII::Archive::ArchiveTypeT::Magic>();
     std::cout << magic << std::endl;
     [[maybe_unused]] const auto &main = archives.Get<OpenVIII::Archive::ArchiveTypeT::Main>();

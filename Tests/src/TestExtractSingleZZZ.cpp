@@ -34,7 +34,7 @@ int main()
     }
     for (const auto &zzzFilePair : OpenVIII::Archive::ZZZ::GetFilesFromPath(path)) {
       std::cout << "Searching: " << path << "\n";
-      for (const auto &dataItem : zzzFilePair.second.Data()) {
+      for (const OpenVIII::Archive::FileData &dataItem : zzzFilePair.second.Data()) {
         {
           const auto pathString = dataItem.GetPathString();
           if (OpenVIII::Tools::iEndsWithAny(pathString, Extensions) != 0U) {

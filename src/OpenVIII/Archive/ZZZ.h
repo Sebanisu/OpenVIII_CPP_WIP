@@ -117,11 +117,11 @@ public:
             std::filesystem::path fsPath(strPath);
             {
               // char retVal = archive.TryAddNested(path_, 0U, fsPath, item);
-              char retVal = archive.TryAdd(path_, fsPath, item.Offset(), item.UncompressedSize());
-              if (retVal == 1) {
+              TryAddT retVal = archive.TryAdd(path_, fsPath, item.Offset(), item.UncompressedSize());
+              if (retVal == TryAddT::AddedToArchive) {
                 continue;
               }
-              if (retVal == 2) {
+              if (retVal == TryAddT::ArchiveFull) {
                 archive.Test();
                 archive = {};
                 continue;

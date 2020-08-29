@@ -23,59 +23,7 @@
 #include "OpenVIII/MenuGroup/RefineSection004.h"
 #include "OpenVIII/MenuGroup/MenuGroupFile.h"
 
-//[[maybe_unused]] constexpr static std::array tkmnmesSections = { 0, 1, 2 };
-//[[maybe_unused]] constexpr static std::array MenuStringsSections = { 87,
-//  88,
-//  89,
-//  90,
-//  95,
-//  96,
-//  97,
-//  98,
-//  99,
-//  100,
-//  101,
-//  102,
-//  103,
-//  104,
-//  105,
-//  106,
-//  107,
-//  108,
-//  109,
-//  110,
-//  111,
-//  112,
-//  113,
-//  114,
-//  115,
-//  116,
-//  117,
-//  118,
-//  119,
-//  120,
-//  121,
-//  122,
-//  123,
-//  124,
-//  125,
-//  126,
-//  160,
-//  161,
-//  162,
-//  163,
-//  164,
-//  165,
-//  166,
-//  167,
-//  204 };
-//[[maybe_unused]] constexpr static std::array refineSections = {//188,189,190,191,192
-//  std::make_pair(188U,196U),
-//  std::make_pair(189U,197U),
-//  std::make_pair(190U,198U),
-//  std::make_pair(191U,199U),
-//  std::make_pair(192U,200U)
-//};
+
 int main()
 {
   for (auto &path : OpenVIII::Paths::get()) {
