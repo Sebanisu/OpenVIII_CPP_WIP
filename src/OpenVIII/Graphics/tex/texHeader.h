@@ -94,7 +94,7 @@ public:
   /**
    * Palette Flag (indicates the presence of a palette)
    */
-  std::uint32_t PALETTE_FLAG  {};
+  std::uint32_t PALETTE_FLAG{};
   /**
    * Bits per Index (always 0 for non_paletted images)
    */

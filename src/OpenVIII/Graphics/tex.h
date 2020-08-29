@@ -135,7 +135,7 @@ public:
         //      case 24: {
         //        break;
         //      }
-      case 32U: {//untested
+      case 32U: {// untested
         auto c32data = std::span(reinterpret_cast<const color32<2, 1, 0, 3> *>(std::ranges::data(imageData)),
           std::ranges::size(imageData) / sizeof(color32<2, 1, 0, 3>));
         for (const auto &i : c32data) { ret.emplace_back(i); }

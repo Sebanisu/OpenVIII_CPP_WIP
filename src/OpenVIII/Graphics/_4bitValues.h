@@ -11,5 +11,5 @@ public:
   std::uint8_t first : 4U {};
   std::uint8_t second : 4U {};
 };
-}
+}// namespace OpenVIII::Graphics
 #endif// VIIIARCHIVE_4BITVALUES_H

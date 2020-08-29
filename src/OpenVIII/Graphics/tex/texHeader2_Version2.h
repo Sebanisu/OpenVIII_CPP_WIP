@@ -20,6 +20,6 @@ struct texHeader2_Version2
 };
 
 
-}
+}// namespace OpenVIII::Graphics
 
 #endif// VIIIARCHIVE_TEXHEADER2_VERSION2_H

@@ -75,10 +75,7 @@ public:
   //}
   // get size of file
   [[maybe_unused]] [[nodiscard]] constexpr auto Size() const noexcept { return size_; }
-  [[maybe_unused]] [[nodiscard]] constexpr auto CompressionType() const noexcept
-  {
-    return CompressionTypeT::None;
-  }
+  [[maybe_unused]] [[nodiscard]] constexpr auto CompressionType() const noexcept { return CompressionTypeT::None; }
   // alias for Size that should mirror FI
   [[maybe_unused]] [[nodiscard]] constexpr auto UncompressedSize() const noexcept { return size_; }
   // get offset of file

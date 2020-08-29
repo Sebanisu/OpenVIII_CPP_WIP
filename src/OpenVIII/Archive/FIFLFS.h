@@ -214,12 +214,12 @@ public:
 
         if (Tools::iEquals(filename.extension().string(), ".tim")) {
           const auto timV = Graphics::tim(buffer);
-          std::cout<<timV;
-            timV.Save(filename.string() + ".ppm");
+          std::cout << timV;
+          timV.Save(filename.string() + ".ppm");
         }
         if (Tools::iEquals(filename.extension().string(), ".tdw")) {
           const auto timV = Graphics::tdw(buffer);
-          std::cout<<timV.TIM();
+          std::cout << timV.TIM();
           timV.TIM().Save(filename.string() + ".ppm");
         }
 
@@ -238,7 +238,8 @@ public:
     std::cout << "Getting Filenames from : " << fl_.path << std::endl;
     FIFLFS archive{};
     using namespace std::string_view_literals;
-    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_,{FS::Ext,FL::Ext,FI::Ext,".tdw"sv});
+    auto items = Archive::FL::GetAllEntriesData(
+      fl_.path, fl_.data, fl_.offset, fl_.size, count_, { FS::Ext, FL::Ext, FI::Ext, ".tdw"sv });
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
       // std::cout << "TryAddNested: {" << id << ", " << strVirtualPath << "}\n";
@@ -289,7 +290,7 @@ public:
           exit(EXIT_FAILURE);
         }
         std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
-        //Tools::WriteBuffer(buffer, strVirtualPath);
+        // Tools::WriteBuffer(buffer, strVirtualPath);
         saveIMG(buffer, strVirtualPath);
       }
     }

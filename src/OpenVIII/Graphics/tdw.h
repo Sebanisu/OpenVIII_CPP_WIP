@@ -34,22 +34,17 @@ public:
     std::memcpy(std::ranges::data(widths), std::ranges::data(bufferBak.subspan(widthsOffset)), widthsSize());
     tim_ = tim{ bufferBak.subspan(timOffset) };
   }
-  [[nodiscard]] auto operator[](size_t i) const {
-    bool first = (i%2U == 0U);
-    i/=2U;
-    if(first) {
-      return static_cast<std::uint8_t>( widths.at(i).first);
+  [[nodiscard]] auto operator[](size_t i) const
+  {
+    bool first = (i % 2U == 0U);
+    i /= 2U;
+    if (first) {
+      return static_cast<std::uint8_t>(widths.at(i).first);
     }
-    return static_cast<std::uint8_t>( widths.at(i).second);
+    return static_cast<std::uint8_t>(widths.at(i).second);
   }
-  [[nodiscard]] auto size() const
-  {
-    return std::ranges::size(widths)*2U;
-  }
-  [[nodiscard]] const auto &TIM()const
-  {
-    return tim_;
-  }
+  [[nodiscard]] auto size() const { return std::ranges::size(widths) * 2U; }
+  [[nodiscard]] const auto &TIM() const { return tim_; }
 };
 }// namespace OpenVIII::Graphics
 #endif// VIIIARCHIVE_TDW_H
