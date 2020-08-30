@@ -294,7 +294,10 @@ public:
         }
         else {
           if (archive.has_value()) {
-            //[[maybe_unused]]const auto result = archive->GetFIFLFSEntries(filename);
+            [[maybe_unused]]const auto result = archive->GetAllEntriesData(filename);
+            if(!std::ranges::empty(result)) {
+              vector.emplace_back(std::make_pair(GetString<archiveType_>(), std::move(result)));
+            }
           }
         }
       }

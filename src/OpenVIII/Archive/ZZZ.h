@@ -37,8 +37,8 @@ private:
 
 public:
   constexpr static auto Ext = ".zzz";
-  [[maybe_unused]] [[nodiscard]] auto &Data() const noexcept { return data_; }
-  [[maybe_unused]] [[nodiscard]] auto &Path() const noexcept { return path_; }
+  [[maybe_unused]] [[nodiscard]] const auto &Data() const noexcept { return data_; }
+  [[maybe_unused]] [[nodiscard]] const auto &Path() const noexcept { return path_; }
   ZZZ(const ZZZ &) = default;
   ZZZ &operator=(const ZZZ &) = default;
   ZZZ(ZZZ &&) = default;
@@ -133,13 +133,11 @@ public:
       }
     }
   }
-  using ZZZmap = std::vector<std::pair<std::string, OpenVIII::Archive::ZZZ>>;
-
-  [[nodiscard]] static ZZZmap GetFilesFromPath(const std::string_view path)
+  [[nodiscard]] static std::vector<std::pair<std::string, OpenVIII::Archive::ZZZ>> GetFilesFromPath(const std::string_view path)
   {
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
 
-    auto tmp = ZZZmap();
+    std::vector<std::pair<std::string, OpenVIII::Archive::ZZZ>> tmp{};
     tmp.reserve(2);// main and other
     int i{};
     for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
@@ -179,6 +177,21 @@ public:
       return os << data.value();
     }
     return os;
+  }
+  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(const std::string_view & filename) const
+  {
+    unsigned int i{};
+    std::vector<std::pair<unsigned int, std::string>> vector{};
+    for (const OpenVIII::Archive::FileData &dataItem : Data()) {
+      {
+        auto pathString = dataItem.GetPathString();
+        if (OpenVIII::Tools::iFind(pathString, filename)) {
+          vector.emplace_back(std::make_pair(i,pathString));
+        }
+      }
+      i++;
+    }
+    return vector;
   }
 };
 
