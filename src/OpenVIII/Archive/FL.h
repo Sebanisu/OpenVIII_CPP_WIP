@@ -73,7 +73,8 @@ public:
    * @param limit max matches; 0 == unlimited
    * @return matches
    */
-  [[nodiscard]] static std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(const std::filesystem::path &path,
+  [[nodiscard]] static std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(
+    const std::filesystem::path &path,
     const std::string &data,
     const size_t &offset,
     const size_t &size = 0U,

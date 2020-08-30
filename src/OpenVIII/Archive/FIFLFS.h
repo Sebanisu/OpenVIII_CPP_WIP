@@ -229,8 +229,7 @@ public:
     }
   };
 
-  template<typename dstT = std::vector<char>, FI_Like fiT>
-  dstT GetEntryBuffer(const fiT & fi) const
+  template<typename dstT = std::vector<char>, FI_Like fiT> dstT GetEntryBuffer(const fiT &fi) const
   {
     if (!fs_.data.empty()) {
       return FS::GetEntry<dstT>(fs_.data, fi, fs_.offset);
@@ -399,29 +398,26 @@ public:
     }();
     return GetEntryData<outT>(GetEntryIndex(id));
   }
-  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(const std::string_view & filename)
+  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(const std::string_view &filename)
   {
     return Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, { filename });
   }
 
-  [[nodiscard]] std::vector<std::pair<std::string,std::vector<std::pair<unsigned int, std::string>>>> GetAllNestedEntriesData([[maybe_unused]]const std::string_view & filename)
+  [[nodiscard]] std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
+    GetAllNestedEntriesData([[maybe_unused]] const std::string_view &filename)
   {
-    if constexpr (!HasNested)
-    {
+    if constexpr (!HasNested) {
       return {};
     }
-    std::vector<std::pair<std::string,std::vector<std::pair<unsigned int, std::string>>>> vector{};
+    std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>> vector{};
     const std::vector<std::pair<unsigned int, std::string>> fls_ = GetAllEntriesData(Archive::FL::Ext);
     const std::string &basename = GetBaseName();
-    for(const auto fl : fls_)
-    {
+    for (const auto fl : fls_) {
       const auto fi = GetEntryIndex(fl.first);
       const auto buffer = GetEntryBuffer<std::string>(fi);
-      auto results =
-        Archive::FL::GetAllEntriesData({},buffer,0,0,0,{filename});
-      if(!std::ranges::empty(results))
-      {
-        vector.emplace_back(std::make_pair(basename + "::" + GetBaseName(fl.second),std::move(results)));
+      auto results = Archive::FL::GetAllEntriesData({}, buffer, 0, 0, 0, { filename });
+      if (!std::ranges::empty(results)) {
+        vector.emplace_back(std::make_pair(basename + "::" + GetBaseName(fl.second), std::move(results)));
       }
     }
     return vector;
@@ -431,7 +427,7 @@ public:
     std::vector<FIFLFS> out{};
     FIFLFS archive{};
 
-    const auto & items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, { filename });
+    const auto &items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, { filename });
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
 

@@ -133,7 +133,8 @@ public:
       }
     }
   }
-  [[nodiscard]] static std::vector<std::pair<std::string, OpenVIII::Archive::ZZZ>> GetFilesFromPath(const std::string_view path)
+  [[nodiscard]] static std::vector<std::pair<std::string, OpenVIII::Archive::ZZZ>> GetFilesFromPath(
+    const std::string_view path)
   {
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
 
@@ -178,7 +179,8 @@ public:
     }
     return os;
   }
-  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(const std::string_view & filename) const
+  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(
+    const std::string_view &filename) const
   {
     unsigned int i{};
     std::vector<std::pair<unsigned int, std::string>> vector{};
@@ -186,7 +188,7 @@ public:
       {
         auto pathString = dataItem.GetPathString();
         if (OpenVIII::Tools::iFind(pathString, filename)) {
-          vector.emplace_back(std::make_pair(i,pathString));
+          vector.emplace_back(std::make_pair(i, pathString));
         }
       }
       i++;
