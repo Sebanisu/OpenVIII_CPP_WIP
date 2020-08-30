@@ -73,7 +73,7 @@ public:
    * @param limit max matches; 0 == unlimited
    * @return matches
    */
-  [[nodiscard]] static auto GetAllEntriesData(const std::filesystem::path &path,
+  [[nodiscard]] static std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(const std::filesystem::path &path,
     const std::string &data,
     const size_t &offset,
     const size_t &size = 0U,
@@ -81,7 +81,7 @@ public:
     const std::initializer_list<std::string_view> &needle = {},
     const size_t &limit = 0U)
   {
-    auto vector = std::vector<std::pair<unsigned int, std::string>>();
+    std::vector<std::pair<unsigned int, std::string>> vector{};
     const auto process = [&limit, &count, &size, &vector, &offset, &needle, &data](auto &cont) {
       cont.seekg(0, std::ios::end);
       auto length = cont.tellg();

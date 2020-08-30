@@ -29,6 +29,9 @@ enum class ArchiveTypeT : std::int8_t {
   World,
   ZZZMain,
   ZZZOther,
+  Count,
+  First = Battle,
+  Last = Count-1,
 };
 template<LangT langVal> struct Archives
 {
@@ -178,12 +181,13 @@ private:
     }
     case ArchiveTypeT::ZZZOther:
       return tryAddToZZZ(zzzOther_);
+    case ArchiveTypeT::Count:
+      break;
     }
     return false;
   }
-
 public:
-  template<ArchiveTypeT archiveType_> constexpr auto GetString()
+  template<ArchiveTypeT archiveType_> constexpr auto GetString() const noexcept
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
     // returns nullptr on failure.
     using namespace std::literals;
@@ -236,7 +240,7 @@ public:
     }
   }
 
-  template<ArchiveTypeT archiveType_> auto Get(const std::string_view &nestedArchive) const noexcept
+  template<ArchiveTypeT archiveType_> auto Get(const std::string_view &nestedArchive) const
   {
     if constexpr (archiveType_ == ArchiveTypeT::Field) {
       return field_.GetFIFLFSEntries(nestedArchive);
@@ -263,6 +267,42 @@ public:
             TryAdd(test, localPath);
           });
       }
+    }
+  }
+
+  template<std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::Last), std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::First)>
+  requires (maxT < static_cast<std::intmax_t>(ArchiveTypeT::Count) && maxT >= minT-1 && minT >= static_cast<std::intmax_t>(ArchiveTypeT::First))
+  [[nodiscard]] std::vector<std::pair<std::string,std::vector<std::pair<unsigned int, std::string>>>> Search(const std::string_view & filename) const
+  {
+    if constexpr (maxT >= minT)
+    {
+      std::vector<std::pair<std::string,std::vector<std::pair<unsigned int, std::string>>>> vector = Search<maxT-1>(filename);
+      constexpr auto archiveType_ = std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(maxT)>{};
+      std::cout << GetString<archiveType_>() << '\n';
+      auto archive = Get<archiveType_>();
+      if constexpr (!std::is_null_pointer_v<decltype(archive)>) {
+        if constexpr (!std::is_same_v<decltype(archive), std::optional<OpenVIII::Archive::ZZZ>>) {
+          [[maybe_unused]] auto result = archive.GetAllEntriesData(filename);
+          if(!std::ranges::empty(result)) {
+            vector.emplace_back(std::make_pair(GetString<archiveType_>(),std::move(result)));
+            auto nested = archive.GetAllNestedEntriesData(filename);
+            if(!std::ranges::empty(nested))
+            {
+              for (auto &item : nested) { vector.emplace_back(std::move(item)); }
+            }
+          }
+        }
+        else {
+          if (archive.has_value()) {
+            //[[maybe_unused]]const auto result = archive->GetFIFLFSEntries(filename);
+          }
+        }
+      }
+      return vector;
+    }
+    else
+    {
+      return {};
     }
   }
 };// namespace OpenVIII::Archive

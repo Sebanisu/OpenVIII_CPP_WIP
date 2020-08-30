@@ -228,6 +228,16 @@ public:
       }
     }
   };
+
+  template<typename dstT = std::vector<char>, FI_Like fiT>
+  dstT GetEntryBuffer(const fiT & fi) const
+  {
+    if (!fs_.data.empty()) {
+      return FS::GetEntry<dstT>(fs_.data, fi, fs_.offset);
+    } else {
+      return FS::GetEntry<dstT>(fs_.path, fi, fs_.offset);
+    }
+  }
   void Test() const
   {
     if (!std::filesystem::exists(fl_.path)) {
@@ -271,12 +281,7 @@ public:
         }
       }
       {
-        std::vector<char> buffer;
-        if (!fs_.data.empty()) {
-          buffer = FS::GetEntry(fs_.data, fi, fs_.offset);
-        } else {
-          buffer = FS::GetEntry(fs_.path, fi, fs_.offset);
-        }
+        const auto buffer = GetEntryBuffer(fi);
         if (buffer.empty()) {
           std::cout << '{' << id << ", "
                     << "Empty!"
@@ -294,12 +299,10 @@ public:
       }
     }
   }
-  using FIFLFSmap = std::vector<std::pair<std::string, OpenVIII::Archive::FIFLFS<true>>>;
-
   static auto GetFilesFromPath(const std::filesystem::path &path)
   {
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
-    auto tmp = FIFLFSmap();
+    std::vector<std::pair<std::string, OpenVIII::Archive::FIFLFS<true>>> tmp{};
     constexpr auto defaultSize = 6U;// battle, field, magic, main, menu, world
     tmp.reserve(defaultSize);
     auto archive = OpenVIII::Archive::FIFLFS<true>();
@@ -396,13 +399,39 @@ public:
     }();
     return GetEntryData<outT>(GetEntryIndex(id));
   }
+  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(const std::string_view & filename)
+  {
+    return Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, { filename });
+  }
 
+  [[nodiscard]] std::vector<std::pair<std::string,std::vector<std::pair<unsigned int, std::string>>>> GetAllNestedEntriesData([[maybe_unused]]const std::string_view & filename)
+  {
+    if constexpr (!HasNested)
+    {
+      return {};
+    }
+    std::vector<std::pair<std::string,std::vector<std::pair<unsigned int, std::string>>>> vector{};
+    const std::vector<std::pair<unsigned int, std::string>> fls_ = GetAllEntriesData(Archive::FL::Ext);
+    const std::string &basename = GetBaseName();
+    for(const auto fl : fls_)
+    {
+      const auto fi = GetEntryIndex(fl.first);
+      const auto buffer = GetEntryBuffer<std::string>(fi);
+      auto results =
+        Archive::FL::GetAllEntriesData({},buffer,0,0,0,{filename});
+      if(!std::ranges::empty(results))
+      {
+        vector.emplace_back(std::make_pair(basename + "::" + GetBaseName(fl.second),std::move(results)));
+      }
+    }
+    return vector;
+  }
   [[nodiscard]] std::vector<FIFLFS> GetFIFLFSEntries(const std::string_view &filename) const
   {
     std::vector<FIFLFS> out{};
     FIFLFS archive{};
 
-    auto items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, { filename });
+    const auto & items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, { filename });
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
 

@@ -369,7 +369,7 @@ public:
   [[nodiscard]] const auto &SectionOffsets() const noexcept { return sectionOffsets_; }
 
 
-  template<int First, int Count, typename Lambda> void static_for([[maybe_unused]] Lambda const &f)
+  template<int First, int Count, typename Lambda> void static_for([[maybe_unused]] const Lambda &f)
   {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
     if constexpr (First < Count) {
       constexpr auto sectionType = std::integral_constant<SectionTypesT, static_cast<SectionTypesT>(First)>{};
