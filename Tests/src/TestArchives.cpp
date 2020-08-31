@@ -22,14 +22,11 @@ int main()
     }
     std::cout << path << std::endl;
     const auto archives = OpenVIII::Archive::Archives<OpenVIII::LangT::EN>(path);
-    auto results = archives.Search({".tdw",".tim",".png"});
-    for(const auto & result : results)
-    {
+    auto results = archives.Search({ ".tdw", ".tim", ".png" });
+    for (const auto &result : results) {
       std::cout << result.first << ":\n";
-      for(const auto & item : result.second)
-      {
-        std::cout << "  "<<item.first<<", "<<item.second << '\n';
-      }
+      [[maybe_unused]] const auto archive = archives.Get(result.first);
+      for (const auto &item : result.second) { std::cout << "  " << item.first << ", " << item.second << '\n'; }
     }
     continue;
     [[maybe_unused]] const auto &battle = archives.Get<OpenVIII::Archive::ArchiveTypeT::Battle>();
@@ -37,10 +34,7 @@ int main()
     [[maybe_unused]] const auto &field = archives.Get<OpenVIII::Archive::ArchiveTypeT::Field>();
     std::cout << field << std::endl;
     [[maybe_unused]] const auto &nestedField = archives.Get<OpenVIII::Archive::ArchiveTypeT::Field>({});
-    for(const auto & nested : nestedField)
-    {
-      std::cout << nested << std::endl;
-    }
+    for (const auto &nested : nestedField) { std::cout << nested << std::endl; }
     [[maybe_unused]] const auto &magic = archives.Get<OpenVIII::Archive::ArchiveTypeT::Magic>();
     std::cout << magic << std::endl;
     [[maybe_unused]] const auto &main = archives.Get<OpenVIII::Archive::ArchiveTypeT::Main>();

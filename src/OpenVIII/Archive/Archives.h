@@ -17,6 +17,7 @@
 #include <type_traits>
 #include <string_view>
 #include "OpenVIII/Strings/LangT.h"
+#include <variant>
 namespace OpenVIII::Archive {
 // There are 6 main FIFLFS archives and 2 main zzz archives for ff8 and ff8 remaster.
 
@@ -188,6 +189,79 @@ private:
   }
 
 public:
+  [[nodiscard]] constexpr std::variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
+    Get(const std::string_view &name, bool zzz = false) const
+  {
+    if (!zzz) {
+      if (GetString<ArchiveTypeT::Battle>() == name) {
+        return Get<ArchiveTypeT::Battle>();
+      }
+
+      if (GetString<ArchiveTypeT::Field>() == name) {
+        return Get<ArchiveTypeT::Field>();
+      }
+
+      if (GetString<ArchiveTypeT::Magic>() == name) {
+        return Get<ArchiveTypeT::Magic>();
+      }
+
+      if (GetString<ArchiveTypeT::Main>() == name) {
+        return Get<ArchiveTypeT::Main>();
+      }
+      if (GetString<ArchiveTypeT::Menu>() == name) {
+        return Get<ArchiveTypeT::Menu>();
+      }
+      if (GetString<ArchiveTypeT::World>() == name) {
+        return Get<ArchiveTypeT::World>();
+      }
+      if (GetString<ArchiveTypeT::Field>().starts_with(name)) {
+        std::cout << " -- nested -- " << name << '\n';
+        return std::monostate{};
+      }
+    } else {
+      if (GetString<ArchiveTypeT::ZZZMain>() == name) {
+        return Get<ArchiveTypeT::ZZZMain>();
+      }
+      if (GetString<ArchiveTypeT::ZZZOther>() == name) {
+        return Get<ArchiveTypeT::ZZZOther>();
+      }
+    }
+    return std::monostate{};
+  }
+  [[maybe_unused]] [[nodiscard]] constexpr std::variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
+    Get(const ArchiveTypeT &type) const
+  {
+    if (ArchiveTypeT::Battle == type) {
+      return Get<ArchiveTypeT::Battle>();
+    }
+
+    if (ArchiveTypeT::Field == type) {
+      return Get<ArchiveTypeT::Field>();
+    }
+
+    if (ArchiveTypeT::Magic == type) {
+      return Get<ArchiveTypeT::Magic>();
+    }
+
+    if (ArchiveTypeT::Main == type) {
+      return Get<ArchiveTypeT::Main>();
+    }
+    if (ArchiveTypeT::Menu == type) {
+      return Get<ArchiveTypeT::Menu>();
+    }
+    if (ArchiveTypeT::World == type) {
+      return Get<ArchiveTypeT::World>();
+    }
+    if (ArchiveTypeT::ZZZMain == type) {
+      return Get<ArchiveTypeT::ZZZMain>();
+    }
+    if (ArchiveTypeT::ZZZOther == type) {
+      return Get<ArchiveTypeT::ZZZOther>();
+    }
+
+    return std::monostate{};
+  }
+
   template<ArchiveTypeT archiveType_> constexpr auto GetString() const noexcept
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
     // returns nullptr on failure.
@@ -201,7 +275,7 @@ public:
     } else if constexpr (archiveType_ == ArchiveTypeT::Magic) {
       constexpr auto magic = "MAGIC"sv;
       return magic;
-    } else if constexpr (archiveType_ == ArchiveTypeT::Main || archiveType_ == ArchiveTypeT::ZZZMain) {
+    } else if constexpr (archiveType_ == ArchiveTypeT::Main) {
       constexpr auto main = "MAIN"sv;
       return main;
     } else if constexpr (archiveType_ == ArchiveTypeT::Menu) {
@@ -213,6 +287,9 @@ public:
     } else if constexpr (archiveType_ == ArchiveTypeT::ZZZOther) {
       constexpr auto other = "OTHER"sv;
       return other;
+    } else if constexpr (archiveType_ == ArchiveTypeT::ZZZMain) {
+      constexpr auto main = "MAIN"sv;
+      return main;
     } else {
       constexpr auto error = ""sv;
       return error;
@@ -271,7 +348,8 @@ public:
     }
   }
 
-  template<bool nested = true,std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::Last),
+  template<bool nested = true,
+    std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::Last),
     std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::First)>
   requires(maxT < static_cast<std::intmax_t>(ArchiveTypeT::Count) && maxT >= minT - 1
            && minT >= static_cast<std::intmax_t>(ArchiveTypeT::First))
@@ -280,9 +358,9 @@ public:
   {
     if constexpr (maxT >= minT) {
       std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>> vector =
-        Search<nested,maxT - 1,minT>(filename);
+        Search<nested, maxT - 1, minT>(filename);
       constexpr auto archiveType_ = std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(maxT)>{};
-      //std::cout << GetString<archiveType_>() << '\n';
+      // std::cout << GetString<archiveType_>() << '\n';
       auto archive = Get<archiveType_>();
       if constexpr (!std::is_null_pointer_v<decltype(archive)>) {
         if constexpr (!std::is_same_v<decltype(archive), std::optional<OpenVIII::Archive::ZZZ>>) {
@@ -290,12 +368,12 @@ public:
           if (!std::ranges::empty(result)) {
             vector.emplace_back(std::make_pair(GetString<archiveType_>(), std::move(result)));
           }
-          if constexpr (nested)
-          {
-          auto nestedResult = archive.GetAllNestedEntriesData(filename);
-          if (!std::ranges::empty(nestedResult)) {
-            for (auto &item : nestedResult) { vector.emplace_back(std::move(item)); }
-          }}
+          if constexpr (nested) {
+            auto nestedResult = archive.GetAllNestedEntriesData(filename);
+            if (!std::ranges::empty(nestedResult)) {
+              for (auto &item : nestedResult) { vector.emplace_back(std::move(item)); }
+            }
+          }
         } else {
           if (archive.has_value()) {
             [[maybe_unused]] const auto result = archive->GetAllEntriesData(filename);
