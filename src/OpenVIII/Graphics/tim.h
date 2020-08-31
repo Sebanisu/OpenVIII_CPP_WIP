@@ -74,20 +74,46 @@ public:
     if (std::ranges::size(buffer) == 0) {
       return;
     }
-    const auto setData = [&buffer](std::string_view &item, const auto &bytes) {
+    bool fail = false;
+    const auto setData = [&buffer, &fail](std::string_view &item, const std::size_t &bytes) {
+      if (bytes > std::ranges::size(buffer)) {
+        fail = true;
+        return;
+      }
       item = std::string_view{ std::ranges::data(buffer), bytes };
       buffer = buffer.subspan(bytes);
     };
-    const auto getValue = [&buffer](auto &item) {
-      memcpy(&item, std::ranges::data(buffer), sizeof(item));
-      buffer = buffer.subspan(sizeof(item));
+    const auto getValue = [&buffer, &fail](auto &item) {
+      const std::size_t sz = sizeof(item);
+      if (sz > std::ranges::size(buffer)) {
+        fail = true;
+        return;
+      }
+      memcpy(&item, std::ranges::data(buffer), sz);
+      buffer = buffer.subspan(sz);
     };
+
     getValue(timHeader_);
+    if (!timHeader_.Check() || fail) {
+      timHeader_ = {};
+      return;
+    }
     if (timHeader_.BPP().ColorLookupTablePresent()) {
       getValue(timClutHeader_);
+      if (!timClutHeader_.Check() || fail) {
+        timClutHeader_ = {};
+        timHeader_ = {};
+        return;
+      }
       setData(timClutData_, timClutHeader_.dataSize());
+      if (fail) {
+        return;
+      }
     }
     getValue(timImageHeader_);
+    if (fail) {
+      return;
+    }
     setData(timImageData_, timImageHeader_.dataSize());
   }
   [[nodiscard]] bool Check() const
@@ -128,8 +154,8 @@ public:
 
   friend std::ostream &operator<<(std::ostream &os, const tim &input)
   {
-    return os << sizeof(_4bitValues) << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", "
-              << input.timImageHeader_ << ", Corrected Width: " << input.Width() << '}';
+    return os << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", " << input.timImageHeader_
+              << ", Corrected Width: " << input.Width() << '}';
   }
   template<typename dstT = color32<>>
   [[nodiscard]] std::vector<dstT> GetColors([[maybe_unused]] std::uint16_t row = 0U) const

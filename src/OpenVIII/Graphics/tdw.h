@@ -15,24 +15,40 @@ namespace OpenVIII::Graphics {
 struct tdw
 {
 private:
-  std::uint32_t widthsOffset{};
-  std::uint32_t timOffset{};
+  static constexpr auto widthsOffsetValue = 8U;
+  std::uint32_t widthsOffset_{};
+  std::uint32_t timOffset_{};
   std::vector<_4bitValues> widths{};
   tim tim_{};
-  auto widthsSize() const noexcept { return timOffset - widthsOffset; }
+  auto widthsSize() const noexcept { return timOffset_ - widthsOffset_; }
 
 public:
   tdw() = default;
   explicit tdw([[maybe_unused]] std::span<const char> buffer)
   {
     const auto bufferBak = buffer;
-    std::memcpy(&widthsOffset, std::ranges::data(buffer), sizeof(std::uint32_t));
-    buffer = buffer.subspan(sizeof(std::uint32_t));
-    std::memcpy(&timOffset, std::ranges::data(buffer), sizeof(std::uint32_t));
-    buffer = buffer.subspan(sizeof(std::uint32_t));
+    size_t sz32 = sizeof(std::uint32_t);
+    if (std::ranges::size(buffer) < sz32) {
+      return;
+    }
+    std::memcpy(&widthsOffset_, std::ranges::data(buffer), sz32);
+    buffer = buffer.subspan(sz32);
+    if (widthsOffsetValue != widthsOffset_) {
+      widthsOffset_ = 0U;
+      return;
+    }
+    if (std::ranges::size(buffer) < sz32) {
+      return;
+    }
+    std::memcpy(&timOffset_, std::ranges::data(buffer), sz32);
+    buffer = buffer.subspan(sz32);
+
+    if (std::ranges::size(buffer) < widthsSize()) {
+      return;
+    }
     widths.resize(widthsSize());
-    std::memcpy(std::ranges::data(widths), std::ranges::data(bufferBak.subspan(widthsOffset)), widthsSize());
-    tim_ = tim{ bufferBak.subspan(timOffset) };
+    std::memcpy(std::ranges::data(widths), std::ranges::data(bufferBak.subspan(widthsOffset_)), widthsSize());
+    tim_ = tim{ bufferBak.subspan(timOffset_) };
   }
   [[nodiscard]] auto operator[](size_t i) const
   {
@@ -45,6 +61,17 @@ public:
   }
   [[nodiscard]] auto size() const { return std::ranges::size(widths) * 2U; }
   [[nodiscard]] const auto &TIM() const { return tim_; }
+  friend std::ostream &operator<<(std::ostream &os, const tdw &t)
+  {
+    //    if(t.size()>0) {
+    os << t.size() << " char widths: ";
+    for (const _4bitValues &w : t.widths) {
+      os << static_cast<std::uint32_t>(w.first) << ", " << static_cast<std::uint32_t>(w.second) << ", ";
+    }
+    return os << '\n' << t.tim_;
+    //    }
+    //    return os;
+  }
 };
 }// namespace OpenVIII::Graphics
 #endif// VIIIARCHIVE_TDW_H

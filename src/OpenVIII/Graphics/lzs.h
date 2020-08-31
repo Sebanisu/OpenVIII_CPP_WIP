@@ -25,32 +25,45 @@ private:
 public:
   [[maybe_unused]] explicit lzs(std::span<const char> buffer)
   {
-    std::uint32_t compSize{};
-    std::memcpy(&compSize, std::ranges::data(buffer), sizeof(std::uint32_t));
-    if (compSize + sizeof(std::uint32_t) != std::ranges::size(buffer)) {
-      std::cout << "wrong size: " << compSize << ", " << std::ranges::size(buffer) << '\n';
+    {
+      std::uint32_t compSize{};
+      size_t sz32 = sizeof(std::uint32_t);
+      if (sz32 > std::ranges::size(buffer)) {
+        return;
+      }
+      std::memcpy(&compSize, std::ranges::data(buffer), sz32);
+      if (compSize + sz32 != std::ranges::size(buffer)) {
+        std::cout << "wrong size: " << compSize << ", " << std::ranges::size(buffer) << '\n';
+        return;
+      }
+      buffer = buffer.subspan(sz32, compSize);// skip the size value.
     }
-    buffer = buffer.subspan(sizeof(std::uint32_t), compSize);// skip the size value.
-    [[maybe_unused]] auto size = std::size(buffer);
-    auto uncompressed = Compression::LZSS::Decompress(buffer);
-    std::span<const char> adj = uncompressed;
-    std::memcpy(&rectangle_, std::ranges::data(adj), sizeof(rectangle_));
-    std::cout << "size of uncompressed before: " << std::ranges::size(adj) << ", new size: ";
-    adj = adj.subspan(sizeof(rectangle_));// static_cast<std::size_t>(rectangle_.Width()) *
-                                          // static_cast<std::size_t>(rectangle_.Height())*sizeof(color16)
-    std::cout << std::ranges::size(adj) << '\n';
-    std::cout << rectangle_ << '\n';
-    std::cout << sizeof(color16) << '\n';
-    colors.resize(rectangle_.Height() * rectangle_.Width());
-    std::cout << std::ranges::size(colors) << ", " << std::ranges::size(adj) / sizeof(color16) << '\n';
-    std::memcpy(std::ranges::data(colors),
-      std::ranges::data(adj),
-      std::min(std::ranges::size(colors) * sizeof(color16), std::ranges::size(adj)));
+    {
+      auto uncompressed = Compression::LZSS::Decompress(buffer);
+      std::span<const char> adj = uncompressed;
+      size_t szrec = sizeof(rectangle_);
+      if (szrec > std::ranges::size(adj)) {
+        return;
+      }
+      std::memcpy(&rectangle_, std::ranges::data(adj), szrec);
+      std::cout << "size of uncompressed before: " << std::ranges::size(adj) << ", new size: ";
+      adj = adj.subspan(szrec);
+      std::cout << std::ranges::size(adj) << '\n';
+      std::cout << rectangle_ << '\n';
+      std::cout << sizeof(color16) << '\n';
+      const size_t maxbytes = std::ranges::size(adj) / sizeof(color16);
+      const size_t area = static_cast<size_t>(rectangle_.Height()) * static_cast<size_t>(rectangle_.Width());
+      size_t minSize = std::min(maxbytes, area);
+      colors.resize(minSize);
+      std::cout << std::ranges::size(colors) << ", " << area << '\n';
+      std::memcpy(std::ranges::data(colors), std::ranges::data(adj), minSize);
+    }
   }
   [[maybe_unused]] void Save(std::string_view filename) const
   {
     ppm::save(colors, rectangle_.Width(), rectangle_.Height(), filename);
   }
+  friend std::ostream &operator<<(std::ostream &os, const lzs &l) { return os << '{' << l.rectangle_ << "}\n"; }
 };
 }// namespace OpenVIII::Graphics
 #endif// VIIIARCHIVE_LZS_H

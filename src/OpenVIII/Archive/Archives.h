@@ -73,16 +73,18 @@ private:
    * @tparam Lambda void (*)(ArchiveTypeT, std::string_view)
    * @param f of type Lambda.
    */
-  template<std::intmax_t First = static_cast<std::intmax_t> (ArchiveTypeT::First),
-    std::intmax_t Last = static_cast<std::intmax_t> (ArchiveTypeT::Last),
-    typename Lambda>
-  requires((TestValidArchiveTypeT(First) && TestValidArchiveTypeT(Last)) || First == Last+1) void static_for(
-    [[maybe_unused]] Lambda const &f)
+  template<std::intmax_t First = static_cast<std::intmax_t>(ArchiveTypeT::First),
+    std::intmax_t Last = static_cast<std::intmax_t>(ArchiveTypeT::Last),
+    typename lambdaT>
+  requires(((TestValidArchiveTypeT(First) && TestValidArchiveTypeT(Last)) || First == Last + 1)
+           && std::invocable<lambdaT,
+             const ArchiveTypeT &,
+             const std::string &>) void static_for([[maybe_unused]] lambdaT const &lambda)
   {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
     if constexpr (First <= Last) {
       constexpr auto archiveType_ = std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(First)>{};
-      f(archiveType_, GetString<archiveType_>());
-      static_for<First + 1, Last>(f);
+      lambda(archiveType_, GetString<archiveType_>());
+      static_for<First + 1, Last>(lambda);
     }
   }
   /**
@@ -216,7 +218,7 @@ private:
               continue;
             }
             auto localPath = std::filesystem::path(pathString);
-            static_for<static_cast<intmax_t>(ArchiveTypeT::First),static_cast<intmax_t>(ArchiveTypeT::ZZZMain)-1>(
+            static_for<static_cast<intmax_t>(ArchiveTypeT::First), static_cast<intmax_t>(ArchiveTypeT::ZZZMain) - 1>(
               [&localPath, &dataItem, &path, this](const ArchiveTypeT &test, const auto &stem) {
                 if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
                   return;
@@ -393,13 +395,12 @@ public:
     {
       const auto &localPath = fileEntry.path();
       if (localPath.has_stem()) {
-        static_for(
-          [&localPath, this](const ArchiveTypeT &test, const auto &stem) {
-            if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
-              return;
-            }
-            TryAdd(test, localPath);
-          });
+        static_for([&localPath, this](const ArchiveTypeT &test, const auto &stem) {
+          if (!(OpenVIII::Tools::iEquals(stem, localPath.stem().string()))) {
+            return;
+          }
+          TryAdd(test, localPath);
+        });
       }
     }
   }
@@ -450,6 +451,45 @@ public:
       return vector;
     } else {
       return {};
+    }
+  }
+
+
+  /**
+   * Execute Lambda on all the archives. For any of the listed strings.
+   * @tparam nested enable or disable searching nested archives from field, default: true.
+   * @tparam maxT Max ArchiveTypeT value to search in. Converted to std::intmax_t. default: ArchiveTypeT::Last.
+   * @tparam minT Min ArchiveTypeT value to search in. Converted to std::intmax_t. default: ArchiveTypeT::First.
+   * @param filename is an initializer-list of strings to search the archives for. use {} to get all files.
+   */
+  template<bool nested = true,
+    std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::Last),
+    std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::First),
+    typename lambdaT>
+  requires(
+    (TestValidArchiveTypeT(maxT) || maxT >= minT - 1) && TestValidArchiveTypeT(minT)
+    && std::invocable<lambdaT,
+      std::vector<char>,
+      std::string>) void ExecuteOn(const std::initializer_list<std::string_view> &filename, const lambdaT &lambda) const
+  {
+    if constexpr (maxT >= minT) {
+      ExecuteOn<nested, maxT - 1, minT>(filename, lambda);
+      constexpr auto archiveType_ = std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(maxT)>{};
+      std::cout << GetString<archiveType_>() << '\n';
+      auto archive = Get<archiveType_>();
+      if constexpr (!std::is_null_pointer_v<decltype(archive)>) {
+        if constexpr (std::is_same_v<decltype(archive), std::optional<ZZZ>>) {
+          if (archive.has_value()) {
+            archive->ExecuteOn(filename, lambda);
+          }
+        } else if constexpr (std::is_same_v<decltype(archive),
+                               FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
+          archive.ExecuteOn(filename, lambda);
+          if constexpr (nested) {
+            archive.ExecuteOnNested(filename, lambda);
+          }
+        }
+      }
     }
   }
 };// namespace OpenVIII::Archive

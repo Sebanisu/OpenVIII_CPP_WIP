@@ -195,6 +195,20 @@ public:
     }
     return vector;
   }
+  template<typename lambdaT>
+  requires(std::invocable<lambdaT, std::vector<char>, std::string>) void ExecuteOn(
+    const std::initializer_list<std::string_view> &filename,
+    const lambdaT &lambda)
+  {
+    for (const OpenVIII::Archive::FileData &dataItem : Data()) {
+      {
+        auto pathString = dataItem.GetPathString();
+        if (OpenVIII::Tools::iFindAny(pathString, filename)) {
+          lambda(FS::GetEntry(path_, dataItem), pathString);
+        }
+      }
+    }
+  }
 };
 
 }// namespace OpenVIII::Archive

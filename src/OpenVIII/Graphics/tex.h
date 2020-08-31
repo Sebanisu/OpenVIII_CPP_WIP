@@ -89,7 +89,7 @@ private:
 public:
   tex() = default;
   [[maybe_unused]] explicit tex(std::span<const char> buffer)
-  {
+  { //TODO add validation checks.
     auto bufferbak = buffer;
     const auto process = [&buffer](auto &member) {
       const auto localSpan = buffer.subspan(0, sizeof(member));
@@ -102,7 +102,7 @@ public:
     if (texHeader_.VERSION >= 2) {
       process(texHeader2_Version2_);
     }
-    std::cout << std::hex << TextureLocator() << ", " << PaletteLocator() << std::dec << '\n';
+    //std::cout << std::hex << TextureLocator() << ", " << PaletteLocator() << std::dec << '\n';
     if (texHeader_.PALETTE_FLAG != 0U) {
       paletteData = bufferbak.subspan(PaletteLocator(), sizeOfPalette());
     }
@@ -157,6 +157,10 @@ public:
         ppm::save(GetColors(i), texHeader_.IMAGE_WIDTH, texHeader_.IMAGE_HEIGHT, ss.str());
       }
     }
+  }
+  friend std::ostream & operator << (std::ostream &os, const tex &t)
+  {
+    return os <<"{BPP: " << t.texHeader_.BITS_PER_PIXEL <<", Width: "<< t.texHeader_.IMAGE_WIDTH << ", Height: "<< t.texHeader_.IMAGE_HEIGHT<<"}\n";
   }
 };
 }// namespace OpenVIII::Graphics

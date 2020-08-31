@@ -55,3 +55,10 @@ add_executable(TestMenuGroup
         TestMenuGroup.cpp TestMenuGroup.h)
 set_target_properties(TestMenuGroup PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestMenuGroup VIIIStrings VIIIMenuGroup VIIIPaths VIIIArchive VIIIGraphics)
+
+
+##test image texture libraries
+add_executable(TestExtractImages
+        TestExtractImages.cpp TestExtractImages.h)
+set_target_properties(TestExtractImages PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestExtractImages VIIIPaths VIIIArchive VIIIGraphics)

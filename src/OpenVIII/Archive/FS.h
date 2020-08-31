@@ -34,7 +34,7 @@ public:
   static constexpr auto Ext = std::string_view(".FS");
 
   template<typename dstT = std::vector<char>, FI_Like datT = OpenVIII::Archive::FI>
-  static dstT GetEntry(const std::filesystem::path &path, const datT &fi, const size_t &offset)
+  static dstT GetEntry(const std::filesystem::path &path, const datT &fi, const size_t &offset = 0U)
   {
     if (fi.UncompressedSize() == 0) {
       return {};

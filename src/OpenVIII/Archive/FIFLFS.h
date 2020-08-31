@@ -26,10 +26,6 @@
 #include <map>
 #include <iterator>
 #include <ranges>
-#include "OpenVIII/Graphics/lzs.h"
-#include "OpenVIII/Graphics/tim.h"
-#include "OpenVIII/Graphics/tdw.h"
-#include "OpenVIII/Graphics/tex.h"
 
 namespace OpenVIII::Archive {
 
@@ -200,34 +196,35 @@ public:
     }
     return TryAddT::NotPartOfArchive;
   }
-  void
-    saveIMG(const std::vector<char> &buffer, const std::string_view &path, const std::string_view &root = "tmp") const
-  {
-    if (std::ranges::size(buffer) > 0) {
-      auto dir = std::filesystem::path(root);
-      auto filename = dir / path;
-      if (filename.has_extension()) {
-        if (Tools::iEquals(filename.extension().string(), ".lzs")) {
-          Graphics::lzs(buffer).Save(filename.string() + ".ppm");
-        }
-
-        if (Tools::iEquals(filename.extension().string(), ".tim")) {
-          const auto timV = Graphics::tim(buffer);
-          std::cout << timV;
-          timV.Save(filename.string() + ".ppm");
-        }
-        if (Tools::iEquals(filename.extension().string(), ".tdw")) {
-          const auto timV = Graphics::tdw(buffer);
-          std::cout << timV.TIM();
-          timV.TIM().Save(filename.string() + ".ppm");
-        }
-
-        if (Tools::iEquals(filename.extension().string(), ".tex")) {
-          Graphics::tex(buffer).Save(filename.string() + ".ppm");
-        }
-      }
-    }
-  };
+  //  void
+  //    saveIMG(const std::vector<char> &buffer, const std::string_view &path, const std::string_view &root = "tmp")
+  //    const
+  //  {
+  //    if (std::ranges::size(buffer) > 0) {
+  //      auto dir = std::filesystem::path(root);
+  //      auto filename = dir / path;
+  //      if (filename.has_extension()) {
+  //        if (Tools::iEquals(filename.extension().string(), ".lzs")) {
+  //          Graphics::lzs(buffer).Save(filename.string() + ".ppm");
+  //        }
+  //
+  //        if (Tools::iEquals(filename.extension().string(), ".tim")) {
+  //          const auto timV = Graphics::tim(buffer);
+  //          std::cout << timV;
+  //          timV.Save(filename.string() + ".ppm");
+  //        }
+  //        if (Tools::iEquals(filename.extension().string(), ".tdw")) {
+  //          const auto timV = Graphics::tdw(buffer);
+  //          std::cout << timV.TIM();
+  //          timV.TIM().Save(filename.string() + ".ppm");
+  //        }
+  //
+  //        if (Tools::iEquals(filename.extension().string(), ".tex")) {
+  //          Graphics::tex(buffer).Save(filename.string() + ".ppm");
+  //        }
+  //      }
+  //    }
+  //  }
 
   template<typename dstT = std::vector<char>, FI_Like fiT> dstT GetEntryBuffer(const fiT &fi) const
   {
@@ -293,8 +290,8 @@ public:
           exit(EXIT_FAILURE);
         }
         std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
-        // Tools::WriteBuffer(buffer, strVirtualPath);
-        saveIMG(buffer, strVirtualPath);
+        Tools::WriteBuffer(buffer, strVirtualPath);
+        // saveIMG(buffer, strVirtualPath);
       }
     }
   }
@@ -399,9 +396,21 @@ public:
     return GetEntryData<outT>(GetEntryIndex(id));
   }
   [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(
-    const std::initializer_list<std::string_view> &filename)
+    const std::initializer_list<std::string_view> &filename) const
   {
     return Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, filename);
+  }
+
+  template<typename lambdaT>
+  requires(std::invocable<lambdaT, std::vector<char>, std::string>) void ExecuteOn(
+    const std::initializer_list<std::string_view> &filename,
+    const lambdaT &lambda) const
+  {
+    const auto results = GetAllEntriesData(filename);
+    for (const std::pair<unsigned int, std::string> &pair : results) {
+      auto fi = GetEntryIndex(pair.first);
+      lambda(GetEntryBuffer(fi), pair.second);
+    }
   }
 
   [[nodiscard]] std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
@@ -423,10 +432,32 @@ public:
     }
     return vector;
   }
-  [[nodiscard]] std::vector<FIFLFS> GetFIFLFSEntries(const std::string_view &filename) const
+
+  template<typename lambdaT>
+  requires(std::invocable<lambdaT, std::vector<char>, std::string>) void ExecuteOnNested(
+    const std::initializer_list<std::string_view> &filename,
+    const lambdaT &lambda) const
   {
-    std::vector<FIFLFS> out{};
-    FIFLFS archive{};
+    if constexpr (!HasNested) {
+      return;
+    }
+    const std::vector<std::pair<unsigned int, std::string>> fls_ = GetAllEntriesData({ Archive::FL::Ext });
+    const std::string &basename = GetBaseName();
+    for (const auto fl : fls_) {
+      const auto fi = GetEntryIndex(fl.first);
+      const auto buffer = GetEntryBuffer<std::string>(fi);
+      auto results = Archive::FL::GetAllEntriesData({}, buffer, 0, 0, 0, filename, 1U);
+      if (!std::ranges::empty(results)) {
+        const auto archives = GetFIFLFSEntries(std::filesystem::path(fl.second).stem().string());
+        for (const auto &archive : archives) { archive.ExecuteOn(filename, lambda); }
+      }
+    }
+  }
+
+  [[nodiscard]] std::vector<FIFLFS<false>> GetFIFLFSEntries(const std::string_view &filename) const
+  {
+    std::vector<FIFLFS<false>> out{};
+    FIFLFS<false> archive{};
 
     const auto &items = Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, { filename });
     for (const auto &item : items) {
