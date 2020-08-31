@@ -160,7 +160,7 @@ public:
   }
   friend std::ostream & operator << (std::ostream &os, const tex &t)
   {
-    return os <<"{BPP: " << t.texHeader_.BITS_PER_PIXEL <<", Width: "<< t.texHeader_.IMAGE_WIDTH << ", Height: "<< t.texHeader_.IMAGE_HEIGHT<<"}\n";
+    return os <<"{Version: " << t.texHeader_.VERSION <<", BPP: " << t.texHeader_.BITS_PER_PIXEL << ", Palette Count: "<< t.texHeader_.NUM_PALETTES <<", Width: "<< t.texHeader_.IMAGE_WIDTH << ", Height: "<< t.texHeader_.IMAGE_HEIGHT<<"}\n";
   }
 };
 }// namespace OpenVIII::Graphics
