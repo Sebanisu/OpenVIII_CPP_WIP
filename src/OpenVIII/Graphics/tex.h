@@ -118,8 +118,10 @@ public:
         ret.emplace_back(GetColorFromPalette(paletteRow, static_cast<std::uint8_t>(i)));
       }
     } else {
+      static constexpr auto _16bpp = 16U;
+      static constexpr auto _32bpp = 32U;
       switch (texHeader_.BITS_PER_PIXEL) {
-      case 16U: {
+      case _16bpp: {
         //        std::vector<color16> tmp(std::ranges::size(ret));
         //        auto size_ = std::min(
         //          std::min(texHeader_.IMAGE_HEIGHT * texHeader_.IMAGE_WIDTH * sizeof(color16),
@@ -135,7 +137,7 @@ public:
         //      case 24: {
         //        break;
         //      }
-      case 32U: {// untested
+      case _32bpp: {// untested
         auto c32data = std::span(reinterpret_cast<const color32<2, 1, 0, 3> *>(std::ranges::data(imageData)),
           std::ranges::size(imageData) / sizeof(color32<2, 1, 0, 3>));
         for (const auto &i : c32data) { ret.emplace_back(i); }
