@@ -180,14 +180,14 @@ public:
     return os;
   }
   [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(
-    const std::string_view &filename) const
+    const std::initializer_list<std::string_view> &filename) const
   {
     unsigned int i{};
     std::vector<std::pair<unsigned int, std::string>> vector{};
     for (const OpenVIII::Archive::FileData &dataItem : Data()) {
       {
         auto pathString = dataItem.GetPathString();
-        if (OpenVIII::Tools::iFind(pathString, filename)) {
+        if (OpenVIII::Tools::iFindAny(pathString, filename)) {
           vector.emplace_back(std::make_pair(i, pathString));
         }
       }

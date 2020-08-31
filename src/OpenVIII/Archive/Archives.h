@@ -271,18 +271,18 @@ public:
     }
   }
 
-  template<std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::Last),
+  template<bool nested = true,std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::Last),
     std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::First)>
   requires(maxT < static_cast<std::intmax_t>(ArchiveTypeT::Count) && maxT >= minT - 1
            && minT >= static_cast<std::intmax_t>(ArchiveTypeT::First))
     [[nodiscard]] std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>> Search(
-      const std::string_view &filename) const
+      const std::initializer_list<std::string_view> &filename) const
   {
     if constexpr (maxT >= minT) {
       std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>> vector =
-        Search<maxT - 1>(filename);
+        Search<nested,maxT - 1,minT>(filename);
       constexpr auto archiveType_ = std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(maxT)>{};
-      std::cout << GetString<archiveType_>() << '\n';
+      //std::cout << GetString<archiveType_>() << '\n';
       auto archive = Get<archiveType_>();
       if constexpr (!std::is_null_pointer_v<decltype(archive)>) {
         if constexpr (!std::is_same_v<decltype(archive), std::optional<OpenVIII::Archive::ZZZ>>) {
@@ -290,10 +290,12 @@ public:
           if (!std::ranges::empty(result)) {
             vector.emplace_back(std::make_pair(GetString<archiveType_>(), std::move(result)));
           }
-          auto nested = archive.GetAllNestedEntriesData(filename);
-          if (!std::ranges::empty(nested)) {
-            for (auto &item : nested) { vector.emplace_back(std::move(item)); }
-          }
+          if constexpr (nested)
+          {
+          auto nestedResult = archive.GetAllNestedEntriesData(filename);
+          if (!std::ranges::empty(nestedResult)) {
+            for (auto &item : nestedResult) { vector.emplace_back(std::move(item)); }
+          }}
         } else {
           if (archive.has_value()) {
             [[maybe_unused]] const auto result = archive->GetAllEntriesData(filename);

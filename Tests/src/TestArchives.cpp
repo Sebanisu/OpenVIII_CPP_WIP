@@ -22,7 +22,7 @@ int main()
     }
     std::cout << path << std::endl;
     const auto archives = OpenVIII::Archive::Archives<OpenVIII::LangT::EN>(path);
-    auto results = archives.Search(".tdw");
+    auto results = archives.Search({".tdw",".tim",".png"});
     for(const auto & result : results)
     {
       std::cout << result.first << ":\n";

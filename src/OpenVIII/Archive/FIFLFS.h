@@ -398,24 +398,24 @@ public:
     }();
     return GetEntryData<outT>(GetEntryIndex(id));
   }
-  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(const std::string_view &filename)
+  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(const std::initializer_list<std::string_view> &filename)
   {
-    return Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, { filename });
+    return Archive::FL::GetAllEntriesData(fl_.path, fl_.data, fl_.offset, fl_.size, count_, filename );
   }
 
   [[nodiscard]] std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
-    GetAllNestedEntriesData([[maybe_unused]] const std::string_view &filename)
+    GetAllNestedEntriesData([[maybe_unused]] const std::initializer_list<std::string_view> & filename)
   {
     if constexpr (!HasNested) {
       return {};
     }
     std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>> vector{};
-    const std::vector<std::pair<unsigned int, std::string>> fls_ = GetAllEntriesData(Archive::FL::Ext);
+    const std::vector<std::pair<unsigned int, std::string>> fls_ = GetAllEntriesData({Archive::FL::Ext});
     const std::string &basename = GetBaseName();
     for (const auto fl : fls_) {
       const auto fi = GetEntryIndex(fl.first);
       const auto buffer = GetEntryBuffer<std::string>(fi);
-      auto results = Archive::FL::GetAllEntriesData({}, buffer, 0, 0, 0, { filename });
+      auto results = Archive::FL::GetAllEntriesData({}, buffer, 0, 0, 0,  filename );
       if (!std::ranges::empty(results)) {
         vector.emplace_back(std::make_pair(basename + "::" + GetBaseName(fl.second), std::move(results)));
       }
