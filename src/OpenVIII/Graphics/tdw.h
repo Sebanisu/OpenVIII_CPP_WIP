@@ -72,6 +72,10 @@ public:
     //    }
     //    return os;
   }
+  void Save(const std::string_view & path)
+  {
+    tim_.Save(path);
+  }
 };
 }// namespace OpenVIII::Graphics
 #endif// VIIIARCHIVE_TDW_H

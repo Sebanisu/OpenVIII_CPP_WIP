@@ -89,24 +89,60 @@ private:
 public:
   tex() = default;
   [[maybe_unused]] explicit tex(std::span<const char> buffer)
-  { //TODO add validation checks.
+  {
     auto bufferbak = buffer;
-    const auto process = [&buffer](auto &member) {
+    bool fail = false;
+    const auto process = [&buffer, &fail](auto &member) {
+      if (sizeof(member) > std::ranges::size(buffer)) {
+        fail = true;
+        return;
+      }
       const auto localSpan = buffer.subspan(0, sizeof(member));
       std::memcpy(&member, std::ranges::data(localSpan), sizeof(member));
       buffer = buffer.subspan(sizeof(member));
     };
     process(texHeader_);
+    if (!texHeader_.Check() || fail) {
+      Reset();
+      return;
+    }
     process(texPixelFormatHeader_);
+    if (fail) {
+      Reset();
+      return;
+    }
     process(texHeader2_);
     if (texHeader_.VERSION >= 2) {
       process(texHeader2_Version2_);
+      if (fail) {
+        Reset();
+        return;
+      }
     }
-    //std::cout << std::hex << TextureLocator() << ", " << PaletteLocator() << std::dec << '\n';
+    // std::cout << std::hex << TextureLocator() << ", " << PaletteLocator() << std::dec << '\n';
     if (texHeader_.PALETTE_FLAG != 0U) {
+
+      if (std::ranges::size(bufferbak) < sizeOfPalette() + PaletteLocator()) {
+        Reset();
+        return;
+      }
+
       paletteData = bufferbak.subspan(PaletteLocator(), sizeOfPalette());
     }
+
+    if (std::ranges::size(bufferbak) < TextureLocator()) {
+      Reset();
+      return;
+    }
     imageData = bufferbak.subspan(TextureLocator());
+  }
+  void Reset()
+  {
+    texHeader_ = {};
+    texPixelFormatHeader_ = {};
+    texHeader2_Version2_ = {};
+    paletteData = {};
+    imageData = {};
   }
   [[maybe_unused]] [[nodiscard]] std::vector<color32<>> GetColors([[maybe_unused]] std::uint32_t paletteRow = 0U) const
   {
@@ -160,9 +196,11 @@ public:
       }
     }
   }
-  friend std::ostream & operator << (std::ostream &os, const tex &t)
+  friend std::ostream &operator<<(std::ostream &os, const tex &t)
   {
-    return os <<"{Version: " << t.texHeader_.VERSION <<", BPP: " << t.texHeader_.BITS_PER_PIXEL << ", Palette Count: "<< t.texHeader_.NUM_PALETTES <<", Width: "<< t.texHeader_.IMAGE_WIDTH << ", Height: "<< t.texHeader_.IMAGE_HEIGHT<<"}\n";
+    return os << "{Version: " << t.texHeader_.VERSION << ", BPP: " << t.texHeader_.BITS_PER_PIXEL
+              << ", Palette Count: " << t.texHeader_.NUM_PALETTES << ", Width: " << t.texHeader_.IMAGE_WIDTH
+              << ", Height: " << t.texHeader_.IMAGE_HEIGHT << "}\n";
   }
 };
 }// namespace OpenVIII::Graphics

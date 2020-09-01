@@ -7,6 +7,8 @@
 #include "OpenVIII/Graphics/tim.h"
 #include "OpenVIII/Graphics/tdw.h"
 #include "OpenVIII/Graphics/tex.h"
+#include "OpenVIII/Graphics/sp1.h"
+#include "OpenVIII/Graphics/sp2.h"
 
 int main()
 {
@@ -18,17 +20,33 @@ int main()
     std::cout << path << std::endl;
     const auto archives = OpenVIII::Archive::Archives<OpenVIII::LangT::EN>(path);
 
-    archives.ExecuteOn({ ".tex" }, [](std::vector<char> buffer, [[maybe_unused]] std::string_view p) {
-      if (OpenVIII::Tools::iEndsWith(p, ".lzs")) {
-        auto t = OpenVIII::Graphics::lzs(buffer);
-        std::cout << p << '\n' << t << '\n';
-      } else if (OpenVIII::Tools::iEndsWith(p, ".tim")) {
-        auto t = OpenVIII::Graphics::tim(buffer);
-        std::cout << p << '\n' << t << '\n';
-      } else if (OpenVIII::Tools::iEndsWith(p, ".tex")) {
-        auto t = OpenVIII::Graphics::tex(buffer);
-        std::cout << p << '\n' << t << '\n';
-      }
-    });
+    archives.ExecuteOn({ /*".tex", ".lzs", ".tim", ".tdw",*/ ".sp1", ".sp2" },
+      [](std::vector<char> buffer, [[maybe_unused]] std::string_view p) {
+        if (OpenVIII::Tools::iEndsWith(p, ".lzs")) {
+          auto t = OpenVIII::Graphics::lzs(buffer);
+          std::cout << p << '\n' << t << '\n';
+          t.Save(p);
+        } else if (OpenVIII::Tools::iEndsWith(p, ".tim")) {
+          auto t = OpenVIII::Graphics::tim(buffer);
+          std::cout << p << '\n' << t << '\n';
+          t.Save(p);
+        } else if (OpenVIII::Tools::iEndsWith(p, ".tex")) {
+          auto t = OpenVIII::Graphics::tex(buffer);
+          std::cout << p << '\n' << t << '\n';
+          t.Save(p);
+        } else if (OpenVIII::Tools::iEndsWith(p, ".tdw")) {
+          auto t = OpenVIII::Graphics::tdw(buffer);
+          std::cout << p << '\n' << t << '\n';
+          t.Save(p);
+        } else if (OpenVIII::Tools::iEndsWith(p, ".sp1")) {
+          auto t = OpenVIII::Graphics::sp1(buffer);
+          std::cout << p << '\n' << t << '\n';
+          // t.Save(p);
+        } else if (OpenVIII::Tools::iEndsWith(p, ".sp2")) {
+          auto t = OpenVIII::Graphics::sp2(buffer);
+          std::cout << p << '\n' << t << '\n';
+          // t.Save(p);
+        }
+      });
   }
 }

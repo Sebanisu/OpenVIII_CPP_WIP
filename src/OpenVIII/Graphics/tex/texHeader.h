@@ -123,6 +123,26 @@ public:
    * Number of Bytes per Pixel
    */
   std::uint32_t BYTES_PER_PIXEL{};
+  /**
+   * Test for valid values.
+   * @return
+   */
+  bool Check()
+  {
+    static constexpr auto _1Bpp = 1U;
+    static constexpr auto _2Bpp = 2U;
+    static constexpr auto _3Bpp = 3U;
+    static constexpr auto _4Bpp = 4U;
+    static constexpr auto _8bpp = 8U;
+    static constexpr auto _16bpp = 16U;
+    static constexpr auto _24bpp = 24U;
+    static constexpr auto _32bpp = 32U;
+    return (VERSION == 1 || VERSION == 2)
+           && ((BITS_PER_PIXEL == _8bpp && BYTES_PER_PIXEL == _1Bpp)
+               || (BITS_PER_PIXEL == _16bpp && BYTES_PER_PIXEL == _2Bpp)
+               || (BITS_PER_PIXEL == _24bpp && BYTES_PER_PIXEL == _3Bpp)
+               || (BITS_PER_PIXEL == _32bpp && BYTES_PER_PIXEL == _4Bpp));
+  }
 };
 }// namespace OpenVIII::Graphics
 #endif// VIIIARCHIVE_TEXHEADER_H

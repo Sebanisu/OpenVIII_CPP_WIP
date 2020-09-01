@@ -20,6 +20,15 @@ public:
   std::uint8_t unknown4_{};
   std::uint8_t unknown5_{};
   std::uint8_t unknown6_{};
+  friend std::ostream &operator<<(std::ostream &os, const sp2Entry &e)
+  {
+    return os << "{ " << static_cast<std::size_t>(e.count_) << " (X, Y) = (" << static_cast<std::size_t>(e.x_) << ", "
+              << static_cast<std::size_t>(e.y_) << "), (W, H) = (" << static_cast<std::size_t>(e.width_) << ", "
+              << static_cast<std::size_t>(e.height_) << "), Unk(" << static_cast<std::size_t>(e.unknown1_) << ", "
+              << static_cast<std::size_t>(e.unknown2_) << ", " << static_cast<std::size_t>(e.unknown3_) << ", "
+              << static_cast<std::size_t>(e.unknown4_) << ", " << static_cast<std::size_t>(e.unknown5_) << ", "
+              << static_cast<std::size_t>(e.unknown6_) << ") }";
+  }
 };
 }// namespace OpenVIII::Graphics
 #endif// VIIIARCHIVE_SP2ENTRY_H
