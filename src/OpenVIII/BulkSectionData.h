@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_BULKSECTIONDATA_H
 #define VIIIARCHIVE_BULKSECTIONDATA_H
 #include <string_view>
-#include "OpenVIII/ItemID.h"
+#include "OpenVIII/ItemIdT.h"
 #include "OpenVIII/Kernel/BattleItems.h"
 #include "OpenVIII/Kernel/NonBattleItems.h"
 
@@ -48,7 +48,7 @@ public:
   template<typename T = std::size_t> requires(std::integral<T> && !std::signed_integral<T>) auto at(const T id_v) const
   {
     auto id = static_cast<size_t>(id_v);
-    if constexpr (std::is_same_v<T, ItemID>) {
+    if constexpr (std::is_same_v<T, ItemIdT>) {
       if constexpr (std::is_same_v<spanT, Kernel::BattleItems>) {
       } else if constexpr (std::is_same_v<spanT, Kernel::NonBattleItems>) {
         static constexpr auto battleItemsCount = 33U;

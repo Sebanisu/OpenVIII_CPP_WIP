@@ -20,20 +20,20 @@ template<typename spanT> requires(sizeof(spanT) > 0U) struct SectionData
 {
 private:
   // data
-  spanT span_{};
+  spanT m_span{};
   // strings
-  std::string_view textSpan_{};
+  std::string_view m_text_span{};
 
 public:
   [[maybe_unused]] explicit SectionData(const spanT &span, const std::string_view &textSpan = {})
-    : span_{ span }, textSpan_{ textSpan }
+    : m_span{ span }, m_text_span{ textSpan }
   {}
-  [[nodiscard]] auto begin() const { return span_.begin(); }
-  [[nodiscard]] auto end() const { return span_.end(); }
-  [[nodiscard]] size_t size() const { return std::size(span_) / sizeof(spanT); }
-  const auto *operator->() const { return &span_; }
-  [[maybe_unused]] auto &Span() const noexcept { return span_; }
-  auto &TextSpan() const noexcept { return textSpan_; }
+  [[nodiscard]] auto begin() const { return m_span.begin(); }
+  [[nodiscard]] auto end() const { return m_span.end(); }
+  [[nodiscard]] size_t size() const { return std::size(m_span) / sizeof(spanT); }
+  const auto *operator->() const { return &m_span; }
+  [[maybe_unused]] auto &span() const noexcept { return m_span; }
+  auto &text_span() const noexcept { return m_text_span; }
 };
 }// namespace open_viii
 #endif// VIIIARCHIVE_SECTIONDATA_H

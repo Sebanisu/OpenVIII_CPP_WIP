@@ -287,7 +287,7 @@ public:
         }
 
         std::cout << "    " << id - 1 << ": {" << subSection.Offset() << "} "
-                  << Tools::u8tosv(subSection.template DecodedString<langVal>(mes.TextSpan(), 0, true)) << '\n';
+                  << Tools::u8tosv(subSection.template DecodedString<langVal>(mes.text_span(), 0, true)) << '\n';
       }
     });
   }
@@ -307,7 +307,7 @@ public:
               continue;
             }
             std::cout << "    " << stringNumber++ << ": {" << subSection.Offset() << "} "
-                      << Tools::u8tosv(subSection.template DecodedString<langVal>(tkmnmesPair.TextSpan(), offset, true))
+                      << Tools::u8tosv(subSection.template DecodedString<langVal>(tkmnmesPair.text_span(), offset, true))
                       << '\n';
           }
         }

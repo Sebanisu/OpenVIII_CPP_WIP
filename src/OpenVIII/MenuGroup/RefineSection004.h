@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION004_H
 #define VIIIARCHIVE_REFINESECTION004_H
-#include "OpenVIII/ItemID.h"
+#include "OpenVIII/ItemIdT.h"
 #include "RefineEntry.h"
 #include "RefineCardID.h"
 #include <array>
@@ -29,7 +29,7 @@ struct [[maybe_unused]] RefineSection004// Refine cards to items
 
 private:
   static constexpr auto cardModCount_ = 110U;
-  std::array<RefineEntry<RefineCardID, ItemID>, cardModCount_> cardMod_{};
+  std::array<RefineEntry<RefineCardID, ItemIdT>, cardModCount_> cardMod_{};
 
 public:
   [[nodiscard]] const auto &CardMod() const noexcept { return cardMod_; }
