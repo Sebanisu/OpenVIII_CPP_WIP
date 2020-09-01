@@ -83,8 +83,8 @@ public:
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.DecodedString<langVal>(buffer);
-    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
+    auto name = nameOffset_.decoded_string<langVal>(buffer);
+    auto description = descriptionOffset_.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }

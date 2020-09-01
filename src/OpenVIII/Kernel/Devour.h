@@ -121,7 +121,7 @@ public:
   [[nodiscard]] auto RaisedStatHPQuantity() const noexcept { return raisedStatHPQuantity_; }
   std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto description = descriptionOffset_.DecodedString<langVal>(buffer);
+    auto description = descriptionOffset_.decoded_string<langVal>(buffer);
     if (!std::empty(description)) {
       os << Tools::u8tosv(description);
     }

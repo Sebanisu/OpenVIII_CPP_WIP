@@ -22,7 +22,7 @@ namespace open_viii {
 template<LangT langVal> struct FF8String
 {
 private:
-  static constexpr std::array<std::u8string_view, 256> euCodePage{ u8"\x00"sv,
+  static constexpr std::array<std::u8string_view, 256> EU_CODE_PAGE{ u8"\x00"sv,
     u8"\x01"sv,
     u8"\n"sv,
     u8"\x03"sv,
@@ -279,7 +279,7 @@ private:
     u8" S"sv,
     u8"ag" };
 
-  static constexpr std::array<std::u8string_view, 256> jpCodePage = { u8"\x00"sv,
+  static constexpr std::array<std::u8string_view, 256> JP_CODE_PAGE = { u8"\x00"sv,
     u8"\x01"sv,
     u8"\n"sv,
     u8"\x03"sv,
@@ -539,16 +539,16 @@ private:
 public:
   // static constexpr std::array LangCodes = { "en"sv, "fr"sv, "es"sv, "it"sv, "de"sv, "jp" };
 
-  static constexpr auto &GetCodePage()
+  static constexpr auto &get_code_page()
   {
     if constexpr (langVal == LangT::jp) {
-      return jpCodePage;
+      return JP_CODE_PAGE;
     } else {
-      return euCodePage;
+      return EU_CODE_PAGE;
     }
   }
-  [[nodiscard]] auto static Decode(uint8_t key) noexcept { return GetCodePage().at(key); }
-  [[nodiscard]] auto static Decode(const std::string_view &buffer)
+  [[nodiscard]] auto static decode(uint8_t key) noexcept { return get_code_page().at(key); }
+  [[nodiscard]] auto static decode(const std::string_view &buffer)
   {
     using u8stringstream = std::basic_stringstream<char8_t, std::char_traits<char8_t>>;
     if (std::empty(buffer)) {
@@ -558,7 +558,7 @@ public:
     //    {return Decode(static_cast<uint8_t>(key));},[](auto a, auto b)){});
     u8stringstream ss{};
     for (auto key : buffer) {
-      const auto value = Decode(static_cast<uint8_t>(key));
+      const auto value = decode(static_cast<uint8_t>(key));
       ss << value;
     }
     return ss.str();

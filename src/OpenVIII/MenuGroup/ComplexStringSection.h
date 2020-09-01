@@ -29,7 +29,7 @@ public:
   }
   template<LangT langVal> std::ostream &out(std::ostream &os) const
   {
-    return os << Tools::u8tosv(FF8String<langVal>::Decode(buffer_));
+    return os << Tools::u8tosv(FF8String<langVal>::decode(buffer_));
   }
 };
 struct ComplexStringSectionOffsets

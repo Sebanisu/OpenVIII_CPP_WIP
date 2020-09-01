@@ -16,7 +16,7 @@
 #include "ZZZ.h"
 #include <type_traits>
 #include <string_view>
-#include "OpenVIII/Strings/LangT.h"
+#include "OpenVIII/Strings/LangCommon.h"
 #include <variant>
 namespace open_viii::archive {
 // There are 6 main FIFLFS archives and 2 main zzz archives for ff8 and ff8 remaster.

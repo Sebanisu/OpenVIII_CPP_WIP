@@ -282,12 +282,12 @@ public:
       size_t id = 0;
       for (const auto &subSection : mes) {
         id++;
-        if (subSection.Offset() == 0) {
+        if (subSection.offset() == 0) {
           continue;
         }
 
-        std::cout << "    " << id - 1 << ": {" << subSection.Offset() << "} "
-                  << Tools::u8tosv(subSection.template DecodedString<langVal>(mes.text_span(), 0, true)) << '\n';
+        std::cout << "    " << id - 1 << ": {" << subSection.offset() << "} "
+                  << Tools::u8tosv(subSection.template decoded_string<langVal>(mes.text_span(), 0, true)) << '\n';
       }
     });
   }
@@ -303,11 +303,11 @@ public:
           const auto subSectionGroup = tkmnmesPair->SubSections().at(id);
           [[maybe_unused]] size_t stringNumber{};
           for (const auto &subSection : subSectionGroup) {
-            if (subSection.Offset() == 0) {
+            if (subSection.offset() == 0) {
               continue;
             }
-            std::cout << "    " << stringNumber++ << ": {" << subSection.Offset() << "} "
-                      << Tools::u8tosv(subSection.template DecodedString<langVal>(tkmnmesPair.text_span(), offset, true))
+            std::cout << "    " << stringNumber++ << ": {" << subSection.offset() << "} "
+                      << Tools::u8tosv(subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true))
                       << '\n';
           }
         }

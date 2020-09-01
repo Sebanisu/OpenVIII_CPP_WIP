@@ -81,7 +81,7 @@ int main()
     //          stringnumber++;
     //          if (subSection.Offset() > 0) {
     //            std::cout << "    " << stringnumber << ": {" << subSection.Offset() << "} "
-    //                      << subSection.DecodedString<coo>(sectionBuffer, offset, false) << '\n';
+    //                      << subSection.decoded_string<coo>(sectionBuffer, offset, false) << '\n';
     //          }
     //        }
     //      }
@@ -97,7 +97,7 @@ int main()
     //          continue;
     //        }
     //        std::cout << "    " << id << ": {" << subSection.Offset() << "} "
-    //                  << subSection.DecodedString<coo>(sectionBuffer, 0, true) << '\n';
+    //                  << subSection.decoded_string<coo>(sectionBuffer, 0, true) << '\n';
     //      }
     //      //          std::cout << '\n';
     //    } else if ((notSkipped >= 107) && (notSkipped <= 111)) {

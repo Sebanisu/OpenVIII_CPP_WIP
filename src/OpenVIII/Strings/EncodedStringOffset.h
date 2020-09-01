@@ -21,11 +21,12 @@ namespace open_viii {
 struct EncodedStringOffset
 {
 private:
-  std::uint16_t offset_{};
+  std::uint16_t m_offset{};
 
   [[nodiscard]] static intmax_t
-    FindStringSize(const std::string_view &buffer, const intmax_t offset, bool skipFirstNull)
+    find_string_size(const std::string_view &buffer, const intmax_t offset, bool skipFirstNull)
   {
+    //TODO: remove the pointers
     if (static_cast<unsigned>(offset) > std::size(buffer)) {
       return -1;
     }
@@ -41,12 +42,12 @@ private:
     }
     return static_cast<signed>(std::size(buffer)) - offset;
   }
-  [[nodiscard]] static auto GetStringAtOffset(const std::string_view &buffer, intmax_t offset, bool skipFirstNull)
+  [[nodiscard]] static auto get_string_at_offset(const std::string_view &buffer, intmax_t offset, bool skipFirstNull)
   {
     using namespace std::literals::string_view_literals;
 
     if (offset >= 0 && !std::empty(buffer) && std::size(buffer) > static_cast<size_t>(offset)) {
-      auto size = FindStringSize(buffer, offset, skipFirstNull);
+      auto size = find_string_size(buffer, offset, skipFirstNull);
       if (size > 0 && std::size(buffer) > (static_cast<size_t>(offset) + static_cast<size_t>(size))) {
         return std::string_view(buffer.data() + static_cast<size_t>(offset), static_cast<size_t>(size));
       }
@@ -56,21 +57,21 @@ private:
 
 public:
   [[nodiscard]] auto
-    RawBytes(const std::string_view &buffer, const intmax_t offset = 0, bool skipFirstNull = false) const
+    raw_bytes(const std::string_view &buffer, const intmax_t offset = 0, bool skipFirstNull = false) const
   {
-    if (offset_ == INT16_MAX) {
+    if (m_offset == INT16_MAX) {
       return ""sv;
     }
-    return GetStringAtOffset(buffer, static_cast<intmax_t>(offset_) + offset, skipFirstNull);
+    return get_string_at_offset(buffer, static_cast<intmax_t>(m_offset) + offset, skipFirstNull);
   }
   template<LangT langVal>
   [[nodiscard]] auto
-    DecodedString(const std::string_view &buffer, const intmax_t offset = 0, bool skipFirstNull = false) const
+    decoded_string(const std::string_view &buffer, const intmax_t offset = 0, bool skipFirstNull = false) const
   {
-    return FF8String<langVal>::Decode(RawBytes(buffer, offset, skipFirstNull));
+    return FF8String<langVal>::decode(raw_bytes(buffer, offset, skipFirstNull));
   }
 
-  [[nodiscard]] auto Offset() const noexcept { return offset_; }
+  [[nodiscard]] auto offset() const noexcept { return m_offset; }
 };
 }// namespace open_viii
 #endif// VIIIARCHIVE_ENCODEDSTRINGOFFSET_H
