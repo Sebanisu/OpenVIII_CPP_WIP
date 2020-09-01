@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_CRISISLEVELT_H
 #include <iostream>
 #include <array>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<typename T> struct CrisisLevelT
 {
 private:
@@ -47,5 +47,5 @@ public:
     return os << '}';
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_CRISISLEVELT_H

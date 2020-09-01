@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_JUNCTIONFLAGST_H
 #include <cstdint>
 
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 enum class JunctionFlagsT : std::uint32_t// cannot contain all abilities because
 {
   None = 0x0,

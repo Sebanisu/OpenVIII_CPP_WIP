@@ -18,7 +18,7 @@
 #include "LangT.h"
 
 using namespace std::string_view_literals;
-namespace OpenVIII {
+namespace open_viii {
 template<LangT langVal> struct FF8String
 {
 private:
@@ -541,7 +541,7 @@ public:
 
   static constexpr auto &GetCodePage()
   {
-    if constexpr (langVal == LangT::JP) {
+    if constexpr (langVal == LangT::jp) {
       return jpCodePage;
     } else {
       return euCodePage;
@@ -564,5 +564,5 @@ public:
     return ss.str();
   }
 };
-}// namespace OpenVIII
+}// namespace open_viii
 #endif// VIIIARCHIVE_FF8STRING_H

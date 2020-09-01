@@ -11,7 +11,7 @@
 #include "OpenVIII/Graphics/ppm.h"
 #include <sstream>
 #include "_4bitValues.h"
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 /**
  * TIM, or PSX TIM, is an uncompressed raster image file format associated with the Sony PlayStation family of video
  * game consoles. It supports 4- and 8-bit paletted images, and 15- and 24-bit full color images.
@@ -26,16 +26,16 @@ namespace OpenVIII::Graphics {
  * @see http://mrclick.zophar.net/TilEd/download/timgfx.txt
  * @see http://fileformats.archiveteam.org/wiki/TIM_(PlayStation_graphics)
  */
-struct tim
+struct Tim
 {
 private:
-  timHeader timHeader_{};
-  timClutHeader timClutHeader_{};
-  std::string_view timClutData_{};
-  timImageHeader timImageHeader_{};
-  std::string_view timImageData_{};
+  timHeader m_tim_header{};
+  timClutHeader m_tim_clut_header{};
+  std::span<const char> m_tim_clut_data{};
+  timImageHeader m_tim_image_header{};
+  std::span<const char> m_tim_image_data{};
 
-  [[nodiscard]] color16 getColor([[maybe_unused]] std::uint16_t row, [[maybe_unused]] std::uint8_t colorKey) const
+  [[nodiscard]] Color16 get_color([[maybe_unused]] std::uint16_t row, [[maybe_unused]] std::uint8_t colorKey) const
   {
     //    // clangTidy says this function can be static which it cannot be static.
     //    color16 rv{};
@@ -52,39 +52,40 @@ private:
     //    }
     //    return rv;
 
-    const auto paletteSpan = std::span(reinterpret_cast<const color16 *>(std::ranges::data(timClutData_)),
-      timClutHeader_.Rectangle().Width() * timClutHeader_.Rectangle().Height())
-                               .subspan(row * timClutHeader_.Rectangle().Width());
-    return paletteSpan[colorKey];
+    const auto palette_span = std::span(reinterpret_cast<const Color16 *>(std::ranges::data(m_tim_clut_data)),
+      m_tim_clut_header.Rectangle().Width() * m_tim_clut_header.Rectangle().Height())
+                               .subspan(row * m_tim_clut_header.Rectangle().Width());
+    return palette_span[colorKey];
   }
-  template<typename dstT> [[nodiscard]] dstT getColorT(std::size_t index) const
+  template<typename dstT> [[nodiscard]] dstT get_color_t(std::size_t index) const
   {
+    //TODO remove pointer math
     dstT rv{};
     index *= sizeof(rv);
-    if (index + sizeof(rv) >= timImageData_.size()) {
+    if (index + sizeof(rv) >= m_tim_image_data.size()) {
       return {};
     }
-    memcpy(&rv, timImageData_.data() + index, sizeof(rv));
+    memcpy(&rv, std::ranges::data(m_tim_image_data.subspan(index)), sizeof(rv));
     return rv;
   }
 
 public:
-  tim() = default;
-  explicit tim([[maybe_unused]] std::span<const char> buffer)
+  Tim() = default;
+  explicit Tim([[maybe_unused]] std::span<const char> buffer)
   {
     if (std::ranges::size(buffer) == 0) {
       return;
     }
     bool fail = false;
-    const auto setData = [&buffer, &fail](std::string_view &item, const std::size_t &bytes) {
+    const auto set_data = [&buffer, &fail]([[maybe_unused]] std::span<const char> & item, const std::size_t &bytes) {
       if (bytes > std::ranges::size(buffer)) {
         fail = true;
         return;
       }
-      item = std::string_view{ std::ranges::data(buffer), bytes };
+      item = buffer.subspan(0U,bytes);
       buffer = buffer.subspan(bytes);
     };
-    const auto getValue = [&buffer, &fail](auto &item) {
+    const auto get_value = [&buffer, &fail](auto &item) {
       const std::size_t sz = sizeof(item);
       if (sz > std::ranges::size(buffer)) {
         fail = true;
@@ -94,141 +95,141 @@ public:
       buffer = buffer.subspan(sz);
     };
 
-    getValue(timHeader_);
-    if (!timHeader_.Check() || fail) {
-      timHeader_ = {};
+    get_value(m_tim_header);
+    if (!m_tim_header.Check() || fail) {
+      m_tim_header = {};
       return;
     }
-    if (timHeader_.BPP().ColorLookupTablePresent()) {
-      getValue(timClutHeader_);
-      if (!timClutHeader_.Check() || fail) {
-        timClutHeader_ = {};
-        timHeader_ = {};
+    if (m_tim_header.BPP().ColorLookupTablePresent()) {
+      get_value(m_tim_clut_header);
+      if (!m_tim_clut_header.Check() || fail) {
+        m_tim_clut_header = {};
+        m_tim_header = {};
         return;
       }
-      setData(timClutData_, timClutHeader_.dataSize());
+      set_data(m_tim_clut_data, m_tim_clut_header.dataSize());
       if (fail) {
         return;
       }
     }
-    getValue(timImageHeader_);
+    get_value(m_tim_image_header);
     if (fail) {
       return;
     }
-    setData(timImageData_, timImageHeader_.dataSize());
+    set_data(m_tim_image_data, m_tim_image_header.dataSize());
   }
-  [[nodiscard]] bool Check() const
+  [[nodiscard]] bool check() const
   {
-    return timHeader_.Check() && (!timHeader_.BPP().Check() || timClutHeader_.Check());
+    return m_tim_header.Check() && (!m_tim_header.BPP().Check() || m_tim_clut_header.Check());
   }
-  [[nodiscard]] auto Width() const
+  [[nodiscard]] auto width() const
   {
-    static constexpr auto _4bpp_step{ 4 };
-    static constexpr auto _8bpp_step{ 2 };
-    static constexpr auto _24bpp_step{ 1.5 };
-    if (timHeader_.BPP()._4bpp()) {
-      return static_cast<decltype(timImageHeader_.Rectangle().Width())>(
-        timImageHeader_.Rectangle().Width() * _4bpp_step);// 4pp
+    static constexpr auto bpp4_step{ 4 };
+    static constexpr auto bpp8_step{ 2 };
+    static constexpr auto bpp24_step{ 1.5 };
+    if (m_tim_header.BPP()._4bpp()) {
+      return static_cast<decltype(m_tim_image_header.Rectangle().Width())>(
+        m_tim_image_header.Rectangle().Width() * bpp4_step);// 4pp
     }
-    if (timHeader_.BPP()._8bpp()) {
-      return static_cast<decltype(timImageHeader_.Rectangle().Width())>(
-        timImageHeader_.Rectangle().Width() * _8bpp_step);// 8pp
+    if (m_tim_header.BPP()._8bpp()) {
+      return static_cast<decltype(m_tim_image_header.Rectangle().Width())>(
+        m_tim_image_header.Rectangle().Width() * bpp8_step);// 8pp
     }
-    if (timHeader_.BPP()._16bpp()) {
-      return timImageHeader_.Rectangle().Width();// 16bpp
+    if (m_tim_header.BPP()._16bpp()) {
+      return m_tim_image_header.Rectangle().Width();// 16bpp
     }
-    if (timHeader_.BPP()._24bpp()) {
-      return static_cast<decltype(timImageHeader_.Rectangle().Width())>(
-        timImageHeader_.Rectangle().Width() / _24bpp_step);// 24 bpp
+    if (m_tim_header.BPP()._24bpp()) {
+      return static_cast<decltype(m_tim_image_header.Rectangle().Width())>(
+        m_tim_image_header.Rectangle().Width() / bpp24_step);// 24 bpp
     }
-    return static_cast<decltype(timImageHeader_.Rectangle().Width())>(0);// invalid value
+    return static_cast<decltype(m_tim_image_header.Rectangle().Width())>(0);// invalid value
   }
-  [[nodiscard]] auto Height() const { return timImageHeader_.Rectangle().Height(); }
-  [[maybe_unused]] [[nodiscard]] auto X() const { return timImageHeader_.Rectangle().X(); }
-  [[maybe_unused]] [[nodiscard]] auto Y() const { return timImageHeader_.Rectangle().Y(); }
+  [[nodiscard]] auto height() const { return m_tim_image_header.Rectangle().Height(); }
+  [[maybe_unused]] [[nodiscard]] auto x() const { return m_tim_image_header.Rectangle().X(); }
+  [[maybe_unused]] [[nodiscard]] auto y() const { return m_tim_image_header.Rectangle().Y(); }
 
-  [[maybe_unused]] [[nodiscard]] auto ClutX() const { return timClutHeader_.Rectangle().X(); }
-  [[maybe_unused]] [[nodiscard]] auto ClutY() const { return timClutHeader_.Rectangle().Y(); }
-  [[nodiscard]] auto size() const { return sizeof(timHeader_) + timClutHeader_.size() + timImageHeader_.size(); }
-  [[nodiscard]] auto ClutRows() const { return timClutHeader_.Rectangle().Height(); }
-  [[maybe_unused]] [[nodiscard]] auto ClutColors() const { return timClutHeader_.Rectangle().Width(); }
+  [[maybe_unused]] [[nodiscard]] auto clut_x() const { return m_tim_clut_header.Rectangle().X(); }
+  [[maybe_unused]] [[nodiscard]] auto clut_y() const { return m_tim_clut_header.Rectangle().Y(); }
+  [[nodiscard]] auto size() const { return sizeof(m_tim_header) + m_tim_clut_header.size() + m_tim_image_header.size(); }
+  [[nodiscard]] auto clut_rows() const { return m_tim_clut_header.Rectangle().Height(); }
+  [[maybe_unused]] [[nodiscard]] auto clut_colors() const { return m_tim_clut_header.Rectangle().Width(); }
 
-  friend std::ostream &operator<<(std::ostream &os, const tim &input)
+  friend std::ostream &operator<<(std::ostream &os, const Tim &input)
   {
-    return os << '{' << input.timHeader_ << ", " << input.timClutHeader_ << ", " << input.timImageHeader_
-              << ", Corrected Width: " << input.Width() << '}';
+    return os << '{' << input.m_tim_header << ", " << input.m_tim_clut_header << ", " << input.m_tim_image_header
+              << ", Corrected Width: " << input.width() << '}';
   }
-  template<typename dstT = color32<>>
-  [[nodiscard]] std::vector<dstT> GetColors([[maybe_unused]] std::uint16_t row = 0U) const
+  template<Color dstT = Tim>
+  [[nodiscard]] std::vector<dstT> get_colors([[maybe_unused]] std::uint16_t row = 0U) const
   {
     static constexpr auto bpp4 = 4U;
     static constexpr auto bpp8 = 8U;
     static constexpr auto bpp16 = 16U;
     static constexpr auto bpp24 = 24U;
     std::vector<dstT> output{};
-    const auto outSize = static_cast<std::size_t>(Width()) * static_cast<std::size_t>(Height());
+    const auto outSize = static_cast<std::size_t>(width()) * static_cast<std::size_t>(height());
     output.reserve(outSize);
-    switch (static_cast<int>(timHeader_.BPP())) {
+    switch (static_cast<int>(m_tim_header.BPP())) {
 
     case bpp4: {
 
       const auto s = std::span(
-        reinterpret_cast<const _4bitValues *>(std::ranges::data(timImageData_)), std::ranges::size(timImageData_));
+        reinterpret_cast<const _4bitValues *>(std::ranges::data(m_tim_image_data)), std::ranges::size(m_tim_image_data));
       // break;
       for (size_t i{}; i < outSize / 2; i++) {
         // std::bitset<8> bs{ static_cast<std::uint8_t>(timImageData_.at(i / 2U)) };
         // static constexpr std::bitset<8> oct1{ 0xF };
         // static constexpr std::bitset<8> oct2{ 0xF0 };
         //        if (i % 2 == 0) {
-        //          output.emplace_back(getColor(row, static_cast<std::uint8_t>((bs & oct1).to_ulong())));
+        //          output.emplace_back(get_color(row, static_cast<std::uint8_t>((bs & oct1).to_ulong())));
         //        } else {
-        //          output.emplace_back(getColor(row, static_cast<std::uint8_t>(((bs & oct2) >> 4U).to_ulong())));
+        //          output.emplace_back(get_color(row, static_cast<std::uint8_t>(((bs & oct2) >> 4U).to_ulong())));
         //        }
         const auto values = s[i];
-        output.emplace_back(getColor(row, values.first));
-        output.emplace_back(getColor(row, values.second));
+        output.emplace_back(get_color(row, values.first));
+        output.emplace_back(get_color(row, values.second));
       }
       break;
     }
     case bpp8: {
       // break;
       for (size_t i{}; i < outSize; i++) {
-        output.emplace_back(getColor(row, static_cast<std::uint8_t>(timImageData_.at(i))));
+        output.emplace_back(get_color(row, static_cast<std::uint8_t>(m_tim_image_data[i])));
       }
       break;
     }
     case bpp16: {
-      const auto sz = std::ranges::size(timImageData_) / sizeof(color16);
-      const auto s = std::span(reinterpret_cast<const color16 *>(std::ranges::data(timImageData_)), sz);
+      const auto sz = std::ranges::size(m_tim_image_data) / sizeof(Color16);
+      const auto s = std::span(reinterpret_cast<const Color16 *>(std::ranges::data(m_tim_image_data)), sz);
 
       for (const Color auto i : s) { output.emplace_back(i); }
       //      for (size_t i{}; i < std::min(outSize, timImageData_.size() / sizeof(color16)); i++) {
-      //        output.emplace_back(getColorT<color16>(i));
+      //        output.emplace_back(get_colorT<color16>(i));
       //      }
       break;
     }
     case bpp24: {
-      for (size_t i{}; i < outSize; i++) { output.emplace_back(getColorT<color24<2, 1, 0>>(i)); }
+      for (size_t i{}; i < outSize; i++) { output.emplace_back(get_color_t<Color24<2, 1, 0>>(i)); }
       break;
     }
     }
     return output;
   }
 
-  [[maybe_unused]] void Save(std::string_view filename) const
+  [[maybe_unused]] void save(std::string_view filename) const
   {
-    if (ClutRows() == 0) {
-      ppm::save(GetColors<color16>(), Width(), Height(), filename);
+    if (clut_rows() == 0) {
+      ppm::save(get_colors<Color16>(), width(), height(), filename);
     } else {
       auto path = std::filesystem::path(filename);
-      for (std::uint16_t i = 0; i < ClutRows(); i++) {
+      for (std::uint16_t i = 0; i < clut_rows(); i++) {
         auto ss = std::stringstream{};
         ss << (path.parent_path() / path.stem()).string() << '_' << i << path.extension().string();
-        ppm::save(GetColors<color16>(i), Width(), Height(), ss.str());
+        ppm::save(get_colors<Color16>(i), width(), height(), ss.str());
       }
     }
   }
 };
 
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TIM_H

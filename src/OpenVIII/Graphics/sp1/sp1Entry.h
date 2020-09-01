@@ -6,27 +6,38 @@
 #define VIIIARCHIVE_SP1ENTRY_H
 
 #include <cstdint>
-namespace OpenVIII::Graphics {
-struct sp1Entry
+namespace open_viii::graphics {
+struct Sp1Entry
 {
+private:
+  uint8_t m_x{};
+  uint8_t m_y{};
+  uint8_t m_unknown1{};
+  uint8_t m_unknown2{};
+  uint8_t m_width{};
+  uint8_t m_offset_x{};
+  uint8_t m_height{};
+  uint8_t m_offset_y{};
+
 public:
-  uint8_t x_{};
-  uint8_t y_{};
-  uint8_t unknown1_{};
-  uint8_t unknown2_{};
-  uint8_t width_{};
-  uint8_t offset_x_{};
-  uint8_t height_{};
-  uint8_t offset_y_{};
-  friend std::ostream &operator<<(std::ostream &os, const sp1Entry &e)
+  [[nodiscard]] const auto &x() const noexcept { return m_x; }
+  [[nodiscard]] const auto &y() const noexcept { return m_y; }
+  [[nodiscard]] const auto &unknown1() const noexcept { return m_unknown1; }
+  [[nodiscard]] const auto &unknown2() const noexcept { return m_unknown2; }
+  [[nodiscard]] const auto &width() const noexcept { return m_width; }
+  [[nodiscard]] const auto &offset_x() const noexcept { return m_offset_x; }
+  [[nodiscard]] const auto &height() const noexcept { return m_height; }
+  [[nodiscard]] const auto &offset_y() const noexcept { return m_offset_y; }
+  Sp1Entry() = default;
+  friend std::ostream &operator<<(std::ostream &os, const Sp1Entry &e)
   {
-    return os << "{ (X, Y) = (" << static_cast<std::size_t>(e.x_) << ", " << static_cast<std::size_t>(e.y_)
-              << "), (W, H) = (" << static_cast<std::size_t>(e.width_) << ", " << static_cast<std::size_t>(e.height_)
-              << "), (Offset X, Offset Y) = (" << static_cast<std::size_t>(e.offset_x_) << ", "
-              << static_cast<std::size_t>(e.offset_y_) << ") Unk(" << static_cast<std::size_t>(e.unknown1_) << ", "
-              << static_cast<std::size_t>(e.unknown2_) << ") }";
+    return os << "{ (X, Y) = (" << static_cast<std::size_t>(e.m_x) << ", " << static_cast<std::size_t>(e.m_y)
+              << "), (W, H) = (" << static_cast<std::size_t>(e.m_width) << ", " << static_cast<std::size_t>(e.m_height)
+              << "), (Offset X, Offset Y) = (" << static_cast<std::size_t>(e.m_offset_x) << ", "
+              << static_cast<std::size_t>(e.m_offset_y) << ") Unk(" << static_cast<std::size_t>(e.m_unknown1) << ", "
+              << static_cast<std::size_t>(e.m_unknown2) << ") }";
   }
 };
 
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP1ENTRY_H

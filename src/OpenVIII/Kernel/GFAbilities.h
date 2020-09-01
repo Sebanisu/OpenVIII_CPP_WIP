@@ -16,7 +16,7 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "StatT.h"
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct GFAbilities
 {
   /*
@@ -61,5 +61,5 @@ public:
     return os;
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_GFABILITIES_H

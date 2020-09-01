@@ -21,7 +21,7 @@
 #include "BattleOnlyStatusesT.h"
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct RenzokukenFinishers
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Renzokuken-finishers
@@ -91,5 +91,5 @@ public:
     return os;
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_RENZOKUKENFINISHERS_H

@@ -16,7 +16,7 @@
 #include "RefineSpellID.h"
 #include "RefineEntry.h"
 #include <iostream>
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection002// Refine Magic to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_3
@@ -62,5 +62,5 @@ public:
     return os;
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_REFINESECTION002_H

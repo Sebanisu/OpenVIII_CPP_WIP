@@ -7,7 +7,7 @@
 #include "sp2/sp2Entry.h"
 #include "sp2/sp2Header.h"
 #include <cstring>
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/Menu_sp2#Layout_of_face.sp2_and_cardanm.sp2:
  */
@@ -37,5 +37,5 @@ public:
     return os << "}\n";
   }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP2_H

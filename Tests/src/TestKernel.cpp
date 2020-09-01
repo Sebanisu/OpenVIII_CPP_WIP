@@ -16,31 +16,31 @@
 #include "OpenVIII/Kernel/Header.h"
 int main()
 {
-  for (auto &path : OpenVIII::Paths::get()) {
-    OpenVIII::Tools::replaceSlashes(path);
+  for (auto &path : open_viii::Paths::get()) {
+    open_viii::Tools::replace_slashes(path);
     if (!std::filesystem::exists(path)) {
       continue;
     }
     std::cout << path << std::endl;
-    const auto coo = OpenVIII::LangT::EN;
-    const auto archives = OpenVIII::Archive::Archives<coo>(path);
-    [[maybe_unused]] const auto &main = archives.Get<OpenVIII::Archive::ArchiveTypeT::Main>();
+    const auto coo = open_viii::LangT::en;
+    const auto archives = open_viii::archive::Archives<coo>(path);
+    [[maybe_unused]] const auto &main = archives.get<open_viii::archive::ArchiveTypeT::main>();
     std::cout << main << std::endl;
-    auto kernel = OpenVIII::Kernel::Header<coo>{ main };
+    auto kernel = open_viii::Kernel::Header<coo>{ main };
     [[maybe_unused]] const auto &buffer = kernel.Buffer();
     std::cout << "kernel.bin " << buffer.size() << " bytes; " << kernel.SectionCount() << " section count\n";
-    std::cout << static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count) << std::endl;
+    std::cout << static_cast<int>(open_viii::Kernel::SectionTypesT::Count) << std::endl;
     //    const auto &sectionOffsets = kernel.SectionOffsets();
     //    std::for_each(
     //      sectionOffsets.begin(), sectionOffsets.end(),[](const auto &value) { std::cout << value << std::endl; });
-    kernel.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypesT::First),
-      static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    kernel.static_for<static_cast<int>(open_viii::Kernel::SectionTypesT::First),
+      static_cast<int>(open_viii::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
       std::cout << "  " << string << " - " << std::size(span) << " bytes\n";
 
       return data;
     });
-    kernel.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypesT::First),
-      static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    kernel.static_for<static_cast<int>(open_viii::Kernel::SectionTypesT::First),
+      static_cast<int>(open_viii::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
       if constexpr (!std::is_null_pointer_v<decltype(
                       data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
         std::cout << string << " ( " << std::size(span) << "bytes) has " << data.size() << " entries\n";

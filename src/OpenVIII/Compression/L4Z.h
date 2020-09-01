@@ -16,12 +16,12 @@
 
 #ifndef VIIICOMPRESSION_L4Z_H
 #define VIIICOMPRESSION_L4Z_H
-namespace OpenVIII::Compression {
+namespace open_viii::compression {
 struct L4Z
 {
   template<typename dstT = std::vector<char>>
   [[nodiscard]] [[maybe_unused]] static dstT
-    Decompress(const char *srcData, const size_t &srcSize, const size_t &dstSize = 0)
+    decompress(const char *srcData, const size_t &srcSize, const size_t &dstSize = 0)
   {
     dstT dst{};
     dst.resize(dstSize);
@@ -36,10 +36,10 @@ struct L4Z
   }
 
   template<typename dstT = std::vector<char>, std::ranges::contiguous_range srcT = std::vector<char>>
-  [[nodiscard]] [[maybe_unused]] static dstT Decompress(const srcT &src, const size_t &dstSize = 0)
+  [[nodiscard]] [[maybe_unused]] static dstT decompress(const srcT &src, const size_t &dstSize = 0)
   {// todo replace with std::span.
-    return Decompress<dstT>(std::ranges::data(src), std::ranges::size(src), dstSize);
+    return decompress<dstT>(std::ranges::data(src), std::ranges::size(src), dstSize);
   }
 };
-}// namespace OpenVIII::Compression
+}// namespace open_viii::Compression
 #endif// VIIICOMPRESSION_L4Z_H

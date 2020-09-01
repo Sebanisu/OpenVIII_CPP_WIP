@@ -6,7 +6,7 @@
 #define VIIIARCHIVE_TIMIMAGEHEADER_H
 #include "OpenVIII/Graphics/rectangle.h"
 #include <cstdint>
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 /**
  * Base Header for the following raw 16bit color image data.
  */
@@ -39,5 +39,5 @@ public:
     return os << '{' << input.size() << " bytes, " << input.rectangle_ << '}';
   }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TIMIMAGEHEADER_H

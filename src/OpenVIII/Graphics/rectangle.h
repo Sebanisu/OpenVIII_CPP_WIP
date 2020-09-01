@@ -6,9 +6,9 @@
 #define VIIIARCHIVE_RECTANGLE_H
 #include "OpenVIII/Graphics/point.h"
 #include <iostream>
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 /**
- * @struct OpenVIII::Graphics::rectangle
+ * @struct open_viii::graphics::rectangle
  * @tparam dimT Number type.
  * @brief 2D Container that holds top left height and width.
  */
@@ -90,5 +90,5 @@ public:
     return os << "{(X, Y) = " << input.TopLeft_ << ", (Width, Height) = " << input.WidthHeight_ << '}';
   }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_RECTANGLE_H

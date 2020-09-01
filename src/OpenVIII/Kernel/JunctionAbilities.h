@@ -17,7 +17,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include <cstring>
 #include "JunctionFlagsT.h"
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct JunctionAbilities
 {
   /*
@@ -56,5 +56,5 @@ public:
     return os << ", " << static_cast<uint32_t>(APRequired()) << ", " << static_cast<uint32_t>(JunctionFlags());
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_JUNCTIONABILITIES_H

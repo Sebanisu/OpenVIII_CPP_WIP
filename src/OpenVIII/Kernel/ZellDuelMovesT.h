@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_ZELLDUELMOVEST_H
 #define VIIIARCHIVE_ZELLDUELMOVEST_H
 
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 enum struct ZellDuelMoveT : std::uint8_t {
   // https://github.com/DarkShinryu/doomtrain/wiki/Zell's-Duel-Moves
   // Offset	Description

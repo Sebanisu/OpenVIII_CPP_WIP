@@ -17,13 +17,14 @@
 #include "RefineSection002.h"
 #include "RefineSection003.h"
 #include "RefineSection004.h"
+#include "OpenVIII/Graphics/color.h"
 #include "OpenVIII/Graphics/tim.h"
 #include "OpenVIII/Graphics/ppm.h"
 //#include "OpenVIII/Graphics/tim.h"
 #include "OpenVIII/Graphics/ppm.h"
 #include <sstream>
 #include <vector>
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 struct MenuGroupFile
 {
 private:
@@ -150,7 +151,7 @@ private:
   template<typename refineT, MenuGroupSectionT textSectionT, typename sectionBufferT>
   auto getRefine(const sectionBufferT &sectionBuffer) const
   {
-    return OpenVIII::BulkSectionData<refineT, 1U>(
+    return open_viii::BulkSectionData<refineT, 1U>(
       sectionBuffer, GetSectionInternal<textSectionT>().GetSectionBuffer(dataBuffer_));
   }
 
@@ -192,8 +193,8 @@ private:
 
 public:
   constexpr static std::string_view FILENAME = "mngrp.bin";
-  explicit MenuGroupFile(const OpenVIII::Archive::FIFLFS<false> &menuArchive)
-    : menuGroupHeader_(menuArchive), dataBuffer_(menuArchive.GetEntryData(FILENAME))
+  explicit MenuGroupFile(const open_viii::archive::FIFLFS<false> &menuArchive)
+    : menuGroupHeader_(menuArchive), dataBuffer_(menuArchive.get_entry_data(FILENAME))
   {}
   //
   //  template<std::size_t sectionTnum> [[nodiscard]] auto GetSectionBuffer() const
@@ -229,19 +230,19 @@ public:
                       || sectionT == MenuGroupSectionT::tkmnmes3) {
           return SectionData<MenuMessages>(MenuMessages{ sectionBuffer }, sectionBuffer);
         } else if constexpr (Tools::any_of(sectionT, timValueArray)) {
-          return Graphics::tim(sectionBuffer);
+          return graphics::Tim(sectionBuffer);
         } else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
           return SectionData<MenuMessagesSection>(MenuMessagesSection{ sectionBuffer }, sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
-          return getRefine<OpenVIII::MenuGroup::RefineSection000, MenuGroupSectionT::refineText0>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection000, MenuGroupSectionT::refineText0>(sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine1) {
-          return getRefine<OpenVIII::MenuGroup::RefineSection001, MenuGroupSectionT::refineText1>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection001, MenuGroupSectionT::refineText1>(sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine2) {
-          return getRefine<OpenVIII::MenuGroup::RefineSection002, MenuGroupSectionT::refineText2>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection002, MenuGroupSectionT::refineText2>(sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine3) {
-          return getRefine<OpenVIII::MenuGroup::RefineSection003, MenuGroupSectionT::refineText3>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection003, MenuGroupSectionT::refineText3>(sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine4) {
-          return getRefine<OpenVIII::MenuGroup::RefineSection004, MenuGroupSectionT::refineText4>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection004, MenuGroupSectionT::refineText4>(sectionBuffer);
         }
       }
     }
@@ -251,24 +252,26 @@ public:
     const auto tempPath = std::filesystem::path(path_input);
     auto path = tempPath.parent_path() / (tempPath.stem().string() + "_tim");
     static_for_tim<0U, timValueArray.size()>(
-      [&, this](const auto &sectionID, [[maybe_unused]] const Graphics::tim &tim) {
+      [&, this](const auto &sectionID, [[maybe_unused]] const graphics::Tim &tim) {
         std::stringstream so{};// TODO have these save in the folder with the mngrp files.
         std::cout << ':' << static_cast<std::size_t>(sectionID) << ":  {" << tim.size() << " bytes},\n";
         std::cout << tim << '\n';
-        std::cout << tim.Check();
+        std::cout << tim.check();
         so << path.string() << static_cast<std::size_t>(sectionID);
-        const auto colorsDump = [&tim, &so](const std::vector<Graphics::color32<>> &colors, std::uint16_t num = 0) {
+        const auto colorsDump = [&tim, &so](const std::vector<graphics::Color32<0,1,2,3>> &colors, std::uint16_t num = 0) {
           std::cout << '\n';
           std::stringstream fn{};
           fn << so.str() << "_" << static_cast<std::size_t>(num) << ".tmp";
 
           //std::cout << "Saved: " << fn.str() << "\n";
-          Graphics::ppm::save(colors, tim.Width(), tim.Height(), fn.str());
+          graphics::ppm::save(colors, tim.width(), tim.height(), fn.str());
         };
-        if (tim.ClutRows() > 0) {
-          for (std::uint16_t i = 0; i < tim.ClutRows(); i++) { colorsDump(tim.GetColors(i), i); }
+        if (tim.clut_rows() > 0) {
+          for (std::uint16_t i = 0; i < tim.clut_rows(); i++) {
+            colorsDump(tim.get_colors<graphics::Color32<0,1,2,3>>(i), i);
+          }
         } else {
-          colorsDump(tim.GetColors());
+          colorsDump(tim.get_colors<graphics::Color32<0,1,2,3>>());
         }
       });
   }
@@ -336,5 +339,5 @@ public:
       });
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_MENUGROUPFILE_H

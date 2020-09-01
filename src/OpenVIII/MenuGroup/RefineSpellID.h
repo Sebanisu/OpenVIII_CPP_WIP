@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_REFINESPELLID_H
 
 #include "cstdint"
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 using RefineSpellID = std::uint8_t;
 }
 #endif// VIIIARCHIVE_REFINESPELLID_H

@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_ATTACKTYPET_H
 #define VIIIARCHIVE_ATTACKTYPET_H
 #include <cstdint>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 // https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/Resources/Attack_Type_List.txt"/>
 enum class AttackTypeT : std::uint8_t {
   None,
@@ -55,5 +55,5 @@ enum class AttackTypeT : std::uint8_t {
   OneHPDamage,
   PhysicalAttackIgnoreTargetVIT
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_ATTACKTYPET_H

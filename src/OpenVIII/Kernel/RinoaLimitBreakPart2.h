@@ -22,7 +22,7 @@
 #include "PersistentStatusesT.h"
 #include "ElementT.h"
 
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct RinoaLimitBreakPart2
 {
   /*
@@ -91,5 +91,5 @@ public:
       ;
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_RINOALIMITBREAKPART2_H

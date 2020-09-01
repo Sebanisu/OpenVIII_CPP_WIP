@@ -14,7 +14,7 @@
 #include "OpenVIII/Graphics/tex/texPixelFormatHeader.h"
 #include "OpenVIII/Graphics/tex/texHeader2.h"
 #include "OpenVIII/Graphics/tex/texHeader2_Version2.h"
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 //{
 //  // Palette Entry (BGRA)
 //  /**
@@ -39,143 +39,138 @@ namespace OpenVIII::Graphics {
  * @see https://github.com/myst6re/vincent_tim/blob/master/TexFile.cpp
  * @see https://github.com/niemasd/PyFF7/blob/master/PyFF7/tex.py
  */
-struct [[maybe_unused]] tex
+struct [[maybe_unused]] Tex
 {
 private:
-  texHeader texHeader_{};
-  texPixelFormatHeader texPixelFormatHeader_{};
-  texHeader2 texHeader2_{};
-  texHeader2_Version2 texHeader2_Version2_{};
-  std::span<const char> paletteData{};
-  std::span<const char> imageData{};
-  [[nodiscard]] color32<> GetColorFromPalette(std::uint32_t row, std::uint8_t key) const
+  TexHeader m_tex_header{};
+  TexPixelFormatHeader m_tex_pixel_format_header{};
+  TexHeader2 m_tex_header2{};
+  TexHeader2Version2 m_tex_header2_version2{};
+  std::span<const char> m_palette_data{};
+  std::span<const char> m_image_data{};
+  [[nodiscard]] auto get_color_from_palette(std::uint32_t row, std::uint8_t key) const
   {
-    if (texHeader_.NUM_PALETTES == 0 || key > texHeader_.NUM_COLORS_PER_PALETTE) {
-      return {};
+    if (m_tex_header.num_palettes() == 0 || key > m_tex_header.num_colors_per_palette()) {
+      return Color32{};
     }
-    if (row > texHeader_.NUM_PALETTES) {
+    if (row > m_tex_header.num_palettes()) {
       row = 0U;
     }
 
-    // const auto offset = (texHeader_.NUM_COLORS_PER_PALETTE * row + key) * sizeof(color32<>);
-    const auto paletteSpan = std::span(reinterpret_cast<const color32<2, 1, 0, 3> *>(std::ranges::data(paletteData)),
-      texHeader_.NUM_COLORS_PER_PALETTE * texHeader_.NUM_PALETTES)
-                               .subspan(row * texHeader_.NUM_COLORS_PER_PALETTE);
-    // auto paletteSpan = paletteData.subspan(offset);
-    color32<> ret{ paletteSpan[key] };
-    //    ret.B(paletteSpan[key].B());
-    //    ret.G(paletteSpan[key].G());
-    //    ret.R(paletteSpan[key].R());
-    //    ret.A(paletteSpan[key].A());
-    return ret;
+    const auto palette_span = std::span(reinterpret_cast<const Color32<2, 1, 0, 3> *>(std::ranges::data(m_palette_data)),
+      m_tex_header.num_colors_per_palette() * m_tex_header.num_palettes())
+                               .subspan(row * m_tex_header.num_colors_per_palette());
+    
+    return Color32<0,1,2,3>( palette_span[key] );
   }
 
 
-  [[nodiscard]] auto sizeOfPalette() const noexcept
+  [[nodiscard]] auto size_of_palette() const noexcept
   {
-    return texHeader_.PALETTE_SIZE * sizeof(std::uint32_t);
+    return m_tex_header.palette_size() * sizeof(std::uint32_t);
   }// I think this is correct.
-  [[nodiscard]] auto PaletteLocator() const noexcept
+  [[nodiscard]] auto palette_locator() const noexcept
   {
     static constexpr auto version1size = 0xECU;
     static constexpr auto version2size = 0xF0U;
-    if (texHeader_.VERSION >= 2) {
+    if (m_tex_header.version() >= 2) {
       return version2size;
     }
     return version1size;
   }
-  [[nodiscard]] auto TextureLocator() const noexcept { return sizeOfPalette() + PaletteLocator(); }
+  [[nodiscard]] auto texture_locator() const noexcept { return size_of_palette() + palette_locator(); }
 
-public:
-  tex() = default;
-  [[maybe_unused]] explicit tex(std::span<const char> buffer)
+  void reset()
   {
-    auto bufferbak = buffer;
+    m_tex_header = {};
+    m_tex_pixel_format_header = {};
+    m_tex_header2 = {};
+    m_tex_header2_version2 = {};
+    m_palette_data = {};
+    m_image_data = {};
+  }
+public:
+  Tex() = default;
+  [[maybe_unused]] explicit Tex(std::span<const char> buffer)
+  {
+    auto buffer_backup = buffer;
     bool fail = false;
     const auto process = [&buffer, &fail](auto &member) {
       if (sizeof(member) > std::ranges::size(buffer)) {
         fail = true;
         return;
       }
-      const auto localSpan = buffer.subspan(0, sizeof(member));
-      std::memcpy(&member, std::ranges::data(localSpan), sizeof(member));
+      const auto local_span = buffer.subspan(0, sizeof(member));
+      std::memcpy(&member, std::ranges::data(local_span), sizeof(member));
       buffer = buffer.subspan(sizeof(member));
     };
-    process(texHeader_);
-    if (!texHeader_.Check() || fail) {
-      Reset();
+    process(m_tex_header);
+    if (!m_tex_header.check() || fail) {
+      reset();
       return;
     }
-    process(texPixelFormatHeader_);
+    process(m_tex_pixel_format_header);
     if (fail) {
-      Reset();
+      reset();
       return;
     }
-    process(texHeader2_);
-    if (texHeader_.VERSION >= 2) {
-      process(texHeader2_Version2_);
+    process(m_tex_header2);
+    if (m_tex_header.version() >= 2) {
+      process(m_tex_header2_version2);
       if (fail) {
-        Reset();
+        reset();
         return;
       }
     }
     // std::cout << std::hex << TextureLocator() << ", " << PaletteLocator() << std::dec << '\n';
-    if (texHeader_.PALETTE_FLAG != 0U) {
+    if (m_tex_header.palette_flag()) {
 
-      if (std::ranges::size(bufferbak) < sizeOfPalette() + PaletteLocator()) {
-        Reset();
+      if (std::ranges::size(buffer_backup) < size_of_palette() + palette_locator()) {
+        reset();
         return;
       }
 
-      paletteData = bufferbak.subspan(PaletteLocator(), sizeOfPalette());
+      m_palette_data = buffer_backup.subspan(palette_locator(), size_of_palette());
     }
 
-    if (std::ranges::size(bufferbak) < TextureLocator()) {
-      Reset();
+    if (std::ranges::size(buffer_backup) < texture_locator()) {
+      reset();
       return;
     }
-    imageData = bufferbak.subspan(TextureLocator());
+    m_image_data = buffer_backup.subspan(texture_locator());
   }
-  void Reset()
-  {
-    texHeader_ = {};
-    texPixelFormatHeader_ = {};
-    texHeader2_Version2_ = {};
-    paletteData = {};
-    imageData = {};
-  }
-  [[maybe_unused]] [[nodiscard]] std::vector<color32<>> GetColors([[maybe_unused]] std::uint32_t paletteRow = 0U) const
+  [[maybe_unused]] [[nodiscard]] auto get_colors([[maybe_unused]] std::uint32_t palette_row = 0U) const
   {
 
-    std::vector<color32<>> ret{};
-    ret.reserve(texHeader_.IMAGE_WIDTH * texHeader_.IMAGE_WIDTH);
-    if (texHeader_.PALETTE_FLAG != 0U) {
-      for (const auto &i : imageData) {
-        ret.emplace_back(GetColorFromPalette(paletteRow, static_cast<std::uint8_t>(i)));
+    std::vector<Color32<0,1,2,3>> ret{};
+    ret.reserve(m_tex_header.image_area());
+    if (m_tex_header.palette_flag()) {
+      for (const auto &i : m_image_data) {
+        ret.emplace_back(get_color_from_palette(palette_row, static_cast<std::uint8_t>(i)));
       }
     } else {
-      static constexpr auto _16bpp = 16U;
-      static constexpr auto _32bpp = 32U;
-      switch (texHeader_.BITS_PER_PIXEL) {
-      case _16bpp: {
+      static constexpr auto bpp16 = 16U;
+      static constexpr auto bpp32 = 32U;
+      switch (m_tex_header.bits_per_pixel()) {
+      case bpp16: {
         //        std::vector<color16> tmp(std::ranges::size(ret));
         //        auto size_ = std::min(
-        //          std::min(texHeader_.IMAGE_HEIGHT * texHeader_.IMAGE_WIDTH * sizeof(color16),
+        //          std::min(m_tex_header.IMAGE_HEIGHT * m_tex_header.IMAGE_WIDTH * sizeof(color16),
         //          std::ranges::size(imageData)), std::ranges::size(tmp) * sizeof(color16));
         //        std::memcpy(std::ranges::data(tmp), std::ranges::data(imageData), size_);
         //
         //        for (const auto &i : tmp) { ret.emplace_back(i); }
-        auto c16data = std::span(reinterpret_cast<const color16 *>(std::ranges::data(imageData)),
-          std::ranges::size(imageData) / sizeof(color16));
+        auto c16data = std::span(reinterpret_cast<const Color16 *>(std::ranges::data(m_image_data)),
+          std::ranges::size(m_image_data) / sizeof(Color16));
         for (const auto &i : c16data) { ret.emplace_back(i); }
         break;
       }
         //      case 24: {
         //        break;
         //      }
-      case _32bpp: {// untested
-        auto c32data = std::span(reinterpret_cast<const color32<2, 1, 0, 3> *>(std::ranges::data(imageData)),
-          std::ranges::size(imageData) / sizeof(color32<2, 1, 0, 3>));
+      case bpp32: {// untested
+        auto c32data = std::span(reinterpret_cast<const Color32<2, 1, 0, 3> *>(std::ranges::data(m_image_data)),
+          std::ranges::size(m_image_data) / sizeof(Color32<2, 1, 0, 3>));
         for (const auto &i : c32data) { ret.emplace_back(i); }
         break;
       }
@@ -183,25 +178,25 @@ public:
     }
     return ret;
   };
-  [[maybe_unused]] void Save(std::string_view filename) const
+  [[maybe_unused]] void save(std::string_view filename) const
   {
-    if (texHeader_.NUM_PALETTES == 0) {
-      ppm::save(GetColors(), texHeader_.IMAGE_WIDTH, texHeader_.IMAGE_HEIGHT, filename);
+    if (m_tex_header.num_palettes() == 0) {
+      ppm::save(get_colors(), m_tex_header.image_width(), m_tex_header.image_height(), filename);
     } else {
       auto path = std::filesystem::path(filename);
-      for (std::uint16_t i = 0; i < texHeader_.NUM_PALETTES; i++) {
+      for (std::uint16_t i = 0; i < m_tex_header.num_palettes(); i++) {
         auto ss = std::stringstream{};
         ss << (path.parent_path() / path.stem()).string() << '_' << i << path.extension().string();
-        ppm::save(GetColors(i), texHeader_.IMAGE_WIDTH, texHeader_.IMAGE_HEIGHT, ss.str());
+        ppm::save(get_colors(i), m_tex_header.image_width(), m_tex_header.image_height(), ss.str());
       }
     }
   }
-  friend std::ostream &operator<<(std::ostream &os, const tex &t)
+  friend std::ostream &operator<<(std::ostream &os, const Tex &t)
   {
-    return os << "{Version: " << t.texHeader_.VERSION << ", BPP: " << t.texHeader_.BITS_PER_PIXEL
-              << ", Palette Count: " << t.texHeader_.NUM_PALETTES << ", Width: " << t.texHeader_.IMAGE_WIDTH
-              << ", Height: " << t.texHeader_.IMAGE_HEIGHT << "}\n";
+    return os << "{Version: " << t.m_tex_header.version() << ", BPP: " << t.m_tex_header.bits_per_index()
+              << ", Palette Count: " << t.m_tex_header.num_palettes() << ", Width: " << t.m_tex_header.image_width()
+              << ", Height: " << t.m_tex_header.image_height() << "}\n";
   }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TEX_H

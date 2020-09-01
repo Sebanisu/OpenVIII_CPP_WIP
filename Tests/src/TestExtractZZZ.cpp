@@ -15,15 +15,14 @@
 int main()
 {
   // test ZZZ extract with FIFLFS
-  for (auto &path : OpenVIII::Paths::get()) {
-    OpenVIII::Tools::replaceSlashes(path);
+  for (auto &path : open_viii::Paths::get()) {
+    open_viii::Tools::replace_slashes(path);
 
     if (!std::filesystem::exists(path)) {
       continue;
     }
-    const auto files = OpenVIII::Archive::ZZZ::GetFilesFromPath(path);
-    std::for_each(files.begin(), files.end(), &OpenVIII::Archive::ZZZ::testPair);
+    const auto files = open_viii::archive::ZZZ::get_files_from_path(path);
+    std::for_each(files.begin(), files.end(), &open_viii::archive::ZZZ::test_pair);
   }
-  std::cout << OpenVIII::Archive::largestCompressedBuffer << std::endl;
   return 0;
 }

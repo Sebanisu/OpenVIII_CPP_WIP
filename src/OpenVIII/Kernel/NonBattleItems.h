@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_NONBATTLEITEMS_H
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct NonBattleItems
 {
   /*
@@ -43,5 +43,5 @@ public:
     return os;
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_NONBATTLEITEMS_H

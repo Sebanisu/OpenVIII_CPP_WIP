@@ -14,7 +14,7 @@
 #define VIIIARCHIVE_TESTPATHS_H
 #include <array>
 #include <string>
-namespace OpenVIII {
+namespace open_viii {
 struct Paths
 {
 public:
@@ -32,5 +32,5 @@ public:
     return paths;
   }
 };
-}// namespace OpenVIII
+}// namespace open_viii
 #endif// VIIIARCHIVE_TESTPATHS_H

@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_JUNCTIONSTATUSEST_H
 
 #include <cstdint>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 enum class JunctionStatusesT : std::uint16_t {
   // https://github.com/DarkShinryu/doomtrain/wiki/Characters-J-Statuses
   None = 0x0,

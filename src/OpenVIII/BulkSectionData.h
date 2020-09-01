@@ -18,7 +18,7 @@
 #include "OpenVIII/Kernel/BattleItems.h"
 #include "OpenVIII/Kernel/NonBattleItems.h"
 
-namespace OpenVIII {
+namespace open_viii {
 template<typename spanT, size_t max = 0U> requires(sizeof(spanT) > 0U) struct BulkSectionData
 {
 private:
@@ -84,5 +84,5 @@ public:
   [[maybe_unused]] auto &Span() const noexcept { return span_; }
   [[maybe_unused]] auto &TextSpan() const noexcept { return textSpan_; }
 };
-}// namespace OpenVIII
+}// namespace open_viii
 #endif// VIIIARCHIVE_BULKSECTIONDATA_H

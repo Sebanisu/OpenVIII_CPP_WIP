@@ -26,14 +26,14 @@ int main()
     if (size <= 0) {
       return true;
     }
-    std::vector<char> randomChars = std::vector<char>(size);
-    if (randomChars.empty()) {
+    std::vector<char> random_chars = std::vector<char>(size);
+    if (random_chars.empty()) {
       return true;
     }
-    std::generate(randomChars.begin(), randomChars.end(), [&dis, &gen]() { return static_cast<char>(dis(gen)); });
+    std::generate(random_chars.begin(), random_chars.end(), [&dis, &gen]() { return static_cast<char>(dis(gen)); });
     // instead of storing compressed variable we just pass it directly into Decompress();
-    auto uncompressed = OpenVIII::Compression::LZSS::Decompress(OpenVIII::Compression::LZSS::Compress(randomChars));
-    if (std::equal(randomChars.begin(), randomChars.end(), uncompressed.begin())) {
+    auto uncompressed = open_viii::compression::LZSS::decompress(open_viii::compression::LZSS::compress(random_chars));
+    if (std::equal(random_chars.begin(), random_chars.end(), uncompressed.begin())) {
       std::cout << "\rSuccessfully compressed and uncompressed data: " << size << " bytes" << std::flush;
       return true;
     }

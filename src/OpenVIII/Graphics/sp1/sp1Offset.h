@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_SP1OFFSET_H
 #define VIIIARCHIVE_SP1OFFSET_H
 #include <cstdint>
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 struct sp1Offset
 {
 private:
@@ -13,9 +13,10 @@ private:
   std::uint16_t count_{};
 
 public:
+  sp1Offset() = default;
   [[nodiscard]] auto Offset() const noexcept { return offset_; }
   [[nodiscard]] auto Count() const noexcept { return count_; }
 };
 
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP1OFFSET_H

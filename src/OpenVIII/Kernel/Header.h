@@ -55,7 +55,7 @@
 #include "QuistisBlueMagicLimitBreakParams.h"
 #include "ZellDuelLimitBreakParams.h"
 // will be moving kernel into it"s own project once it"svs more fully baked.
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 
 template<LangT langVal> struct Header
 {
@@ -348,7 +348,7 @@ public:
 
   template<typename mainT> explicit Header(const mainT &main)
   {
-    buffer_ = main.GetEntryData(fileName_);
+    buffer_ = main.get_entry_data(fileName_);
     if (std::size(buffer_) < sizeof(std::uint32_t)) {
       return;
     }
@@ -379,6 +379,6 @@ public:
       static_for<First + 1, Count>(f);
     }
   }
-};// namespace OpenVIII::Kernel
-}// namespace OpenVIII::Kernel
+};// namespace open_viii::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_KERNEL_HEADER_H

@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_STATGROUP_H
 #include <array>
 #include <iostream>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<typename T> struct StatGroup
 {
 private:
@@ -78,5 +78,5 @@ public:
     return os;
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_STATGROUP_H

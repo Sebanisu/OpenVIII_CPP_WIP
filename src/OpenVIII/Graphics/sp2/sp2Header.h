@@ -8,7 +8,7 @@
 #include <vector>
 #include <span>
 #include <ranges>
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 struct sp2Header
 {
 private:
@@ -27,5 +27,5 @@ public:
   [[nodiscard]] const auto &Offsets() const noexcept { return offsets_; }
   [[nodiscard]] auto &size() const noexcept { return count_; }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP2HEADER_H

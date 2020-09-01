@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_SECTIONTYPEST_H
 #define VIIIARCHIVE_SECTIONTYPEST_H
 #include <cstdint>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 enum class SectionTypesT : std::int8_t {
   // https://github.com/alexfilth/doomtrain/wiki/Header
   BattleCommands,

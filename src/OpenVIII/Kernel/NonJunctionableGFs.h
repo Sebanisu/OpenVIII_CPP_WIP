@@ -18,7 +18,7 @@
 #include "PersistentStatusesT.h"
 #include "BattleOnlyStatusesT.h"
 #include "AttackTypeT.h"
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct NonJunctionableGFs
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Non-junctionable-GF-attacks
@@ -145,5 +145,5 @@ public:
       ;
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_NONJUNCTIONABLEGFS_H

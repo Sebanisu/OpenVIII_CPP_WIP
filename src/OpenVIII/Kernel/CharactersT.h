@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_CHARACTERST_H
 #define VIIIARCHIVE_CHARACTERST_H
 #include <cstdint>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 enum class CharactersT : std::uint8_t {
   // I noticed some values were in order of these characters so I made those values into arrays
   // and put the character names into an enum.

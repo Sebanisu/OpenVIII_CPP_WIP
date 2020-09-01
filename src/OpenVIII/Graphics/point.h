@@ -6,7 +6,7 @@
 #define VIIIARCHIVE_POINT_H
 #include <iostream>
 
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 template<typename dimT> struct point
 {
 private:
@@ -46,5 +46,5 @@ public:
     return os << '{' << input.X_ << ", " << input.Y_ << '}';
   }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_POINT_H

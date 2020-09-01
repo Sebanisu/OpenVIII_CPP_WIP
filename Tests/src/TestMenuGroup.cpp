@@ -26,17 +26,17 @@
 
 int main()
 {
-  for (auto &path : OpenVIII::Paths::get()) {
-    OpenVIII::Tools::replaceSlashes(path);
+  for (auto &path : open_viii::Paths::get()) {
+    open_viii::Tools::replace_slashes(path);
     if (!std::filesystem::exists(path)) {
       continue;
     }
     std::cout << path << std::endl;
-    constexpr auto coo = OpenVIII::LangT::EN;
-    const auto archives = OpenVIII::Archive::Archives<coo>(path);
-    [[maybe_unused]] const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
+    constexpr auto coo = open_viii::LangT::en;
+    const auto archives = open_viii::archive::Archives<coo>(path);
+    [[maybe_unused]] const auto &menu = archives.get<open_viii::archive::ArchiveTypeT::menu>();
     std::cout << menu << std::endl;
-    auto mngrpfile = OpenVIII::MenuGroup::MenuGroupFile{ menu };
+    auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };
     //    auto buffer = mngrpfile.GetSectionBuffer<3>();
     //    std::ofstream ofs{};
     //    ofs.open("4.bin",std::ios::binary|std::ios::out);
@@ -51,10 +51,10 @@ int main()
     mngrpfile.TestTkMnMes<coo>();
     mngrpfile.TestMes<coo>();
     mngrpfile.TestRefine<coo>();
-    mngrpfile.TestTim(menu.GetFullPath(OpenVIII::MenuGroup::MenuGroupFile::FILENAME));
+    mngrpfile.TestTim(menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
     continue;
-    // auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
-    // auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
+    // auto mngrphd = open_viii::menu_group::menu_groupHeader{ menu };
+    // auto mngrpBuffer = menu.get_entry_data("mngrp.bin");
     // std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";
     // size_t i = 0;
     // size_t notSkipped = 0;
@@ -67,7 +67,7 @@ int main()
     //    std::cout << i - 1 << ":" << notSkipped - 1 << ": {" << item.FileOffset() << ", " << sectionBuffer.size()
     //              << "}\n";
     //    if (i <= 3) {
-    //      OpenVIII::MenuGroup::MenuMessages tkmnmes_{ sectionBuffer };
+    //      open_viii::menu_group::MenuMessages tkmnmes_{ sectionBuffer };
     //      std::cout << "{" << tkmnmes_.Sections().size() << ", " << tkmnmes_.SubSections().size() << "},\n";
     //      size_t id{};
     //      for (const auto &subSectionGroup : tkmnmes_.SubSections()) {
@@ -88,7 +88,7 @@ int main()
     //      std::cout << '\n';
     //    } else if ((notSkipped >= 39 && notSkipped <= 74) || (notSkipped >= 82 && notSkipped <= 89)
     //               || (notSkipped == 117)) {
-    //      OpenVIII::MenuGroup::MenuMessagesSection tkmnmes_{ sectionBuffer };
+    //      open_viii::menu_group::MenuMessagesSection tkmnmes_{ sectionBuffer };
     //      std::cout << "  {" << tkmnmes_.size() << "},\n";
     //      size_t id{};
     //      for (const auto &subSection : tkmnmes_) {
@@ -105,10 +105,10 @@ int main()
     //      case 189:// 107
     //      {
     //        const auto refine =
-    //          OpenVIII::BulkSectionData<OpenVIII::MenuGroup::RefineSection000>(sectionBuffer.data(),
+    //          open_viii::BulkSectionData<open_viii::menu_group::RefineSection000>(sectionBuffer.data(),
     //          GetSection(196));
     //        refine.at(0).out<coo>(std::cout, refine.TextSpan());
-    //        //            OpenVIII::MenuGroup::RefineSection000 refine{};
+    //        //            open_viii::menu_group::RefineSection000 refine{};
     //        //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
     //        //            refine.out<coo>(std::cout,GetSection(196));
     //        break;
@@ -116,10 +116,10 @@ int main()
     //      case 190:// 108
     //      {
     //        const auto refine =
-    //          OpenVIII::BulkSectionData<OpenVIII::MenuGroup::RefineSection001>(sectionBuffer.data(),
+    //          open_viii::BulkSectionData<open_viii::menu_group::RefineSection001>(sectionBuffer.data(),
     //          GetSection(197));
     //        refine.at(0).out<coo>(std::cout, refine.TextSpan());
-    //        //            OpenVIII::MenuGroup::RefineSection001 refine{};
+    //        //            open_viii::menu_group::RefineSection001 refine{};
     //        //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
     //        //            refine.out<coo>(std::cout,GetSection(197));
     //        break;
@@ -127,10 +127,10 @@ int main()
     //      case 191:// 109
     //      {
     //        const auto refine =
-    //          OpenVIII::BulkSectionData<OpenVIII::MenuGroup::RefineSection002>(sectionBuffer.data(),
+    //          open_viii::BulkSectionData<open_viii::menu_group::RefineSection002>(sectionBuffer.data(),
     //          GetSection(198));
     //        refine.at(0).out<coo>(std::cout, refine.TextSpan());
-    //        //            OpenVIII::MenuGroup::RefineSection002 refine{};
+    //        //            open_viii::menu_group::RefineSection002 refine{};
     //        //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
     //        //            refine.out<coo>(std::cout,GetSection(198));
     //        break;
@@ -138,10 +138,10 @@ int main()
     //      case 192:// 110
     //      {
     //        const auto refine =
-    //          OpenVIII::BulkSectionData<OpenVIII::MenuGroup::RefineSection003>(sectionBuffer.data(),
+    //          open_viii::BulkSectionData<open_viii::menu_group::RefineSection003>(sectionBuffer.data(),
     //          GetSection(199));
     //        refine.at(0).out<coo>(std::cout, refine.TextSpan());
-    //        //            OpenVIII::MenuGroup::RefineSection003 refine{};
+    //        //            open_viii::menu_group::RefineSection003 refine{};
     //        //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
     //        //            refine.out<coo>(std::cout,GetSection(199));
     //        break;
@@ -149,10 +149,10 @@ int main()
     //      case 193:// 111
     //      {
     //        const auto refine =
-    //          OpenVIII::BulkSectionData<OpenVIII::MenuGroup::RefineSection004>(sectionBuffer.data(),
+    //          open_viii::BulkSectionData<open_viii::menu_group::RefineSection004>(sectionBuffer.data(),
     //          GetSection(200));
     //        refine.at(0).out<coo>(std::cout, refine.TextSpan());
-    //        //            OpenVIII::MenuGroup::RefineSection004 refine{};
+    //        //            open_viii::menu_group::RefineSection004 refine{};
     //        //            std::memcpy(&refine,sectionBuffer.data(),sizeof(refine));
     //        //            refine.out<coo>(std::cout,GetSection(200));
     //        break;
@@ -160,7 +160,7 @@ int main()
     //      }
     //      // std::cout<< notSkipped << "\n";
     //    }
-    //    //        if(sectionBuffer.size() >= sizeof(OpenVIII::MenuGroup::RefineSection000))
+    //    //        if(sectionBuffer.size() >= sizeof(open_viii::menu_group::RefineSection000))
     //    //        {
     //    //          //exit(0);
     //    //        }
@@ -173,15 +173,15 @@ int main()
     //       }
     //    [[maybe_unused]] const auto &buffer = mngrphd.Buffer();
     //    std::cout << "kernel.bin " << buffer.size() << " bytes; " << mngrphd.SectionCount() << " section count\n";
-    //    std::cout << static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count) << std::endl;
-    //    mngrphd.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypesT::First),
-    //      static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    //    std::cout << static_cast<int>(open_viii::Kernel::SectionTypesT::Count) << std::endl;
+    //    mngrphd.static_for<static_cast<int>(open_viii::Kernel::SectionTypesT::First),
+    //      static_cast<int>(open_viii::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
     //           std::cout << "  " << string << " - " << std::size(span) << " bytes\n";
     //
     //           return data;
     //    });
-    //    mngrphd.static_for<static_cast<int>(OpenVIII::Kernel::SectionTypesT::First),
-    //      static_cast<int>(OpenVIII::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    //    mngrphd.static_for<static_cast<int>(open_viii::Kernel::SectionTypesT::First),
+    //      static_cast<int>(open_viii::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
     //           if constexpr (!std::is_null_pointer_v<decltype(
     //           data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
     //             std::cout << string << " ( " << std::size(span) << "bytes) has " << data.Count() << "entries\n";

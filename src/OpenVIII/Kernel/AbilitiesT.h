@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_ABILITIEST_H
 #define VIIIARCHIVE_ABILITIEST_H
 #include <cstdint>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 enum class AbilitiesT : std::uint16_t {
   // https://github.com/alexfilth/doomtrain/wiki/Junction-abilities
   None,

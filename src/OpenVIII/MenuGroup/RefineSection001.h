@@ -17,7 +17,7 @@
 #include "RefineEntry.h"
 #include <array>
 #include <iostream>
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection001// Item to Item
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_2
@@ -95,5 +95,5 @@ public:
     return os;
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_REFINESECTION001_H

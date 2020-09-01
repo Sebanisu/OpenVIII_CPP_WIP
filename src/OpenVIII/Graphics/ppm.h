@@ -10,7 +10,7 @@
 #include <string_view>
 #include "color.h"
 #include "OpenVIII/concepts.h"
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 struct ppm
 {
 
@@ -30,12 +30,12 @@ struct ppm
     std::stringstream ss{};
     ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
     for (const Color auto &color : data) {// organize the data in ram first then write all at once.
-      ss << color.R();
-      ss << color.G();
-      ss << color.B();
+      ss << color.r();
+      ss << color.g();
+      ss << color.b();
     }
-    Tools::WriteBuffer(ss.str(), filename);
+    Tools::write_buffer(ss.str(), filename);
   }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_PPM_H

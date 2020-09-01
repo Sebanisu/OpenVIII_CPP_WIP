@@ -22,7 +22,7 @@
 #include "BattleOnlyStatusesT.h"
 #include "PersistentStatusesT.h"
 
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct TeamLagunaLimitBreaks
 {
   /*
@@ -103,5 +103,5 @@ public:
       ;
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_TEAMLAGUNALIMITBREAKS_H

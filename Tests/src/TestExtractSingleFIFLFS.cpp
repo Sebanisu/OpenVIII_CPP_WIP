@@ -20,30 +20,30 @@ int main()
   std::string needle{};
   std::cout << "Enter string to search for: ";
   std::getline(std::cin, needle);
-  OpenVIII::Tools::replaceSlashes(needle);
+  open_viii::Tools::replace_slashes(needle);
   if (needle.empty()) {
     return 1;
   }
-  for (auto &path : OpenVIII::Paths::get()) {
-    OpenVIII::Tools::replaceSlashes(path);
+  for (auto &path : open_viii::Paths::get()) {
+    open_viii::Tools::replace_slashes(path);
     if (!std::filesystem::exists(path)) {
       continue;
     }
-    const auto files = OpenVIII::Archive::FIFLFS<true>::GetFilesFromPath(path);
+    const auto files = open_viii::archive::FIFLFS<true>::get_files_from_path(path);
     for (const auto &entry : files) {
 
       const auto &fiflfs = entry.second;
-      const auto &fl = fiflfs.FL();
+      const auto &fl = fiflfs.fl();
       std::cout << "Searching " << fiflfs << '\n';
       {
-        const auto &[id, innerPath] = OpenVIII::Archive::FL::GetEntry(fl.path, { needle }, fl.offset);
+        const auto &[id, innerPath] = open_viii::archive::FL::get_entry(fl.path(), { needle }, fl.offset());
         if (!innerPath.empty()) {
           std::cout << "single match: {" << id << ", " << innerPath << "}\n";
         }
       }
       {
-        const auto searchEntries = OpenVIII::Archive::FL::GetAllEntries(
-          fl.path, fl.offset, 0U, 0U, { std::string_view(needle), OpenVIII::Archive::FL::Ext });
+        const auto searchEntries = open_viii::archive::FL::get_all_entries(
+          fl.path(), fl.offset(), 0U, 0U, { std::string_view(needle), open_viii::archive::FL::EXT });
         if (!searchEntries.empty()) {
           std::cout << "filtered sorted searchEntries: \n";
           for (const auto &searchEntry : searchEntries) {
@@ -51,27 +51,27 @@ int main()
             if (!innerPath.empty()) {
               auto p = std::filesystem::path(innerPath);
               {
-                auto extNum = OpenVIII::Archive::FIFLFS<true>::CheckExtension(p);
+                auto extNum = open_viii::archive::FIFLFS<true>::check_extension(p);
                 if (extNum == 1) {
-                  const FI_Like auto &parent_fi = fiflfs.FI();
-                  const auto &parent_fs = fiflfs.FS();
-                  const FI_Like auto fi = [&parent_fi, &id]() {
-                    if (std::empty(parent_fi.data)) {
-                      return OpenVIII::Archive::FI(parent_fi.path, id, parent_fi.offset);
+                  const auto &parent_fi = fiflfs.fi();
+                  const auto &parent_fs = fiflfs.fs();
+                  const open_viii::FI_Like auto fi = [&parent_fi, &id]() {
+                    if (std::ranges::empty(parent_fi.data())) {
+                      return open_viii::archive::FI(parent_fi.path(), id, parent_fi.offset());
                     }
-                    return OpenVIII::Archive::FI(parent_fi.data, id, parent_fi.offset);
+                    return open_viii::archive::FI(parent_fi.data(), id, parent_fi.offset());
                   }();
                   auto buffer = [&parent_fs, &fi]() {
-                    if (std::empty(parent_fs.data)) {
-                      return OpenVIII::Archive::FS::GetEntry<std::string>(parent_fs.path, fi, parent_fs.offset);
+                    if (std::ranges::empty(parent_fs.data())) {
+                      return open_viii::archive::FS::get_entry<std::string>(parent_fs.path(), fi, parent_fs.offset());
                     }
-                    return OpenVIII::Archive::FS::GetEntry<std::string>(parent_fs.data, fi, parent_fs.offset);
+                    return open_viii::archive::FS::get_entry<std::string>(parent_fs.data(), fi, parent_fs.offset());
                   }();
-                  OpenVIII::Archive::FL::CleanBuffer(buffer);
+                  open_viii::archive::FL::clean_buffer(buffer);
 
                   std::cout << "  Searching " << innerPath << '\n';
                   for (const auto &nestedSearchEntry :
-                    OpenVIII::Archive::FL::GetAllEntriesData(innerPath, buffer, 0U, 0U, 0U, { needle })) {
+                    open_viii::archive::FL::get_all_entries_data(innerPath, buffer, 0U, 0U, 0U, { needle })) {
                     const auto &[nestedId, nestedInnerPath] = nestedSearchEntry;
                     std::cout << "    {" << nestedId << ", " << nestedInnerPath << "}\n";
                   }
@@ -87,6 +87,6 @@ int main()
       }
     }
   }
-  // std::for_each(std::begin(files), std::end(files), &OpenVIII::Archive::FIFLFS::testPair);
+  // std::for_each(std::begin(files), std::end(files), &open_viii::archive::FIFLFS::testPair);
   return 0;
 }

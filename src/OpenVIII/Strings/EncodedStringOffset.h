@@ -17,7 +17,7 @@
 #include <string_view>
 #include "FF8String.h"
 
-namespace OpenVIII {
+namespace open_viii {
 struct EncodedStringOffset
 {
 private:
@@ -72,5 +72,5 @@ public:
 
   [[nodiscard]] auto Offset() const noexcept { return offset_; }
 };
-}// namespace OpenVIII
+}// namespace open_viii
 #endif// VIIIARCHIVE_ENCODEDSTRINGOFFSET_H

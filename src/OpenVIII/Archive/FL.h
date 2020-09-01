@@ -26,7 +26,7 @@
 #include <initializer_list>
 #include "OpenVIII/Tools/Tools.h"
 
-namespace OpenVIII::Archive {
+namespace open_viii::archive {
 //
 /**
  * FL files contain internal file structure paths. As a flat text file. This class is used to search the strings for a
@@ -43,24 +43,24 @@ private:
    * @param skipFixed if false skip removing the \r from end and skip replacing slashes.
    * @return void
    */
-  constexpr static void CleanString(std::string &input, const bool &skipFixed = true) noexcept
+  constexpr static void clean_string(std::string &input, const bool &skipFixed = true) noexcept
   {
     if (std::size(input) > 4) {
-      if (Tools::iEquals(std::string_view(input.c_str(), 2), "c:")) {
+      if (Tools::i_starts_with(std::string_view(input.c_str(), 2), "c:")) {
         input.erase(0, 3);// remove c:\ from the start of the strings.
       }
       if (skipFixed) {
         if (input.at(input.size() - 1) == '\r') {
           input.pop_back();
         }// remove the carriage return character
-        Tools::replaceSlashes(input);
+        Tools::replace_slashes(input);
       }
     }
   }
 
 
 public:
-  constexpr const static auto Ext = std::string_view(".FL");
+  constexpr const static auto EXT = std::string_view(".FL");
 
   /**
    * Get All entries sorted from file or data buffer.
@@ -73,7 +73,7 @@ public:
    * @param limit max matches; 0 == unlimited
    * @return matches
    */
-  [[nodiscard]] static std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(
+  [[nodiscard]] static std::vector<std::pair<unsigned int, std::string>> get_all_entries_data(
     const std::filesystem::path &path,
     const std::string &data,
     const size_t &offset,
@@ -100,33 +100,33 @@ public:
 
       // id numerical order is same order as fi data. So need to keep the id so we can reference the fi correctly.
       {
-        std::basic_string<char> innerPath;
+        std::basic_string<char> inner_path;
         for (unsigned int id = 0;
              (count == 0U || vector.size() < count)
                //&& (limit == 0U || vector.size() < limit)
-               && (size == 0U || cont.tellg() < static_cast<long>(size + offset)) && [&innerPath, &cont]() -> bool {
+               && (size == 0U || cont.tellg() < static_cast<long>(size + offset)) && [&inner_path, &cont]() -> bool {
                if (cont.seekg(3, std::ios::cur)) {
                  /* skip c:\ */
-                 return static_cast<bool>(std::getline(cont, innerPath));
+                 return static_cast<bool>(std::getline(cont, inner_path));
                }
                return false;
              }();
              id++) {
           if (!std::empty(needle)
-              && !std::any_of(needle.begin(), needle.end(), [&innerPath](const std::string_view &innerNeedle) {
-                   return !innerPath.empty() && Tools::iFind(innerPath, innerNeedle);
+              && !std::any_of(needle.begin(), needle.end(), [&inner_path](const std::string_view &innerNeedle) {
+                   return !inner_path.empty() && Tools::i_find(inner_path, innerNeedle);
                  })) {
             continue;
           }
 
           // https://youtu.be/oTMSgI1XjF8?t=1727
-          CleanString(
+          clean_string(
             vector
               .emplace_back(
-                std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(std::move(innerPath)))
+                std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(std::move(inner_path)))
               .second,
             std::empty(data));
-          innerPath = {};
+          inner_path = {};
         }
       }
     };
@@ -166,14 +166,14 @@ public:
     return vector;
   }
   // Get all entries from the FL file sorted and cleaned.
-  [[maybe_unused]] [[nodiscard]] static auto GetAllEntries(const std::filesystem::path &path,
+  [[maybe_unused]] [[nodiscard]] static auto get_all_entries(const std::filesystem::path &path,
     const size_t &offset,
     const size_t &size = 0,
     const size_t &count = 0,
     const std::initializer_list<std::string_view> &needle = {})
   {
     auto tmp = std::string();
-    return GetAllEntriesData(path, tmp, offset, size, count, needle);
+    return get_all_entries_data(path, tmp, offset, size, count, needle);
   }
 
   /**
@@ -188,7 +188,7 @@ public:
    */
 
 
-  [[nodiscard]] static auto GetEntryData(const std::filesystem::path &path,
+  [[nodiscard]] static auto get_entry_data(const std::filesystem::path &path,
     const std::string &data,
     const std::initializer_list<std::string_view> &needle,
     const size_t &offset = 0U,
@@ -196,33 +196,33 @@ public:
     const size_t &count = 0U)
   {// Maybe should search all entries instead of using this because this is not sorted. Sorting matters when the
     // strings are similar. Though this might be faster if only getting a few files from an archive.
-    auto buffer = GetAllEntriesData(path, data, offset, size, count, needle, 1);
+    auto buffer = get_all_entries_data(path, data, offset, size, count, needle, 1);
     if (std::empty(buffer)) {
       return std::make_pair(0U, std::string(""));
     }
     return buffer.at(0);
   }
   // Get a single entry that is the first match for needle.
-  [[nodiscard]] static auto GetEntry(const std::filesystem::path &path,
+  [[nodiscard]] static auto get_entry(const std::filesystem::path &path,
     const std::initializer_list<std::string_view> &needle,
     const size_t &offset = 0U,
     const size_t &size = 0U,
     const size_t &count = 0U)
   {// Maybe should search all entries instead of using this because this is not sorted. Sorting matters when the
    // strings are similar. Though this might be faster if only getting a few files from an archive.
-    auto data = GetAllEntriesData(path, "", offset, size, count, needle, 1);
+    auto data = get_all_entries_data(path, "", offset, size, count, needle, 1);
     if (std::empty(data)) {
       return std::make_pair(0U, std::string(""));
     }
     return data.at(0);
   }
-  static void CleanBuffer(std::string &buffer)
+  static void clean_buffer(std::string &buffer)
   {
     // remove carriage returns
     buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
     // change slashes to preferred
-    Tools::replaceSlashes(buffer);
+    Tools::replace_slashes(buffer);
   }
 };
-}// namespace OpenVIII::Archive
+}// namespace open_viii::Archive
 #endif// !VIIIARCHIVE_FL_H

@@ -18,7 +18,7 @@
 #include <cstring>
 #include <array>
 #include <vector>
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 struct MenuMessages
 {
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_tkmnmes
@@ -61,5 +61,5 @@ public:
     }
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_MENUMESSAGES_H

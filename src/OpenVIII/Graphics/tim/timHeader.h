@@ -7,9 +7,9 @@
 #include <cstdint>
 #include <iostream>
 #include "BPPT.h"
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 /**
- * @struct OpenVIII::Graphics::timHeader
+ * @struct open_viii::graphics::timHeader
  * @ingroup Graphics
  * @brief Color Lookup Table Header
  */
@@ -72,7 +72,7 @@ public:
    */
   [[nodiscard]] bool Check() const
   {
-    return none0_ == 0 && none1_ == 0 && none2_ == 0 && none3_ == 0 && (none4_ == 0 || none4_ == 22) && tag_ == tagVal_
+    return none0_ == 0 && none1_ == 0 && none2_ == 0 && none3_ == 0 && /*(none4_ == 0 || none4_ == 22) &&*/ tag_ == tagVal_
            && version_ == versionVal_ && bpp_.Check();
   }
 
@@ -83,5 +83,5 @@ public:
               << ", Version: " << static_cast<uint32_t>(input.version_) << ", " << input.bpp_ << '}';
   }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TIMHEADER_H

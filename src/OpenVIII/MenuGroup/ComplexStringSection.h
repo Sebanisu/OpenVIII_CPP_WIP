@@ -10,7 +10,7 @@
 #include <ostream>
 #include <string_view>
 #include "OpenVIII/Strings/FF8String.h"
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 struct ComplexStringSectionEntry
 {
 private:
@@ -83,5 +83,5 @@ public:
       temp.data() + offsets.offset(), temp.size() - offsets.offset() } };
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_COMPLEXSTRINGSECTION_H

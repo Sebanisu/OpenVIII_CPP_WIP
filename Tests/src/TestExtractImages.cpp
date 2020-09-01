@@ -13,20 +13,20 @@
 
 int main()
 {
-  for (auto &path : OpenVIII::Paths::get()) {
-    OpenVIII::Tools::replaceSlashes(path);
+  for (auto &path : open_viii::Paths::get()) {
+    open_viii::Tools::replace_slashes(path);
     if (!std::filesystem::exists(path)) {
       continue;
     }
     std::cout << path << std::endl;
-    const auto archives = OpenVIII::Archive::Archives<OpenVIII::LangT::EN>(path);
+    const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
 //    {
-//      const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
-//      const auto menuGroup = OpenVIII::MenuGroup::MenuGroupFile{ menu };
+//      const auto &menu = archives.Get<open_viii::archive::ArchiveTypeT::Menu>();
+//      const auto menuGroup = open_viii::MenuGroup::MenuGroupFile{ menu };
 //      const auto fullpath = menu.GetFullPath(menuGroup.FILENAME);
 //      menuGroup.TestTim(fullpath);
 //    }
-    archives.ExecuteOn(
+    archives.execute_on(
       { /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2"*/
         "mag164",
         "mag179",
@@ -43,34 +43,34 @@ int main()
         "mag325",
         "mag326-329" },
       [](std::vector<char> buffer, [[maybe_unused]] std::string_view p) {
-        if (OpenVIII::Tools::iEndsWith(p, ".lzs")) {
-          auto t = OpenVIII::Graphics::lzs(buffer);
+        if (open_viii::Tools::i_ends_with(p, ".lzs")) {
+          auto t = open_viii::graphics::Lzs(buffer);
           std::cout << p << '\n' << t << '\n';
-          t.Save(p);
-        } else if (OpenVIII::Tools::iEndsWith(p, ".tim")) {
-          auto t = OpenVIII::Graphics::tim(buffer);
+          t.save(p);
+        } else if (open_viii::Tools::i_ends_with(p, ".tim")) {
+          auto t = open_viii::graphics::Tim(buffer);
           std::cout << p << '\n' << t << '\n';
-          if(t.Width()==0 || t.Height() == 0)
+          if(t.width()==0 || t.height() == 0)
           {
-            OpenVIII::Tools::WriteBuffer(buffer,p);
+            open_viii::Tools::write_buffer(buffer,p);
           }
           else {
-            t.Save(p);
+            t.save(p);
           }
-        } else if (OpenVIII::Tools::iEndsWith(p, ".tex")) {
-          auto t = OpenVIII::Graphics::tex(buffer);
+        } else if (open_viii::Tools::i_ends_with(p, ".tex")) {
+          auto t = open_viii::graphics::Tex(buffer);
           std::cout << p << '\n' << t << '\n';
-          t.Save(p);
-        } else if (OpenVIII::Tools::iEndsWith(p, ".tdw")) {
-          auto t = OpenVIII::Graphics::tdw(buffer);
+          t.save(p);
+        } else if (open_viii::Tools::i_ends_with(p, ".tdw")) {
+          auto t = open_viii::graphics::Tdw(buffer);
           std::cout << p << '\n' << t << '\n';
-          t.Save(p);
-        } else if (OpenVIII::Tools::iEndsWith(p, ".sp1")) {
-          auto t = OpenVIII::Graphics::sp1(buffer);
+          t.save(p);
+        } else if (open_viii::Tools::i_ends_with(p, ".sp1")) {
+          auto t = open_viii::graphics::Sp1(buffer);
           std::cout << p << '\n' << t << '\n';
           // t.Save(p);
-        } else if (OpenVIII::Tools::iEndsWith(p, ".sp2")) {
-          auto t = OpenVIII::Graphics::sp2(buffer);
+        } else if (open_viii::Tools::i_ends_with(p, ".sp2")) {
+          auto t = open_viii::graphics::sp2(buffer);
           std::cout << p << '\n' << t << '\n';
           // t.Save(p);
         }

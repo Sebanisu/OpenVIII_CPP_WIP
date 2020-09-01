@@ -14,7 +14,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #ifndef VIIIARCHIVE_RefineEntry_H
 #define VIIIARCHIVE_RefineEntry_H
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 template<typename inputT, typename outputT> struct RefineEntry
 {
   /*
@@ -60,5 +60,5 @@ public:
   //    return input.out(os);
   //  }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_RefineEntry_H

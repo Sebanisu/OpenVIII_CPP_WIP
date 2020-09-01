@@ -9,7 +9,7 @@
 #include <vector>
 #include <span>
 #include "sp1Offset.h"
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 struct sp1Header
 {
 private:
@@ -43,5 +43,5 @@ public:
   [[nodiscard]] const auto &Offsets() const noexcept { return offsets_; }
 };
 
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP1HEADER_H

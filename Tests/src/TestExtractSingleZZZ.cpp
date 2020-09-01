@@ -15,31 +15,31 @@
 #include "OpenVIII/Paths/Paths.h"
 int main()
 {
-  const std::initializer_list<std::string_view> Extensions = {
-    OpenVIII::Archive::FI::Ext, OpenVIII::Archive::FL::Ext, OpenVIII::Archive::FS::Ext
+  const std::initializer_list<std::string_view> extensions = {
+    open_viii::archive::FI::EXT, open_viii::archive::FL::EXT, open_viii::archive::FS::EXT
   };
   std::string needle{};
   std::cout << "Enter string to search for: ";
   std::getline(std::cin, needle);
-  OpenVIII::Tools::replaceSlashes(needle);
+  open_viii::Tools::replace_slashes(needle);
   if (needle.empty()) {
     return 1;
   }
   // test ZZZ extract with FIFLFS
-  for (auto &path : OpenVIII::Paths::get()) {
-    OpenVIII::Tools::replaceSlashes(path);
+  for (auto &path : open_viii::Paths::get()) {
+    open_viii::Tools::replace_slashes(path);
 
     if (!std::filesystem::exists(path)) {
       continue;
     }
-    for (const auto &zzzFilePair : OpenVIII::Archive::ZZZ::GetFilesFromPath(path)) {
+    for (const auto &zzzFilePair : open_viii::archive::ZZZ::get_files_from_path(path)) {
       std::cout << "Searching: " << path << "\n";
-      for (const OpenVIII::Archive::FileData &dataItem : zzzFilePair.second.Data()) {
+      for (const open_viii::archive::FileData &dataItem : zzzFilePair.second.data()) {
         {
-          const auto pathString = dataItem.GetPathString();
-          if (OpenVIII::Tools::iEndsWithAny(pathString, Extensions) != 0U) {
+          const auto pathString = dataItem.get_path_string();
+          if (open_viii::Tools::i_ends_with_any(pathString, extensions) != 0U) {
             std::cout << "  nested: {" << pathString << "}\n";
-          } else if (OpenVIII::Tools::iFind(pathString, needle)) {
+          } else if (open_viii::Tools::i_find(pathString, needle)) {
             std::cout << "  {" << pathString << "}\n";
           }
         }

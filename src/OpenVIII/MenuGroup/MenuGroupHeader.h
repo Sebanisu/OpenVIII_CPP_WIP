@@ -18,7 +18,7 @@
 #include <cstring>
 #include <string_view>
 #include <array>
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 struct MenuGroupHeader
 {
 private:
@@ -35,12 +35,12 @@ public:
   MenuGroupHeader() = default;
   template<typename mainT> explicit MenuGroupHeader(const mainT &main)
   {
-    auto buffer = main.GetEntryData(FILENAME);
+    auto buffer = main.get_entry_data(FILENAME);
     if (std::size(buffer) < sizeof(std::uint32_t) || size_ != std::size(buffer)) {
       return;
     }
     std::memcpy(sections_.data(), buffer.data(), std::size(buffer));
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_MENUGROUPHEADER_H

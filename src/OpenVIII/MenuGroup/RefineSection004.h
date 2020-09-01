@@ -18,7 +18,7 @@
 #include "RefineCardID.h"
 #include <array>
 #include <iostream>
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection004// Refine cards to items
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_5
@@ -58,5 +58,5 @@ public:
     return os;
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_REFINESECTION004_H

@@ -20,7 +20,7 @@
 #include "AttackTypeT.h"
 #include "AttackFlagsT.h"
 #include "ElementT.h"
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct CommandAbilitiesData
 {
 
@@ -72,5 +72,5 @@ public:
               << static_cast<std::uint32_t>(BattleOnlyStatuses());
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_COMMANDABILITIESDATA_H

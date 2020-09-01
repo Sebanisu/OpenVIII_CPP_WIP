@@ -17,7 +17,7 @@
 #include <iostream>
 #include "AbilitiesT.h"
 #include "UnlockerT.h"
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 struct UnlockableAbility
 {
 private:
@@ -35,5 +35,5 @@ public:
               << ", " << static_cast<std::uint32_t>(ua.Ability()) << '}';
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_UNLOCKABLEABILITY_H

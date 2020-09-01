@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_SLOTSARRAY_H
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include <cstdint>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 struct SlotsArray
 {
   /*
@@ -34,5 +34,5 @@ public:
   }
   [[nodiscard]] explicit operator std::uint8_t() const { return slotSetID_; }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_SLOTSARRAY_H

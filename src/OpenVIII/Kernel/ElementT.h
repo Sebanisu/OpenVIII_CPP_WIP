@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_ELEMENTT_H
 #define VIIIARCHIVE_ELEMENTT_H
 #include <cstdint>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 enum class ElementT : std::uint8_t {
   NonElemental = 0x00,
   Fire = 0x01,

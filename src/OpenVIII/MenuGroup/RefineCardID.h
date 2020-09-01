@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_REFINECARDID_H
 
 #include "cstdint"
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 using RefineCardID = std::uint8_t;
 }
 #endif// VIIIARCHIVE_REFINECARDID_H

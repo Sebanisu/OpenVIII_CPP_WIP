@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_SECTIONDATA_H
 #include <string_view>
 
-namespace OpenVIII {
+namespace open_viii {
 template<typename spanT> requires(sizeof(spanT) > 0U) struct SectionData
 {
 private:
@@ -35,5 +35,5 @@ public:
   [[maybe_unused]] auto &Span() const noexcept { return span_; }
   auto &TextSpan() const noexcept { return textSpan_; }
 };
-}// namespace OpenVIII
+}// namespace open_viii
 #endif// VIIIARCHIVE_SECTIONDATA_H

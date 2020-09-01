@@ -16,7 +16,7 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "TargetT.h"
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct RinoaLimitBreakPart1
 {
   /*
@@ -58,5 +58,5 @@ public:
               << ", " << static_cast<std::uint32_t>(AbilityDataID()) << ", " << static_cast<std::uint32_t>(Unknown0());
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_RINOALIMITBREAKPART1_H

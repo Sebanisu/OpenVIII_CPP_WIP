@@ -17,7 +17,7 @@
 #include "RefineSpellID.h"
 #include "RefineEntry.h"
 #include <iostream>
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 // enum struct Refine000T
 //{
 //  tMagRF,
@@ -156,5 +156,5 @@ public:
     return os;
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_REFINESECTION000_H

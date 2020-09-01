@@ -20,7 +20,7 @@
 #include "RenzokukenFinishersT.h"
 #include <cstdint>
 
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct Weapons
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Weapons
@@ -92,5 +92,5 @@ public:
               << static_cast<std::uint32_t>(MeleeWeapon());
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_WEAPONS_H

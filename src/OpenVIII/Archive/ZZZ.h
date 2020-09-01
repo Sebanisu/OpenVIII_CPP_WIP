@@ -23,7 +23,7 @@
 #include <algorithm>
 #include "FIFLFS.h"
 #include "FileData.h"
-namespace OpenVIII::Archive {
+namespace open_viii::archive {
 struct [[maybe_unused]] ZZZ
 {
 
@@ -32,13 +32,13 @@ private:
   // stored at top of zzz file to tell how many files are stored inside
   // unsigned int count_{};
   // file data inside zzz file.
-  std::vector<FileData> data_{};
-  std::filesystem::path path_{};
+  std::vector<FileData> m_data{};
+  std::filesystem::path m_path{};
 
 public:
-  constexpr static auto Ext = ".zzz";
-  [[maybe_unused]] [[nodiscard]] const auto &Data() const noexcept { return data_; }
-  [[maybe_unused]] [[nodiscard]] const auto &Path() const noexcept { return path_; }
+  constexpr static auto EXT = ".zzz";
+  [[maybe_unused]] [[nodiscard]] const auto &data() const noexcept { return m_data; }
+  [[maybe_unused]] [[nodiscard]] const auto &path() const noexcept { return m_path; }
   ZZZ(const ZZZ &) = default;
   ZZZ &operator=(const ZZZ &) = default;
   ZZZ(ZZZ &&) = default;
@@ -47,7 +47,7 @@ public:
   constexpr ZZZ() = default;
   explicit ZZZ(const std::filesystem::path &path)
   {
-    if (!(path.has_extension() && Tools::iEquals(path.extension().string(), Ext)) || !std::filesystem::exists(path)) {
+    if (!(path.has_extension() && Tools::i_equals(path.extension().string(), EXT)) || !std::filesystem::exists(path)) {
       return;
     }
 
@@ -57,99 +57,99 @@ public:
       fp.close();
       return;
     }
-    path_ = path;
-    Tools::ReadVal(fp, count);
-    data_.reserve(count);
+    m_path = path;
+    Tools::read_val(fp, count);
+    m_data.reserve(count);
     for (auto i = 0U; fp.is_open() && !fp.eof() && i < count; i++) {
-      if ((data_.emplace_back(fp).empty())) {
+      if ((m_data.emplace_back(fp).empty())) {
         std::cerr << "empty element detected and removed\n";
-        data_.pop_back();
+        m_data.pop_back();
       }
     }
-    std::sort(data_.begin(), data_.end(), [](const FileData &left, const FileData &right) {
-      const auto &rightString = right.GetPathString();
-      const auto &leftString = left.GetPathString();
-      const auto &rightSize = std::size(rightString);
-      const auto &leftSize = std::size(leftString);
-      if (leftSize == rightSize) {
-        return leftString < rightString;
+    std::sort(m_data.begin(), m_data.end(), [](const FileData &left, const FileData &right) {
+      const auto &right_string = right.get_path_string();
+      const auto &left_string = left.get_path_string();
+      const auto &right_size = std::size(right_string);
+      const auto &left_size = std::size(left_string);
+      if (left_size == right_size) {
+        return left_string < right_string;
       }
-      return leftSize < rightSize;
+      return left_size < right_size;
     });
     fp.close();
-    data_.shrink_to_fit();
+    m_data.shrink_to_fit();
   }
-  void SaveEntry(const FileData &item, const std::string_view &strPath) const
+  void save_entry(const FileData &item, const std::string_view &strPath) const
   {
-    auto buffer = FS::GetEntry(path_, item, 0U);
+    auto buffer = FS::get_entry(m_path, item, 0U);
     std::cout << '{' << buffer.size() << ", " << strPath << "}\n";
-    Tools::WriteBuffer(buffer, strPath);
+    Tools::write_buffer(buffer, strPath);
   }
-  void Test() const
+  void test() const
   {
 
     FIFLFS archive{};
     {
-      auto beg = data_.begin();
-      auto end = data_.end();
+      auto beg = m_data.begin();
+      auto end = m_data.end();
       for (auto cur = beg; cur < end; cur++) {
         // const auto &item : data_
         const auto &item = *cur;
-        const auto &[strPath, zzzOffset, zzzSize] = item.GetTuple();
+        const auto &[strPath, zzzOffset, zzzSize] = item.get_tuple();
         {
-          const auto &next = cur + 1 < end && (FIFLFS<true>::CheckExtension((*(cur + 1)).GetPathString()) != 0)
+          const auto &next = cur + 1 < end && (FIFLFS<true>::check_extension((*(cur + 1)).get_path_string()) != 0)
                                ? *(cur + 1)
                                : FileData();
-          const auto &prev = cur - 1 > beg && (FIFLFS<true>::CheckExtension((*(cur - 1)).GetPathString()) != 0)
+          const auto &prev = cur - 1 > beg && (FIFLFS<true>::check_extension((*(cur - 1)).get_path_string()) != 0)
                                ? *(cur - 1)
                                : FileData();
           // getting a prev and next element to check vs cur item. To make sure at least 2 of them match so we don't add
           // an orphan to the FIFLFS archive.
           std::cout << '{' << zzzOffset << ", " << zzzSize << ", " << strPath << "}\n";
-          if ((FIFLFS<true>::CheckExtension(strPath) != 0)
+          if ((FIFLFS<true>::check_extension(strPath) != 0)
               && ((!next.empty()
-                    && FIFLFS<true>::GetBaseName(strPath) == FIFLFS<true>::GetBaseName(next.GetPathString()))
+                    && FIFLFS<true>::get_base_name(strPath) == FIFLFS<true>::get_base_name(next.get_path_string()))
                   ||
 
                   (!prev.empty()
-                    && FIFLFS<true>::GetBaseName(strPath) == FIFLFS<true>::GetBaseName(prev.GetPathString())))) {
+                    && FIFLFS<true>::get_base_name(strPath) == FIFLFS<true>::get_base_name(prev.get_path_string())))) {
 
-            std::filesystem::path fsPath(strPath);
+            std::filesystem::path fs_path(strPath);
             {
-              // char retVal = archive.TryAddNested(path_, 0U, fsPath, item);
-              TryAddT retVal = archive.TryAdd(path_, fsPath, item.Offset(), item.UncompressedSize());
-              if (retVal == TryAddT::AddedToArchive) {
+              // char retVal = archive.try_add_nested(path_, 0U, fsPath, item);
+              TryAddT ret_val = archive.try_add(m_path, fs_path, item.offset(), item.uncompressed_size());
+              if (ret_val == TryAddT::added_to_archive) {
                 continue;
               }
-              if (retVal == TryAddT::ArchiveFull) {
-                archive.Test();
+              if (ret_val == TryAddT::archive_full) {
+                archive.test();
                 archive = {};
                 continue;
               }
             }
           }
         }
-        SaveEntry(item, strPath);
+        save_entry(item, strPath);
       }
     }
   }
-  [[nodiscard]] static std::vector<std::pair<std::string, OpenVIII::Archive::ZZZ>> GetFilesFromPath(
+  [[nodiscard]] static std::vector<std::pair<std::string, open_viii::archive::ZZZ>> get_files_from_path(
     const std::string_view path)
   {
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
 
-    std::vector<std::pair<std::string, OpenVIII::Archive::ZZZ>> tmp{};
+    std::vector<std::pair<std::string, open_viii::archive::ZZZ>> tmp{};
     tmp.reserve(2);// main and other
     int i{};
-    for (const auto &fileEntry : std::filesystem::directory_iterator(path, options)) {
-      if (!(fileEntry.path().has_extension() && Tools::iEquals(fileEntry.path().extension().string(), Ext))) {
+    for (const auto &file_entry : std::filesystem::directory_iterator(path, options)) {
+      if (!(file_entry.path().has_extension() && Tools::i_equals(file_entry.path().extension().string(), EXT))) {
         continue;
       }
       // todo check for language codes to choose correct files
 
       auto &pair = tmp.emplace_back(std::piecewise_construct,
-        std::forward_as_tuple(fileEntry.path().filename().stem().string()),
-        std::forward_as_tuple(fileEntry));
+        std::forward_as_tuple(file_entry.path().filename().stem().string()),
+        std::forward_as_tuple(file_entry));
       if (std::empty(pair.first)) {
         pair.first = "__" + std::to_string(i++);
       }
@@ -158,18 +158,18 @@ public:
     tmp.shrink_to_fit();
     return tmp;
   }
-  static void testPair(const std::pair<std::string_view, OpenVIII::Archive::ZZZ> &pair)
+  static void test_pair(const std::pair<std::string_view, open_viii::archive::ZZZ> &pair)
   {
     const auto &[name, zzz] = pair;
-    std::cout << '{' << name << ", " << zzz.path_ << "}\n";
-    zzz.Test();
+    std::cout << '{' << name << ", " << zzz.m_path << "}\n";
+    zzz.test();
     // testFLPath(paths.FL(),paths.FI());
   }
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const ZZZ &data)
   {
-    return os << '{' << data.Path().stem().string() << " zzz {" << std::size(data.Data())
-              << " File Entries from : " << data.Path() << "}}";
+    return os << '{' << data.path().stem().string() << " zzz {" << std::size(data.data())
+              << " File Entries from : " << data.path() << "}}";
   }
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const std::optional<ZZZ> &data)
   {
@@ -179,15 +179,15 @@ public:
     }
     return os;
   }
-  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(
+  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> get_all_entries_data(
     const std::initializer_list<std::string_view> &filename) const
   {
     unsigned int i{};
     std::vector<std::pair<unsigned int, std::string>> vector{};
-    for (const OpenVIII::Archive::FileData &dataItem : Data()) {
+    for (const open_viii::archive::FileData &dataItem : data()) {
       {
-        auto pathString = dataItem.GetPathString();
-        if (OpenVIII::Tools::iFindAny(pathString, filename)) {
+        auto pathString = dataItem.get_path_string();
+        if (open_viii::Tools::i_find_any(pathString, filename)) {
           vector.emplace_back(std::make_pair(i, pathString));
         }
       }
@@ -196,20 +196,20 @@ public:
     return vector;
   }
   template<typename lambdaT>
-  requires(std::invocable<lambdaT, std::vector<char>, std::string>) void ExecuteOn(
+  requires(std::invocable<lambdaT, std::vector<char>, std::string>) void execute_on(
     const std::initializer_list<std::string_view> &filename,
     const lambdaT &lambda)
   {
-    for (const OpenVIII::Archive::FileData &dataItem : Data()) {
+    for (const open_viii::archive::FileData &dataItem : data()) {
       {
-        auto pathString = dataItem.GetPathString();
-        if (OpenVIII::Tools::iFindAny(pathString, filename)) {
-          lambda(FS::GetEntry(path_, dataItem), pathString);
+        auto pathString = dataItem.get_path_string();
+        if (open_viii::Tools::i_find_any(pathString, filename)) {
+          lambda(FS::get_entry(m_path, dataItem), pathString);
         }
       }
     }
   }
 };
 
-}// namespace OpenVIII::Archive
+}// namespace open_viii::Archive
 #endif// VIIIARCHIVE_ZZZ_H

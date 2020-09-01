@@ -5,9 +5,9 @@
 #ifndef VIIIARCHIVE_BPPT_H
 #define VIIIARCHIVE_BPPT_H
 #include <iostream>
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 /**
- * @enum OpenVIII::Graphics::BPPT
+ * @enum open_viii::graphics::BPPT
  * \ingroup Graphics
  * @brief Contains 4 to 24 bits per pixel flags. Also a CLP flag for color lookup table.
  * @note change to default initiated cpp20 style.
@@ -94,5 +94,5 @@ public:
     return os << "{BPP: " << static_cast<int>(input) << ", CLP: " << input.colorLookupTablePresent_ << '}';
   }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_BPPT_H

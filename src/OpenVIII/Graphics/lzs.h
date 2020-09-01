@@ -11,63 +11,64 @@
 #include <cstring>
 #include <vector>
 #include "ppm.h"
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 /**
  * lzs images are LZSS images with a small header (X,Y,H,W) and 16bit colors.
  * @see https://github.com/myst6re/deling/blob/master/FF8Image.cpp#L30
  */
-struct [[maybe_unused]] lzs
+struct [[maybe_unused]] Lzs
 {
 private:
-  rectangle<std::uint16_t> rectangle_{};
-  std::vector<color16> colors{};
+  rectangle<std::uint16_t> m_rectangle{};
+  std::vector<Color16> m_colors{};
 
 public:
-  [[maybe_unused]] explicit lzs(std::span<const char> buffer)
+  [[maybe_unused]] explicit Lzs(std::span<const char> buffer)
   {
     {
-      std::uint32_t compSize{};
+      std::uint32_t comp_size{};
       size_t sz32 = sizeof(std::uint32_t);
       if (sz32 > std::ranges::size(buffer)) {
         return;
       }
-      std::memcpy(&compSize, std::ranges::data(buffer), sz32);
-      if (compSize + sz32 != std::ranges::size(buffer)) {
-        std::cout << "wrong size: " << compSize << ", " << std::ranges::size(buffer) << '\n';
+      std::memcpy(&comp_size, std::ranges::data(buffer), sz32);
+      if (comp_size + sz32 != std::ranges::size(buffer)) {
+        std::cout << "wrong size: " << comp_size << ", " << std::ranges::size(buffer) << '\n';
         return;
       }
-      buffer = buffer.subspan(sz32, compSize);// skip the size value.
+      buffer = buffer.subspan(sz32, comp_size);// skip the size value.
     }
     {
-      auto uncompressed = Compression::LZSS::Decompress(buffer);
+      auto uncompressed = compression::LZSS::decompress(buffer);
       std::span<const char> adj = uncompressed;
-      size_t szrec = sizeof(rectangle_);
+      size_t szrec = sizeof(m_rectangle);
       if (szrec > std::ranges::size(adj)) {
         return;
       }
-      std::memcpy(&rectangle_, std::ranges::data(adj), szrec);
+      std::memcpy(&m_rectangle, std::ranges::data(adj), szrec);
       std::cout << "size of uncompressed before: " << std::ranges::size(adj) << ", new size: ";
       adj = adj.subspan(szrec);
       std::cout << std::ranges::size(adj) << '\n';
-      std::cout << rectangle_ << '\n';
-      std::cout << sizeof(color16) << '\n';
-      const size_t maxbytes = std::ranges::size(adj) / sizeof(color16);
-      const size_t area = static_cast<size_t>(rectangle_.Height()) * static_cast<size_t>(rectangle_.Width());
-      size_t minSize = std::min(maxbytes, area) * sizeof(color16);
-      if (minSize == 0) {
-        rectangle_ = {};
+      std::cout << m_rectangle << '\n';
+      static constexpr size_t sz16 = sizeof(Color16);
+      std::cout << sz16 << '\n';
+      const size_t max_bytes = std::ranges::size(adj) / sz16;
+      const size_t area = static_cast<size_t>(m_rectangle.Height()) * static_cast<size_t>(m_rectangle.Width());
+      size_t min_size = std::min(max_bytes, area) * sz16;
+      if (min_size == 0) {
+        m_rectangle = {};
         return;
       }
-      colors.resize(minSize);
-      std::cout << std::ranges::size(colors) << ", " << area << '\n';
-      std::memcpy(std::ranges::data(colors), std::ranges::data(adj), minSize);
+      m_colors.resize(min_size);
+      std::cout << std::ranges::size(m_colors) << ", " << area << '\n';
+      std::memcpy(std::ranges::data(m_colors), std::ranges::data(adj), min_size);
     }
   }
-  [[maybe_unused]] void Save(const std::string_view &filename) const
+  [[maybe_unused]] void save(const std::string_view &filename) const
   {
-    ppm::save(colors, rectangle_.Width(), rectangle_.Height(), filename);
+    ppm::save(m_colors, m_rectangle.Width(), m_rectangle.Height(), filename);
   }
-  friend std::ostream &operator<<(std::ostream &os, const lzs &l) { return os << '{' << l.rectangle_ << "}\n"; }
+  friend std::ostream &operator<<(std::ostream &os, const Lzs &l) { return os << '{' << l.m_rectangle << "}\n"; }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_LZS_H

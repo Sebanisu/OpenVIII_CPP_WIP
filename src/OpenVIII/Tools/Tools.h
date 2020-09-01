@@ -22,7 +22,7 @@
 #include <cassert>
 #include <ranges>
 #include "OpenVIII/concepts.h"
-namespace OpenVIII {
+namespace open_viii {
 struct [[maybe_unused]] Tools
 {
 
@@ -47,16 +47,16 @@ struct [[maybe_unused]] Tools
     auto sv = u8tosv(s8);
     return { sv.begin(), sv.end() };
   }
-  template<typename trivialType> [[maybe_unused]] static void ReadVal(std::istream &fp, trivialType &item)
+  template<typename trivialType> [[maybe_unused]] static void read_val(std::istream &fp, trivialType &item)
   {
     static_assert(std::is_trivial_v<trivialType>);
     std::array<char, sizeof(item)> tmp{};
     fp.read(tmp.data(), tmp.size());
     memcpy(&item, tmp.data(), sizeof(item));
-  }// namespace OpenVIII
+  }// namespace open_viii
 
   template<typename dstT = std::vector<char>, typename sizeT>
-  [[maybe_unused]] static auto ReadBuffer(std::istream &fp, const sizeT &s)
+  [[maybe_unused]] static auto read_buffer(std::istream &fp, const sizeT &s)
   {
     static_assert(std::is_integral_v<sizeT>, "Integral Required");
     assert(s > 0);
@@ -67,7 +67,7 @@ struct [[maybe_unused]] Tools
   }
 
   [[maybe_unused]] static bool
-    WriteBuffer(const std::span<const char> &buffer, const std::string_view &path, const std::string_view &root = "tmp")
+    write_buffer(const std::span<const char> &buffer, const std::string_view &path, const std::string_view &root = "tmp")
   {
     // todo make buffer a std::span
     if (std::ranges::empty(buffer)) {
@@ -91,15 +91,15 @@ struct [[maybe_unused]] Tools
   /*
   Case Insensitive strings equal
   */
-  [[maybe_unused]] [[nodiscard]] constexpr static bool iEquals(const std::string_view &str1,
+  [[maybe_unused]] [[nodiscard]] constexpr static bool i_equals(const std::string_view &str1,
     const std::string_view &str2)
   {
-    const constexpr auto iEqual = [](const auto &c1, const auto &c2) { return ::toupper(c1) == ::toupper(c2); };
+    const constexpr auto i_equal = [](const auto &c1, const auto &c2) { return ::toupper(c1) == ::toupper(c2); };
     if (str1.length() != str2.length()) {
       return false;
     }
     for (size_t i = 0; i < str1.length(); i++) {
-      if (!iEqual(str1.at(i), str2.at(i))) {
+      if (!i_equal(str1.at(i), str2.at(i))) {
         return false;
       }
     }
@@ -112,7 +112,7 @@ struct [[maybe_unused]] Tools
   // I use this to make the separator on windows or linux matches the strings.
   template<typename needleType, typename replacementType>
   [[maybe_unused]] constexpr static void
-    replaceAll(std::string &haystack, const needleType &needle, const replacementType &replacement) noexcept
+    replace_all(std::string &haystack, const needleType &needle, const replacementType &replacement) noexcept
   {
 
     static_assert(std::is_integral<needleType>::value && std::is_integral<replacementType>::value,
@@ -121,7 +121,7 @@ struct [[maybe_unused]] Tools
       return;
     }
 
-    if (static_cast<int>(needle) == static_cast<int>(replacement)) {// casting because worried if the types don't match.
+    if (static_cast<std::intmax_t>(needle) == static_cast<std::intmax_t>(replacement)) {// casting because worried if the types don't match.
       return;
     }
     const auto replace = [needle, replacement](const auto &input) {
@@ -143,9 +143,9 @@ struct [[maybe_unused]] Tools
     }
     return false;
   }
-  [[maybe_unused]] constexpr static void replaceSlashes(std::string &haystack)
+  [[maybe_unused]] constexpr static void replace_slashes(std::string &haystack)
   {
-    replaceAll(haystack, '\\', std::filesystem::path::preferred_separator);
+    replace_all(haystack, '\\', std::filesystem::path::preferred_separator);
   }
   /*
   Find Case Insensitive Sub String in a given substring (version returns location in string and allows offset)
@@ -163,7 +163,7 @@ struct [[maybe_unused]] Tools
 
   // Find Case Insensitive Sub String in a given substring
 
-  [[maybe_unused]] [[nodiscard]] inline static auto iFind(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] inline static auto i_find(const std::string_view &haystack,
     const std::string_view &needle)
   {
     if (std::size(haystack) >= std::size(needle)) {
@@ -177,17 +177,17 @@ struct [[maybe_unused]] Tools
     }
     return false;
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto iFindAny(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] inline static auto i_find_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &needles)
   {
     for (const auto &needle : needles) {
-      if (iFind(haystack, needle)) {
+      if (i_find(haystack, needle)) {
         return true;
       }
     }
     return false;
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto iEndsWith(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] inline static auto i_ends_with(const std::string_view &haystack,
     const std::string_view &ending)
   {
 
@@ -196,7 +196,7 @@ struct [[maybe_unused]] Tools
                 return ::toupper(ch1) == ::toupper(ch2);
               });
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto iStartsWith(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] inline static auto i_starts_with(const std::string_view &haystack,
     const std::string_view &starting)
   {
 
@@ -205,14 +205,14 @@ struct [[maybe_unused]] Tools
                 return ::toupper(ch1) == ::toupper(ch2);
               });
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto iEndsWithAny(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] inline static auto i_ends_with_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &endings)
   {
     {
       size_t i{};
       for (const auto &ending : endings) {
         i++;
-        if (iEndsWith(haystack, ending)) {
+        if (i_ends_with(haystack, ending)) {
           return i;// return index of found +1;
         }
       }
@@ -220,30 +220,30 @@ struct [[maybe_unused]] Tools
     return size_t{};// return 0 if not found;
   }
 
-  [[maybe_unused]] [[nodiscard]] inline static auto iStartsWithAny(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] inline static auto i_starts_with_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &endings)
   {
     {
       size_t i{};
       for (const auto &ending : endings) {
         i++;
-        if (iStartsWith(haystack, ending)) {
+        if (i_starts_with(haystack, ending)) {
           return i;// return index of found +1;
         }
       }
     }
     return size_t{};// return 0 if not found;
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto iFindAll(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] inline static auto i_find_all(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &needles)
   {
     for (const auto &needle : needles) {
-      if (!iFind(haystack, needle)) {
+      if (!i_find(haystack, needle)) {
         return false;
       }
     }
     return true;
   }
 };
-}// namespace OpenVIII
+}// namespace open_viii
 #endif// !VIITOOLS_H

@@ -6,7 +6,7 @@
 #define VIIIARCHIVE_MENUMESSAGESSECTION_H
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 struct MenuMessagesSection
 {
 private:
@@ -57,5 +57,5 @@ public:
     //[Start of string location] = [Start of file] + [Section value] + [Subsection value]
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_MENUMESSAGESSECTION_H

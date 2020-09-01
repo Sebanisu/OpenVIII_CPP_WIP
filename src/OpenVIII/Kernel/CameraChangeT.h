@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_CAMERACHANGET_H
 #include <cstdint>
 #include <iostream>
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 struct CameraChangeT
 {
 private:
@@ -36,5 +36,5 @@ public:
     return os;
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_CAMERACHANGET_H

@@ -20,18 +20,17 @@ int main()
   //        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)",
   //        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)"});
 
-  for (auto &path : OpenVIII::Paths::get()) {
-    OpenVIII::Tools::replaceSlashes(path);
+  for (auto &path : open_viii::Paths::get()) {
+    open_viii::Tools::replace_slashes(path);
     if (!std::filesystem::exists(path)) {
       continue;
     }
-    const auto files = OpenVIII::Archive::FIFLFS<true>::GetFilesFromPath(path);
+    const auto files = open_viii::archive::FIFLFS<true>::get_files_from_path(path);
     for (const auto &pair : files) {
       const auto &[name, paths] = pair;
       std::cout << paths << '\n';
-      paths.Test();
+      paths.test();
     }
   }
-  std::cout << OpenVIII::Archive::largestCompressedBuffer << std::endl;
   return 0;
 }

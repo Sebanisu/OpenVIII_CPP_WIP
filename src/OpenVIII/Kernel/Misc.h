@@ -16,7 +16,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "SequenceAndTimer.h"
 #include "CrisisLevelT.h"
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct Misc
 {
   /*
@@ -231,5 +231,5 @@ public:
               << static_cast<std::uint32_t>(BackAttackLimitEffect()) << ", " << DuelTimers() << ", " << ShotTimers();
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_MISC_H

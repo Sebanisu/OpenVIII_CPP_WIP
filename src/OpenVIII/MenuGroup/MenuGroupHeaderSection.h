@@ -7,7 +7,7 @@
 #include <cstring>
 #include <cstdint>
 #include <string_view>
-namespace OpenVIII::MenuGroup {
+namespace open_viii::menu_group {
 struct MenuGroupHeaderSection
 {
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrphd_bin
@@ -33,5 +33,5 @@ public:
     return { std::data(fileBuffer) + FileOffset(), Size() };
   }
 };
-}// namespace OpenVIII::MenuGroup
+}// namespace open_viii::menu_group
 #endif// VIIIARCHIVE_MENUGROUPHEADERSECTION_H

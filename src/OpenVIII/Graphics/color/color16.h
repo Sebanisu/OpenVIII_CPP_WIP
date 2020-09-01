@@ -9,61 +9,61 @@
 #include <bitset>
 #include "OpenVIII/concepts.h"
 #include "OpenVIII/Tools/Tools.h"
-namespace OpenVIII::Graphics {
+namespace open_viii::graphics {
 /**
  *
  * @see https://github.com/myst6re/deling/blob/master/FF8Image.cpp#L30
  */
-struct color16
+struct Color16
 {
 private:
-  static constexpr auto bits = 16U;
-  mutable uint16_t value{};
-  static constexpr std::bitset<bits> BlueMask{ 0x7C00 };
-  static constexpr std::bitset<bits> GreenMask{ 0x3E0 };
-  static constexpr std::bitset<bits> RedMask{ 0x1F };
-  [[maybe_unused]] static constexpr std::bitset<bits> STPMask{ 0x8000U };
-  static constexpr std::bitset<bits> AllColorMask{ 0x7FFF };
-  static constexpr std::uint_fast8_t BlueShift{ 10U };
-  static constexpr std::uint_fast8_t GreenShift{ 5U };
-  static constexpr std::uint_fast8_t RedShift = { 0U };
-  [[maybe_unused]] static constexpr std::uint_fast8_t STPShift = { 15U };
-  static constexpr std::uint_fast8_t ConvertShift = { 3U };
-  static constexpr std::uint_fast8_t GetHighBitShift = { 2U };
-  static constexpr std::uint_fast8_t largest5BitValue{ 0b0001'1111 };
-  [[nodiscard]] std::bitset<bits> valueBit() const { return std::bitset<bits>{ value }; }
-  void valueBit(const std::bitset<bits> &newValue) const { value = static_cast<std::uint16_t>(newValue.to_ulong()); }
-  [[nodiscard]] std::uint8_t convert(const std::bitset<bits> &mask, const std::uint_fast8_t &shift) const
+  static constexpr auto BITS = 16U;
+  mutable uint16_t m_value{};
+  static constexpr std::bitset<BITS> BLUE_MASK{ 0x7C00 };
+  static constexpr std::bitset<BITS> GREEN_MASK{ 0x3E0 };
+  static constexpr std::bitset<BITS> RED_MASK{ 0x1F };
+  [[maybe_unused]] static constexpr std::bitset<BITS> STP_MASK{ 0x8000U };
+  static constexpr std::bitset<BITS> ALL_COLOR_MASK{ 0x7FFF };
+  static constexpr std::uint_fast8_t BLUE_SHIFT{ 10U };
+  static constexpr std::uint_fast8_t GREEN_SHIFT{ 5U };
+  static constexpr std::uint_fast8_t RED_SHIFT = { 0U };
+  [[maybe_unused]] static constexpr std::uint_fast8_t STP_SHIFT = { 15U };
+  static constexpr std::uint_fast8_t CONVERT_SHIFT = { 3U };
+  static constexpr std::uint_fast8_t GET_HIGH_BIT_SHIFT = { 2U };
+  static constexpr std::uint_fast8_t LARGEST_5_BIT_VALUE{ 0b0001'1111 };
+  [[nodiscard]] std::bitset<BITS> value_bit() const { return std::bitset<BITS>{ m_value }; }
+  void value_bit(const std::bitset<BITS> &newValue) const { m_value = static_cast<std::uint16_t>(newValue.to_ulong()); }
+  [[nodiscard]] std::uint8_t convert(const std::bitset<BITS> &mask, const std::uint_fast8_t &shift) const
   {
-    auto temp = ((valueBit() & mask) >> shift);
-    return static_cast<std::uint8_t>(((temp << ConvertShift) | temp >> GetHighBitShift).to_ulong());
+    auto temp = ((value_bit() & mask) >> shift);
+    return static_cast<std::uint8_t>(((temp << CONVERT_SHIFT) | temp >> GET_HIGH_BIT_SHIFT).to_ulong());
   }
 
-  template<std::floating_point T> void set(T input, std::bitset<bits> mask, const std::uint_fast8_t &shift) const
+  template<std::floating_point T> void set(T input, std::bitset<BITS> mask, const std::uint_fast8_t &shift) const
   {
-    std::bitset<bits> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0.0F, 1.0F) * largest5BitValue) };
+    std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0.0F, 1.0F) * LARGEST_5_BIT_VALUE) };
     val <<= shift;
-    valueBit((valueBit() & mask.flip()) | val);
+    value_bit((value_bit() & mask.flip()) | val);
   }
 
-  template<std::integral T> void set(T input, std::bitset<bits> mask, const std::uint_fast8_t &shift) const
+  template<std::integral T> void set(T input, std::bitset<BITS> mask, const std::uint_fast8_t &shift) const
   {
-    std::bitset<bits> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0, UINT8_MAX)) };
-    val >>= ConvertShift;
+    std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0, UINT8_MAX)) };
+    val >>= CONVERT_SHIFT;
     val <<= shift;
-    valueBit((valueBit() & mask.flip()) | val);
+    value_bit((value_bit() & mask.flip()) | val);
   }
 
 public:
-  color16() = default;
-  explicit color16(std::uint16_t rawColor) : value(rawColor) {}
-  template<Color cT> explicit color16(cT color)
+  Color16() = default;
+  explicit Color16(std::uint16_t rawColor) : m_value(rawColor) {}
+  template<Color cT> explicit Color16(cT color)
   {
-    R(color.R());
-    G(color.G());
-    B(color.B());
+    r(color.r());
+    g(color.g());
+    b(color.b());
     // pass stp bit? assuming alpha is 100% *shrugs*
-    if (value == 0) {
+    if (m_value == 0) {
       stp(true);
     } else {
       stp(false);
@@ -73,33 +73,27 @@ public:
    * Color Blue stored as 5 bit.
    * @return 8 bit color value.
    */
-  [[nodiscard]] std::uint8_t B() const { return convert(BlueMask, BlueShift); }
+  [[nodiscard]] std::uint8_t b() const { return convert(BLUE_MASK, BLUE_SHIFT); }
   /**
    * Color Green stored as 5 bit.
    * @return 8 bit color value.
    */
-  [[nodiscard]] std::uint8_t G() const { return convert(GreenMask, GreenShift); }
+  [[nodiscard]] std::uint8_t g() const { return convert(GREEN_MASK, GREEN_SHIFT); }
   /**
    * Color Red stored as 5 bit.
    * @return 8 bit color value.
    */
-  [[nodiscard]] std::uint8_t R() const { return convert(RedMask, RedShift); }
-  /**
-   * Special transparency bit
-   * @return true or false
-   */
-
-
+  [[nodiscard]] std::uint8_t r() const { return convert(RED_MASK, RED_SHIFT); }
   /**
    * Color Blue stored as 5 bit.
    * @return 8 bit color value.
    * @tparam T is an integral value. Clamped to 0-255.
    * @param b is a new blue value.
    */
-  template<Number T> [[maybe_unused]] std::uint8_t B(const T &b) const
+  template<Number T> [[maybe_unused]] std::uint8_t b(const T &b_in) const
   {
-    set(b, BlueMask, BlueShift);
-    return B();
+    set(b_in, BLUE_MASK, BLUE_SHIFT);
+    return b();
   }
   /**
    * Color Green stored as 5 bit.
@@ -107,10 +101,10 @@ public:
    * @tparam T is an integral value. Clamped to 0-255.
    * @param g is a new blue value.
    */
-  template<Number T> [[maybe_unused]] std::uint8_t G(const T &g) const
+  template<Number T> [[maybe_unused]] std::uint8_t g(const T &g_in) const
   {
-    set(g, GreenMask, GreenShift);
-    return G();
+    set(g_in, GREEN_MASK, GREEN_SHIFT);
+    return g();
   }
   /**
    * Color Red stored as 5 bit.
@@ -118,16 +112,16 @@ public:
    * @tparam T is an integral value. Clamped to 0-255.
    * @param r is a new blue value.
    */
-  template<Number T> [[maybe_unused]] std::uint8_t R(const T &r) const
+  template<Number T> [[maybe_unused]] std::uint8_t r(const T &r_in) const
   {
-    set(r, RedMask, RedShift);
-    return R();
+    set(r_in, RED_MASK, RED_SHIFT);
+    return r();
   }
   /**
    * Special transparency bit
    * @return true or false
    */
-  [[maybe_unused]] [[nodiscard]] bool stp() const { return (valueBit() & STPMask).any(); }
+  [[maybe_unused]] [[nodiscard]] bool stp() const { return (value_bit() & STP_MASK).any(); }
 
   /**
    * Special transparency bit
@@ -136,9 +130,9 @@ public:
   [[maybe_unused]] bool stp(bool enabled) const
   {
     if (enabled) {
-      valueBit(valueBit() | STPMask);
+      value_bit(value_bit() | STP_MASK);
     } else {
-      valueBit(valueBit() & AllColorMask);
+      value_bit(value_bit() & ALL_COLOR_MASK);
     }
     return enabled;
   }
@@ -146,25 +140,25 @@ public:
    * @return true if color is black. at least all the color bits are 0.
    */
 
-  [[nodiscard]] bool isBlack() const { return (valueBit() & AllColorMask).none(); }
+  [[nodiscard]] bool is_black() const { return (value_bit() & ALL_COLOR_MASK).none(); }
 
   /**
    * @return true if color is transparent Black. all bits are 0.
    */
-  [[nodiscard]] [[maybe_unused]] bool isTransparentBlack() const { return value == 0; }
-  [[nodiscard]] std::uint8_t A() const
+  [[nodiscard]] [[maybe_unused]] bool is_transparent_black() const { return m_value == 0; }
+  [[nodiscard]] std::uint8_t a() const
   {
-    if (isBlack()) {
+    if (is_black()) {
       return 0;
     }
     return UINT8_MAX;
   }
-  friend std::ostream &operator<<(std::ostream &os, const color16 &color)
+  friend std::ostream &operator<<(std::ostream &os, const Color16 &color)
   {
-    return os << std::uppercase << std::hex << '{' << static_cast<std::size_t>(color.R()) << ", "
-              << static_cast<std::size_t>(color.G()) << ", " << static_cast<std::size_t>(color.B()) << ", "
-              << static_cast<std::size_t>(color.A()) << '}' << std::dec << std::nouppercase;
+    return os << std::uppercase << std::hex << '{' << static_cast<std::size_t>(color.r()) << ", "
+              << static_cast<std::size_t>(color.g()) << ", " << static_cast<std::size_t>(color.b()) << ", "
+              << static_cast<std::size_t>(color.a()) << '}' << std::dec << std::nouppercase;
   }
 };
-}// namespace OpenVIII::Graphics
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR16_H

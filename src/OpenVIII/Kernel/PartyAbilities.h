@@ -16,7 +16,7 @@
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 
-namespace OpenVIII::Kernel {
+namespace open_viii::Kernel {
 template<LangT langVal> struct PartyAbilities
 {
   /*
@@ -58,5 +58,5 @@ public:
               << static_cast<std::uint32_t>(unknown0()) << ", " << static_cast<std::uint32_t>(unknown1());
   }
 };
-}// namespace OpenVIII::Kernel
+}// namespace open_viii::Kernel
 #endif// VIIIARCHIVE_PARTYABILITIES_H
