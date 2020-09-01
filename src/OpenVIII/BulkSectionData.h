@@ -23,17 +23,17 @@ template<typename spanT, size_t max = 0U> requires(sizeof(spanT) > 0U) struct Bu
 {
 private:
   // data
-  std::string_view span_{};
+  std::string_view m_span{};
   // strings
-  std::string_view textSpan_{};
+  std::string_view m_text_span{};
 
 public:
   [[maybe_unused]] explicit BulkSectionData(const std::string_view &span, const std::string_view &textSpan = {})
-    : span_{ span }, textSpan_{ textSpan }
+    : m_span{ span }, m_text_span{ textSpan }
   {}
   [[nodiscard]] size_t size() const
   {
-    const auto calcSize = [this]() { return std::size(span_) / sizeof(spanT); };
+    const auto calcSize = [this]() { return std::size(m_span) / sizeof(spanT); };
     if constexpr (max == 0U) {
       return calcSize();
     } else {
@@ -51,8 +51,8 @@ public:
     if constexpr (std::is_same_v<T, ItemIdT>) {
       if constexpr (std::is_same_v<spanT, Kernel::BattleItems>) {
       } else if constexpr (std::is_same_v<spanT, Kernel::NonBattleItems>) {
-        static constexpr auto battleItemsCount = 33U;
-        id -= battleItemsCount;
+        static constexpr auto battle_items_count = 33U;
+        id -= battle_items_count;
       } else {
         throw(std::invalid_argument{ "ItemID used in wrong place!" });
       }
@@ -69,7 +69,7 @@ public:
   auto operator[](size_t id) const noexcept
   {
     auto r = spanT{};
-    memcpy(&r, span_.data() + (id * sizeof(spanT)), sizeof(spanT));
+    memcpy(&r, m_span.data() + (id * sizeof(spanT)), sizeof(spanT));
     return r;
   }
 
@@ -81,8 +81,8 @@ public:
   //  {
   //    return at(size()-1);
   //  }
-  [[maybe_unused]] auto &Span() const noexcept { return span_; }
-  [[maybe_unused]] auto &TextSpan() const noexcept { return textSpan_; }
+  [[maybe_unused]] auto &Span() const noexcept { return m_span; }
+  [[maybe_unused]] auto &TextSpan() const noexcept { return m_text_span; }
 };
 }// namespace open_viii
 #endif// VIIIARCHIVE_BULKSECTIONDATA_H
