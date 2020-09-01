@@ -20,13 +20,28 @@ int main()
     }
     std::cout << path << std::endl;
     const auto archives = OpenVIII::Archive::Archives<OpenVIII::LangT::EN>(path);
-    {
-      const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
-      const auto menuGroup = OpenVIII::MenuGroup::MenuGroupFile{ menu };
-      const auto fullpath = menu.GetFullPath(menuGroup.FILENAME);
-      menuGroup.TestTim(fullpath);
-    }
-    archives.ExecuteOn({ /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2"*/ ".lzs" },
+//    {
+//      const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
+//      const auto menuGroup = OpenVIII::MenuGroup::MenuGroupFile{ menu };
+//      const auto fullpath = menu.GetFullPath(menuGroup.FILENAME);
+//      menuGroup.TestTim(fullpath);
+//    }
+    archives.ExecuteOn(
+      { /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2"*/
+        "mag164",
+        "mag179",
+        "mag180",
+        "mag181",
+        "mag185",
+        "mag186",
+        "mag187",
+        "mag190",
+        "mag191",
+        "mag192",
+        "mag194",
+        "mag323",
+        "mag325",
+        "mag326-329" },
       [](std::vector<char> buffer, [[maybe_unused]] std::string_view p) {
         if (OpenVIII::Tools::iEndsWith(p, ".lzs")) {
           auto t = OpenVIII::Graphics::lzs(buffer);
@@ -35,7 +50,13 @@ int main()
         } else if (OpenVIII::Tools::iEndsWith(p, ".tim")) {
           auto t = OpenVIII::Graphics::tim(buffer);
           std::cout << p << '\n' << t << '\n';
-          t.Save(p);
+          if(t.Width()==0 || t.Height() == 0)
+          {
+            OpenVIII::Tools::WriteBuffer(buffer,p);
+          }
+          else {
+            t.Save(p);
+          }
         } else if (OpenVIII::Tools::iEndsWith(p, ".tex")) {
           auto t = OpenVIII::Graphics::tex(buffer);
           std::cout << p << '\n' << t << '\n';

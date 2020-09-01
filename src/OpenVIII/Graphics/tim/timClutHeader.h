@@ -23,10 +23,10 @@ private:
    */
   static constexpr auto MaxY_{ 511U };
 
-  /**
-   * @brief Valid width values
-   */
-  static constexpr std::array ValidWidth_ = { 16U, 256U };
+//  /**
+//   * @brief Valid width values
+//   */
+//  static constexpr std::array ValidWidth_ = { 16U, 256U };
 
   timImageHeader imageHeader_{};
 
@@ -55,8 +55,8 @@ public:
    */
   [[nodiscard]] bool Check() const
   {
-    return imageHeader_.Rectangle().X() % XdivisableBy_ == 0 && imageHeader_.Rectangle().Y() <= MaxY_
-           && Tools::any_of(imageHeader_.Rectangle().Width(), ValidWidth_);
+    return imageHeader_.Rectangle().X() % XdivisableBy_ == 0 && imageHeader_.Rectangle().Y() <= MaxY_;
+           //&& Tools::any_of(imageHeader_.Rectangle().Width(), ValidWidth_);
   }
 
   friend std::ostream &operator<<(std::ostream &os, const timClutHeader &input)

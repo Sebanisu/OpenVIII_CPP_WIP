@@ -55,7 +55,7 @@ private:
    */
   std::uint8_t none3_{};
   /**
-   * @brief value should be 0.
+   * @brief value should be 0 or 22
    */
   std::uint8_t none4_{};
 
@@ -72,7 +72,7 @@ public:
    */
   [[nodiscard]] bool Check() const
   {
-    return none0_ == 0 && none1_ == 0 && none2_ == 0 && none3_ == 0 && none4_ == 0 && tag_ == tagVal_
+    return none0_ == 0 && none1_ == 0 && none2_ == 0 && none3_ == 0 && (none4_ == 0 || none4_ == 22) && tag_ == tagVal_
            && version_ == versionVal_ && bpp_.Check();
   }
 
