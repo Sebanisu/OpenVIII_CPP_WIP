@@ -22,24 +22,19 @@ public:
   {
     const auto header = sp2Header{ buffer };
     entries_.resize(header.size());
-    std::span<sp2Entry> s{ entries_};
-    for(const std::uint32_t offset : header.Offsets())
-    {
+    std::span<sp2Entry> s{ entries_ };
+    for (const std::uint32_t offset : header.Offsets()) {
       std::memcpy(std::ranges::data(s), std::ranges::data(buffer.subspan(offset)), sizeof(sp2Entry));
       s = s.subspan(1);
     }
   }
   [[nodiscard]] const auto &at(const size_t i) const { return entries_.at(i); }
   [[nodiscard]] auto size() const { return std::ranges::size(entries_); }
-  friend std::ostream & operator << (std::ostream & os, sp2 s)
+  friend std::ostream &operator<<(std::ostream &os, sp2 s)
   {
-    os<< "{ Entry Count: " << s.size() << " {";
-    for(const auto & e : s.entries_)
-    {
-        os << e;
-
-    }
-    return os <<"}\n";
+    os << "{ Entry Count: " << s.size() << " {";
+    for (const auto &e : s.entries_) { os << e; }
+    return os << "}\n";
   }
 };
 }// namespace OpenVIII::Graphics

@@ -23,36 +23,31 @@ public:
   {
     const auto header = sp1Header{ buffer };
     entries_.resize(header.size());
-    std::span<std::vector<sp1Entry>> s{entries_};
-    for (const auto & offset : header.Offsets()) {
-      auto & current = s.first(1)[0];
+    std::span<std::vector<sp1Entry>> s{ entries_ };
+    for (const auto &offset : header.Offsets()) {
+      auto &current = s.first(1)[0];
       current.resize(offset.Count());
       size_t sz = sizeof(sp1Entry) * offset.Count();
-      if(std::ranges::size(buffer)<offset.Offset()+sz)
-      {
-        entries_={};
+      if (std::ranges::size(buffer) < offset.Offset() + sz) {
+        entries_ = {};
         return;
       }
-      std::memcpy(std::ranges::data(current), std::ranges::data(buffer.subspan(offset.Offset())),sz);
+      std::memcpy(std::ranges::data(current), std::ranges::data(buffer.subspan(offset.Offset())), sz);
       s = s.subspan(1);
     }
   }
   [[nodiscard]] const auto &at(const size_t i) const { return entries_.at(i); }
   [[nodiscard]] auto size() const { return std::ranges::size(entries_); }
-  friend std::ostream & operator << (std::ostream & os, sp1 s)
+  friend std::ostream &operator<<(std::ostream &os, sp1 s)
   {
-    os<< "{ Entry Groups Count: " << s.size() << " {";
-    for(const auto & eg : s.entries_)
-    {
-      if(std::ranges::size(eg)>1) {
+    os << "{ Entry Groups Count: " << s.size() << " {";
+    for (const auto &eg : s.entries_) {
+      if (std::ranges::size(eg) > 1) {
         os << " Entry Count: " << std::ranges::size(eg) << ", ";
       }
-      for(const auto & e : eg)
-      {
-        os << e;
-      }
+      for (const auto &e : eg) { os << e; }
     }
-    return os <<"}\n";
+    return os << "}\n";
   }
 };
 
