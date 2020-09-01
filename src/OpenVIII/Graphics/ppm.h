@@ -15,29 +15,26 @@ struct ppm
 {
 
   template<std::ranges::contiguous_range cT>
-  static void save(const cT &data, std::size_t width, std::size_t height, std::string_view filename)
+  static void save(const cT &data, std::size_t width, std::size_t height, const std::string_view &input)
   {// how do i make the concept reject ranges that aren't of Colors? I'm at least checking for Color down below.
+    if (width == 0 || height == 0 || std::ranges::empty(data)) {
+      return;
+    }
+
+    auto tmp = std::filesystem::path(input);
+    std::string filename{ (tmp.parent_path() / tmp.stem()).string() + ".ppm" };
+
     if (std::ranges::size(data) < width * height) {
       return;
     }
-    std::fstream fs{};
-    fs.open(filename.data(), std::ios::binary | std::ios::out);
-    if (fs.is_open()) {
-      fs << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
-      std::vector<char> outBuffer{};
-      // outBuffer.reserve(std::ranges::size(data)*3U);
-      for (const Color auto &color : data) {// organize the data in ram first then write all at once.
-        // outBuffer.emplace_back(static_cast<char>(color.R()));
-        // outBuffer.emplace_back(static_cast<char>(color.G()));
-        // outBuffer.emplace_back(static_cast<char>(color.B()));
-        fs << color.R();
-        fs << color.G();
-        fs << color.B();
-      }
-      // fs.write(outBuffer.data(),static_cast<long>(outBuffer.size()));
-      fs.flush();
-      fs.close();
+    std::stringstream ss{};
+    ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
+    for (const Color auto &color : data) {// organize the data in ram first then write all at once.
+      ss << color.R();
+      ss << color.G();
+      ss << color.B();
     }
+    Tools::WriteBuffer(ss.str(), filename);
   }
 };
 }// namespace OpenVIII::Graphics

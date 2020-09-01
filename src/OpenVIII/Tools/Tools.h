@@ -70,17 +70,21 @@ struct [[maybe_unused]] Tools
     WriteBuffer(const std::span<const char> &buffer, const std::string_view &path, const std::string_view &root = "tmp")
   {
     // todo make buffer a std::span
-    if (std::empty(buffer)) {
+    if (std::ranges::empty(buffer)) {
       return false;
     }
     auto dir = std::filesystem::path(root);
     auto filename = dir / path;
     std::filesystem::create_directories(filename.parent_path());
+
     auto fp = std::ofstream(filename, std::ios::out | std::ios::binary | std::ios::trunc);
     if (fp.is_open()) {
-      fp.write(buffer.data(), static_cast<long>(buffer.size()));
+      std::cout << "Saving: " << filename << '\n';
+      fp.write(std::ranges::data(buffer), static_cast<long>(std::ranges::size(buffer)));
+      fp.close();
+    } else {
+      std::cout << "Failed to Open for saving: " << filename << '\n';
     }
-    fp.close();
     return true;
   }
 

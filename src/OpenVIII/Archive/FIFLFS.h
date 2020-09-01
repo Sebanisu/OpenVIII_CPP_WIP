@@ -385,14 +385,21 @@ public:
       return OpenVIII::Archive::FS::GetEntry<outT>(fs_.data, fi, fs_.offset);
     }();
   }
+  [[nodiscard]] std::string GetFullPath(const std::string_view &filename) const
+  {
+    return GetEntryIDandPath(filename).second;
+  }
+  [[nodiscard]] auto GetEntryIDandPath(const std::string_view &filename) const
+  {
+     if (std::empty(fl_.data)) {
+       return OpenVIII::Archive::FL::GetEntry(fl_.path, { filename }, fl_.offset, fl_.size, count_);
+     }
+     return OpenVIII::Archive::FL::GetEntryData(fl_.path, fl_.data, { filename }, fl_.offset, fl_.size, count_);
+
+  }
   template<typename outT = std::vector<char>> [[nodiscard]] outT GetEntryData(const std::string_view &filename) const
   {
-    const auto &[id, path] = [this, &filename]() {
-      if (std::empty(fl_.data)) {
-        return OpenVIII::Archive::FL::GetEntry(fl_.path, { filename }, fl_.offset, fl_.size, count_);
-      }
-      return OpenVIII::Archive::FL::GetEntryData(fl_.path, fl_.data, { filename }, fl_.offset, fl_.size, count_);
-    }();
+    const auto &[id, path] = GetEntryIDandPath(filename);
     return GetEntryData<outT>(GetEntryIndex(id));
   }
   [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> GetAllEntriesData(

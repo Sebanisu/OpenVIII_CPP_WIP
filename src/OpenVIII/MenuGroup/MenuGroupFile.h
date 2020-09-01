@@ -10,7 +10,15 @@
 #include "MenuGroupSectionT.h"
 #include "MenuMessages.h"
 #include "OpenVIII/SectionData.h"
+#include "OpenVIII/BulkSectionData.h"
 #include "ComplexStringSection.h"
+#include "RefineSection000.h"
+#include "RefineSection001.h"
+#include "RefineSection002.h"
+#include "RefineSection003.h"
+#include "RefineSection004.h"
+#include "OpenVIII/Graphics/tim.h"
+#include "OpenVIII/Graphics/ppm.h"
 //#include "OpenVIII/Graphics/tim.h"
 #include "OpenVIII/Graphics/ppm.h"
 #include <sstream>
@@ -183,8 +191,9 @@ private:
   }
 
 public:
+  constexpr static std::string_view FILENAME = "mngrp.bin";
   explicit MenuGroupFile(const OpenVIII::Archive::FIFLFS<false> &menuArchive)
-    : menuGroupHeader_(menuArchive), dataBuffer_(menuArchive.GetEntryData("mngrp.bin"))
+    : menuGroupHeader_(menuArchive), dataBuffer_(menuArchive.GetEntryData(FILENAME))
   {}
   //
   //  template<std::size_t sectionTnum> [[nodiscard]] auto GetSectionBuffer() const
@@ -237,21 +246,23 @@ public:
       }
     }
   }
-  void TestTim() const
+  void TestTim(const std::string_view &path_input) const
   {
+    const auto tempPath = std::filesystem::path(path_input);
+    auto path = tempPath.parent_path() / (tempPath.stem().string() + "_tim");
     static_for_tim<0U, timValueArray.size()>(
       [&, this](const auto &sectionID, [[maybe_unused]] const Graphics::tim &tim) {
-        std::stringstream so{};
+        std::stringstream so{};// TODO have these save in the folder with the mngrp files.
         std::cout << ':' << static_cast<std::size_t>(sectionID) << ":  {" << tim.size() << " bytes},\n";
         std::cout << tim << '\n';
         std::cout << tim.Check();
-        so << "MenuGroupTim_" << static_cast<std::size_t>(sectionID);
+        so << path.string() << static_cast<std::size_t>(sectionID);
         const auto colorsDump = [&tim, &so](const std::vector<Graphics::color32<>> &colors, std::uint16_t num = 0) {
           std::cout << '\n';
           std::stringstream fn{};
-          fn << so.str() << "_" << static_cast<std::size_t>(num) << ".ppm";
+          fn << so.str() << "_" << static_cast<std::size_t>(num) << ".tmp";
 
-          std::cout << "Saved: " << fn.str() << "\n";
+          //std::cout << "Saved: " << fn.str() << "\n";
           Graphics::ppm::save(colors, tim.Width(), tim.Height(), fn.str());
         };
         if (tim.ClutRows() > 0) {

@@ -8,6 +8,7 @@
 #include "OpenVIII/Graphics/tim/timHeader.h"
 #include "OpenVIII/Graphics/tim/timClutHeader.h"
 #include "OpenVIII/Graphics/color.h"
+#include "OpenVIII/Graphics/ppm.h"
 #include <sstream>
 #include "_4bitValues.h"
 namespace OpenVIII::Graphics {

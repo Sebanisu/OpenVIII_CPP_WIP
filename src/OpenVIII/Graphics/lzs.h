@@ -53,13 +53,17 @@ public:
       std::cout << sizeof(color16) << '\n';
       const size_t maxbytes = std::ranges::size(adj) / sizeof(color16);
       const size_t area = static_cast<size_t>(rectangle_.Height()) * static_cast<size_t>(rectangle_.Width());
-      size_t minSize = std::min(maxbytes, area);
+      size_t minSize = std::min(maxbytes, area) * sizeof(color16);
+      if (minSize == 0) {
+        rectangle_ = {};
+        return;
+      }
       colors.resize(minSize);
       std::cout << std::ranges::size(colors) << ", " << area << '\n';
       std::memcpy(std::ranges::data(colors), std::ranges::data(adj), minSize);
     }
   }
-  [[maybe_unused]] void Save(std::string_view filename) const
+  [[maybe_unused]] void Save(const std::string_view &filename) const
   {
     ppm::save(colors, rectangle_.Width(), rectangle_.Height(), filename);
   }

@@ -9,6 +9,7 @@
 #include "OpenVIII/Graphics/tex.h"
 #include "OpenVIII/Graphics/sp1.h"
 #include "OpenVIII/Graphics/sp2.h"
+#include "OpenVIII/MenuGroup/MenuGroupFile.h"
 
 int main()
 {
@@ -19,8 +20,13 @@ int main()
     }
     std::cout << path << std::endl;
     const auto archives = OpenVIII::Archive::Archives<OpenVIII::LangT::EN>(path);
-
-    archives.ExecuteOn({ /*".tex", ".lzs", ".tim", ".tdw",*/ ".sp1", ".sp2" },
+    {
+      const auto &menu = archives.Get<OpenVIII::Archive::ArchiveTypeT::Menu>();
+      const auto menuGroup = OpenVIII::MenuGroup::MenuGroupFile{ menu };
+      const auto fullpath = menu.GetFullPath(menuGroup.FILENAME);
+      menuGroup.TestTim(fullpath);
+    }
+    archives.ExecuteOn({ /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2"*/ ".lzs" },
       [](std::vector<char> buffer, [[maybe_unused]] std::string_view p) {
         if (OpenVIII::Tools::iEndsWith(p, ".lzs")) {
           auto t = OpenVIII::Graphics::lzs(buffer);

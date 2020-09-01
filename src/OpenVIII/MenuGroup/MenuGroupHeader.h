@@ -27,14 +27,15 @@ private:
   std::array<MenuGroupHeaderSection, count_> sections_{};
 
 public:
+
+  constexpr static std::string_view FILENAME = "mngrphd.bin";
   static constexpr auto size() { return count_; }
-  static constexpr auto FileName = std::string_view{ "mngrphd.bin" };
   [[nodiscard]] const auto &Sections() const { return sections_; }
 
   MenuGroupHeader() = default;
   template<typename mainT> explicit MenuGroupHeader(const mainT &main)
   {
-    auto buffer = main.GetEntryData(FileName);
+    auto buffer = main.GetEntryData(FILENAME);
     if (std::size(buffer) < sizeof(std::uint32_t) || size_ != std::size(buffer)) {
       return;
     }

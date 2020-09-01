@@ -51,7 +51,7 @@ int main()
     mngrpfile.TestTkMnMes<coo>();
     mngrpfile.TestMes<coo>();
     mngrpfile.TestRefine<coo>();
-    mngrpfile.TestTim();
+    mngrpfile.TestTim(menu.GetFullPath(OpenVIII::MenuGroup::MenuGroupFile::FILENAME));
     continue;
     // auto mngrphd = OpenVIII::MenuGroup::MenuGroupHeader{ menu };
     // auto mngrpBuffer = menu.GetEntryData("mngrp.bin");
