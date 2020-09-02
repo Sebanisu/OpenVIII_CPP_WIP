@@ -30,22 +30,22 @@ template<LangT langVal> struct CharacterAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t apRequired_{};
+  std::uint8_t m_ap_required{};
   // uint32_t characterAbilityFlags_ : 3;// cpp20 allows default member initializers for bitfields add {} in cpp20.
-  std::array<std::uint8_t, 3> characterAbilityFlags_{};
+  std::array<std::uint8_t, 3> m_character_ability_flags{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
+  [[maybe_unused]] [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
+  [[maybe_unused]] [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
 
-  [[nodiscard]] auto APRequired() const noexcept { return apRequired_; }
-  [[nodiscard]] auto CharacterAbilityFlags() const
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
+  [[nodiscard]] auto character_ability_flags() const
   {
     // I think this is okay.
     // The size of the enum is 4 bytes but the field is 3 bytes.
     // return static_cast<CharacterAbilityFlagsT>(characterAbilityFlags_);
     CharacterAbilityFlagsT out{};
-    std::memcpy(&out, characterAbilityFlags_.data(), characterAbilityFlags_.size());
+    std::memcpy(&out, m_character_ability_flags.data(), m_character_ability_flags.size());
     // out = static_cast<CharacterAbilityFlagsT>(static_cast<uint32_t>(out) << 1U);
     return out;
   }
@@ -60,8 +60,8 @@ public:
       os << ", " << Tools::u8tosv(description);
     }
 
-    auto test = CharacterAbilityFlags();
-    return os << ", " << static_cast<std::uint32_t>(APRequired()) << ", " << static_cast<uint32_t>(test);
+    auto test = character_ability_flags();
+    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", " << static_cast<uint32_t>(test);
   }
 };
 }// namespace open_viii::kernel

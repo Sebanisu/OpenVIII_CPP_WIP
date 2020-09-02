@@ -44,7 +44,7 @@ template<LangT langVal> struct EnemyAttacks
 private:
   EncodedStringOffset m_name_offset{};
   uint16_t magicID_{};
-  CameraChange cameraChange_{};
+  CameraChange m_camera_change{};
   uint8_t unknown0_{};
   AttackTypeT attackType_{};
   uint8_t attackPower_{};
@@ -60,7 +60,7 @@ private:
 public:
   [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
   [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
-  [[nodiscard]] auto CameraChange() const noexcept { return cameraChange_; }
+  [[nodiscard]] auto camera_change() const noexcept { return m_camera_change; }
   [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
   [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
   [[nodiscard]] auto attackPower() const noexcept { return attackPower_; }
