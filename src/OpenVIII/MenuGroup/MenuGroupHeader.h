@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_MENUGROUPHEADER_H
 #define VIIIARCHIVE_MENUGROUPHEADER_H
-#include "MenuGroupHeaderSection.h"
+#include "OpenVIII/MenuGroup/MenuGroupHeader/MenuGroupHeaderSection.h"
 #include <cstdint>
 #include <cstring>
 #include <string_view>
@@ -22,24 +22,24 @@ namespace open_viii::menu_group {
 struct MenuGroupHeader
 {
 private:
-  static constexpr auto size_{ 2048U };
-  static constexpr auto count_{ size_ / sizeof(MenuGroupHeaderSection) };
-  std::array<MenuGroupHeaderSection, count_> sections_{};
+  static constexpr auto SIZE{ 2048U };
+  static constexpr auto COUNT{ SIZE / sizeof(MenuGroupHeaderSection) };
+  std::array<MenuGroupHeaderSection, COUNT> m_sections{};
 
 public:
 
   constexpr static std::string_view FILENAME = "mngrphd.bin";
-  static constexpr auto size() { return count_; }
-  [[nodiscard]] const auto &Sections() const { return sections_; }
+  static constexpr auto size() { return COUNT; }
+  [[nodiscard]] const auto &sections() const { return m_sections; }
 
   MenuGroupHeader() = default;
   template<typename mainT> explicit MenuGroupHeader(const mainT &main)
   {
     auto buffer = main.get_entry_data(FILENAME);
-    if (std::size(buffer) < sizeof(std::uint32_t) || size_ != std::size(buffer)) {
+    if (std::size(buffer) < sizeof(std::uint32_t) || SIZE != std::size(buffer)) {
       return;
     }
-    std::memcpy(sections_.data(), buffer.data(), std::size(buffer));
+    std::memcpy(m_sections.data(), buffer.data(), std::size(buffer));
   }
 };
 }// namespace open_viii::menu_group

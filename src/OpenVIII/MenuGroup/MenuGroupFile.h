@@ -34,7 +34,7 @@ private:
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto GetSectionInternal() const
   {
     if constexpr (static_cast<size_t>(sectionT) < MenuGroupHeader::size()) {
-      return menuGroupHeader_.Sections().at(static_cast<size_t>(sectionT));
+      return menuGroupHeader_.sections().at(static_cast<size_t>(sectionT));
     } else {
       return nullptr;
     }
@@ -209,9 +209,9 @@ public:
   //  }
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto GetSection() const
   {
-    if constexpr (Tools::any_of(sectionT, complexValueArray) || sectionT == MenuGroupSectionT::complexMap) {
+    if constexpr (Tools::any_of(sectionT, complexValueArray) || sectionT == MenuGroupSectionT::complex_map) {
 
-      const auto map{ GetSectionInternal<MenuGroupSectionT::complexMap>().GetSectionBuffer(dataBuffer_) };
+      const auto map{ GetSectionInternal<MenuGroupSectionT::complex_map>().GetSectionBuffer(dataBuffer_) };
       const std::array data = { GetSectionInternal<MenuGroupSectionT::complex01>().GetSectionBuffer(dataBuffer_),
         GetSectionInternal<MenuGroupSectionT::complex02>().GetSectionBuffer(dataBuffer_),
         GetSectionInternal<MenuGroupSectionT::complex03>().GetSectionBuffer(dataBuffer_),
@@ -234,15 +234,15 @@ public:
         } else if constexpr (Tools::any_of(sectionT, mesValueArray)) {
           return SectionData<MenuMessagesSection>(MenuMessagesSection{ sectionBuffer }, sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
-          return getRefine<open_viii::menu_group::RefineSection000, MenuGroupSectionT::refineText0>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection000, MenuGroupSectionT::refine_text0>(sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine1) {
-          return getRefine<open_viii::menu_group::RefineSection001, MenuGroupSectionT::refineText1>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection001, MenuGroupSectionT::refine_text1>(sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine2) {
-          return getRefine<open_viii::menu_group::RefineSection002, MenuGroupSectionT::refineText2>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection002, MenuGroupSectionT::refine_text2>(sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine3) {
-          return getRefine<open_viii::menu_group::RefineSection003, MenuGroupSectionT::refineText3>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection003, MenuGroupSectionT::refine_text3>(sectionBuffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine4) {
-          return getRefine<open_viii::menu_group::RefineSection004, MenuGroupSectionT::refineText4>(sectionBuffer);
+          return getRefine<open_viii::menu_group::RefineSection004, MenuGroupSectionT::refine_text4>(sectionBuffer);
         }
       }
     }
@@ -296,11 +296,11 @@ public:
     constexpr auto start = 0U;
     static_for_tkmnmes<start, mesValueArray.size() - start>(
       [&, this](const auto &sectionID, [[maybe_unused]] const auto &tkmnmesPair) {
-        std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << tkmnmesPair->Sections().size() << ", "
-                  << tkmnmesPair->SubSections().size() << "},\n";
-        for (size_t id = 0; id < tkmnmesPair->Sections().size() && id < tkmnmesPair->SubSections().size(); id++) {
-          [[maybe_unused]] const auto offset = tkmnmesPair->Sections().at(id);
-          const auto subSectionGroup = tkmnmesPair->SubSections().at(id);
+        std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << tkmnmesPair->sections().size() << ", "
+                  << tkmnmesPair->sub_sections().size() << "},\n";
+        for (size_t id = 0; id < tkmnmesPair->sections().size() && id < tkmnmesPair->sub_sections().size(); id++) {
+          [[maybe_unused]] const auto offset = tkmnmesPair->sections().at(id);
+          const auto subSectionGroup = tkmnmesPair->sub_sections().at(id);
           [[maybe_unused]] size_t stringNumber{};
           for (const auto &subSection : subSectionGroup) {
             if (subSection.offset() == 0) {
@@ -316,7 +316,7 @@ public:
 
   template<LangT langVal> void TestComplex() const
   {
-    const auto complex = GetSection<MenuGroupSectionT::complexMap>();
+    const auto complex = GetSection<MenuGroupSectionT::complex_map>();
     for (size_t i{}; i < complex.size(); i++) {
       [[maybe_unused]] const auto data = complex.at(i);
 

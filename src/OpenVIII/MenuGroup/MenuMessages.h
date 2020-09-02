@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_MENUMESSAGES_H
 #define VIIIARCHIVE_MENUMESSAGES_H
-#include "MenuMessagesSection.h"
+#include "OpenVIII/MenuGroup/MenuMessages/MenuMessagesSection.h"
 #include <cstdint>
 #include <cstring>
 #include <array>
@@ -23,40 +23,41 @@ struct MenuMessages
 {
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_tkmnmes
 private:
-  static constexpr std::uint16_t defaultSize_{ 16U };
-  std::uint16_t size_{ defaultSize_ };
-  std::array<std::uint16_t, defaultSize_> sections_{};
-  std::array<MenuMessagesSection, defaultSize_> subSections_{};
+  static constexpr std::uint16_t DEFAULT_SIZE{ 16U };
+  std::uint16_t m_size{ DEFAULT_SIZE };
+  std::array<std::uint16_t, DEFAULT_SIZE> m_sections{};
+  std::array<MenuMessagesSection, DEFAULT_SIZE> m_sub_sections{};
 
 public:
-  [[nodiscard]] auto size() const noexcept { return size_; }
-  [[nodiscard]] auto Sections() const noexcept { return sections_; }
-  [[nodiscard]] auto SubSections() const noexcept { return subSections_; }
-  [[nodiscard]] auto begin() const noexcept { return subSections_.begin(); }
-  [[nodiscard]] auto end() const noexcept { return subSections_.end(); }
+  [[nodiscard]] auto size() const noexcept { return m_size; }
+  [[nodiscard]] auto sections() const noexcept { return m_sections; }
+  [[maybe_unused]] [[nodiscard]] auto sub_sections() const noexcept { return m_sub_sections; }
+  [[nodiscard]] auto begin() const noexcept { return m_sub_sections.begin(); }
+  [[nodiscard]] auto end() const noexcept { return m_sub_sections.end(); }
   template<typename T = std::vector<char>> explicit MenuMessages(const T &buffer)
   {
+    //TODO remove pointer; use span instead of template.
     auto *ptr = buffer.data();
-    std::memcpy(&size_, ptr, sizeof(size_));
-    if (size_ != defaultSize_) {
+    std::memcpy(&m_size, ptr, sizeof(m_size));
+    if (m_size != DEFAULT_SIZE) {
       exit(1);
     }
-    ptr += sizeof(size_);
-    std::memcpy(sections_.data(), ptr, std::size(sections_) * sizeof(std::uint16_t));
-    ptr += sizeof(sections_);
-    for (size_t i = 0; i < std::size(sections_); i++) {
+    ptr += sizeof(m_size);
+    std::memcpy(m_sections.data(), ptr, std::size(m_sections) * sizeof(std::uint16_t));
+    ptr += sizeof(m_sections);
+    for (size_t i = 0; i < std::size(m_sections); i++) {
       //[Count of Subsections] = [Start of file] + [Section value]
-      if (sections_.at(i) == 0U) {
+      if (m_sections.at(i) == 0U) {
         continue;
       }
-      ptr = buffer.data() + sections_.at(i);
+      ptr = buffer.data() + m_sections.at(i);
       std::uint16_t subSectionCount{};
       std::memcpy(&subSectionCount, ptr, sizeof(subSectionCount));
       std::string_view b{ ptr + sizeof(std::uint16_t), subSectionCount * sizeof(std::uint16_t) };
-      subSections_.at(i).SetData(b, subSectionCount);
+      m_sub_sections.at(i).SetData(b, subSectionCount);
       //      ptr += sizeof(subSectionCount);
-      //      subSections_.at(i).resize(subSectionCount);
-      //      std::memcpy(subSections_.at(i).data(), ptr, subSections_.at(i).size() * sizeof(EncodedStringOffset));
+      //      m_sub_sections.at(i).resize(subSectionCount);
+      //      std::memcpy(m_sub_sections.at(i).data(), ptr, m_sub_sections.at(i).size() * sizeof(EncodedStringOffset));
       //[Start of string location] = [Start of file] + [Section value] + [Subsection value]
     }
   }
