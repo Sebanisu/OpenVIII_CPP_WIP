@@ -2,8 +2,8 @@
 // Created by pcvii on 8/25/2020.
 //
 
-#ifndef VIIIARCHIVE_RECTANGLE__H
-#define VIIIARCHIVE_RECTANGLE__H
+#ifndef VIIIARCHIVE_RECTANGLE_H
+#define VIIIARCHIVE_RECTANGLE_H
 #include "OpenVIII/Graphics/Point.h"
 #include <iostream>
 namespace open_viii::graphics {
@@ -114,4 +114,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_RECTANGLE__H
+#endif// VIIIARCHIVE_RECTANGLE_H

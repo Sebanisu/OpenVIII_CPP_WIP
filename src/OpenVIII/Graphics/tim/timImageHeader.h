@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_TIMIMAGEHEADER_H
 #define VIIIARCHIVE_TIMIMAGEHEADER_H
-#include "OpenVIII/Graphics/rectangle_.h"
+#include "OpenVIII/Graphics/Rectangle.h"
 #include <cstdint>
 namespace open_viii::graphics {
 /**

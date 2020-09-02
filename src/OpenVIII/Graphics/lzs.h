@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_LZS_H
 #define VIIIARCHIVE_LZS_H
 #include "OpenVIII/Graphics/color/color16.h"
-#include "rectangle_.h"
+#include "Rectangle.h"
 #include "OpenVIII/Compression/LZSS.h"
 #include <span>
 #include <cstring>
