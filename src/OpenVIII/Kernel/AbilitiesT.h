@@ -17,193 +17,193 @@
 namespace open_viii::kernel {
 enum class AbilitiesT : std::uint16_t {
   // https://github.com/alexfilth/doomtrain/wiki/Junction-abilities
-  None,
+  none,
   // Enables HP junction
-  HPJ,
+  hpj [[maybe_unused]],
 
   // Enables Strength junction
 
-  StrJ,
+  str_j [[maybe_unused]],
 
   // Enables Vitality junction
 
-  VitJ,
+  vit_j [[maybe_unused]],
 
   // Enables Magic junction
 
-  MagJ,
+  mag_j [[maybe_unused]],
 
   // Enables Spirit junction
 
-  SprJ,
+  spr_j [[maybe_unused]],
 
   // Enables Speed junction
 
-  SpdJ,
+  spd_j [[maybe_unused]],
 
   // Enables Evasion junction
 
-  EvaJ,
+  eva_j [[maybe_unused]],
 
   // Enables Hit junction
 
-  HitJ,
+  hit_j [[maybe_unused]],
 
   // Enables Luck junction
 
-  LuckJ,
+  luck_j [[maybe_unused]],
 
   // Increased elemental attack slot Count to 1
 
-  ElAtkJ,
+  el_atk_j [[maybe_unused]],
 
   // Increased status attack slot Count to 1
 
-  StAtkJ,
+  st_atk_j [[maybe_unused]],
 
   // Increased elemental defense slot Count to 1
 
-  ElDefJ,
+  el_def_j [[maybe_unused]],
 
   // Increased status defense slot Count to 1
 
-  StDefJ,
+  st_def_j [[maybe_unused]],
 
   // Increased elemental defense slot Count to 2
 
-  ElDefJ2,
+  el_def_j2 [[maybe_unused]],
 
   // Increased elemental defense slot Count to 4
 
-  ElDefJ4,
+  el_def_j4 [[maybe_unused]],
 
   // Increased status defense slot Count to 2
 
-  StDefJ2,
+  st_def_j2 [[maybe_unused]],
 
   // Increased status defense slot Count to 4
 
-  StDefJ4,
+  st_def_j4,
 
   // Increases ability slot Count to 3
 
-  Ability3,
+  ability3 [[maybe_unused]],
 
   // Increases ability slot Count to 4
 
-  Ability4,
+  ability4 [[maybe_unused]],
 
   // Equippable commands start here
   // https://github.com/alexfilth/doomtrain/wiki/Command-abilities
-  Magic,
-  GF,
-  Draw,
-  Item,
-  Empty,
-  Card,
-  Doom,
-  MadRush,
-  Treatment,
-  Defend,
-  Darkside,
-  Recover,
-  Absorb,
-  Revive,
-  LvDown,
-  LvUp,
-  Kamikaze,
-  Devour,
-  MiniMog,
+  magic,
+  gf [[maybe_unused]],
+  draw [[maybe_unused]],
+  item,
+  empty,
+  card,
+  doom [[maybe_unused]],
+  mad_rush [[maybe_unused]],
+  treatment [[maybe_unused]],
+  defend [[maybe_unused]],
+  dark_side [[maybe_unused]],
+  recover [[maybe_unused]],
+  absorb [[maybe_unused]],
+  revive,
+  lv_down [[maybe_unused]],
+  lv_up [[maybe_unused]],
+  kamikaze [[maybe_unused]],
+  devour [[maybe_unused]],
+  mini_mog [[maybe_unused]],
   // Equippable commands end here
 
   // Equippable abilities start here
   // https://github.com/alexfilth/doomtrain/wiki/Stat-percentage-increasing-abilities
-  HP20,
-  HP40,
-  HP80,
-  Str20,
-  Str40,
-  Str60,
-  Vit20,
-  Vit40,
-  Vit60,
-  Mag20,
-  Mag40,
-  Mag60,
-  Spr20,
-  Spr40,
-  Spr60,
-  Spd20,
-  Spd40,
-  Eva30,
-  Luck50,
+  hp20 [[maybe_unused]],
+  hp40 [[maybe_unused]],
+  hp80 [[maybe_unused]],
+  str20 [[maybe_unused]],
+  str40 [[maybe_unused]],
+  str60 [[maybe_unused]],
+  vit20 [[maybe_unused]],
+  vit40 [[maybe_unused]],
+  vit60 [[maybe_unused]],
+  mag20 [[maybe_unused]],
+  mag40 [[maybe_unused]],
+  mag60 [[maybe_unused]],
+  spr20 [[maybe_unused]],
+  spr40 [[maybe_unused]],
+  spr60 [[maybe_unused]],
+  spd20 [[maybe_unused]],
+  spd40 [[maybe_unused]],
+  eva30 [[maybe_unused]],
+  luck50 [[maybe_unused]],
 
   // https://github.com/alexfilth/doomtrain/wiki/Character-abilities
-  Mug,
-  MedData,
-  Counter,
-  ReturnDamage,
-  Cover,
-  Initiative,
-  MoveHPUp,
-  HPBonus,
-  StrBonus,
-  VitBonus,
-  MagBonus,
-  SprBonus,
-  AutoProtect,
-  AutoShell,
-  AutoReflect,
-  AutoHaste,
-  AutoPotion,
-  Expend2,
-  Expend3,
-  Ribbon,
+  mug,
+  med_data [[maybe_unused]],
+  counter [[maybe_unused]],
+  return_damage [[maybe_unused]],
+  cover,
+  initiative [[maybe_unused]],
+  move_hp_up,
+  hp_bonus [[maybe_unused]],
+  str_bonus [[maybe_unused]],
+  vit_bonus [[maybe_unused]],
+  mag_bonus [[maybe_unused]],
+  spr_bonus [[maybe_unused]],
+  auto_protect,
+  auto_shell [[maybe_unused]],
+  auto_reflect,
+  auto_haste,
+  auto_potion [[maybe_unused]],
+  expend2 [[maybe_unused]],
+  expend3 [[maybe_unused]],
+  ribbon,
 
   // https://github.com/alexfilth/doomtrain/wiki/Party-abilities
-  Alert,
-  MoveFind,
-  EncHalf,
-  EncNone,
-  RareItem,
+  alert [[maybe_unused]],
+  move_find [[maybe_unused]],
+  enc_half [[maybe_unused]],
+  enc_none [[maybe_unused]],
+  rare_item [[maybe_unused]],
 
   // https://github.com/alexfilth/doomtrain/wiki/GF-abilities
-  SumMag10,
-  SumMag20,
-  SumMag30,
-  SumMag40,
-  GFHP10,
-  GFHP20,
-  GFHP30,
-  GFHP40,
-  Boost,
+  sum_mag10 [[maybe_unused]],
+  sum_mag20 [[maybe_unused]],
+  sum_mag30 [[maybe_unused]],
+  sum_mag40 [[maybe_unused]],
+  gf_hp10 [[maybe_unused]],
+  gf_hp20 [[maybe_unused]],
+  gf_hp30 [[maybe_unused]],
+  gf_hp40 [[maybe_unused]],
+  boost [[maybe_unused]],
   // Equipable abilities end here
 
   // https://github.com/alexfilth/doomtrain/wiki/Menu-abilities
-  Haggle,
-  SellHigh,
-  Familiar,
-  CallShop,
-  JunkShop,
-  ThunderMagRF,
-  IceMagRF,
-  FireMagRF,
-  LifeMagRF,
-  TimeMagRF,
-  StatusMagRF,
-  SuptMagRF,
-  ForbidMagRF,
-  RecoveryMedRF,
-  StatusMedRF,
-  AmmoRF,
-  ToolRF,
-  ForbidMedRF,
-  GFRecoveryMedRF,
-  GFAblMedRF,
-  MidMagRF,
-  HighMagRF,
-  MedLvUp,
-  CardMod,
+  haggle [[maybe_unused]],
+  sell_high [[maybe_unused]],
+  familiar [[maybe_unused]],
+  call_shop [[maybe_unused]],
+  junk_shop [[maybe_unused]],
+  thunder_mag_rf [[maybe_unused]],
+  ice_mag_rf [[maybe_unused]],
+  fire_mag_rf [[maybe_unused]],
+  life_mag_rf [[maybe_unused]],
+  time_mag_rf [[maybe_unused]],
+  status_mag_rf [[maybe_unused]],
+  supt_mag_rf [[maybe_unused]],
+  forbid_mag_rf [[maybe_unused]],
+  recovery_med_rf [[maybe_unused]],
+  status_med_rf [[maybe_unused]],
+  ammo_rf [[maybe_unused]],
+  tool_rf [[maybe_unused]],
+  forbid_med_rf [[maybe_unused]],
+  gf_recovery_med_rf [[maybe_unused]],
+  gf_abl_med_rf [[maybe_unused]],
+  mid_mag_rf [[maybe_unused]],
+  high_mag_rf [[maybe_unused]],
+  med_lv_up [[maybe_unused]],
+  card_mod [[maybe_unused]],
 };
 }
 #endif// VIIIARCHIVE_ABILITIEST_H
