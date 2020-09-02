@@ -17,15 +17,15 @@
 #include <cstdint>
 namespace open_viii::kernel {
 enum class AttackFlagsT : std::uint8_t {
-  None = 0x0,
-  Shelled = 0x1,
-  Unk0X2 = 0x2,
-  Unk0X4 = 0x4,
-  BreakDamageLimit = 0x8,
-  Reflected = 0x10,
-  Unk0X20 = 0x20,
-  Unk0X40 = 0x40,
-  Revive = 0x80
+  none = 0x0,
+  shelled [[maybe_unused]] = 0x1,
+  unk_x2 [[maybe_unused]] = 0x2,
+  unk_x4 [[maybe_unused]] = 0x4,
+  break_damage_limit [[maybe_unused]] = 0x8,
+  reflected [[maybe_unused]] = 0x10,
+  unk_x20 [[maybe_unused]] = 0x20,
+  unk_x40 [[maybe_unused]] = 0x40,
+  revive = 0x80
 };
 }
 #endif// VIIIARCHIVE_ATTACKFLAGST_H
