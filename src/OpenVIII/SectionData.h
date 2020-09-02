@@ -25,8 +25,8 @@ private:
   std::string_view m_text_span{};
 
 public:
-  [[maybe_unused]] explicit SectionData(const spanT &span, const std::string_view &textSpan = {})
-    : m_span{ span }, m_text_span{ textSpan }
+  [[maybe_unused]] explicit SectionData(const spanT &span, const std::string_view &text_span = {})
+    : m_span{ span }, m_text_span{ text_span }
   {}
   [[nodiscard]] auto begin() const { return m_span.begin(); }
   [[nodiscard]] auto end() const { return m_span.end(); }

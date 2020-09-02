@@ -334,7 +334,7 @@ public:
         std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << refineBulkSectionData.size() << "},\n";
 
         for (size_t id = 0U; id < 1U; id++) {
-          refineBulkSectionData.at(id).template out<langVal>(std::cout, refineBulkSectionData.TextSpan());
+          refineBulkSectionData.at(id).template out<langVal>(std::cout, refineBulkSectionData.text_span());
         }
       });
   }

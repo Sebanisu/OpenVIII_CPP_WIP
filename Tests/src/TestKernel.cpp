@@ -47,7 +47,7 @@ int main()
         for (size_t i = 0; i < data.size(); i++) {
           auto entry = data.at(i);
           std::cout << i << ": ";
-          entry.out(std::cout, data.TextSpan());
+          entry.out(std::cout, data.text_span());
           std::cout << '\n';
         }
       }

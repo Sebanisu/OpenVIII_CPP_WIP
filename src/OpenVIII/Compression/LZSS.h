@@ -65,14 +65,14 @@ public:
   // http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
 
   template<typename dstT = std::vector<char>>
-  [[nodiscard]] static dstT decompress(std::span<const char> src, size_t dstSize = 0)
+  [[nodiscard]] static dstT decompress(std::span<const char> src, size_t dst_size = 0)
   {
     // todo replace src type with a std::span so you can pass any container.
     // string view might work if nulls aren't detected as end and size is respected.
     // and string view is const. I mostly want to just have something I can hold the pointers in.
     dstT dst{};
-    if (dstSize > 0) {
-      dst.reserve(dstSize);
+    if (dst_size > 0) {
+      dst.reserve(dst_size);
     }
     auto iterator = src.begin();
     const auto &srcEnd = src.end();

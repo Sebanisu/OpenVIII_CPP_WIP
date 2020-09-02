@@ -28,8 +28,8 @@ private:
   std::string_view m_text_span{};
 
 public:
-  [[maybe_unused]] explicit BulkSectionData(const std::string_view &span, const std::string_view &textSpan = {})
-    : m_span{ span }, m_text_span{ textSpan }
+  [[maybe_unused]] explicit BulkSectionData(const std::string_view &span, const std::string_view &text_span = {})
+    : m_span{ span }, m_text_span{ text_span }
   {}
   [[nodiscard]] size_t size() const
   {
@@ -81,8 +81,8 @@ public:
   //  {
   //    return at(size()-1);
   //  }
-  [[maybe_unused]] auto &Span() const noexcept { return m_span; }
-  [[maybe_unused]] auto &TextSpan() const noexcept { return m_text_span; }
+  [[maybe_unused]] auto &span() const noexcept { return m_span; }
+  [[maybe_unused]] auto &text_span() const noexcept { return m_text_span; }
 };
 }// namespace open_viii
 #endif// VIIIARCHIVE_BULKSECTIONDATA_H

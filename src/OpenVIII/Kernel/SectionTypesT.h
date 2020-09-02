@@ -74,7 +74,7 @@ enum class SectionTypesT : std::int8_t {
   devour_text,
   misc_text,
   count,
-  first = battle_commands
+  first = battle_commands,
 };
 }
 #endif// VIIIARCHIVE_SECTIONTYPEST_H

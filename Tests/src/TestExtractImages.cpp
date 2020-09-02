@@ -27,21 +27,7 @@ int main()
 //      menuGroup.TestTim(fullpath);
 //    }
     archives.execute_on(
-      { /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2"*/
-        "mag164",
-        "mag179",
-        "mag180",
-        "mag181",
-        "mag185",
-        "mag186",
-        "mag187",
-        "mag190",
-        "mag191",
-        "mag192",
-        "mag194",
-        "mag323",
-        "mag325",
-        "mag326-329" },
+      { ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2" },
       [](std::vector<char> buffer, [[maybe_unused]] std::string_view p) {
         if (open_viii::Tools::i_ends_with(p, ".lzs")) {
           auto t = open_viii::graphics::Lzs(buffer);

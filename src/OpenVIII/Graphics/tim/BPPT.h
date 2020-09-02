@@ -15,8 +15,8 @@ namespace open_viii::graphics {
 struct BPPT
 {
 private:
-  bool m_8bpp : 1 { false };
-  bool m_16bpp : 1 { false };
+  bool m_bpp8 : 1 { false };
+  bool m_bpp16 : 1 { false };
   bool m_unused1 : 1 { false };
   bool m_color_lookup_table_present : 1 { false };
 
@@ -31,29 +31,29 @@ public:
    * Test bits to check if color lookup table is present and 8bpp and 16bpp are not set;
    * @return true if 4bpp
    */
-  [[nodiscard]] bool bpp4() const { return !unused() && !m_8bpp && !m_16bpp && m_color_lookup_table_present; }
+  [[nodiscard]] bool bpp4() const { return !unused() && !m_bpp8 && !m_bpp16 && m_color_lookup_table_present; }
   /**
    * Test bits to check if color lookup table is present and 8bpp is set and 16bpp is not set;
    * @return true if 8bpp
    */
-  [[nodiscard]] bool bpp8() const { return !unused() && m_8bpp && !m_16bpp && m_color_lookup_table_present; }
+  [[nodiscard]] bool bpp8() const { return !unused() && m_bpp8 && !m_bpp16 && m_color_lookup_table_present; }
 
   /**
    * Test bits to check if color lookup table is not present and 8bpp is not set and 16bpp is set;
    * @return true if 16bpp
    */
-  [[nodiscard]] bool bpp16() const { return !unused() && !m_8bpp && m_16bpp && !m_color_lookup_table_present; }
+  [[nodiscard]] bool bpp16() const { return !unused() && !m_bpp8 && m_bpp16 && !m_color_lookup_table_present; }
 
   /**
    * Test bits to check if color lookup table is not present and 8bpp is set and 16bpp is set;
    * @return true if 24bpp
    */
-  [[nodiscard]] bool bpp24() const { return !unused() && m_8bpp && m_16bpp && !m_color_lookup_table_present; }
+  [[nodiscard]] bool bpp24() const { return !unused() && m_bpp8 && m_bpp16 && !m_color_lookup_table_present; }
   /**
    * Test bits to check if color lookup table is present and 8bpp is ignored and 16bpp is not set;
    * @return true if 16bpp
    */
-  [[nodiscard]] bool color_lookup_table_present() const { return !unused() && !m_16bpp && m_color_lookup_table_present; }
+  [[nodiscard]] bool color_lookup_table_present() const { return !unused() && !m_bpp16 && m_color_lookup_table_present; }
   /**
    * Test that one of the valid states is true.
    * @return true if is a valid state.

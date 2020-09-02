@@ -277,7 +277,7 @@ private:
     u8"ar"sv,
     u8"\u2C77"sv,
     u8" S"sv,
-    u8"ag" };
+    u8"ag"sv };
 
   static constexpr std::array<std::u8string_view, 256> JP_CODE_PAGE = { u8"\x00"sv,
     u8"\x01"sv,

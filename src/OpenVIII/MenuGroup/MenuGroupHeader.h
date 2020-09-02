@@ -23,7 +23,7 @@ struct MenuGroupHeader
 {
 private:
   static constexpr auto SIZE{ 2048U };
-  static constexpr auto COUNT{ SIZE / sizeof(MenuGroupHeaderSection) };
+  static constexpr auto COUNT{ (SIZE / sizeof(MenuGroupHeaderSection)) };
   std::array<MenuGroupHeaderSection, COUNT> m_sections{};
 
 public:

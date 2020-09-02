@@ -37,21 +37,7 @@ private:
 
   [[nodiscard]] Color16 get_color([[maybe_unused]] std::uint16_t row, [[maybe_unused]] std::uint8_t color_key) const
   {
-    //    // clangTidy says this function can be static which it cannot be static.
-    //    color16 rv{};
-    //    if (timClutHeader_.rectangle().height() != 0) {
-    //
-    //      if (row > timClutHeader_.rectangle().height()) {
-    //        row = 0;
-    //      }
-    //      [[maybe_unused]] const auto index{ (colorKey * 2U) + (row * timClutHeader_.rectangle().width()) };
-    //      if (index < timClutData_.size()) {
-    //
-    //        memcpy(&rv, timClutData_.data() + index, sizeof(rv));
-    //      }
-    //    }
-    //    return rv;
-
+    // clangTidy says this function can be static which it cannot be static.
     const auto palette_span = std::span(reinterpret_cast<const Color16 *>(std::ranges::data(m_tim_clut_data)),
       m_tim_clut_header.rectangle().width() * m_tim_clut_header.rectangle().height())
                                .subspan(row * m_tim_clut_header.rectangle().width());

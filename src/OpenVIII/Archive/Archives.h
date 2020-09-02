@@ -30,8 +30,8 @@ enum class ArchiveTypeT : std::uint8_t {
   zzz_main,
   zzz_other,
   count,
-  first = battle,
-  last = count - 1,
+  first = static_cast<std::int8_t>(battle),
+  last = static_cast<std::int8_t>(count) - 1,
 };
 
 
