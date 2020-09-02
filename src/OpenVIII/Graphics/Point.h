@@ -2,8 +2,8 @@
 // Created by pcvii on 8/25/2020.
 //
 
-#ifndef VIIIARCHIVE_POINT__H
-#define VIIIARCHIVE_POINT__H
+#ifndef VIIIARCHIVE_POINT_H
+#define VIIIARCHIVE_POINT_H
 #include <iostream>
 #include <concepts>
 namespace open_viii::graphics {
@@ -47,4 +47,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_POINT__H
+#endif// VIIIARCHIVE_POINT_H
