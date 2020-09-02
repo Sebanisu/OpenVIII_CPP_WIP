@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_RENZOKUKENFINISHERST_H
 #define VIIIARCHIVE_RENZOKUKENFINISHERST_H
 #include <cstdint>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class RenzokukenFinishersT : std::uint8_t {
   None = 0x00,
   RoughDivide = 0x01,

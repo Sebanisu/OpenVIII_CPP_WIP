@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_ZELLDUELBUTTONT_H
 #define VIIIARCHIVE_ZELLDUELBUTTONT_H
 
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class ZellDuelButtonT : std::uint16_t {
   End = 0x0001,
   Up = 0x0010,

@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_ATTACKFLAGST_H
 
 #include <cstdint>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class AttackFlagsT : std::uint8_t {
   None = 0x0,
   Shelled = 0x1,

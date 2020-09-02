@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_MENUMESSAGES_H
 #define VIIIARCHIVE_MENUMESSAGES_H
-#include "OpenVIII/MenuGroup/MenuMessages/MenuMessagesSection.h"
+#include "MenuMessagesSection.h"
 #include <cstdint>
 #include <cstring>
 #include <array>

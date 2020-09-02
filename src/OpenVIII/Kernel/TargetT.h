@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_TARGETT_H
 #include <cstdint>
 
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class TargetT : std::uint8_t {
   None = 0x00,
   Dead = 0x01,

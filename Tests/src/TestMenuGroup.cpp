@@ -173,15 +173,15 @@ int main()
     //       }
     //    [[maybe_unused]] const auto &buffer = mngrphd.Buffer();
     //    std::cout << "kernel.bin " << buffer.size() << " bytes; " << mngrphd.SectionCount() << " section count\n";
-    //    std::cout << static_cast<int>(open_viii::Kernel::SectionTypesT::Count) << std::endl;
-    //    mngrphd.static_for<static_cast<int>(open_viii::Kernel::SectionTypesT::First),
-    //      static_cast<int>(open_viii::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    //    std::cout << static_cast<int>(open_viii::kernel::SectionTypesT::Count) << std::endl;
+    //    mngrphd.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::First),
+    //      static_cast<int>(open_viii::kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
     //           std::cout << "  " << string << " - " << std::size(span) << " bytes\n";
     //
     //           return data;
     //    });
-    //    mngrphd.static_for<static_cast<int>(open_viii::Kernel::SectionTypesT::First),
-    //      static_cast<int>(open_viii::Kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    //    mngrphd.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::First),
+    //      static_cast<int>(open_viii::kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
     //           if constexpr (!std::is_null_pointer_v<decltype(
     //           data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
     //             std::cout << string << " ( " << std::size(span) << "bytes) has " << data.Count() << "entries\n";

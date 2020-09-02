@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_UNLOCKERT_H
 #define VIIIARCHIVE_UNLOCKERT_H
 #include <cstdint>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 //"https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/MainForm.Designer.cs"
 enum class UnlockerT : std::uint8_t {
   None,
@@ -141,5 +141,5 @@ enum class UnlockerT : std::uint8_t {
   Ability21,
 
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_UNLOCKERT_H

@@ -23,7 +23,7 @@
 #include "ZellDuelButtonT.h"
 #include <array>
 
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct ZellDuelLimitBreak
 { /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Duel-(Zell-limit-break)
@@ -134,5 +134,5 @@ public:
       ;
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ZELLDUELLIMITBREAK_H

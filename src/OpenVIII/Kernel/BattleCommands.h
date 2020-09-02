@@ -16,7 +16,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "TargetT.h"
 
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct BattleCommands
 {
   /*
@@ -64,5 +64,5 @@ public:
       ;
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_BATTLECOMMANDS_H

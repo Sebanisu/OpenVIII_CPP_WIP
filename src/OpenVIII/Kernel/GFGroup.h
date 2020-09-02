@@ -16,7 +16,7 @@
 #include <array>
 #include <iostream>
 
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<typename T> struct GFGroup
 {
 private:
@@ -96,5 +96,5 @@ public:
     return os << '}';
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_GFGROUP_H

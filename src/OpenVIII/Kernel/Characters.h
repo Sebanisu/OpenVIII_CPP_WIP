@@ -17,7 +17,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "GenderT.h"
 #include "StatGroupNoEVANoHIT.h"
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct Characters
 {
   /*
@@ -102,5 +102,5 @@ public:
               << static_cast<std::uint32_t>(EXP()[1]) << "}, " << Stats();
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_CHARACTERS_H

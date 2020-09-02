@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_MENUGROUPHEADER_H
 #define VIIIARCHIVE_MENUGROUPHEADER_H
-#include "OpenVIII/MenuGroup/MenuGroupHeader/MenuGroupHeaderSection.h"
+#include "MenuGroupHeaderSection.h"
 #include <cstdint>
 #include <cstring>
 #include <string_view>

@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_BATTLEONLYSTATUSEST_H
 #define VIIIARCHIVE_BATTLEONLYSTATUSEST_H
 #include <cstdint>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class BattleOnlyStatusesT : std::uint32_t {
   // https://github.com/DarkShinryu/doomtrain/wiki/Statuses-1
   None = 0x0,

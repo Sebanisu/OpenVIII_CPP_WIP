@@ -21,7 +21,7 @@
 #include "AttackFlagsT.h"
 #include "AttackTypeT.h"
 #include "TargetT.h"
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct BattleItems
 {
   /*
@@ -103,5 +103,5 @@ public:
               << ", " << static_cast<std::uint32_t>(HitCount()) << ", " << static_cast<std::uint32_t>(Element());
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_BATTLEITEMS_H

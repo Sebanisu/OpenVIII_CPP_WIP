@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_MENUABILITIES_H
 
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct MenuAbilities
 {
   /*
@@ -57,5 +57,5 @@ public:
               << ", " << static_cast<std::uint32_t>(StartOffset()) << ", " << static_cast<std::uint32_t>(EndOffset());
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_MENUABILITIES_H

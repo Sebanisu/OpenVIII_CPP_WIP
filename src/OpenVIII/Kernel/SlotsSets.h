@@ -16,7 +16,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include <cstdint>
 #include <array>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 struct Slot
 {
 private:
@@ -61,5 +61,5 @@ public:
     return os << '}';
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SLOTSSETS_H

@@ -16,7 +16,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "BattleOnlyStatusesT.h"
 #include "PersistentStatusesT.h"
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class PercentQuantityT : std::uint8_t {
   // 0% = 0x00
   None [[maybe_unused]] = 0x00,
@@ -132,5 +132,5 @@ public:
               << static_cast<std::uint32_t>(RaisedStatHPQuantity());
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_DEVOUR_H

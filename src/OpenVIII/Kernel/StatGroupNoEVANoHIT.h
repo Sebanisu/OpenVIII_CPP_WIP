@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_STATGROUPNOEVANOHIT_H
 #include <array>
 #include <iostream>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<typename T> struct StatGroupNoEVANoHIT
 {
 private:
@@ -75,5 +75,5 @@ public:
     return os;
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_STATGROUPNOEVANOHIT_H

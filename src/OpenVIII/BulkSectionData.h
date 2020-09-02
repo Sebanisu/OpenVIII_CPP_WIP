@@ -49,8 +49,8 @@ public:
   {
     auto id = static_cast<size_t>(id_v);
     if constexpr (std::is_same_v<T, ItemIdT>) {
-      if constexpr (std::is_same_v<spanT, Kernel::BattleItems>) {
-      } else if constexpr (std::is_same_v<spanT, Kernel::NonBattleItems>) {
+      if constexpr (std::is_same_v<spanT, kernel::BattleItems>) {
+      } else if constexpr (std::is_same_v<spanT, kernel::NonBattleItems>) {
         static constexpr auto battle_items_count = 33U;
         id -= battle_items_count;
       } else {

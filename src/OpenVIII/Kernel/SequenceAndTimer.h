@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_SEQUENCEANDTIMER_H
 #include <cstdint>
 #include <iostream>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 struct SequenceAndTimer
 {
 private:
@@ -31,5 +31,5 @@ public:
               << static_cast<std::uint32_t>(input.Timer()) << '}';
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SEQUENCEANDTIMER_H

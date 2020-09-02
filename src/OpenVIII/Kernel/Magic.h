@@ -23,7 +23,7 @@
 #include "StatGroup.h"
 #include "JunctionStatusesT.h"
 #include "GFGroup.h"
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct Magic
 {
   /*
@@ -167,5 +167,5 @@ public:
            << static_cast<std::uint32_t>(unknown3());
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_MAGIC_H

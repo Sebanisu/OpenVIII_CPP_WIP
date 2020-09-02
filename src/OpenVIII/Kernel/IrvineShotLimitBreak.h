@@ -20,7 +20,7 @@
 #include "AttackFlagsT.h"
 #include "TargetT.h"
 #include "OpenVIII/Strings/EncodedStringOffset.h"
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct IrvineShotLimitBreak
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Shot-(Irvine-limit-break)
@@ -101,5 +101,5 @@ public:
       ;
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_IRVINESHOTLIMITBREAK_H

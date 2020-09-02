@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_PERSISTENTSTATUSEST_H
 #define VIIIARCHIVE_PERSISTENTSTATUSEST_H
 #include <cstdint>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class PersistentStatusesT : std::uint16_t {
   // https://github.com/DarkShinryu/doomtrain/wiki/Statuses-0
   None = 0x00,

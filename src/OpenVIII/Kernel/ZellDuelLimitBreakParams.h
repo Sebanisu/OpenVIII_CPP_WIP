@@ -6,7 +6,7 @@
 #define VIIIARCHIVE_ZELLDUELLIMITBREAKPARAMS_H
 #include <cstdint>
 #include <array>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 struct ZellDuelLimitBreakParams
 {
 private:
@@ -135,5 +135,5 @@ public:
     return os << "};";
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ZELLDUELLIMITBREAKPARAMS_H

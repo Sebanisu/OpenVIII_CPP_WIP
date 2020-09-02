@@ -8,7 +8,7 @@
 #include "ElementT.h"
 #include "GFGroup.h"
 #include "UnlockableAbility.h"
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct JunctionableGFs
 {
   /*
@@ -226,5 +226,5 @@ public:
               << static_cast<std::uint32_t>(LevelMod());
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_JUNCTIONABLEGFS_H

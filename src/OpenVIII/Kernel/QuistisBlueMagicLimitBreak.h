@@ -17,7 +17,7 @@
 #include "ElementT.h"
 #include "AttackTypeT.h"
 #include "AttackFlagsT.h"
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct QuistisBlueMagicLimitBreak
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Blue-magic-(Quistis-limit-break)
@@ -83,5 +83,5 @@ public:
               << ", " << static_cast<std::uint32_t>(unknown4());
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAK_H

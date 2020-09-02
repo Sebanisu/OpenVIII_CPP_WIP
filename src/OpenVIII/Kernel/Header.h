@@ -55,7 +55,7 @@
 #include "QuistisBlueMagicLimitBreakParams.h"
 #include "ZellDuelLimitBreakParams.h"
 // will be moving kernel into it"s own project once it"svs more fully baked.
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 
 template<LangT langVal> struct Header
 {
@@ -379,6 +379,6 @@ public:
       static_for<First + 1, Count>(f);
     }
   }
-};// namespace open_viii::Kernel
-}// namespace open_viii::Kernel
+};// namespace open_viii::kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_KERNEL_HEADER_H

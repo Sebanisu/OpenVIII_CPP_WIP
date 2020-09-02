@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_CHARACTERABILITYFLAGST_H
 #define VIIIARCHIVE_CHARACTERABILITYFLAGST_H
 #include <cstdint>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class CharacterAbilityFlagsT : std::uint32_t {
   None = 0x0,
   Mug = 0x1,

@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_STATT_H
 #define VIIIARCHIVE_STATT_H
 #include <cstdint>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class StatT : std::uint8_t {
   HP,
   STR,

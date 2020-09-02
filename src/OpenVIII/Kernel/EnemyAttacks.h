@@ -21,7 +21,7 @@
 #include "AttackTypeT.h"
 #include "ElementT.h"
 #include "CameraChangeT.h"
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct EnemyAttacks
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Enemy-attacks
@@ -89,5 +89,5 @@ public:
       ;
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ENEMYATTACKS_H

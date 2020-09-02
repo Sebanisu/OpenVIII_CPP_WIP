@@ -17,7 +17,7 @@
 #include "OpenVIII/Strings/EncodedStringOffset.h"
 #include "CharacterAbilityFlagsT.h"
 #include <cstring>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 template<LangT langVal> struct CharacterAbilities
 {
   /*
@@ -64,5 +64,5 @@ public:
     return os << ", " << static_cast<std::uint32_t>(APRequired()) << ", " << static_cast<uint32_t>(test);
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_CHARACTERABILITIES_H

@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_GENDERT_H
 #include <cstdint>
 
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 enum class GenderT : std::uint8_t {
   Male = 0,
   Female = 1,

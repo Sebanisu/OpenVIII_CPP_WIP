@@ -17,7 +17,7 @@
 #include "PersistentStatusesT.h"
 #include <array>
 #include <iostream>
-namespace open_viii::Kernel {
+namespace open_viii::kernel {
 struct QuistisBlueMagicLimitBreakParam
 {
 
@@ -63,5 +63,5 @@ public:
     return os << blueMagicData_;
   }
 };
-}// namespace open_viii::Kernel
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAKPARAMS_H
