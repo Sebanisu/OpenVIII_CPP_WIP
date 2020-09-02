@@ -13,24 +13,25 @@ struct MenuGroupHeaderSection
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrphd_bin
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrp_bin
 private:
-  static constexpr std::uint32_t invalidSize_ = 0U;
-  static constexpr std::uint32_t invalidFileOffset_ = 0xFFFFFFFF;
-  static constexpr std::uint8_t permOffset_{ 1 };
-  std::uint32_t fileOffset_{};
-  std::uint32_t size_{};
+  static constexpr std::uint32_t INVALID_SIZE = 0U;
+  static constexpr std::uint32_t INVALID_FILE_OFFSET = 0xFFFFFFFFU;
+  static constexpr std::uint8_t PERM_OFFSET{ 1U };
+  std::uint32_t m_file_offset{};
+  std::uint32_t m_size{};
 
 public:
-  [[nodiscard]] auto FileOffset() const noexcept { return fileOffset_ - permOffset_; }
-  [[nodiscard]] auto Size() const noexcept { return size_; }
+  [[nodiscard]] auto file_offset() const noexcept { return m_file_offset - PERM_OFFSET; }
+  [[nodiscard]] const auto & size() const noexcept { return m_size; }
   template<typename charContainer = std::string_view>
-  [[nodiscard]] std::string_view GetSectionBuffer(const charContainer &fileBuffer) const
+  [[nodiscard]] std::string_view get_section_buffer(const charContainer &file_buffer) const
   {
-    if (Size() == invalidSize_ || fileOffset_ == invalidFileOffset_
-        || static_cast<std::size_t>(FileOffset()) + static_cast<std::size_t>(Size()) > std::size(fileBuffer)) {
+    const uint32_t adj_offset = file_offset();
+    if (m_size == INVALID_SIZE || m_file_offset == INVALID_FILE_OFFSET
+        || static_cast<std::size_t>(adj_offset) + static_cast<std::size_t>(m_size) > std::size(file_buffer)) {
       return {};// returns empty buffer if invalid or error.
     }
-    std::cout << '<' << FileOffset() << ',' << Size() << ">\n";
-    return { std::data(fileBuffer) + FileOffset(), Size() };
+    std::cout << '<' << adj_offset << ',' << m_size << ">\n";
+    return { std::data(file_buffer) + adj_offset, m_size };
   }
 };
 }// namespace open_viii::menu_group

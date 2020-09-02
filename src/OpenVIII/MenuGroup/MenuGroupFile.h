@@ -152,7 +152,7 @@ private:
   auto getRefine(const sectionBufferT &sectionBuffer) const
   {
     return open_viii::BulkSectionData<refineT, 1U>(
-      sectionBuffer, GetSectionInternal<textSectionT>().GetSectionBuffer(dataBuffer_));
+      sectionBuffer, GetSectionInternal<textSectionT>().get_section_buffer(dataBuffer_));
   }
 
   template<size_t i, size_t count, typename T> constexpr void static_for_tim(const T t) const
@@ -197,35 +197,35 @@ public:
     : menuGroupHeader_(menuArchive), dataBuffer_(menuArchive.get_entry_data(FILENAME))
   {}
   //
-  //  template<std::size_t sectionTnum> [[nodiscard]] auto GetSectionBuffer() const
+  //  template<std::size_t sectionTnum> [[nodiscard]] auto get_section_buffer() const
   //  {
   //    constexpr auto sectionT = static_cast<MenuGroupSectionT>(sectionTnum);
   //    [[maybe_unused]] const auto section{ GetSectionInternal<sectionT>() };
   //    if constexpr (std::is_null_pointer_v<decltype(section)>) {
   //      return nullptr;
   //    } else {
-  //      return section.GetSectionBuffer(dataBuffer_);
+  //      return section.get_section_buffer(dataBuffer_);
   //    }
   //  }
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto GetSection() const
   {
     if constexpr (Tools::any_of(sectionT, complexValueArray) || sectionT == MenuGroupSectionT::complex_map) {
 
-      const auto map{ GetSectionInternal<MenuGroupSectionT::complex_map>().GetSectionBuffer(dataBuffer_) };
-      const std::array data = { GetSectionInternal<MenuGroupSectionT::complex01>().GetSectionBuffer(dataBuffer_),
-        GetSectionInternal<MenuGroupSectionT::complex02>().GetSectionBuffer(dataBuffer_),
-        GetSectionInternal<MenuGroupSectionT::complex03>().GetSectionBuffer(dataBuffer_),
-        GetSectionInternal<MenuGroupSectionT::complex04>().GetSectionBuffer(dataBuffer_),
-        GetSectionInternal<MenuGroupSectionT::complex05>().GetSectionBuffer(dataBuffer_),
-        GetSectionInternal<MenuGroupSectionT::complex06>().GetSectionBuffer(dataBuffer_) };
+      const auto map{ GetSectionInternal<MenuGroupSectionT::complex_map>().get_section_buffer(dataBuffer_) };
+      const std::array data = { GetSectionInternal<MenuGroupSectionT::complex01>().get_section_buffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex02>().get_section_buffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex03>().get_section_buffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex04>().get_section_buffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex05>().get_section_buffer(dataBuffer_),
+        GetSectionInternal<MenuGroupSectionT::complex06>().get_section_buffer(dataBuffer_) };
       return ComplexStringSection(map, data);
     } else {
       [[maybe_unused]] auto section{ GetSectionInternal<sectionT>() };
       if constexpr (std::is_null_pointer_v<decltype(section)>) {
         return nullptr;
       } else {
-        // return mngrphd.Sections().at(id).GetSectionBuffer(mngrpBuffer);
-        [[maybe_unused]] const auto sectionBuffer{ section.GetSectionBuffer(dataBuffer_) };
+        // return mngrphd.Sections().at(id).get_section_buffer(mngrpBuffer);
+        [[maybe_unused]] const auto sectionBuffer{ section.get_section_buffer(dataBuffer_) };
         if constexpr (sectionT == MenuGroupSectionT::tkmnmes1 || sectionT == MenuGroupSectionT::tkmnmes2
                       || sectionT == MenuGroupSectionT::tkmnmes3) {
           return SectionData<MenuMessages>(MenuMessages{ sectionBuffer }, sectionBuffer);

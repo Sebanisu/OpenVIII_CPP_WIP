@@ -51,7 +51,7 @@ int main()
     mngrpfile.TestTkMnMes<coo>();
     mngrpfile.TestMes<coo>();
     mngrpfile.TestRefine<coo>();
-    mngrpfile.TestTim(menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
+    //mngrpfile.TestTim(menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
     continue;
     // auto mngrphd = open_viii::menu_group::menu_groupHeader{ menu };
     // auto mngrpBuffer = menu.get_entry_data("mngrp.bin");
