@@ -38,32 +38,32 @@ private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
 
-  std::uint16_t magicID_{};
-  std::uint8_t unknown0_{};
-  AttackTypeT attackType_{};
-  std::uint8_t unknown1_{};
-  std::uint8_t unknown2_{};
-  AttackFlagsT attackFlags_{};
-  std::uint8_t unknown3_{};
-  ElementT element_{};
-  std::uint8_t statusAttack_{};
-  std::uint8_t criticalBonus_{};
-  std::uint8_t unknown4_{};
+  std::uint16_t m_magic_id{};
+  std::uint8_t m_unknown0{};
+  AttackTypeT m_attack_type{};
+  std::uint8_t m_unknown1{};
+  std::uint8_t m_unknown2{};
+  AttackFlagsT m_attack_flags{};
+  std::uint8_t m_unknown3{};
+  ElementT m_element{};
+  std::uint8_t m_status_attack{};
+  std::uint8_t m_critical_bonus{};
+  std::uint8_t m_unknown4{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
-  [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
-  [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
-  [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
-  [[nodiscard]] auto unknown2() const noexcept { return unknown2_; }
-  [[nodiscard]] auto AttackFlags() const noexcept { return attackFlags_; }
-  [[nodiscard]] auto unknown3() const noexcept { return unknown3_; }
-  [[nodiscard]] auto Element() const noexcept { return element_; }
-  [[nodiscard]] auto StatusAttack() const noexcept { return statusAttack_; }
-  [[nodiscard]] auto CriticalBonus() const noexcept { return criticalBonus_; }
-  [[nodiscard]] auto unknown4() const noexcept { return unknown4_; }
+  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
+  [[nodiscard]] auto magic_id() const noexcept { return m_magic_id; }
+  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
+  [[nodiscard]] auto attack_type() const noexcept { return m_attack_type; }
+  [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
+  [[nodiscard]] auto unknown2() const noexcept { return m_unknown2; }
+  [[nodiscard]] auto attack_flags() const noexcept { return m_attack_flags; }
+  [[nodiscard]] auto unknown3() const noexcept { return m_unknown3; }
+  [[nodiscard]] auto element() const noexcept { return m_element; }
+  [[nodiscard]] auto status_attack() const noexcept { return m_status_attack; }
+  [[nodiscard]] auto critical_bonus() const noexcept { return m_critical_bonus; }
+  [[nodiscard]] auto unknown4() const noexcept { return m_unknown4; }
 
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
@@ -75,12 +75,12 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(MagicID()) << ", " << static_cast<std::uint32_t>(unknown0()) << ", "
-              << static_cast<std::uint32_t>(AttackType()) << ", " << static_cast<std::uint32_t>(unknown1()) << ", "
-              << static_cast<std::uint32_t>(unknown2()) << ", " << static_cast<std::uint32_t>(AttackFlags()) << ", "
-              << static_cast<std::uint32_t>(unknown3()) << ", " << static_cast<std::uint32_t>(Element()) << ", "
-              << static_cast<std::uint32_t>(StatusAttack()) << ", " << static_cast<std::uint32_t>(CriticalBonus())
-              << ", " << static_cast<std::uint32_t>(unknown4());
+    return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
+              << static_cast<std::uint32_t>(m_attack_type) << ", " << static_cast<std::uint32_t>(m_unknown1) << ", "
+              << static_cast<std::uint32_t>(m_unknown2) << ", " << static_cast<std::uint32_t>(m_attack_flags) << ", "
+              << static_cast<std::uint32_t>(m_unknown3) << ", " << static_cast<std::uint32_t>(m_element) << ", "
+              << static_cast<std::uint32_t>(m_status_attack) << ", " << static_cast<std::uint32_t>(m_critical_bonus)
+              << ", " << static_cast<std::uint32_t>(m_unknown4);
   }
 };
 }// namespace open_viii::kernel

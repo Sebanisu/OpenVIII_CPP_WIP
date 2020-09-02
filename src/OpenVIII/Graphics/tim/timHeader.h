@@ -13,74 +13,74 @@ namespace open_viii::graphics {
  * @ingroup Graphics
  * @brief Color Lookup Table Header
  */
-struct timHeader
+struct TimHeader
 {
 private:
   /**
    * @brief expected value of tag_ is 0x10.
    */
-  static constexpr auto tagVal_ = 0x10;
+  static constexpr auto TAG_VAL = 0x10;
   /**
    * @brief expected value of version_ is 0x0.
    */
-  static constexpr auto versionVal_ = 0x0;
+  static constexpr auto VERSION_VAL = 0x0;
   /**
    * @brief tag_ is first byte of a TIM file.
    */
-  std::uint8_t tag_{};
+  std::uint8_t m_tag{};
   /**
    * @brief version_ is second byte of a TIM file.
    */
-  std::uint8_t version_{};
+  std::uint8_t m_version{};
 
   /**
    * @brief value should be 0.
    */
-  std::uint8_t none0_{};
+  std::uint8_t m_none0{};
   /**
    * @brief value should be 0.
    */
-  std::uint8_t none1_{};
+  std::uint8_t m_none1{};
 
   /**
    * @brief bits per pixel flags and CLP flag
    */
-  BPPT bpp_{};
+  BPPT m_bpp{};
   /**
    * @brief value should be 0.
    */
-  std::uint8_t none2_{};
+  std::uint8_t m_none2{};
   /**
    * @brief value should be 0.
    */
-  std::uint8_t none3_{};
+  std::uint8_t m_none3{};
   /**
    * @brief value should be 0 or 22
    */
-  std::uint8_t none4_{};
+  std::uint8_t m_none4{};
 
 public:
   /**
    * @return bits per pixel flags and CLP flag
    */
-  [[nodiscard]] auto BPP() const { return bpp_; }
+  [[nodiscard]] auto bpp() const { return m_bpp; }
   /**
    * All none values should be 0. version_ should be versionVal_. tag_ should be tagVal_. Only valid values for bpp are
    * 4bpp with CLP, 8bpp with CLP, 16bpp, or 24 bpp.
    * @brief Test member variables for valid values.
    * @return true if Check test passes.
    */
-  [[nodiscard]] bool Check() const
+  [[nodiscard]] bool check() const
   {
-    return none0_ == 0 && none1_ == 0 && none2_ == 0 && none3_ == 0 && /*(none4_ == 0 || none4_ == 22) &&*/ tag_ == tagVal_
-           && version_ == versionVal_ && bpp_.Check();
+    return m_none0 == 0 && m_none1 == 0 && m_none2 == 0 && m_none3 == 0 && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL
+           && m_version == VERSION_VAL && m_bpp.check();
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const timHeader &input)
+  friend std::ostream &operator<<(std::ostream &os, const TimHeader &input)
   {
     //[[maybe_unused]]static constexpr auto size_ = sizeof(input);
-    return os << "{ Tag: " << static_cast<uint32_t>(input.tag_)
-              << ", Version: " << static_cast<uint32_t>(input.version_) << ", " << input.bpp_ << '}';
+    return os << "{ Tag: " << static_cast<uint32_t>(input.m_tag)
+              << ", Version: " << static_cast<uint32_t>(input.m_version) << ", " << input.m_bpp << '}';
   }
 };
 }// namespace open_viii::graphics

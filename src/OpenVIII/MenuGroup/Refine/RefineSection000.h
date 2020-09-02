@@ -81,11 +81,11 @@ public:
     std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
-    bool skipFirstNull = false) const
+    bool skip_first_null = false) const
 
   {
     for (const auto item : arr) {
-      item.template out<langVal>(os, buffer, offset, skipFirstNull);
+      item.template out<langVal>(os, buffer, offset, skip_first_null);
       os << '\n';
     }
     return os;
@@ -94,25 +94,25 @@ public:
   std::ostream &out(std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
-    bool skipFirstNull = false) const
+    bool skip_first_null = false) const
 
   {
     os << "tMagRF:\n";
-    out_array<langVal>(m_t_mag_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_t_mag_rf, os, buffer, offset, skip_first_null);
     os << "iMagRF:\n";
-    out_array<langVal>(m_i_mag_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_i_mag_rf, os, buffer, offset, skip_first_null);
     os << "fMagRF:\n";
-    out_array<langVal>(m_f_mag_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_f_mag_rf, os, buffer, offset, skip_first_null);
     os << "lMagRF:\n";
-    out_array<langVal>(m_l_mag_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_l_mag_rf, os, buffer, offset, skip_first_null);
     os << "timeMagRF:\n";
-    out_array<langVal>(m_time_mag_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_time_mag_rf, os, buffer, offset, skip_first_null);
     os << "stMagRF:\n";
-    out_array<langVal>(m_st_mag_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_st_mag_rf, os, buffer, offset, skip_first_null);
     os << "suptMagRF:\n";
-    out_array<langVal>(m_supt_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_supt_rf, os, buffer, offset, skip_first_null);
     os << "forbidMagRF:\n";
-    out_array<langVal>(m_forbid_mag_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_forbid_mag_rf, os, buffer, offset, skip_first_null);
     return os;
   }
 };

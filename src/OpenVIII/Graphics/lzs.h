@@ -19,7 +19,7 @@ namespace open_viii::graphics {
 struct [[maybe_unused]] Lzs
 {
 private:
-  rectangle<std::uint16_t> m_rectangle{};
+  Rectangle<std::uint16_t> m_rectangle{};
   std::vector<Color16> m_colors{};
 
 public:
@@ -53,7 +53,7 @@ public:
       static constexpr size_t sz16 = sizeof(Color16);
       std::cout << sz16 << '\n';
       const size_t max_bytes = std::ranges::size(adj) / sz16;
-      const size_t area = static_cast<size_t>(m_rectangle.Height()) * static_cast<size_t>(m_rectangle.Width());
+      const size_t area = m_rectangle.area();
       size_t min_size = std::min(max_bytes, area) * sz16;
       if (min_size == 0) {
         m_rectangle = {};
@@ -66,7 +66,7 @@ public:
   }
   [[maybe_unused]] void save(const std::string_view &filename) const
   {
-    ppm::save(m_colors, m_rectangle.Width(), m_rectangle.Height(), filename);
+    Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
   }
   friend std::ostream &operator<<(std::ostream &os, const Lzs &l) { return os << '{' << l.m_rectangle << "}\n"; }
 };

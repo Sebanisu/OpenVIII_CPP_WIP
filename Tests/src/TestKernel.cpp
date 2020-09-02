@@ -27,20 +27,20 @@ int main()
     [[maybe_unused]] const auto &main = archives.get<open_viii::archive::ArchiveTypeT::main>();
     std::cout << main << std::endl;
     auto kernel = open_viii::kernel::Header<coo>{ main };
-    [[maybe_unused]] const auto &buffer = kernel.Buffer();
-    std::cout << "kernel.bin " << buffer.size() << " bytes; " << kernel.SectionCount() << " section count\n";
-    std::cout << static_cast<int>(open_viii::kernel::SectionTypesT::Count) << std::endl;
+    [[maybe_unused]] const auto &buffer = kernel.buffer();
+    std::cout << "kernel.bin " << buffer.size() << " bytes; " << kernel.section_count() << " section count\n";
+    std::cout << static_cast<int>(open_viii::kernel::SectionTypesT::count) << std::endl;
     //    const auto &sectionOffsets = kernel.SectionOffsets();
     //    std::for_each(
     //      sectionOffsets.begin(), sectionOffsets.end(),[](const auto &value) { std::cout << value << std::endl; });
-    kernel.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::First),
-      static_cast<int>(open_viii::kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    kernel.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::first),
+      static_cast<int>(open_viii::kernel::SectionTypesT::count)>([](auto string, auto span, auto data) {
       std::cout << "  " << string << " - " << std::size(span) << " bytes\n";
 
       return data;
     });
-    kernel.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::First),
-      static_cast<int>(open_viii::kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
+    kernel.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::first),
+      static_cast<int>(open_viii::kernel::SectionTypesT::count)>([](auto string, auto span, auto data) {
       if constexpr (!std::is_null_pointer_v<decltype(
                       data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
         std::cout << string << " ( " << std::size(span) << "bytes) has " << data.size() << " entries\n";

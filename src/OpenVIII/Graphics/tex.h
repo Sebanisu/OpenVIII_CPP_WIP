@@ -181,13 +181,13 @@ public:
   [[maybe_unused]] void save(std::string_view filename) const
   {
     if (m_tex_header.num_palettes() == 0) {
-      ppm::save(get_colors(), m_tex_header.image_width(), m_tex_header.image_height(), filename);
+      Ppm::save(get_colors(), m_tex_header.image_width(), m_tex_header.image_height(), filename);
     } else {
       auto path = std::filesystem::path(filename);
       for (std::uint16_t i = 0; i < m_tex_header.num_palettes(); i++) {
         auto ss = std::stringstream{};
         ss << (path.parent_path() / path.stem()).string() << '_' << i << path.extension().string();
-        ppm::save(get_colors(i), m_tex_header.image_width(), m_tex_header.image_height(), ss.str());
+        Ppm::save(get_colors(i), m_tex_header.image_width(), m_tex_header.image_height(), ss.str());
       }
     }
   }

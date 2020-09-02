@@ -31,22 +31,22 @@ public:
       return EMPTY;
     }
   }
-  [[maybe_unused]] [[nodiscard]] static constexpr LangT from_string(std::string_view strVal) noexcept
+  [[maybe_unused]] [[nodiscard]] static constexpr LangT from_string(std::string_view str_val) noexcept
   {
-    if (strVal.size() == 2) {
-      if (open_viii::Tools::i_equals(strVal, EN)) {
+    if (str_val.size() == 2) {
+      if (open_viii::Tools::i_equals(str_val, EN)) {
         return LangT::en;
       }
-      if (open_viii::Tools::i_equals(strVal, DE)) {
+      if (open_viii::Tools::i_equals(str_val, DE)) {
         return LangT::de;
       }
-      if (open_viii::Tools::i_equals(strVal, FR)) {
+      if (open_viii::Tools::i_equals(str_val, FR)) {
         return LangT::fr;
       }
-      if (open_viii::Tools::i_equals(strVal, IT)) {
+      if (open_viii::Tools::i_equals(str_val, IT)) {
         return LangT::it;
       }
-      if (open_viii::Tools::i_equals(strVal, JP)) {
+      if (open_viii::Tools::i_equals(str_val, JP)) {
         return LangT::jp;
       }
     }

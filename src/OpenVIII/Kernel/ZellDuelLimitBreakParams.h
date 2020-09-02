@@ -113,19 +113,19 @@ private:
   //  0x0061	1 byte	Next Sequence 24_1
   //  0x0062	1 byte	Next Sequence 24_2
   //  0x0063	1 byte	Next Sequence 24_3
-  std::array<std::uint8_t, 4> data_{};
+  std::array<std::uint8_t, 4> m_data{};
 
 public:
-  [[nodiscard]] constexpr auto at(const size_t &index) const { return data_.at(index); }
-  [[nodiscard]] constexpr auto size() { return data_.size(); }
+  [[nodiscard]] constexpr auto at(const size_t &index) const { return m_data.at(index); }
+  [[nodiscard]] constexpr auto size() { return m_data.size(); }
   //[[nodiscard]] constexpr auto operator[](const size_t &index) { return data_[index]; }
-  [[nodiscard]] constexpr auto begin() { return data_.begin(); }
-  [[nodiscard]] constexpr auto end() { return data_.end(); }
+  [[nodiscard]] constexpr auto begin() { return m_data.begin(); }
+  [[nodiscard]] constexpr auto end() { return m_data.end(); }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &textSpan)
   {
     os << '{';
     bool first = true;
-    for (const auto &item : data_) {
+    for (const auto &item : m_data) {
       if (!first) {
         os << ", ";
       }

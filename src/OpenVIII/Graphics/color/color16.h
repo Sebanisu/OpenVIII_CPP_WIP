@@ -32,7 +32,7 @@ private:
   static constexpr std::uint_fast8_t GET_HIGH_BIT_SHIFT = { 2U };
   static constexpr std::uint_fast8_t LARGEST_5_BIT_VALUE{ 0b0001'1111 };
   [[nodiscard]] std::bitset<BITS> value_bit() const { return std::bitset<BITS>{ m_value }; }
-  void value_bit(const std::bitset<BITS> &newValue) const { m_value = static_cast<std::uint16_t>(newValue.to_ulong()); }
+  void value_bit(const std::bitset<BITS> &new_value) const { m_value = static_cast<std::uint16_t>(new_value.to_ulong()); }
   [[nodiscard]] std::uint8_t convert(const std::bitset<BITS> &mask, const std::uint_fast8_t &shift) const
   {
     auto temp = ((value_bit() & mask) >> shift);
@@ -56,7 +56,7 @@ private:
 
 public:
   Color16() = default;
-  explicit Color16(std::uint16_t rawColor) : m_value(rawColor) {}
+  explicit Color16(std::uint16_t raw_color) : m_value(raw_color) {}
   template<Color cT> explicit Color16(cT color)
   {
     r(color.r());

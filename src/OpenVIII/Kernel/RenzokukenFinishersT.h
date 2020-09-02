@@ -16,11 +16,11 @@
 #include <cstdint>
 namespace open_viii::kernel {
 enum class RenzokukenFinishersT : std::uint8_t {
-  None = 0x00,
-  RoughDivide = 0x01,
-  FatedCircle = 0x02,
-  BlastingZone = 0x04,
-  LionHeart = 0x08,
+  none = 0x00,
+  rough_divide = 0x01,
+  fated_circle = 0x02,
+  blasting_zone = 0x04,
+  lion_heart = 0x08,
 };
 }
 #endif// VIIIARCHIVE_RENZOKUKENFINISHERST_H

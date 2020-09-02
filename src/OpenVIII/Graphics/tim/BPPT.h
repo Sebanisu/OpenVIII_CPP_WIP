@@ -15,69 +15,69 @@ namespace open_viii::graphics {
 struct BPPT
 {
 private:
-  bool _8bpp_ : 1 { false };
-  bool _16bpp_ : 1 { false };
-  bool unused1 : 1 { false };
-  bool colorLookupTablePresent_ : 1 { false };
+  bool m_8bpp : 1 { false };
+  bool m_16bpp : 1 { false };
+  bool m_unused1 : 1 { false };
+  bool m_color_lookup_table_present : 1 { false };
 
-  bool unused2 : 1 { false };
-  bool unused3 : 1 { false };
-  bool unused4 : 1 { false };
-  bool unused5 : 1 { false };
+  bool m_unused2 : 1 { false };
+  bool m_unused3 : 1 { false };
+  bool m_unused4 : 1 { false };
+  bool m_unused5 : 1 { false };
 
 public:
-  [[nodiscard]] bool unused() const { return unused1 && unused2 && unused3 && unused4 && unused5; }
+  [[nodiscard]] bool unused() const { return m_unused1 && m_unused2 && m_unused3 && m_unused4 && m_unused5; }
   /**
    * Test bits to check if color lookup table is present and 8bpp and 16bpp are not set;
    * @return true if 4bpp
    */
-  [[nodiscard]] bool _4bpp() const { return !unused() && !_8bpp_ && !_16bpp_ && colorLookupTablePresent_; }
+  [[nodiscard]] bool bpp4() const { return !unused() && !m_8bpp && !m_16bpp && m_color_lookup_table_present; }
   /**
    * Test bits to check if color lookup table is present and 8bpp is set and 16bpp is not set;
    * @return true if 8bpp
    */
-  [[nodiscard]] bool _8bpp() const { return !unused() && _8bpp_ && !_16bpp_ && colorLookupTablePresent_; }
+  [[nodiscard]] bool bpp8() const { return !unused() && m_8bpp && !m_16bpp && m_color_lookup_table_present; }
 
   /**
    * Test bits to check if color lookup table is not present and 8bpp is not set and 16bpp is set;
    * @return true if 16bpp
    */
-  [[nodiscard]] bool _16bpp() const { return !unused() && !_8bpp_ && _16bpp_ && !colorLookupTablePresent_; }
+  [[nodiscard]] bool bpp16() const { return !unused() && !m_8bpp && m_16bpp && !m_color_lookup_table_present; }
 
   /**
    * Test bits to check if color lookup table is not present and 8bpp is set and 16bpp is set;
    * @return true if 24bpp
    */
-  [[nodiscard]] bool _24bpp() const { return !unused() && _8bpp_ && _16bpp_ && !colorLookupTablePresent_; }
+  [[nodiscard]] bool bpp24() const { return !unused() && m_8bpp && m_16bpp && !m_color_lookup_table_present; }
   /**
    * Test bits to check if color lookup table is present and 8bpp is ignored and 16bpp is not set;
    * @return true if 16bpp
    */
-  [[nodiscard]] bool ColorLookupTablePresent() const { return !unused() && !_16bpp_ && colorLookupTablePresent_; }
+  [[nodiscard]] bool color_lookup_table_present() const { return !unused() && !m_16bpp && m_color_lookup_table_present; }
   /**
    * Test that one of the valid states is true.
    * @return true if is a valid state.
    */
-  [[nodiscard]] bool Check() const { return _4bpp() || _8bpp() || _16bpp() || _24bpp(); }
-  [[nodiscard]] explicit operator bool() const { return Check(); }
+  [[nodiscard]] bool check() const { return bpp4() || bpp8() || bpp16() || bpp24(); }
+  [[nodiscard]] explicit operator bool() const { return check(); }
   [[nodiscard]] explicit operator int() const
   {
     //[[maybe_unused]] static constexpr auto size_ = sizeof(BPPT);
-    if (_4bpp()) {
-      const int retVal = 4;
-      return retVal;
+    if (bpp4()) {
+      const int ret_val = 4;
+      return ret_val;
     }
-    if (_8bpp()) {
-      const int retVal = 8;
-      return retVal;
+    if (bpp8()) {
+      const int ret_val = 8;
+      return ret_val;
     }
-    if (_16bpp()) {
-      const int retVal = 16;
-      return retVal;
+    if (bpp16()) {
+      const int ret_val = 16;
+      return ret_val;
     }
-    if (_24bpp()) {
-      const int retVal = 24;
-      return retVal;
+    if (bpp24()) {
+      const int ret_val = 24;
+      return ret_val;
     }
     return 0;
   }
@@ -91,7 +91,7 @@ public:
 
   friend std::ostream &operator<<(std::ostream &os, const BPPT &input)
   {
-    return os << "{BPP: " << static_cast<int>(input) << ", CLP: " << input.colorLookupTablePresent_ << '}';
+    return os << "{BPP: " << static_cast<int>(input) << ", CLP: " << input.m_color_lookup_table_present << '}';
   }
 };
 }// namespace open_viii::graphics

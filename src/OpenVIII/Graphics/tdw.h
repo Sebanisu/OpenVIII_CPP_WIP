@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_TDW_H
 #define VIIIARCHIVE_TDW_H
 #include "tim.h"
-#include "_4bitValues.h"
+#include "Bit4Values.h"
 #include <cstdint>
 #include <cstring>
 namespace open_viii::graphics {
@@ -18,7 +18,7 @@ private:
   static constexpr auto WIDTHS_OFFSET_VALUE = 8U;
   std::uint32_t m_widths_offset{};
   std::uint32_t m_tim_offset{};
-  std::vector<_4bitValues> m_widths{};
+  std::vector<Bit4Values> m_widths{};
   Tim m_tim{};
   [[nodiscard]] auto widths_size() const noexcept { return m_tim_offset - m_widths_offset; }
 
@@ -64,7 +64,7 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Tdw &t)
   {
     os << t.size() << " char widths: ";
-    for (const _4bitValues &w : t.m_widths) {
+    for (const Bit4Values &w : t.m_widths) {
       os << static_cast<std::uint32_t>(w.first) << ", " << static_cast<std::uint32_t>(w.second) << ", ";
     }
     return os << '\n' << t.m_tim;

@@ -15,41 +15,44 @@
 #define VIIIARCHIVE_STATGROUP_H
 #include <array>
 #include <iostream>
+#include <concepts>
 namespace open_viii::kernel {
-template<typename T> struct StatGroup
+template<typename T>
+requires (std::unsigned_integral<T> || std::ranges::contiguous_range<T>)
+struct StatGroup
 {
 private:
-  static constexpr auto statCount = 9U;
-  std::array<T, statCount> stats_{};
-  static constexpr auto HP_{ 0U };
-  static constexpr auto STR_{ 1U };
-  static constexpr auto VIT_{ 2U };
-  static constexpr auto MAG_{ 3U };
-  static constexpr auto SPR_{ 4U };
-  static constexpr auto SPD_{ 5U };
-  static constexpr auto EVA_{ 6U };
-  static constexpr auto HIT_{ 7U };
-  static constexpr auto LUCK_{ 8U };
-  template<typename maybeNumberT> static bool isIntegral([[maybe_unused]] const maybeNumberT &value)
-  {
-    return std::is_integral_v<maybeNumberT>;
-  }
-  template<typename maybeNumberT> static bool isIntegral() { return std::is_integral_v<maybeNumberT>; }
+  static constexpr auto STAT_COUNT = 9U;
+  std::array<T, STAT_COUNT> m_stats{};
+  static constexpr auto HP{ 0U };
+  static constexpr auto STR{ 1U };
+  static constexpr auto VIT{ 2U };
+  static constexpr auto MAG{ 3U };
+  static constexpr auto SPR{ 4U };
+  static constexpr auto SPD{ 5U };
+  static constexpr auto EVA{ 6U };
+  static constexpr auto HIT{ 7U };
+  static constexpr auto LUCK{ 8U };
+//  template<typename maybeNumberT> static bool is_integral([[maybe_unused]] const maybeNumberT &value)
+//  {
+//    return std::is_integral_v<maybeNumberT>;
+//  }
+  //template<typename maybeNumberT> static bool is_integral() { return std::is_integral_v<maybeNumberT>; }
 
 public:
-  [[nodiscard]] T &HP() const noexcept { return stats_.at(HP_); }
-  [[nodiscard]] T &STR() const noexcept { return stats_.at(STR_); }
-  [[nodiscard]] T &VIT() const noexcept { return stats_.at(VIT_); }
-  [[nodiscard]] T &MAG() const noexcept { return stats_.at(MAG_); }
-  [[nodiscard]] T &SPR() const noexcept { return stats_.at(SPR_); }
-  [[nodiscard]] T &SPD() const noexcept { return stats_.at(SPD_); }
-  [[nodiscard]] T &EVA() const noexcept { return stats_.at(EVA_); }
-  [[nodiscard]] T &HIT() const noexcept { return stats_.at(HIT_); }
-  [[nodiscard]] T &LUCK() const noexcept { return stats_.at(LUCK_); }
+  [[maybe_unused]] [[nodiscard]] T &hp() const noexcept { return m_stats.at(HP); }
+  [[nodiscard]] T &str() const noexcept { return m_stats.at(STR); }
+  [[maybe_unused]] [[nodiscard]] T &vit() const noexcept { return m_stats.at(VIT); }
+  [[nodiscard]] T &mag() const noexcept { return m_stats.at(MAG); }
+  [[nodiscard]] T &spr() const noexcept { return m_stats.at(SPR); }
+  [[nodiscard]] T &spd() const noexcept { return m_stats.at(SPD); }
+  [[maybe_unused]] [[nodiscard]] T &eva() const noexcept { return m_stats.at(EVA); }
+  [[nodiscard]] T &hit() const noexcept { return m_stats.at(HIT); }
+  [[maybe_unused]] [[nodiscard]] T &luck() const noexcept { return m_stats.at(LUCK); }
   friend std::ostream &operator<<(std::ostream &os, const StatGroup<T> &input)
   {
     bool first{ true };
-    for (const auto &item : input.stats_) {
+    for (const auto &item : input.m_stats) {
       if (!first) {
         os << ", ";
       } else {
@@ -66,7 +69,7 @@ public:
           } else {
             subFirst = false;
           }
-          if (isIntegral(subItem)) {
+          if (std::is_integral_v<decltype(subItem)>) {
             os << static_cast<size_t>(subItem);
           } else {
             os << subItem;

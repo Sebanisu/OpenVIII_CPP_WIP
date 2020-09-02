@@ -16,15 +16,15 @@
 #include <cstdint>
 namespace open_viii::kernel {
 enum class ElementT : std::uint8_t {
-  NonElemental = 0x00,
-  Fire = 0x01,
-  Ice = 0x02,
-  Thunder = 0x04,
-  Earth = 0x08,
-  Poison = 0x10,
-  Wind = 0x20,
-  Water = 0x40,
-  Holy = 0x80,
+  non_elemental = 0x00,
+  fire = 0x01,
+  ice = 0x02,
+  thunder = 0x04,
+  earth = 0x08,
+  poison = 0x10,
+  wind = 0x20,
+  water = 0x40,
+  holy = 0x80,
 };
 }
 #endif// VIIIARCHIVE_ELEMENTT_H

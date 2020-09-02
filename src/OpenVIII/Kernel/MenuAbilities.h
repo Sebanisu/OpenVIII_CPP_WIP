@@ -31,18 +31,18 @@ template<LangT langVal> struct MenuAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t APRequired_{};
-  std::uint8_t MenuFileIndex_{};
-  std::uint8_t StartOffset_{};
-  std::uint8_t EndOffset_{};
+  std::uint8_t m_ap_required{};
+  std::uint8_t m_menu_file_index{};
+  std::uint8_t m_start_offset{};
+  std::uint8_t m_end_offset{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto APRequired() const noexcept { return APRequired_; }
-  [[nodiscard]] auto MenuFileIndex() const noexcept { return MenuFileIndex_; }
-  [[nodiscard]] auto StartOffset() const noexcept { return StartOffset_; }
-  [[nodiscard]] auto EndOffset() const noexcept { return EndOffset_; }
+  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
+  [[maybe_unused]] [[nodiscard]] auto menu_file_index() const noexcept { return m_menu_file_index; }
+  [[maybe_unused]] [[nodiscard]] auto start_offset() const noexcept { return m_start_offset; }
+  [[maybe_unused]] [[nodiscard]] auto end_offset() const noexcept { return m_end_offset; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
@@ -53,8 +53,8 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(APRequired()) << ", " << static_cast<std::uint32_t>(MenuFileIndex())
-              << ", " << static_cast<std::uint32_t>(StartOffset()) << ", " << static_cast<std::uint32_t>(EndOffset());
+    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", " << static_cast<std::uint32_t>(m_menu_file_index)
+              << ", " << static_cast<std::uint32_t>(m_start_offset) << ", " << static_cast<std::uint32_t>(m_end_offset);
   }
 };
 }// namespace open_viii::kernel

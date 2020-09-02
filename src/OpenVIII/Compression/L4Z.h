@@ -13,32 +13,51 @@
 
 #include <vector>
 #include "lz4/lib/lz4.h"
+#include <concepts>
 
 #ifndef VIIICOMPRESSION_L4Z_H
 #define VIIICOMPRESSION_L4Z_H
 namespace open_viii::compression {
 struct L4Z
 {
-  template<typename dstT = std::vector<char>>
+  /**
+   * Extract char buffer using LZ4 decompressor.
+   * @tparam dstT returning type.
+   * @param src_data pointer to source char buffer.
+   * @param src_size (cast to int) size of src data.
+   * @param dst_size (cast to int) size of dst data.
+   * @return uncompressed char buffer.
+   */
+  template<typename dstT = std::vector<char>, std::integral srcSizeT, std::integral dstSizeT>
   [[nodiscard]] [[maybe_unused]] static dstT
-    decompress(const char *srcData, const size_t &srcSize, const size_t &dstSize = 0)
+    decompress(const char *src_data, const srcSizeT &src_size, const dstSizeT &dst_size)
   {
+    if(src_size<0 || dst_size <0)
+    {
+      return {};
+    }
     dstT dst{};
-    dst.resize(dstSize);
-    auto outSize = LZ4_decompress_safe(srcData, dst.data(), static_cast<int>(srcSize), static_cast<int>(dst.size()));
+    dst.resize(static_cast<std::size_t>(dst_size));
+    auto outSize = LZ4_decompress_safe(src_data, dst.data(), static_cast<int>(src_size), static_cast<int>(dst.size()));
     if (outSize <= 0) {
       return {};
     }
-    if (static_cast<unsigned>(outSize) != dstSize) {
+    if (static_cast<unsigned>(outSize) != dst_size) {
       dst.resize(static_cast<unsigned long>(outSize));
     }
     return dst;
   }
-
-  template<typename dstT = std::vector<char>, std::ranges::contiguous_range srcT = std::vector<char>>
-  [[nodiscard]] [[maybe_unused]] static dstT decompress(const srcT &src, const size_t &dstSize = 0)
-  {// todo replace with std::span.
-    return decompress<dstT>(std::ranges::data(src), std::ranges::size(src), dstSize);
+/**
+ * Extract char buffer using LZ4 decompressor.
+ * @tparam dstT returning type.
+ * @param src source char buffer
+ * @param dst_size (cast to int) size of dst data.
+ * @return uncompressed char buffer.
+ */
+  template<typename dstT = std::vector<char>, std::integral dstSizeT>
+  [[nodiscard]] [[maybe_unused]] static dstT decompress(const std::span<const char> &src, const dstSizeT &dst_size)
+  {
+    return decompress<dstT>(std::ranges::data(src), std::ranges::size(src), dst_size);
   }
 };
 }// namespace open_viii::Compression

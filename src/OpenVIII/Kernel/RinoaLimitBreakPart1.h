@@ -31,19 +31,19 @@ template<LangT langVal> struct RinoaLimitBreakPart1
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t unknownFlags0_{};
-  TargetT target_{};
-  std::uint8_t abilityDataID_{};
-  std::uint8_t unknown0_{};
+  std::uint8_t m_unknown_flags0{};
+  TargetT m_target{};
+  std::uint8_t m_ability_data_id{};
+  std::uint8_t m_unknown0{};
 
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto UnknownFlags0() const noexcept { return unknownFlags0_; }
-  [[nodiscard]] auto Target() const noexcept { return target_; }
-  [[nodiscard]] auto AbilityDataID() const noexcept { return abilityDataID_; }
-  [[nodiscard]] auto Unknown0() const noexcept { return unknown0_; }
+  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
+  [[maybe_unused]] [[nodiscard]] auto unknown_flags0() const noexcept { return m_unknown_flags0; }
+  [[nodiscard]] auto target() const noexcept { return m_target; }
+  [[maybe_unused]] [[nodiscard]] auto ability_data_id() const noexcept { return m_ability_data_id; }
+  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
@@ -54,8 +54,8 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(UnknownFlags0()) << ", " << static_cast<std::uint32_t>(Target())
-              << ", " << static_cast<std::uint32_t>(AbilityDataID()) << ", " << static_cast<std::uint32_t>(Unknown0());
+    return os << ", " << static_cast<std::uint32_t>(m_unknown_flags0) << ", " << static_cast<std::uint32_t>(m_target)
+              << ", " << static_cast<std::uint32_t>(m_ability_data_id) << ", " << static_cast<std::uint32_t>(m_unknown0);
   }
 };
 }// namespace open_viii::kernel

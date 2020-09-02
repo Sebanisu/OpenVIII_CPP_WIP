@@ -135,64 +135,64 @@ template<LangT langVal> struct JunctionableGFs
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint16_t magicID_{};
-  AttackTypeT attackType_{};
-  std::uint8_t gfPower_{};
-  std::uint16_t unknown0_{};
-  AttackFlagsT attackFlags_{};
-  std::uint8_t unknown1_{};
-  std::uint8_t unknown2_{};
-  ElementT element_{};
-  PersistentStatusesT PersistentStatuses_{};
-  BattleOnlyStatusesT BattleOnlyStatuses_{};
-  std::uint8_t gfHPModifier_{};
-  std::uint8_t unknown3_{};
-  std::uint8_t unknown4_{};
-  std::uint8_t unknown5_{};
-  std::uint8_t unknown6_{};
-  std::uint8_t unknown7_{};
-  std::uint8_t unknown8_{};
-  std::uint8_t statusAttackEnabler_{};
-  static constexpr auto maxAbilities_ = 21U;
-  std::array<UnlockableAbility, maxAbilities_> unlockableAbilities_{};
-  GFGroup<std::uint8_t> compatibility_{};
-  std::uint8_t unknown9_{};
-  std::uint8_t unknown10_{};
-  std::uint8_t powerMod_{};
-  std::uint8_t levelMod_{};
+  std::uint16_t m_magic_id{};
+  AttackTypeT m_attack_type{};
+  std::uint8_t m_gf_power{};
+  std::uint16_t m_unknown0{};
+  AttackFlagsT m_attack_flags{};
+  std::uint8_t m_unknown1{};
+  std::uint8_t m_unknown2{};
+  ElementT m_element{};
+  PersistentStatusesT m_persistent_statuses{};
+  BattleOnlyStatusesT m_battle_only_statuses{};
+  std::uint8_t m_gf_hp_modifier{};
+  std::uint8_t m_unknown3{};
+  std::uint8_t m_unknown4{};
+  std::uint8_t m_unknown5{};
+  std::uint8_t m_unknown6{};
+  std::uint8_t m_unknown7{};
+  std::uint8_t m_unknown8{};
+  std::uint8_t m_status_attack_enabler{};
+  static constexpr auto MAX_ABILITIES = 21U;
+  std::array<UnlockableAbility, MAX_ABILITIES> m_unlockable_abilities{};
+  GFGroup<std::uint8_t> m_compatibility{};
+  std::uint8_t m_unknown9{};
+  std::uint8_t m_unknown10{};
+  std::uint8_t m_power_mod{};
+  std::uint8_t m_level_mod{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
-  [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
-  [[nodiscard]] auto GFPower() const noexcept { return gfPower_; }
-  [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
-  [[nodiscard]] auto AttackFlags() const noexcept { return attackFlags_; }
-  [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
-  [[nodiscard]] auto unknown2() const noexcept { return unknown2_; }
-  [[nodiscard]] auto Element() const noexcept { return element_; }
-  [[nodiscard]] auto PersistentStatuses() const noexcept { return PersistentStatuses_; }
-  [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return BattleOnlyStatuses_; }
-  [[nodiscard]] auto GFHPModifier() const noexcept { return gfHPModifier_; }
-  [[nodiscard]] auto unknown3() const noexcept { return unknown3_; }
-  [[nodiscard]] auto unknown4() const noexcept { return unknown4_; }
-  [[nodiscard]] auto unknown5() const noexcept { return unknown5_; }
-  [[nodiscard]] auto unknown6() const noexcept { return unknown6_; }
-  [[nodiscard]] auto unknown7() const noexcept { return unknown7_; }
-  [[nodiscard]] auto unknown8() const noexcept { return unknown8_; }
-  [[nodiscard]] auto StatusAttackEnabler() const noexcept { return statusAttackEnabler_; }
-  template<size_t i> [[nodiscard]] const auto &UnlockableAbilities() const noexcept
+  [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] const auto &description_offset() const noexcept { return m_description_offset; }
+  [[nodiscard]] const auto &magic_id() const noexcept { return m_magic_id; }
+  [[nodiscard]] const auto &attack_type() const noexcept { return m_attack_type; }
+  [[maybe_unused]] [[nodiscard]] const auto &gf_power() const noexcept { return m_gf_power; }
+  [[nodiscard]] const auto &unknown0() const noexcept { return m_unknown0; }
+  [[nodiscard]] const auto &attack_flags() const noexcept { return m_attack_flags; }
+  [[nodiscard]] const auto &unknown1() const noexcept { return m_unknown1; }
+  [[nodiscard]] const auto &unknown2() const noexcept { return m_unknown2; }
+  [[nodiscard]] const auto &element() const noexcept { return m_element; }
+  [[nodiscard]] const auto &persistent_statuses() const noexcept { return m_persistent_statuses; }
+  [[nodiscard]] const auto &battle_only_statuses() const noexcept { return m_battle_only_statuses; }
+  [[maybe_unused]] [[nodiscard]] const auto &gfhp_modifier() const noexcept { return m_gf_hp_modifier; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown3() const noexcept { return m_unknown3; }
+  [[nodiscard]] const auto &unknown4() const noexcept { return m_unknown4; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown5() const noexcept { return m_unknown5; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown6() const noexcept { return m_unknown6; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown7() const noexcept { return m_unknown7; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown8() const noexcept { return m_unknown8; }
+  [[nodiscard]] const auto &status_attack_enabler() const noexcept { return m_status_attack_enabler; }
+  template<size_t i> [[nodiscard]] const auto &unlockable_abilities() const noexcept
   {
-    static_assert(i < maxAbilities_);
-    return unlockableAbilities_.at(i);
+    static_assert(i < MAX_ABILITIES);
+    return m_unlockable_abilities.at(i);
   }
-  [[nodiscard]] const auto &UnlockableAbilities() const noexcept { return unlockableAbilities_; }
-  [[nodiscard]] auto Compatibility() const noexcept { return compatibility_; }
-  [[nodiscard]] auto unknown9() const noexcept { return unknown9_; }
-  [[nodiscard]] auto unknown10() const noexcept { return unknown10_; }
-  [[nodiscard]] auto PowerMod() const noexcept { return powerMod_; }
-  [[nodiscard]] auto LevelMod() const noexcept { return levelMod_; }
+  [[nodiscard]] const auto &unlockable_abilities() const noexcept { return m_unlockable_abilities; }
+  [[maybe_unused]] [[nodiscard]] const auto &compatibility() const noexcept { return m_compatibility; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown9() const noexcept { return m_unknown9; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown10() const noexcept { return m_unknown10; }
+  [[nodiscard]] const auto &power_mod() const noexcept { return m_power_mod; }
+  [[maybe_unused]] [[nodiscard]] const auto &level_mod() const noexcept { return m_level_mod; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
@@ -203,17 +203,18 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    os << ", " << static_cast<std::uint32_t>(MagicID()) << ", " << static_cast<std::uint32_t>(AttackType()) << ", "
-       << static_cast<std::uint32_t>(GFPower()) << ", " << static_cast<std::uint32_t>(unknown0()) << ", "
-       << static_cast<std::uint32_t>(AttackFlags()) << ", " << static_cast<std::uint32_t>(unknown1()) << ", "
-       << static_cast<std::uint32_t>(unknown2()) << ", " << static_cast<std::uint32_t>(Element()) << ", "
-       << static_cast<std::uint32_t>(PersistentStatuses()) << ", " << static_cast<std::uint32_t>(BattleOnlyStatuses())
-       << ", " << static_cast<std::uint32_t>(GFHPModifier()) << ", " << static_cast<std::uint32_t>(unknown3()) << ", "
-       << static_cast<std::uint32_t>(unknown4()) << ", " << static_cast<std::uint32_t>(unknown5()) << ", "
-       << static_cast<std::uint32_t>(unknown6()) << ", " << static_cast<std::uint32_t>(unknown7()) << ", "
-       << static_cast<std::uint32_t>(unknown8()) << ", " << static_cast<std::uint32_t>(StatusAttackEnabler()) << ", ";
+    os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", " << static_cast<std::uint32_t>(m_attack_type) << ", "
+       << static_cast<std::uint32_t>(m_gf_power) << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
+       << static_cast<std::uint32_t>(m_attack_flags) << ", " << static_cast<std::uint32_t>(m_unknown1) << ", "
+       << static_cast<std::uint32_t>(m_unknown2) << ", " << static_cast<std::uint32_t>(m_element) << ", "
+       << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
+       << static_cast<std::uint32_t>(m_battle_only_statuses) << ", " << static_cast<std::uint32_t>(m_gf_hp_modifier)
+       << ", " << static_cast<std::uint32_t>(m_unknown3) << ", " << static_cast<std::uint32_t>(m_unknown4) << ", "
+       << static_cast<std::uint32_t>(m_unknown5) << ", " << static_cast<std::uint32_t>(m_unknown6) << ", "
+       << static_cast<std::uint32_t>(m_unknown7) << ", " << static_cast<std::uint32_t>(m_unknown8) << ", "
+       << static_cast<std::uint32_t>(m_status_attack_enabler) << ", ";
     bool first = true;
-    for (const auto &item : UnlockableAbilities()) {
+    for (const auto &item : m_unlockable_abilities) {
       if (!first) {
         os << ", ";
       } else {
@@ -221,9 +222,9 @@ public:
       }
       os << item;
     }
-    return os << ", " << Compatibility() << ", " << static_cast<std::uint32_t>(unknown9()) << ", "
-              << static_cast<std::uint32_t>(unknown10()) << ", " << static_cast<std::uint32_t>(PowerMod()) << ", "
-              << static_cast<std::uint32_t>(LevelMod());
+    return os << ", " << m_compatibility << ", " << static_cast<std::uint32_t>(m_unknown9) << ", "
+              << static_cast<std::uint32_t>(m_unknown10) << ", " << static_cast<std::uint32_t>(m_power_mod) << ", "
+              << static_cast<std::uint32_t>(m_level_mod);
   }
 };
 }// namespace open_viii::kernel

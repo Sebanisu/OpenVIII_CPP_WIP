@@ -60,25 +60,25 @@ public:
   m_compression_type{static_cast<decltype(m_compression_type)>(fi.compression_type())}
   {
   }
-  constexpr FI(const unsigned int &uncompressedSize,
+  constexpr FI(const unsigned int &uncompressed_size,
     const unsigned int &offset,
-    const CompressionTypeT &compressionType = CompressionTypeT::none) noexcept
-  :m_uncompressed_size{uncompressedSize},m_offset{offset},m_compression_type{compressionType}
+    const CompressionTypeT &compression_type = CompressionTypeT::none) noexcept
+  :m_uncompressed_size{uncompressed_size},m_offset{offset},m_compression_type{compression_type}
   {
 
   }
 
-  explicit FI(std::ifstream &&fp, const long &startOffset = 0, bool close = false)
+  explicit FI(std::ifstream &&fp, const long &start_offset = 0, bool close = false)
   {
     // unsure if this is correct but passing from ifstream is an rvalue
     // so umm it won't let me use a normal reference unless it's const.
     if (!fp.is_open()) {
       return;
     }
-    if (startOffset < 0) {
+    if (start_offset < 0) {
       return;// shouldn't be less than 0;
     }
-    fp.seekg(startOffset);
+    fp.seekg(start_offset);
 
     Tools::read_val(fp, m_uncompressed_size);
     if (m_uncompressed_size > 0) {// if size is 0 than no point in reading more.
@@ -94,12 +94,12 @@ public:
     : FI(std::ifstream(path, std::ios::in | std::ios::binary), static_cast<long>(get_start_offset(id, offset)), true)
   {}
 
-  explicit FI(std::span<const char> buffer, const size_t &startOffset = 0U)
+  explicit FI(std::span<const char> buffer, const size_t &start_offset = 0U)
   {
-    if (startOffset + SIZE > std::ranges::size(buffer)) {
+    if (start_offset + SIZE > std::ranges::size(buffer)) {
       return;
     }
-    buffer = buffer.subspan(startOffset, SIZE);
+    buffer = buffer.subspan(start_offset, SIZE);
 
     std::memcpy(&m_uncompressed_size, std::ranges::data(buffer), sizeof(m_uncompressed_size));
     if (m_uncompressed_size > 0) {// if size is 0 than no point in reading more.
@@ -114,7 +114,7 @@ public:
     : FI(buffer, get_start_offset(id, offset))
   {}
 
-  [[nodiscard]] constexpr static size_t get_count(const size_t fileSize) noexcept { return fileSize / SIZE; }
+  [[nodiscard]] constexpr static size_t get_count(const size_t file_size) noexcept { return file_size / SIZE; }
   // GetCount which is fileSize/Size if file doesn't exist return 0;
   [[maybe_unused]] [[nodiscard]] size_t static get_count(const std::filesystem::path &path)
   {

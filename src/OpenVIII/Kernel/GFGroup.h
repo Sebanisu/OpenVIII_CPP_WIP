@@ -17,11 +17,11 @@
 #include <iostream>
 
 namespace open_viii::kernel {
-template<typename T> struct GFGroup
+template<typename T> requires (std::unsigned_integral<T>||std::ranges::contiguous_range<T>)struct GFGroup
 {
 private:
-  static constexpr auto maxGFs = 16U;
-  std::array<T, maxGFs> gfs_{};
+  static constexpr auto MAX_G_FS = 16U;
+  std::array<T, MAX_G_FS> m_gfs{};
   //  static constexpr auto Quetzalcoatl_{};
   //  static constexpr auto Shiva_{};
   //  static constexpr auto Ifrit_{};
@@ -38,56 +38,56 @@ private:
   //  static constexpr auto Cactuar_{};
   //  static constexpr auto Tonberry_{};
   //  static constexpr auto Eden_{};
-  static constexpr auto Quetzalcoatl_{ 0U };
-  static constexpr auto Shiva_{ 1U };
-  static constexpr auto Ifrit_{ 2U };
-  static constexpr auto Siren_{ 3U };
-  static constexpr auto Brothers_{ 4U };
-  static constexpr auto Diablos_{ 5U };
-  static constexpr auto Carbuncle_{ 6U };
-  static constexpr auto Leviathan_{ 7U };
-  static constexpr auto Pandemona_{ 8U };
-  static constexpr auto Cerberus_{ 9U };
-  static constexpr auto Alexander_{ 10U };
-  static constexpr auto Doomtrain_{ 11U };
-  static constexpr auto Bahamut_{ 12U };
-  static constexpr auto Cactuar_{ 13U };
-  static constexpr auto Tonberry_{ 14U };
-  static constexpr auto Eden_{ 15U };
-  template<typename maybeNumberT> static bool isIntegral([[maybe_unused]] const maybeNumberT &value)
-  {
-    return std::is_integral_v<maybeNumberT>;
-  }
-  template<typename maybeNumberT> static bool isIntegral() { return std::is_integral_v<maybeNumberT>; }
+  static constexpr auto QUETZALCOATL{ 0U };
+  static constexpr auto SHIVA{ 1U };
+  static constexpr auto IFRIT{ 2U };
+  static constexpr auto SIREN{ 3U };
+  static constexpr auto BROTHERS{ 4U };
+  static constexpr auto DIABLOS{ 5U };
+  static constexpr auto CARBUNCLE{ 6U };
+  static constexpr auto LEVIATHAN{ 7U };
+  static constexpr auto PANDEMONA{ 8U };
+  static constexpr auto CERBERUS{ 9U };
+  static constexpr auto ALEXANDER{ 10U };
+  static constexpr auto DOOMTRAIN{ 11U };
+  static constexpr auto BAHAMUT{ 12U };
+  static constexpr auto CACTUAR{ 13U };
+  static constexpr auto TONBERRY{ 14U };
+  static constexpr auto EDEN{ 15U };
+//  template<typename maybeNumberT> static bool is_integral([[maybe_unused]] const maybeNumberT &value)
+//  {
+//    return std::is_integral_v<maybeNumberT>;
+//  }
+//  template<typename maybeNumberT> static bool is_integral() { return std::is_integral_v<maybeNumberT>; }
 
 public:
-  [[nodiscard]] T &Quetzalcoatl() const noexcept { return gfs_.at(Quetzalcoatl_); }
-  [[nodiscard]] T &Shiva() const noexcept { return gfs_.at(Shiva_); }
-  [[nodiscard]] T &Ifrit() const noexcept { return gfs_.at(Ifrit_); }
-  [[nodiscard]] T &Siren() const noexcept { return gfs_.at(Siren_); }
-  [[nodiscard]] T &Brothers() const noexcept { return gfs_.at(Brothers_); }
-  [[nodiscard]] T &Diablos() const noexcept { return gfs_.at(Diablos_); }
-  [[nodiscard]] T &Carbuncle() const noexcept { return gfs_.at(Carbuncle_); }
-  [[nodiscard]] T &Leviathan() const noexcept { return gfs_.at(Leviathan_); }
-  [[nodiscard]] T &Pandemona() const noexcept { return gfs_.at(Pandemona_); }
-  [[nodiscard]] T &Cerberus() const noexcept { return gfs_.at(Cerberus_); }
-  [[nodiscard]] T &Alexander() const noexcept { return gfs_.at(Alexander_); }
-  [[nodiscard]] T &Doomtrain() const noexcept { return gfs_.at(Doomtrain_); }
-  [[nodiscard]] T &Bahamut() const noexcept { return gfs_.at(Bahamut_); }
-  [[nodiscard]] T &Cactuar() const noexcept { return gfs_.at(Cactuar_); }
-  [[nodiscard]] T &Tonberry() const noexcept { return gfs_.at(Tonberry_); }
-  [[nodiscard]] T &Eden() const noexcept { return gfs_.at(Eden_); }
+  [[nodiscard]] T &quetzalcoatl() const noexcept { return m_gfs.at(QUETZALCOATL); }
+  [[nodiscard]] T &shiva() const noexcept { return m_gfs.at(SHIVA); }
+  [[nodiscard]] T &ifrit() const noexcept { return m_gfs.at(IFRIT); }
+  [[nodiscard]] T &siren() const noexcept { return m_gfs.at(SIREN); }
+  [[nodiscard]] T &brothers() const noexcept { return m_gfs.at(BROTHERS); }
+  [[nodiscard]] T &diablos() const noexcept { return m_gfs.at(DIABLOS); }
+  [[nodiscard]] T &carbuncle() const noexcept { return m_gfs.at(CARBUNCLE); }
+  [[nodiscard]] T &leviathan() const noexcept { return m_gfs.at(LEVIATHAN); }
+  [[nodiscard]] T &pandemona() const noexcept { return m_gfs.at(PANDEMONA); }
+  [[nodiscard]] T &cerberus() const noexcept { return m_gfs.at(CERBERUS); }
+  [[nodiscard]] T &alexander() const noexcept { return m_gfs.at(ALEXANDER); }
+  [[nodiscard]] T &doomtrain() const noexcept { return m_gfs.at(DOOMTRAIN); }
+  [[nodiscard]] T &bahamut() const noexcept { return m_gfs.at(BAHAMUT); }
+  [[nodiscard]] T &cactuar() const noexcept { return m_gfs.at(CACTUAR); }
+  [[nodiscard]] T &tonberry() const noexcept { return m_gfs.at(TONBERRY); }
+  [[nodiscard]] T &eden() const noexcept { return m_gfs.at(EDEN); }
   friend auto &operator<<(std::ostream &os, const GFGroup<T> &in)
   {
     os << '{';
     bool first = true;
-    for (const auto &item : in.gfs_) {
+    for (const auto &item : in.m_gfs) {
       if (!first) {
         os << ", ";
       } else {
         first = false;
       }
-      if (isIntegral(item)) {
+      if (std::is_integral_v<decltype(item)>) {
         os << static_cast<std::size_t>(item);
       } else {
         os << item;

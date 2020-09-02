@@ -32,18 +32,18 @@ template<LangT langVal> struct GFAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  uint8_t apRequired_{};
-  uint8_t enableBoost_{};
-  StatT statToIncrease_{};
-  uint8_t increaseValue_{};
+  uint8_t m_ap_required{};
+  uint8_t m_enable_boost{};
+  StatT m_stat_to_increase{};
+  uint8_t m_increase_value{};
 
 public:
-  [[nodiscard]] const auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] const auto &DescriptionOffset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto APRequired() const noexcept { return apRequired_; }
-  [[nodiscard]] auto EnableBoost() const noexcept { return enableBoost_ != 0; }
-  [[nodiscard]] auto StatToIncrease() const noexcept { return statToIncrease_; }
-  [[nodiscard]] auto IncreaseValue() const noexcept { return increaseValue_; }
+  [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] const auto &description_offset() const noexcept { return m_description_offset; }
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
+  [[maybe_unused]] [[nodiscard]] auto enable_boost() const noexcept { return m_enable_boost != 0; }
+  [[maybe_unused]] [[nodiscard]] auto stat_to_increase() const noexcept { return m_stat_to_increase; }
+  [[maybe_unused]] [[nodiscard]] auto increase_value() const noexcept { return m_increase_value; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
@@ -54,10 +54,10 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    os << ", " << static_cast<int>(APRequired());
-    os << ", " << static_cast<int>(EnableBoost());
-    os << ", " << static_cast<int>(StatToIncrease());
-    os << ", " << static_cast<int>(IncreaseValue());
+    os << ", " << static_cast<int>(m_ap_required);
+    os << ", " << static_cast<int>(m_enable_boost);
+    os << ", " << static_cast<int>(m_stat_to_increase);
+    os << ", " << static_cast<int>(m_increase_value);
     return os;
   }
 };

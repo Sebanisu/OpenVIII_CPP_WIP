@@ -65,33 +65,33 @@ public:
     std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
-    bool skipFirstNull = false) const
+    bool skip_first_null = false) const
 
   {
-    for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skipFirstNull)) << '\n'; }
+    for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n'; }
     return os;
   }
   template<LangT langVal>
   std::ostream &out(std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
-    bool skipFirstNull = false) const
+    bool skip_first_null = false) const
 
   {
     os << "recovMedRF:\n";
-    out_array<langVal>(m_recov_med_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_recov_med_rf, os, buffer, offset, skip_first_null);
     os << "stMedRF:\n";
-    out_array<langVal>(m_st_med_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_st_med_rf, os, buffer, offset, skip_first_null);
     os << "ammoRF:\n";
-    out_array<langVal>(m_ammo_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_ammo_rf, os, buffer, offset, skip_first_null);
     os << "forbidMedRF:\n";
-    out_array<langVal>(m_forbid_med_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_forbid_med_rf, os, buffer, offset, skip_first_null);
     os << "gfRecovRF:\n";
-    out_array<langVal>(m_gf_recov_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_gf_recov_rf, os, buffer, offset, skip_first_null);
     os << "gfAblMedRF:\n";
-    out_array<langVal>(m_gf_abl_med_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_gf_abl_med_rf, os, buffer, offset, skip_first_null);
     os << "toolRF:\n";
-    out_array<langVal>(m_tool_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_tool_rf, os, buffer, offset, skip_first_null);
     return os;
   }
 };

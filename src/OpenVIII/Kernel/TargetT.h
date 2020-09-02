@@ -17,15 +17,15 @@
 
 namespace open_viii::kernel {
 enum class TargetT : std::uint8_t {
-  None = 0x00,
-  Dead = 0x01,
-  Unk02 = 0x02,
-  Ally = 0x04,
-  SingleSide = 0x08,
-  SingleTarget = 0x10,
-  Unk20 = 0x20,
-  Enemy = 0x40,
-  Unk80 = 0x80,
+  none = 0x00,
+  dead = 0x01,
+  unk02 = 0x02,
+  ally = 0x04,
+  single_side = 0x08,
+  single_target = 0x10,
+  unk20 = 0x20,
+  enemy = 0x40,
+  unk80 = 0x80,
 };
 }
 #endif// VIIIARCHIVE_TARGETT_H

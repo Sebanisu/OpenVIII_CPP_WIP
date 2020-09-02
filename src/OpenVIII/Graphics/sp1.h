@@ -21,18 +21,18 @@ public:
   Sp1() = default;
   explicit Sp1(std::span<const char> buffer)
   {
-    const auto header = sp1Header{ buffer };
+    const auto header = Sp1Header{ buffer };
     m_entries.resize(header.size());
     std::span<std::vector<Sp1Entry>> s{ m_entries };
-    for (const auto &offset : header.Offsets()) {
+    for (const auto &offset : header.offsets()) {
       auto &current = s.first(1)[0];
-      current.resize(offset.Count());
-      size_t sz = sizeof(Sp1Entry) * offset.Count();
-      if (std::ranges::size(buffer) < offset.Offset() + sz) {
+      current.resize(offset.count());
+      size_t sz = sizeof(Sp1Entry) * offset.count();
+      if (std::ranges::size(buffer) < offset.offset() + sz) {
         m_entries = {};
         return;
       }
-      std::memcpy(std::ranges::data(current), std::ranges::data(buffer.subspan(offset.Offset())), sz);
+      std::memcpy(std::ranges::data(current), std::ranges::data(buffer.subspan(offset.offset())), sz);
       s = s.subspan(1);
     }
   }

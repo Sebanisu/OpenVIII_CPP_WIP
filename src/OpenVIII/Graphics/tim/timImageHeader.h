@@ -10,33 +10,33 @@ namespace open_viii::graphics {
 /**
  * Base Header for the following raw 16bit color image data.
  */
-struct timImageHeader
+struct TimImageHeader
 {
 private:
-  std::uint32_t size_{};
-  rectangle<std::uint16_t> rectangle_{};
+  std::uint32_t m_size{};
+  Rectangle<std::uint16_t> m_rectangle{};
 
 public:
   /**
    * Total Header and Data size
    * @brief size in bytes
    */
-  auto size() const { return size_; }
+  auto size() const { return m_size; }
   /**
    * Dimensions of data.
    */
-  auto Rectangle() const { return rectangle_; }
+  auto rectangle() const { return m_rectangle; }
 
 
   /**
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] auto dataSize() const { return size_ - sizeof(timImageHeader); };
+  [[nodiscard]] auto data_size() const { return m_size - sizeof(TimImageHeader); };
 
-  friend std::ostream &operator<<(std::ostream &os, const timImageHeader &input)
+  friend std::ostream &operator<<(std::ostream &os, const TimImageHeader &input)
   {
-    return os << '{' << input.size() << " bytes, " << input.rectangle_ << '}';
+    return os << '{' << input.size() << " bytes, " << input.m_rectangle << '}';
   }
 };
 }// namespace open_viii::graphics

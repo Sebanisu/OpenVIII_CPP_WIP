@@ -20,15 +20,15 @@ namespace open_viii::kernel {
 struct Slot
 {
 private:
-  std::uint8_t magicID_{};
-  std::uint8_t count_{};
+  std::uint8_t m_magic_id{};
+  std::uint8_t m_count{};
 
 public:
-  [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
-  [[nodiscard]] auto Count() const noexcept { return count_; }
+  [[nodiscard]] auto magic_id() const noexcept { return m_magic_id; }
+  [[nodiscard]] auto count() const noexcept { return m_count; }
   friend std::ostream &operator<<(std::ostream &os, const Slot &slot)
   {
-    return os << '{' << static_cast<uint16_t>(slot.MagicID()) << ", " << static_cast<uint16_t>(slot.Count()) << '}';
+    return os << '{' << static_cast<uint16_t>(slot.magic_id()) << ", " << static_cast<uint16_t>(slot.count()) << '}';
   }
 };
 struct SlotsSets
@@ -38,11 +38,11 @@ struct SlotsSets
    * array of 16 bytes 8 total 2 bytes per Magic Slot { Magic ID and Count }
    */
 private:
-  static constexpr auto total_ = 8U;
-  std::array<Slot, total_> slots_{};
+  static constexpr auto TOTAL = 8U;
+  std::array<Slot, TOTAL> m_slots{};
 
 public:
-  [[nodiscard]] const auto &Slots() const noexcept { return slots_; }
+  [[nodiscard]] const auto &slots() const noexcept { return m_slots; }
 
   friend std::ostream &operator<<(std::ostream &os, const SlotsSets &set) { return set.out(os, {}); }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
@@ -50,7 +50,7 @@ public:
 
     os << '{';
     bool first = true;
-    for (const auto &item : Slots()) {
+    for (const auto &item : slots()) {
       if (!first) {
         os << ", ";
       } else {

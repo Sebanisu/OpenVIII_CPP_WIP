@@ -43,13 +43,13 @@ private:
    * @param skipFixed if false skip removing the \r from end and skip replacing slashes.
    * @return void
    */
-  constexpr static void clean_string(std::string &input, const bool &skipFixed = true) noexcept
+  constexpr static void clean_string(std::string &input, const bool &skip_fixed = true) noexcept
   {
     if (std::size(input) > 4) {
       if (Tools::i_starts_with(std::string_view(input.c_str(), 2), "c:")) {
         input.erase(0, 3);// remove c:\ from the start of the strings.
       }
-      if (skipFixed) {
+      if (skip_fixed) {
         if (input.at(input.size() - 1) == '\r') {
           input.pop_back();
         }// remove the carriage return character
@@ -113,8 +113,8 @@ public:
              }();
              id++) {
           if (!std::empty(needle)
-              && !std::any_of(needle.begin(), needle.end(), [&inner_path](const std::string_view &innerNeedle) {
-                   return !inner_path.empty() && Tools::i_find(inner_path, innerNeedle);
+              && !std::any_of(needle.begin(), needle.end(), [&inner_path](const std::string_view &inner_needle) {
+                   return !inner_path.empty() && Tools::i_find(inner_path, inner_needle);
                  })) {
             continue;
           }

@@ -19,30 +19,30 @@
 namespace open_viii::kernel {
 enum class PercentQuantityT : std::uint8_t {
   // 0% = 0x00
-  None [[maybe_unused]] = 0x00,
+  none [[maybe_unused]] = 0x00,
 
   // 6.25% = 0x01,
-  Sixteenth = 0x01,
+  sixteenth = 0x01,
 
   // 12.50% = 0x02
-  Eighth = 0x02,
+  eighth = 0x02,
 
   // 25% = 0x04
-  Quarter = 0x04,
+  quarter = 0x04,
 
   // 50% = 0x08
-  Half = 0x08,
+  half = 0x08,
 
   // 100% = 0x10
-  Full = 0x10,
+  full = 0x10,
 };
 enum class DevourStatFlagT : std::uint8_t {
-  None = 0x00,
-  STR = 0x01,
-  VIT = 0x02,
-  MAG = 0x04,
-  SPR = 0x08,
-  SPD = 0x10,
+  none = 0x00,
+  str = 0x01,
+  vit [[maybe_unused]] = 0x02,
+  mag = 0x04,
+  spr = 0x08,
+  spd = 0x10,
 };
 template<LangT langVal> struct Devour
 {
@@ -73,63 +73,63 @@ template<LangT langVal> struct Devour
    * */
 private:
   EncodedStringOffset m_description_offset{};
-  std::uint8_t damageOrHeal_{};// HP and Status; If last on right bit is set heal, and if not dmg. Rest looks like
+  std::uint8_t m_damage_or_heal{};// HP and Status; If last on right bit is set heal, and if not dmg. Rest looks like
                                // 0b‭00011110‬.
-  PercentQuantityT percentQuantity_{};
-  BattleOnlyStatusesT battleOnlyStatuses_{};// statuses 8-39
-  PersistentStatusesT persistentStatuses_{};// statuses 0-7
-  DevourStatFlagT devourStatFlag_{};
-  std::uint8_t raisedStatHPQuantity_{};
+  PercentQuantityT m_percent_quantity{};
+  BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
+  PersistentStatusesT m_persistent_statuses{};// statuses 0-7
+  DevourStatFlagT m_devour_stat_flag{};
+  std::uint8_t m_raised_stat_hp_quantity{};
 
 public:
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto DamageOrHeal() const noexcept
+  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
+  [[nodiscard]] auto damage_or_heal() const noexcept
   {
-    return (damageOrHeal_ & 0x1U) == 0;
+    return (m_damage_or_heal & 0x1U) == 0;
   }// HP and Status //false is damage, true is heal.
-  [[nodiscard]] auto PercentQuantity() const noexcept// clang tidy thinks this can be made static...
+  [[nodiscard]] auto percent_quantity() const noexcept// clang tidy thinks this can be made static...
   {
-    const auto FlagSet = [this](const PercentQuantityT &flag) {
-      return (static_cast<uint8_t>(percentQuantity_) & static_cast<uint8_t>(flag)) != 0;
+    const auto flag_set = [this](const PercentQuantityT &flag) {
+      return (static_cast<uint8_t>(m_percent_quantity) & static_cast<uint8_t>(flag)) != 0;
     };
     float out{};
-    if (FlagSet(PercentQuantityT::Full)) {
+    if (flag_set(PercentQuantityT::full)) {
       static constexpr auto full = 1.0F;
       out += full;
     }
-    if (FlagSet(PercentQuantityT::Half)) {
+    if (flag_set(PercentQuantityT::half)) {
       static constexpr auto half = 1.0F / 2.0F;
       out += half;
     }
-    if (FlagSet(PercentQuantityT::Quarter)) {
+    if (flag_set(PercentQuantityT::quarter)) {
       static constexpr auto quarter = 1.0F / 4.0F;
       out += quarter;
     }
-    if (FlagSet(PercentQuantityT::Eighth)) {
+    if (flag_set(PercentQuantityT::eighth)) {
       static constexpr auto eighth = 1.0F / 8.0F;
       out += eighth;
     }
-    if (FlagSet(PercentQuantityT::Sixteenth)) {
+    if (flag_set(PercentQuantityT::sixteenth)) {
       static constexpr auto sixteenth = 1.0F / 16.0F;
       out += sixteenth;
     }
     return out;
   }
-  [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
-  [[nodiscard]] auto PersistentStatuses() const noexcept { return persistentStatuses_; }// statuses 0-7
-  [[nodiscard]] auto DevourStatFlag() const noexcept { return devourStatFlag_; }
-  [[nodiscard]] auto RaisedStatHPQuantity() const noexcept { return raisedStatHPQuantity_; }
+  [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }// statuses 8-39
+  [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }// statuses 0-7
+  [[maybe_unused]] [[nodiscard]] auto devour_stat_flag() const noexcept { return m_devour_stat_flag; }
+  [[maybe_unused]] [[nodiscard]] auto raised_stat_hp_quantity() const noexcept { return m_raised_stat_hp_quantity; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(description)) {
       os << Tools::u8tosv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(DamageOrHeal()) << ", " << PercentQuantity() << ", "
-              << static_cast<std::uint32_t>(BattleOnlyStatuses()) << ", "
-              << static_cast<std::uint32_t>(PersistentStatuses()) << ", "
-              << static_cast<std::uint32_t>(DevourStatFlag()) << ", "
-              << static_cast<std::uint32_t>(RaisedStatHPQuantity());
+    return os << ", " << static_cast<std::uint32_t>(damage_or_heal()) << ", " << percent_quantity() << ", "
+              << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
+              << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
+              << static_cast<std::uint32_t>(m_devour_stat_flag) << ", "
+              << static_cast<std::uint32_t>(m_raised_stat_hp_quantity);
   }
 };
 }// namespace open_viii::kernel

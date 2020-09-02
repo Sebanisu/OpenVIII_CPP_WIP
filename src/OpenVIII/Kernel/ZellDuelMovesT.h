@@ -20,16 +20,16 @@ enum struct ZellDuelMoveT : std::uint8_t {
   //  0x08	Different Beat
   //  0x09	My Final Heaven
 
-  PunchRush,
-  Booya,
-  HeelDrop,
-  MachKick,
-  DolphinBlow,
-  MeteorStrike,
-  BurningRave,
-  MeteorBarret,
-  DifferentBeat,
-  MyFinalHeaven
+  punch_rush,
+  booya,
+  heel_drop,
+  mach_kick,
+  dolphin_blow,
+  meteor_strike,
+  burning_rave,
+  meteor_barret,
+  different_beat,
+  my_final_heaven
 };
 }
 #endif// VIIIARCHIVE_ZELLDUELMOVEST_H

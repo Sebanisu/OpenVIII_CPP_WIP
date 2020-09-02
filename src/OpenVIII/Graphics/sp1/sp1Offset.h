@@ -6,16 +6,16 @@
 #define VIIIARCHIVE_SP1OFFSET_H
 #include <cstdint>
 namespace open_viii::graphics {
-struct sp1Offset
+struct Sp1Offset
 {
 private:
-  std::uint16_t offset_{};
-  std::uint16_t count_{};
+  std::uint16_t m_offset{};
+  std::uint16_t m_count{};
 
 public:
-  sp1Offset() = default;
-  [[nodiscard]] auto Offset() const noexcept { return offset_; }
-  [[nodiscard]] auto Count() const noexcept { return count_; }
+  Sp1Offset() = default;
+  [[nodiscard]] auto offset() const noexcept { return m_offset; }
+  [[nodiscard]] auto count() const noexcept { return m_count; }
 };
 
 }// namespace open_viii::graphics

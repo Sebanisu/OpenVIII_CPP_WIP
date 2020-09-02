@@ -79,11 +79,11 @@ public:
     fp.close();
     m_data.shrink_to_fit();
   }
-  void save_entry(const FileData &item, const std::string_view &strPath) const
+  void save_entry(const FileData &item, const std::string_view &str_path) const
   {
     auto buffer = FS::get_entry(m_path, item, 0U);
-    std::cout << '{' << buffer.size() << ", " << strPath << "}\n";
-    Tools::write_buffer(buffer, strPath);
+    std::cout << '{' << buffer.size() << ", " << str_path << "}\n";
+    Tools::write_buffer(buffer, str_path);
   }
   void test() const
   {
@@ -184,11 +184,11 @@ public:
   {
     unsigned int i{};
     std::vector<std::pair<unsigned int, std::string>> vector{};
-    for (const open_viii::archive::FileData &dataItem : data()) {
+    for (const open_viii::archive::FileData &data_item : data()) {
       {
-        auto pathString = dataItem.get_path_string();
-        if (open_viii::Tools::i_find_any(pathString, filename)) {
-          vector.emplace_back(std::make_pair(i, pathString));
+        auto path_string = data_item.get_path_string();
+        if (open_viii::Tools::i_find_any(path_string, filename)) {
+          vector.emplace_back(std::make_pair(i, path_string));
         }
       }
       i++;

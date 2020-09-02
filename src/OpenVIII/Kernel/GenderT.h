@@ -17,8 +17,8 @@
 
 namespace open_viii::kernel {
 enum class GenderT : std::uint8_t {
-  Male = 0,
-  Female = 1,
+  male = 0,
+  female = 1,
 };
 }
 #endif// VIIIARCHIVE_GENDERT_H

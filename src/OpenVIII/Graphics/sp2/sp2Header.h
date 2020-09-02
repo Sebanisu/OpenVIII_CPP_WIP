@@ -9,23 +9,23 @@
 #include <span>
 #include <ranges>
 namespace open_viii::graphics {
-struct sp2Header
+struct Sp2Header
 {
 private:
-  std::uint32_t count_{};
-  std::vector<std::uint32_t> offsets_{};
+  std::uint32_t m_count{};
+  std::vector<std::uint32_t> m_offsets{};
 
 public:
-  sp2Header() = default;
-  explicit sp2Header(std::span<const char> buffer)
+  Sp2Header() = default;
+  explicit Sp2Header(std::span<const char> buffer)
   {
-    std::memcpy(&count_, std::ranges::data(buffer), sizeof(count_));
-    buffer = buffer.subspan(sizeof(count_));
-    offsets_.resize(count_);
-    std::memcpy(std::ranges::data(offsets_), std::ranges::data(buffer), sizeof(std::uint32_t) * count_);
+    std::memcpy(&m_count, std::ranges::data(buffer), sizeof(m_count));
+    buffer = buffer.subspan(sizeof(m_count));
+    m_offsets.resize(m_count);
+    std::memcpy(std::ranges::data(m_offsets), std::ranges::data(buffer), sizeof(std::uint32_t) * m_count);
   }
-  [[nodiscard]] const auto &Offsets() const noexcept { return offsets_; }
-  [[nodiscard]] auto &size() const noexcept { return count_; }
+  [[nodiscard]] const auto &offsets() const noexcept { return m_offsets; }
+  [[nodiscard]] auto &size() const noexcept { return m_count; }
 };
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP2HEADER_H

@@ -11,7 +11,7 @@
 #include "color.h"
 #include "OpenVIII/concepts.h"
 namespace open_viii::graphics {
-struct ppm
+struct Ppm
 {
 
   template<std::ranges::contiguous_range cT>

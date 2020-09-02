@@ -19,16 +19,16 @@ namespace open_viii::kernel {
 struct SequenceAndTimer
 {
 private:
-  std::uint8_t Sequence_{};
-  std::uint8_t Timer_{};
+  std::uint8_t m_sequence{};
+  std::uint8_t m_timer{};
 
 public:
-  [[nodiscard]] auto Sequence() const noexcept { return Sequence_; }
-  [[nodiscard]] auto Timer() const noexcept { return Timer_; }
+  [[nodiscard]] auto sequence() const noexcept { return m_sequence; }
+  [[nodiscard]] auto timer() const noexcept { return m_timer; }
   friend std::ostream &operator<<(std::ostream &os, const SequenceAndTimer &input)
   {
-    return os << '{' << static_cast<std::uint32_t>(input.Sequence()) << ", "
-              << static_cast<std::uint32_t>(input.Timer()) << '}';
+    return os << '{' << static_cast<std::uint32_t>(input.sequence()) << ", "
+              << static_cast<std::uint32_t>(input.timer()) << '}';
   }
 };
 }// namespace open_viii::kernel

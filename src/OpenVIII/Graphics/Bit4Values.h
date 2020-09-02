@@ -5,7 +5,7 @@
 #ifndef VIIIARCHIVE_4BITVALUES_H
 #define VIIIARCHIVE_4BITVALUES_H
 namespace open_viii::graphics {
-struct _4bitValues
+struct Bit4Values
 {
 public:
   std::uint8_t first : 4U {};

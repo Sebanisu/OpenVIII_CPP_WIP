@@ -42,23 +42,23 @@ public:
     std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
-    bool skipFirstNull = false) const
+    bool skip_first_null = false) const
 
   {
-    for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skipFirstNull)) << '\n'; }
+    for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n'; }
     return os;
   }
   template<LangT langVal>
   std::ostream &out(std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
-    bool skipFirstNull = false) const
+    bool skip_first_null = false) const
 
   {
     os << "midMagRF_:\n";
-    out_array<langVal>(m_mid_mag_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_mid_mag_rf, os, buffer, offset, skip_first_null);
     os << "highMagRF_:\n";
-    out_array<langVal>(m_high_mag_rf, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_high_mag_rf, os, buffer, offset, skip_first_null);
     return os;
   }
 };

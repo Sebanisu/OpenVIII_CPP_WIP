@@ -55,41 +55,41 @@ template<LangT langVal> struct Weapons
    */
 private:
   EncodedStringOffset m_name_offset{};
-  RenzokukenFinishersT renzokukenFinishers_{};
-  std::uint8_t unknown_{};
-  CharactersT characterID_{};
-  AttackTypeT attackType_{};
-  std::uint8_t attackPower_{};
-  std::uint8_t attackParameter_{};
-  std::uint8_t strBonus_{};
-  std::uint8_t weaponTier_{};
-  std::uint8_t criticalBonus_{};
-  std::uint8_t meleeWeapon_{};
+  RenzokukenFinishersT m_renzokuken_finishers{};
+  std::uint8_t m_unknown{};
+  CharactersT m_character_id{};
+  AttackTypeT m_attack_type{};
+  std::uint8_t m_attack_power{};
+  std::uint8_t m_attack_parameter{};
+  std::uint8_t m_str_bonus{};
+  std::uint8_t m_weapon_tier{};
+  std::uint8_t m_critical_bonus{};
+  std::uint8_t m_melee_weapon{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto RenzokukenFinishers() const noexcept { return renzokukenFinishers_; }
-  [[nodiscard]] auto unknown() const noexcept { return unknown_; }
-  [[nodiscard]] auto CharacterID() const noexcept { return characterID_; }
-  [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
-  [[nodiscard]] auto AttackPower() const noexcept { return attackPower_; }
-  [[nodiscard]] auto AttackParameter() const noexcept { return attackParameter_; }
-  [[nodiscard]] auto STRBonus() const noexcept { return strBonus_; }
-  [[nodiscard]] auto WeaponTier() const noexcept { return weaponTier_; }
-  [[nodiscard]] auto CriticalBonus() const noexcept { return criticalBonus_; }
-  [[nodiscard]] auto MeleeWeapon() const noexcept { return meleeWeapon_ != 0; }
+  [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
+  [[maybe_unused]] [[nodiscard]] const auto &renzokuken_finishers() const noexcept { return m_renzokuken_finishers; }
+  [[nodiscard]] const auto &unknown() const noexcept { return m_unknown; }
+  [[maybe_unused]] [[nodiscard]] const auto &character_id() const noexcept { return m_character_id; }
+  [[nodiscard]] const auto &attack_type() const noexcept { return m_attack_type; }
+  [[maybe_unused]] [[nodiscard]] const auto &attack_power() const noexcept { return m_attack_power; }
+  [[maybe_unused]] [[nodiscard]] const auto &attack_parameter() const noexcept { return m_attack_parameter; }
+  [[maybe_unused]] [[nodiscard]] const auto &str_bonus() const noexcept { return m_str_bonus; }
+  [[maybe_unused]] [[nodiscard]] const auto &weapon_tier() const noexcept { return m_weapon_tier; }
+  [[maybe_unused]] [[nodiscard]] const auto &critical_bonus() const noexcept { return m_critical_bonus; }
+  [[maybe_unused]] [[nodiscard]] const auto &melee_weapon() const noexcept { return m_melee_weapon != 0; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }
-    return os << ", " << static_cast<std::uint32_t>(RenzokukenFinishers()) << ", "
-              << static_cast<std::uint32_t>(unknown()) << ", " << static_cast<std::uint32_t>(CharacterID()) << ", "
-              << static_cast<std::uint32_t>(AttackType()) << ", " << static_cast<std::uint32_t>(AttackPower()) << ", "
-              << static_cast<std::uint32_t>(AttackParameter()) << ", " << static_cast<std::uint32_t>(STRBonus()) << ", "
-              << static_cast<std::uint32_t>(WeaponTier()) << ", " << static_cast<std::uint32_t>(CriticalBonus()) << ", "
-              << static_cast<std::uint32_t>(MeleeWeapon());
+    return os << ", " << static_cast<std::uint32_t>(m_renzokuken_finishers) << ", "
+              << static_cast<std::uint32_t>(m_unknown) << ", " << static_cast<std::uint32_t>(m_character_id) << ", "
+              << static_cast<std::uint32_t>(m_attack_type) << ", " << static_cast<std::uint32_t>(m_attack_power) << ", "
+              << static_cast<std::uint32_t>(m_attack_parameter) << ", " << static_cast<std::uint32_t>(m_str_bonus)
+              << ", " << static_cast<std::uint32_t>(m_weapon_tier) << ", "
+              << static_cast<std::uint32_t>(m_critical_bonus) << ", " << static_cast<std::uint32_t>(m_melee_weapon);
   }
 };
 }// namespace open_viii::kernel

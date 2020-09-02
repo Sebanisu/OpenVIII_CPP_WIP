@@ -131,23 +131,23 @@ public:
    * 2 = added and all set
    * */
 
-  TryAddT try_add(const std::filesystem::path &existingFilePath,
-    const std::filesystem::path &nestedPath = "",
+  TryAddT try_add(const std::filesystem::path &existing_file_path,
+    const std::filesystem::path &nested_path = "",
     size_t offset = 0U,
     size_t size = 0U) const
   {
-    const auto set = [&existingFilePath, &offset, &nestedPath, &size, this](auto &ds) {
-      ds.path(existingFilePath);
+    const auto set = [&existing_file_path, &offset, &nested_path, &size, this](auto &ds) {
+      ds.path(existing_file_path);
       ds.offset(offset);
       ds.size(size);
-      ds.nested_path(nestedPath);
-      if (nestedPath.has_stem()) {
-        ds.base(get_base_name(nestedPath));
+      ds.nested_path(nested_path);
+      if (nested_path.has_stem()) {
+        ds.base(get_base_name(nested_path));
       } else {
         ds.get_base_name();
       }
     };
-    const auto i = nestedPath.has_extension() ? check_extension(nestedPath) : check_extension(existingFilePath);
+    const auto i = nested_path.has_extension() ? check_extension(nested_path) : check_extension(existing_file_path);
     if (i >= 1 && i <= 3) {
       switch (i) {
       case 1: {
@@ -183,32 +183,32 @@ public:
    */
   template<typename srcT, FI_Like datT = archive::FI>
   requires(std::convertible_to<srcT, std::filesystem::path> || std::ranges::contiguous_range<srcT>) TryAddT
-    try_add_nested(const srcT &src, const size_t srcOffset, const std::filesystem::path &fileEntry, const datT &fi) const
+    try_add_nested(const srcT &src, const size_t src_offset, const std::filesystem::path &file_entry, const datT &fi) const
   {
 
-    const auto set = [&fileEntry, &srcOffset](auto &ds) {
-      ds.path(fileEntry);
+    const auto set = [&file_entry](auto &ds) {
+      ds.path(file_entry);
       ds.offset(0U);// the offset is 0 because we are getting the truncated data below.
       ds.get_base_name();
     };
-    const auto i = check_extension(fileEntry);
+    const auto i = check_extension(file_entry);
     if (i >= 1 && i <= 3) {
       switch (i) {
       case 1: {
         set(m_fl);
-        m_fl.data(FS::get_entry<std::string>(src, fi, srcOffset));
+        m_fl.data(FS::get_entry<std::string>(src, fi, src_offset));
         FL::clean_buffer(m_fl.data());
         break;
       }
       case 2: {
         set(m_fs);
-        m_fs.data( FS::get_entry(src, fi, srcOffset));
+        m_fs.data( FS::get_entry(src, fi, src_offset));
         break;
       }
 
       case 3: {
         set(m_fi);
-        m_fi.data( FS::get_entry(src, fi, srcOffset));
+        m_fi.data( FS::get_entry(src, fi, src_offset));
         get_count();
         break;
       }

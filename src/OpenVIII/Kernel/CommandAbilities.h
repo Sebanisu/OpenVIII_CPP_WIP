@@ -30,19 +30,19 @@ template<LangT langVal> struct CommandAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t apRequired_{};
-  std::uint8_t indexToBattleCommand_{};
-  std::uint8_t unknown0_{};
-  std::uint8_t unknown1_{};
+  std::uint8_t m_ap_required{};
+  std::uint8_t m_index_to_battle_command{};
+  std::uint8_t m_unknown0{};
+  std::uint8_t m_unknown1{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
+  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
 
-  [[nodiscard]] auto APRequired() const noexcept { return apRequired_; }
-  [[nodiscard]] auto IndexToBattleCommand() const noexcept { return indexToBattleCommand_; }
-  [[nodiscard]] auto Unknown0() const noexcept { return unknown0_; }
-  [[nodiscard]] auto Unknown1() const noexcept { return unknown1_; }
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
+  [[maybe_unused]] [[nodiscard]] auto index_to_battle_command() const noexcept { return m_index_to_battle_command; }
+  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
+  [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
@@ -53,8 +53,8 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    os << ", " << static_cast<std::uint32_t>(APRequired()) << ", " << static_cast<std::uint32_t>(IndexToBattleCommand())
-       << ", " << static_cast<std::uint32_t>(Unknown0()) << ", " << static_cast<std::uint32_t>(Unknown1());
+    os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", " << static_cast<std::uint32_t>(m_index_to_battle_command)
+       << ", " << static_cast<std::uint32_t>(m_unknown0) << ", " << static_cast<std::uint32_t>(m_unknown1);
     return os;
   }
 };

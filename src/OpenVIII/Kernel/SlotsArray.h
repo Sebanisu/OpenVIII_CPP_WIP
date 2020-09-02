@@ -24,15 +24,15 @@ struct SlotsArray
    * 0x0000	1 byte	Slot Set ID
    */
 private:
-  std::uint8_t slotSetID_{};
+  std::uint8_t m_slot_set_id{};
 
 public:
-  [[nodiscard]] auto SlotSetID() const noexcept { return slotSetID_; }
+  [[nodiscard]] auto slot_set_id() const noexcept { return m_slot_set_id; }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
-    return os << static_cast<uint16_t>(SlotSetID());
+    return os << static_cast<uint16_t>(slot_set_id());
   }
-  [[nodiscard]] explicit operator std::uint8_t() const { return slotSetID_; }
+  [[nodiscard]] explicit operator std::uint8_t() const { return m_slot_set_id; }
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SLOTSARRAY_H

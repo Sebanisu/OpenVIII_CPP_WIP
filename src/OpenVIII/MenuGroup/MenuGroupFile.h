@@ -264,7 +264,7 @@ public:
           fn << so.str() << "_" << static_cast<std::size_t>(num) << ".tmp";
 
           //std::cout << "Saved: " << fn.str() << "\n";
-          graphics::ppm::save(colors, tim.width(), tim.height(), fn.str());
+          graphics::Ppm::save(colors, tim.width(), tim.height(), fn.str());
         };
         if (tim.clut_rows() > 0) {
           for (std::uint16_t i = 0; i < tim.clut_rows(); i++) {

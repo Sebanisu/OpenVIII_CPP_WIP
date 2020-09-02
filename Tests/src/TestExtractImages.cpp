@@ -70,7 +70,7 @@ int main()
           std::cout << p << '\n' << t << '\n';
           // t.Save(p);
         } else if (open_viii::Tools::i_ends_with(p, ".sp2")) {
-          auto t = open_viii::graphics::sp2(buffer);
+          auto t = open_viii::graphics::Sp2(buffer);
           std::cout << p << '\n' << t << '\n';
           // t.Save(p);
         }

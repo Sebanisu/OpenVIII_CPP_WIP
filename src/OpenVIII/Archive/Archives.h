@@ -35,17 +35,17 @@ enum class ArchiveTypeT : std::uint8_t {
 };
 
 
-template<std::signed_integral T> static constexpr bool test_valid_archive_type_t(T archiveTypeT)
+template<std::signed_integral T> static constexpr bool test_valid_archive_type_t(T archive_type_t)
 {
-  return (static_cast<std::intmax_t>(archiveTypeT) >= static_cast<std::intmax_t>(ArchiveTypeT::first)
-          || static_cast<std::intmax_t>(archiveTypeT) <= static_cast<std::intmax_t>(ArchiveTypeT::last));
+  return (static_cast<std::intmax_t>(archive_type_t) >= static_cast<std::intmax_t>(ArchiveTypeT::first)
+          || static_cast<std::intmax_t>(archive_type_t) <= static_cast<std::intmax_t>(ArchiveTypeT::last));
 }
 template<typename T>
 requires(std::unsigned_integral<T> || std::is_same_v<T, ArchiveTypeT>) static constexpr bool test_valid_archive_type_t(
-  T archiveTypeT)
+  T archive_type_t)
 {
-  return (static_cast<std::size_t>(archiveTypeT) >= static_cast<std::size_t>(ArchiveTypeT::first)
-          || static_cast<std::size_t>(archiveTypeT) <= static_cast<std::size_t>(ArchiveTypeT::last));
+  return (static_cast<std::size_t>(archive_type_t) >= static_cast<std::size_t>(ArchiveTypeT::first)
+          || static_cast<std::size_t>(archive_type_t) <= static_cast<std::size_t>(ArchiveTypeT::last));
 }
 //
 // template<ArchiveTypeT archiveTypeT>
@@ -167,16 +167,16 @@ private:
    * @param size max size of archive? 0U = unlimited
    * @return
    */
-  bool try_add(const ArchiveTypeT &archiveType_,
+  bool try_add(const ArchiveTypeT &archive_type,
     const std::filesystem::path &path,
-    const std::filesystem::path &nestedPath = {},
+    const std::filesystem::path &nested_path = {},
     const size_t &offset = {},
     const size_t &size = {})
   {// this string can be compared to the stem of the filename to determine which archive is try added to.
     // returns nullptr on failure.
-    assert(test_valid_archive_type_t(archiveType_));
-    const auto tryAddToFIFLFS = [&path, &nestedPath, &offset, &size](auto &archive) {
-      return archive.try_add(path, nestedPath, offset, size) != TryAddT::not_part_of_archive;
+    assert(test_valid_archive_type_t(archive_type));
+    const auto tryAddToFIFLFS = [&path, &nested_path, &offset, &size](auto &archive) {
+      return archive.try_add(path, nested_path, offset, size) != TryAddT::not_part_of_archive;
     };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
       if (path.has_extension() && Tools::i_equals(path.extension().string(), ZZZ::EXT)) {
@@ -185,7 +185,7 @@ private:
       }
       return false;
     };
-    switch (archiveType_) {
+    switch (archive_type) {
     case ArchiveTypeT::battle:
       return tryAddToFIFLFS(m_battle);
     case ArchiveTypeT::field:
@@ -379,7 +379,7 @@ public:
    * @param nestedArchive string to filter results. {} will get all nested archives.
    * @return all results.
    */
-  auto get_nested(const std::string_view &nestedArchive) const { return m_field.get_fiflfs_entries(nestedArchive); }
+  auto get_nested(const std::string_view &nested_archive) const { return m_field.get_fiflfs_entries(nested_archive); }
   Archives() = default;
   /**
    * Preloads all archives in the path.

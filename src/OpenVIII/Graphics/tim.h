@@ -10,7 +10,7 @@
 #include "OpenVIII/Graphics/color.h"
 #include "OpenVIII/Graphics/ppm.h"
 #include <sstream>
-#include "_4bitValues.h"
+#include "Bit4Values.h"
 namespace open_viii::graphics {
 /**
  * TIM, or PSX TIM, is an uncompressed raster image file format associated with the Sony PlayStation family of video
@@ -29,22 +29,22 @@ namespace open_viii::graphics {
 struct Tim
 {
 private:
-  timHeader m_tim_header{};
-  timClutHeader m_tim_clut_header{};
+  TimHeader m_tim_header{};
+  TimClutHeader m_tim_clut_header{};
   std::span<const char> m_tim_clut_data{};
-  timImageHeader m_tim_image_header{};
+  TimImageHeader m_tim_image_header{};
   std::span<const char> m_tim_image_data{};
 
-  [[nodiscard]] Color16 get_color([[maybe_unused]] std::uint16_t row, [[maybe_unused]] std::uint8_t colorKey) const
+  [[nodiscard]] Color16 get_color([[maybe_unused]] std::uint16_t row, [[maybe_unused]] std::uint8_t color_key) const
   {
     //    // clangTidy says this function can be static which it cannot be static.
     //    color16 rv{};
-    //    if (timClutHeader_.Rectangle().Height() != 0) {
+    //    if (timClutHeader_.rectangle().height() != 0) {
     //
-    //      if (row > timClutHeader_.Rectangle().Height()) {
+    //      if (row > timClutHeader_.rectangle().height()) {
     //        row = 0;
     //      }
-    //      [[maybe_unused]] const auto index{ (colorKey * 2U) + (row * timClutHeader_.Rectangle().Width()) };
+    //      [[maybe_unused]] const auto index{ (colorKey * 2U) + (row * timClutHeader_.rectangle().width()) };
     //      if (index < timClutData_.size()) {
     //
     //        memcpy(&rv, timClutData_.data() + index, sizeof(rv));
@@ -53,9 +53,9 @@ private:
     //    return rv;
 
     const auto palette_span = std::span(reinterpret_cast<const Color16 *>(std::ranges::data(m_tim_clut_data)),
-      m_tim_clut_header.Rectangle().Width() * m_tim_clut_header.Rectangle().Height())
-                               .subspan(row * m_tim_clut_header.Rectangle().Width());
-    return palette_span[colorKey];
+      m_tim_clut_header.rectangle().width() * m_tim_clut_header.rectangle().height())
+                               .subspan(row * m_tim_clut_header.rectangle().width());
+    return palette_span[color_key];
   }
   template<typename dstT> [[nodiscard]] dstT get_color_t(std::size_t index) const
   {
@@ -96,18 +96,18 @@ public:
     };
 
     get_value(m_tim_header);
-    if (!m_tim_header.Check() || fail) {
+    if (!m_tim_header.check() || fail) {
       m_tim_header = {};
       return;
     }
-    if (m_tim_header.BPP().ColorLookupTablePresent()) {
+    if (m_tim_header.bpp().color_lookup_table_present()) {
       get_value(m_tim_clut_header);
-      if (!m_tim_clut_header.Check() || fail) {
+      if (!m_tim_clut_header.check() || fail) {
         m_tim_clut_header = {};
         m_tim_header = {};
         return;
       }
-      set_data(m_tim_clut_data, m_tim_clut_header.dataSize());
+      set_data(m_tim_clut_data, m_tim_clut_header.data_size());
       if (fail) {
         return;
       }
@@ -116,43 +116,43 @@ public:
     if (fail) {
       return;
     }
-    set_data(m_tim_image_data, m_tim_image_header.dataSize());
+    set_data(m_tim_image_data, m_tim_image_header.data_size());
   }
   [[nodiscard]] bool check() const
   {
-    return m_tim_header.Check() && (!m_tim_header.BPP().Check() || m_tim_clut_header.Check());
+    return m_tim_header.check() && (!m_tim_header.bpp().check() || m_tim_clut_header.check());
   }
   [[nodiscard]] auto width() const
   {
     static constexpr auto bpp4_step{ 4 };
     static constexpr auto bpp8_step{ 2 };
     static constexpr auto bpp24_step{ 1.5 };
-    if (m_tim_header.BPP()._4bpp()) {
-      return static_cast<decltype(m_tim_image_header.Rectangle().Width())>(
-        m_tim_image_header.Rectangle().Width() * bpp4_step);// 4pp
+    if (m_tim_header.bpp().bpp4()) {
+      return static_cast<decltype(m_tim_image_header.rectangle().width())>(
+        m_tim_image_header.rectangle().width() * bpp4_step);// 4pp
     }
-    if (m_tim_header.BPP()._8bpp()) {
-      return static_cast<decltype(m_tim_image_header.Rectangle().Width())>(
-        m_tim_image_header.Rectangle().Width() * bpp8_step);// 8pp
+    if (m_tim_header.bpp().bpp8()) {
+      return static_cast<decltype(m_tim_image_header.rectangle().width())>(
+        m_tim_image_header.rectangle().width() * bpp8_step);// 8pp
     }
-    if (m_tim_header.BPP()._16bpp()) {
-      return m_tim_image_header.Rectangle().Width();// 16bpp
+    if (m_tim_header.bpp().bpp16()) {
+      return m_tim_image_header.rectangle().width();// 16bpp
     }
-    if (m_tim_header.BPP()._24bpp()) {
-      return static_cast<decltype(m_tim_image_header.Rectangle().Width())>(
-        m_tim_image_header.Rectangle().Width() / bpp24_step);// 24 bpp
+    if (m_tim_header.bpp().bpp24()) {
+      return static_cast<decltype(m_tim_image_header.rectangle().width())>(
+        m_tim_image_header.rectangle().width() / bpp24_step);// 24 bpp
     }
-    return static_cast<decltype(m_tim_image_header.Rectangle().Width())>(0);// invalid value
+    return static_cast<decltype(m_tim_image_header.rectangle().width())>(0);// invalid value
   }
-  [[nodiscard]] auto height() const { return m_tim_image_header.Rectangle().Height(); }
-  [[maybe_unused]] [[nodiscard]] auto x() const { return m_tim_image_header.Rectangle().X(); }
-  [[maybe_unused]] [[nodiscard]] auto y() const { return m_tim_image_header.Rectangle().Y(); }
+  [[nodiscard]] auto height() const { return m_tim_image_header.rectangle().height(); }
+  [[maybe_unused]] [[nodiscard]] auto x() const { return m_tim_image_header.rectangle().x(); }
+  [[maybe_unused]] [[nodiscard]] auto y() const { return m_tim_image_header.rectangle().y(); }
 
-  [[maybe_unused]] [[nodiscard]] auto clut_x() const { return m_tim_clut_header.Rectangle().X(); }
-  [[maybe_unused]] [[nodiscard]] auto clut_y() const { return m_tim_clut_header.Rectangle().Y(); }
+  [[maybe_unused]] [[nodiscard]] auto clut_x() const { return m_tim_clut_header.rectangle().x(); }
+  [[maybe_unused]] [[nodiscard]] auto clut_y() const { return m_tim_clut_header.rectangle().y(); }
   [[nodiscard]] auto size() const { return sizeof(m_tim_header) + m_tim_clut_header.size() + m_tim_image_header.size(); }
-  [[nodiscard]] auto clut_rows() const { return m_tim_clut_header.Rectangle().Height(); }
-  [[maybe_unused]] [[nodiscard]] auto clut_colors() const { return m_tim_clut_header.Rectangle().Width(); }
+  [[nodiscard]] auto clut_rows() const { return m_tim_clut_header.rectangle().height(); }
+  [[maybe_unused]] [[nodiscard]] auto clut_colors() const { return m_tim_clut_header.rectangle().width(); }
 
   friend std::ostream &operator<<(std::ostream &os, const Tim &input)
   {
@@ -167,16 +167,16 @@ public:
     static constexpr auto bpp16 = 16U;
     static constexpr auto bpp24 = 24U;
     std::vector<dstT> output{};
-    const auto outSize = static_cast<std::size_t>(width()) * static_cast<std::size_t>(height());
-    output.reserve(outSize);
-    switch (static_cast<int>(m_tim_header.BPP())) {
+    const auto out_size = static_cast<std::size_t>(width()) * static_cast<std::size_t>(height());
+    output.reserve(out_size);
+    switch (static_cast<int>(m_tim_header.bpp())) {
 
     case bpp4: {
 
       const auto s = std::span(
-        reinterpret_cast<const _4bitValues *>(std::ranges::data(m_tim_image_data)), std::ranges::size(m_tim_image_data));
+        reinterpret_cast<const Bit4Values *>(std::ranges::data(m_tim_image_data)), std::ranges::size(m_tim_image_data));
       // break;
-      for (size_t i{}; i < outSize / 2; i++) {
+      for (size_t i{}; i < out_size / 2; i++) {
         // std::bitset<8> bs{ static_cast<std::uint8_t>(timImageData_.at(i / 2U)) };
         // static constexpr std::bitset<8> oct1{ 0xF };
         // static constexpr std::bitset<8> oct2{ 0xF0 };
@@ -193,7 +193,7 @@ public:
     }
     case bpp8: {
       // break;
-      for (size_t i{}; i < outSize; i++) {
+      for (size_t i{}; i < out_size; i++) {
         output.emplace_back(get_color(row, static_cast<std::uint8_t>(m_tim_image_data[i])));
       }
       break;
@@ -209,7 +209,7 @@ public:
       break;
     }
     case bpp24: {
-      for (size_t i{}; i < outSize; i++) { output.emplace_back(get_color_t<Color24<2, 1, 0>>(i)); }
+      for (size_t i{}; i < out_size; i++) { output.emplace_back(get_color_t<Color24<2, 1, 0>>(i)); }
       break;
     }
     }
@@ -219,13 +219,13 @@ public:
   [[maybe_unused]] void save(std::string_view filename) const
   {
     if (clut_rows() == 0) {
-      ppm::save(get_colors<Color16>(), width(), height(), filename);
+      Ppm::save(get_colors<Color16>(), width(), height(), filename);
     } else {
       auto path = std::filesystem::path(filename);
       for (std::uint16_t i = 0; i < clut_rows(); i++) {
         auto ss = std::stringstream{};
         ss << (path.parent_path() / path.stem()).string() << '_' << i << path.extension().string();
-        ppm::save(get_colors<Color16>(i), width(), height(), ss.str());
+        Ppm::save(get_colors<Color16>(i), width(), height(), ss.str());
       }
     }
   }

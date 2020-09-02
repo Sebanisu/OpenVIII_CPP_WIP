@@ -21,18 +21,18 @@ namespace open_viii::kernel {
 struct UnlockableAbility
 {
 private:
-  UnlockerT unlocker_{};
-  std::uint8_t unknown_{};
-  AbilitiesT ability_{};
+  UnlockerT m_unlocker{};
+  std::uint8_t m_unknown{};
+  AbilitiesT m_ability{};
 
 public:
-  [[nodiscard]] auto Unlocker() const noexcept { return unlocker_; }
-  [[nodiscard]] auto unknown() const noexcept { return unknown_; }
-  [[nodiscard]] auto Ability() const noexcept { return ability_; }
+  [[nodiscard]] auto unlocker() const noexcept { return m_unlocker; }
+  [[nodiscard]] auto unknown() const noexcept { return m_unknown; }
+  [[nodiscard]] auto ability() const noexcept { return m_ability; }
   friend auto &operator<<(std::ostream &os, const UnlockableAbility &ua)
   {
-    return os << '{' << static_cast<std::uint32_t>(ua.Unlocker()) << ", " << static_cast<std::uint32_t>(ua.unknown())
-              << ", " << static_cast<std::uint32_t>(ua.Ability()) << '}';
+    return os << '{' << static_cast<std::uint32_t>(ua.unlocker()) << ", " << static_cast<std::uint32_t>(ua.unknown())
+              << ", " << static_cast<std::uint32_t>(ua.ability()) << '}';
   }
 };
 }// namespace open_viii::kernel

@@ -30,17 +30,17 @@ template<LangT langVal> struct JunctionAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t apRequired_{};
-  std::array<std::uint8_t, 3> junctionFlags_{};
+  std::uint8_t m_ap_required{};
+  std::array<std::uint8_t, 3> m_junction_flags{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto APRequired() const noexcept { return apRequired_; }
-  [[nodiscard]] auto JunctionFlags() const
+  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
+  [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
+  [[nodiscard]] auto junction_flags() const
   {
     JunctionFlagsT out{};
-    std::memcpy(&out, junctionFlags_.data(), junctionFlags_.size());
+    std::memcpy(&out, m_junction_flags.data(), m_junction_flags.size());
     return out;
   }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
@@ -53,7 +53,7 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    return os << ", " << static_cast<uint32_t>(APRequired()) << ", " << static_cast<uint32_t>(JunctionFlags());
+    return os << ", " << static_cast<uint32_t>(m_ap_required) << ", " << static_cast<uint32_t>(junction_flags());
   }
 };
 }// namespace open_viii::kernel

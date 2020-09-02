@@ -31,19 +31,19 @@ template<LangT langVal> struct PartyAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t apRequired_{};
-  std::uint8_t flag_{};
-  std::uint8_t unknown0_{};
-  std::uint8_t unknown1_{};
+  std::uint8_t m_ap_required{};
+  std::uint8_t m_flag{};
+  std::uint8_t m_unknown0{};
+  std::uint8_t m_unknown1{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
+  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
 
-  [[nodiscard]] auto APRequired() const noexcept { return apRequired_; }
-  [[nodiscard]] auto Flag() const noexcept { return flag_; }
-  [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
-  [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
+  [[maybe_unused]] [[nodiscard]] auto flag() const noexcept { return m_flag; }
+  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
+  [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
@@ -54,8 +54,8 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(APRequired()) << ", " << static_cast<std::uint32_t>(Flag()) << ", "
-              << static_cast<std::uint32_t>(unknown0()) << ", " << static_cast<std::uint32_t>(unknown1());
+    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", " << static_cast<std::uint32_t>(m_flag) << ", "
+              << static_cast<std::uint32_t>(m_unknown0) << ", " << static_cast<std::uint32_t>(m_unknown1);
   }
 };
 }// namespace open_viii::kernel

@@ -18,21 +18,21 @@
 namespace open_viii::kernel {
 enum class JunctionStatusesT : std::uint16_t {
   // https://github.com/DarkShinryu/doomtrain/wiki/Characters-J-Statuses
-  None = 0x0,
-  Death = 0x1,
-  Poison = 0x2,
-  Petrify = 0x4,
-  Darkness = 0x8,
-  Silence = 0x10,
-  Berserk = 0x20,
-  Zombie = 0x40,
-  Sleep = 0x80,
-  Slow = 0x100,
-  Stop = 0x200,
+  none = 0x0,
+  death = 0x1,
+  poison = 0x2,
+  petrify = 0x4,
+  darkness = 0x8,
+  silence = 0x10,
+  berserk = 0x20,
+  zombie = 0x40,
+  sleep = 0x80,
+  slow = 0x100,
+  stop = 0x200,
   // Curse; unused for attack
-  Curse = 0x400,
-  Confusion = 0x800,
-  Drain = 0x1000,
+  curse = 0x400,
+  confusion = 0x800,
+  drain = 0x1000,
 };
 }
 #endif// VIIIARCHIVE_JUNCTIONSTATUSEST_H

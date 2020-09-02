@@ -30,21 +30,21 @@ struct QuistisBlueMagicLimitBreakParam
    * 0x0007	1 byte	Attack Param
    */
 private:
-  BattleOnlyStatusesT BattleOnlyStatuses_{};
-  PersistentStatusesT PersistentStatuses_{};
-  std::uint8_t AttackPower_{};
-  std::uint8_t AttackParam_{};
+  BattleOnlyStatusesT m_battle_only_statuses{};
+  PersistentStatusesT m_persistent_statuses{};
+  std::uint8_t m_attack_power{};
+  std::uint8_t m_attack_param{};
 
 public:
-  [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return BattleOnlyStatuses_; }
-  [[nodiscard]] auto PersistentStatuses() const noexcept { return PersistentStatuses_; }
-  [[nodiscard]] auto AttackPower() const noexcept { return AttackPower_; }
-  [[nodiscard]] auto AttackParam() const noexcept { return AttackParam_; }
+  [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }
+  [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }
+  [[nodiscard]] auto attack_power() const noexcept { return m_attack_power; }
+  [[nodiscard]] auto attack_param() const noexcept { return m_attack_param; }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
-    return os << '{' << static_cast<std::uint32_t>(BattleOnlyStatuses()) << ", "
-              << static_cast<std::uint32_t>(PersistentStatuses()) << ", " << static_cast<std::uint32_t>(AttackPower())
-              << ", " << static_cast<std::uint32_t>(AttackParam()) << '}';
+    return os << '{' << static_cast<std::uint32_t>(battle_only_statuses()) << ", "
+              << static_cast<std::uint32_t>(persistent_statuses()) << ", " << static_cast<std::uint32_t>(attack_power())
+              << ", " << static_cast<std::uint32_t>(attack_param()) << '}';
   }
   friend std::ostream &operator<<(std::ostream &os, const QuistisBlueMagicLimitBreakParam &input)
   {
@@ -54,13 +54,13 @@ public:
 struct QuistisBlueMagicLimitBreakParams
 {
 private:
-  CrisisLevelT<QuistisBlueMagicLimitBreakParam> blueMagicData_{};
+  CrisisLevelT<QuistisBlueMagicLimitBreakParam> m_blue_magic_data{};
 
 public:
-  [[nodiscard]] const auto *operator->() const noexcept { return &blueMagicData_; }
+  [[nodiscard]] const auto *operator->() const noexcept { return &m_blue_magic_data; }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
-    return os << blueMagicData_;
+    return os << m_blue_magic_data;
   }
 };
 }// namespace open_viii::kernel

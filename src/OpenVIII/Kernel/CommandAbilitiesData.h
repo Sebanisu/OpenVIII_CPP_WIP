@@ -39,37 +39,37 @@ template<LangT langVal> struct CommandAbilitiesData
    *  public BattleOnlyStatuses Statuses1 { get;  }
    */
 private:
-  std::uint16_t magicID_{};
-  std::uint16_t unknown_{};
-  AttackTypeT attackType_{};
-  std::uint8_t attackPower_{};
-  AttackFlagsT attackFlags_{};
-  std::uint8_t hitCount_{};
-  ElementT element_{};
-  std::uint8_t statusAttackEnabler_{};
-  PersistentStatusesT persistentStatuses_{};
-  BattleOnlyStatusesT battleOnlyStatuses_{};
+  std::uint16_t m_magic_id{};
+  std::uint16_t m_unknown{};
+  AttackTypeT m_attack_type{};
+  std::uint8_t m_attack_power{};
+  AttackFlagsT m_attack_flags{};
+  std::uint8_t m_hit_count{};
+  ElementT m_element{};
+  std::uint8_t m_status_attack_enabler{};
+  PersistentStatusesT m_persistent_statuses{};
+  BattleOnlyStatusesT m_battle_only_statuses{};
 
 public:
-  [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
-  [[nodiscard]] auto Unknown() const noexcept { return unknown_; }
-  [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
-  [[nodiscard]] auto AttackPower() const noexcept { return attackPower_; }
-  [[nodiscard]] auto AttackFlags() const noexcept { return attackFlags_; }
-  [[nodiscard]] auto HitCount() const noexcept { return hitCount_; }
-  [[nodiscard]] auto Element() const noexcept { return element_; }
-  [[nodiscard]] auto StatusAttackEnabler() const noexcept { return statusAttackEnabler_; }
-  [[nodiscard]] auto PersistentStatuses() const noexcept { return persistentStatuses_; }
-  [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }
+  [[nodiscard]] auto magic_id() const noexcept { return m_magic_id; }
+  [[nodiscard]] auto unknown() const noexcept { return m_unknown; }
+  [[nodiscard]] auto attack_type() const noexcept { return m_attack_type; }
+  [[maybe_unused]] [[nodiscard]] auto attack_power() const noexcept { return m_attack_power; }
+  [[nodiscard]] auto attack_flags() const noexcept { return m_attack_flags; }
+  [[nodiscard]] auto hit_count() const noexcept { return m_hit_count; }
+  [[nodiscard]] auto element() const noexcept { return m_element; }
+  [[nodiscard]] auto status_attack_enabler() const noexcept { return m_status_attack_enabler; }
+  [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }
+  [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }
 
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
-    return os << MagicID() << ", " << Unknown() << ", " << static_cast<std::uint32_t>(AttackType()) << ", "
-              << static_cast<std::uint32_t>(AttackPower()) << ", " << static_cast<std::uint32_t>(AttackFlags()) << ", "
-              << static_cast<std::uint32_t>(HitCount()) << ", " << static_cast<std::uint32_t>(Element()) << ", "
-              << static_cast<std::uint32_t>(StatusAttackEnabler()) << ", "
-              << static_cast<std::uint32_t>(PersistentStatuses()) << ", "
-              << static_cast<std::uint32_t>(BattleOnlyStatuses());
+    return os << m_magic_id << ", " << m_unknown << ", " << static_cast<std::uint32_t>(m_attack_type) << ", "
+              << static_cast<std::uint32_t>(m_attack_power) << ", " << static_cast<std::uint32_t>(m_attack_flags) << ", "
+              << static_cast<std::uint32_t>(m_hit_count) << ", " << static_cast<std::uint32_t>(m_element) << ", "
+              << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+              << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
+              << static_cast<std::uint32_t>(m_battle_only_statuses);
   }
 };
 }// namespace open_viii::kernel

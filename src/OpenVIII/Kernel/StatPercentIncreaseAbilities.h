@@ -29,19 +29,19 @@ private:
    */
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t apRequired_{};
-  std::uint8_t statToIncrease_{};
-  std::uint8_t increasedValue_{};
-  std::uint8_t unknown0_{};
+  std::uint8_t m_ap_required{};
+  std::uint8_t m_stat_to_increase{};
+  std::uint8_t m_increased_value{};
+  std::uint8_t m_unknown0{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
+  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
 
-  [[nodiscard]] auto APRequired() const noexcept { return apRequired_; }
-  [[nodiscard]] auto StatToIncrease() const noexcept { return statToIncrease_; }
-  [[nodiscard]] auto IncreasedValue() const noexcept { return increasedValue_; }
-  [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
+  [[maybe_unused]] [[nodiscard]] auto stat_to_increase() const noexcept { return m_stat_to_increase; }
+  [[maybe_unused]] [[nodiscard]] auto increased_value() const noexcept { return m_increased_value; }
+  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
@@ -52,9 +52,9 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(APRequired()) << ", "
-              << static_cast<std::uint32_t>(StatToIncrease()) << ", " << static_cast<std::uint32_t>(IncreasedValue())
-              << ", " << static_cast<std::uint32_t>(unknown0());
+    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
+              << static_cast<std::uint32_t>(m_stat_to_increase) << ", " << static_cast<std::uint32_t>(m_increased_value)
+              << ", " << static_cast<std::uint32_t>(m_unknown0);
   }
 };
 }// namespace open_viii::kernel

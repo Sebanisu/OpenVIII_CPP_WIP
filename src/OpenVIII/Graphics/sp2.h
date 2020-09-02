@@ -11,29 +11,29 @@ namespace open_viii::graphics {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/Menu_sp2#Layout_of_face.sp2_and_cardanm.sp2:
  */
-struct sp2
+struct Sp2
 {
 private:
-  std::vector<sp2Entry> entries_{};
+  std::vector<Sp2Entry> m_entries{};
 
 public:
-  sp2() = default;
-  explicit sp2(std::span<const char> buffer)
+  Sp2() = default;
+  explicit Sp2(std::span<const char> buffer)
   {
-    const auto header = sp2Header{ buffer };
-    entries_.resize(header.size());
-    std::span<sp2Entry> s{ entries_ };
-    for (const std::uint32_t offset : header.Offsets()) {
-      std::memcpy(std::ranges::data(s), std::ranges::data(buffer.subspan(offset)), sizeof(sp2Entry));
+    const auto header = Sp2Header{ buffer };
+    m_entries.resize(header.size());
+    std::span<Sp2Entry> s{ m_entries };
+    for (const std::uint32_t offset : header.offsets()) {
+      std::memcpy(std::ranges::data(s), std::ranges::data(buffer.subspan(offset)), sizeof(Sp2Entry));
       s = s.subspan(1);
     }
   }
-  [[nodiscard]] const auto &at(const size_t i) const { return entries_.at(i); }
-  [[nodiscard]] auto size() const { return std::ranges::size(entries_); }
-  friend std::ostream &operator<<(std::ostream &os, sp2 s)
+  [[nodiscard]] const auto &at(const size_t i) const { return m_entries.at(i); }
+  [[nodiscard]] auto size() const { return std::ranges::size(m_entries); }
+  friend std::ostream &operator<<(std::ostream &os, Sp2 s)
   {
     os << "{ Entry Count: " << s.size() << " {";
-    for (const auto &e : s.entries_) { os << e; }
+    for (const auto &e : s.m_entries) { os << e; }
     return os << "}\n";
   }
 };
