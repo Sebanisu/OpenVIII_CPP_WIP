@@ -2,12 +2,12 @@
 // Created by pcvii on 8/25/2020.
 //
 
-#ifndef VIIIARCHIVE_POINT_H
-#define VIIIARCHIVE_POINT_H
+#ifndef VIIIARCHIVE_POINT__H
+#define VIIIARCHIVE_POINT__H
 #include <iostream>
-
+#include <concepts>
 namespace open_viii::graphics {
-template<typename dimT> struct Point
+template<std::integral dimT>struct Point
 {
 private:
   mutable dimT m_x{};
@@ -47,4 +47,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_POINT_H
+#endif// VIIIARCHIVE_POINT__H

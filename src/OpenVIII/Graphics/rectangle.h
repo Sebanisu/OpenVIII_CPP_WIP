@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_RECTANGLE_H
 #define VIIIARCHIVE_RECTANGLE_H
-#include "OpenVIII/Graphics/point.h"
+#include "OpenVIII/Graphics/point_.h"
 #include <iostream>
 namespace open_viii::graphics {
 /**
