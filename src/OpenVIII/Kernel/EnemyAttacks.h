@@ -20,7 +20,7 @@
 #include "AttackFlagsT.h"
 #include "AttackTypeT.h"
 #include "ElementT.h"
-#include "CameraChangeT.h"
+#include "CameraChange.h"
 namespace open_viii::kernel {
 template<LangT langVal> struct EnemyAttacks
 {
@@ -44,7 +44,7 @@ template<LangT langVal> struct EnemyAttacks
 private:
   EncodedStringOffset m_name_offset{};
   uint16_t magicID_{};
-  CameraChangeT cameraChange_{};
+  CameraChange cameraChange_{};
   uint8_t unknown0_{};
   AttackTypeT attackType_{};
   uint8_t attackPower_{};

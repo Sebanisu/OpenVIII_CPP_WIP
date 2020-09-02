@@ -11,12 +11,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_CAMERACHANGET_H
-#define VIIIARCHIVE_CAMERACHANGET_H
+#ifndef VIIIARCHIVE_CAMERACHANGE_H
+#define VIIIARCHIVE_CAMERACHANGE_H
 #include <cstdint>
 #include <iostream>
 namespace open_viii::kernel {
-struct CameraChangeT
+struct CameraChange
 {
 private:
   static constexpr std::uint8_t HIGH_BIT_MASK = 0x80U;
@@ -30,11 +30,11 @@ public:
     return static_cast<std::uint8_t>(m_camera_change & OTHER_BITS_MASK);
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const CameraChangeT &camera_change)
+  friend std::ostream &operator<<(std::ostream &os, const CameraChange &camera_change)
   {
     os << camera_change.checked() << '/' << static_cast<uint16_t>(camera_change.value());
     return os;
   }
 };
 }// namespace open_viii::kernel
-#endif// VIIIARCHIVE_CAMERACHANGET_H
+#endif// VIIIARCHIVE_CAMERACHANGE_H
