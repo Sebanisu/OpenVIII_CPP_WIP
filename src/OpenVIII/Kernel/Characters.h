@@ -43,14 +43,14 @@ template<LangT langVal> struct Characters
    * */
 private:
   EncodedStringOffset m_name_offset{};
-  std::uint8_t crisisLevelHPMultiplier_{};
-  GenderT gender_{};
-  std::uint8_t limitBreakID_{};
-  std::uint8_t limitBreakParam_{};
+  std::uint8_t m_crisis_level_hp_multiplier{};
+  GenderT m_gender{};
+  std::uint8_t m_limit_break_id{};
+  std::uint8_t m_limit_break_param{};
   //  std::uint8_t EXP0;
   //  std::uint8_t EXP1;
   //  std::uint8_t EXP[2];
-  std::array<std::uint8_t, 2> exp_{};
+  std::array<std::uint8_t, 2> m_exp{};
   //  std::uint8_t HP0;
   //  std::uint8_t HP1;
   //  std::uint8_t HP2;
@@ -79,27 +79,27 @@ private:
   //  std::uint8_t LUCK1;
   //  std::uint8_t LUCK2;
   //  std::uint8_t LUCK3;
-  StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> stats_{};
+  StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> m_stats{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto CrisisLevelHPMultiplier() const noexcept { return crisisLevelHPMultiplier_; }
-  [[nodiscard]] auto Gender() const noexcept { return gender_; }
-  [[nodiscard]] auto LimitBreakID() const noexcept { return limitBreakID_; }
-  [[nodiscard]] auto LimitBreakParam() const noexcept { return limitBreakParam_; }
-  [[nodiscard]] auto EXP() const noexcept { return exp_; }
-  [[nodiscard]] auto Stats() const noexcept { return stats_; }
-  [[nodiscard]] auto operator->() const noexcept { return &stats_; }
+  [[maybe_unused]] [[nodiscard]]const auto &name_offset() const noexcept { return m_name_offset; }
+  [[maybe_unused]] [[nodiscard]]const auto &crisis_level_hp_multiplier() const noexcept { return m_crisis_level_hp_multiplier; }
+  [[maybe_unused]] [[nodiscard]]const auto &gender() const noexcept { return m_gender; }
+  [[maybe_unused]] [[nodiscard]]const auto &limit_break_id() const noexcept { return m_limit_break_id; }
+  [[maybe_unused]] [[nodiscard]]const auto &limit_break_param() const noexcept { return m_limit_break_param; }
+  [[maybe_unused]] [[nodiscard]]const auto &exp() const noexcept { return m_exp; }
+  [[maybe_unused]] [[nodiscard]]const auto &stats() const noexcept { return m_stats; }
+  [[nodiscard]] auto operator->() const noexcept { return &m_stats; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }
-    return os << ", " << static_cast<std::uint32_t>(CrisisLevelHPMultiplier()) << ", "
-              << static_cast<std::uint32_t>(Gender()) << ", " << static_cast<std::uint32_t>(LimitBreakID()) << ", "
-              << static_cast<std::uint32_t>(LimitBreakParam()) << ", {" << static_cast<std::uint32_t>(EXP()[0]) << ", "
-              << static_cast<std::uint32_t>(EXP()[1]) << "}, " << Stats();
+    return os << ", " << static_cast<std::uint32_t>(m_crisis_level_hp_multiplier) << ", "
+              << static_cast<std::uint32_t>(m_gender) << ", " << static_cast<std::uint32_t>(m_limit_break_id) << ", "
+              << static_cast<std::uint32_t>(m_limit_break_param) << ", {" << static_cast<std::uint32_t>(m_exp[0]) << ", "
+              << static_cast<std::uint32_t>(m_exp[1]) << "}, " << m_stats;
   }
 };
 }// namespace open_viii::kernel
