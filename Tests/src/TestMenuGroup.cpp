@@ -47,11 +47,11 @@ int main()
     //      std::cout << std::filesystem::current_path().c_str() << "4.bin";
     //    }
 
-    mngrpfile.TestComplex<coo>();
-    mngrpfile.TestTkMnMes<coo>();
-    mngrpfile.TestMes<coo>();
-    mngrpfile.TestRefine<coo>();
-    //mngrpfile.TestTim(menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
+    mngrpfile.test_complex<coo>();
+    mngrpfile.test_tk_mn_mes<coo>();
+    mngrpfile.test_mes<coo>();
+    mngrpfile.test_refine<coo>();
+    //mngrpfile.test_tim(menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
     continue;
     // auto mngrphd = open_viii::menu_group::menu_groupHeader{ menu };
     // auto mngrpBuffer = menu.get_entry_data("mngrp.bin");
