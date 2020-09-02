@@ -15,9 +15,9 @@ private:
   uint8_t m_unknown1{};
   uint8_t m_unknown2{};
   uint8_t m_width{};
-  uint8_t m_offset_x{};
+  int8_t m_offset_x{};
   uint8_t m_height{};
-  uint8_t m_offset_y{};
+  int8_t m_offset_y{};
 
 public:
   [[nodiscard]] const auto &x() const noexcept { return m_x; }
