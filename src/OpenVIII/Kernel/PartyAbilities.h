@@ -29,16 +29,16 @@ template<LangT langVal> struct PartyAbilities
    * 0x0006	2 byte	Unknown/Unused
    */
 private:
-  EncodedStringOffset nameOffset_{};
-  EncodedStringOffset descriptionOffset_{};
+  EncodedStringOffset m_name_offset{};
+  EncodedStringOffset m_description_offset{};
   std::uint8_t apRequired_{};
   std::uint8_t flag_{};
   std::uint8_t unknown0_{};
   std::uint8_t unknown1_{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
+  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
 
   [[nodiscard]] auto APRequired() const noexcept { return apRequired_; }
   [[nodiscard]] auto Flag() const noexcept { return flag_; }
@@ -46,8 +46,8 @@ public:
   [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.decoded_string<langVal>(buffer);
-    auto description = descriptionOffset_.decoded_string<langVal>(buffer);
+    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }

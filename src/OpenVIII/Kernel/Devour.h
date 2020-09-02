@@ -72,7 +72,7 @@ template<LangT langVal> struct Devour
    * 0x000B	1 byte	Raised Stat HP Quantity
    * */
 private:
-  EncodedStringOffset descriptionOffset_{};
+  EncodedStringOffset m_description_offset{};
   std::uint8_t damageOrHeal_{};// HP and Status; If last on right bit is set heal, and if not dmg. Rest looks like
                                // 0b‭00011110‬.
   PercentQuantityT percentQuantity_{};
@@ -82,7 +82,7 @@ private:
   std::uint8_t raisedStatHPQuantity_{};
 
 public:
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
+  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
   [[nodiscard]] auto DamageOrHeal() const noexcept
   {
     return (damageOrHeal_ & 0x1U) == 0;
@@ -121,7 +121,7 @@ public:
   [[nodiscard]] auto RaisedStatHPQuantity() const noexcept { return raisedStatHPQuantity_; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto description = descriptionOffset_.decoded_string<langVal>(buffer);
+    auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(description)) {
       os << Tools::u8tosv(description);
     }

@@ -44,7 +44,7 @@ template<LangT langVal> struct RinoaLimitBreakPart2
    * 0x0010	4 bytes	status_1; //statuses 8-39
    */
 private:
-  EncodedStringOffset nameOffset_{};
+  EncodedStringOffset m_name_offset{};
   std::uint16_t magicID_{};
   AttackTypeT attackType_{};
   std::uint8_t attackPower_{};
@@ -60,7 +60,7 @@ private:
   BattleOnlyStatusesT battleOnlyStatuses_{};// statuses 8-39
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
+  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
   [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
   [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
   [[nodiscard]] auto AttackPower() const noexcept { return attackPower_; }
@@ -76,7 +76,7 @@ public:
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.decoded_string<langVal>(buffer);
+    auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }

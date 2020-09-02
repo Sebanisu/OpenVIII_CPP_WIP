@@ -42,7 +42,7 @@ template<LangT langVal> struct EnemyAttacks
    * 0x10	4 bytes	status_1; //statuses 8-31
    */
 private:
-  EncodedStringOffset nameOffset_{};
+  EncodedStringOffset m_name_offset{};
   uint16_t magicID_{};
   CameraChangeT cameraChange_{};
   uint8_t unknown0_{};
@@ -58,7 +58,7 @@ private:
   BattleOnlyStatusesT battleOnlyStatuses_{};// statuses 8-31
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
+  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
   [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
   [[nodiscard]] auto CameraChange() const noexcept { return cameraChange_; }
   [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
@@ -74,7 +74,7 @@ public:
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-31
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.decoded_string<langVal>(buffer);
+    auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name) << ", ";
     }

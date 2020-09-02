@@ -96,7 +96,7 @@ template<LangT langVal> struct NonJunctionableGFs
    * 0x0013	1 byte	Level Mod (used in damage formula)
    */
 private:
-  EncodedStringOffset nameOffset_{};
+  EncodedStringOffset m_name_offset{};
   std::uint16_t magicID_{};
   AttackTypeT attackType_{};
   std::uint8_t gfPower_{};// (used in damage formula)
@@ -112,7 +112,7 @@ private:
   std::uint8_t powerMod_{};// (used in damage formula)
   std::uint8_t levelMod_{};// (used in damage formula)
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
+  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
   [[nodiscard]] auto MagicID() const noexcept { return magicID_; }
   [[nodiscard]] auto AttackType() const noexcept { return attackType_; }
   [[nodiscard]] auto GFPower() const noexcept { return gfPower_; }// (used in damage formula)
@@ -129,7 +129,7 @@ public:
   [[nodiscard]] auto LevelMod() const noexcept { return levelMod_; }// (used in damage formula)
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.decoded_string<langVal>(buffer);
+    auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }

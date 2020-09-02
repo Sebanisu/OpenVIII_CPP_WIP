@@ -42,7 +42,7 @@ template<LangT langVal> struct Characters
    * 0x0020	4 bytes	LUCK
    * */
 private:
-  EncodedStringOffset nameOffset_{};
+  EncodedStringOffset m_name_offset{};
   std::uint8_t crisisLevelHPMultiplier_{};
   GenderT gender_{};
   std::uint8_t limitBreakID_{};
@@ -82,7 +82,7 @@ private:
   StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> stats_{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
+  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
   [[nodiscard]] auto CrisisLevelHPMultiplier() const noexcept { return crisisLevelHPMultiplier_; }
   [[nodiscard]] auto Gender() const noexcept { return gender_; }
   [[nodiscard]] auto LimitBreakID() const noexcept { return limitBreakID_; }
@@ -92,7 +92,7 @@ public:
   [[nodiscard]] auto operator->() const noexcept { return &stats_; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.decoded_string<langVal>(buffer);
+    auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }

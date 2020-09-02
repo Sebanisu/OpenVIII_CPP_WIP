@@ -54,7 +54,7 @@ template<LangT langVal> struct Weapons
    * 0x000B	1 byte	Melee Weapon?
    */
 private:
-  EncodedStringOffset nameOffset_{};
+  EncodedStringOffset m_name_offset{};
   RenzokukenFinishersT renzokukenFinishers_{};
   std::uint8_t unknown_{};
   CharactersT characterID_{};
@@ -67,7 +67,7 @@ private:
   std::uint8_t meleeWeapon_{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
+  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
   [[nodiscard]] auto RenzokukenFinishers() const noexcept { return renzokukenFinishers_; }
   [[nodiscard]] auto unknown() const noexcept { return unknown_; }
   [[nodiscard]] auto CharacterID() const noexcept { return characterID_; }
@@ -80,7 +80,7 @@ public:
   [[nodiscard]] auto MeleeWeapon() const noexcept { return meleeWeapon_ != 0; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.decoded_string<langVal>(buffer);
+    auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }

@@ -24,16 +24,16 @@ template<LangT langVal> struct NonBattleItems
    * 0x0002	2 bytes	Offset to item description
    */
 private:
-  EncodedStringOffset nameOffset_{};
-  EncodedStringOffset descriptionOffset_{};
+  EncodedStringOffset m_name_offset{};
+  EncodedStringOffset m_description_offset{};
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
+  [[nodiscard]] auto &NameOffset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.decoded_string<langVal>(buffer);
-    auto description = descriptionOffset_.decoded_string<langVal>(buffer);
+    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }

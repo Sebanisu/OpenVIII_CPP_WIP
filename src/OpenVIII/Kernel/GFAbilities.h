@@ -30,24 +30,24 @@ template<LangT langVal> struct GFAbilities
    * 0x0007	1 byte	Increase value
    */
 private:
-  EncodedStringOffset nameOffset_{};
-  EncodedStringOffset descriptionOffset_{};
+  EncodedStringOffset m_name_offset{};
+  EncodedStringOffset m_description_offset{};
   uint8_t apRequired_{};
   uint8_t enableBoost_{};
   StatT statToIncrease_{};
   uint8_t increaseValue_{};
 
 public:
-  [[nodiscard]] const auto &NameOffset() const noexcept { return nameOffset_; }
-  [[nodiscard]] const auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
+  [[nodiscard]] const auto &NameOffset() const noexcept { return m_name_offset; }
+  [[nodiscard]] const auto &DescriptionOffset() const noexcept { return m_description_offset; }
   [[nodiscard]] auto APRequired() const noexcept { return apRequired_; }
   [[nodiscard]] auto EnableBoost() const noexcept { return enableBoost_ != 0; }
   [[nodiscard]] auto StatToIncrease() const noexcept { return statToIncrease_; }
   [[nodiscard]] auto IncreaseValue() const noexcept { return increaseValue_; }
   std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.decoded_string<langVal>(buffer);
-    auto description = descriptionOffset_.decoded_string<langVal>(buffer);
+    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }
