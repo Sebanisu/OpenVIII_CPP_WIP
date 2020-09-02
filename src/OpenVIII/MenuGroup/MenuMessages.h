@@ -54,7 +54,7 @@ public:
       std::uint16_t subSectionCount{};
       std::memcpy(&subSectionCount, ptr, sizeof(subSectionCount));
       std::string_view b{ ptr + sizeof(std::uint16_t), subSectionCount * sizeof(std::uint16_t) };
-      m_sub_sections.at(i).SetData(b, subSectionCount);
+      m_sub_sections.at(i).set_data(b, subSectionCount);
       //      ptr += sizeof(subSectionCount);
       //      m_sub_sections.at(i).resize(subSectionCount);
       //      std::memcpy(m_sub_sections.at(i).data(), ptr, m_sub_sections.at(i).size() * sizeof(EncodedStringOffset));
