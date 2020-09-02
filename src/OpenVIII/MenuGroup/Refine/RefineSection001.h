@@ -31,37 +31,37 @@ struct [[maybe_unused]] RefineSection001// Item to Item
    * Tool-RF	    32 Entries	  (mngrp.bin loc: 0x21FB78)	0x378	Item to Tool Items
    * */
 private:
-  static constexpr auto recovMedRFCount_ = 9U;
-  static constexpr auto stMedRFCount_ = 12U;
-  static constexpr auto ammoRFCount_ = 16U;
-  static constexpr auto forbidMedRFCount_ = 20U;
-  static constexpr auto gfRecovRFCount_ = 12U;
-  static constexpr auto gfAblMedRFCount_ = 42U;
-  static constexpr auto toolRFCount_ = 32U;
-  std::array<RefineEntry<ItemIdT, ItemIdT>, recovMedRFCount_> recovMedRF_{};
-  std::array<RefineEntry<ItemIdT, ItemIdT>, stMedRFCount_> stMedRF_{};
-  std::array<RefineEntry<ItemIdT, ItemIdT>, ammoRFCount_> ammoRF_{};
-  std::array<RefineEntry<ItemIdT, ItemIdT>, forbidMedRFCount_> forbidMedRF_{};
-  std::array<RefineEntry<ItemIdT, ItemIdT>, gfRecovRFCount_> gfRecovRF_{};
-  std::array<RefineEntry<ItemIdT, ItemIdT>, gfAblMedRFCount_> gfAblMedRF_{};
-  std::array<RefineEntry<ItemIdT, ItemIdT>, toolRFCount_> toolRF_{};
+  static constexpr auto RECOV_MED_RF_COUNT = 9U;
+  static constexpr auto ST_MED_RF_COUNT = 12U;
+  static constexpr auto AMMO_RF_COUNT = 16U;
+  static constexpr auto FORBID_MED_RF_COUNT = 20U;
+  static constexpr auto GF_RECOV_RF_COUNT = 12U;
+  static constexpr auto GF_ABL_MED_RF_COUNT = 42U;
+  static constexpr auto TOOL_RF_COUNT = 32U;
+  std::array<RefineEntry<ItemIdT, ItemIdT>, RECOV_MED_RF_COUNT> m_recov_med_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, ST_MED_RF_COUNT> m_st_med_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, AMMO_RF_COUNT> m_ammo_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, FORBID_MED_RF_COUNT> m_forbid_med_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, GF_RECOV_RF_COUNT> m_gf_recov_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, GF_ABL_MED_RF_COUNT> m_gf_abl_med_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, TOOL_RF_COUNT> m_tool_rf{};
 
 public:
-  [[nodiscard]] const auto &RecovMedRF() const noexcept { return recovMedRF_; }
-  [[nodiscard]] const auto &STMedRF() const noexcept { return stMedRF_; }
-  [[nodiscard]] const auto &AmmoRF() const noexcept { return ammoRF_; }
-  [[nodiscard]] const auto &ForbidMedRF() const noexcept { return forbidMedRF_; }
-  [[nodiscard]] const auto &GFRecovRF() const noexcept { return gfRecovRF_; }
-  [[nodiscard]] const auto &GFAblMedRF() const noexcept { return gfAblMedRF_; }
-  [[nodiscard]] const auto &ToolRF() const noexcept { return toolRF_; }
+  [[maybe_unused]] [[nodiscard]] const auto &recov_med_rf() const noexcept { return m_recov_med_rf; }
+  [[maybe_unused]] [[nodiscard]] const auto &st_med_rf() const noexcept { return m_st_med_rf; }
+  [[maybe_unused]] [[nodiscard]] const auto &ammo_rf() const noexcept { return m_ammo_rf; }
+  [[maybe_unused]] [[nodiscard]] const auto &forbid_med_rf() const noexcept { return m_forbid_med_rf; }
+  [[maybe_unused]] [[nodiscard]] const auto &gf_recov_rf() const noexcept { return m_gf_recov_rf; }
+  [[maybe_unused]] [[nodiscard]] const auto &gf_abl_med_rf() const noexcept { return m_gf_abl_med_rf; }
+  [[maybe_unused]] [[nodiscard]] const auto &tool_rf() const noexcept { return m_tool_rf; }
   [[nodiscard]] static constexpr auto size()
   {
-    return recovMedRFCount_ + stMedRFCount_ + ammoRFCount_ + forbidMedRFCount_ + gfRecovRFCount_ + gfAblMedRFCount_
-           + toolRFCount_;
+    return RECOV_MED_RF_COUNT + ST_MED_RF_COUNT + AMMO_RF_COUNT + FORBID_MED_RF_COUNT + GF_RECOV_RF_COUNT + GF_ABL_MED_RF_COUNT
+           + TOOL_RF_COUNT;
   }
 
   template<LangT langVal, typename T>
-  std::ostream &outArray(const T &arr,
+  [[maybe_unused]] std::ostream &out_array(const T &arr,
     std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
@@ -79,19 +79,19 @@ public:
 
   {
     os << "recovMedRF:\n";
-    outArray<langVal>(recovMedRF_, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_recov_med_rf, os, buffer, offset, skipFirstNull);
     os << "stMedRF:\n";
-    outArray<langVal>(stMedRF_, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_st_med_rf, os, buffer, offset, skipFirstNull);
     os << "ammoRF:\n";
-    outArray<langVal>(ammoRF_, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_ammo_rf, os, buffer, offset, skipFirstNull);
     os << "forbidMedRF:\n";
-    outArray<langVal>(forbidMedRF_, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_forbid_med_rf, os, buffer, offset, skipFirstNull);
     os << "gfRecovRF:\n";
-    outArray<langVal>(gfRecovRF_, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_gf_recov_rf, os, buffer, offset, skipFirstNull);
     os << "gfAblMedRF:\n";
-    outArray<langVal>(gfAblMedRF_, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_gf_abl_med_rf, os, buffer, offset, skipFirstNull);
     os << "toolRF:\n";
-    outArray<langVal>(toolRF_, os, buffer, offset, skipFirstNull);
+    out_array<langVal>(m_tool_rf, os, buffer, offset, skipFirstNull);
     return os;
   }
 };

@@ -16,11 +16,11 @@
 #include "OpenVIII/BulkSectionData.h"
 #include "OpenVIII/MenuGroup/MenuGroupHeader.h"
 #include "OpenVIII/MenuGroup/MenuMessages.h"
-#include "OpenVIII/MenuGroup/RefineSection000.h"
-#include "OpenVIII/MenuGroup/RefineSection001.h"
-#include "OpenVIII/MenuGroup/RefineSection002.h"
-#include "OpenVIII/MenuGroup/RefineSection003.h"
-#include "OpenVIII/MenuGroup/RefineSection004.h"
+#include "OpenVIII/MenuGroup/Refine/RefineSection000.h"
+#include "OpenVIII/MenuGroup/Refine/RefineSection001.h"
+#include "OpenVIII/MenuGroup/Refine/RefineSection002.h"
+#include "OpenVIII/MenuGroup/Refine/RefineSection003.h"
+#include "OpenVIII/MenuGroup/Refine/RefineSection004.h"
 #include "OpenVIII/MenuGroup/MenuGroupFile.h"
 
 

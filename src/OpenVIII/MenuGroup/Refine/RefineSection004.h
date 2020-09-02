@@ -11,31 +11,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_REFINESECTION003_H
-#define VIIIARCHIVE_REFINESECTION003_H
+#ifndef VIIIARCHIVE_REFINESECTION004_H
+#define VIIIARCHIVE_REFINESECTION004_H
 #include "OpenVIII/ItemIdT.h"
 #include "RefineEntry.h"
+#include "RefineCardID.h"
 #include <array>
 #include <iostream>
 namespace open_viii::menu_group {
-struct [[maybe_unused]] RefineSection003// Refine items to items
+struct [[maybe_unused]] RefineSection004// Refine cards to items
 {
-  /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_3
+  /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_5
    * Ability	        # of Entries	mngrp.bin Location	        Offset	Description
-   * Med LV Up	        12 Entries	(mngrp.bin loc: 0x220800)	0x0	Level up low level recovery items to
-   * higher items level
+   * CardMod	        110 Entries	(mngrp.bin loc: 0x221000)	0x0	Card to Items
+   * level
    */
 
 private:
-  static constexpr auto medLVUPCount_ = 12U;
-  std::array<RefineEntry<ItemIdT, ItemIdT>, medLVUPCount_> medLVUP_{};
+  static constexpr auto CARD_MOD_COUNT = 110U;
+  std::array<RefineEntry<RefineCardID, ItemIdT>, CARD_MOD_COUNT> m_card_mod{};
 
 public:
-  [[nodiscard]] const auto &MedLVUP() const noexcept { return medLVUP_; }
-  [[nodiscard]] const auto *operator->() const { return &medLVUP_; }
-  [[nodiscard]] static constexpr auto size() { return medLVUPCount_; }
+  [[nodiscard]] const auto &card_mod() const noexcept { return m_card_mod; }
+  [[nodiscard]] const auto *operator->() const { return &m_card_mod; }
+  [[nodiscard]] static constexpr auto size() { return CARD_MOD_COUNT; }
   template<LangT langVal, typename T>
-  std::ostream &outArray(const T &arr,
+  std::ostream &out_array(const T &arr,
     std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
@@ -52,10 +53,10 @@ public:
     bool skipFirstNull = false) const
 
   {
-    os << "MedLVUP:\n";
-    outArray<langVal>(medLVUP_, os, buffer, offset, skipFirstNull);
+    os << "cardMod:\n";
+    out_array<langVal>(m_card_mod, os, buffer, offset, skipFirstNull);
     return os;
   }
 };
 }// namespace open_viii::menu_group
-#endif// VIIIARCHIVE_REFINESECTION003_H
+#endif// VIIIARCHIVE_REFINESECTION004_H

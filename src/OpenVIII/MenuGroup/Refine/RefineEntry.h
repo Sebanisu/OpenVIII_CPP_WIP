@@ -27,33 +27,33 @@ template<typename inputT, typename outputT> struct RefineEntry
    * Byte	1	Output_Item_ID	Output: Item id value 0x00-0xC6
    */
 private:
-  EncodedStringOffset offset_{};
-  std::uint8_t amountReceived_{};
-  std::uint8_t unknown0_{};
-  std::uint8_t unknown1_{};
-  inputT input_{};
-  std::uint8_t amountRequired_{};
-  outputT output_{};
+  EncodedStringOffset m_offset{};
+  std::uint8_t m_amount_received{};
+  std::uint8_t m_unknown0{};
+  std::uint8_t m_unknown1{};
+  inputT m_input{};
+  std::uint8_t m_amount_required{};
+  outputT m_output{};
 
 public:
-  [[nodiscard]] auto Offset() const noexcept { return offset_; }
-  [[nodiscard]] auto AmountReceived() const noexcept { return amountReceived_; }
-  [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
-  [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
-  [[nodiscard]] auto Input() const noexcept { return input_; }
-  [[nodiscard]] auto AmountRequired() const noexcept { return amountRequired_; }
-  [[nodiscard]] auto Output() const noexcept { return output_; }
+  [[nodiscard]] const auto &offset() const noexcept { return m_offset; }
+  [[maybe_unused]] [[nodiscard]] const auto &amount_received() const noexcept { return m_amount_received; }
+  [[nodiscard]] const auto &unknown0() const noexcept { return m_unknown0; }
+  [[nodiscard]] const auto &unknown1() const noexcept { return m_unknown1; }
+  [[nodiscard]] const auto &input() const noexcept { return m_input; }
+  [[maybe_unused]] [[nodiscard]] const auto &amount_required() const noexcept { return m_amount_required; }
+  [[nodiscard]] const auto &output() const noexcept { return m_output; }
 
   template<LangT langVal>
   std::ostream &out(std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
-    bool skipFirstNull = false) const
+    bool skip_first_null = false) const
   {
-    return os << '"' << Tools::u8tosv(offset_.decoded_string<langVal>(buffer, offset, skipFirstNull)) << "\", "
-              << static_cast<std::uint16_t>(AmountReceived()) << ", " << static_cast<std::uint16_t>(unknown0()) << ", "
-              << static_cast<std::uint16_t>(unknown1()) << ", " << static_cast<std::uint16_t>(Input()) << ", "
-              << static_cast<std::uint16_t>(AmountRequired()) << ", " << static_cast<std::uint16_t>(Output());
+    return os << '"' << Tools::u8tosv(m_offset.decoded_string<langVal>(buffer, offset, skip_first_null)) << "\", "
+              << static_cast<std::uint16_t>(m_amount_received) << ", " << static_cast<std::uint16_t>(m_unknown0) << ", "
+              << static_cast<std::uint16_t>(m_unknown1) << ", " << static_cast<std::uint16_t>(m_input) << ", "
+              << static_cast<std::uint16_t>(m_amount_required) << ", " << static_cast<std::uint16_t>(m_output);
   }
   //  friend std::ostream &operator<<(std::ostream &os, const RefineEntry<inputT, outputT> &input)
   //  {

@@ -11,34 +11,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_REFINESECTION002_H
-#define VIIIARCHIVE_REFINESECTION002_H
-#include "RefineSpellID.h"
+#ifndef VIIIARCHIVE_REFINESECTION003_H
+#define VIIIARCHIVE_REFINESECTION003_H
+#include "OpenVIII/ItemIdT.h"
 #include "RefineEntry.h"
+#include <array>
 #include <iostream>
 namespace open_viii::menu_group {
-struct [[maybe_unused]] RefineSection002// Refine Magic to Magic
+struct [[maybe_unused]] RefineSection003// Refine items to items
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_3
    * Ability	        # of Entries	mngrp.bin Location	        Offset	Description
-   * Mid-Mag-RF	        4 entries	(mngrp.bin loc: 0x2200000)	0x0	Upgrade Magic from low level to mid
-   * level High-Mag-RF	6 entries	(mngrp.bin loc: 0x2200020)	0x20	Upgrade Magic from mid level to high
-   * level
+   * Med LV Up	        12 Entries	(mngrp.bin loc: 0x220800)	0x0	Level up low level recovery items to
+   * higher items level
    */
 
 private:
-  static constexpr auto midMagRFCount_ = 4U;
-  static constexpr auto highMagRFCount_ = 6U;
-  std::array<RefineEntry<RefineSpellID, RefineSpellID>, midMagRFCount_> midMagRF_{};
-  std::array<RefineEntry<RefineSpellID, RefineSpellID>, highMagRFCount_> highMagRF_{};
-
+  static constexpr auto MED_LVUP_COUNT = 12U;
+  std::array<RefineEntry<ItemIdT, ItemIdT>, MED_LVUP_COUNT> m_med_lv_up{};
 
 public:
-  [[nodiscard]] const auto &MidMagRF() const noexcept { return midMagRF_; }
-  [[nodiscard]] const auto &HighMagRF() const noexcept { return highMagRF_; }
-  [[nodiscard]] static constexpr auto size() { return midMagRFCount_ + highMagRFCount_; }
+  [[maybe_unused]] [[nodiscard]] const auto &med_lv_up() const noexcept { return m_med_lv_up; }
+  [[nodiscard]] const auto *operator->() const { return &m_med_lv_up; }
+  [[nodiscard]] static constexpr auto size() { return MED_LVUP_COUNT; }
   template<LangT langVal, typename T>
-  std::ostream &outArray(const T &arr,
+  std::ostream &out_array(const T &arr,
     std::ostream &os,
     const std::string_view &buffer = ""sv,
     const intmax_t offset = 0,
@@ -55,12 +52,10 @@ public:
     bool skipFirstNull = false) const
 
   {
-    os << "midMagRF_:\n";
-    outArray<langVal>(midMagRF_, os, buffer, offset, skipFirstNull);
-    os << "highMagRF_:\n";
-    outArray<langVal>(highMagRF_, os, buffer, offset, skipFirstNull);
+    os << "MedLVUP:\n";
+    out_array<langVal>(m_med_lv_up, os, buffer, offset, skipFirstNull);
     return os;
   }
 };
 }// namespace open_viii::menu_group
-#endif// VIIIARCHIVE_REFINESECTION002_H
+#endif// VIIIARCHIVE_REFINESECTION003_H
