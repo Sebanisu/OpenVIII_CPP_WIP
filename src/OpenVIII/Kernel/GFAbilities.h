@@ -44,7 +44,7 @@ public:
   [[nodiscard]] auto EnableBoost() const noexcept { return enableBoost_ != 0; }
   [[nodiscard]] auto StatToIncrease() const noexcept { return statToIncrease_; }
   [[nodiscard]] auto IncreaseValue() const noexcept { return increaseValue_; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

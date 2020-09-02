@@ -81,7 +81,7 @@ public:
   [[nodiscard]] auto Unknown2() const noexcept { return unknown2_; }
   [[nodiscard]] auto Unknown3() const noexcept { return unknown3_; }
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

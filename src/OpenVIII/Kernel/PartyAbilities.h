@@ -44,7 +44,7 @@ public:
   [[nodiscard]] auto Flag() const noexcept { return flag_; }
   [[nodiscard]] auto unknown0() const noexcept { return unknown0_; }
   [[nodiscard]] auto unknown1() const noexcept { return unknown1_; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

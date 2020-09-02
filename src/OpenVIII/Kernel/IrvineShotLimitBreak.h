@@ -78,7 +78,7 @@ public:
   [[nodiscard]] auto UsedItemIndex() const noexcept { return usedItemIndex_; }
   [[nodiscard]] auto CriticalIncrease() const noexcept { return criticalIncrease_; }
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }// statuses 8-39
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

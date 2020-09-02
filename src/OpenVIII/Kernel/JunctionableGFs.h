@@ -193,7 +193,7 @@ public:
   [[nodiscard]] auto unknown10() const noexcept { return unknown10_; }
   [[nodiscard]] auto PowerMod() const noexcept { return powerMod_; }
   [[nodiscard]] auto LevelMod() const noexcept { return levelMod_; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

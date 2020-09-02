@@ -78,7 +78,7 @@ public:
   [[nodiscard]] auto WeaponTier() const noexcept { return weaponTier_; }
   [[nodiscard]] auto CriticalBonus() const noexcept { return criticalBonus_; }
   [[nodiscard]] auto MeleeWeapon() const noexcept { return meleeWeapon_ != 0; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {

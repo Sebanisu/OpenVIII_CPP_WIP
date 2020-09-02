@@ -62,7 +62,7 @@ public:
   [[nodiscard]] auto PersistentStatuses() const noexcept { return persistentStatuses_; }
   [[nodiscard]] auto BattleOnlyStatuses() const noexcept { return battleOnlyStatuses_; }
 
-  std::ostream &Out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
     return os << MagicID() << ", " << Unknown() << ", " << static_cast<std::uint32_t>(AttackType()) << ", "
               << static_cast<std::uint32_t>(AttackPower()) << ", " << static_cast<std::uint32_t>(AttackFlags()) << ", "

@@ -121,7 +121,7 @@ public:
   //[[nodiscard]] constexpr auto operator[](const size_t &index) { return data_[index]; }
   [[nodiscard]] constexpr auto begin() { return data_.begin(); }
   [[nodiscard]] constexpr auto end() { return data_.end(); }
-  std::ostream &Out(std::ostream &os, [[maybe_unused]] const std::string_view &textSpan)
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &textSpan)
   {
     os << '{';
     bool first = true;

@@ -119,7 +119,7 @@ public:
   [[nodiscard]] auto PersistentStatuses() const noexcept { return persistentStatuses_; }// statuses 0-7
   [[nodiscard]] auto DevourStatFlag() const noexcept { return devourStatFlag_; }
   [[nodiscard]] auto RaisedStatHPQuantity() const noexcept { return raisedStatHPQuantity_; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);
     if (!std::empty(description)) {

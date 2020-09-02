@@ -43,7 +43,7 @@ public:
     std::memcpy(&out, junctionFlags_.data(), junctionFlags_.size());
     return out;
   }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

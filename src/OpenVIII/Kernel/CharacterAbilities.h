@@ -49,7 +49,7 @@ public:
     // out = static_cast<CharacterAbilityFlagsT>(static_cast<uint32_t>(out) << 1U);
     return out;
   }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

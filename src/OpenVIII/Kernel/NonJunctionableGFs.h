@@ -127,7 +127,7 @@ public:
   // [[nodiscard]] auto Unknown3() const noexcept { return Unknown3_; } // assuming this is part of persistent statuses.
   [[nodiscard]] auto PowerMod() const noexcept { return powerMod_; }// (used in damage formula)
   [[nodiscard]] auto LevelMod() const noexcept { return levelMod_; }// (used in damage formula)
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {

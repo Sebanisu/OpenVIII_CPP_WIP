@@ -82,7 +82,7 @@ public:
   [[nodiscard]] auto unknown3() const noexcept { return unknown3_; }
   [[nodiscard]] auto HitCount() const noexcept { return hitCount_; }
   [[nodiscard]] auto Element() const noexcept { return element_; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

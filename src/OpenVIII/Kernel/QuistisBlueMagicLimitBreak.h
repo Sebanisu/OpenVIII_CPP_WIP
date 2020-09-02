@@ -65,7 +65,7 @@ public:
   [[nodiscard]] auto CriticalBonus() const noexcept { return criticalBonus_; }
   [[nodiscard]] auto unknown4() const noexcept { return unknown4_; }
 
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

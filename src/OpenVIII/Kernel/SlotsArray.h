@@ -28,7 +28,7 @@ private:
 
 public:
   [[nodiscard]] auto SlotSetID() const noexcept { return slotSetID_; }
-  std::ostream &Out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
     return os << static_cast<uint16_t>(SlotSetID());
   }

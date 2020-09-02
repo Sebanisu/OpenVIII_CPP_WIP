@@ -40,7 +40,7 @@ public:
   [[nodiscard]] auto PersistentStatuses() const noexcept { return PersistentStatuses_; }
   [[nodiscard]] auto AttackPower() const noexcept { return AttackPower_; }
   [[nodiscard]] auto AttackParam() const noexcept { return AttackParam_; }
-  std::ostream &Out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
     return os << '{' << static_cast<std::uint32_t>(BattleOnlyStatuses()) << ", "
               << static_cast<std::uint32_t>(PersistentStatuses()) << ", " << static_cast<std::uint32_t>(AttackPower())
@@ -48,7 +48,7 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const QuistisBlueMagicLimitBreakParam &input)
   {
-    return input.Out(os, "");
+    return input.out(os, "");
   }
 };
 struct QuistisBlueMagicLimitBreakParams
@@ -58,7 +58,7 @@ private:
 
 public:
   [[nodiscard]] const auto *operator->() const noexcept { return &blueMagicData_; }
-  std::ostream &Out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
     return os << blueMagicData_;
   }

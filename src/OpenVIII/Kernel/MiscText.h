@@ -32,7 +32,7 @@ private:
 public:
   [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
   //[[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     // auto description = descriptionOffset_.decoded_string<langVal>(buffer);

@@ -138,7 +138,7 @@ public:
   [[nodiscard]] auto Compatibility() const noexcept { return compatibility_; }
   [[nodiscard]] auto unknown3() const noexcept { return unknown3_; }
 
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

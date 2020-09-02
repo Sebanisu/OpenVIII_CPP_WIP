@@ -44,8 +44,8 @@ private:
 public:
   [[nodiscard]] const auto &Slots() const noexcept { return slots_; }
 
-  friend std::ostream &operator<<(std::ostream &os, const SlotsSets &set) { return set.Out(os, {}); }
-  std::ostream &Out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  friend std::ostream &operator<<(std::ostream &os, const SlotsSets &set) { return set.out(os, {}); }
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
 
     os << '{';

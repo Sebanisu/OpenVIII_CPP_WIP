@@ -44,7 +44,7 @@ public:
   [[nodiscard]] auto Target() const noexcept { return target_; }
   [[nodiscard]] auto AbilityDataID() const noexcept { return abilityDataID_; }
   [[nodiscard]] auto Unknown0() const noexcept { return unknown0_; }
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
     auto name = nameOffset_.decoded_string<langVal>(buffer);
     auto description = descriptionOffset_.decoded_string<langVal>(buffer);

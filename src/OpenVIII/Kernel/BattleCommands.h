@@ -30,26 +30,26 @@ template<LangT langVal> struct BattleCommands
    * 	1 byte	Unknown / Unused
    */
 private:
-  EncodedStringOffset nameOffset_{};
-  EncodedStringOffset descriptionOffset_{};
-  std::uint8_t abilityDataID_{};
-  std::uint8_t unknownFlags_{};
-  TargetT target_{};
-  std::uint8_t unknown_{};
+  EncodedStringOffset m_name_offset{};
+  EncodedStringOffset m_description_offset{};
+  std::uint8_t m_ability_data_id{};
+  std::uint8_t m_unknown_flags{};
+  TargetT m_target{};
+  std::uint8_t m_unknown{};
 
 
 public:
-  [[nodiscard]] auto &NameOffset() const noexcept { return nameOffset_; }
-  [[nodiscard]] auto &DescriptionOffset() const noexcept { return descriptionOffset_; }
-  [[nodiscard]] auto AbilityDataID() const noexcept { return abilityDataID_; }
-  [[nodiscard]] auto UnknownFlags() const noexcept { return unknownFlags_; }
-  [[nodiscard]] auto GetTarget() const noexcept { return target_; }
-  [[nodiscard]] auto Unknown() const noexcept { return unknown_; }
+  [[maybe_unused]] [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
+  [[maybe_unused]] [[nodiscard]] const auto &description_offset() const noexcept { return m_description_offset; }
+  [[maybe_unused]] [[nodiscard]] const auto &ability_data_id() const noexcept { return m_ability_data_id; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown_flags() const noexcept { return m_unknown_flags; }
+  [[maybe_unused]] [[nodiscard]] const auto &get_target() const noexcept { return m_target; }
+  [[nodiscard]] auto unknown() const noexcept { return m_unknown; }
 
-  std::ostream &Out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
   {
-    auto name = nameOffset_.decoded_string<langVal>(buffer);
-    auto description = descriptionOffset_.decoded_string<langVal>(buffer);
+    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << Tools::u8tosv(name);
     }
@@ -58,8 +58,9 @@ public:
     }
     return os
 
-           << ", " << static_cast<std::uint32_t>(AbilityDataID()) << ", " << static_cast<std::uint32_t>(UnknownFlags())
-           << ", " << static_cast<std::uint32_t>(GetTarget()) << ", " << static_cast<std::uint32_t>(Unknown())
+           << ", " << static_cast<std::uint32_t>(m_ability_data_id) << ", "
+           << static_cast<std::uint32_t>(m_unknown_flags) << ", " << static_cast<std::uint32_t>(m_target) << ", "
+           << static_cast<std::uint32_t>(m_unknown)
 
       ;
   }

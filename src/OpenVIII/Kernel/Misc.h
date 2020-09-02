@@ -188,7 +188,7 @@ public:
   [[nodiscard]] auto BackAttackLimitEffect() const noexcept { return backAttackLimitEffect_; }
   [[nodiscard]] auto DuelTimers() const noexcept { return duelTimers_; }
   [[nodiscard]] auto ShotTimers() const noexcept { return shotTimers_; }
-  std::ostream &Out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
   {
     return os << static_cast<std::uint32_t>(SleepTimer()) << ", " << static_cast<std::uint32_t>(HasteTimer()) << ", "
               << static_cast<std::uint32_t>(SlowTimer()) << ", " << static_cast<std::uint32_t>(StopTimer()) << ", "
