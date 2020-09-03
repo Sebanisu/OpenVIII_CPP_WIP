@@ -40,12 +40,12 @@ private:
     // clangTidy says this function can be static which it cannot be static.
     const auto palette_span = std::span(reinterpret_cast<const Color16 *>(std::ranges::data(m_tim_clut_data)),
       m_tim_clut_header.rectangle().width() * m_tim_clut_header.rectangle().height())
-                               .subspan(row * m_tim_clut_header.rectangle().width());
+                                .subspan(row * m_tim_clut_header.rectangle().width());
     return palette_span[color_key];
   }
   template<typename dstT> [[nodiscard]] dstT get_color_t(std::size_t index) const
   {
-    //TODO remove pointer math
+    // TODO remove pointer math
     dstT rv{};
     index *= sizeof(rv);
     if (index + sizeof(rv) >= m_tim_image_data.size()) {
@@ -63,12 +63,12 @@ public:
       return;
     }
     bool fail = false;
-    const auto set_data = [&buffer, &fail]([[maybe_unused]] std::span<const char> & item, const std::size_t &bytes) {
+    const auto set_data = [&buffer, &fail]([[maybe_unused]] std::span<const char> &item, const std::size_t &bytes) {
       if (bytes > std::ranges::size(buffer)) {
         fail = true;
         return;
       }
-      item = buffer.subspan(0U,bytes);
+      item = buffer.subspan(0U, bytes);
       buffer = buffer.subspan(bytes);
     };
     const auto get_value = [&buffer, &fail](auto &item) {
@@ -136,7 +136,10 @@ public:
 
   [[maybe_unused]] [[nodiscard]] auto clut_x() const { return m_tim_clut_header.rectangle().x(); }
   [[maybe_unused]] [[nodiscard]] auto clut_y() const { return m_tim_clut_header.rectangle().y(); }
-  [[nodiscard]] auto size() const { return sizeof(m_tim_header) + m_tim_clut_header.size() + m_tim_image_header.size(); }
+  [[nodiscard]] auto size() const
+  {
+    return sizeof(m_tim_header) + m_tim_clut_header.size() + m_tim_image_header.size();
+  }
   [[nodiscard]] auto clut_rows() const { return m_tim_clut_header.rectangle().height(); }
   [[maybe_unused]] [[nodiscard]] auto clut_colors() const { return m_tim_clut_header.rectangle().width(); }
 
@@ -145,8 +148,7 @@ public:
     return os << '{' << input.m_tim_header << ", " << input.m_tim_clut_header << ", " << input.m_tim_image_header
               << ", Corrected Width: " << input.width() << '}';
   }
-  template<Color dstT = Tim>
-  [[nodiscard]] std::vector<dstT> get_colors([[maybe_unused]] std::uint16_t row = 0U) const
+  template<Color dstT = Tim> [[nodiscard]] std::vector<dstT> get_colors([[maybe_unused]] std::uint16_t row = 0U) const
   {
     static constexpr auto bpp4 = 4U;
     static constexpr auto bpp8 = 8U;

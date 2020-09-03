@@ -38,7 +38,7 @@ public:
   }
   [[nodiscard]] const auto &at(const size_t i) const { return m_entries.at(i); }
   [[nodiscard]] auto size() const { return std::ranges::size(m_entries); }
-  friend std::ostream &operator<<(std::ostream &os, const Sp1 & s)
+  friend std::ostream &operator<<(std::ostream &os, const Sp1 &s)
   {
     os << "{ Entry Groups Count: " << s.size() << " {";
     for (const auto &eg : s.m_entries) {

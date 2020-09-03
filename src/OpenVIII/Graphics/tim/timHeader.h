@@ -72,8 +72,8 @@ public:
    */
   [[nodiscard]] bool check() const
   {
-    return m_none0 == 0 && m_none1 == 0 && m_none2 == 0 && m_none3 == 0 && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL
-           && m_version == VERSION_VAL && m_bpp.check();
+    return m_none0 == 0 && m_none1 == 0 && m_none2 == 0 && m_none3 == 0
+           && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL && m_version == VERSION_VAL && m_bpp.check();
   }
 
   friend std::ostream &operator<<(std::ostream &os, const TimHeader &input)

@@ -107,7 +107,10 @@ public:
    */
   [[nodiscard]] auto height(const dimT &height) const { return m_width_height.Y(height); }
 
-  [[nodiscard]] std::size_t area() const { return static_cast<std::size_t>(m_width_height.x()) * static_cast<std::size_t>(m_width_height.y()); }
+  [[nodiscard]] std::size_t area() const
+  {
+    return static_cast<std::size_t>(m_width_height.x()) * static_cast<std::size_t>(m_width_height.y());
+  }
   friend std::ostream &operator<<(std::ostream &os, const Rectangle<dimT> &input)
   {
     return os << "{(X, Y) = " << input.m_top_left << ", (Width, Height) = " << input.m_width_height << '}';

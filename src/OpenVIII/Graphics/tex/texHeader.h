@@ -210,7 +210,7 @@ public:
   /**
    * Palette Flag (indicates the presence of a palette)
    */
-  [[maybe_unused]] [[nodiscard]] bool palette_flag() const noexcept { return m_palette_flag !=0; }
+  [[maybe_unused]] [[nodiscard]] bool palette_flag() const noexcept { return m_palette_flag != 0; }
   /**
    * Bits per Index (always 0 for non_paletted images)
    */

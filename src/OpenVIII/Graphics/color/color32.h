@@ -9,14 +9,13 @@
 #include <bitset>
 #include "OpenVIII/concepts.h"
 namespace open_viii::graphics {
-//template <size_t valueT>
-//requires (valueT >=0U && valueT <=3U)
-//static constexpr bool color32_valid_offset()
+// template <size_t valueT>
+// requires (valueT >=0U && valueT <=3U)
+// static constexpr bool color32_valid_offset()
 //{
 //  return true;
 //}
-template<size_t r_ = 0U, size_t g_ = 1U, size_t b_ = 2U, size_t a_ = 3U>
-struct Color32
+template<size_t r_ = 0U, size_t g_ = 1U, size_t b_ = 2U, size_t a_ = 3U> struct Color32
 {
 private:
   mutable std::array<std::uint8_t, 4> m_parts{};

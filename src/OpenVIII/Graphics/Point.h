@@ -7,7 +7,7 @@
 #include <iostream>
 #include <concepts>
 namespace open_viii::graphics {
-template<std::integral dimT>struct Point
+template<std::integral dimT> struct Point
 {
 private:
   mutable dimT m_x{};

@@ -53,7 +53,10 @@ public:
    * Test bits to check if color lookup table is present and 8bpp is ignored and 16bpp is not set;
    * @return true if 16bpp
    */
-  [[nodiscard]] bool color_lookup_table_present() const { return !unused() && !m_bpp16 && m_color_lookup_table_present; }
+  [[nodiscard]] bool color_lookup_table_present() const
+  {
+    return !unused() && !m_bpp16 && m_color_lookup_table_present;
+  }
   /**
    * Test that one of the valid states is true.
    * @return true if is a valid state.

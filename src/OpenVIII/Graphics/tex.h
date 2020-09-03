@@ -57,11 +57,12 @@ private:
       row = 0U;
     }
 
-    const auto palette_span = std::span(reinterpret_cast<const Color32<2, 1, 0, 3> *>(std::ranges::data(m_palette_data)),
-      m_tex_header.num_colors_per_palette() * m_tex_header.num_palettes())
-                               .subspan(row * m_tex_header.num_colors_per_palette());
-    
-    return Color32<0,1,2,3>( palette_span[key] );
+    const auto palette_span =
+      std::span(reinterpret_cast<const Color32<2, 1, 0, 3> *>(std::ranges::data(m_palette_data)),
+        m_tex_header.num_colors_per_palette() * m_tex_header.num_palettes())
+        .subspan(row * m_tex_header.num_colors_per_palette());
+
+    return Color32<0, 1, 2, 3>(palette_span[key]);
   }
 
 
@@ -89,6 +90,7 @@ private:
     m_palette_data = {};
     m_image_data = {};
   }
+
 public:
   Tex() = default;
   [[maybe_unused]] explicit Tex(std::span<const char> buffer)
@@ -142,7 +144,7 @@ public:
   [[maybe_unused]] [[nodiscard]] auto get_colors([[maybe_unused]] std::uint32_t palette_row = 0U) const
   {
 
-    std::vector<Color32<0,1,2,3>> ret{};
+    std::vector<Color32<0, 1, 2, 3>> ret{};
     ret.reserve(m_tex_header.image_area());
     if (m_tex_header.palette_flag()) {
       for (const auto &i : m_image_data) {

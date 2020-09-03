@@ -10,6 +10,9 @@
 #include "OpenVIII/Graphics/sp1.h"
 #include "OpenVIII/Graphics/sp2.h"
 #include "OpenVIII/MenuGroup/MenuGroupFile.h"
+#include "OpenVIII/Graphics/background/Mim.h"
+#include "OpenVIII/Graphics/background/Tile1.h"
+#include "OpenVIII/Graphics/background/Tile2.h"
 
 int main()
 {
@@ -20,14 +23,14 @@ int main()
     }
     std::cout << path << std::endl;
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
-//    {
-//      const auto &menu = archives.Get<open_viii::archive::ArchiveTypeT::Menu>();
-//      const auto menuGroup = open_viii::MenuGroup::MenuGroupFile{ menu };
-//      const auto fullpath = menu.GetFullPath(menuGroup.FILENAME);
-//      menuGroup.TestTim(fullpath);
-//    }
-    archives.execute_on(
-      { ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2" },
+    //    {
+    //      const auto &menu = archives.Get<open_viii::archive::ArchiveTypeT::Menu>();
+    //      const auto menuGroup = open_viii::MenuGroup::MenuGroupFile{ menu };
+    //      const auto fullpath = menu.GetFullPath(menuGroup.FILENAME);
+    //      menuGroup.TestTim(fullpath);
+    //    }
+
+    archives.execute_on({ /* ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2"*/ ".mim" },
       [](std::vector<char> buffer, [[maybe_unused]] std::string_view p) {
         if (open_viii::Tools::i_ends_with(p, ".lzs")) {
           auto t = open_viii::graphics::Lzs(buffer);
@@ -36,11 +39,9 @@ int main()
         } else if (open_viii::Tools::i_ends_with(p, ".tim")) {
           auto t = open_viii::graphics::Tim(buffer);
           std::cout << p << '\n' << t << '\n';
-          if(t.width()==0 || t.height() == 0)
-          {
-            open_viii::Tools::write_buffer(buffer,p);
-          }
-          else {
+          if (t.width() == 0 || t.height() == 0) {
+            open_viii::Tools::write_buffer(buffer, p);
+          } else {
             t.save(p);
           }
         } else if (open_viii::Tools::i_ends_with(p, ".tex")) {
@@ -59,6 +60,15 @@ int main()
           auto t = open_viii::graphics::Sp2(buffer);
           std::cout << p << '\n' << t << '\n';
           // t.Save(p);
+        } else if (open_viii::Tools::i_ends_with(p, ".map")) {
+          //          auto t = open_viii::graphics::Sp2(buffer);
+          //          std::cout << p << '\n' << t << '\n';
+          // t.Save(p);
+          //std::cout << sizeof(open_viii::graphics::background::PaletteID) << '\n';
+        }else if (open_viii::Tools::i_ends_with(p, ".mim")) {
+          auto t = open_viii::graphics::background::Mim(buffer);
+          std::cout << p << '\n' << t << '\n';
+          t.save(p);
         }
       });
   }

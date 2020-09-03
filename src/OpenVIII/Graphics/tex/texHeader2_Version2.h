@@ -20,14 +20,10 @@ private:
   std::uint32_t m_unknown_11{};
 
 public:
-
   /**
    * Unknown 11 (TEX version 2 only)
    */
-  [[maybe_unused]] [[nodiscard]] std::uint32_t unknown_11() const noexcept
-  {
-    return m_unknown_11;
-  }
+  [[maybe_unused]] [[nodiscard]] std::uint32_t unknown_11() const noexcept { return m_unknown_11; }
 };
 
 
