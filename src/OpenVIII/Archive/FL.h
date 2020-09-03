@@ -224,5 +224,5 @@ public:
     Tools::replace_slashes(buffer);
   }
 };
-}// namespace open_viii::Archive
+}// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FL_H

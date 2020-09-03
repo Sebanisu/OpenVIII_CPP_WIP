@@ -53,5 +53,5 @@ public:
     exit(1);
   }
 };
-}
+}// namespace open_viii
 #endif// VIIIARCHIVE_LANGCOMMON_H

@@ -84,5 +84,5 @@ public:
   [[maybe_unused]] [[nodiscard]] auto get_path_string() const { return std::string_view(m_filename); }
   [[maybe_unused]] [[nodiscard]] auto get_tuple() const { return std::make_tuple(get_path_string(), offset(), size()); }
 };
-}// namespace open_viii::Archive
+}// namespace open_viii::archive
 #endif// VIIIARCHIVE_FILEDATA_H

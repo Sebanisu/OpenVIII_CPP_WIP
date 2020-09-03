@@ -66,8 +66,9 @@ struct [[maybe_unused]] Tools
     return buf;
   }
 
-  [[maybe_unused]] static bool
-    write_buffer(const std::span<const char> &buffer, const std::string_view &path, const std::string_view &root = "tmp")
+  [[maybe_unused]] static bool write_buffer(const std::span<const char> &buffer,
+    const std::string_view &path,
+    const std::string_view &root = "tmp")
   {
     // todo make buffer a std::span
     if (std::ranges::empty(buffer)) {
@@ -121,7 +122,8 @@ struct [[maybe_unused]] Tools
       return;
     }
 
-    if (static_cast<std::intmax_t>(needle) == static_cast<std::intmax_t>(replacement)) {// casting because worried if the types don't match.
+    if (static_cast<std::intmax_t>(needle)
+        == static_cast<std::intmax_t>(replacement)) {// casting because worried if the types don't match.
       return;
     }
     const auto replace = [needle, replacement](const auto &input) {

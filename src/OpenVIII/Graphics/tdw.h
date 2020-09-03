@@ -27,7 +27,7 @@ public:
   explicit Tdw([[maybe_unused]] std::span<const char> buffer)
   {
     const auto buffer_bak = buffer;
-    size_t sz32 = sizeof(std::uint32_t);
+    constexpr static std::size_t sz32 = sizeof(std::uint32_t);
     if (std::ranges::size(buffer) < sz32) {
       return;
     }
@@ -46,8 +46,10 @@ public:
     if (std::ranges::size(buffer) < widths_size()) {
       return;
     }
-    m_widths.resize(widths_size());
-    std::memcpy(std::ranges::data(m_widths), std::ranges::data(buffer_bak.subspan(m_widths_offset)), widths_size());
+    if (widths_size() > 0) {
+      m_widths.resize(widths_size());
+      std::memcpy(std::ranges::data(m_widths), std::ranges::data(buffer_bak.subspan(m_widths_offset)), widths_size());
+    }
     m_tim = Tim{ buffer_bak.subspan(m_tim_offset) };
   }
   [[nodiscard]] auto operator[](size_t i) const

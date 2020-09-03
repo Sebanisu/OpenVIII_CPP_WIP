@@ -53,8 +53,9 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", " << static_cast<std::uint32_t>(m_index_to_battle_command)
-       << ", " << static_cast<std::uint32_t>(m_unknown0) << ", " << static_cast<std::uint32_t>(m_unknown1);
+    os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
+       << static_cast<std::uint32_t>(m_index_to_battle_command) << ", " << static_cast<std::uint32_t>(m_unknown0)
+       << ", " << static_cast<std::uint32_t>(m_unknown1);
     return os;
   }
 };

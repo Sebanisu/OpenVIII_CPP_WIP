@@ -12,7 +12,6 @@ namespace open_viii::graphics::background {
 struct MimType
 {
 private:
-
   std::uint8_t m_palettes{};
   std::uint8_t m_texture_pages{};
   std::uint8_t m_skipped_palettes{};
@@ -21,8 +20,8 @@ private:
 
 public:
   /**
-  * first 8 are junk and are not used.
-  */
+   * first 8 are junk and are not used.
+   */
   static constexpr uint8_t DEFAULT_SKIPPED_PALETTES{ 8U };
   static constexpr uint8_t DEFAULT_TYPE{ 1U };
   static constexpr std::uint16_t OUT_HEIGHT{ 256U };
@@ -58,8 +57,9 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const MimType &m)
   {
-    return os << '{' << static_cast<std::uint32_t>(m.m_palettes) << ", " << static_cast<std::uint32_t>(m.m_texture_pages)
-              << ", " << static_cast<std::uint32_t>(m.m_skipped_palettes) << ", " << static_cast<std::uint32_t>(m.m_type)
+    return os << '{' << static_cast<std::uint32_t>(m.m_palettes) << ", "
+              << static_cast<std::uint32_t>(m.m_texture_pages) << ", "
+              << static_cast<std::uint32_t>(m.m_skipped_palettes) << ", " << static_cast<std::uint32_t>(m.m_type)
               << '}';
   }
 };

@@ -26,7 +26,7 @@ private:
   [[nodiscard]] static intmax_t
     find_string_size(const std::string_view &buffer, const intmax_t offset, bool skip_first_null)
   {
-    //TODO: remove the pointers
+    // TODO: remove the pointers
     if (static_cast<unsigned>(offset) > std::size(buffer)) {
       return -1;
     }

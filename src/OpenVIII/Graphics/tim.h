@@ -37,9 +37,12 @@ private:
 
   [[nodiscard]] Color16 get_color([[maybe_unused]] std::uint16_t row, [[maybe_unused]] std::uint8_t color_key) const
   {
+    if (m_tim_clut_header.rectangle().width() == 0 || m_tim_clut_header.rectangle().height() == 0) {
+      return {};
+    }
     // clangTidy says this function can be static which it cannot be static.
-    const auto palette_span = std::span(reinterpret_cast<const Color16 *>(std::ranges::data(m_tim_clut_data)),
-      m_tim_clut_header.rectangle().width() * m_tim_clut_header.rectangle().height())
+    const auto palette_span = std::span(
+      reinterpret_cast<const Color16 *>(std::ranges::data(m_tim_clut_data)), m_tim_clut_header.rectangle().area())
                                 .subspan(row * m_tim_clut_header.rectangle().width());
     return palette_span[color_key];
   }
@@ -131,6 +134,7 @@ public:
     return static_cast<decltype(m_tim_image_header.rectangle().width())>(0);// invalid value
   }
   [[nodiscard]] auto height() const { return m_tim_image_header.rectangle().height(); }
+  [[nodiscard]] auto area() const { return m_tim_image_header.rectangle().area(); }
   [[maybe_unused]] [[nodiscard]] auto x() const { return m_tim_image_header.rectangle().x(); }
   [[maybe_unused]] [[nodiscard]] auto y() const { return m_tim_image_header.rectangle().y(); }
 
@@ -150,12 +154,15 @@ public:
   }
   template<Color dstT = Tim> [[nodiscard]] std::vector<dstT> get_colors([[maybe_unused]] std::uint16_t row = 0U) const
   {
+    if (width() == 0 || height() == 0) {
+      return {};
+    }
     static constexpr auto bpp4 = 4U;
     static constexpr auto bpp8 = 8U;
     static constexpr auto bpp16 = 16U;
     static constexpr auto bpp24 = 24U;
     std::vector<dstT> output{};
-    const auto out_size = static_cast<std::size_t>(width()) * static_cast<std::size_t>(height());
+    const auto out_size = area();
     output.reserve(out_size);
     switch (static_cast<int>(m_tim_header.bpp())) {
 

@@ -73,8 +73,8 @@ public:
   [[maybe_unused]] [[nodiscard]] const auto &forbid_mag_rf() const noexcept { return m_forbid_mag_rf; }
   [[nodiscard]] static constexpr auto size()
   {
-    return T_MAG_RF_COUNT + I_MAG_RF_COUNT + F_MAG_RF_COUNT + L_MAG_RF_COUNT + TIME_MAG_RF_COUNT + ST_MAG_RF_COUNT + SUPT_RF_COUNT
-           + FORBID_MAG_RF_COUNT;
+    return T_MAG_RF_COUNT + I_MAG_RF_COUNT + F_MAG_RF_COUNT + L_MAG_RF_COUNT + TIME_MAG_RF_COUNT + ST_MAG_RF_COUNT
+           + SUPT_RF_COUNT + FORBID_MAG_RF_COUNT;
   }
   template<LangT langVal, typename T>
   std::ostream &out_array(const T &arr,

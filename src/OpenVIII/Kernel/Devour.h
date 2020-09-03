@@ -74,7 +74,7 @@ template<LangT langVal> struct Devour
 private:
   EncodedStringOffset m_description_offset{};
   std::uint8_t m_damage_or_heal{};// HP and Status; If last on right bit is set heal, and if not dmg. Rest looks like
-                               // 0b‭00011110‬.
+                                  // 0b‭00011110‬.
   PercentQuantityT m_percent_quantity{};
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
   PersistentStatusesT m_persistent_statuses{};// statuses 0-7

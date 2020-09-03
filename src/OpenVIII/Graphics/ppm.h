@@ -22,8 +22,9 @@ struct Ppm
     }
 
     auto tmp = std::filesystem::path(input);
-    std::string filename{ (tmp.parent_path() / tmp.stem()).string() + ".ppm" };
-std::cout << std::ranges::size(data) <<", " << width * height <<'\n';
+    std::string filename{ (tmp.parent_path() / tmp.stem()).string() + "_" + tmp.extension().string().substr(1)
+                          + ".ppm" };
+    std::cout << std::ranges::size(data) << ", " << width * height << '\n';
     if (std::ranges::size(data) < width * height) {
       return;
     }

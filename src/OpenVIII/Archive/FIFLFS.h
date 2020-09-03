@@ -42,28 +42,29 @@ private:
     mutable T m_data{};
     mutable std::string m_base{};
     mutable std::filesystem::path m_nested_path{};
+
   public:
-    [[nodiscard]] std::filesystem::path & path() const noexcept{ return m_path; }
-    [[nodiscard]] std::size_t & offset() const noexcept{ return m_offset; }
-    [[nodiscard]] std::size_t & size() const noexcept{ return m_size; }// if forced otherwise 0;
-    [[nodiscard]] T & data() const noexcept{ return m_data; }
-    [[nodiscard]] std::string & base() const noexcept{ return m_base; }
-    [[nodiscard]] std::filesystem::path & nested_path() const noexcept{ return m_nested_path; }
+    [[nodiscard]] std::filesystem::path &path() const noexcept { return m_path; }
+    [[nodiscard]] std::size_t &offset() const noexcept { return m_offset; }
+    [[nodiscard]] std::size_t &size() const noexcept { return m_size; }// if forced otherwise 0;
+    [[nodiscard]] T &data() const noexcept { return m_data; }
+    [[nodiscard]] std::string &base() const noexcept { return m_base; }
+    [[nodiscard]] std::filesystem::path &nested_path() const noexcept { return m_nested_path; }
 
-//    void path(std::filesystem::path && value) const noexcept{ m_path = value; }
-//    void offset(std::size_t && value) const noexcept{ m_offset = value; }
-//    void size(std::size_t && value) const noexcept{ m_size = value; }// if forced otherwise 0;
-//    void data(T && value) const noexcept{ m_data = value; }
-//    void base(std::string && value) const noexcept{ m_base = value; }
-//    void nested_path(std::filesystem::path && value) const noexcept{ m_nested_path = value; }
+    //    void path(std::filesystem::path && value) const noexcept{ m_path = value; }
+    //    void offset(std::size_t && value) const noexcept{ m_offset = value; }
+    //    void size(std::size_t && value) const noexcept{ m_size = value; }// if forced otherwise 0;
+    //    void data(T && value) const noexcept{ m_data = value; }
+    //    void base(std::string && value) const noexcept{ m_base = value; }
+    //    void nested_path(std::filesystem::path && value) const noexcept{ m_nested_path = value; }
 
 
-    void path( const std::filesystem::path & value) const noexcept{ m_path = value; }
-    void offset( std::size_t  value) const noexcept{ m_offset = value; }
-    void size(std::size_t & value) const noexcept{ m_size = value; }// if forced otherwise 0;
-    void data( T && value) const noexcept{ m_data = std::move(value); }
-    void base( const std::string & value) const noexcept{ m_base = value; }
-    void nested_path( const std::filesystem::path & value) const noexcept{ m_nested_path = value; }
+    void path(const std::filesystem::path &value) const noexcept { m_path = value; }
+    void offset(std::size_t value) const noexcept { m_offset = value; }
+    void size(std::size_t &value) const noexcept { m_size = value; }// if forced otherwise 0;
+    void data(T &&value) const noexcept { m_data = std::move(value); }
+    void base(const std::string &value) const noexcept { m_base = value; }
+    void nested_path(const std::filesystem::path &value) const noexcept { m_nested_path = value; }
 
     //    // Assigns basename and returns it.
     [[maybe_unused]] std::string get_base_name() const noexcept { return m_base = FIFLFS::get_base_name(m_path); }
@@ -108,8 +109,8 @@ public:
     const auto str = [](auto fiflfs) {
       return std::ranges::empty(fiflfs.nested_path()) ? fiflfs.path() : fiflfs.path() / fiflfs.nested_path();
     };
-    return os << '{' << data.get_base_name() << " {" << data.m_count << " File Entries from : " << str(data.m_fi) << ", "
-              << str(data.m_fl) << ", " << str(data.m_fs) << "}}";
+    return os << '{' << data.get_base_name() << " {" << data.m_count << " File Entries from : " << str(data.m_fi)
+              << ", " << str(data.m_fl) << ", " << str(data.m_fs) << "}}";
   }
 
   [[nodiscard]] archive::FI get_entry_index(const unsigned int &id) const
@@ -183,7 +184,10 @@ public:
    */
   template<typename srcT, FI_Like datT = archive::FI>
   requires(std::convertible_to<srcT, std::filesystem::path> || std::ranges::contiguous_range<srcT>) TryAddT
-    try_add_nested(const srcT &src, const size_t src_offset, const std::filesystem::path &file_entry, const datT &fi) const
+    try_add_nested(const srcT &src,
+      const size_t src_offset,
+      const std::filesystem::path &file_entry,
+      const datT &fi) const
   {
 
     const auto set = [&file_entry](auto &ds) {
@@ -202,13 +206,13 @@ public:
       }
       case 2: {
         set(m_fs);
-        m_fs.data( FS::get_entry(src, fi, src_offset));
+        m_fs.data(FS::get_entry(src, fi, src_offset));
         break;
       }
 
       case 3: {
         set(m_fi);
-        m_fi.data( FS::get_entry(src, fi, src_offset));
+        m_fi.data(FS::get_entry(src, fi, src_offset));
         get_count();
         break;
       }
@@ -265,8 +269,7 @@ public:
     std::cout << "Getting Filenames from : " << m_fl.path() << '\n';
     FIFLFS archive{};
     using namespace std::string_view_literals;
-    auto items = archive::FL::get_all_entries_data(
-      m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, {});
+    auto items = archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, {});
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
       // std::cout << "try_add_nested: {" << id << ", " << strVirtualPath << "}\n";
@@ -280,7 +283,8 @@ public:
           }
 
           if (fi.compression_type() == CompressionTypeT::none) {
-            auto localRetVal = archive.try_add(m_fs.path(), virtualPath, m_fs.offset() + fi.offset(), fi.uncompressed_size());
+            auto localRetVal =
+              archive.try_add(m_fs.path(), virtualPath, m_fs.offset() + fi.offset(), fi.uncompressed_size());
             if (localRetVal != TryAddT::not_part_of_archive) {
               std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
             }
@@ -413,11 +417,11 @@ public:
   }
   [[nodiscard]] auto get_entry_id_and_path(const std::string_view &filename) const
   {
-     if (std::ranges::empty(m_fl.data())) {
-       return open_viii::archive::FL::get_entry(m_fl.path(), { filename }, m_fl.offset(), m_fl.size(), m_count);
-     }
-     return open_viii::archive::FL::get_entry_data(m_fl.path(), m_fl.data(), { filename }, m_fl.offset(), m_fl.size(), m_count);
-
+    if (std::ranges::empty(m_fl.data())) {
+      return open_viii::archive::FL::get_entry(m_fl.path(), { filename }, m_fl.offset(), m_fl.size(), m_count);
+    }
+    return open_viii::archive::FL::get_entry_data(
+      m_fl.path(), m_fl.data(), { filename }, m_fl.offset(), m_fl.size(), m_count);
   }
   template<typename outT = std::vector<char>> [[nodiscard]] outT get_entry_data(const std::string_view &filename) const
   {
@@ -488,7 +492,8 @@ public:
     std::vector<FIFLFS<false>> out{};
     FIFLFS<false> archive{};
 
-    const auto &items = archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, { filename });
+    const auto &items =
+      archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, { filename });
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
 
@@ -501,7 +506,8 @@ public:
           }
 
           if (fi.compression_type() == CompressionTypeT::none) {
-            auto localRetVal = archive.try_add(m_fs.path(), virtualPath, m_fs.offset() + fi.offset(), fi.uncompressed_size());
+            auto localRetVal =
+              archive.try_add(m_fs.path(), virtualPath, m_fs.offset() + fi.offset(), fi.uncompressed_size());
             if (localRetVal != TryAddT::not_part_of_archive) {
               std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
             }
@@ -524,5 +530,5 @@ public:
   }
 };
 
-}// namespace open_viii::Archive
+}// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FIFLm_fsH

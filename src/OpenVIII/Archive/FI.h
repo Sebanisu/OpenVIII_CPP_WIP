@@ -54,19 +54,18 @@ public:
 
   constexpr FI() noexcept = default;
 
-  template<FI_Like fiT> constexpr explicit FI(const fiT &fi)
-  :    m_uncompressed_size{static_cast<decltype(m_uncompressed_size)>(fi.uncompressed_size())},
-  m_offset{static_cast<decltype(m_offset)>(fi.offset())},
-  m_compression_type{static_cast<decltype(m_compression_type)>(fi.compression_type())}
-  {
-  }
+  template<FI_Like fiT>
+  constexpr explicit FI(const fiT &fi)
+    : m_uncompressed_size{ static_cast<decltype(m_uncompressed_size)>(fi.uncompressed_size()) },
+      m_offset{ static_cast<decltype(m_offset)>(fi.offset()) }, m_compression_type{
+        static_cast<decltype(m_compression_type)>(fi.compression_type())
+      }
+  {}
   constexpr FI(const unsigned int &uncompressed_size,
     const unsigned int &offset,
     const CompressionTypeT &compression_type = CompressionTypeT::none) noexcept
-  :m_uncompressed_size{uncompressed_size},m_offset{offset},m_compression_type{compression_type}
-  {
-
-  }
+    : m_uncompressed_size{ uncompressed_size }, m_offset{ offset }, m_compression_type{ compression_type }
+  {}
 
   explicit FI(std::ifstream &&fp, const long &start_offset = 0, bool close = false)
   {
@@ -131,6 +130,6 @@ public:
     return os;
   }
 };
-}// namespace open_viii::Archive
+}// namespace open_viii::archive
 
 #endif// !VIIIARCHIVE_FI_H

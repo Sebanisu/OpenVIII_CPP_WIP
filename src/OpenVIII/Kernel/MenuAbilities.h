@@ -53,8 +53,9 @@ public:
     if (!std::empty(description)) {
       os << ", " << Tools::u8tosv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", " << static_cast<std::uint32_t>(m_menu_file_index)
-              << ", " << static_cast<std::uint32_t>(m_start_offset) << ", " << static_cast<std::uint32_t>(m_end_offset);
+    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
+              << static_cast<std::uint32_t>(m_menu_file_index) << ", " << static_cast<std::uint32_t>(m_start_offset)
+              << ", " << static_cast<std::uint32_t>(m_end_offset);
   }
 };
 }// namespace open_viii::kernel

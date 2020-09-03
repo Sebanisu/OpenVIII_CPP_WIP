@@ -32,8 +32,7 @@ struct L4Z
   [[nodiscard]] [[maybe_unused]] static dstT
     decompress(const char *src_data, const srcSizeT &src_size, const dstSizeT &dst_size)
   {
-    if(src_size<0 || dst_size <0)
-    {
+    if (src_size < 0 || dst_size < 0) {
       return {};
     }
     dstT dst{};
@@ -47,18 +46,18 @@ struct L4Z
     }
     return dst;
   }
-/**
- * Extract char buffer using LZ4 decompressor.
- * @tparam dstT returning type.
- * @param src source char buffer
- * @param dst_size (cast to int) size of dst data.
- * @return uncompressed char buffer.
- */
+  /**
+   * Extract char buffer using LZ4 decompressor.
+   * @tparam dstT returning type.
+   * @param src source char buffer
+   * @param dst_size (cast to int) size of dst data.
+   * @return uncompressed char buffer.
+   */
   template<typename dstT = std::vector<char>, std::integral dstSizeT>
   [[nodiscard]] [[maybe_unused]] static dstT decompress(const std::span<const char> &src, const dstSizeT &dst_size)
   {
     return decompress<dstT>(std::ranges::data(src), std::ranges::size(src), dst_size);
   }
 };
-}// namespace open_viii::Compression
+}// namespace open_viii::compression
 #endif// VIIICOMPRESSION_L4Z_H

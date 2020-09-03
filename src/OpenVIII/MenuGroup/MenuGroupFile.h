@@ -258,20 +258,21 @@ public:
         std::cout << tim << '\n';
         std::cout << tim.check();
         so << path.string() << static_cast<std::size_t>(section_id);
-        const auto colors_dump = [&tim, &so](const std::vector<graphics::Color32<0,1,2,3>> &colors, std::uint16_t num = 0) {
+        const auto colors_dump = [&tim, &so](
+                                   const std::vector<graphics::Color32<0, 1, 2, 3>> &colors, std::uint16_t num = 0) {
           std::cout << '\n';
           std::stringstream fn{};
           fn << so.str() << "_" << static_cast<std::size_t>(num) << ".tmp";
 
-          //std::cout << "Saved: " << fn.str() << "\n";
+          // std::cout << "Saved: " << fn.str() << "\n";
           graphics::Ppm::save(colors, tim.width(), tim.height(), fn.str());
         };
         if (tim.clut_rows() > 0) {
           for (std::uint16_t i = 0; i < tim.clut_rows(); i++) {
-            colors_dump(tim.get_colors<graphics::Color32<0,1,2,3>>(i), i);
+            colors_dump(tim.get_colors<graphics::Color32<0, 1, 2, 3>>(i), i);
           }
         } else {
-          colors_dump(tim.get_colors<graphics::Color32<0,1,2,3>>());
+          colors_dump(tim.get_colors<graphics::Color32<0, 1, 2, 3>>());
         }
       });
   }
@@ -294,24 +295,24 @@ public:
   template<LangT langVal> void test_tk_mn_mes() const
   {
     constexpr auto start = 0U;
-    static_for_tkmnmes<start, MES_VALUE_ARRAY.size() - start>(
-      [&, this](const auto &sectionID, [[maybe_unused]] const auto &tkmnmesPair) {
-        std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << tkmnmesPair->sections().size() << ", "
-                  << tkmnmesPair->sub_sections().size() << "},\n";
-        for (size_t id = 0; id < tkmnmesPair->sections().size() && id < tkmnmesPair->sub_sections().size(); id++) {
-          [[maybe_unused]] const auto offset = tkmnmesPair->sections().at(id);
-          const auto subSectionGroup = tkmnmesPair->sub_sections().at(id);
-          [[maybe_unused]] size_t stringNumber{};
-          for (const auto &subSection : subSectionGroup) {
-            if (subSection.offset() == 0) {
-              continue;
-            }
-            std::cout << "    " << stringNumber++ << ": {" << subSection.offset() << "} "
-                      << Tools::u8tosv(subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true))
-                      << '\n';
+    static_for_tkmnmes<start, MES_VALUE_ARRAY.size() - start>([&, this](const auto &sectionID,
+                                                                [[maybe_unused]] const auto &tkmnmesPair) {
+      std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << tkmnmesPair->sections().size() << ", "
+                << tkmnmesPair->sub_sections().size() << "},\n";
+      for (size_t id = 0; id < tkmnmesPair->sections().size() && id < tkmnmesPair->sub_sections().size(); id++) {
+        [[maybe_unused]] const auto offset = tkmnmesPair->sections().at(id);
+        const auto subSectionGroup = tkmnmesPair->sub_sections().at(id);
+        [[maybe_unused]] size_t stringNumber{};
+        for (const auto &subSection : subSectionGroup) {
+          if (subSection.offset() == 0) {
+            continue;
           }
+          std::cout << "    " << stringNumber++ << ": {" << subSection.offset() << "} "
+                    << Tools::u8tosv(subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true))
+                    << '\n';
         }
-      });
+      }
+    });
   }
 
   template<LangT langVal> void test_complex() const

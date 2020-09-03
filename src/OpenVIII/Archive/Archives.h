@@ -466,11 +466,11 @@ public:
     std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::last),
     std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::first),
     typename lambdaT>
-  requires(
-    (test_valid_archive_type_t(maxT) || maxT >= minT - 1) && test_valid_archive_type_t(minT)
-    && std::invocable<lambdaT,
-      std::vector<char>,
-      std::string>) void execute_on(const std::initializer_list<std::string_view> &filename, const lambdaT &lambda) const
+  requires((test_valid_archive_type_t(maxT) || maxT >= minT - 1) && test_valid_archive_type_t(minT)
+           && std::invocable<lambdaT,
+             std::vector<char>,
+             std::string>) void execute_on(const std::initializer_list<std::string_view> &filename,
+    const lambdaT &lambda) const
   {
     if constexpr (maxT >= minT) {
       execute_on<nested, maxT - 1, minT>(filename, lambda);
@@ -493,5 +493,5 @@ public:
     }
   }
 };// namespace open_viii::Archive
-}// namespace open_viii::Archive
+}// namespace open_viii::archive
 #endif// VIIIARCHIVE_ARCHIVES_H

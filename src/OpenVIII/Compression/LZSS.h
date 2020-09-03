@@ -167,8 +167,8 @@ public:
     auto right_side = std::array<unsigned int, RIGHT_SIDE_SIZE>();
     auto parent = std::array<unsigned int, N_PLUS2>();
 
-    auto text_buf =
-      std::array<unsigned char, N_PLUS17>();// ring buffer of size N, with extra 17 bytes to facilitate string comparison
+    auto text_buf = std::array<unsigned char,
+      N_PLUS17>();// ring buffer of size N, with extra 17 bytes to facilitate string comparison
     unsigned int cur_result{};
     size_t size_alloc = src.size() / 2U;
     auto code_buf = std::array<unsigned char, F_MINUS1>();
@@ -185,7 +185,7 @@ public:
      * Note item plays double role, as tree node and position in buffer.
      */
     const auto insert_node = [&text_buf, &right_side, &left_side, &match_length, &parent, &match_position](
-                              const unsigned int &item) {
+                               const unsigned int &item) {
       /*  */
 
       int cmp = 1U;
@@ -405,5 +405,5 @@ public:
     return result;
   }
 };
-}// namespace open_viii::Compression
+}// namespace open_viii::compression
 #endif

@@ -94,8 +94,9 @@ public:
               << static_cast<std::uint32_t>(m_attack_flags) << ", " << static_cast<std::uint32_t>(m_hit_count) << ", "
               << static_cast<std::uint32_t>(m_element) << ", " << static_cast<std::uint32_t>(m_element_attack_percent)
               << ", " << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-              << static_cast<std::uint32_t>(m_persistent_statuses) << ", " << static_cast<std::uint32_t>(m_used_item_index)
-              << ", " << static_cast<std::uint32_t>(m_critical_increase) << ", "
+              << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
+              << static_cast<std::uint32_t>(m_used_item_index) << ", "
+              << static_cast<std::uint32_t>(m_critical_increase) << ", "
               << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
 
       ;

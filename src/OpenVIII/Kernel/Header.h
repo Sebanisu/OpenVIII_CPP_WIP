@@ -102,9 +102,11 @@ public:
       return BulkSectionData<RenzokukenFinishers<langVal>>{ get_span<sectionType>(),
         get_span<SectionTypesT::renzokuken_finishers_text>() };
     } else if constexpr (sectionType == SectionTypesT::characters) {
-      return BulkSectionData<Characters<langVal>>{ get_span<sectionType>(), get_span<SectionTypesT::characters_text>() };
+      return BulkSectionData<Characters<langVal>>{ get_span<sectionType>(),
+        get_span<SectionTypesT::characters_text>() };
     } else if constexpr (sectionType == SectionTypesT::battle_items) {
-      return BulkSectionData<BattleItems<langVal>>{ get_span<sectionType>(), get_span<SectionTypesT::battle_items_text>() };
+      return BulkSectionData<BattleItems<langVal>>{ get_span<sectionType>(),
+        get_span<SectionTypesT::battle_items_text>() };
     } else if constexpr (sectionType == SectionTypesT::non_battle_items) {
       return BulkSectionData<NonBattleItems<langVal>>{ get_span<sectionType>(),
         get_span<SectionTypesT::non_battle_items_text>() };
@@ -129,7 +131,8 @@ public:
       return BulkSectionData<PartyAbilities<langVal>>{ get_span<sectionType>(),
         get_span<SectionTypesT::party_abilities_text>() };
     } else if constexpr (sectionType == SectionTypesT::gf_abilities) {
-      return BulkSectionData<GFAbilities<langVal>>{ get_span<sectionType>(), get_span<SectionTypesT::gf_abilities_text>() };
+      return BulkSectionData<GFAbilities<langVal>>{ get_span<sectionType>(),
+        get_span<SectionTypesT::gf_abilities_text>() };
     } else if constexpr (sectionType == SectionTypesT::menu_abilities) {
       return BulkSectionData<MenuAbilities<langVal>>{ get_span<sectionType>(),
         get_span<SectionTypesT::menu_abilities_text>() };
@@ -303,7 +306,7 @@ public:
     }
     m_section_offsets.reserve(sectionCount);
     size_t i{ 1 };
-    //todo: remove pointers. use span.
+    // todo: remove pointers. use span.
     while (sectionCount-- > 0) {
       std::memcpy(
         &m_section_offsets.emplace_back(), m_buffer.data() + (sizeof(sectionCount) * (i++)), sizeof(sectionCount));

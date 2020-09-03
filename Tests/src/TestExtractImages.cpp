@@ -30,7 +30,7 @@ int main()
     //      menuGroup.TestTim(fullpath);
     //    }
 
-    archives.execute_on({ /* ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2"*/ ".mim" },
+    archives.execute_on({ /* ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2"*/ "ending" },
       [](std::vector<char> buffer, [[maybe_unused]] std::string_view p) {
         if (open_viii::Tools::i_ends_with(p, ".lzs")) {
           auto t = open_viii::graphics::Lzs(buffer);
@@ -64,8 +64,8 @@ int main()
           //          auto t = open_viii::graphics::Sp2(buffer);
           //          std::cout << p << '\n' << t << '\n';
           // t.Save(p);
-          //std::cout << sizeof(open_viii::graphics::background::PaletteID) << '\n';
-        }else if (open_viii::Tools::i_ends_with(p, ".mim")) {
+          // std::cout << sizeof(open_viii::graphics::background::PaletteID) << '\n';
+        } else if (open_viii::Tools::i_ends_with(p, ".mim")) {
           auto t = open_viii::graphics::background::Mim(buffer);
           std::cout << p << '\n' << t << '\n';
           t.save(p);

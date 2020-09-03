@@ -76,7 +76,10 @@ public:
   [[maybe_unused]] [[nodiscard]] auto attack_flags() const noexcept { return m_attack_flags; }
   [[nodiscard]] auto unknown2() const noexcept { return m_unknown2; }
   [[maybe_unused]] [[nodiscard]] auto status_attack_enabler() const noexcept { return m_status_attack_enabler; }
-  [[maybe_unused]] [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }// statuses 0-7
+  [[maybe_unused]] [[nodiscard]] auto persistent_statuses() const noexcept
+  {
+    return m_persistent_statuses;
+  }// statuses 0-7
   [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }// statuses 8-39
   [[maybe_unused]] [[nodiscard]] auto attack_param() const noexcept { return m_attack_param; }
   [[maybe_unused]] [[nodiscard]] auto unknown3() const noexcept { return m_unknown3; }

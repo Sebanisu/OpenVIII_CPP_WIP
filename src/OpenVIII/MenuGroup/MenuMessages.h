@@ -36,7 +36,7 @@ public:
   [[nodiscard]] auto end() const noexcept { return m_sub_sections.end(); }
   template<typename T = std::vector<char>> explicit MenuMessages(const T &buffer)
   {
-    //TODO remove pointer; use span instead of template.
+    // TODO remove pointer; use span instead of template.
     auto *ptr = buffer.data();
     std::memcpy(&m_size, ptr, sizeof(m_size));
     if (m_size != DEFAULT_SIZE) {

@@ -56,8 +56,8 @@ public:
   [[maybe_unused]] [[nodiscard]] const auto &tool_rf() const noexcept { return m_tool_rf; }
   [[nodiscard]] static constexpr auto size()
   {
-    return RECOV_MED_RF_COUNT + ST_MED_RF_COUNT + AMMO_RF_COUNT + FORBID_MED_RF_COUNT + GF_RECOV_RF_COUNT + GF_ABL_MED_RF_COUNT
-           + TOOL_RF_COUNT;
+    return RECOV_MED_RF_COUNT + ST_MED_RF_COUNT + AMMO_RF_COUNT + FORBID_MED_RF_COUNT + GF_RECOV_RF_COUNT
+           + GF_ABL_MED_RF_COUNT + TOOL_RF_COUNT;
   }
 
   template<LangT langVal, typename T>

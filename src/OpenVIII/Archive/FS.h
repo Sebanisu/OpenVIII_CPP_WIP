@@ -144,5 +144,5 @@ public:
     return {};
   }
 };
-}// namespace open_viii::Archive
+}// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FS_H

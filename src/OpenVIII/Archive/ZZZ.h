@@ -211,5 +211,5 @@ public:
   }
 };
 
-}// namespace open_viii::Archive
+}// namespace open_viii::archive
 #endif// VIIIARCHIVE_ZZZ_H
