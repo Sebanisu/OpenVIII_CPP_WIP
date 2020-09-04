@@ -22,6 +22,8 @@ private:
   std::uint16_t m_data{};
 
 public:
+  PaletteID() = default;
+  friend auto operator==(const PaletteID &left, const PaletteID &right) { return left.m_data == right.m_data; }
   [[nodiscard]] std::uint8_t thirty() const noexcept { return static_cast<std::uint8_t>(m_data & THIRTY_MASK); }
   [[nodiscard]] std::uint8_t id() const noexcept
   {

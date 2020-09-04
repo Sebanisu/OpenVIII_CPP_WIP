@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_TIM_H
 #define VIIIARCHIVE_TIM_H
-#include "OpenVIII/Graphics/tim/BPPT.h"
+#include "BPPT.h"
 #include "OpenVIII/Graphics/tim/timHeader.h"
 #include "OpenVIII/Graphics/tim/timClutHeader.h"
 #include "OpenVIII/Graphics/color.h"
@@ -111,30 +111,30 @@ public:
   {
     return m_tim_header.check() && (!m_tim_header.bpp().check() || m_tim_clut_header.check());
   }
-  [[nodiscard]] auto width() const
+  [[nodiscard]] std::size_t width() const
   {
     static constexpr auto bpp4_step{ 4 };
     static constexpr auto bpp8_step{ 2 };
     static constexpr auto bpp24_step{ 1.5 };
     if (m_tim_header.bpp().bpp4()) {
-      return static_cast<decltype(m_tim_image_header.rectangle().width())>(
-        m_tim_image_header.rectangle().width() * bpp4_step);// 4pp
+      return static_cast<std::size_t>(m_tim_image_header.rectangle().width() * bpp4_step);// 4pp
     }
     if (m_tim_header.bpp().bpp8()) {
-      return static_cast<decltype(m_tim_image_header.rectangle().width())>(
-        m_tim_image_header.rectangle().width() * bpp8_step);// 8pp
+      return static_cast<std::size_t>(m_tim_image_header.rectangle().width() * bpp8_step);// 8pp
     }
     if (m_tim_header.bpp().bpp16()) {
-      return m_tim_image_header.rectangle().width();// 16bpp
+      return static_cast<std::size_t>(m_tim_image_header.rectangle().width());// 16bpp
     }
     if (m_tim_header.bpp().bpp24()) {
-      return static_cast<decltype(m_tim_image_header.rectangle().width())>(
-        m_tim_image_header.rectangle().width() / bpp24_step);// 24 bpp
+      return static_cast<std::size_t>(m_tim_image_header.rectangle().width() / bpp24_step);// 24 bpp
     }
-    return static_cast<decltype(m_tim_image_header.rectangle().width())>(0);// invalid value
+    return {};// invalid value
   }
   [[nodiscard]] auto height() const { return m_tim_image_header.rectangle().height(); }
-  [[nodiscard]] auto area() const { return m_tim_image_header.rectangle().area(); }
+  [[nodiscard]] auto area() const
+  {
+    return width() * static_cast<std::size_t>(m_tim_image_header.rectangle().height());
+  }
   [[maybe_unused]] [[nodiscard]] auto x() const { return m_tim_image_header.rectangle().x(); }
   [[maybe_unused]] [[nodiscard]] auto y() const { return m_tim_image_header.rectangle().y(); }
 

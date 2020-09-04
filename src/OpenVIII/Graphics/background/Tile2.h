@@ -16,8 +16,8 @@ namespace open_viii::graphics::background {
 struct Tile2
 {
 private:
-  std::int16_t m_x{};
-  std::int16_t m_y{};
+  mutable std::int16_t m_x{};
+  mutable std::int16_t m_y{};
   std::uint16_t m_source_x{};
   std::uint16_t m_source_y{};
   std::uint16_t m_z{};
@@ -27,16 +27,26 @@ private:
   std::uint8_t m_animation_state{};
 
 public:
-  static constexpr auto END_X{ 0x7FFFU };
+  Tile2() = default;
+  friend auto operator==(const Tile2 &left, const Tile2 &right)
+  {
+    return left.m_x == right.m_x && left.m_y == right.m_y && left.m_z == right.m_z
+           && left.m_tex_id_buffer == right.m_tex_id_buffer && left.m_palette_id == right.m_palette_id
+           && left.m_source_x == right.m_source_x && left.m_source_y == right.m_source_y
+           && left.m_animation_id == right.m_animation_id && left.m_animation_state == right.m_animation_state;
+  }
   static constexpr auto HEIGHT{ 16 };
   static constexpr auto WIDTH{ 16 };
+  static constexpr auto TEXTURE_PAGE_WIDTH{ 128U };
   static constexpr auto AREA = HEIGHT * WIDTH;
   [[nodiscard]] const std::int16_t &x() const noexcept { return m_x; }
   [[nodiscard]] const std::int16_t &y() const noexcept { return m_y; }
+  void x(std::int16_t in_x) const noexcept { m_x = in_x; }
+  void y(std::int16_t in_y) const noexcept { m_y = in_y; }
   [[nodiscard]] const std::uint16_t &z() const noexcept { return m_z; }
   [[nodiscard]] std::uint8_t texture_id() const noexcept { return m_tex_id_buffer.id(); }
   [[nodiscard]] std::uint8_t blend() const noexcept { return m_tex_id_buffer.blend(); }
-  [[nodiscard]] std::uint8_t depth() const noexcept { return m_tex_id_buffer.depth(); }
+  [[nodiscard]] BPPT depth() const noexcept { return m_tex_id_buffer.depth(); }
   [[nodiscard]] bool draw() const noexcept { return m_tex_id_buffer.draw(); }
   [[nodiscard]] std::uint8_t palette_id() const noexcept { return m_palette_id.id(); }
   [[nodiscard]] const std::uint16_t &source_x() const noexcept { return m_source_x; }
@@ -45,6 +55,14 @@ public:
   [[nodiscard]] static BlendModeT blend_mode() noexcept { return BlendModeT::none; }
   [[nodiscard]] const std::uint8_t &animation_id() const noexcept { return m_animation_id; }
   [[nodiscard]] const std::uint8_t &animation_state() const noexcept { return m_animation_state; }
+  [[nodiscard]] Rectangle<std::uint16_t> rectangle() const noexcept
+  {
+    return { static_cast<std::uint16_t>(source_x() + texture_id() * TEXTURE_PAGE_WIDTH), source_y(), WIDTH, HEIGHT };
+  }
+  [[nodiscard]] Rectangle<std::uint16_t> out_rectangle() const noexcept
+  {
+    return { static_cast<std::uint16_t>(m_x), std::uint16_t(m_y), WIDTH, HEIGHT };
+  }
 };
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_TILE2_H

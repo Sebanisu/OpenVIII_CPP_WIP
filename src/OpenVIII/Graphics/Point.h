@@ -14,6 +14,8 @@ private:
   mutable dimT m_y{};
 
 public:
+  Point() = default;
+  Point(const dimT &in_x, const dimT &in_y) : m_x(in_x), m_y(in_y){};
   /**
    * X coordinate.
    * @return x

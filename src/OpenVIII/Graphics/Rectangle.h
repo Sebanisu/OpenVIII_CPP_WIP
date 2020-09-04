@@ -33,13 +33,13 @@ public:
    * @param x is new Left coordinate.
    * @return Left coordinate.
    */
-  [[nodiscard]] auto x(const dimT &x) const { return m_top_left.x(x); }
+  auto x(const dimT &x) const { return m_top_left.x(x); }
   /**
    *
    * @param x is new Left coordinate.
    * @return Left coordinate.
    */
-  [[nodiscard]] auto left(const dimT &x) const { return m_top_left.x(x); }
+  auto left(const dimT &x) const { return m_top_left.x(x); }
   /**
    * @return Top coordinate.
    */
@@ -53,7 +53,7 @@ public:
    * @param y is new Top coordinate.
    * @return Top coordinate.
    */
-  [[nodiscard]] auto y(const dimT &y) const { return m_top_left.y(y); }
+  auto y(const dimT &y) const { return m_top_left.y(y); }
 
   /**
    * @return Right coordinate.
@@ -63,7 +63,7 @@ public:
   /**
    * @return Set Right coordinate.
    */
-  [[nodiscard]] auto right(const dimT right) const
+  auto right(const dimT right) const
   {
     if (right >= m_top_left.x()) {
       return m_width_height.X(m_top_left.x() - right);
@@ -74,7 +74,7 @@ public:
   /**
    * @return Set Bottom coordinate.
    */
-  [[nodiscard]] auto bottom(const dimT bottom) const
+  auto bottom(const dimT bottom) const
   {
     if (bottom >= m_top_left.y()) {
       return m_width_height.Y(m_top_left.y() - bottom);
@@ -95,7 +95,7 @@ public:
    * @param width is new Width value.
    * @return Width.
    */
-  [[nodiscard]] auto width(const dimT &width) const { return m_width_height.X(width); }
+  auto width(const dimT &width) const { return m_width_height.x(width); }
   /**
    * @return Height.
    */
@@ -105,12 +105,16 @@ public:
    * @param height is new Height value.
    * @return Height.
    */
-  [[nodiscard]] auto height(const dimT &height) const { return m_width_height.Y(height); }
+  auto height(const dimT &height) const { return m_width_height.y(height); }
 
   [[nodiscard]] std::size_t area() const
   {
     return static_cast<std::size_t>(m_width_height.x()) * static_cast<std::size_t>(m_width_height.y());
   }
+  Rectangle() = default;
+  Rectangle(const dimT &in_x, const dimT &in_y, const dimT &in_width, const dimT &in_height)
+    : m_top_left{ in_x, in_y }, m_width_height{ in_width, in_height }
+  {}
   friend std::ostream &operator<<(std::ostream &os, const Rectangle<dimT> &input)
   {
     return os << "{(X, Y) = " << input.m_top_left << ", (Width, Height) = " << input.m_width_height << '}';

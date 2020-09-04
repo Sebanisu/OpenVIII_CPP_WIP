@@ -38,7 +38,7 @@ public:
     : m_palettes(palettes), m_texture_pages(texture_pages), m_skipped_palettes(skipped_palettes), m_type(type)
   {}
 
-
+  [[nodiscard]] const auto &type() const noexcept { return m_type; }
   [[nodiscard]] std::size_t bytes_skipped_palettes() const noexcept
   {
     return static_cast<std::size_t>(BYTES_PER_PALETTE) * static_cast<std::size_t>(m_skipped_palettes);

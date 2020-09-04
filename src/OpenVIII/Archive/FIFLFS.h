@@ -26,6 +26,7 @@
 #include <map>
 #include <iterator>
 #include <ranges>
+#include <execution>
 
 namespace open_viii::archive {
 
@@ -440,10 +441,14 @@ public:
     const lambdaT &lambda) const
   {
     const auto results = get_all_entries_data(filename);
-    for (const std::pair<unsigned int, std::string> &pair : results) {
+    std::for_each(results.cbegin(), results.cend(), [&](const std::pair<unsigned int, std::string> &pair) {
       auto fi = get_entry_index(pair.first);
-      lambda(get_entry_buffer(fi), pair.second);
-    }
+      lambda(get_entry_buffer(fi), std::string(pair.second));
+    });
+    //    for (const std::pair<unsigned int, std::string> &pair : results) {
+    //      auto fi = get_entry_index(pair.first);
+    //      lambda(get_entry_buffer(fi), std::string(pair.second));
+    //    }
   }
 
   [[nodiscard]] std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
@@ -485,6 +490,40 @@ public:
         for (const auto &archive : archives) { archive.execute_on(filename, lambda); }
       }
     }
+  }
+  template<typename lambdaT> void execute_with_nested(const std::string_view &filename, const lambdaT lambda) const
+  {
+    FIFLFS<false> archive{};
+
+    const auto &items =
+      archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, { filename });
+    std::for_each(std::execution::seq, items.cbegin(), items.cend(), [this, &archive, &lambda](const auto &item) {
+      const auto &[id, strVirtualPath] = item;
+      FI_Like auto fi = get_entry_index(id);
+
+      TryAddT retVal = [this, &archive, &fi, &strVirtualPath, &lambda]() {
+        std::filesystem::path virtualPath(strVirtualPath);
+        if (!std::ranges::empty(m_fs.data())) {
+          return archive.try_add_nested(m_fs.data(), m_fs.offset(), virtualPath, fi);
+        }
+
+        if (fi.compression_type() == CompressionTypeT::none) {
+          auto localRetVal =
+            archive.try_add(m_fs.path(), virtualPath, m_fs.offset() + fi.offset(), fi.uncompressed_size());
+          if (localRetVal != TryAddT::not_part_of_archive) {
+            std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
+          }
+          return localRetVal;
+        }
+        return archive.try_add_nested(
+          m_fs.path(), m_fs.offset(), virtualPath, fi);// when path is sent a different function is used later.
+      }();
+      if (retVal == TryAddT::added_to_archive) {
+      } else if (retVal == TryAddT::archive_full) {
+        lambda(archive);
+        archive = {};
+      }
+    });
   }
 
   [[nodiscard]] std::vector<FIFLFS<false>> get_fiflfs_entries(const std::string_view &filename) const

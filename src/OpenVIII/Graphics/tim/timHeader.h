@@ -6,7 +6,7 @@
 #define VIIIARCHIVE_TIMHEADER_H
 #include <cstdint>
 #include <iostream>
-#include "BPPT.h"
+#include "OpenVIII/Graphics/BPPT.h"
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timHeader

@@ -204,7 +204,7 @@ public:
       {
         auto pathString = dataItem.get_path_string();
         if (open_viii::Tools::i_find_any(pathString, filename)) {
-          lambda(FS::get_entry(m_path, dataItem), pathString);
+          lambda(FS::get_entry(m_path, dataItem), std::string(pathString));
         }
       }
     }

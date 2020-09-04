@@ -23,6 +23,7 @@ public:
   explicit Mim(std::span<const char> buffer)
     : m_buffer(buffer.begin(), buffer.end()), m_mim_type(get_texture_type(buffer))
   {}
+  [[nodiscard]] const auto &mim_type() const noexcept { return m_mim_type; }
   [[maybe_unused]] [[nodiscard]] static MimType get_texture_type(std::span<const char> buffer)
   {
     for (const auto &m : TEXTURE_TYPES) {
@@ -31,6 +32,40 @@ public:
       }
     }
     return {};
+  }
+  std::vector<Color16> bpp8(const std::uint8_t &clut_row)
+  {
+
+    const auto buffer = std::span<const char>(m_buffer);
+    const auto image_buffer = buffer.subspan(m_mim_type.palette_section_size());
+    const auto palette_buffer_tmp = buffer.subspan(
+      m_mim_type.bytes_skipped_palettes(), m_mim_type.palette_section_size() - m_mim_type.bytes_skipped_palettes());
+
+    const auto image_buffer_bbp8 =
+      std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t *>(std::ranges::data(image_buffer)),
+        std::ranges::size(image_buffer) / sizeof(std::uint8_t));
+    const auto palette_buffer_bbp16 =
+      std::span(reinterpret_cast<const Color16 *>(std::ranges::data(palette_buffer_tmp)),
+        std::ranges::size(palette_buffer_tmp) / sizeof(Color16));
+    const uint16_t clut_width = open_viii::graphics::background::MimType::COLORS_PER_PALETTE;
+    const std::size_t clut_height = std::ranges::size(palette_buffer_bbp16) / clut_width;
+    if (clut_row > clut_height) {
+      return {};
+    }
+    std::vector<Color16> out{};
+    out.resize(std::ranges::size(image_buffer_bbp8));
+    const auto palette_row = palette_buffer_bbp16.subspan(clut_row * clut_width, clut_width);
+    std::transform(image_buffer_bbp8.begin(),
+      image_buffer_bbp8.end(),
+      out.begin(),
+      [&palette_row, &clut_row, &clut_width](const std::uint8_t &key) -> Color16 {
+        if (key < std::ranges::size(palette_row)) {
+          return palette_row[key];
+        } else {
+          return {};
+        }
+      });
+    return out;
   }
   friend std::ostream &operator<<(std::ostream &os, const Mim &m) { return os << m.m_mim_type; }
   [[maybe_unused]] void save([[maybe_unused]] std::string_view filename) const

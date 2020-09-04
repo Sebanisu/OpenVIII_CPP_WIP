@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_COLOR32_H
 #define VIIIARCHIVE_COLOR32_H
-
+#include <algorithm>
 #include <cstdint>
 #include <bitset>
 #include "OpenVIII/concepts.h"
@@ -21,11 +21,12 @@ private:
   mutable std::array<std::uint8_t, 4> m_parts{};
   template<size_t index, std::floating_point T> std::uint8_t set(T value) const
   {
-    return m_parts[index] = static_cast<std::uint8_t>(Tools::clamp(value, 0.0F, 1.0F) * UINT8_MAX);
+    return m_parts[index] =
+             static_cast<std::uint8_t>(std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F)) * UINT8_MAX);
   }
   template<size_t index, std::integral T> std::uint8_t set(T value) const
   {
-    return m_parts[index] = static_cast<std::uint8_t>(Tools::clamp(value, 0, UINT8_MAX));
+    return m_parts[index] = static_cast<std::uint8_t>(std::clamp(value, static_cast<T>(0U), static_cast<T>(UINT8_MAX)));
   }
 
 public:

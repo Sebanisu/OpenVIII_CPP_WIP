@@ -44,14 +44,16 @@ private:
 
   template<std::floating_point T> void set(T input, std::bitset<BITS> mask, const std::uint_fast8_t &shift) const
   {
-    std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0.0F, 1.0F) * LARGEST_5_BIT_VALUE) };
+    std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(
+      std::clamp(input, static_cast<T>(0.0F), static_cast<T>(1.0F)) * LARGEST_5_BIT_VALUE) };
     val <<= shift;
     value_bit((value_bit() & mask.flip()) | val);
   }
 
   template<std::integral T> void set(T input, std::bitset<BITS> mask, const std::uint_fast8_t &shift) const
   {
-    std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(Tools::clamp(input, 0, UINT8_MAX)) };
+    std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(
+      std::clamp(input, static_cast<T>(0), static_cast<T>(UINT8_MAX))) };
     val >>= CONVERT_SHIFT;
     val <<= shift;
     value_bit((value_bit() & mask.flip()) | val);
