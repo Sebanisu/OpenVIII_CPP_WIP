@@ -24,6 +24,9 @@
 #include "FIFLFS.h"
 #include "FileData.h"
 namespace open_viii::archive {
+/**
+ * @see https://github.com/myst6re/qt-zzz
+ */
 struct [[maybe_unused]] ZZZ
 {
 
