@@ -22,6 +22,48 @@ int main()
     }
     std::cout << path << std::endl;
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
+    [[maybe_unused]] static constexpr auto dump_image = [](std::vector<char> &&in_buffer, std::string &&in_path) {
+      std::vector<char> buffer{ std::move(in_buffer) };
+      std::string p{ std::move(in_path) };
+      if (open_viii::Tools::i_ends_with(p, ".lzs")) {
+        auto t = open_viii::graphics::Lzs(buffer);
+        std::cout << p << '\n' << t << '\n';
+        t.save(p);
+      } else if (open_viii::Tools::i_ends_with(p, ".tim")) {
+        auto t = open_viii::graphics::Tim(buffer);
+        std::cout << p << '\n' << t << '\n';
+        if (t.width() == 0 || t.height() == 0) {
+          open_viii::Tools::write_buffer(buffer, p);
+        } else {
+          t.save(p);
+        }
+      } else if (open_viii::Tools::i_ends_with(p, ".tex")) {
+        auto t = open_viii::graphics::Tex(buffer);
+        std::cout << p << '\n' << t << '\n';
+        t.save(p);
+      } else if (open_viii::Tools::i_ends_with(p, ".tdw")) {
+        auto t = open_viii::graphics::Tdw(buffer);
+        std::cout << p << '\n' << t << '\n';
+        t.save(p);
+      } else if (open_viii::Tools::i_ends_with(p, ".sp1")) {
+        auto t = open_viii::graphics::Sp1(buffer);
+        std::cout << p << '\n' << t << '\n';
+        // t.Save(p);
+      } else if (open_viii::Tools::i_ends_with(p, ".sp2")) {
+        auto t = open_viii::graphics::Sp2(buffer);
+        std::cout << p << '\n' << t << '\n';
+        // t.Save(p);
+      } else if (open_viii::Tools::i_ends_with(p, ".map")) {
+        auto t = open_viii::graphics::background::Map<1>(buffer);
+        std::cout << p << '\n' << t << '\n';
+        // t.Save(p);
+        // std::cout << sizeof(open_viii::graphics::background::PaletteID) << '\n';
+      } else if (open_viii::Tools::i_ends_with(p, ".mim")) {
+        auto t = open_viii::graphics::background::Mim(buffer);
+        std::cout << p << '\n' << t << '\n';
+        t.save(p);
+      }
+    };
     //    {
     //      const auto &menu = archives.Get<open_viii::archive::ArchiveTypeT::Menu>();
     //      const auto menuGroup = open_viii::MenuGroup::MenuGroupFile{ menu };
@@ -30,8 +72,9 @@ int main()
     //    }
     {
       const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-      field.execute_with_nested({"ending"}, [](const open_viii::archive::FIFLFS<false> &e) {
+      field.execute_with_nested({ "ending" }, [](const open_viii::archive::FIFLFS<false> &e) {
         auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(".mim") };
+        mim.save(e.get_full_path(".mim"));
         const auto process = [&mim, &e](const auto &map) {
           //((open_viii::graphics::background::Map<1>)map).max_x()
           std::cout << "  " << e.get_base_name() << '\n';
@@ -61,49 +104,7 @@ int main()
         }
       });
     }
-//    continue;
-    archives.execute_on({ /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", ".map", ".mim"*/ "ending" },
-      [](std::vector<char> &&in_buffer, std::string &&in_path) {
-        std::vector<char> buffer{ std::move(in_buffer) };
-        std::string p{ std::move(in_path) };
-        if (open_viii::Tools::i_ends_with(p, ".lzs")) {
-          auto t = open_viii::graphics::Lzs(buffer);
-          std::cout << p << '\n' << t << '\n';
-          t.save(p);
-        } else if (open_viii::Tools::i_ends_with(p, ".tim")) {
-          auto t = open_viii::graphics::Tim(buffer);
-          std::cout << p << '\n' << t << '\n';
-          if (t.width() == 0 || t.height() == 0) {
-            open_viii::Tools::write_buffer(buffer, p);
-          } else {
-            t.save(p);
-          }
-        } else if (open_viii::Tools::i_ends_with(p, ".tex")) {
-          auto t = open_viii::graphics::Tex(buffer);
-          std::cout << p << '\n' << t << '\n';
-          t.save(p);
-        } else if (open_viii::Tools::i_ends_with(p, ".tdw")) {
-          auto t = open_viii::graphics::Tdw(buffer);
-          std::cout << p << '\n' << t << '\n';
-          t.save(p);
-        } else if (open_viii::Tools::i_ends_with(p, ".sp1")) {
-          auto t = open_viii::graphics::Sp1(buffer);
-          std::cout << p << '\n' << t << '\n';
-          // t.Save(p);
-        } else if (open_viii::Tools::i_ends_with(p, ".sp2")) {
-          auto t = open_viii::graphics::Sp2(buffer);
-          std::cout << p << '\n' << t << '\n';
-          // t.Save(p);
-        } else if (open_viii::Tools::i_ends_with(p, ".map")) {
-          auto t = open_viii::graphics::background::Map<1>(buffer);
-          std::cout << p << '\n' << t << '\n';
-          // t.Save(p);
-          // std::cout << sizeof(open_viii::graphics::background::PaletteID) << '\n';
-        } else if (open_viii::Tools::i_ends_with(p, ".mim")) {
-          auto t = open_viii::graphics::background::Mim(buffer);
-          std::cout << p << '\n' << t << '\n';
-          t.save(p);
-        }
-      });
+    //    continue;
+    // archives.execute_on({ /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", ".map", ".mim"*/ "ending" },dump_image);
   }
 }
