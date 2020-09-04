@@ -65,15 +65,11 @@ struct [[maybe_unused]] Tools
     fp.read(buf.data(), s);
     return buf;
   }
-
-  [[maybe_unused]] static bool write_buffer(const std::span<const char> &buffer,
+  template<typename lambdaT>
+  requires(std::invocable<lambdaT, std::ostream &>) [[maybe_unused]] static bool write_buffer(const lambdaT &lambda,
     const std::string_view &path,
     const std::string_view &root = "tmp")
   {
-    // todo make buffer a std::span
-    if (std::ranges::empty(buffer)) {
-      return false;
-    }
     auto dir = std::filesystem::path(root);
     auto filename = dir / path;
     std::filesystem::create_directories(filename.parent_path());
@@ -81,12 +77,27 @@ struct [[maybe_unused]] Tools
     auto fp = std::ofstream(filename, std::ios::out | std::ios::binary | std::ios::trunc);
     if (fp.is_open()) {
       std::cout << "Saving: " << filename << '\n';
-      fp.write(std::ranges::data(buffer), static_cast<long>(std::ranges::size(buffer)));
+      lambda(fp);
       fp.close();
     } else {
       std::cout << "Failed to Open for saving: " << filename << '\n';
     }
     return true;
+  }
+
+  [[maybe_unused]] static bool write_buffer(const std::span<const char> &buffer,
+    const std::string_view &path,
+    const std::string_view &root = "tmp")
+  {
+    if (std::ranges::empty(buffer)) {
+      return false;
+    }
+    return write_buffer(
+      [&buffer](std::ostream & fp) {
+        fp.write(std::ranges::data(buffer), static_cast<long>(std::ranges::size(buffer)));
+      },
+      path,
+      root);
   }
 
   /*
@@ -115,7 +126,6 @@ struct [[maybe_unused]] Tools
   [[maybe_unused]] constexpr static void
     replace_all(std::string &haystack, const needleType &needle, const replacementType &replacement) noexcept
   {
-
     static_assert(std::is_integral<needleType>::value && std::is_integral<replacementType>::value,
       "Should be dealing with chars so is integral should cover that.");
     if (haystack.empty()) {
@@ -192,7 +202,6 @@ struct [[maybe_unused]] Tools
   [[maybe_unused]] [[nodiscard]] inline static auto i_ends_with(const std::string_view &haystack,
     const std::string_view &ending)
   {
-
     return std::size(haystack) >= std::size(ending)
            && std::equal(ending.rbegin(), ending.rend(), haystack.rbegin(), [](const auto &ch1, const auto &ch2) {
                 return ::toupper(ch1) == ::toupper(ch2);
@@ -201,7 +210,6 @@ struct [[maybe_unused]] Tools
   [[maybe_unused]] [[nodiscard]] inline static auto i_starts_with(const std::string_view &haystack,
     const std::string_view &starting)
   {
-
     return std::size(haystack) >= std::size(starting)
            && std::equal(starting.begin(), starting.end(), haystack.begin(), [](const auto &ch1, const auto &ch2) {
                 return ::toupper(ch1) == ::toupper(ch2);

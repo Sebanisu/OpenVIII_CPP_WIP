@@ -28,14 +28,16 @@ struct Ppm
       std::cout << std::ranges::size(data) << ", " << width << '*' << height << '=' << width * height << '\n';
       return;
     }
-    std::stringstream ss{};
-    ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
-    for (const Color auto &color : data) {// organize the data in ram first then write all at once.
-      ss << color.r();
-      ss << color.g();
-      ss << color.b();
-    }
-    Tools::write_buffer(ss.str(), filename);
+
+
+
+    Tools::write_buffer([&data,&width,&height](std::ostream &ss){
+           ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
+           for (const Color auto &color : data) {// organize the data in ram first then write all at once.
+             ss << color.r();
+             ss << color.g();
+             ss << color.b();}
+    }, filename);
   }
 };
 }// namespace open_viii::graphics

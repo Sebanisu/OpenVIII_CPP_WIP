@@ -30,7 +30,7 @@ int main()
     //    }
     {
       const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-      field.execute_with_nested({}, [](const open_viii::archive::FIFLFS<false> &e) {
+      field.execute_with_nested({"ending"}, [](const open_viii::archive::FIFLFS<false> &e) {
         auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(".mim") };
         const auto process = [&mim, &e](const auto &map) {
           //((open_viii::graphics::background::Map<1>)map).max_x()
@@ -61,8 +61,8 @@ int main()
         }
       });
     }
-    continue;
-    archives.execute_on({ /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", ".map", ".mim"*/ ".map" },
+//    continue;
+    archives.execute_on({ /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", ".map", ".mim"*/ "ending" },
       [](std::vector<char> &&in_buffer, std::string &&in_path) {
         std::vector<char> buffer{ std::move(in_buffer) };
         std::string p{ std::move(in_path) };

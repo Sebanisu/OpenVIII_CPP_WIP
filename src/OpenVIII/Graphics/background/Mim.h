@@ -92,18 +92,21 @@ public:
     const std::size_t clut_height = std::ranges::size(palette_buffer_bbp16) / clut_width;
     Ppm::save(palette_buffer_bbp16, clut_width, clut_height, s);
     {
+
       for (std::size_t i{}; i < clut_height; i++) {
         std::vector<Color16> out{};
-        out.reserve(std::ranges::size(image_buffer_bbp8));
-        for (std::size_t key : image_buffer_bbp8) {
-          key += i * clut_width;
-          if (key < std::ranges::size(palette_buffer_bbp16)) {
-            out.emplace_back(palette_buffer_bbp16[key]);
-          } else {
-            out.emplace_back();
-          }
-        }
-
+        out.resize(std::ranges::size(image_buffer_bbp8));
+        std::transform(image_buffer_bbp8.begin(),
+          image_buffer_bbp8.end(),
+          out.begin(),
+          [&i, &palette_buffer_bbp16](std::size_t key) -> Color16 {
+            key += i * clut_width;
+            if (key < std::ranges::size(palette_buffer_bbp16)) {
+              return palette_buffer_bbp16[key];
+            } else {
+              return {};
+            }
+          });
         const auto s2 = ((path.parent_path() / path.stem()).string()) + "_8bpp_" + std::to_string(i) + ".mim";
         Ppm::save(out, m_mim_type.width(), std::ranges::size(out) / m_mim_type.width(), s2);
       }
@@ -112,20 +115,22 @@ public:
       for (std::size_t i{}; i < clut_height; i++) {
         std::vector<Color16> out{};
         out.reserve(std::ranges::size(image_buffer_bbp4) * 2);
-        for (const Bit4Values &key : image_buffer_bbp4) {
-          auto k1 = key.first + (i * clut_width);
-          auto k2 = key.second + (i * clut_width);
-          if (k1 < std::ranges::size(palette_buffer_bbp16)) {
-            out.emplace_back(palette_buffer_bbp16[k1]);
-          } else {
-            out.emplace_back();
-          }
-          if (k2 < std::ranges::size(palette_buffer_bbp16)) {
-            out.emplace_back(palette_buffer_bbp16[k1]);
-          } else {
-            out.emplace_back();
-          }
-        }
+        std::for_each(
+          image_buffer_bbp4.begin(), image_buffer_bbp4.end(), [&i, &palette_buffer_bbp16, &out](const Bit4Values &key) {
+            auto k1 = key.first + (i * clut_width);
+            auto k2 = key.second + (i * clut_width);
+            if (k1 < std::ranges::size(palette_buffer_bbp16)) {
+              out.emplace_back(palette_buffer_bbp16[k1]);
+            } else {
+              out.emplace_back();
+            }
+            if (k2 < std::ranges::size(palette_buffer_bbp16)) {
+              out.emplace_back(palette_buffer_bbp16[k1]);
+            } else {
+              out.emplace_back();
+            }
+          });
+
 
         const auto s2 = ((path.parent_path() / path.stem()).string()) + "_4bpp_" + std::to_string(i) + ".mim";
         Ppm::save(out, m_mim_type.width() * 2, std::ranges::size(out) / (m_mim_type.width() * 2), s2);
