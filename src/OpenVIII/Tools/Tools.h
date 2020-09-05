@@ -93,9 +93,8 @@ struct [[maybe_unused]] Tools
       return false;
     }
     return write_buffer(
-      [&buffer](std::ostream & fp) {
-        fp.write(std::ranges::data(buffer), static_cast<long>(std::ranges::size(buffer)));
-      },
+      [&buffer](
+        std::ostream &fp) { fp.write(std::ranges::data(buffer), static_cast<long>(std::ranges::size(buffer))); },
       path,
       root);
   }

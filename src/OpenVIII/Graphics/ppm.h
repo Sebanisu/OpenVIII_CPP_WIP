@@ -30,14 +30,16 @@ struct Ppm
     }
 
 
-
-    Tools::write_buffer([&data,&width,&height](std::ostream &ss){
-           ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
-           for (const Color auto &color : data) {// organize the data in ram first then write all at once.
-             ss << color.r();
-             ss << color.g();
-             ss << color.b();}
-    }, filename);
+    Tools::write_buffer(
+      [&data, &width, &height](std::ostream &ss) {
+        ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
+        for (const Color auto &color : data) {// organize the data in ram first then write all at once.
+          ss << color.r();
+          ss << color.g();
+          ss << color.b();
+        }
+      },
+      filename);
   }
 };
 }// namespace open_viii::graphics

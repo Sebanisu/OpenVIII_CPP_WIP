@@ -60,7 +60,7 @@ public:
   [[nodiscard]] const std::uint8_t &animation_state() const noexcept { return m_animation_state; }
   [[nodiscard]] Rectangle<std::uint16_t> rectangle() const noexcept
   {
-    return { static_cast<std::uint16_t>(source_x() + texture_id() * TEXTURE_PAGE_WIDTH), source_y(), WIDTH, HEIGHT };
+    return { source_x(), source_y(), WIDTH, HEIGHT };
   }
   [[nodiscard]] Rectangle<std::uint16_t> out_rectangle() const noexcept
   {

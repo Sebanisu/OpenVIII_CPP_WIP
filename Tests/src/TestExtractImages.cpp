@@ -72,9 +72,9 @@ int main()
     //    }
     {
       const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-      field.execute_with_nested({ "ending" }, [](const open_viii::archive::FIFLFS<false> &e) {
+      field.execute_with_nested({ "bd" }, [](const open_viii::archive::FIFLFS<false> &e) {
         auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(".mim") };
-        mim.save(e.get_full_path(".mim"));
+        // mim.save(e.get_full_path(".mim"));
         const auto process = [&mim, &e](const auto &map) {
           //((open_viii::graphics::background::Map<1>)map).max_x()
           std::cout << "  " << e.get_base_name() << '\n';
@@ -94,7 +94,7 @@ int main()
           std::cout << "max y: " << max_y->y() << '\n';
           std::cout << "canvas: " << map.canvas() << '\n';
 
-          map.save(mim, e.get_base_name() + "_map.mim");
+          map.save(mim, e.get_full_path(".mim"));
         };
         if (mim.mim_type().type() == 1) {
           process(open_viii::graphics::background::Map<1>{ e.get_entry_data(".map") });

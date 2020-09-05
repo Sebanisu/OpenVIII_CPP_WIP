@@ -58,6 +58,7 @@ public:
       std::span(reinterpret_cast<const Color16 *>(std::ranges::data(palette_buffer_tmp)),
         std::ranges::size(palette_buffer_tmp) / sizeof(Color16));
     const auto image_buffer = buffer.subspan(m_mim_type.palette_section_size());
+    // const auto temp_buffer_bbp16 = buffer.subspan(m_mim_type.bytes_skipped_palettes());
     const auto image_buffer_bbp16 =
       std::span<const Color16>(reinterpret_cast<const Color16 *>(std::ranges::data(image_buffer)),
         std::ranges::size(image_buffer) / sizeof(Color16));
