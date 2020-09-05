@@ -93,8 +93,10 @@ int main()
           std::cout << "max x: " << max_x->x() << '\n';
           std::cout << "max y: " << max_y->y() << '\n';
           std::cout << "canvas: " << map.canvas() << '\n';
-
+          // map.save_csv(mim,e.get_full_path(".map"));
           map.save(mim, e.get_full_path(".mim"));
+
+          // map.save_v1(mim, e.get_full_path(".mim"));
         };
         if (mim.mim_type().type() == 1) {
           process(open_viii::graphics::background::Map<1>{ e.get_entry_data(".map") });
