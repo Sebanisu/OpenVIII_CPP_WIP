@@ -39,20 +39,39 @@ private:
   void sort()
   {
     static constexpr auto cmp = [](const auto &l, const auto &r) -> bool {
-      if (l.z() > r.z())
+      if (l.z() > r.z()) {
         return true;
-      if (l.z() < r.z())
+      }
+      if (l.z() < r.z()) {
         return false;
-      if (l.layer_id() < r.layer_id())
+      }
+      if (l.layer_id() < r.layer_id()) {
         return true;
-      if (l.layer_id() > r.layer_id())
+      }
+      if (l.layer_id() > r.layer_id()) {
         return false;
-      if (l.animation_id() < r.animation_id())
+      }
+      if (l.animation_id() < r.animation_id()) {
         return true;
-      if (l.animation_id() > r.animation_id())
+      }
+      if (l.animation_id() > r.animation_id()) {
         return false;
-      if (l.animation_state() < r.animation_state())
+      }
+      if (l.animation_state() < r.animation_state()) {
         return true;
+      }
+      if (l.animation_state() > r.animation_state()) {
+        return false;
+      }
+      if (l.x() > r.x()) {
+        return true;
+      }
+      if (l.x() < r.x()) {
+        return false;
+      }
+      if (l.y() > r.y()) {
+        return true;
+      }
       return false;
     };
     std::sort(m_t1.begin(), m_t1.end(), cmp);
@@ -153,6 +172,25 @@ public:
       return 0;
     }
   }
+
+  [[nodiscard]] auto unique_pupu() const
+  {
+
+    const auto &t = tiles();
+    if constexpr (!std::is_null_pointer_v<decltype(t)>) {
+      std::vector<std::uint64_t> out{};
+      out.resize(std::ranges::size(t));
+      std::transform(std::ranges::cbegin(t), std::ranges::cend(t), std::ranges::begin(out), [this](const auto &tile) {
+        return generate_pupu(tile);
+      });
+      std::sort(out.begin(), out.end());
+      auto last = std::unique(std::ranges::begin(out), std::ranges::end(out));
+      out.erase(last, std::ranges::end(out));
+      return out;
+    } else {
+      return nullptr;
+    }
+  }
   [[nodiscard]] auto used_depth_and_palette() const
   {
     const auto &t = tiles();
@@ -245,28 +283,72 @@ public:
   {
     return os << std::ranges::size(m.m_t1) << ", " << std::ranges::size(m.m_t2);
   }
+  template<typename tileT>
+  requires(std::is_convertible_v<tileT, Tile1> || std::is_convertible_v<tileT, Tile2>) std::uint64_t
+    generate_pupu(const tileT &tile) const noexcept
+  {
+    static constexpr auto bits_per_long = sizeof(std::uint64_t) * 8U;
+    static constexpr auto bits_per_short = sizeof(std::uint16_t) * 8U;
+    static constexpr auto bits_per_byte = sizeof(std::uint8_t) * 8U;// 0-255
+    static constexpr auto bits_per_nibble = bits_per_byte / 2U;// 0-15
+    static constexpr auto bits_per_crumb = bits_per_nibble / 2U;// 0-3
+    [[maybe_unused]] static constexpr auto short_mask = 0xFFFFU;
+    [[maybe_unused]] static constexpr auto byte_mask = 0xFFU;
+    [[maybe_unused]] static constexpr auto nibble_mask = 0xFU;
+    [[maybe_unused]] static constexpr auto crumb_mask = 0x3U;
+    auto bits = bits_per_long;
+    std::uint64_t pupu_id{};
+    [[maybe_unused]] static const auto add_crumb = [&bits, &pupu_id](const auto &value) {
+      bits -= bits_per_crumb;
+      pupu_id = (static_cast<std::uint64_t>(value) & crumb_mask) << bits;
+    };
+    [[maybe_unused]] static const auto add_nibble = [&bits, &pupu_id](const auto &value) {
+      bits -= bits_per_nibble;
+      pupu_id = (static_cast<std::uint64_t>(value) & nibble_mask) << bits;
+    };
+
+    [[maybe_unused]] static const auto add_byte = [&bits, &pupu_id](const auto &value) {
+      bits -= bits_per_byte;
+      pupu_id += (static_cast<std::uint64_t>(value) & byte_mask) << bits;
+    };
+    [[maybe_unused]] static const auto add_short = [&bits, &pupu_id](const auto &value) {
+      bits -= bits_per_short;
+      pupu_id += (static_cast<std::uint64_t>(value) & short_mask) << bits;
+    };
+    add_crumb(tile.depth().raw());
+    add_nibble(tile.layer_id());
+    add_nibble(tile.blend_mode());
+    add_byte(tile.animation_id());
+    add_byte(tile.animation_state());
+    add_short(tile.z());
+    //  Debug.Assert(((pupu_id & 0xF0000000) >> 28) == LayerID);
+    //  Debug.Assert((pupu_id)((PupuID & 0x0F000000) >> 24) == BlendMode);
+    //  Debug.Assert(((pupu_id & 0x00FF0000) >> 16) == AnimationID);
+    //  Debug.Assert(((pupu_id & 0x0000FF00) >> 8) == AnimationState);
+    return pupu_id;
+  }
   void save([[maybe_unused]] const Mim &in_mim, [[maybe_unused]] const std::string_view &in_path) const
   {
 
     const auto &ts = tiles();
     if constexpr (!std::is_null_pointer_v<decltype(ts)>) {
-      Rectangle<std::int32_t> c = canvas();
-      std::vector<Color16> v{};
-      v.reserve(c.area());
-
+      Rectangle<std::int32_t> rect = canvas();
       const auto dnps = used_depth_and_palette();
-      if constexpr (!std::is_null_pointer_v<decltype(dnps)>) {
+      const auto upupu = unique_pupu();
+      if constexpr (!std::is_null_pointer_v<decltype(dnps)> && !std::is_null_pointer_v<decltype(upupu)>) {
 
+//        for (const auto &pupu : upupu) {
+//          std::cout << std::uppercase << std::hex << std::setfill('0') << std::setw(16U) << pupu << '\n';
+//        }
+//        return;
         for (const auto &[depth, palette] : dnps) {
-          const auto ppm_save = [this, &depth, &palette, &ts](const std::span<const Color16> &data,
+          const auto ppm_save = [this, &rect, &depth, &palette, &ts](const std::span<const Color16> &data,
                                   const std::size_t &width,
                                   const std::size_t &height,
                                   std::string local_filename) {
-            Ppm::save(data, width, height, local_filename);
+            // Ppm::save(data, width, height, local_filename);
             std::vector<Color16> out{};
             out.resize(width * height);
-
-            auto rect = canvas();
             for (const auto &t : ts) {
               // auto x = t.x();
               // auto y = t.y();
@@ -285,12 +367,6 @@ public:
                   else if (t.depth().bpp16()) {
                     pixel_in += (t.TEXTURE_PAGE_WIDTH * t.texture_id()) / 2U;
                   }
-                  // tile.SourceX + textureWidth * tile.TextureID + _textureType.Width * tile.SourceY
-
-                  // auto pixel_in = [&t,&x,&y,&width](){return t.source_x() + x +
-                  // (t.depth().bpp16()?t.TEXTURE_PAGE_WIDTH/2:t.TEXTURE_PAGE_WIDTH)*t.texture_id() + ((t.source_y() +
-                  // y)
-                  // * width);}();
                   auto pixel_out =
                     (static_cast<std::uint32_t>(t.x()) + x)
                     + ((static_cast<std::uint32_t>(t.y()) + y) * static_cast<std::uint32_t>(rect.width()));

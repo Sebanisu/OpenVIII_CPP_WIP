@@ -162,7 +162,12 @@ public:
   //  CLP = 0b1000, /**< is coded as std::uint8_t of value 8. CLP flag for color lookup table present. This is required
   //  for
   //                   4bpp and 8bpp. */
-
+  std::uint8_t raw() const noexcept
+  {
+    constexpr static auto clp_value = 8U;
+    return static_cast<std::uint8_t>(
+      (m_bpp8 ? 1U : 0U) + (m_bpp16 ? 2U : 0U) + (m_color_lookup_table_present ? clp_value : 0U));
+  }
   friend std::ostream &operator<<(std::ostream &os, const BPPT &input)
   {
     return os << "{BPP: " << static_cast<int>(input) << ", CLP: " << input.m_color_lookup_table_present << '}';
