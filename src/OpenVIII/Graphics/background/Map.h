@@ -5,9 +5,13 @@
 #ifndef VIIIARCHIVE_MAP_H
 #define VIIIARCHIVE_MAP_H
 #include <cstdint>
+#include <filesystem>
 #include "Tile1.h"
 #include "Tile2.h"
 #include "Mim.h"
+#include <bit>
+#include <bitset>
+#include "OpenVIII/Tools/Tools.h"
 namespace open_viii::graphics::background {
 template<size_t typeT = 1> requires(typeT >= 0 && typeT <= 2) struct Map
 {
@@ -63,13 +67,13 @@ private:
       if (l.animation_state() > r.animation_state()) {
         return false;
       }
-      if (l.x() > r.x()) {
+      if (l.x() < r.x()) {
         return true;
       }
-      if (l.x() < r.x()) {
+      if (l.x() > r.x()) {
         return false;
       }
-      if (l.y() > r.y()) {
+      if (l.y() < r.y()) {
         return true;
       }
       return false;
@@ -284,14 +288,14 @@ public:
     return os << std::ranges::size(m.m_t1) << ", " << std::ranges::size(m.m_t2);
   }
   template<typename tileT>
-  requires(std::is_convertible_v<tileT, Tile1> || std::is_convertible_v<tileT, Tile2>) std::uint64_t
+  requires(std::is_convertible_v<tileT, Tile1> || std::is_convertible_v<tileT, Tile2>) [[nodiscard]] std::uint64_t
     generate_pupu(const tileT &tile) const noexcept
   {
-    static constexpr auto bits_per_long = sizeof(std::uint64_t) * 8U;
-    static constexpr auto bits_per_short = sizeof(std::uint16_t) * 8U;
-    static constexpr auto bits_per_byte = sizeof(std::uint8_t) * 8U;// 0-255
-    static constexpr auto bits_per_nibble = bits_per_byte / 2U;// 0-15
-    static constexpr auto bits_per_crumb = bits_per_nibble / 2U;// 0-3
+    static constexpr auto bits_per_long = static_cast<int>(sizeof(std::uint64_t) * 8);
+    static constexpr auto bits_per_short = static_cast<int>(sizeof(std::uint16_t) * 8);
+    static constexpr auto bits_per_byte = static_cast<int>(sizeof(std::uint8_t) * 8);// 0-255
+    static constexpr auto bits_per_nibble = bits_per_byte / 2;// 0-15
+    static constexpr auto bits_per_crumb = bits_per_nibble / 2;// 0-3
     [[maybe_unused]] static constexpr auto short_mask = 0xFFFFU;
     [[maybe_unused]] static constexpr auto byte_mask = 0xFFU;
     [[maybe_unused]] static constexpr auto nibble_mask = 0xFU;
@@ -300,20 +304,20 @@ public:
     std::uint64_t pupu_id{};
     [[maybe_unused]] static const auto add_crumb = [&bits, &pupu_id](const auto &value) {
       bits -= bits_per_crumb;
-      pupu_id = (static_cast<std::uint64_t>(value) & crumb_mask) << bits;
+      pupu_id |= std::rotl((static_cast<std::uint64_t>(value) & crumb_mask), bits);
     };
     [[maybe_unused]] static const auto add_nibble = [&bits, &pupu_id](const auto &value) {
       bits -= bits_per_nibble;
-      pupu_id = (static_cast<std::uint64_t>(value) & nibble_mask) << bits;
+      pupu_id |= std::rotl((static_cast<std::uint64_t>(value) & nibble_mask) ,bits);
     };
 
     [[maybe_unused]] static const auto add_byte = [&bits, &pupu_id](const auto &value) {
       bits -= bits_per_byte;
-      pupu_id += (static_cast<std::uint64_t>(value) & byte_mask) << bits;
+      pupu_id |= std::rotl((static_cast<std::uint64_t>(value) & byte_mask) ,bits);
     };
     [[maybe_unused]] static const auto add_short = [&bits, &pupu_id](const auto &value) {
       bits -= bits_per_short;
-      pupu_id += (static_cast<std::uint64_t>(value) & short_mask) << bits;
+      pupu_id |= std::rotl((static_cast<std::uint64_t>(value) & short_mask) ,bits);
     };
     add_crumb(tile.depth().raw());
     add_nibble(tile.layer_id());
@@ -327,7 +331,153 @@ public:
     //  Debug.Assert(((pupu_id & 0x0000FF00) >> 8) == AnimationState);
     return pupu_id;
   }
+
+  [[nodiscard]] auto extract_pupu(std::uint64_t pupu_id) const noexcept
+  {
+    static constexpr auto bits_per_long = static_cast<int>(sizeof(std::uint64_t) * 8);
+    static constexpr auto bits_per_short = static_cast<int>(sizeof(std::uint16_t) * 8);
+    static constexpr auto bits_per_byte = static_cast<int>(sizeof(std::uint8_t) * 8);// 0-255
+    static constexpr auto bits_per_nibble = bits_per_byte / 2;// 0-15
+    static constexpr auto bits_per_crumb = bits_per_nibble / 2;// 0-3
+    [[maybe_unused]] static constexpr auto short_mask = 0xFFFFU;
+    [[maybe_unused]] static constexpr auto byte_mask = 0xFFU;
+    [[maybe_unused]] static constexpr auto nibble_mask = 0xFU;
+    [[maybe_unused]] static constexpr auto crumb_mask = 0x3U;
+    int bits = bits_per_long;
+    [[maybe_unused]] static const auto extract_crumb = [&bits, &pupu_id]() -> std::uint8_t {
+      bits -= bits_per_crumb;
+      return static_cast<std::uint8_t>(std::rotr(pupu_id, bits) & crumb_mask);
+    };
+    [[maybe_unused]] static const auto extract_nibble = [&bits, &pupu_id]() -> std::uint8_t {
+      bits -= bits_per_nibble;
+      return static_cast<std::uint8_t>(std::rotr(pupu_id, bits) & nibble_mask);
+    };
+
+    [[maybe_unused]] static const auto extract_byte = [&bits, &pupu_id]() -> std::uint8_t {
+      bits -= bits_per_byte;
+      return static_cast<std::uint8_t>(std::rotr(pupu_id, bits) & byte_mask);
+    };
+    [[maybe_unused]] static const auto extract_short = [&bits, &pupu_id]() -> std::uint16_t {
+      bits -= bits_per_short;
+      return static_cast<std::uint16_t>(std::rotr(pupu_id, bits) & short_mask);
+    };
+    //  Debug.Assert(((pupu_id & 0xF0000000) >> 28) == LayerID);
+    //  Debug.Assert((pupu_id)((PupuID & 0x0F000000) >> 24) == BlendMode);
+    //  Debug.Assert(((pupu_id & 0x00FF0000) >> 16) == AnimationID);
+    //  Debug.Assert(((pupu_id & 0x0000FF00) >> 8) == AnimationState);
+    //std::cout<<std::bitset<bits_per_long>(pupu_id)<<'\n';
+    auto depth = extract_crumb();
+    auto layer_id = extract_nibble();
+    auto blend_mode= extract_nibble();
+    auto animation_id=  extract_byte();
+    auto animation_state = extract_byte();
+    auto p_z = extract_short();
+    return std::make_tuple(depth,layer_id,blend_mode,animation_id,animation_state,p_z);
+  }
   void save([[maybe_unused]] const Mim &in_mim, [[maybe_unused]] const std::string_view &in_path) const
+  {
+
+    const auto &ts = tiles();
+    if constexpr (!std::is_null_pointer_v<decltype(ts)>) {
+      Rectangle<std::int32_t> rect = canvas();
+      const auto dnps = used_depth_and_palette();
+      const auto upupu = unique_pupu();
+      if constexpr (!std::is_null_pointer_v<decltype(dnps)> && !std::is_null_pointer_v<decltype(upupu)>) {
+
+        for (auto pupu : upupu) {
+          //                  add_crumb(tile.depth().raw());
+          //                  add_nibble(tile.layer_id());
+          //                  add_nibble(tile.blend_mode());
+          //                  add_byte(tile.animation_id());
+          //                  add_byte(tile.animation_state());
+          //                  add_short(tile.z());
+          // std::cout << std::uppercase << std::hex << std::setfill('0') << std::setw(16U) << pupu << '\n';
+          const auto [p_depth, p_layer_id, p_blend_mode, p_animation_id, p_animation_state, p_z] = extract_pupu(pupu);
+
+          std::vector<Color16> out{};
+          out.resize(rect.area());
+          for (const auto &[depth, palette] : dnps) {
+            const auto depth_raw = static_cast<std::uint8_t>(depth.raw() & 0x3U);
+//            std::cout << depth << ", " << static_cast<std::uint16_t>(depth_raw) << ", "
+//                      << static_cast<std::uint16_t>(p_depth) << '\n';
+            if (depth_raw != p_depth) {
+              continue;
+            }
+            const auto ppm_save = [this,
+                                    &rect,
+                                    &depth,
+                                    &palette,
+                                    &ts,
+                                    &p_animation_id,
+                                    &p_animation_state,
+                                    &p_blend_mode,
+                                    &p_layer_id,
+                                    &out](const std::span<const Color16> &data,
+                                    [[maybe_unused]] const std::size_t &raw_width,
+                                    [[maybe_unused]] const std::size_t &raw_height,
+                                    std::string local_filename) {
+              // Ppm::save(data, width, height, local_filename);
+
+              for (const auto &t : ts) {
+
+                // auto x = t.x();
+                // auto y = t.y();
+
+                if (depth != t.depth() || palette != t.palette_id() || !t.draw() || p_animation_id != t.animation_id()
+                    || p_animation_state != t.animation_state()
+                    || p_blend_mode != static_cast<decltype(p_blend_mode)>(t.blend_mode())
+                    || p_layer_id != t.layer_id()) {
+                  continue;
+                }
+                for (std::uint32_t y = {}; y < t.HEIGHT; y++) {
+                  for (std::uint32_t x = {}; x < t.WIDTH; x++) {
+                    auto pixel_in = (t.source_x() + x) + ((t.source_y() + y) * raw_width);
+                    if (t.depth().bpp4()) {
+                      pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
+                    } else if (t.depth().bpp8()) {
+                      pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id();
+                    }
+
+                    else if (t.depth().bpp16()) {
+                      pixel_in += (t.TEXTURE_PAGE_WIDTH * t.texture_id()) / 2U;
+                    }
+                    auto pixel_out =
+                      (static_cast<std::uint32_t>(t.x()) + x)
+                      + ((static_cast<std::uint32_t>(t.y()) + y) * static_cast<std::uint32_t>(rect.width()));
+                    Color16 color = data[pixel_in];
+                    if (!color.is_black()) {
+                      out.at(pixel_out) = data[pixel_in];
+                    }
+                  }
+                }
+              }
+              auto p = std::filesystem::path(local_filename);
+              // local_filename = (p.parent_path() / p.stem()).string() + "_tiled_mim.map";
+            };
+
+            in_mim.get_colors(in_path, depth, palette, ppm_save, false);
+
+            std::cout << depth << ", " << static_cast<std::uint32_t>(palette) << '\n';
+          }
+          auto path_v = std::filesystem::path(in_path);
+          std::stringstream ss{};
+          ss << (path_v.parent_path() / path_v.stem()).string() << '_' << std::uppercase << std::hex
+             << std::setfill('0') << std::setw(16U) << pupu << ".mimmap";
+          Ppm::save(out, static_cast<std::uint32_t>(rect.width()), static_cast<std::uint32_t>(rect.height()), ss.str());
+        }
+      }
+    }
+  }
+
+  [[maybe_unused]] void save_csv([[maybe_unused]] const Mim &in_mim, [[maybe_unused]] const std::string_view &in_path) const
+  {
+
+    const auto &ts = tiles();
+    if constexpr (!std::is_null_pointer_v<decltype(ts)>) {
+      Tools::
+    }
+  }
+  [[maybe_unused]] void save_v1([[maybe_unused]] const Mim &in_mim, [[maybe_unused]] const std::string_view &in_path) const
   {
 
     const auto &ts = tiles();
@@ -343,44 +493,44 @@ public:
 //        return;
         for (const auto &[depth, palette] : dnps) {
           const auto ppm_save = [this, &rect, &depth, &palette, &ts](const std::span<const Color16> &data,
-                                  const std::size_t &width,
-                                  const std::size_t &height,
-                                  std::string local_filename) {
-            // Ppm::save(data, width, height, local_filename);
-            std::vector<Color16> out{};
-            out.resize(width * height);
-            for (const auto &t : ts) {
-              // auto x = t.x();
-              // auto y = t.y();
+                                                                     const std::size_t &width,
+                                                                     const std::size_t &height,
+                                                                     std::string local_filename) {
+                 // Ppm::save(data, width, height, local_filename);
+                 std::vector<Color16> out{};
+                 out.resize(width * height);
+                 for (const auto &t : ts) {
+                   // auto x = t.x();
+                   // auto y = t.y();
 
-              if (depth != t.depth() || palette != t.palette_id() || !t.draw())
-                continue;
-              for (std::uint32_t y = {}; y < t.HEIGHT; y++) {
-                for (std::uint32_t x = {}; x < t.WIDTH; x++) {
-                  auto pixel_in = (t.source_x() + x) + ((t.source_y() + y) * width);
-                  if (t.depth().bpp4()) {
-                    pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
-                  } else if (t.depth().bpp8()) {
-                    pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id();
-                  }
+                   if (depth != t.depth() || palette != t.palette_id() || !t.draw())
+                     continue;
+                   for (std::uint32_t y = {}; y < t.HEIGHT; y++) {
+                     for (std::uint32_t x = {}; x < t.WIDTH; x++) {
+                       auto pixel_in = (t.source_x() + x) + ((t.source_y() + y) * width);
+                       if (t.depth().bpp4()) {
+                         pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
+                       } else if (t.depth().bpp8()) {
+                         pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id();
+                       }
 
-                  else if (t.depth().bpp16()) {
-                    pixel_in += (t.TEXTURE_PAGE_WIDTH * t.texture_id()) / 2U;
-                  }
-                  auto pixel_out =
-                    (static_cast<std::uint32_t>(t.x()) + x)
-                    + ((static_cast<std::uint32_t>(t.y()) + y) * static_cast<std::uint32_t>(rect.width()));
-                  Color16 color = data[pixel_in];
-                  if (!color.is_black()) {
-                    out.at(pixel_out) = data[pixel_in];
-                  }
-                }
-              }
-            }
-            auto p = std::filesystem::path(local_filename);
-            local_filename = (p.parent_path() / p.stem()).string() + "_tiled_mim.map";
-            Ppm::save(
-              out, static_cast<std::uint32_t>(rect.width()), static_cast<std::uint32_t>(rect.height()), local_filename);
+                       else if (t.depth().bpp16()) {
+                         pixel_in += (t.TEXTURE_PAGE_WIDTH * t.texture_id()) / 2U;
+                       }
+                       auto pixel_out =
+                         (static_cast<std::uint32_t>(t.x()) + x)
+                         + ((static_cast<std::uint32_t>(t.y()) + y) * static_cast<std::uint32_t>(rect.width()));
+                       Color16 color = data[pixel_in];
+                       if (!color.is_black()) {
+                         out.at(pixel_out) = data[pixel_in];
+                       }
+                     }
+                   }
+                 }
+                 auto p = std::filesystem::path(local_filename);
+                 local_filename = (p.parent_path() / p.stem()).string() + "_tiled_mim.map";
+                 Ppm::save(
+                   out, static_cast<std::uint32_t>(rect.width()), static_cast<std::uint32_t>(rect.height()), local_filename);
           };
           in_mim.get_colors(in_path, depth, palette, ppm_save, false);
 
