@@ -277,13 +277,12 @@ public:
                 for (std::uint32_t x = {}; x < t.WIDTH; x++) {
                   auto pixel_in = (t.source_x() + x) + ((t.source_y() + y) * width);
                   if (t.depth().bpp4()) {
-                    pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id()*2U;
-                  }
-                  else if (t.depth().bpp8()) {
+                    pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
+                  } else if (t.depth().bpp8()) {
                     pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id();
                   }
 
-                  else if(t.depth().bpp16()) {
+                  else if (t.depth().bpp16()) {
                     pixel_in += (t.TEXTURE_PAGE_WIDTH * t.texture_id()) / 2U;
                   }
                   // tile.SourceX + textureWidth * tile.TextureID + _textureType.Width * tile.SourceY
