@@ -15,7 +15,7 @@ private:
   std::uint8_t m_palettes{};
   std::uint8_t m_texture_pages{};
   std::uint8_t m_skipped_palettes{};
-  std::uint8_t m_type{};
+  mutable std::uint8_t m_type{};
 
 
 public:
@@ -39,6 +39,7 @@ public:
   {}
 
   [[nodiscard]] const auto &type() const noexcept { return m_type; }
+  void type(std::uint8_t new_type) const noexcept { m_type = new_type; }
   [[nodiscard]] std::size_t bytes_skipped_palettes() const noexcept
   {
     return static_cast<std::size_t>(BYTES_PER_PALETTE) * static_cast<std::size_t>(m_skipped_palettes);

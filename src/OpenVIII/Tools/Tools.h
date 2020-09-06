@@ -77,7 +77,11 @@ struct [[maybe_unused]] Tools
     auto fp = std::ofstream(filename, std::ios::out | std::ios::binary | std::ios::trunc);
     if (fp.is_open()) {
       std::cout << "Saving: " << filename << '\n';
-      lambda(fp);
+      try {
+        lambda(fp);
+      } catch (const std::out_of_range &oor) {
+        std::cerr << "Out of Range error: " << oor.what() << '\n';
+      }
       fp.close();
     } else {
       std::cout << "Failed to Open for saving: " << filename << '\n';

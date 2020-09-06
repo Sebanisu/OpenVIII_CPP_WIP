@@ -29,9 +29,13 @@ private:
 public:
   static constexpr std::array<MimType, 2> TEXTURE_TYPES{ MimType(24, 13), MimType(16, 12, 0, 2) };
   Mim() = default;
-  explicit Mim(std::span<const char> buffer)
-    : m_buffer(buffer.begin(), buffer.end()), m_mim_type(get_texture_type(buffer))
-  {}
+  explicit Mim(std::vector<char> &&buffer, std::string_view name) : m_buffer(std::move(buffer))
+  {
+    m_mim_type = get_texture_type(m_buffer);
+    if (Tools::i_find(name, "logo")) {
+      m_mim_type.type(3);
+    }
+  }
   [[nodiscard]] const auto &mim_type() const noexcept { return m_mim_type; }
   [[maybe_unused]] [[nodiscard]] static MimType get_texture_type(std::span<const char> buffer)
   {

@@ -8,36 +8,52 @@
 #include <filesystem>
 #include "Tile1.h"
 #include "Tile2.h"
+#include "Tile3.h"
 #include "Mim.h"
 #include <bit>
 #include <bitset>
 #include "OpenVIII/Tools/Tools.h"
 namespace open_viii::graphics::background {
-template<size_t typeT = 1> requires(typeT >= 0 && typeT <= 2) struct Map
+template<size_t typeT = 1> requires(typeT >= 0 && typeT <= 3) struct Map
 {
 private:
   mutable std::vector<Tile1> m_t1{};
   mutable std::vector<Tile2> m_t2{};
+  mutable std::vector<Tile3> m_t3{};
 
   void remove_end()
   {
     static constexpr auto cmp = [](const auto &x) {
       static constexpr auto END_X{ 0x7FFFU };
-      return x.x() == END_X;//|| !x.draw();
+      [[maybe_unused]] static constexpr auto limit = 1000U;
+
+      return x.x() == END_X;// || std::abs(x.y()) > limit || std::abs(x.x()) > limit; //|| x.source_x() >limit ||
+                            // x.source_y() >limit; //|| !x.draw();
     };
 
-    std::erase_if(m_t1, cmp);
-    std::erase_if(m_t2, cmp);
+    if constexpr (typeT == 0 || typeT == 1) {
+      std::erase_if(m_t1, cmp);
+    }
+    if constexpr (typeT == 0 || typeT == 2) {
+      std::erase_if(m_t2, cmp);
+    }
+    if constexpr (typeT == 0 || typeT == 3) {
+      std::erase_if(m_t3, cmp);
+    }
   }
   void remove_duplicates()
   {
-    {
+    if constexpr (typeT == 0 || typeT == 1) {
       auto last = std::unique(m_t1.begin(), m_t1.end());
       m_t1.erase(last, m_t1.end());
     }
-    {
+    if constexpr (typeT == 0 || typeT == 2) {
       auto last = std::unique(m_t2.begin(), m_t2.end());
       m_t2.erase(last, m_t2.end());
+    }
+    if constexpr (typeT == 0 || typeT == 3) {
+      auto last = std::unique(m_t3.begin(), m_t3.end());
+      m_t3.erase(last, m_t3.end());
     }
   }
   void sort()
@@ -78,8 +94,15 @@ private:
       }
       return false;
     };
-    std::sort(m_t1.begin(), m_t1.end(), cmp);
-    std::sort(m_t2.begin(), m_t2.end(), cmp);
+    if constexpr (typeT == 0 || typeT == 1) {
+      std::sort(m_t1.begin(), m_t1.end(), cmp);
+    }
+    if constexpr (typeT == 0 || typeT == 2) {
+      std::sort(m_t2.begin(), m_t2.end(), cmp);
+    }
+    if constexpr (typeT == 0 || typeT == 3) {
+      std::sort(m_t3.begin(), m_t3.end(), cmp);
+    }
   }
 
 public:
@@ -96,6 +119,11 @@ public:
         reinterpret_cast<const Tile2 *>(std::ranges::data(buffer)), std::ranges::size(buffer) / sizeof(Tile2));
       m_t2 = { t2.begin(), t2.end() };
     }
+    if constexpr (typeT == 0 || typeT == 3) {
+      auto t3 = std::span(
+        reinterpret_cast<const Tile3 *>(std::ranges::data(buffer)), std::ranges::size(buffer) / sizeof(Tile3));
+      m_t3 = { t3.begin(), t3.end() };
+    }
     remove_end();
     remove_duplicates();
     sort();
@@ -106,6 +134,8 @@ public:
       return m_t1;
     } else if constexpr (typeT == 2) {
       return m_t2;
+    } else if constexpr (typeT == 3) {
+      return m_t3;
     } else {
       return nullptr;
     }
@@ -183,8 +213,8 @@ public:
     const auto &t = tiles();
     if constexpr (!std::is_null_pointer_v<decltype(t)>) {
       std::vector<std::uint64_t> out{};
-      out.resize(std::ranges::size(t));
-      std::transform(std::ranges::cbegin(t), std::ranges::cend(t), std::ranges::begin(out), [this](const auto &tile) {
+      out.reserve(std::ranges::size(t));
+      std::transform(std::ranges::cbegin(t), std::ranges::cend(t), std::back_inserter(out), [this](const auto &tile) {
         return generate_pupu(tile);
       });
       std::sort(out.begin(), out.end());
@@ -267,15 +297,21 @@ public:
       const auto abs_y = std::abs(l_min_y->y());
 
       if constexpr (typeT == 1 || typeT == 0) {
-        std::transform(std::execution::seq, m_t1.begin(), m_t1.end(), m_t1.begin(), [&abs_x, &abs_y](Tile1 t) {
+        std::transform(std::execution::seq, m_t1.cbegin(), m_t1.cend(), m_t1.begin(), [&abs_x, &abs_y](Tile1 t) {
           t.x(static_cast<std::int16_t>(t.x() + abs_x));
           t.y(static_cast<std::int16_t>(t.y() + abs_y));
           return t;
         });
       }
-
       if constexpr (typeT == 2 || typeT == 0) {
-        std::transform(std::execution::seq, m_t2.begin(), m_t2.end(), m_t2.begin(), [&abs_x, &abs_y](Tile2 t) {
+        std::transform(std::execution::seq, m_t2.cbegin(), m_t2.cend(), m_t2.begin(), [&abs_x, &abs_y](Tile2 t) {
+          t.x(static_cast<std::int16_t>(t.x() + abs_x));
+          t.y(static_cast<std::int16_t>(t.y() + abs_y));
+          return t;
+        });
+      }
+      if constexpr (typeT == 3 || typeT == 0) {
+        std::transform(std::execution::seq, m_t3.cbegin(), m_t3.cend(), m_t3.begin(), [&abs_x, &abs_y](Tile3 t) {
           t.x(static_cast<std::int16_t>(t.x() + abs_x));
           t.y(static_cast<std::int16_t>(t.y() + abs_y));
           return t;
@@ -285,11 +321,13 @@ public:
   }
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const Map &m)
   {
-    return os << std::ranges::size(m.m_t1) << ", " << std::ranges::size(m.m_t2);
+    return os << std::ranges::size(m.m_t1) << ", " << std::ranges::size(m.m_t2) << ", " << std::ranges::size(m.m_t3)
+              << '\n';
   }
   template<typename tileT>
-  requires(std::is_convertible_v<tileT, Tile1> || std::is_convertible_v<tileT, Tile2>) [[nodiscard]] std::uint64_t
-    generate_pupu( tileT tile) const noexcept
+  requires(
+    std::is_convertible_v<tileT, Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>)
+    [[nodiscard]] std::uint64_t generate_pupu(tileT tile) const noexcept
   {
     static constexpr auto bits_per_long = static_cast<int>(sizeof(std::uint64_t) * 8);
     static constexpr auto bits_per_short = static_cast<int>(sizeof(std::uint16_t) * 8);
@@ -396,6 +434,7 @@ public:
 
           std::vector<Color16> out{};
           out.resize(rect.area());
+          bool drawn = false;
           for (const auto &[depth, palette] : dnps) {
             const auto depth_raw = static_cast<std::uint8_t>(depth.raw() & 0x3U);
             //            std::cout << depth << ", " << static_cast<std::uint16_t>(depth_raw) << ", "
@@ -404,14 +443,15 @@ public:
               continue;
             }
             const auto ppm_save = [this,
+                                    &drawn,
                                     &rect,
                                     &depth,
                                     &palette,
                                     &ts,
-                                                                        &p_animation_id,
-                                                                        &p_animation_state,
-                                                                        &p_blend_mode,
-                                                                        &p_layer_id,
+                                    &p_animation_id,
+                                    &p_animation_state,
+                                    &p_blend_mode,
+                                    &p_layer_id,
                                     &p_z,
 
                                     &out](const std::span<const Color16> &data,
@@ -425,18 +465,18 @@ public:
                 // auto x = t.x();
                 // auto y = t.y();
 
-                if (depth != t.depth() || palette != t.palette_id() || !t.draw()
-                    || p_animation_id != t.animation_id()
+                if (depth != t.depth() || palette != t.palette_id() || !t.draw() || p_animation_id != t.animation_id()
                     || p_animation_state != t.animation_state()
-                    || p_blend_mode != static_cast<decltype(p_blend_mode)>(t.blend_mode())
-                    || p_layer_id != t.layer_id()
-                    || p_z != t.z())
-                {
+                    || p_blend_mode != static_cast<decltype(p_blend_mode)>(t.blend_mode()) || p_layer_id != t.layer_id()
+                    || p_z != t.z()) {
                   continue;
                 }
                 for (std::uint32_t y = {}; y < t.HEIGHT; y++) {
                   for (std::uint32_t x = {}; x < t.WIDTH; x++) {
-                    auto pixel_in = (t.source_x() + x) + ((t.source_y() + y) * raw_width);
+                    if (t.source_x() < 0 || t.source_y() < 0)
+                      continue;
+                    auto pixel_in = (static_cast<std::uint32_t>(t.source_x()) + x)
+                                    + ((static_cast<std::uint32_t>(t.source_y()) + y) * raw_width);
                     if (t.depth().bpp4()) {
                       pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
                     } else if (t.depth().bpp8()) {
@@ -452,6 +492,7 @@ public:
                     Color16 color = data[pixel_in];
                     if (!color.is_black()) {
                       out.at(pixel_out) = data[pixel_in];
+                      drawn = true;
                     }
                   }
                 }
@@ -464,11 +505,14 @@ public:
 
             std::cout << depth << ", " << static_cast<std::uint32_t>(palette) << '\n';
           }
-          auto path_v = std::filesystem::path(in_path);
-          std::stringstream ss{};
-          ss << (path_v.parent_path() / path_v.stem()).string() << '_' << std::uppercase << std::hex
-             << std::setfill('0') << std::setw(16U) << pupu << ".mimmap";
-          Ppm::save(out, static_cast<std::uint32_t>(rect.width()), static_cast<std::uint32_t>(rect.height()), ss.str());
+          if (drawn) {
+            auto path_v = std::filesystem::path(in_path);
+            std::stringstream ss{};
+            ss << (path_v.parent_path() / path_v.stem()).string() << '_' << std::uppercase << std::hex
+               << std::setfill('0') << std::setw(16U) << pupu << ".mimmap";
+            Ppm::save(
+              out, static_cast<std::uint32_t>(rect.width()), static_cast<std::uint32_t>(rect.height()), ss.str());
+          }
         }
       }
     }
@@ -523,6 +567,7 @@ public:
             // Ppm::save(data, width, height, local_filename);
             std::vector<Color16> out{};
             out.resize(width * height);
+            bool drawn = false;
             for (const auto &t : ts) {
               // auto x = t.x();
               // auto y = t.y();
@@ -531,7 +576,10 @@ public:
                 continue;
               for (std::uint32_t y = {}; y < t.HEIGHT; y++) {
                 for (std::uint32_t x = {}; x < t.WIDTH; x++) {
-                  auto pixel_in = (t.source_x() + x) + ((t.source_y() + y) * width);
+                  if (t.source_y() < 0 || t.source_x() < 0)
+                    continue;
+                  auto pixel_in = (static_cast<std::uint32_t>(t.source_x()) + x)
+                                  + ((static_cast<std::uint32_t>(t.source_y()) + y) * width);
                   if (t.depth().bpp4()) {
                     pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
                   } else if (t.depth().bpp8()) {
@@ -547,14 +595,19 @@ public:
                   Color16 color = data[pixel_in];
                   if (!color.is_black()) {
                     out.at(pixel_out) = data[pixel_in];
+                    drawn = true;
                   }
                 }
               }
             }
-            auto p = std::filesystem::path(local_filename);
-            local_filename = (p.parent_path() / p.stem()).string() + "_tiled_mim.map";
-            Ppm::save(
-              out, static_cast<std::uint32_t>(rect.width()), static_cast<std::uint32_t>(rect.height()), local_filename);
+            if (drawn) {
+              auto p = std::filesystem::path(local_filename);
+              local_filename = (p.parent_path() / p.stem()).string() + "_tiled_mim.map";
+              Ppm::save(out,
+                static_cast<std::uint32_t>(rect.width()),
+                static_cast<std::uint32_t>(rect.height()),
+                local_filename);
+            }
           };
           in_mim.get_colors(in_path, depth, palette, ppm_save, false);
 

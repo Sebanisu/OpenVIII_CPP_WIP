@@ -66,7 +66,6 @@ public:
   {
     return { static_cast<std::uint16_t>(m_x), std::uint16_t(m_y), WIDTH, HEIGHT };
   }
-
 };
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_TILE1_H
