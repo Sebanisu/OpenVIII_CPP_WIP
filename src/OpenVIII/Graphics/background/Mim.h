@@ -29,7 +29,13 @@ private:
 public:
   static constexpr std::array<MimType, 2> TEXTURE_TYPES{ MimType(24, 13), MimType(16, 12, 0, 2) };
   Mim() = default;
-  explicit Mim(std::vector<char> &&buffer, std::string_view name) : m_buffer(std::move(buffer))
+  /**
+   * Load up the raw pixel data, 4bpp, 8bpp or 16bpp Needs at least basename to check or it'll use size of buffer to
+   * find type 1 or 2. Type is used to know which map to load.
+   * @param buffer is the raw bytes. std::move into object.
+   * @param name logo has a unique map type.
+   */
+  explicit Mim(std::vector<char> &&buffer, std::string_view name = {}) : m_buffer(std::move(buffer))
   {
     m_mim_type = get_texture_type(m_buffer);
     if (Tools::i_find(name, "logo")) {

@@ -72,7 +72,7 @@ int main()
     //    }
     {
       const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-      field.execute_with_nested({ "logo" }, [](const open_viii::archive::FIFLFS<false> &e) {
+      field.execute_with_nested({  }, [](const open_viii::archive::FIFLFS<false> &e) {
         auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(".mim"), e.get_base_name() };
         // mim.save(e.get_full_path(".mim"));
         const auto process = [&mim, &e](const auto &map) {

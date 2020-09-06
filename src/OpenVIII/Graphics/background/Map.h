@@ -217,7 +217,7 @@ public:
       std::transform(std::ranges::cbegin(t), std::ranges::cend(t), std::back_inserter(out), [this](const auto &tile) {
         return generate_pupu(tile);
       });
-      std::sort(out.begin(), out.end());
+      std::sort(std::ranges::begin(out), std::ranges::end(out));
       auto last = std::unique(std::ranges::begin(out), std::ranges::end(out));
       out.erase(last, std::ranges::end(out));
       return out;
@@ -340,33 +340,26 @@ public:
     [[maybe_unused]] static constexpr auto crumb_mask = 0x3U;
     auto bits = bits_per_long;
     std::uint64_t pupu_id{};
-    [[maybe_unused]] static const auto add_crumb = [&bits, &pupu_id](const auto &value) {
-      bits -= bits_per_crumb;
-      pupu_id |= std::rotl((static_cast<std::uint64_t>(value) & crumb_mask), bits);
+    [[maybe_unused]] const auto add_common = [&bits, &pupu_id](
+                                               std::uint64_t value, const int &shift, const uint64_t &mask) {
+      bits -= shift;
+      pupu_id |= std::rotl((value & mask), bits);
     };
-    [[maybe_unused]] static const auto add_nibble = [&bits, &pupu_id](const auto &value) {
-      bits -= bits_per_nibble;
-      pupu_id |= std::rotl((static_cast<std::uint64_t>(value) & nibble_mask), bits);
+    [[maybe_unused]] const auto add_crumb = [&add_common](
+                                              const auto &value) { add_common(value, bits_per_crumb, crumb_mask); };
+    [[maybe_unused]] const auto add_nibble = [&add_common](const auto &value) {
+      add_common(static_cast<std::uint64_t>(value), bits_per_nibble, nibble_mask);
     };
-
-    [[maybe_unused]] static const auto add_byte = [&bits, &pupu_id](const auto &value) {
-      bits -= bits_per_byte;
-      pupu_id |= std::rotl((static_cast<std::uint64_t>(value) & byte_mask), bits);
-    };
-    [[maybe_unused]] static const auto add_short = [&bits, &pupu_id](const auto &value) {
-      bits -= bits_per_short;
-      pupu_id |= std::rotl((static_cast<std::uint64_t>(value) & short_mask), bits);
-    };
+    [[maybe_unused]] const auto add_byte = [&add_common](
+                                             const auto &value) { add_common(value, bits_per_byte, byte_mask); };
+    [[maybe_unused]] const auto add_short = [&add_common](
+                                              const auto &value) { add_common(value, bits_per_short, short_mask); };
     add_crumb(tile.depth().raw());
     add_nibble(tile.layer_id());
     add_nibble(tile.blend_mode());
     add_byte(tile.animation_id());
     add_byte(tile.animation_state());
     add_short(tile.z());
-    //  Debug.Assert(((pupu_id & 0xF0000000) >> 28) == LayerID);
-    //  Debug.Assert((pupu_id)((PupuID & 0x0F000000) >> 24) == BlendMode);
-    //  Debug.Assert(((pupu_id & 0x00FF0000) >> 16) == AnimationID);
-    //  Debug.Assert(((pupu_id & 0x0000FF00) >> 8) == AnimationState);
     return pupu_id;
   }
 
@@ -382,35 +375,31 @@ public:
     [[maybe_unused]] static constexpr auto nibble_mask = 0xFU;
     [[maybe_unused]] static constexpr auto crumb_mask = 0x3U;
     int bits = bits_per_long;
-    [[maybe_unused]] static const auto extract_crumb = [&bits, &pupu_id]() -> std::uint8_t {
-      bits -= bits_per_crumb;
-      return static_cast<std::uint8_t>(std::rotr(pupu_id, bits) & crumb_mask);
+
+    [[maybe_unused]] const auto extract_common = [&bits, &pupu_id](const int &shift, const uint64_t &mask) {
+      bits -= shift;
+      return std::rotr(pupu_id, bits) & mask;
     };
-    [[maybe_unused]] static const auto extract_nibble = [&bits, &pupu_id]() -> std::uint8_t {
-      bits -= bits_per_nibble;
-      return static_cast<std::uint8_t>(std::rotr(pupu_id, bits) & nibble_mask);
+    [[maybe_unused]] const auto extract_crumb = [&extract_common]() -> std::uint8_t {
+      return static_cast<std::uint8_t>(extract_common(bits_per_crumb, crumb_mask));
+    };
+    [[maybe_unused]] const auto extract_nibble = [&extract_common]() -> std::uint8_t {
+      return static_cast<std::uint8_t>(extract_common(bits_per_nibble, nibble_mask));
     };
 
-    [[maybe_unused]] static const auto extract_byte = [&bits, &pupu_id]() -> std::uint8_t {
-      bits -= bits_per_byte;
-      return static_cast<std::uint8_t>(std::rotr(pupu_id, bits) & byte_mask);
+    [[maybe_unused]] const auto extract_byte = [&extract_common]() -> std::uint8_t {
+      return static_cast<std::uint8_t>(extract_common(bits_per_byte, byte_mask));
     };
-    [[maybe_unused]] static const auto extract_short = [&bits, &pupu_id]() -> std::uint16_t {
-      bits -= bits_per_short;
-      return static_cast<std::uint16_t>(std::rotr(pupu_id, bits) & short_mask);
+    [[maybe_unused]] const auto extract_short = [&extract_common]() -> std::uint16_t {
+      return static_cast<std::uint16_t>(extract_common(bits_per_short, short_mask));
     };
-    //  Debug.Assert(((pupu_id & 0xF0000000) >> 28) == LayerID);
-    //  Debug.Assert((pupu_id)((PupuID & 0x0F000000) >> 24) == BlendMode);
-    //  Debug.Assert(((pupu_id & 0x00FF0000) >> 16) == AnimationID);
-    //  Debug.Assert(((pupu_id & 0x0000FF00) >> 8) == AnimationState);
-    // std::cout<<std::bitset<bits_per_long>(pupu_id)<<'\n';
     auto depth = extract_crumb();
     auto layer_id = extract_nibble();
     auto blend_mode = extract_nibble();
     auto animation_id = extract_byte();
     auto animation_state = extract_byte();
-    auto p_z = extract_short();
-    return std::make_tuple(depth, layer_id, blend_mode, animation_id, animation_state, p_z);
+    auto z = extract_short();
+    return std::make_tuple(depth, layer_id, blend_mode, animation_id, animation_state, z);
   }
   void save([[maybe_unused]] const Mim &in_mim, [[maybe_unused]] const std::string_view &in_path) const
   {
@@ -423,13 +412,6 @@ public:
       if constexpr (!std::is_null_pointer_v<decltype(dnps)> && !std::is_null_pointer_v<decltype(upupu)>) {
 
         for (auto pupu : upupu) {
-          //                  add_crumb(tile.depth().raw());
-          //                  add_nibble(tile.layer_id());
-          //                  add_nibble(tile.blend_mode());
-          //                  add_byte(tile.animation_id());
-          //                  add_byte(tile.animation_state());
-          //                  add_short(tile.z());
-          // std::cout << std::uppercase << std::hex << std::setfill('0') << std::setw(16U) << pupu << '\n';
           const auto [p_depth, p_layer_id, p_blend_mode, p_animation_id, p_animation_state, p_z] = extract_pupu(pupu);
 
           std::vector<Color16> out{};

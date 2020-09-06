@@ -42,7 +42,7 @@ public:
     // if compressed will keep decompressing till get size
     // size compressed isn't quite known with out finding the offset of the next file and finding difference.
     fp.seekg(static_cast<long>(offset + fi.offset()), std::ios::beg);
-    //    static const auto readBuffer = [&fp](const auto &s) {
+    //    const auto readBuffer = [&fp](const auto &s) {
     //      auto buf = std::vector<char>(s);
     ////      auto tmp = std::vector<char>(s);
     //      fp.read(buf.data(), s);// TODO change to bitcast in cpp 20 or read another way?
@@ -50,7 +50,7 @@ public:
     //      return buf;
     //    };
 
-    //    static const auto readVal = [&fp](auto &v) {
+    //    const auto readVal = [&fp](auto &v) {
     //      auto tmp = std::array<char, sizeof(v)>();
     //      fp.read(tmp.data(), sizeof(v));
     //      memcpy(&v, tmp.data(), sizeof(v));// memcpy will be optimized away. It is safer than casting.
