@@ -21,8 +21,8 @@ struct Tile3
 private:
   mutable std::int16_t m_x{};// 2
   mutable std::int16_t m_y{};// 4
-  std::int16_t m_source_x{};// 6
-  std::int16_t m_source_y{};// 8
+  std::uint16_t m_source_x{};// 6
+  std::uint16_t m_source_y{};// 8
   std::uint16_t m_z{};// 10
   TexIdBuffer m_tex_id_buffer{};// 12
   PaletteID m_palette_id{};// 14
@@ -49,8 +49,8 @@ public:
   [[nodiscard]] BPPT depth() const noexcept { return m_tex_id_buffer.depth(); }
   [[nodiscard]] bool draw() const noexcept { return m_tex_id_buffer.draw(); }
   [[nodiscard]] std::uint8_t palette_id() const noexcept { return m_palette_id.id(); }
-  [[nodiscard]] const std::int16_t &source_x() const noexcept { return m_source_x; }
-  [[nodiscard]] const std::int16_t &source_y() const noexcept { return m_source_y; }
+  [[nodiscard]] const std::uint16_t &source_x() const noexcept { return m_source_x; }
+  [[nodiscard]] const std::uint16_t &source_y() const noexcept { return m_source_y; }
   [[nodiscard]] static std::uint8_t layer_id() noexcept { return 0U; }
   [[nodiscard]] static BlendModeT blend_mode() noexcept { return BlendModeT::none; }
   [[nodiscard]] static std::uint8_t animation_id() noexcept

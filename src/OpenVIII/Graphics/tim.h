@@ -167,7 +167,6 @@ public:
     switch (static_cast<int>(m_tim_header.bpp())) {
 
     case bpp4: {
-
       const auto s = std::span(
         reinterpret_cast<const Bit4Values *>(std::ranges::data(m_tim_image_data)), std::ranges::size(m_tim_image_data));
       // break;
