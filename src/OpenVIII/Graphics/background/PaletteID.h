@@ -34,6 +34,8 @@ public:
   {
     return static_cast<std::uint8_t>(static_cast<std::uint16_t>(m_data & ZERO_MASK) >> ZERO_SHIFT);
   }
+  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{2U};
 };
+static_assert(sizeof(PaletteID)==PaletteID::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_PALETTEID_H

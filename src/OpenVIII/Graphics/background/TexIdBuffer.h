@@ -54,6 +54,8 @@ public:
   {
     return static_cast<std::uint8_t>(static_cast<std::uint16_t>(m_data & UNK_MASK) >> UNK_SHIFT);
   }
+  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{2U};
 };
+static_assert(sizeof(TexIdBuffer)==TexIdBuffer::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_TEXIDBUFFER_H

@@ -63,6 +63,8 @@ public:
   {
     return { static_cast<std::uint16_t>(m_x), std::uint16_t(m_y), WIDTH, HEIGHT };
   }
+  constexpr static auto EXPLICIT_SIZE{16U};
 };
+static_assert(sizeof(Tile2)==Tile2::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_TILE2_H

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <bitset>
+#include <limits>
 #include "OpenVIII/concepts.h"
 namespace open_viii::graphics {
 // template <size_t valueT>
@@ -15,18 +16,29 @@ namespace open_viii::graphics {
 //{
 //  return true;
 //}
-template<size_t r_ = 0U, size_t g_ = 1U, size_t b_ = 2U, size_t a_ = 3U> struct Color32
+/**
+ * 32 bit colors, Each color is 8 bits, or 1 bytes. You may choose the order of the colors. The indexes must be unique.
+ * @tparam r_ red index
+ * @tparam g_ green index
+ * @tparam b_ blue index
+ * @tparam a_ alpha index
+ */
+template<size_t r_ = 0U, size_t g_ = 1U, size_t b_ = 2U, size_t a_ = 3U>  requires (
+  r_<4U && g_<4U && b_<4U && r_!=g_ && r_!=b_ && g_!=b_ && a_!=g_ && a_!=b_ && a_!=r_
+)struct Color32
 {
+public:
+  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{4U};
 private:
-  mutable std::array<std::uint8_t, 4> m_parts{};
+  mutable std::array<std::uint8_t, EXPLICIT_SIZE> m_parts{};
   template<size_t index, std::floating_point T> std::uint8_t set(T value) const
   {
     return m_parts[index] =
-             static_cast<std::uint8_t>(std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F)) * UINT8_MAX);
+             static_cast<std::uint8_t>(std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F)) * std::numeric_limits<std::uint8_t>::max());
   }
-  template<size_t index, std::integral T> std::uint8_t set(T value) const
+  template<size_t index, typename T> requires(std::integral<T> && !std::is_same_v<T,std::int8_t>) std::uint8_t set(T value) const
   {
-    return m_parts[index] = static_cast<std::uint8_t>(std::clamp(value, static_cast<T>(0U), static_cast<T>(UINT8_MAX)));
+    return m_parts[index] = static_cast<std::uint8_t>(std::clamp(value, static_cast<T>(0U), static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
   }
 
 public:
@@ -56,5 +68,6 @@ public:
               << static_cast<std::size_t>(color.A()) << '}' << std::dec << std::nouppercase;
   }
 };
+static_assert(sizeof(Color32<>)==Color32<>::EXPLICIT_SIZE);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR32_H
