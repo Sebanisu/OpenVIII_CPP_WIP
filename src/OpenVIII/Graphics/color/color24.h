@@ -18,23 +18,25 @@ namespace open_viii::graphics {
  * @tparam g_ green index
  * @tparam b_ blue index
  */
-template<size_t r_ = 2U, size_t g_ = 1U, size_t b_ = 0U> requires (
-  r_<3U && g_<3U && b_<3U && r_!=g_ && r_!=b_ && g_!=b_
-  )struct Color24
+template<size_t r_ = 2U, size_t g_ = 1U, size_t b_ = 0U>
+requires(r_ < 3U && g_ < 3U && b_ < 3U && r_ != g_ && r_ != b_ && g_ != b_) struct Color24
 {
 public:
-  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{3U};
+  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 3U };
+
 private:
   mutable std::array<std::uint8_t, EXPLICIT_SIZE> m_parts{};
-  template<size_t index, typename T> requires( std::integral<T> && !std::is_same_v<T,std::int8_t>) std::uint8_t set(T value) const
+  template<size_t index, typename T>
+  requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) std::uint8_t set(T value) const
   {
-    return m_parts[index] = static_cast<std::uint8_t>(std::clamp(value, static_cast<T>(0), static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
+    return m_parts[index] = static_cast<std::uint8_t>(
+             std::clamp(value, static_cast<T>(0), static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
   }
 
   template<size_t index, std::floating_point T> std::uint8_t set(T value) const
   {
-    return m_parts[index] =
-             static_cast<std::uint8_t>(std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F)) * std::numeric_limits<std::uint8_t>::max());
+    return m_parts[index] = static_cast<std::uint8_t>(
+             std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F)) * std::numeric_limits<std::uint8_t>::max());
   }
 
 public:
@@ -45,10 +47,10 @@ public:
   template<Number T> std::uint8_t r(const T &value) const { return set<r_, T>(value); }
   template<Number T> std::uint8_t g(const T &value) const { return set<g_, T>(value); }
   template<Number T> std::uint8_t b(const T &value) const { return set<b_, T>(value); }
-//  template<Number T> [[maybe_unused]] [[nodiscard]] std::uint8_t a([[maybe_unused]] const T &unused) const
-//  {
-//    return std::numeric_limits<std::uint8_t>::max();
-//  }
+  //  template<Number T> [[maybe_unused]] [[nodiscard]] std::uint8_t a([[maybe_unused]] const T &unused) const
+  //  {
+  //    return std::numeric_limits<std::uint8_t>::max();
+  //  }
 
   Color24() = default;
   template<Color cT> explicit Color24(cT color)
@@ -64,7 +66,7 @@ public:
               << static_cast<std::size_t>(color.A()) << '}' << std::dec << std::nouppercase;
   }
 };
-static_assert(sizeof(Color24<>)==Color24<>::EXPLICIT_SIZE);
+static_assert(sizeof(Color24<>) == Color24<>::EXPLICIT_SIZE);
 
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR24_H

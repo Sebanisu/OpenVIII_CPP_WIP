@@ -69,7 +69,7 @@ int main()
       const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
       field.execute_with_nested({}, [](const open_viii::archive::FIFLFS<false> &e) {
         auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(".mim"), e.get_base_name() };
-        //mim.save(e.get_full_path(".mim"));
+        // mim.save(e.get_full_path(".mim"));
         const auto process = [&mim, &e](const auto &map) {
           //((open_viii::graphics::background::Map<1>)map).max_x()
           std::cout << "  " << e.get_base_name() << '\n';
@@ -91,7 +91,7 @@ int main()
           map.save_csv(mim, e.get_full_path(".map"));
           map.save(mim, e.get_full_path(".mim"));
 
-          //map.save_v1(mim, e.get_full_path(".mim"));
+          // map.save_v1(mim, e.get_full_path(".mim"));
         };
         if (mim.mim_type().type() == 1) {
           process(open_viii::graphics::background::Map<1>{ e.get_entry_data(".map") });

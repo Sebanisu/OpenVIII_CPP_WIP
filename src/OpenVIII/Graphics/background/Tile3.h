@@ -5,6 +5,8 @@
 #ifndef VIIIARCHIVE_TILE3_H
 #define VIIIARCHIVE_TILE3_H
 #include <cstdint>
+#include <array>
+#include <string_view>
 #include "TexIdBuffer.h"
 #include "PaletteID.h"
 #include "LayerID.h"
@@ -62,8 +64,9 @@ public:
   {
     return { static_cast<std::uint16_t>(m_x), std::uint16_t(m_y), WIDTH, HEIGHT };
   }
-  constexpr static auto EXPLICIT_SIZE{14U};
+  constexpr static auto EXPLICIT_SIZE{ 14U };
+  static constexpr std::array FORCE_TYPE_VALUES = { std::string_view("logo") };
 };
-static_assert(sizeof(Tile3)==Tile3::EXPLICIT_SIZE);
+static_assert(sizeof(Tile3) == Tile3::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_TILE3_H

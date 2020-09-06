@@ -491,7 +491,8 @@ public:
       }
     }
   }
-  template<typename lambdaT> void execute_with_nested(const std::initializer_list<std::string_view> &filename, const lambdaT lambda) const
+  template<typename lambdaT>
+  void execute_with_nested(const std::initializer_list<std::string_view> &filename, const lambdaT lambda) const
   {
     FIFLFS<false> archive{};
 

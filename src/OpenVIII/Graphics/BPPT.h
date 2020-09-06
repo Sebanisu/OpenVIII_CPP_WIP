@@ -173,6 +173,6 @@ public:
     return os << "{BPP: " << static_cast<int>(input) << ", CLP: " << input.m_color_lookup_table_present << '}';
   }
 };
-static_assert(sizeof(BPPT)==1U);
+static_assert(sizeof(BPPT) == 1U);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_BPPT_H

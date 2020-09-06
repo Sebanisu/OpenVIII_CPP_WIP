@@ -50,7 +50,10 @@ private:
     val <<= shift;
     value_bit((value_bit() & mask.flip()) | val);
   }
-  template<typename T> requires(std::integral<T> && !std::is_same_v<T,std::int8_t>) void set(T input, std::bitset<BITS> mask, const std::uint_fast8_t &shift) const
+  template<typename T>
+  requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) void set(T input,
+    std::bitset<BITS> mask,
+    const std::uint_fast8_t &shift) const
   {
     std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(
       std::clamp(input, static_cast<T>(0), static_cast<T>(std::numeric_limits<std::uint8_t>::max()))) };
@@ -164,8 +167,8 @@ public:
               << static_cast<std::size_t>(color.g()) << ", " << static_cast<std::size_t>(color.b()) << ", "
               << static_cast<std::size_t>(color.a()) << '}' << std::dec << std::nouppercase;
   }
-  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{2U};
+  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 2U };
 };
-static_assert(sizeof(Color16)==Color16::EXPLICIT_SIZE);
+static_assert(sizeof(Color16) == Color16::EXPLICIT_SIZE);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR16_H

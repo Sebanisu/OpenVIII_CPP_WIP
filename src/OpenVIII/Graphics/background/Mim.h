@@ -4,6 +4,8 @@
 
 #ifndef VIIIARCHIVE_MIM_H
 #define VIIIARCHIVE_MIM_H
+#include "Tile2.h"
+#include "Tile3.h"
 #include "MimType.h"
 #include <span>
 #include <vector>
@@ -38,9 +40,9 @@ public:
   explicit Mim(std::vector<char> &&buffer, std::string_view name = {}) : m_buffer(std::move(buffer))
   {
     m_mim_type = get_texture_type(m_buffer);
-    if (Tools::i_find(name, "logo")) {
+    if (Tools::i_find_any(name, Tile3::FORCE_TYPE_VALUES)) {
       m_mim_type.type(3);
-    } else if (Tools::i_find_any(name, { "test10", "test11", "test12" })) {
+    } else if (Tools::i_find_any(name, Tile2::FORCE_TYPE_VALUES)) {
       m_mim_type.type(2);
     }
   }
@@ -70,7 +72,6 @@ public:
       std::span(reinterpret_cast<const Color16 *>(std::ranges::data(palette_buffer_tmp)),
         std::ranges::size(palette_buffer_tmp) / sizeof(Color16));
     const auto image_buffer = buffer.subspan(m_mim_type.palette_section_size());
-    // const auto temp_buffer_bbp16 = buffer.subspan(m_mim_type.bytes_skipped_palettes());
     const auto image_buffer_bbp16 =
       std::span<const Color16>(reinterpret_cast<const Color16 *>(std::ranges::data(image_buffer)),
         std::ranges::size(image_buffer) / sizeof(Color16));

@@ -192,8 +192,8 @@ struct [[maybe_unused]] Tools
     }
     return false;
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto i_find_any(const std::string_view &haystack,
-    const std::initializer_list<std::string_view> &needles)
+  template<std::ranges::contiguous_range rangeT>
+  [[maybe_unused]] [[nodiscard]] inline static auto i_find_any(const std::string_view &haystack, const rangeT &needles)
   {
     for (const auto &needle : needles) {
       if (i_find(haystack, needle)) {
