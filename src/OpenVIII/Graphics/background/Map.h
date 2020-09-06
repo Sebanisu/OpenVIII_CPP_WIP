@@ -9,17 +9,19 @@
 #include "Tile1.h"
 #include "Tile2.h"
 #include "Tile3.h"
+#include "Tile4.h"
 #include "Mim.h"
 #include <bit>
 #include <bitset>
 #include "OpenVIII/Tools/Tools.h"
 namespace open_viii::graphics::background {
-template<size_t typeT = 1> requires(typeT >= 0 && typeT <= 3) struct Map
+template<size_t typeT = 1> requires(typeT >= 0 && typeT <= 4) struct Map
 {
 private:
   mutable std::vector<Tile1> m_t1{};
   mutable std::vector<Tile2> m_t2{};
   mutable std::vector<Tile3> m_t3{};
+  mutable std::vector<Tile4> m_t4{};
 
   void remove_end()
   {
@@ -40,6 +42,9 @@ private:
     if constexpr (typeT == 0 || typeT == 3) {
       std::erase_if(m_t3, cmp);
     }
+    if constexpr (typeT == 0 || typeT == 4) {
+      std::erase_if(m_t4, cmp);
+    }
   }
   void remove_duplicates()
   {
@@ -54,6 +59,10 @@ private:
     if constexpr (typeT == 0 || typeT == 3) {
       auto last = std::unique(m_t3.begin(), m_t3.end());
       m_t3.erase(last, m_t3.end());
+    }
+    if constexpr (typeT == 0 || typeT == 4) {
+      auto last = std::unique(m_t4.begin(), m_t4.end());
+      m_t4.erase(last, m_t4.end());
     }
   }
   void sort()
@@ -103,6 +112,9 @@ private:
     if constexpr (typeT == 0 || typeT == 3) {
       std::sort(m_t3.begin(), m_t3.end(), cmp);
     }
+    if constexpr (typeT == 0 || typeT == 4) {
+      std::sort(m_t4.begin(), m_t4.end(), cmp);
+    }
   }
 
 public:
@@ -124,6 +136,11 @@ public:
         reinterpret_cast<const Tile3 *>(std::ranges::data(buffer)), std::ranges::size(buffer) / sizeof(Tile3));
       m_t3 = { t3.begin(), t3.end() };
     }
+    if constexpr (typeT == 0 || typeT == 4) {
+      auto t4 = std::span(
+        reinterpret_cast<const Tile4 *>(std::ranges::data(buffer)), std::ranges::size(buffer) / sizeof(Tile4));
+      m_t4 = { t4.begin(), t4.end() };
+    }
     remove_end();
     remove_duplicates();
     sort();
@@ -136,6 +153,8 @@ public:
       return m_t2;
     } else if constexpr (typeT == 3) {
       return m_t3;
+    } else if constexpr (typeT == 4) {
+      return m_t4;
     } else {
       return nullptr;
     }
@@ -317,16 +336,24 @@ public:
           return t;
         });
       }
+      if constexpr (typeT == 4 || typeT == 0) {
+        std::transform(std::execution::seq, m_t4.cbegin(), m_t4.cend(), m_t4.begin(), [&abs_x, &abs_y](Tile4 t) {
+          t.x(static_cast<std::int16_t>(t.x() + abs_x));
+          t.y(static_cast<std::int16_t>(t.y() + abs_y));
+          return t;
+        });
+      }
     }
   }
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const Map &m)
   {
-    return os << std::ranges::size(m.m_t1) << ", " << std::ranges::size(m.m_t2) << ", " << std::ranges::size(m.m_t3)
-              << '\n';
+    return os << std::ranges::size(m.m_t1) << ", " << std::ranges::size(m.m_t2) << ", "
+              << std::ranges::size(m.m_t3) << ", " << std::ranges::size(m.m_t4) << '\n';
   }
   template<typename tileT>
   requires(
-    std::is_convertible_v<tileT, Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>)
+    std::is_convertible_v<tileT,
+      Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3> || std::is_convertible_v<tileT, Tile4>)
     [[nodiscard]] std::uint64_t generate_pupu(tileT tile) const noexcept
   {
     static constexpr auto bits_per_long = static_cast<int>(sizeof(std::uint64_t) * 8);

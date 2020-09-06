@@ -40,6 +40,8 @@ public:
     m_mim_type = get_texture_type(m_buffer);
     if (Tools::i_find(name, "logo")) {
       m_mim_type.type(3);
+    } else if (Tools::i_find_any(name, { "test10", "test11", "test12" })) {
+      m_mim_type.type(2);
     }
   }
   [[nodiscard]] const auto &mim_type() const noexcept { return m_mim_type; }

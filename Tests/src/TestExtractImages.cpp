@@ -64,17 +64,12 @@ int main()
         t.save(p);
       }
     };
-    //    {
-    //      const auto &menu = archives.Get<open_viii::archive::ArchiveTypeT::Menu>();
-    //      const auto menuGroup = open_viii::MenuGroup::MenuGroupFile{ menu };
-    //      const auto fullpath = menu.GetFullPath(menuGroup.FILENAME);
-    //      menuGroup.TestTim(fullpath);
-    //    }
+
     {
       const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-      field.execute_with_nested({  }, [](const open_viii::archive::FIFLFS<false> &e) {
+      field.execute_with_nested({"test10","test11","test12"}, [](const open_viii::archive::FIFLFS<false> &e) {
         auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(".mim"), e.get_base_name() };
-        // mim.save(e.get_full_path(".mim"));
+        mim.save(e.get_full_path(".mim"));
         const auto process = [&mim, &e](const auto &map) {
           //((open_viii::graphics::background::Map<1>)map).max_x()
           std::cout << "  " << e.get_base_name() << '\n';
@@ -104,6 +99,8 @@ int main()
           process(open_viii::graphics::background::Map<2>{ e.get_entry_data(".map") });
         } else if (mim.mim_type().type() == 3) {
           process(open_viii::graphics::background::Map<3>{ e.get_entry_data(".map") });
+        } else if (mim.mim_type().type() == 4) {
+          process(open_viii::graphics::background::Map<4>{ e.get_entry_data(".map") });
         }
       });
     }

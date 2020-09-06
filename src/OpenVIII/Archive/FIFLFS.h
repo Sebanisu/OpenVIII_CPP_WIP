@@ -491,12 +491,12 @@ public:
       }
     }
   }
-  template<typename lambdaT> void execute_with_nested(const std::string_view &filename, const lambdaT lambda) const
+  template<typename lambdaT> void execute_with_nested(const std::initializer_list<std::string_view> &filename, const lambdaT lambda) const
   {
     FIFLFS<false> archive{};
 
     const auto &items =
-      archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, { filename });
+      archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
     std::for_each(std::execution::seq, items.cbegin(), items.cend(), [this, &archive, &lambda](const auto &item) {
       const auto &[id, strVirtualPath] = item;
       FI_Like auto fi = get_entry_index(id);
