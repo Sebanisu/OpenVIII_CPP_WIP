@@ -28,7 +28,7 @@ struct [[maybe_unused]] Tools
 private:
   struct IEqualPredicate
   {
-  bool operator()(const auto &ch1, const auto &ch2) const noexcept
+  constexpr bool operator()(const auto &ch1, const auto &ch2) const noexcept
   {
     return ::toupper(ch1) == ::toupper(ch2);
   }
