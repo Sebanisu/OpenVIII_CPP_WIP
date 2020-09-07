@@ -26,18 +26,18 @@ namespace open_viii {
 struct [[maybe_unused]] Tools
 {
 
-  template<Number T, Number rT> static constexpr T clamp(const T &input, const rT &min, const rT &max)
-  {
-    static_assert((std::is_integral_v<T> && std::is_integral_v<rT>)
-                  || (std::is_floating_point_v<T> && std::is_floating_point_v<rT>));
-    if (input > max) {
-      return static_cast<T>(max);
-    }
-    if (input < min) {
-      return static_cast<T>(min);
-    }
-    return input;
-  }
+  //  template<Number T, Number rT> static constexpr T clamp(const T &input, const rT &min, const rT &max)
+  //  {
+  //    static_assert((std::is_integral_v<T> && std::is_integral_v<rT>)
+  //                  || (std::is_floating_point_v<T> && std::is_floating_point_v<rT>));
+  //    if (input > max) {
+  //      return static_cast<T>(max);
+  //    }
+  //    if (input < min) {
+  //      return static_cast<T>(min);
+  //    }
+  //    return input;
+  //  }
   static std::string_view u8tosv(const std::u8string_view &s8)
   {
     return { reinterpret_cast<const char *>(s8.data()), s8.size() };
@@ -89,7 +89,7 @@ struct [[maybe_unused]] Tools
     return true;
   }
 
-  [[maybe_unused]] static bool write_buffer(const std::span<const char> &buffer,
+  [[maybe_unused]] static bool write_buffer([[maybe_unused]] const std::span<const char> &buffer,
     const std::string_view &path,
     const std::string_view &root = "tmp")
   {
@@ -125,47 +125,45 @@ struct [[maybe_unused]] Tools
 
   // Replace all of one char to another char. Arguments will be static_cast to the type of string char used in haystack.
   // I use this to make the separator on windows or linux matches the strings.
-  template<typename needleType, typename replacementType>
-  [[maybe_unused]] constexpr static void
-    replace_all(std::string &haystack, const needleType &needle, const replacementType &replacement) noexcept
+  template<typename needleType, typename replacementType, std::ranges::range T>
+  requires(std::is_convertible_v<replacementType, needleType> &&std::is_convertible_v<needleType, replacementType>)
+    [[maybe_unused]] constexpr static void replace_all(T &haystack,
+      const needleType &needle,
+      const replacementType &replacement) noexcept
   {
     static_assert(std::is_integral<needleType>::value && std::is_integral<replacementType>::value,
       "Should be dealing with chars so is integral should cover that.");
     if (haystack.empty()) {
       return;
     }
-
-    if (static_cast<std::intmax_t>(needle)
-        == static_cast<std::intmax_t>(replacement)) {// casting because worried if the types don't match.
-      return;
-    }
-    const auto replace = [needle, replacement](const auto &input) {
+    //
+    //    if (static_cast<std::intmax_t>(needle)
+    //        == static_cast<std::intmax_t>(replacement)) {// casting because worried if the types don't match.
+    //      return;
+    //    }
+    std::ranges::transform(haystack, std::ranges::begin(haystack), [needle, replacement](const auto &input) {
       // handle when T2 doesn't match T by casting to match input;
       return input == static_cast<decltype(input)>(needle) ? static_cast<decltype(input)>(replacement) : input;
       // windows uses a wchar_t instead of char. So I need to static cast to make them match
       // though might need at least one value to be char. I'm unsure what would happen if we were in
       // a unicode mode.
-    };
-    std::transform(haystack.begin(), haystack.end(), haystack.begin(), replace);
+    });
   }
 
-  template<typename T, typename T2> [[maybe_unused]] constexpr static bool any_of(const T &needle, const T2 &haystack)
+  template<typename T, std::ranges::contiguous_range T2>
+  [[maybe_unused]] constexpr static bool any_of(const T &needle, const T2 &haystack)
   {
-    for (const auto i : haystack) {// in cpp 20 std::any_of can be used instead.
-      if (i == needle) {
-        return true;
-      }
-    }
-    return false;
+    return std::ranges::any_of(haystack, [&needle](const auto &value) -> bool { return value == needle; });
   }
   [[maybe_unused]] constexpr static void replace_slashes(std::string &haystack)
   {
-    replace_all(haystack, '\\', std::filesystem::path::preferred_separator);
+    std::ranges::replace(haystack, '\\', std::filesystem::path::preferred_separator);
+    // replace_all(haystack, '\\', std::filesystem::path::preferred_separator);
   }
   /*
   Find Case Insensitive Sub String in a given substring (version returns location in string and allows offset)
   */
-  //[[nodiscard]] inline static size_t iFind(std::string haystack, std::string needle, size_t offset = 0)
+  //[[nodiscard]]  static size_t iFind(std::string haystack, std::string needle, size_t offset = 0)
   //{
   //	// Convert complete given String to lower case
   //	std::transform(haystack.begin(), haystack.end(), haystack.begin(), ::toupper);
@@ -178,47 +176,54 @@ struct [[maybe_unused]] Tools
 
   // Find Case Insensitive Sub String in a given substring
 
-  [[maybe_unused]] [[nodiscard]] inline static auto i_find(const std::string_view &haystack,
-    const std::string_view &needle)
+  [[maybe_unused]] [[nodiscard]] static constexpr auto i_find(const std::string_view &haystack, const std::string_view &needle)
   {
-    if (std::size(haystack) >= std::size(needle)) {
-      return std::search(haystack.begin(),
-               haystack.end(),
-               needle.begin(),
-               needle.end(),
-               [](const auto &ch1, const auto &ch2) { return ::toupper(ch1) == ::toupper(ch2); })
-             != haystack.end();
+    if (std::ranges::size(haystack) >= std::ranges::size(needle)) {
+      const auto sub_range = std::ranges::search(haystack,
+                                      needle,
+                                      [](const auto &ch1, const auto &ch2) { return ::toupper(ch1) == ::toupper(ch2); });
+      return std::ranges::size(sub_range) == std::ranges::size(needle) ;
       // todo make constexpr in cpp 20
     }
     return false;
   }
+
   template<std::ranges::contiguous_range rangeT>
-  [[maybe_unused]] [[nodiscard]] inline static auto i_find_any(const std::string_view &haystack, const rangeT &needles)
+  [[maybe_unused]] [[nodiscard]] static auto i_find_any(const std::string_view &haystack, const rangeT &needles)
   {
-    for (const auto &needle : needles) {
-      if (i_find(haystack, needle)) {
-        return true;
-      }
-    }
-    return false;
+    return std::ranges::any_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto i_ends_with(const std::string_view &haystack,
+  static void search_path(const std::filesystem::path &dir, std::initializer_list<std::string_view> extensions)
+  {
+    for (const auto &item : std::filesystem::recursive_directory_iterator(dir)) {
+      if (!std::filesystem::is_regular_file(item.path()) || i_find_any(item.path().extension().string(), extensions))
+        continue;
+
+      // open text file here
+      std::cout << "Found file: " << item.path().string() << '\n';
+    }
+  }
+  [[maybe_unused]] [[nodiscard]] static constexpr auto i_ends_with(const std::string_view &haystack,
     const std::string_view &ending)
   {
-    return std::size(haystack) >= std::size(ending)
-           && std::equal(ending.rbegin(), ending.rend(), haystack.rbegin(), [](const auto &ch1, const auto &ch2) {
+    const auto ending_view = ending | std::views::reverse;
+    const auto haystack_view = haystack | std::views::reverse | std::views::take(std::ranges::size(ending));
+    return std::ranges::size(haystack) >= std::ranges::size(ending)
+           && std::ranges::equal(ending_view, haystack_view, [](const auto &ch1, const auto &ch2) {
                 return ::toupper(ch1) == ::toupper(ch2);
               });
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto i_starts_with(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] static auto i_starts_with(const std::string_view &haystack,
     const std::string_view &starting)
   {
-    return std::size(haystack) >= std::size(starting)
-           && std::equal(starting.begin(), starting.end(), haystack.begin(), [](const auto &ch1, const auto &ch2) {
+    const auto starting_view = starting;
+    const auto haystack_view = haystack | std::views::reverse | std::views::take(std::ranges::size(starting));
+    return std::ranges::size(haystack) >= std::ranges::size(starting)
+           && std::ranges::equal(starting_view, haystack_view, [](const auto &ch1, const auto &ch2) {
                 return ::toupper(ch1) == ::toupper(ch2);
               });
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto i_ends_with_any(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &endings)
   {
     {
@@ -233,7 +238,7 @@ struct [[maybe_unused]] Tools
     return size_t{};// return 0 if not found;
   }
 
-  [[maybe_unused]] [[nodiscard]] inline static auto i_starts_with_any(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] static auto i_starts_with_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &endings)
   {
     {
@@ -247,15 +252,16 @@ struct [[maybe_unused]] Tools
     }
     return size_t{};// return 0 if not found;
   }
-  [[maybe_unused]] [[nodiscard]] inline static auto i_find_all(const std::string_view &haystack,
+  [[maybe_unused]] [[nodiscard]] static auto i_find_all(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &needles)
   {
-    for (const auto &needle : needles) {
-      if (!i_find(haystack, needle)) {
-        return false;
-      }
-    }
-    return true;
+    return std::ranges::all_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
+    //    for (const auto &needle : needles) {
+    //      if (!i_find(haystack, needle)) {
+    //        return false;
+    //      }
+    //    }
+    //    return true;
   }
 };
 }// namespace open_viii
