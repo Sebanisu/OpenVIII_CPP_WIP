@@ -40,7 +40,7 @@ public:
   [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }
   [[nodiscard]] auto attack_power() const noexcept { return m_attack_power; }
   [[nodiscard]] auto attack_param() const noexcept { return m_attack_param; }
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << '{' << static_cast<std::uint32_t>(battle_only_statuses()) << ", "
               << static_cast<std::uint32_t>(persistent_statuses()) << ", " << static_cast<std::uint32_t>(attack_power())
@@ -58,7 +58,7 @@ private:
 
 public:
   [[nodiscard]] const auto *operator->() const noexcept { return &m_blue_magic_data; }
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << m_blue_magic_data;
   }

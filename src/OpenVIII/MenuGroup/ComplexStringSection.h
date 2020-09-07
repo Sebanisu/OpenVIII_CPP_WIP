@@ -29,7 +29,8 @@ public:
   }
   template<LangT langVal> std::ostream &out(std::ostream &os) const
   {
-    return os << Tools::u8_to_sv(FF8String<langVal>::decode(m_buffer));
+    const auto temp = FF8String<langVal>::decode(m_buffer);
+    return os << Tools::u8_to_sv(temp);
   }
 };
 struct ComplexStringSectionOffsets
@@ -52,17 +53,17 @@ struct ComplexStringSection
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrp_complex_strings
 private:
   std::uint32_t m_count{};
-  std::string_view m_buffer{};
+  std::span<const char> m_buffer{};
   static constexpr auto SECTION_COUNT = 6U;
   std::array<std::string_view, SECTION_COUNT> m_data{};
 
 public:
-  ComplexStringSection(const std::string_view &buffer, const std::array<std::string_view, SECTION_COUNT> &data)
+  ComplexStringSection([[maybe_unused]]const std::span<const char> &buffer, const std::array<std::string_view, SECTION_COUNT> &data)
     : m_data{ data }
   {
-    if (std::size(buffer) > sizeof(m_count)) {
-      std::memcpy(&m_count, buffer.data(), sizeof(m_count));
-      m_buffer = std::string_view{ buffer.data() + sizeof(m_count), std::size(buffer) - sizeof(m_count) };
+    if (std::ranges::size(buffer) > sizeof(m_count)) {
+      std::memcpy(&m_count,std::ranges::data(buffer), sizeof(m_count));
+      m_buffer = buffer.subspan(sizeof(m_count));
     }
   }
   [[nodiscard]] auto size() const { return m_count; }

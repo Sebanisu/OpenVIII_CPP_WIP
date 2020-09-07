@@ -29,8 +29,7 @@ struct MenuGroupFile
 {
 private:
   MenuGroupHeader m_menu_group_header{};
-  std::vector<char> m_data_buffer{};
-  // std::string_view ToStringView() { return { dataBuffer_.data(), dataBuffer_.size() }; }
+  std::vector<char> m_data_buffer{}; //maybe should be a view unless we plan to keep this in memory 100%
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto get_section_internal() const
   {
     if constexpr (static_cast<size_t>(sectionT) < MenuGroupHeader::size()) {
@@ -196,17 +195,7 @@ public:
   explicit MenuGroupFile(const open_viii::archive::FIFLFS<false> &menu_archive)
     : m_menu_group_header(menu_archive), m_data_buffer(menu_archive.get_entry_data(FILENAME))
   {}
-  //
-  //  template<std::size_t sectionTnum> [[nodiscard]] auto get_section_buffer() const
-  //  {
-  //    constexpr auto sectionT = static_cast<MenuGroupSectionT>(sectionTnum);
-  //    [[maybe_unused]] const auto section{ get_section_internal<sectionT>() };
-  //    if constexpr (std::is_null_pointer_v<decltype(section)>) {
-  //      return nullptr;
-  //    } else {
-  //      return section.get_section_buffer(dataBuffer_);
-  //    }
-  //  }
+
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto get_section() const
   {
     if constexpr (Tools::any_of(sectionT, COMPLEX_VALUE_ARRAY) || sectionT == MenuGroupSectionT::complex_map) {
@@ -286,9 +275,9 @@ public:
         if (subSection.offset() == 0) {
           continue;
         }
-
+        const auto temp = subSection.template decoded_string<langVal>(mes.text_span(), 0, true);
         std::cout << "    " << id - 1 << ": {" << subSection.offset() << "} "
-                  << Tools::u8_to_sv(subSection.template decoded_string<langVal>(mes.text_span(), 0, true)) << '\n';
+                  << Tools::u8_to_sv(temp) << '\n';
       }
     });
   }
@@ -307,8 +296,9 @@ public:
           if (subSection.offset() == 0) {
             continue;
           }
+          const auto temp = subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true);
           std::cout << "    " << stringNumber++ << ": {" << subSection.offset() << "} "
-                    << Tools::u8_to_sv(subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true))
+                    << Tools::u8_to_sv(temp)
                     << '\n';
         }
       }
@@ -335,7 +325,7 @@ public:
         std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << refineBulkSectionData.size() << "},\n";
 
         for (size_t id = 0U; id < 1U; id++) {
-          refineBulkSectionData.at(id).template out<langVal>(std::cout, refineBulkSectionData.text_span());
+          refineBulkSectionData[id].template out<langVal>(std::cout, refineBulkSectionData.text_span());
         }
       });
   }

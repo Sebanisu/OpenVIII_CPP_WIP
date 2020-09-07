@@ -43,7 +43,7 @@ public:
   [[maybe_unused]] [[nodiscard]] auto index_to_battle_command() const noexcept { return m_index_to_battle_command; }
   [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
   [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
-  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);

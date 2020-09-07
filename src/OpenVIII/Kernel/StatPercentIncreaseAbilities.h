@@ -42,7 +42,7 @@ public:
   [[maybe_unused]] [[nodiscard]] auto stat_to_increase() const noexcept { return m_stat_to_increase; }
   [[maybe_unused]] [[nodiscard]] auto increased_value() const noexcept { return m_increased_value; }
   [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
-  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);

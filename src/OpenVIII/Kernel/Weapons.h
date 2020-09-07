@@ -78,7 +78,7 @@ public:
   [[maybe_unused]] [[nodiscard]] const auto &weapon_tier() const noexcept { return m_weapon_tier; }
   [[maybe_unused]] [[nodiscard]] const auto &critical_bonus() const noexcept { return m_critical_bonus; }
   [[maybe_unused]] [[nodiscard]] const auto &melee_weapon() const noexcept { return m_melee_weapon != 0; }
-  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {

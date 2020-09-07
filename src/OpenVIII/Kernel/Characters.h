@@ -93,7 +93,7 @@ public:
   [[maybe_unused]] [[nodiscard]] const auto &exp() const noexcept { return m_exp; }
   [[maybe_unused]] [[nodiscard]] const auto &stats() const noexcept { return m_stats; }
   [[nodiscard]] auto operator->() const noexcept { return &m_stats; }
-  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {

@@ -35,9 +35,9 @@ public:
   [[nodiscard]] const auto *operator->() const { return &m_med_lv_up; }
   [[nodiscard]] static constexpr auto size() { return MED_LVUP_COUNT; }
   template<LangT langVal, typename T>
-  std::ostream &out_array(const T &arr,
+std::ostream &out_array(const T &arr,
     std::ostream &os,
-    const std::string_view &buffer = ""sv,
+    const std::span<const char> &buffer = ""sv,
     const intmax_t offset = 0,
     bool skip_first_null = false) const
 
@@ -46,8 +46,8 @@ public:
     return os;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &os,
-    const std::string_view &buffer = ""sv,
+std::ostream &out(std::ostream &os,
+    const std::span<const char> &buffer = ""sv,
     const intmax_t offset = 0,
     bool skip_first_null = false) const
 

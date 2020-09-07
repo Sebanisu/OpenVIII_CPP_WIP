@@ -197,7 +197,7 @@ public:
   [[nodiscard]] auto back_attack_limit_effect() const noexcept { return m_back_attack_limit_effect; }
   [[maybe_unused]] [[nodiscard]] auto duel_timers() const noexcept { return m_duel_timers; }
   [[maybe_unused]] [[nodiscard]] auto shot_timers() const noexcept { return m_shot_timers; }
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << static_cast<std::uint32_t>(m_sleep_timer) << ", " << static_cast<std::uint32_t>(m_haste_timer) << ", "
               << static_cast<std::uint32_t>(m_slow_timer) << ", " << static_cast<std::uint32_t>(m_stop_timer) << ", "

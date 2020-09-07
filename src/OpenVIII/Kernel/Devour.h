@@ -119,7 +119,7 @@ public:
   [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }// statuses 0-7
   [[maybe_unused]] [[nodiscard]] auto devour_stat_flag() const noexcept { return m_devour_stat_flag; }
   [[maybe_unused]] [[nodiscard]] auto raised_stat_hp_quantity() const noexcept { return m_raised_stat_hp_quantity; }
-  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(description)) {

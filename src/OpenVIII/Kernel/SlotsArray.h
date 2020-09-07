@@ -28,7 +28,7 @@ private:
 
 public:
   [[nodiscard]] auto slot_set_id() const noexcept { return m_slot_set_id; }
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << static_cast<uint16_t>(slot_set_id());
   }

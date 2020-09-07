@@ -28,10 +28,10 @@ struct [[maybe_unused]] Tools
 private:
   struct IEqualPredicate
   {
-  constexpr bool operator()(const auto &ch1, const auto &ch2) const noexcept
-  {
-    return ::toupper(ch1) == ::toupper(ch2);
-  }
+    constexpr bool operator()(const auto &ch1, const auto &ch2) const noexcept
+    {
+      return ::toupper(ch1) == ::toupper(ch2);
+    }
   };
 
 public:
@@ -44,6 +44,7 @@ public:
   {
     return { reinterpret_cast<const char *>(s8.data()), s8.size() };
   }
+
   /**
    * Workaround there is no way to currently to print a utf8 string... streams are char only pretty much.
    * @param s8 utf8 string_view
@@ -173,58 +174,68 @@ public:
   {
     return std::ranges::any_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
   }
-  [[maybe_unused]] static void search_path(const std::filesystem::path &dir, std::initializer_list<std::string_view> extensions)
+  [[maybe_unused]] static auto i_path_ends_with_any(const std::filesystem::path &dir,
+    std::initializer_list<std::string_view> extensions)
   {
-    for (const auto &item : std::filesystem::recursive_directory_iterator(dir)) {
-      if (!std::filesystem::is_regular_file(item.path()) || i_find_any(item.path().extension().string(), extensions))
-        continue;
-
-      // open text file here
-      std::cout << "Found file: " << item.path().string() << '\n';
-    }
+    std::vector<std::filesystem::path> out{};
+    std::ranges::copy_if(std::filesystem::recursive_directory_iterator(dir),
+      std::back_insert_iterator(out),
+      [&extensions](const auto &item) -> bool {
+        if(!std::filesystem::is_regular_file(item.path()) || !item.path().has_extension()
+               || !i_ends_with_any(item.path().extension().string(), extensions))
+        {
+          return false; //clang tidy says this is redundant. :( Well screw you clang tidy I want to print out matches.
+        }
+        std::cout << "Found file: " << item.path().string() << '\n';
+        return true;
+      });
+    return out;
+    //    for (const auto &item :) {
+    //      if (!std::filesystem::is_regular_file(item.path()) || i_find_any(item.path().extension().string(),
+    //      extensions))
+    //        continue;
+    //      // open text file here
+    //      std::cout << "Found file: " << item.path().string() << '\n';
+    //    }
   }
   [[maybe_unused]] [[nodiscard]] static constexpr auto i_ends_with(const std::string_view &haystack,
     const std::string_view &ending)
   {
     [[maybe_unused]] const auto ending_view = ending | std::views::reverse;
-    [[maybe_unused]] const auto haystack_view = haystack | std::views::reverse | std::views::take(std::ranges::size(ending));
+    [[maybe_unused]] const auto haystack_view =
+      haystack | std::views::reverse | std::views::take(std::ranges::size(ending));
     return std::ranges::size(haystack) >= std::ranges::size(ending)
            && std::ranges::equal(ending_view, haystack_view, IEqualPredicate());
   }
   [[maybe_unused]] [[nodiscard]] static auto i_starts_with(const std::string_view &haystack,
     const std::string_view &starting)
   {
-    //[[maybe_unused]] const auto starting_view = starting;
     [[maybe_unused]] const auto haystack_view = haystack | std::views::take(std::ranges::size(starting));
     return std::ranges::size(haystack) >= std::ranges::size(starting)
            && std::ranges::equal(starting, haystack_view, IEqualPredicate());
   }
   [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(const std::string_view &haystack,
-    const std::initializer_list<std::string_view> &endings)
+    const std::initializer_list<std::string_view> &needles)
   {
-    {
-      size_t i{};
-      for (const auto &ending : endings) {
-        i++;
-        if (i_ends_with(haystack, ending)) {
-          return i;// return index of found +1;
-        }
-      }
+    size_t i{};
+    if (std::ranges::any_of(needles, [&haystack, &i](const auto &needle) -> bool {
+          ++i;
+          return i_ends_with(haystack, needle);
+        })) {
+      return i;// return index of found +1;
     }
     return size_t{};// return 0 if not found;
   }
 
   [[maybe_unused]] [[nodiscard]] static auto i_starts_with_any(const std::string_view &haystack,
-    const std::initializer_list<std::string_view> &endings)
+    const std::initializer_list<std::string_view> &needles)
   {
-    {
-      size_t i{};
-      for (const auto &ending : endings) {
-        i++;
-        if (i_starts_with(haystack, ending)) {
-          return i;// return index of found +1;
-        }
-      }
+    size_t i{};
+    if (std::ranges::any_of(needles, [&haystack, &i](const auto &needle) -> bool {
+          ++i;
+          return i_starts_with(haystack, needle);
+        })) {
+      return i;// return index of found +1;
     }
     return size_t{};// return 0 if not found;
   }
@@ -232,12 +243,6 @@ public:
     const std::initializer_list<std::string_view> &needles)
   {
     return std::ranges::all_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
-    //    for (const auto &needle : needles) {
-    //      if (!i_find(haystack, needle)) {
-    //        return false;
-    //      }
-    //    }
-    //    return true;
   }
 };
 }// namespace open_viii

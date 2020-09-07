@@ -46,7 +46,7 @@ public:
   [[maybe_unused]] [[nodiscard]] const auto &get_target() const noexcept { return m_target; }
   [[nodiscard]] auto unknown() const noexcept { return m_unknown; }
 
-  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);

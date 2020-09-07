@@ -548,14 +548,12 @@ public:
     }
   }
   [[nodiscard]] auto static decode(uint8_t key) noexcept { return get_code_page().at(key); }
-  [[nodiscard]] auto static decode(const std::string_view &buffer)
+  [[nodiscard]] auto static decode(const std::span<const char> &buffer)
   {
     using u8stringstream = std::basic_stringstream<char8_t, std::char_traits<char8_t>>;
     if (std::empty(buffer)) {
       return std::u8string{};
     }
-    //    std::transform_reduce(buffer.begin(),buffer.end(),r,[](const auto &key)
-    //    {return Decode(static_cast<uint8_t>(key));},[](auto a, auto b)){});
     u8stringstream ss{};
     for (auto key : buffer) {
       const auto value = decode(static_cast<uint8_t>(key));

@@ -85,7 +85,7 @@ public:
   [[maybe_unused]] [[nodiscard]] auto unknown3() const noexcept { return m_unknown3; }
   [[maybe_unused]] [[nodiscard]] auto hit_count() const noexcept { return m_hit_count; }
   [[nodiscard]] auto element() const noexcept { return m_element; }
-  std::ostream &out(std::ostream &os, const std::string_view &buffer) const
+  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
