@@ -173,7 +173,7 @@ public:
   {
     return std::ranges::any_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
   }
-  static void search_path(const std::filesystem::path &dir, std::initializer_list<std::string_view> extensions)
+  [[maybe_unused]] static void search_path(const std::filesystem::path &dir, std::initializer_list<std::string_view> extensions)
   {
     for (const auto &item : std::filesystem::recursive_directory_iterator(dir)) {
       if (!std::filesystem::is_regular_file(item.path()) || i_find_any(item.path().extension().string(), extensions))
@@ -186,18 +186,18 @@ public:
   [[maybe_unused]] [[nodiscard]] static constexpr auto i_ends_with(const std::string_view &haystack,
     const std::string_view &ending)
   {
-    const auto ending_view = ending | std::views::reverse;
-    const auto haystack_view = haystack | std::views::reverse | std::views::take(std::ranges::size(ending));
+    [[maybe_unused]] const auto ending_view = ending | std::views::reverse;
+    [[maybe_unused]] const auto haystack_view = haystack | std::views::reverse | std::views::take(std::ranges::size(ending));
     return std::ranges::size(haystack) >= std::ranges::size(ending)
            && std::ranges::equal(ending_view, haystack_view, IEqualPredicate());
   }
   [[maybe_unused]] [[nodiscard]] static auto i_starts_with(const std::string_view &haystack,
     const std::string_view &starting)
   {
-    const auto starting_view = starting;
-    const auto haystack_view = haystack | std::views::reverse | std::views::take(std::ranges::size(starting));
+    //[[maybe_unused]] const auto starting_view = starting;
+    [[maybe_unused]] const auto haystack_view = haystack | std::views::take(std::ranges::size(starting));
     return std::ranges::size(haystack) >= std::ranges::size(starting)
-           && std::ranges::equal(starting_view, haystack_view, IEqualPredicate());
+           && std::ranges::equal(starting, haystack_view, IEqualPredicate());
   }
   [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &endings)
