@@ -67,8 +67,8 @@ public:
    * @param path filename path.
    * @param data buffer of bytes.
    * @param offset bytes from start of data to start looking.
-   * @param size number of bytes?; 0 == unlimited
-   * @param count expected number of matches?; 0 == unlimited
+   * @param size of FL file if known; 0 == unlimited
+   * @param count expected number of matches; calculated from FI file size / 12; 0 == unlimited
    * @param needle possible string matches; {} == all
    * @param limit max matches; 0 == unlimited
    * @return matches
@@ -84,11 +84,15 @@ public:
   {
     std::vector<std::pair<unsigned int, std::string>> vector{};
     const auto process = [&limit, &count, &size, &vector, &offset, &needle, &data](auto &cont) {
-      cont.seekg(0, std::ios::end);
-      auto length = cont.tellg();
-      if (!cont.seekg(static_cast<long>(offset))) {
-        std::cerr << "failed to seek to offset: " << offset << "; length: " << length << ";\n";
-        exit(EXIT_FAILURE);
+      {//Get length
+        cont.seekg(0, std::ios::end);
+        auto length = cont.tellg();
+        //Goto Offset
+        if (!cont.seekg(static_cast<long>(offset))) {
+          //Error on failure
+          std::cerr << "failed to seek to offset: " << offset << "; length: " << length << ";\n";
+          exit(EXIT_FAILURE);
+        }
       }
       if (count > 0) {
         if (limit > 0 && count > limit) {
@@ -102,9 +106,8 @@ public:
       {
         std::basic_string<char> inner_path;
         for (unsigned int id = 0;
-             (count == 0U || vector.size() < count)
-               //&& (limit == 0U || vector.size() < limit)
-               && (size == 0U || cont.tellg() < static_cast<long>(size + offset)) && [&inner_path, &cont]() -> bool {
+             (count == 0U || std::ranges::size(vector) < count)
+               && (size == 0U || static_cast<std::size_t>(cont.tellg()) < size + offset) && [&inner_path, &cont]() -> bool {
                if (cont.seekg(3, std::ios::cur)) {
                  /* skip c:\ */
                  return static_cast<bool>(std::getline(cont, inner_path));
@@ -112,10 +115,7 @@ public:
                return false;
              }();
              id++) {
-          if (!std::empty(needle)
-              && !std::any_of(needle.begin(), needle.end(), [&inner_path](const std::string_view &inner_needle) {
-                   return !inner_path.empty() && Tools::i_find(inner_path, inner_needle);
-                 })) {
+          if (!std::ranges::empty(needle) && !Tools::i_find_any(inner_path, needle)) {
             continue;
           }
 
@@ -146,23 +146,24 @@ public:
     } else {
       std::cout << "\033[1;31mFL Data is null!\033[0m\n";
     }
-    std::sort(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
+
+    std::ranges::sort(vector, [](const auto &left, const auto &right) {
       if (left.second.length() == right.second.length()) {
         return left.second < right.second;
       }
       return left.second.length() < right.second.length();
     });
-    if (!std::is_sorted(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
-          if (left.second.length() == right.second.length()) {
-            return left.second < right.second;
-          }
-          return left.second.length() < right.second.length();
-        })) {
-
-      for (const auto &item : vector) { std::cout << item.second << '\n'; }
-      std::cerr << "not sorted!!!";
-      exit(1);
-    }
+    //    if (!std::is_sorted(vector.begin(), vector.end(), [](const auto &left, const auto &right) {
+    //          if (left.second.length() == right.second.length()) {
+    //            return left.second < right.second;
+    //          }
+    //          return left.second.length() < right.second.length();
+    //        })) {
+    //
+    //      for (const auto &item : vector) { std::cout << item.second << '\n'; }
+    //      std::cerr << "not sorted!!!";
+    //      exit(1);
+    //    }
     return vector;
   }
   // Get all entries from the FL file sorted and cleaned.

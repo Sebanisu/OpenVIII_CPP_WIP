@@ -50,7 +50,7 @@ public:
     const intmax_t offset = 0,
     bool skip_first_null = false) const
   {
-    return os << '"' << Tools::u8tosv(m_offset.decoded_string<langVal>(buffer, offset, skip_first_null)) << "\", "
+    return os << '"' << Tools::u8_to_sv(m_offset.decoded_string<langVal>(buffer, offset, skip_first_null)) << "\", "
               << static_cast<std::uint16_t>(m_amount_received) << ", " << static_cast<std::uint16_t>(m_unknown0) << ", "
               << static_cast<std::uint16_t>(m_unknown1) << ", " << static_cast<std::uint16_t>(m_input) << ", "
               << static_cast<std::uint16_t>(m_amount_required) << ", " << static_cast<std::uint16_t>(m_output);
