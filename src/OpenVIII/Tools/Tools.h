@@ -25,19 +25,16 @@
 namespace open_viii {
 struct [[maybe_unused]] Tools
 {
+private:
+  struct IEqualPredicate
+  {
+  bool operator()(const auto &ch1, const auto &ch2) const noexcept
+  {
+    return ::toupper(ch1) == ::toupper(ch2);
+  }
+  };
 
-  //  template<Number T, Number rT> static constexpr T clamp(const T &input, const rT &min, const rT &max)
-  //  {
-  //    static_assert((std::is_integral_v<T> && std::is_integral_v<rT>)
-  //                  || (std::is_floating_point_v<T> && std::is_floating_point_v<rT>));
-  //    if (input > max) {
-  //      return static_cast<T>(max);
-  //    }
-  //    if (input < min) {
-  //      return static_cast<T>(min);
-  //    }
-  //    return input;
-  //  }
+public:
   static std::string_view u8tosv(const std::u8string_view &s8)
   {
     return { reinterpret_cast<const char *>(s8.data()), s8.size() };
@@ -109,18 +106,7 @@ struct [[maybe_unused]] Tools
   [[maybe_unused]] [[nodiscard]] constexpr static bool i_equals(const std::string_view &str1,
     const std::string_view &str2)
   {
-    const constexpr auto i_equal = [](const auto &c1, const auto &c2) { return ::toupper(c1) == ::toupper(c2); };
-    if (str1.length() != str2.length()) {
-      return false;
-    }
-    for (size_t i = 0; i < str1.length(); i++) {
-      if (!i_equal(str1.at(i), str2.at(i))) {
-        return false;
-      }
-    }
-    return true;
-    // return std::equal(str1.begin(), str1.end(), str2.begin(), iEqual);
-    // todo std::equal constexpr in cpp20
+    return std::ranges::equal(str1, str2, IEqualPredicate());
   }
 
   // Replace all of one char to another char. Arguments will be static_cast to the type of string char used in haystack.
@@ -160,29 +146,13 @@ struct [[maybe_unused]] Tools
     std::ranges::replace(haystack, '\\', std::filesystem::path::preferred_separator);
     // replace_all(haystack, '\\', std::filesystem::path::preferred_separator);
   }
-  /*
-  Find Case Insensitive Sub String in a given substring (version returns location in string and allows offset)
-  */
-  //[[nodiscard]]  static size_t iFind(std::string haystack, std::string needle, size_t offset = 0)
-  //{
-  //	// Convert complete given String to lower case
-  //	std::transform(haystack.begin(), haystack.end(), haystack.begin(), ::toupper);
-  //	// Convert complete given Sub String to lower case
-  //	std::transform(needle.begin(), needle.end(), needle.begin(), ::toupper);
-  //	// Find sub string in given string
-  //	return haystack.find(needle, offset);
-  //}
 
-
-  // Find Case Insensitive Sub String in a given substring
-
-  [[maybe_unused]] [[nodiscard]] static constexpr auto i_find(const std::string_view &haystack, const std::string_view &needle)
+  [[maybe_unused]] [[nodiscard]] static constexpr auto i_find(const std::string_view &haystack,
+    const std::string_view &needle)
   {
     if (std::ranges::size(haystack) >= std::ranges::size(needle)) {
-      const auto sub_range = std::ranges::search(haystack,
-                                      needle,
-                                      [](const auto &ch1, const auto &ch2) { return ::toupper(ch1) == ::toupper(ch2); });
-      return std::ranges::size(sub_range) == std::ranges::size(needle) ;
+      const auto sub_range = std::ranges::search(haystack, needle, IEqualPredicate());
+      return std::ranges::size(sub_range) == std::ranges::size(needle);
       // todo make constexpr in cpp 20
     }
     return false;
@@ -209,9 +179,7 @@ struct [[maybe_unused]] Tools
     const auto ending_view = ending | std::views::reverse;
     const auto haystack_view = haystack | std::views::reverse | std::views::take(std::ranges::size(ending));
     return std::ranges::size(haystack) >= std::ranges::size(ending)
-           && std::ranges::equal(ending_view, haystack_view, [](const auto &ch1, const auto &ch2) {
-                return ::toupper(ch1) == ::toupper(ch2);
-              });
+           && std::ranges::equal(ending_view, haystack_view, IEqualPredicate());
   }
   [[maybe_unused]] [[nodiscard]] static auto i_starts_with(const std::string_view &haystack,
     const std::string_view &starting)
@@ -219,9 +187,7 @@ struct [[maybe_unused]] Tools
     const auto starting_view = starting;
     const auto haystack_view = haystack | std::views::reverse | std::views::take(std::ranges::size(starting));
     return std::ranges::size(haystack) >= std::ranges::size(starting)
-           && std::ranges::equal(starting_view, haystack_view, [](const auto &ch1, const auto &ch2) {
-                return ::toupper(ch1) == ::toupper(ch2);
-              });
+           && std::ranges::equal(starting_view, haystack_view, IEqualPredicate());
   }
   [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &endings)
