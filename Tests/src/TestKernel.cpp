@@ -30,28 +30,28 @@ int main()
     [[maybe_unused]] const auto &buffer = kernel.buffer();
     std::cout << "kernel.bin " << buffer.size() << " bytes; " << kernel.section_count() << " section count\n";
     std::cout << static_cast<int>(open_viii::kernel::SectionTypesT::count) << std::endl;
-    //    const auto &sectionOffsets = kernel.SectionOffsets();
+    // const auto &sectionOffsets = kernel.SectionOffsets();
     //    std::for_each(
     //      sectionOffsets.begin(), sectionOffsets.end(),[](const auto &value) { std::cout << value << std::endl; });
-    kernel.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::first),
-      static_cast<int>(open_viii::kernel::SectionTypesT::count)>([](auto string, auto span, auto data) {
-      std::cout << "  " << string << " - " << std::size(span) << " bytes\n";
-
-      return data;
-    });
-    kernel.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::first),
-      static_cast<int>(open_viii::kernel::SectionTypesT::count)>([](auto string, auto span, auto data) {
-      if constexpr (!std::is_null_pointer_v<decltype(
-                      data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
-        std::cout << string << " ( " << std::size(span) << "bytes) has " << data.size() << " entries\n";
-        for (size_t i = 0; i < data.size(); i++) {
-          auto entry = data.at(i);
-          std::cout << i << ": ";
-          entry.out(std::cout, data.text_span());
-          std::cout << '\n';
-        }
-      }
-    });
+    //    kernel.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::first),
+    //      static_cast<int>(open_viii::kernel::SectionTypesT::count)>([](const std::string_view &string,const
+    //      std::span<const char> & span, const auto & data) { std::cout << "  " << string << " - " << std::size(span)
+    //      << " bytes\n";
+    //
+    //      return data;
+    //    });
+    kernel.static_for([]<typename kernel_section_t>(
+                        const std::string_view &string, const std::span<const char> &span, const kernel_section_t &data)
+                        requires(!std::is_null_pointer_v<kernel_section_t>) {
+                          std::cout << string << " ( " << std::ranges::size(span) << "bytes) has "
+                                    << std::ranges::size(data) << " entries\n";
+                          for (size_t i = 0; i < data.size(); i++) {
+                            auto entry = data.at(i);
+                            std::cout << i << ": ";
+                            entry.out(std::cout, data.text_span());
+                            std::cout << '\n';
+                          }
+                        });
   }
   return 0;
 }
