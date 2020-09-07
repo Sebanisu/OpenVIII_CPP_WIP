@@ -97,7 +97,7 @@ public:
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
-      os << Tools::u8tosv(name);
+      os << Tools::u8_to_sv(name);
     }
     return os << ", " << static_cast<std::uint32_t>(m_crisis_level_hp_multiplier) << ", "
               << static_cast<std::uint32_t>(m_gender) << ", " << static_cast<std::uint32_t>(m_limit_break_id) << ", "

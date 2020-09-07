@@ -288,7 +288,7 @@ public:
         }
 
         std::cout << "    " << id - 1 << ": {" << subSection.offset() << "} "
-                  << Tools::u8tosv(subSection.template decoded_string<langVal>(mes.text_span(), 0, true)) << '\n';
+                  << Tools::u8_to_sv(subSection.template decoded_string<langVal>(mes.text_span(), 0, true)) << '\n';
       }
     });
   }
@@ -308,7 +308,7 @@ public:
             continue;
           }
           std::cout << "    " << stringNumber++ << ": {" << subSection.offset() << "} "
-                    << Tools::u8tosv(subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true))
+                    << Tools::u8_to_sv(subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true))
                     << '\n';
         }
       }

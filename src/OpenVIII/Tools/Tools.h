@@ -35,13 +35,23 @@ private:
   };
 
 public:
-  static std::string_view u8tosv(const std::u8string_view &s8)
+  /**
+   * Workaround there is no way to currently to print a utf8 string... streams are char only pretty much.
+   * @param s8 utf8 string_view
+   * @return char string_view.
+   */
+  static std::string_view u8_to_sv(const std::u8string_view &s8)
   {
     return { reinterpret_cast<const char *>(s8.data()), s8.size() };
   }
-  [[maybe_unused]] static std::string u8tos(const std::u8string_view &s8)
+  /**
+   * Workaround there is no way to currently to print a utf8 string... streams are char only pretty much.
+   * @param s8 utf8 string_view
+   * @return char string
+   */
+  [[maybe_unused]] static std::string u8_to_s(const std::u8string_view &s8)
   {
-    auto sv = u8tosv(s8);
+    auto sv = u8_to_sv(s8);
     return { sv.begin(), sv.end() };
   }
   template<typename trivialType> [[maybe_unused]] static void read_val(std::istream &fp, trivialType &item)
