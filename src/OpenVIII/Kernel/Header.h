@@ -66,12 +66,14 @@ private:
   static constexpr auto FILE_NAME = std::string_view{ "kernel.bin" };
 
 public:
-  template<SectionTypesT sectionType> [[nodiscard]] constexpr auto get_span() const
+  template<SectionTypesT sectionType> static consteval bool section_type_test()
   {
-    if constexpr (static_cast<int>(sectionType) >= static_cast<int>(SectionTypesT::count)
-                  || static_cast<int>(sectionType) < 0) {
-      return nullptr;// failure
-    }
+    return static_cast<int>(sectionType) < static_cast<int>(SectionTypesT::count) && static_cast<int>(sectionType) >= 0;
+  }
+
+  template<SectionTypesT sectionType>
+  requires(section_type_test<sectionType>()) [[nodiscard]] constexpr auto get_span() const
+  {
     auto length = [this]() {
       if constexpr (static_cast<int>(sectionType) >= (static_cast<int>(SectionTypesT::count) - 1)) {
         return std::size(m_buffer) - m_section_offsets.at(static_cast<size_t>(sectionType));
@@ -80,9 +82,10 @@ public:
                                    - m_section_offsets.at(static_cast<size_t>(sectionType)));
       }
     }();
-    return std::string_view(m_buffer.data() + m_section_offsets.at(static_cast<size_t>(sectionType)), length);
+    return std::span<const char>(m_buffer).subspan(m_section_offsets.at(static_cast<size_t>(sectionType)), length);
   }
-  template<SectionTypesT sectionType> [[nodiscard]] auto get_section_data() const
+  template<SectionTypesT sectionType>
+  requires(section_type_test<sectionType>()) [[nodiscard]] auto get_section_data() const
   {
     using namespace std::string_literals;
     if constexpr (sectionType == SectionTypesT::battle_commands) {
@@ -169,11 +172,13 @@ public:
     } else if constexpr (sectionType == SectionTypesT::misc_text_pointers) {
       return BulkSectionData<MiscText<langVal>>{ get_span<sectionType>(), get_span<SectionTypesT::misc_text>() };
     } else {
+      // anything that isn't a main section like Text is returning null here.
       return nullptr;
     }
   }
 
-  template<SectionTypesT sectionType> [[nodiscard]] constexpr std::string_view get_section_name() const
+  template<SectionTypesT sectionType>
+  requires(section_type_test<sectionType>()) [[nodiscard]] constexpr std::string_view get_section_name() const
   {
     using namespace std::string_view_literals;
     if constexpr (sectionType == SectionTypesT::battle_commands) {
@@ -288,8 +293,6 @@ public:
       return "Devour Text"sv;
     } else if constexpr (sectionType == SectionTypesT::misc_text) {
       return "Misc Text"sv;
-    } else {
-      return ""sv;
     }
   }
 
@@ -317,14 +320,22 @@ public:
   [[nodiscard]] const auto &section_offsets() const noexcept { return m_section_offsets; }
 
 
-  template<int First, int Count, typename Lambda> void static_for([[maybe_unused]] const Lambda &f)
+  template<int First = static_cast<int>(SectionTypesT::first),
+    int Count = static_cast<int>(SectionTypesT::count),
+    typename Lambda>
+  requires(section_type_test<static_cast<SectionTypesT>(First)>()
+           && (section_type_test<static_cast<SectionTypesT>(Count)>()
+               || Count == static_cast<int>(SectionTypesT::count))) void static_for([[maybe_unused]] const Lambda &f)
   {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
     if constexpr (First < Count) {
       constexpr auto sectionType = std::integral_constant<SectionTypesT, static_cast<SectionTypesT>(First)>{};
       const auto &data = get_section_data<sectionType>();
-      f(get_section_name<sectionType>(), get_span<sectionType>(), data);
-
-      static_for<First + 1, Count>(f);
+      if (!std::is_null_pointer_v <decltype(data)>) {
+        f(get_section_name<sectionType>(), get_span<sectionType>(), data);
+      }
+      if constexpr (First + 1 < Count) {
+        static_for<First + 1, Count>(f);
+      }
     }
   }
 };// namespace open_viii::kernel
