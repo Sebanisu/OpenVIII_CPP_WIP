@@ -25,4 +25,5 @@ The Plan:
   - Support for each of the file formats
   - Tests to make sure the code works as I go. Dumping data to check to see if I can read correctly.
   - Ability to quickly get at what you want.
-  - Last thing I'll worry about is the game. Though I may right tests to quickly render things.
+  - Later on may write tests to quickly render things. Much like our debug menu on OpenVIII-monogame. I'll be able to open up maps and view them make sure the drawing logic is good. But like it'll be it's own lightweight exe that just populates a list of maps or something for each type I wanna test.
+  - Last thing I'll worry about is the game. 
