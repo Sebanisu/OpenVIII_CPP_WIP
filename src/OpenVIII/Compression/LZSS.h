@@ -75,7 +75,7 @@ public:
       dst.reserve(dst_size);
     }
     auto iterator = src.begin();
-    const auto &srcEnd = src.end();
+    const auto srcEnd = std::ranges::end(src);
     unsigned int current{ 0 };
     auto textBuf = std::array<unsigned int, N_MINUS1 + F>();
     // ring buffer of size N, with extra F-1 bytes to facilitate string comparison

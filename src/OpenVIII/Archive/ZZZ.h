@@ -70,10 +70,10 @@ public:
       }
     }
     std::sort(m_data.begin(), m_data.end(), [](const FileData &left, const FileData &right) {
-      const auto &right_string = right.get_path_string();
-      const auto &left_string = left.get_path_string();
-      const auto &right_size = std::size(right_string);
-      const auto &left_size = std::size(left_string);
+      const auto right_string = right.get_path_string();
+      const auto left_string = left.get_path_string();
+      const auto right_size = std::size(right_string);
+      const auto left_size = std::size(left_string);
       if (left_size == right_size) {
         return left_string < right_string;
       }
@@ -92,7 +92,7 @@ public:
   {
 
     FIFLFS archive{};
-    {
+    { //TODO rewrite with out iterators.
       auto beg = m_data.begin();
       auto end = m_data.end();
       for (auto cur = beg; cur < end; cur++) {

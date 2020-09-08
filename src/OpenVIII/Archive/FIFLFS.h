@@ -496,7 +496,7 @@ public:
   {
     FIFLFS<false> archive{};
 
-    const auto &items =
+    const auto items =
       archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
     std::for_each(std::execution::seq, items.cbegin(), items.cend(), [this, &archive, &lambda](const auto &item) {
       const auto &[id, strVirtualPath] = item;
@@ -532,7 +532,7 @@ public:
     std::vector<FIFLFS<false>> out{};
     FIFLFS<false> archive{};
 
-    const auto &items =
+    const auto items =
       archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, { filename });
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
