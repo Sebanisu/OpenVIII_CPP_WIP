@@ -14,7 +14,7 @@
 #include <bitset>
 #include "OpenVIII/Tools/Tools.h"
 namespace open_viii::graphics::background {
-template<size_t typeT = 1> requires(typeT >= 0 && typeT <= 3) struct Map
+template<size_t typeT = 0> requires(typeT >= 0 && typeT <= 3) struct Map
 {
 private:
   mutable std::vector<Tile1> m_t1{};
@@ -238,7 +238,7 @@ public:
     l_canvas.width(static_cast<std::int32_t>(std::abs(l_max_x->x()) + std::abs(l_min_x->x()) + tile_size));
     return l_canvas;
   }
-  void shift_to_origin() const noexcept
+  [[nodiscard]] auto shift_to_origin() const noexcept
   {
     const auto l_minmax_x = minmax_x();
     const auto l_minmax_y = minmax_y();
@@ -248,27 +248,44 @@ public:
     const auto abs_x = std::abs(l_min_x->x());
     const auto abs_y = std::abs(l_min_y->y());
 
-    if constexpr (typeT == 1 || typeT == 0) {
-      std::transform(std::execution::seq, m_t1.cbegin(), m_t1.cend(), m_t1.begin(), [&abs_x, &abs_y](Tile1 t) {
+    static constexpr auto transform = [](auto &range) {
+      std::ranges::transform(std::execution::seq, range, range.begin(), [&abs_x, &abs_y](auto t) {
         t.x(static_cast<std::int16_t>(t.x() + abs_x));
         t.y(static_cast<std::int16_t>(t.y() + abs_y));
         return t;
       });
+    }
+    if constexpr (typeT == 1 || typeT == 0) {
+      transform(m_t1)
     }
     if constexpr (typeT == 2 || typeT == 0) {
-      std::transform(std::execution::seq, m_t2.cbegin(), m_t2.cend(), m_t2.begin(), [&abs_x, &abs_y](Tile2 t) {
-        t.x(static_cast<std::int16_t>(t.x() + abs_x));
-        t.y(static_cast<std::int16_t>(t.y() + abs_y));
-        return t;
-      });
+      transform(m_t2)
     }
     if constexpr (typeT == 3 || typeT == 0) {
-      std::transform(std::execution::seq, m_t3.cbegin(), m_t3.cend(), m_t3.begin(), [&abs_x, &abs_y](Tile3 t) {
-        t.x(static_cast<std::int16_t>(t.x() + abs_x));
-        t.y(static_cast<std::int16_t>(t.y() + abs_y));
-        return t;
-      });
+      transform(m_t3)
     }
+
+    //    if constexpr (typeT == 1 || typeT == 0) {
+    //      std::transform(std::execution::seq, m_t1.cbegin(), m_t1.cend(), m_t1.begin(), [&abs_x, &abs_y](Tile1 t) {
+    //        t.x(static_cast<std::int16_t>(t.x() + abs_x));
+    //        t.y(static_cast<std::int16_t>(t.y() + abs_y));
+    //        return t;
+    //      });
+    //    }
+    //    if constexpr (typeT == 2 || typeT == 0) {
+    //      std::transform(std::execution::seq, m_t2.cbegin(), m_t2.cend(), m_t2.begin(), [&abs_x, &abs_y](Tile2 t) {
+    //        t.x(static_cast<std::int16_t>(t.x() + abs_x));
+    //        t.y(static_cast<std::int16_t>(t.y() + abs_y));
+    //        return t;
+    //      });
+    //    }
+    //    if constexpr (typeT == 3 || typeT == 0) {
+    //      std::transform(std::execution::seq, m_t3.cbegin(), m_t3.cend(), m_t3.begin(), [&abs_x, &abs_y](Tile3 t) {
+    //        t.x(static_cast<std::int16_t>(t.x() + abs_x));
+    //        t.y(static_cast<std::int16_t>(t.y() + abs_y));
+    //        return t;
+    //      });
+    //    }
   }
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const Map &m)
   {
@@ -314,17 +331,10 @@ public:
     return pupu_id;
   }
 
-  [[nodiscard]] auto extract_pupu(std::uint64_t pupu_id) const noexcept
+  [[nodiscard]] static auto constexpr extract_pupu(std::uint64_t pupu_id) noexcept
   {
-    static constexpr auto bits_per_long = static_cast<int>(sizeof(std::uint64_t) * 8);
-    static constexpr auto bits_per_short = static_cast<int>(sizeof(std::uint16_t) * 8);
-    static constexpr auto bits_per_byte = static_cast<int>(sizeof(std::uint8_t) * 8);// 0-255
-    static constexpr auto bits_per_nibble = bits_per_byte / 2;// 0-15
-    static constexpr auto bits_per_crumb = bits_per_nibble / 2;// 0-3
-    [[maybe_unused]] static constexpr auto short_mask = 0xFFFFU;
-    [[maybe_unused]] static constexpr auto byte_mask = 0xFFU;
-    [[maybe_unused]] static constexpr auto nibble_mask = 0xFU;
-    [[maybe_unused]] static constexpr auto crumb_mask = 0x3U;
+    constexpr auto bits_per_long = static_cast<int>(sizeof(std::uint64_t) * 8);
+
     int bits = bits_per_long;
 
     [[maybe_unused]] const auto extract_common = [&bits, &pupu_id](const int &shift, const uint64_t &mask) {
@@ -332,19 +342,39 @@ public:
       return std::rotr(pupu_id, bits) & mask;
     };
     [[maybe_unused]] const auto extract_crumb = [&extract_common]() -> std::uint8_t {
+      static constexpr auto bits_per_crumb = static_cast<int>(sizeof(std::uint8_t) * 8) / 4;// 0-3
+      [[maybe_unused]] static constexpr auto crumb_mask = 0x3U;
       return static_cast<std::uint8_t>(extract_common(bits_per_crumb, crumb_mask));
     };
     [[maybe_unused]] const auto extract_nibble = [&extract_common]() -> std::uint8_t {
+      static constexpr auto bits_per_nibble = static_cast<int>(sizeof(std::uint8_t) * 8) / 2;// 0-15
+      [[maybe_unused]] static constexpr auto nibble_mask = 0xFU;
       return static_cast<std::uint8_t>(extract_common(bits_per_nibble, nibble_mask));
     };
 
     [[maybe_unused]] const auto extract_byte = [&extract_common]() -> std::uint8_t {
+      static constexpr auto bits_per_byte = static_cast<int>(sizeof(std::uint8_t) * 8);// 0-255
+      [[maybe_unused]] static constexpr auto byte_mask = 0xFFU;
       return static_cast<std::uint8_t>(extract_common(bits_per_byte, byte_mask));
     };
     [[maybe_unused]] const auto extract_short = [&extract_common]() -> std::uint16_t {
+      static constexpr auto bits_per_short = static_cast<int>(sizeof(std::uint16_t) * 8);
+      [[maybe_unused]] constexpr static auto short_mask = 0xFFFFU;
       return static_cast<std::uint16_t>(extract_common(bits_per_short, short_mask));
     };
-    auto depth = extract_crumb();
+    const auto extract_depth = [&extract_crumb]() {
+      switch (extract_crumb()) {
+      default:
+        return 4_bpp;
+      case 1:
+        return 8_bpp;
+      case 2:
+        return 16_bpp;
+      case 3:
+        return 24_bpp;
+      }
+    };
+    auto depth = extract_depth();
     auto layer_id = extract_nibble();
     auto blend_mode = extract_nibble();
     auto animation_id = extract_byte();
@@ -367,8 +397,7 @@ public:
       out.resize(rect.area());
       bool drawn = false;
       for (const auto &[depth, palette] : dnps) {
-        const auto depth_raw = static_cast<std::uint8_t>(depth.raw() & 0x3U);
-        if (depth_raw != p_depth) {
+        if (depth != p_depth) {
           continue;
         }
         const auto ppm_save = [this,

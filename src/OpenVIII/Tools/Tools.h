@@ -13,7 +13,7 @@
 
 #ifndef VIITOOLS_H
 #define VIITOOLS_H
-
+#include <concepts>
 #include <string>
 #include <algorithm>
 #include <fstream>
@@ -174,28 +174,49 @@ public:
   {
     return std::ranges::any_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
   }
-  [[maybe_unused]] static auto i_path_ends_with_any(const std::filesystem::path &dir,
-    std::initializer_list<std::string_view> extensions)
+  /**
+   *
+   * @tparam lambdaT the type of the invocable (lambda) that accepts the path as an argument.
+   * @param dir what directory to search
+   * @param filenames any values required to be inside filename.
+   * @param extensions any values required to be in the extension.
+   * @param lambda accepts path as an argument.
+   */
+  template<typename lambdaT> requires (std::invocable<lambdaT,std::filesystem::path>)
+  [[maybe_unused]] static void execute_on_i_path_extension_ends_with_any(const std::filesystem::path &dir, std::initializer_list<std::string_view> filenames
+    ,std::initializer_list<std::string_view> extensions, const lambdaT & lambda)
+  {
+    std::ranges::for_each(std::filesystem::recursive_directory_iterator(dir),
+                         [&extensions,&filenames,&lambda](const auto &item) {
+                                if (!std::filesystem::is_regular_file(item.path()) || !item.path().has_extension()
+                                    || !i_ends_with_any(item.path().extension().string(), extensions) || !i_find_any(item.path().stem().string(),filenames)) {
+                                  return;
+                                }
+                                lambda(item.path());
+                         });
+  }
+  /**
+   * Get matching of paths.
+   * @param dir path you want to search.
+   * @param filenames any values required to be inside filename.
+   * @param extensions any values required to be in the extension.
+   * @return vector of all the matching paths.
+   */
+  [[maybe_unused]] [[nodiscard]] static auto i_path_extension_ends_with_any(const std::filesystem::path &dir, std::initializer_list<std::string_view> filenames
+    ,std::initializer_list<std::string_view> extensions)
   {
     std::vector<std::filesystem::path> out{};
     std::ranges::copy_if(std::filesystem::recursive_directory_iterator(dir),
       std::back_insert_iterator(out),
-      [&extensions](const auto &item) -> bool {
+      [&extensions,&filenames](const auto &item) -> bool {
         if (!std::filesystem::is_regular_file(item.path()) || !item.path().has_extension()
-            || !i_ends_with_any(item.path().extension().string(), extensions)) {
+            || !i_find_any(item.path().extension().string(), extensions) || !i_find_any(item.path().stem().string(),filenames)) {
           return false;// clang tidy says this is redundant. :( Well screw you clang tidy I want to print out matches.
         }
         std::cout << "Found file: " << item.path().string() << '\n';
         return true;
       });
     return out;
-    //    for (const auto &item :) {
-    //      if (!std::filesystem::is_regular_file(item.path()) || i_find_any(item.path().extension().string(),
-    //      extensions))
-    //        continue;
-    //      // open text file here
-    //      std::cout << "Found file: " << item.path().string() << '\n';
-    //    }
   }
   [[maybe_unused]] [[nodiscard]] static constexpr auto i_ends_with(const std::string_view &haystack,
     const std::string_view &ending)

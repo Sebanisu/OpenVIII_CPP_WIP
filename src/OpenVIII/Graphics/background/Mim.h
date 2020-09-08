@@ -39,18 +39,18 @@ public:
    */
   explicit Mim(std::vector<char> &&buffer, std::string_view name = {}) : m_buffer(std::move(buffer))
   {
-    m_mim_type = get_texture_type(m_buffer);
-    if (Tools::i_find_any(name, Tile3::FORCE_TYPE_VALUES)) {
-      m_mim_type.type(3);
-    } else if (Tools::i_find_any(name, Tile2::FORCE_TYPE_VALUES)) {
-      m_mim_type.type(2);
-    }
+    m_mim_type = get_texture_type(std::ranges::size(m_buffer),name);
   }
   [[nodiscard]] const auto &mim_type() const noexcept { return m_mim_type; }
-  [[maybe_unused]] [[nodiscard]] static MimType get_texture_type(std::span<const char> buffer)
+  [[maybe_unused]] [[nodiscard]] static MimType get_texture_type(std::size_t mim_filesize, std::string_view name = {})
   {
-    for (const auto &m : TEXTURE_TYPES) {
-      if (m.file_size() == std::ranges::size(buffer)) {
+    for (auto m : TEXTURE_TYPES) {
+      if (m.file_size() == mim_filesize) {
+        if (Tools::i_find_any(name, Tile3::FORCE_TYPE_VALUES)) {
+          m.type(3);
+        } else if (Tools::i_find_any(name, Tile2::FORCE_TYPE_VALUES)) {
+          m.type(2);
+        }
         return m;
       }
     }
