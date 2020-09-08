@@ -1,2 +1,12 @@
 TODO:
 Need to reswizzle output.
+0) create new test? or add to extract images?
+1) find the images in folder.
+2) filter down to the images with the HEX pupu ID.
+3) read in hex values using pattern = field_hex_mimmap.ext
+4) group the hex values that are the same (depth and same field and same textureID)
+5) filter the tiles for the field that match the hex values read in.
+6) produce a image that is field_depth_textureID. images will be square 256x256.
+7) we copy each tile into the new image. putting it from (x,y) to (src x,y).
+8) if 24 bit treat black as transparent. ppm is 24 bit
+9) if 32 bit treat 0 alpha as transparent black (all 0 for color and alpha).

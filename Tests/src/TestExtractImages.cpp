@@ -1,6 +1,7 @@
 //
 // Created by pcvii on 8/29/2020.
 //
+#include "TestExtractImages.h"
 #include "OpenVIII/Paths/Paths.h"
 #include "OpenVIII/Archive/Archives.h"
 #include "OpenVIII/Graphics/lzs.h"
@@ -48,61 +49,23 @@ int main()
       } else if (open_viii::Tools::i_ends_with(p, ".sp1")) {
         auto t = open_viii::graphics::Sp1(buffer);
         std::cout << p << '\n' << t << '\n';
-        // t.Save(p);
       } else if (open_viii::Tools::i_ends_with(p, ".sp2")) {
         auto t = open_viii::graphics::Sp2(buffer);
         std::cout << p << '\n' << t << '\n';
-        // t.Save(p);
       } else if (open_viii::Tools::i_ends_with(p, ".map")) {
         auto t = open_viii::graphics::background::Map<1>(buffer);
         std::cout << p << '\n' << t << '\n';
-        // t.Save(p);
-        // std::cout << sizeof(open_viii::graphics::background::PaletteID) << '\n';
       } else if (open_viii::Tools::i_ends_with(p, ".mim")) {
         auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
         std::cout << p << '\n' << t << '\n';
         t.save(p);
       }
     };
-
-    {
-      const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-      field.execute_with_nested({}, [](const open_viii::archive::FIFLFS<false> &e) {
-        auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(".mim"), e.get_base_name() };
-        // mim.save(e.get_full_path(".mim"));
-        const auto process = [&mim, &e](const auto &map) {
-          //((open_viii::graphics::background::Map<1>)map).max_x()
-          std::cout << "  " << e.get_base_name() << '\n';
-          const auto &[min_x, max_x] = map.minmax_x();
-          const auto &[min_y, max_y] = map.minmax_y();
-          std::cout << "  Type: " << static_cast<uint16_t>(mim.mim_type().type()) << '\n';
-          std::cout << "min x: " << min_x->x() << '\n';
-          std::cout << "min y: " << min_y->y() << '\n';
-          std::cout << "max x: " << max_x->x() << '\n';
-          std::cout << "max y: " << max_y->y() << '\n';
-          std::cout << "canvas: " << map.canvas() << '\n';
-          map.shift_to_origin();
-
-          std::cout << "min x: " << min_x->x() << '\n';
-          std::cout << "min y: " << min_y->y() << '\n';
-          std::cout << "max x: " << max_x->x() << '\n';
-          std::cout << "max y: " << max_y->y() << '\n';
-          std::cout << "canvas: " << map.canvas() << '\n';
-          map.save_csv(mim, e.get_full_path(".map"));
-          map.save(mim, e.get_full_path(".mim"));
-
-          // map.save_v1(mim, e.get_full_path(".mim"));
-        };
-        if (mim.mim_type().type() == 1) {
-          process(open_viii::graphics::background::Map<1>{ e.get_entry_data(".map") });
-        } else if (mim.mim_type().type() == 2) {
-          process(open_viii::graphics::background::Map<2>{ e.get_entry_data(".map") });
-        } else if (mim.mim_type().type() == 3) {
-          process(open_viii::graphics::background::Map<3>{ e.get_entry_data(".map") });
-        }
-      });
-    }
-    //    continue;
-    // archives.execute_on({ /*".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", ".map", ".mim"*/ "ending" },dump_image);
+    archives.execute_on({ ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", ".mim"},dump_image);
+//dump images from menu group.
+    [[maybe_unused]] const auto &menu = archives.get<open_viii::archive::ArchiveTypeT::menu>();
+    std::cout << menu << std::endl;
+    auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };
+    mngrpfile.test_tim(menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
   }
 }

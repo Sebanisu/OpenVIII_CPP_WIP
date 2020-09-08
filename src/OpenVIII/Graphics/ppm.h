@@ -74,7 +74,7 @@ public:
   template<std::ranges::contiguous_range cT>
   static void save(const cT &data, std::size_t width, std::size_t height, const std::string_view &input)
   {// how do i make the concept reject ranges that aren't of Colors? I'm at least checking for Color down below.
-    if (width == 0 || height == 0 || std::ranges::empty(data)) {
+    if (width == 0 || height == 0 || std::ranges::empty(data) || std::ranges::all_of(data,[](const Color auto &color)->bool{return color.a()==0U;})) {
       return;
     }
 

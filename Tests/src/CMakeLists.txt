@@ -62,3 +62,17 @@ add_executable(TestExtractImages
         TestExtractImages.cpp TestExtractImages.h)
 set_target_properties(TestExtractImages PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractImages VIIIPaths VIIIArchive VIIIGraphics)
+
+
+##test image Deswizzle of fields like pupu
+add_executable(TestDeswizzleFields
+        TestDeswizzleFields.cpp TestDeswizzleFields.h)
+set_target_properties(TestDeswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestDeswizzleFields VIIIPaths VIIIArchive VIIIGraphics)
+
+
+##test image Reswizzle of fields like pupu
+add_executable(TestReswizzleFields
+        TestReswizzleFields.cpp TestReswizzleFields.h)
+set_target_properties(TestReswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestReswizzleFields VIIIPaths VIIIArchive VIIIGraphics)
