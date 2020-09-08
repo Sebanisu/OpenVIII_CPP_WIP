@@ -382,8 +382,6 @@ public:
     }
   }
 
-  // todo move get files to here
-
   [[nodiscard]] std::string static get_base_name(const std::filesystem::path &path)
   {
     if (path.string().empty()) {

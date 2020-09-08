@@ -42,21 +42,6 @@ public:
     // if compressed will keep decompressing till get size
     // size compressed isn't quite known with out finding the offset of the next file and finding difference.
     fp.seekg(static_cast<long>(offset + fi.offset()), std::ios::beg);
-    //    const auto readBuffer = [&fp](const auto &s) {
-    //      auto buf = std::vector<char>(s);
-    ////      auto tmp = std::vector<char>(s);
-    //      fp.read(buf.data(), s);// TODO change to bitcast in cpp 20 or read another way?
-    ////      memcpy(buf.data(), tmp.data(), s);// memcpy will be optimized away. It is safer than casting.
-    //      return buf;
-    //    };
-
-    //    const auto readVal = [&fp](auto &v) {
-    //      auto tmp = std::array<char, sizeof(v)>();
-    //      fp.read(tmp.data(), sizeof(v));
-    //      memcpy(&v, tmp.data(), sizeof(v));// memcpy will be optimized away. It is safer than casting.
-    //      // TODO change to bitcast in cpp 20 or read another way?
-    //    };
-
 
     switch (fi.compression_type()) {
     case CompressionTypeT::none: {
@@ -98,8 +83,6 @@ public:
       return dstT{};
     }
     data = data.subspan(fi.offset() + offset);
-
-    // ptr and iterator.base() would be the same. sadly msvc doesn't have a .base()
     // todo usages of memcpy can be replaced with std::bitcast in cpp20
 
     switch (fi.compression_type()) {
@@ -107,10 +90,8 @@ public:
       if (fi.uncompressed_size() > std::ranges::size(data)) {
         break;
       }
-      // dstT dst = {};
-      // dst.reserve(fi.UncompressedSize());
-      // std::copy(iterator, iterator + fi.UncompressedSize(), std::back_inserter(dst)); //todo do I need this copy?
-      return { data.begin(), data.begin() + fi.uncompressed_size() };
+      data = data.subspan(0,fi.uncompressed_size());
+      return { std::ranges::cbegin(data), std::ranges::end(data) };
     }
     case CompressionTypeT::lzss: {
       unsigned int compSize{ 0 };

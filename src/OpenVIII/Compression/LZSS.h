@@ -67,9 +67,6 @@ public:
   template<typename dstT = std::vector<char>>
   [[nodiscard]] static dstT decompress(std::span<const char> src, size_t dst_size = 0)
   {
-    // todo replace src type with a std::span so you can pass any container.
-    // string view might work if nulls aren't detected as end and size is respected.
-    // and string view is const. I mostly want to just have something I can hold the pointers in.
     dstT dst{};
     if (dst_size > 0) {
       dst.reserve(dst_size);
@@ -125,7 +122,6 @@ public:
     }
     return dst;
   }
-  // todo add compression method
 
   /****************************************************************************
    ** Deling Final Fantasy VIII Field Editor
@@ -157,8 +153,6 @@ public:
 
   [[nodiscard]] [[maybe_unused]] static auto compress(std::span<const char> src)
   {
-    // todo pass a std::span in cpp 20 instead of vector.
-
     unsigned int match_length = {};
     unsigned int match_position{};
 
@@ -173,8 +167,8 @@ public:
     size_t size_alloc = src.size() / 2U;
     auto code_buf = std::array<unsigned char, F_MINUS1>();
 
-    const auto data_end = src.end();
-    auto data = src.begin();
+    const auto data_end = std::ranges::cend(src);
+    auto data = std::ranges::cbegin(src);
 
     auto result = std::vector<char>();
     result.reserve(size_alloc);
@@ -192,7 +186,7 @@ public:
       auto key = std::span<unsigned char>(text_buf);
       key = key.subspan(item);
 
-      // auto key = text_buf.begin() + item;// todo replace with std::span.
+      // auto key = text_buf.begin() + item;
       unsigned int p = P_OFFSET + key[0];
 
       right_side.at(item) = left_side.at(item) = NOT_USED;
@@ -216,17 +210,19 @@ public:
             return;
           }
         }
-        unsigned int node_index = 1;
-        for (; node_index < NODE_SIZE; node_index++) {
-          if ((cmp = key.subspan(node_index)[0] - (text_buf.at(p + node_index))) != 0) {
-            break;
-          }// todo need std::span to remove pointer math.
-        }
-
-        if (node_index > match_length) {
-          match_position = p;
-          if ((match_length = node_index) >= NODE_SIZE) {
-            break;
+        {
+          unsigned int node_index = 1;
+          for (; node_index < NODE_SIZE;
+               node_index++) {// if ((cmp = key.subspan(node_index)[0] - (text_buf.at(p + node_index))) != 0) {
+            if ((cmp = key[node_index] - (text_buf.at(p + node_index))) != 0) {
+              break;
+            }
+          }
+          if (node_index > match_length) {
+            match_position = p;
+            if ((match_length = node_index) >= NODE_SIZE) {
+              break;
+            }
           }
         }
       }
@@ -298,8 +294,8 @@ public:
 
     // for(i=4097 ; i<=4352 ; ++i)	rightSide[i] = NotUsed;
     // for(i=0 ; i<N ; ++i)	parent[i] = NotUsed;
-    parent.fill(NOT_USED);
-    std::fill(right_side.begin() + N_PLUS1, right_side.end(), NOT_USED);
+    std::ranges::fill(parent, NOT_USED);
+    std::ranges::fill(std::span(right_side).subspan(N_PLUS1), NOT_USED);
 
     code_buf[0] = 0;// code_buf[1..16] saves eight units of code, and code_buf[0] works as eight flags, "1" representing
                     // that the unit is an unencoded letter (1 byte), "0" a position-and-length pair (2 bytes). Thus,
@@ -313,8 +309,8 @@ public:
     //		text_buf[i] = '\x0';//Clear the buffer with  any character that will appear often.
     // memset(text_buf, 0, r); //std::array should init with 0s.
     unsigned int len = 0;
-    for (; len < NODE_SIZE && data < data_end; ++len) {
-      text_buf.at(r + len) = static_cast<unsigned char>(*data++);// Read 18 bytes into the last 18 bytes of the buffer
+    for (; len < NODE_SIZE && data < data_end; ++len, data++) {
+      text_buf.at(r + len) = static_cast<unsigned char>(*data);// Read 18 bytes into the last 18 bytes of the buffer
     }
     if (/* (textsize =  */ len /* ) */ == 0) {
       result.clear();
