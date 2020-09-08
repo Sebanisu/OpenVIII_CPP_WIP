@@ -15,32 +15,44 @@ private:
 
 public:
   Point() = default;
-  Point(const dimT &in_x, const dimT &in_y) : m_x(in_x), m_y(in_y){};
+  Point(const dimT &in_x, const dimT &in_y) noexcept : m_x(in_x), m_y(in_y){};
+  friend auto operator==(const Point<dimT> &left, const Point<dimT> &right) noexcept
+  {
+    return left.m_x == right.m_x && left.m_y == right.m_y;
+  }
+  friend auto operator<(const Point<dimT> &left, const Point<dimT> &right) noexcept
+  {
+    return left.m_x < right.m_x && left.m_y < right.m_y;
+  }
+  friend auto operator>(const Point<dimT> &left, const Point<dimT> &right) noexcept
+  {
+    return left.m_x > right.m_x && left.m_y > right.m_y;
+  }
   /**
    * X coordinate.
    * @return x
    */
-  [[nodiscard]] auto x() const { return m_x; }
+  [[nodiscard]] const auto &x() const noexcept { return m_x; }
 
   /**
    * Y coordinate.
    * @return y
    */
-  [[nodiscard]] auto y() const { return m_y; }
+  [[nodiscard]] const auto &y() const noexcept { return m_y; }
 
   /**
    *
    * @param x is new X coordinate.
    * @return x
    */
-  [[nodiscard]] auto x(const dimT &x) const { return m_x = x; }
+  [[nodiscard]] const auto &x(const dimT &x) const noexcept { return m_x = x; }
 
   /**
    *
    * @param y is new Y coordinate.
    * @return y
    */
-  [[nodiscard]] auto y(const dimT &y) const { return m_y = y; }
+  [[nodiscard]] const auto &y(const dimT &y) const noexcept { return m_y = y; }
 
 
   friend std::ostream &operator<<(std::ostream &os, const Point<dimT> &input)

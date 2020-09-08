@@ -330,7 +330,7 @@ public:
     if constexpr (First < Count) {
       constexpr auto sectionType = std::integral_constant<SectionTypesT, static_cast<SectionTypesT>(First)>{};
       const auto data = get_section_data<sectionType>();
-      if constexpr (!std::is_null_pointer_v <decltype(data)>) {
+      if constexpr (!std::is_null_pointer_v<decltype(data)>) {
         f(get_section_name<sectionType>(), get_span<sectionType>(), data);
       }
       if constexpr (First + 1 < Count) {

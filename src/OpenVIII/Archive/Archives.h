@@ -393,7 +393,7 @@ public:
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
     for (const auto &fileEntry : std::filesystem::directory_iterator(m_path, options))// todo may need sorted.
     {
-      const auto & localPath = fileEntry.path();
+      const auto &localPath = fileEntry.path();
       if (localPath.has_stem()) {
         static_for([&localPath, this](const ArchiveTypeT &test, const auto &stem) {
           if (!(open_viii::Tools::i_equals(stem, localPath.stem().string()))) {

@@ -85,12 +85,12 @@ public:
   {
     std::vector<std::pair<unsigned int, std::string>> vector{};
     const auto process = [&limit, &count, &size, &vector, &offset, &needle, &data](auto &cont) {
-      {//Get length
+      {// Get length
         cont.seekg(0, std::ios::end);
         auto length = cont.tellg();
-        //Goto Offset
+        // Goto Offset
         if (!cont.seekg(static_cast<long>(offset))) {
-          //Error on failure
+          // Error on failure
           std::cerr << "failed to seek to offset: " << offset << "; length: " << length << ";\n";
           exit(EXIT_FAILURE);
         }
@@ -106,9 +106,9 @@ public:
       // id numerical order is same order as fi data. So need to keep the id so we can reference the fi correctly.
       {
         std::basic_string<char> inner_path;
-        for (unsigned int id = 0;
-             (count == 0U || std::ranges::size(vector) < count)
-               && (size == 0U || static_cast<std::size_t>(cont.tellg()) < size + offset) && [&inner_path, &cont]() -> bool {
+        for (unsigned int id = 0; (count == 0U || std::ranges::size(vector) < count)
+                                    && (size == 0U || static_cast<std::size_t>(cont.tellg()) < size + offset) &&
+                                    [&inner_path, &cont]() -> bool {
                if (cont.seekg(3, std::ios::cur)) {
                  /* skip c:\ */
                  return static_cast<bool>(std::getline(cont, inner_path));

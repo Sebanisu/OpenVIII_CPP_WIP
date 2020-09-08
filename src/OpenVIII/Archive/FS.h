@@ -77,8 +77,8 @@ public:
     if (data.empty()) {
       return dstT{};
     }
-    // todo do I need this version of the function? I think at least for nested entries. zzz shouldn't use this.
-    // It should use the other one. Though that is only the case for FIFLFS archives.
+    // todo if we get a span stream we maybe can combine the two functions into 1. stringstream only works with strings.
+    // and strstream is depreciated. It should use the other one. Though that is only the case for FIFLFS archives.
     if (fi.uncompressed_size() == 0) {
       return dstT{};
     }
@@ -90,7 +90,7 @@ public:
       if (fi.uncompressed_size() > std::ranges::size(data)) {
         break;
       }
-      data = data.subspan(0,fi.uncompressed_size());
+      data = data.subspan(0, fi.uncompressed_size());
       return { std::ranges::cbegin(data), std::ranges::end(data) };
     }
     case CompressionTypeT::lzss: {

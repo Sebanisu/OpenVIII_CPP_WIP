@@ -45,16 +45,16 @@ public:
   [[nodiscard]] const auto &output() const noexcept { return m_output; }
 
   template<LangT langVal>
-std::ostream &out(std::ostream &os,
+  std::ostream &out(std::ostream &os,
     const std::span<const char> &buffer = ""sv,
     const intmax_t offset = 0,
     bool skip_first_null = false) const
   {
     const auto temp = m_offset.decoded_string<langVal>(buffer, offset, skip_first_null);
-    return os << '"' << Tools::u8_to_sv(temp) << "\", "
-              << static_cast<std::uint16_t>(m_amount_received) << ", " << static_cast<std::uint16_t>(m_unknown0) << ", "
-              << static_cast<std::uint16_t>(m_unknown1) << ", " << static_cast<std::uint16_t>(m_input) << ", "
-              << static_cast<std::uint16_t>(m_amount_required) << ", " << static_cast<std::uint16_t>(m_output);
+    return os << '"' << Tools::u8_to_sv(temp) << "\", " << static_cast<std::uint16_t>(m_amount_received) << ", "
+              << static_cast<std::uint16_t>(m_unknown0) << ", " << static_cast<std::uint16_t>(m_unknown1) << ", "
+              << static_cast<std::uint16_t>(m_input) << ", " << static_cast<std::uint16_t>(m_amount_required) << ", "
+              << static_cast<std::uint16_t>(m_output);
   }
   //  friend std::ostream &operator<<(std::ostream &os, const RefineEntry<inputT, outputT> &input)
   //  {

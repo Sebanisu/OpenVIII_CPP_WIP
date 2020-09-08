@@ -72,7 +72,7 @@ public:
     return os;
   }
   template<LangT langVal>
-std::ostream &out(std::ostream &os,
+  std::ostream &out(std::ostream &os,
     const std::span<const char> &buffer = ""sv,
     const intmax_t offset = 0,
     bool skip_first_null = false) const

@@ -29,7 +29,7 @@ struct MenuGroupFile
 {
 private:
   MenuGroupHeader m_menu_group_header{};
-  std::vector<char> m_data_buffer{}; //maybe should be a view unless we plan to keep this in memory 100%
+  std::vector<char> m_data_buffer{};// maybe should be a view unless we plan to keep this in memory 100%
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto get_section_internal() const
   {
     if constexpr (static_cast<size_t>(sectionT) < MenuGroupHeader::size()) {
@@ -276,33 +276,31 @@ public:
           continue;
         }
         const auto temp = subSection.template decoded_string<langVal>(mes.text_span(), 0, true);
-        std::cout << "    " << id - 1 << ": {" << subSection.offset() << "} "
-                  << Tools::u8_to_sv(temp) << '\n';
+        std::cout << "    " << id - 1 << ": {" << subSection.offset() << "} " << Tools::u8_to_sv(temp) << '\n';
       }
     });
   }
   template<LangT langVal> void test_tk_mn_mes() const
   {
     constexpr auto start = 0U;
-    static_for_tkmnmes<start, MES_VALUE_ARRAY.size() - start>([&, this](const auto &sectionID,
-                                                                [[maybe_unused]] const auto &tkmnmesPair) {
-      std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << tkmnmesPair->sections().size() << ", "
-                << tkmnmesPair->sub_sections().size() << "},\n";
-      for (size_t id = 0; id < tkmnmesPair->sections().size() && id < tkmnmesPair->sub_sections().size(); id++) {
-        [[maybe_unused]] const auto offset = tkmnmesPair->sections().at(id);
-        const auto subSectionGroup = tkmnmesPair->sub_sections().at(id);
-        [[maybe_unused]] size_t stringNumber{};
-        for (const auto &subSection : subSectionGroup) {
-          if (subSection.offset() == 0) {
-            continue;
+    static_for_tkmnmes<start, MES_VALUE_ARRAY.size() - start>(
+      [&, this](const auto &sectionID, [[maybe_unused]] const auto &tkmnmesPair) {
+        std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {" << tkmnmesPair->sections().size() << ", "
+                  << tkmnmesPair->sub_sections().size() << "},\n";
+        for (size_t id = 0; id < tkmnmesPair->sections().size() && id < tkmnmesPair->sub_sections().size(); id++) {
+          [[maybe_unused]] const auto offset = tkmnmesPair->sections().at(id);
+          const auto subSectionGroup = tkmnmesPair->sub_sections().at(id);
+          [[maybe_unused]] size_t stringNumber{};
+          for (const auto &subSection : subSectionGroup) {
+            if (subSection.offset() == 0) {
+              continue;
+            }
+            const auto temp = subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true);
+            std::cout << "    " << stringNumber++ << ": {" << subSection.offset() << "} " << Tools::u8_to_sv(temp)
+                      << '\n';
           }
-          const auto temp = subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true);
-          std::cout << "    " << stringNumber++ << ": {" << subSection.offset() << "} "
-                    << Tools::u8_to_sv(temp)
-                    << '\n';
         }
-      }
-    });
+      });
   }
 
   template<LangT langVal> void test_complex() const

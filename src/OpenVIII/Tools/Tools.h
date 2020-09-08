@@ -181,10 +181,9 @@ public:
     std::ranges::copy_if(std::filesystem::recursive_directory_iterator(dir),
       std::back_insert_iterator(out),
       [&extensions](const auto &item) -> bool {
-        if(!std::filesystem::is_regular_file(item.path()) || !item.path().has_extension()
-               || !i_ends_with_any(item.path().extension().string(), extensions))
-        {
-          return false; //clang tidy says this is redundant. :( Well screw you clang tidy I want to print out matches.
+        if (!std::filesystem::is_regular_file(item.path()) || !item.path().has_extension()
+            || !i_ends_with_any(item.path().extension().string(), extensions)) {
+          return false;// clang tidy says this is redundant. :( Well screw you clang tidy I want to print out matches.
         }
         std::cout << "Found file: " << item.path().string() << '\n';
         return true;

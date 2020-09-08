@@ -92,7 +92,7 @@ public:
   {
 
     FIFLFS archive{};
-    { //TODO rewrite with out iterators.
+    {// TODO rewrite with out iterators.
       auto beg = m_data.begin();
       auto end = m_data.end();
       for (auto cur = beg; cur < end; cur++) {

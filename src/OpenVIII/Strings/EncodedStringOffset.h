@@ -30,8 +30,7 @@ private:
       return -1;
     }
     intmax_t i{};
-    for(const char & c : buffer.subspan(static_cast<std::size_t>(offset)))
-    {
+    for (const char &c : buffer.subspan(static_cast<std::size_t>(offset))) {
       if (skip_first_null && i == 0) {
         continue;
       }
@@ -40,26 +39,26 @@ private:
       }
       i++;
     }
-//    auto first = buffer.begin() + offset;// clang tidy says to add * but don't do that. msvc doesn't return a pointer.
-//    auto last = buffer.end();
-//    for (intmax_t i = 0; first != last; ++first, i++) {
-//      if (skip_first_null && i == 0) {
-//        continue;
-//      }
-//      if (*first == '\0') {
-//        return i;
-//      }
-//    }
+    //    auto first = buffer.begin() + offset;// clang tidy says to add * but don't do that. msvc doesn't return a
+    //    pointer. auto last = buffer.end(); for (intmax_t i = 0; first != last; ++first, i++) {
+    //      if (skip_first_null && i == 0) {
+    //        continue;
+    //      }
+    //      if (*first == '\0') {
+    //        return i;
+    //      }
+    //    }
     return static_cast<signed>(std::ranges::size(buffer)) - offset;
   }
-  [[nodiscard]] static auto get_string_at_offset(const std::span<const char> &buffer, intmax_t offset, bool skip_first_null)
+  [[nodiscard]] static auto
+    get_string_at_offset(const std::span<const char> &buffer, intmax_t offset, bool skip_first_null)
   {
     using namespace std::literals::string_view_literals;
 
     if (offset >= 0 && !std::empty(buffer) && std::size(buffer) > static_cast<size_t>(offset)) {
       auto size = find_string_size(buffer, offset, skip_first_null);
       if (size > 0 && std::size(buffer) > (static_cast<size_t>(offset) + static_cast<size_t>(size))) {
-        //return std::span<const char>(buffer.data() + static_cast<size_t>(offset), static_cast<size_t>(size));
+        // return std::span<const char>(buffer.data() + static_cast<size_t>(offset), static_cast<size_t>(size));
         return buffer.subspan(static_cast<size_t>(offset), static_cast<size_t>(size));
       }
     }

@@ -36,7 +36,7 @@ public:
   [[nodiscard]] const auto *operator->() const { return &m_card_mod; }
   [[nodiscard]] static constexpr auto size() { return CARD_MOD_COUNT; }
   template<LangT langVal, typename T>
-std::ostream &out_array(const T &arr,
+  std::ostream &out_array(const T &arr,
     std::ostream &os,
     const std::span<const char> &buffer = ""sv,
     const intmax_t offset = 0,
@@ -47,7 +47,7 @@ std::ostream &out_array(const T &arr,
     return os;
   }
   template<LangT langVal>
-std::ostream &out(std::ostream &os,
+  std::ostream &out(std::ostream &os,
     const std::span<const char> &buffer = ""sv,
     const intmax_t offset = 0,
     bool skip_first_null = false) const

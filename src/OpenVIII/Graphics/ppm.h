@@ -70,10 +70,7 @@ public:
       m_colors = { std::ranges::cbegin(colorspan), std::ranges::cend(colorspan) };
     }
   }
-  [[nodiscard]] const auto & colors()
-  {
-    return m_colors;
-  }
+  [[nodiscard]] const auto &colors() { return m_colors; }
   template<std::ranges::contiguous_range cT>
   static void save(const cT &data, std::size_t width, std::size_t height, const std::string_view &input)
   {// how do i make the concept reject ranges that aren't of Colors? I'm at least checking for Color down below.
