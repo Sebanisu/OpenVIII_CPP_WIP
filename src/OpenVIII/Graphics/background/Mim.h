@@ -39,7 +39,7 @@ public:
    */
   explicit Mim(std::vector<char> &&buffer, std::string_view name = {}) : m_buffer(std::move(buffer))
   {
-    m_mim_type = get_texture_type(std::ranges::size(m_buffer),name);
+    m_mim_type = get_texture_type(std::ranges::size(m_buffer), name);
   }
   [[nodiscard]] const auto &mim_type() const noexcept { return m_mim_type; }
   [[maybe_unused]] [[nodiscard]] static MimType get_texture_type(std::size_t mim_filesize, std::string_view name = {})

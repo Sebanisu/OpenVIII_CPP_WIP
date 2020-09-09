@@ -61,8 +61,8 @@ int main()
         t.save(p);
       }
     };
-    archives.execute_on({ ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", ".mim"},dump_image);
-//dump images from menu group.
+    archives.execute_on({ ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", ".mim" }, dump_image);
+    // dump images from menu group.
     [[maybe_unused]] const auto &menu = archives.get<open_viii::archive::ArchiveTypeT::menu>();
     std::cout << menu << std::endl;
     auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };

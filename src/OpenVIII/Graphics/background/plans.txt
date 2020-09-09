@@ -1,7 +1,10 @@
 TODO:
 Need to reswizzle output.
-0) create new test? or add to extract images?
-1) find the images in folder.
+done 0) create new test? or add to extract images?
+wip 1) find the images in folder.
+--- The issue i discovered is it's be better to process each directory.
+--- Right now I'm grabbing each image but if I don't do all the folders together. Then I'm grabbing the .map each time.
+--- So better is to get folder then get map and then get images out of folder.
 2) filter down to the images with the HEX pupu ID.
 3) read in hex values using pattern = field_hex_mimmap.ext
 4) group the hex values that are the same (depth and same field and same textureID)

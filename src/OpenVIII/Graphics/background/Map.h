@@ -238,7 +238,26 @@ public:
     l_canvas.width(static_cast<std::int32_t>(std::abs(l_max_x->x()) + std::abs(l_min_x->x()) + tile_size));
     return l_canvas;
   }
-  [[nodiscard]] auto shift_to_origin() const noexcept
+  void shift(const auto &x, const auto &y) const noexcept
+  {
+    const auto transform = [&x, &y](auto &range) {
+      std::ranges::transform(range, range.begin(), [&x, &y](auto t) {
+        t.x(static_cast<std::int16_t>(t.x() + x));
+        t.y(static_cast<std::int16_t>(t.y() + y));
+        return t;
+      });
+    };
+    if constexpr (typeT == 1 || typeT == 0) {
+      transform(m_t1);
+    }
+    if constexpr (typeT == 2 || typeT == 0) {
+      transform(m_t2);
+    }
+    if constexpr (typeT == 3 || typeT == 0) {
+      transform(m_t3);
+    }
+  }
+  auto shift_to_origin() const noexcept
   {
     const auto l_minmax_x = minmax_x();
     const auto l_minmax_y = minmax_y();
@@ -247,45 +266,8 @@ public:
     const auto &[l_min_y, l_max_y] = l_minmax_y;
     const auto abs_x = std::abs(l_min_x->x());
     const auto abs_y = std::abs(l_min_y->y());
-
-    static constexpr auto transform = [](auto &range) {
-      std::ranges::transform(std::execution::seq, range, range.begin(), [&abs_x, &abs_y](auto t) {
-        t.x(static_cast<std::int16_t>(t.x() + abs_x));
-        t.y(static_cast<std::int16_t>(t.y() + abs_y));
-        return t;
-      });
-    }
-    if constexpr (typeT == 1 || typeT == 0) {
-      transform(m_t1)
-    }
-    if constexpr (typeT == 2 || typeT == 0) {
-      transform(m_t2)
-    }
-    if constexpr (typeT == 3 || typeT == 0) {
-      transform(m_t3)
-    }
-
-    //    if constexpr (typeT == 1 || typeT == 0) {
-    //      std::transform(std::execution::seq, m_t1.cbegin(), m_t1.cend(), m_t1.begin(), [&abs_x, &abs_y](Tile1 t) {
-    //        t.x(static_cast<std::int16_t>(t.x() + abs_x));
-    //        t.y(static_cast<std::int16_t>(t.y() + abs_y));
-    //        return t;
-    //      });
-    //    }
-    //    if constexpr (typeT == 2 || typeT == 0) {
-    //      std::transform(std::execution::seq, m_t2.cbegin(), m_t2.cend(), m_t2.begin(), [&abs_x, &abs_y](Tile2 t) {
-    //        t.x(static_cast<std::int16_t>(t.x() + abs_x));
-    //        t.y(static_cast<std::int16_t>(t.y() + abs_y));
-    //        return t;
-    //      });
-    //    }
-    //    if constexpr (typeT == 3 || typeT == 0) {
-    //      std::transform(std::execution::seq, m_t3.cbegin(), m_t3.cend(), m_t3.begin(), [&abs_x, &abs_y](Tile3 t) {
-    //        t.x(static_cast<std::int16_t>(t.x() + abs_x));
-    //        t.y(static_cast<std::int16_t>(t.y() + abs_y));
-    //        return t;
-    //      });
-    //    }
+    shift(abs_x, abs_y);
+    return Point(l_min_x->x(), l_min_x->y());
   }
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const Map &m)
   {

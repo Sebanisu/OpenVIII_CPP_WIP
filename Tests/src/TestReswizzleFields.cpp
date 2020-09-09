@@ -27,7 +27,7 @@ int main()
     //[[maybe_unused]]const auto ppms =
     // open_viii::Tools::i_path_extension_ends_with_any(std::filesystem::current_path(),{"test"},{".ppm"});
     open_viii::Tools::execute_on_i_path_extension_ends_with_any(
-      std::filesystem::current_path(), { "test" }, { ".ppm" }, [](const std::filesystem::path &p) {
+      std::filesystem::current_path(), { "test" }, { ".ppm" }, [&field](const std::filesystem::path &p) {
         // if(!p.has_stem()) {return;}
         auto basename = p.stem().string();
         static constexpr auto minsize{ 24 };
@@ -48,8 +48,14 @@ int main()
 
         const auto [p_depth, p_layer_id, p_blend_mode, p_animation_id, p_animation_state, p_z] =
           open_viii::graphics::background::Map<>::extract_pupu(pupu_id);
-        std::cout << '\t' << p_depth << '\t' << p_layer_id << '\t' << p_blend_mode << '\t' << p_animation_id << '\t'
-                  << p_animation_state << '\t' << p_z << '\n';
+        std::cout << '\t' << p_depth << '\t' << static_cast<std::uint16_t>(p_layer_id) << '\t'
+                  << static_cast<std::uint16_t>(p_blend_mode) << '\t' << static_cast<std::uint16_t>(p_animation_id)
+                  << '\t' << static_cast<std::uint16_t>(p_animation_state) << '\t' << p_z << '\n';
+        auto prefix_map = std::string(prefix) + std::string(".map");
+        field.execute_on_nested({ prefix_map }, [](std::vector<char> &&in_buffer, std::string &&in_path) {
+          [[maybe_unused]] auto map = open_viii::graphics::background::Map(std::move(in_buffer));
+          std::cout << in_path << '\n';
+        });
       });
   }
 }
