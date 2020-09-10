@@ -13,3 +13,4 @@ cmake-build-*/
 .idea/vcs.xml
 .idea/VIIIcppTest.iml
 .vs/*
+External/lz4
