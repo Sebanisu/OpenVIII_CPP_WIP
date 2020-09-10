@@ -182,7 +182,7 @@ public:
     }
     return os;
   }
-  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> get_all_entries_data(
+  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> get_vector_of_indexs_and_files(
     const std::initializer_list<std::string_view> &filename) const
   {
     unsigned int i{};
