@@ -379,7 +379,10 @@ public:
    * @param nestedArchive string to filter results. {} will get all nested archives.
    * @return all results.
    */
-  auto get_nested(const std::initializer_list<std::string_view> &nested_archive) const { return m_field.get_fiflfs_entries(nested_archive); }
+  auto get_nested(const std::initializer_list<std::string_view> &nested_archive) const
+  {
+    return m_field.get_fiflfs_entries(nested_archive);
+  }
   Archives() = default;
   /**
    * Preloads all archives in the path.

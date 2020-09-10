@@ -41,7 +41,7 @@ int main()
         const std::string mim_filename = directory_path.filename().string() + std::string(".mim");
         std::cout << map_filename << '\n';
         std::cout << archive << '\n';
-        auto mims = archive.get_vector_of_indexs_and_files({mim_filename});
+        auto mims = archive.get_vector_of_indexs_and_files({ mim_filename });
         if (std::ranges::empty(mims)) {
           return;// no mim file.
         }
@@ -64,16 +64,9 @@ int main()
               auto hex = std::string_view(basename).substr(std::ranges::size(basename) - 23, 16);
               auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
 
-              auto pupu_id = std::strtoull(std::ranges::data(hex), 0, 16);
+              auto pupu_id = open_viii::graphics::background::Pupu(hex);
               std::cout << basename << '\t' << suffix << '\t' << hex << '\t' << pupu_id << '\t' << prefix;
               std::cout << '\n';
-
-              const auto [p_depth, p_layer_id, p_blend_mode, p_animation_id, p_animation_state, p_z] =
-                open_viii::graphics::background::Map<>::extract_pupu(pupu_id);
-              std::cout << '\t' << p_depth << '\t' << static_cast<std::uint16_t>(p_layer_id) << '\t'
-                        << static_cast<std::uint16_t>(p_blend_mode) << '\t'
-                        << static_cast<std::uint16_t>(p_animation_id) << '\t'
-                        << static_cast<std::uint16_t>(p_animation_state) << '\t' << p_z << '\n';
             });
         };
         const auto map_buffer = archive.get_entry_data(map_filename);

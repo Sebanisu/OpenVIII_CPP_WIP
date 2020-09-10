@@ -40,18 +40,18 @@ int main()
     //
     //      return data;
     //    });
-    kernel.static_for([]<typename kernel_section_t>(
-                        const std::string_view &string, const std::span<const char> &span, const kernel_section_t &data)
-                        requires(!std::is_null_pointer_v<kernel_section_t>) {
-                          std::cout << string << " ( " << std::ranges::size(span) << "bytes) has "
-                                    << std::ranges::size(data) << " entries\n";
-                          for (size_t i = 0; i < data.size(); i++) {
-                            auto entry = data.at(i);
-                            std::cout << i << ": ";
-                            entry.out(std::cout, data.text_span());
-                            std::cout << '\n';
-                          }
-                        });
+    kernel.static_for([]<typename kernel_section_t>(const std::string_view &string,
+      const std::span<const char> &span,
+      const kernel_section_t &data) requires(!std::is_null_pointer_v<kernel_section_t>) {
+      std::cout << string << " ( " << std::ranges::size(span) << "bytes) has " << std::ranges::size(data)
+                << " entries\n";
+      for (size_t i = 0; i < data.size(); i++) {
+        auto entry = data.at(i);
+        std::cout << i << ": ";
+        entry.out(std::cout, data.text_span());
+        std::cout << '\n';
+      }
+    });
   }
   return 0;
 }

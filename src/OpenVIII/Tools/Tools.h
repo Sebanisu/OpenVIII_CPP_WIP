@@ -84,12 +84,9 @@ public:
 
     auto fp = std::ofstream(filename, std::ios::out | std::ios::binary | std::ios::trunc);
     if (fp.is_open()) {
-      std::cout << "Saving: " << filename << '\n';
-      try {
-        lambda(fp);
-      } catch (const std::out_of_range &oor) {
-        std::cerr << "Out of Range error: " << oor.what() << '\n';
-      }
+      std::cout << "Saving: " << filename << "...";
+      lambda(fp);
+      std::cout << "Saved!\n";
       fp.close();
     } else {
       std::cout << "Failed to Open for saving: " << filename << '\n';
@@ -172,7 +169,9 @@ public:
   template<std::ranges::contiguous_range rangeT>
   [[maybe_unused]] [[nodiscard]] static auto i_find_any(const std::string_view &haystack, const rangeT &needles)
   {
-    return std::ranges::empty(needles) || std::ranges::any_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
+    return std::ranges::empty(needles) || std::ranges::any_of(needles, [&haystack](const auto &needle) -> bool {
+      return i_find(haystack, needle);
+    });
   }
 
   /**
@@ -189,8 +188,7 @@ public:
       const lambdaT &lambda)
   {
     std::ranges::for_each(
-      std::filesystem::recursive_directory_iterator(dir),
-      [&path_contains, &lambda](const auto &item) {
+      std::filesystem::recursive_directory_iterator(dir), [&path_contains, &lambda](const auto &item) {
         if (std::filesystem::is_directory(item) && Tools::i_find_any(item.path().string(), path_contains)) {
           lambda(item.path());
         }
@@ -198,21 +196,18 @@ public:
   }
   template<typename lambdaT>
   requires(std::invocable<lambdaT, std::filesystem::path>)
-  [[maybe_unused]] static void execute_on_directory(const std::filesystem::path &dir,
-                                                    std::initializer_list<std::string_view> filenames,
-                                                    std::initializer_list<std::string_view> extensions,
-                                                      const lambdaT &lambda)
+    [[maybe_unused]] static void execute_on_directory(const std::filesystem::path &dir,
+      std::initializer_list<std::string_view> filenames,
+      std::initializer_list<std::string_view> extensions,
+      const lambdaT &lambda)
   {
-    std::ranges::for_each(
-      dir,
-      [&filenames,&extensions, &lambda](const auto &item) {
-             if (!std::filesystem::is_regular_file(item) || !item.has_extension()
-                 || !i_ends_with_any(item.extension().string(), extensions)
-                 || !i_find_any(item.stem().string(), filenames)) {
-               return;
-             }
-             lambda(item);
-      });
+    std::ranges::for_each(dir, [&filenames, &extensions, &lambda](const auto &item) {
+      if (!std::filesystem::is_regular_file(item) || !item.has_extension()
+          || !i_ends_with_any(item.extension().string(), extensions) || !i_find_any(item.stem().string(), filenames)) {
+        return;
+      }
+      lambda(item);
+    });
   }
 
   /**

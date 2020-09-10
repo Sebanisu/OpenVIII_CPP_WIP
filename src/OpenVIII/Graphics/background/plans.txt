@@ -2,9 +2,10 @@ TODO:
 Need to reswizzle output.
 done 0) create new test? or add to extract images?
 wip 1) find the images in folder.
---- The issue i discovered is it's be better to process each directory.
---- Right now I'm grabbing each image but if I don't do all the folders together. Then I'm grabbing the .map each time.
---- So better is to get folder then get map and then get images out of folder.
+done --- The issue i discovered is it's be better to process each directory.
+done --- Right now I'm grabbing each image but if I don't do all the folders together. Then I'm grabbing the .map each time.
+done --- So better is to get folder then get map and then get images out of folder.
+--- I need to parse the file names and poop out the pupu id into a vector, I'll probably make a new type to keep from being super confused. Because I want to parse the name once. So I need a good way to store the data beyond a tuple.
 2) filter down to the images with the HEX pupu ID.
 3) read in hex values using pattern = field_hex_mimmap.ext
 4) group the hex values that are the same (depth and same field and same textureID)

@@ -5,6 +5,7 @@
 #ifndef VIIIARCHIVE_BPPT_H
 #define VIIIARCHIVE_BPPT_H
 #include <iostream>
+#include <compare>
 namespace open_viii::graphics {
 /**
  * @enum open_viii::graphics::BPPT
@@ -36,29 +37,30 @@ private:
 
 public:
   consteval friend BPPT operator"" _bpp(unsigned long long int value);
-  constexpr friend auto operator==(const BPPT &left, const BPPT &right)
-  {
-    return left.m_bpp8 == right.m_bpp8 && left.m_bpp16 == right.m_bpp16// && left.m_unused1 == right.m_unused1
-           && left.m_color_lookup_table_present == right.m_color_lookup_table_present;
-    //           && left.m_unused2 == right.m_unused2 && left.m_unused3 == right.m_unused3
-    //           && left.m_unused4 == right.m_unused4 && left.m_unused5 == right.m_unused5;
-  }
-  constexpr friend auto operator<(const BPPT &left, const BPPT &right)
-  {
-    return left.m_bpp8 < right.m_bpp8 && left.m_bpp16 < right.m_bpp16// && left.m_unused1 < right.m_unused1
-           && left.m_color_lookup_table_present < right.m_color_lookup_table_present;
-    //           && left.m_unused2 < right.m_unused2
-    //           && left.m_unused3 < right.m_unused3 && left.m_unused4 < right.m_unused4 && left.m_unused5 <
-    //           right.m_unused5;
-  }
-
-  constexpr friend auto operator>(const BPPT &left, const BPPT &right)
-  {
-    return left.m_bpp8 > right.m_bpp8 && left.m_bpp16 > right.m_bpp16// && left.m_unused1 > right.m_unused1
-           && left.m_color_lookup_table_present
-                > right.m_color_lookup_table_present;// && left.m_unused2 > right.m_unused2
-    //&& left.m_unused3 > right.m_unused3 && left.m_unused4 > right.m_unused4 && left.m_unused5 > right.m_unused5;
-  }
+  auto operator<=>(const BPPT &) const = default;
+  //  constexpr friend auto operator==(const BPPT &left, const BPPT &right)
+  //  {
+  //    return left.m_bpp8 == right.m_bpp8 && left.m_bpp16 == right.m_bpp16// && left.m_unused1 == right.m_unused1
+  //           && left.m_color_lookup_table_present == right.m_color_lookup_table_present;
+  //    //           && left.m_unused2 == right.m_unused2 && left.m_unused3 == right.m_unused3
+  //    //           && left.m_unused4 == right.m_unused4 && left.m_unused5 == right.m_unused5;
+  //  }
+  //  constexpr friend auto operator<(const BPPT &left, const BPPT &right)
+  //  {
+  //    return left.m_bpp8 < right.m_bpp8 && left.m_bpp16 < right.m_bpp16// && left.m_unused1 < right.m_unused1
+  //           && left.m_color_lookup_table_present < right.m_color_lookup_table_present;
+  //    //           && left.m_unused2 < right.m_unused2
+  //    //           && left.m_unused3 < right.m_unused3 && left.m_unused4 < right.m_unused4 && left.m_unused5 <
+  //    //           right.m_unused5;
+  //  }
+  //
+  //  constexpr friend auto operator>(const BPPT &left, const BPPT &right)
+  //  {
+  //    return left.m_bpp8 > right.m_bpp8 && left.m_bpp16 > right.m_bpp16// && left.m_unused1 > right.m_unused1
+  //           && left.m_color_lookup_table_present
+  //                > right.m_color_lookup_table_present;// && left.m_unused2 > right.m_unused2
+  //    //&& left.m_unused3 > right.m_unused3 && left.m_unused4 > right.m_unused4 && left.m_unused5 > right.m_unused5;
+  //  }
   [[nodiscard]] constexpr bool unused() const noexcept
   {
     return m_unused1 && m_unused2 && m_unused3 && m_unused4 && m_unused5;
