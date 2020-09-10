@@ -116,7 +116,7 @@ public:
                return false;
              }();
              id++) {
-          if (!std::ranges::empty(needle) && !Tools::i_find_any(inner_path, needle)) {
+          if (!Tools::i_find_any(inner_path, needle)) {
             continue;
           }
 

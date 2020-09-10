@@ -172,8 +172,49 @@ public:
   template<std::ranges::contiguous_range rangeT>
   [[maybe_unused]] [[nodiscard]] static auto i_find_any(const std::string_view &haystack, const rangeT &needles)
   {
-    return std::ranges::any_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
+    return std::ranges::empty(needles) || std::ranges::any_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
   }
+
+  /**
+   * Will find and execute lambda on the dir if path_contains a valid value.
+   * @tparam lambdaT
+   * @param dir
+   * @param path_contains list of valid values {} = all.
+   * @param lambda f(std::filesystem:: path)
+   */
+  template<typename lambdaT>
+  requires(std::invocable<lambdaT, std::filesystem::path>)
+    [[maybe_unused]] static void execute_on_directories(const std::filesystem::path &dir,
+      std::initializer_list<std::string_view> path_contains,
+      const lambdaT &lambda)
+  {
+    std::ranges::for_each(
+      std::filesystem::recursive_directory_iterator(dir),
+      [&path_contains, &lambda](const auto &item) {
+        if (std::filesystem::is_directory(item) && Tools::i_find_any(item.path().string(), path_contains)) {
+          lambda(item.path());
+        }
+      });
+  }
+  template<typename lambdaT>
+  requires(std::invocable<lambdaT, std::filesystem::path>)
+  [[maybe_unused]] static void execute_on_directory(const std::filesystem::path &dir,
+                                                    std::initializer_list<std::string_view> filenames,
+                                                    std::initializer_list<std::string_view> extensions,
+                                                      const lambdaT &lambda)
+  {
+    std::ranges::for_each(
+      dir,
+      [&filenames,&extensions, &lambda](const auto &item) {
+             if (!std::filesystem::is_regular_file(item) || !item.has_extension()
+                 || !i_ends_with_any(item.extension().string(), extensions)
+                 || !i_find_any(item.stem().string(), filenames)) {
+               return;
+             }
+             lambda(item);
+      });
+  }
+
   /**
    *
    * @tparam lambdaT the type of the invocable (lambda) that accepts the path as an argument.

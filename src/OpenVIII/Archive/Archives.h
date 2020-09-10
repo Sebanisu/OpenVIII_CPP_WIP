@@ -379,7 +379,7 @@ public:
    * @param nestedArchive string to filter results. {} will get all nested archives.
    * @return all results.
    */
-  auto get_nested(const std::string_view &nested_archive) const { return m_field.get_fiflfs_entries(nested_archive); }
+  auto get_nested(const std::initializer_list<std::string_view> &nested_archive) const { return m_field.get_fiflfs_entries(nested_archive); }
   Archives() = default;
   /**
    * Preloads all archives in the path.
@@ -428,14 +428,14 @@ public:
       if constexpr (!std::is_null_pointer_v<decltype(archive)>) {
         if constexpr (std::is_same_v<decltype(archive), std::optional<ZZZ>>) {
           if (archive.has_value()) {
-            [[maybe_unused]] const auto result = archive->get_all_entries_data(filename);
+            [[maybe_unused]] const auto result = archive->get_vector_of_indexs_and_files(filename);
             if (!std::ranges::empty(result)) {
               vector.emplace_back(std::make_pair(get_string<archiveType_>(), std::move(result)));
             }
           }
         } else if constexpr (std::is_same_v<decltype(archive),
                                FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
-          [[maybe_unused]] auto result = archive.get_all_entries_data(filename);
+          [[maybe_unused]] auto result = archive.get_vector_of_indexs_and_files(filename);
           if (!std::ranges::empty(result)) {
             vector.emplace_back(std::make_pair(get_string<archiveType_>(), std::move(result)));
           }

@@ -24,38 +24,66 @@ int main()
     std::cout << path << std::endl;
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-    //[[maybe_unused]]const auto ppms =
-    // open_viii::Tools::i_path_extension_ends_with_any(std::filesystem::current_path(),{"test"},{".ppm"});
-    open_viii::Tools::execute_on_i_path_extension_ends_with_any(
-      std::filesystem::current_path(), { "test" }, { ".ppm" }, [&field](const std::filesystem::path &p) {
-        // if(!p.has_stem()) {return;}
-        auto basename = p.stem().string();
-        static constexpr auto minsize{ 24 };
-        if (std::ranges::size(basename) < minsize) {
-          return;
-        }
-        auto suffix = std::string_view(basename).substr(std::ranges::size(basename) - 7);
-        if (suffix != "_mimmap") {
-          return;
-        }
-        auto hex = std::string_view(basename).substr(std::ranges::size(basename) - 23, 16);
-        auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
+    //    [[maybe_unused]]const auto ppms =
+    //     open_viii::Tools::i_path_extension_ends_with_any(std::filesystem::current_path(),{"test"},{".ppm"});
 
-        auto pupu_id = std::strtoull(std::ranges::data(hex), 0, 16);
-        std::cout << basename << '\t' << suffix << '\t' << hex << '\t' << pupu_id << '\t' << prefix;
-        std::cout << '\n';
-        // test7_413FC003FF800000_mimmap.ppm
+    open_viii::Tools::execute_on_directories(
+      std::filesystem::current_path(), { "test" }, [&field](const std::filesystem::path &directory_path) {
+        const std::string fi_filename = directory_path.filename().string() + std::string(open_viii::archive::FI::EXT);
+        const std::string fl_filename = directory_path.filename().string() + std::string(open_viii::archive::FL::EXT);
+        const std::string fs_filename = directory_path.filename().string() + std::string(open_viii::archive::FS::EXT);
+        auto archive = field.get_fiflfs({ fi_filename, fl_filename, fs_filename });
 
-        const auto [p_depth, p_layer_id, p_blend_mode, p_animation_id, p_animation_state, p_z] =
-          open_viii::graphics::background::Map<>::extract_pupu(pupu_id);
-        std::cout << '\t' << p_depth << '\t' << static_cast<std::uint16_t>(p_layer_id) << '\t'
-                  << static_cast<std::uint16_t>(p_blend_mode) << '\t' << static_cast<std::uint16_t>(p_animation_id)
-                  << '\t' << static_cast<std::uint16_t>(p_animation_state) << '\t' << p_z << '\n';
-        auto prefix_map = std::string(prefix) + std::string(".map");
-        field.execute_on_nested({ prefix_map }, [](std::vector<char> &&in_buffer, std::string &&in_path) {
-          [[maybe_unused]] auto map = open_viii::graphics::background::Map(std::move(in_buffer));
-          std::cout << in_path << '\n';
-        });
+        if (!static_cast<bool>(archive)) {
+          return;// no archive for this directory.
+        }
+        const std::string map_filename = directory_path.filename().string() + std::string(".map");
+        const std::string mim_filename = directory_path.filename().string() + std::string(".mim");
+        std::cout << map_filename << '\n';
+        std::cout << archive << '\n';
+        auto mims = archive.get_vector_of_indexs_and_files({mim_filename});
+        if (std::ranges::empty(mims)) {
+          return;// no mim file.
+        }
+        open_viii::FI_Like auto mim_fi = archive.get_entry_by_index(mims[0].first);
+        open_viii::graphics::background::MimType mim_type = open_viii::graphics::background::Mim::get_texture_type(
+          mim_fi.uncompressed_size(), directory_path.filename().string());
+        const auto reswizzle = [&directory_path](auto map) {
+          open_viii::Tools::execute_on_directory(
+            directory_path, {}, { ".ppm" }, [&map](const std::filesystem::path &file_path) {
+              // if(!file_path.has_stem()) {return;}
+              auto basename = file_path.stem().string();
+              static constexpr auto minsize{ 24 };
+              if (std::ranges::size(basename) < minsize) {
+                return;
+              }
+              auto suffix = std::string_view(basename).substr(std::ranges::size(basename) - 7);
+              if (suffix != "_mimmap") {
+                return;
+              }
+              auto hex = std::string_view(basename).substr(std::ranges::size(basename) - 23, 16);
+              auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
+
+              auto pupu_id = std::strtoull(std::ranges::data(hex), 0, 16);
+              std::cout << basename << '\t' << suffix << '\t' << hex << '\t' << pupu_id << '\t' << prefix;
+              std::cout << '\n';
+
+              const auto [p_depth, p_layer_id, p_blend_mode, p_animation_id, p_animation_state, p_z] =
+                open_viii::graphics::background::Map<>::extract_pupu(pupu_id);
+              std::cout << '\t' << p_depth << '\t' << static_cast<std::uint16_t>(p_layer_id) << '\t'
+                        << static_cast<std::uint16_t>(p_blend_mode) << '\t'
+                        << static_cast<std::uint16_t>(p_animation_id) << '\t'
+                        << static_cast<std::uint16_t>(p_animation_state) << '\t' << p_z << '\n';
+            });
+        };
+        const auto map_buffer = archive.get_entry_data(map_filename);
+        if (mim_type.type() == 1) {
+          reswizzle(open_viii::graphics::background::Map<1>(map_buffer));
+        } else if (mim_type.type() == 2) {
+          reswizzle(open_viii::graphics::background::Map<2>(map_buffer));
+        } else if (mim_type.type() == 3) {
+          reswizzle(open_viii::graphics::background::Map<3>(map_buffer));
+        }
       });
   }
 }
