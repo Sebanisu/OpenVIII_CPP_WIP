@@ -13,6 +13,7 @@
 #include "OpenVIII/MenuGroup/MenuGroupFile.h"
 #include "OpenVIII/Graphics/background/Mim.h"
 #include "OpenVIII/Graphics/background/Map.h"
+#include "OpenVIII/Graphics/background/Deswizzle.h"
 
 int main()
 {
@@ -48,7 +49,7 @@ int main()
 
           [[maybe_unused]] const auto shift_back = map.shift_to_origin();
           map.save_csv(mim, e.get_full_path(".map"));
-          map.save(mim, e.get_full_path(".mim"));
+          open_viii::graphics::background::Deswizzle::save(mim, map, e.get_full_path(".mim"));
           // map.save_v1(mim, e.get_full_path(".mim"));
           map.shift(shift_back.x(), shift_back.y());
         };
