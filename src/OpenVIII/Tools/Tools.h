@@ -22,6 +22,8 @@
 #include <cassert>
 #include <ranges>
 #include "OpenVIII/concepts.h"
+#include <chrono>
+#include <thread>
 namespace open_viii {
 struct [[maybe_unused]] Tools
 {
@@ -82,13 +84,19 @@ public:
     auto filename = dir / path;
     std::filesystem::create_directories(filename.parent_path());
 
-    auto fp = std::ofstream(filename, std::ios::out | std::ios::binary | std::ios::trunc);
+    auto fp = std::ofstream{};
+    do {
+      fp.open(filename, std::ios::out | std::ios::binary | std::ios::trunc);
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    while(!fp.is_open());
     if (fp.is_open()) {
-      std::cout << "Saving: " << filename << "...\n";
+      //std::cout << "Saving: " << filename << "...\n";
       lambda(fp);
       fp.close();
     } else {
-      std::cout << "Failed to Open for saving: " << filename << '\n';
+      std::cout << (std::string("Failed to Open for saving: \"")+ filename.string() + std::string("\"\n"));
+      return false;
     }
     return true;
   }
@@ -98,6 +106,7 @@ public:
     const std::string_view &root = "tmp")
   {
     if (std::ranges::empty(buffer)) {
+      //std::cout << (std::string("Buffer is empty: \"")+ std::string(path) + std::string("\"\n"));
       return false;
     }
     return write_buffer(

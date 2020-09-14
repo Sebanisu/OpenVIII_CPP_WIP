@@ -263,11 +263,11 @@ public:
   }
   void test() const
   {
-    if (!std::filesystem::exists(m_fl.path())) {
-      std::cout << "nested file!\n";
-    }
-    std::cout << *this << '\n';
-    std::cout << "Getting Filenames from : " << m_fl.path() << '\n';
+//    if (!std::filesystem::exists(m_fl.path())) {
+//      std::cout << "nested file!\n";
+//    }
+//    std::cout << *this << '\n';
+//    std::cout << "Getting Filenames from : " << m_fl.path() << '\n';
     FIFLFS archive{};
     using namespace std::string_view_literals;
     auto items = archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, {});
@@ -286,9 +286,9 @@ public:
           if (fi.compression_type() == CompressionTypeT::none) {
             auto localRetVal =
               archive.try_add(m_fs.path(), virtualPath, m_fs.offset() + fi.offset(), fi.uncompressed_size());
-            if (localRetVal != TryAddT::not_part_of_archive) {
-              std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
-            }
+//            if (localRetVal != TryAddT::not_part_of_archive) {
+//              std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
+//            }
             return localRetVal;
           }
           return archive.try_add_nested(
@@ -306,9 +306,9 @@ public:
       {
         const auto buffer = get_entry_buffer(fi);
         if (buffer.empty()) {
-          std::cout << '{' << id << ", "
-                    << "Empty!"
-                    << ", " << strVirtualPath << "}" << fi << std::endl;
+//          std::cout << '{' << id << ", "
+//                    << "Empty!"
+//                    << ", " << strVirtualPath << "}" << fi << std::endl;
           if (!(fi.uncompressed_size() == 0 && fi.compression_type() == CompressionTypeT::none)) {
             exit(EXIT_FAILURE);
           }
@@ -316,7 +316,7 @@ public:
         if (fi.uncompressed_size() != buffer.size()) {
           exit(EXIT_FAILURE);
         }
-        std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
+//        std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
         Tools::write_buffer(buffer, strVirtualPath);
         // saveIMG(buffer, strVirtualPath);
       }
@@ -438,15 +438,17 @@ public:
     const std::initializer_list<std::string_view> &filename,
     const lambdaT &lambda) const
   {
+
+    std::vector<std::jthread> threads{};
     const auto results = get_vector_of_indexs_and_files(filename);
-    std::for_each(results.cbegin(), results.cend(), [&](const std::pair<unsigned int, std::string> &pair) {
-      auto fi = get_entry_by_index(pair.first);
-      lambda(get_entry_buffer(fi), std::string(pair.second));
-    });
-    //    for (const std::pair<unsigned int, std::string> &pair : results) {
-    //      auto fi = get_entry_by_index(pair.first);
-    //      lambda(get_entry_buffer(fi), std::string(pair.second));
-    //    }
+    std::ranges::for_each(results | std::views::filter([this](const std::pair<unsigned int, std::string> &pair) -> bool {
+      return check_extension(pair.second) == 0; //prevent from running on nested archives. We have another function for those.
+    }),
+      [this, &lambda, &threads](const std::pair<unsigned int, std::string> &pair) {
+        auto fi = get_entry_by_index(pair.first);
+          threads.emplace_back([&lambda](std::vector<char>&& buffer, std::string && path)
+          {lambda(std::move(buffer), std::move(path));},get_entry_buffer(fi),std::string(pair.second));
+      });
   }
 
   [[nodiscard]] std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
@@ -523,9 +525,9 @@ public:
           if (fi.compression_type() == CompressionTypeT::none) {
             auto localRetVal =
               archive.try_add(m_fs.path(), virtualPath, m_fs.offset() + fi.offset(), fi.uncompressed_size());
-            if (localRetVal != TryAddT::not_part_of_archive) {
-              std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
-            }
+//            if (localRetVal != TryAddT::not_part_of_archive) {
+//              std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
+//            }
             return localRetVal;
           }
           return archive.try_add_nested(
@@ -561,9 +563,9 @@ public:
       if (fi.compression_type() == CompressionTypeT::none) {
         auto localRetVal =
           archive.try_add(m_fs.path(), virtualPath, m_fs.offset() + fi.offset(), fi.uncompressed_size());
-        if (localRetVal != TryAddT::not_part_of_archive) {
-          std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
-        }
+//        if (localRetVal != TryAddT::not_part_of_archive) {
+//          std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
+//        }
         return localRetVal;
       }
       return archive.try_add_nested(

@@ -15,6 +15,8 @@
 
 int main()
 {
+
+  const auto start = std::chrono::steady_clock::now();
   //      //test FIFLFS
   //      std::array<std::string, 2> paths ({
   //        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)",
@@ -32,5 +34,9 @@ int main()
       paths.test();
     }
   }
+
+  const auto end = std::chrono::steady_clock::now();
+  const auto diff = end - start;
+  std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms" << '\n';
   return 0;
 }

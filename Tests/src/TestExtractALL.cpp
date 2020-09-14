@@ -16,6 +16,7 @@
 
 int main()
 {
+  const auto start = std::chrono::steady_clock::now();
   for (auto &path : open_viii::Paths::get()) {
     open_viii::Tools::replace_slashes(path);
     if (!std::filesystem::exists(path)) {
@@ -30,4 +31,7 @@ int main()
     };
     archives.execute_on({}, dump);
   }
+  const auto end = std::chrono::steady_clock::now();
+  const auto diff = end - start;
+  std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms" << '\n';
 }
