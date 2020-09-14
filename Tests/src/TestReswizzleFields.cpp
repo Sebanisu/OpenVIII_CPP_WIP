@@ -80,11 +80,11 @@ int main()
         };
         const auto map_buffer = archive.get_entry_data(map_filename);
         if (mim_type.type() == 1) {
-          reswizzle(open_viii::graphics::background::Map<1>(map_buffer));
+          reswizzle(open_viii::graphics::background::Map<open_viii::graphics::background::Tile1>(map_buffer));
         } else if (mim_type.type() == 2) {
-          reswizzle(open_viii::graphics::background::Map<2>(map_buffer));
+          reswizzle(open_viii::graphics::background::Map<open_viii::graphics::background::Tile2>(map_buffer));
         } else if (mim_type.type() == 3) {
-          reswizzle(open_viii::graphics::background::Map<3>(map_buffer));
+          reswizzle(open_viii::graphics::background::Map<open_viii::graphics::background::Tile3>(map_buffer));
         }
       });
   }

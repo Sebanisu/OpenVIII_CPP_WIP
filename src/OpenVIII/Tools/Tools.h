@@ -88,14 +88,13 @@ public:
     do {
       fp.open(filename, std::ios::out | std::ios::binary | std::ios::trunc);
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    while(!fp.is_open());
+    } while (!fp.is_open());
     if (fp.is_open()) {
-      //std::cout << "Saving: " << filename << "...\n";
+      // std::cout << "Saving: " << filename << "...\n";
       lambda(fp);
       fp.close();
     } else {
-      std::cout << (std::string("Failed to Open for saving: \"")+ filename.string() + std::string("\"\n"));
+      std::cout << (std::string("Failed to Open for saving: \"") + filename.string() + std::string("\"\n"));
       return false;
     }
     return true;
@@ -106,7 +105,7 @@ public:
     const std::string_view &root = "tmp")
   {
     if (std::ranges::empty(buffer)) {
-      //std::cout << (std::string("Buffer is empty: \"")+ std::string(path) + std::string("\"\n"));
+      // std::cout << (std::string("Buffer is empty: \"")+ std::string(path) + std::string("\"\n"));
       return false;
     }
     return write_buffer(
@@ -209,13 +208,21 @@ public:
       std::initializer_list<std::string_view> extensions,
       const lambdaT &lambda)
   {
-    std::ranges::for_each(dir, [&filenames, &extensions, &lambda](const auto &item) {
-      if (!std::filesystem::is_regular_file(item) || !item.has_extension()
-          || !i_ends_with_any(item.extension().string(), extensions) || !i_find_any(item.stem().string(), filenames)) {
-        return;
-      }
-      lambda(item);
-    });
+
+    std::ranges::for_each(
+      std::filesystem::directory_iterator(dir), [&filenames, &extensions, &lambda](const auto &item) {
+        const auto path = item.path();
+        //        std::cout<<"here \"" << path.string() <<"\""<<std::endl;
+        //           std::cout << std::filesystem::is_regular_file(item) <<' '<< path.has_extension() << ' '<<
+        //           i_ends_with_any(path.extension().string(), extensions)  << ' '<< i_find_any(path.stem().string(),
+        //           filenames)<<std::endl;
+        if (!std::filesystem::is_regular_file(item) || !path.has_extension()
+            || !i_ends_with_any(path.extension().string(), extensions)
+            || !i_find_any(path.stem().string(), filenames)) {
+          return;
+        }
+        lambda(item);
+      });
   }
 
   /**
@@ -287,6 +294,7 @@ public:
   [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &needles)
   {
+    // std::cout << haystack <<std::endl;
     size_t i{};
     if (std::ranges::any_of(needles, [&haystack, &i](const auto &needle) -> bool {
           ++i;
