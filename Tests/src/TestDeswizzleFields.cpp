@@ -18,7 +18,7 @@
 
 int main()
 {
-    const auto start = std::chrono::steady_clock::now();
+  const auto start = std::chrono::steady_clock::now();
   for (auto &path : open_viii::Paths::get()) {
     open_viii::Tools::replace_slashes(path);
     if (!std::filesystem::exists(path)) {
@@ -49,24 +49,25 @@ int main()
           //          std::cout << "max y: " << max_y->y() << '\n';
           //          std::cout << "canvas: " << map.canvas() << '\n';
 
-          [[maybe_unused]] const auto shift_back = map.shift_to_origin();
-          map.save_csv(mim, e.get_full_path(".map"));
+          map.save_csv(e.get_full_path(".map"));
           open_viii::graphics::background::Deswizzle(mim, map, e.get_full_path(".mim"));
           // map.save_v1(mim, e.get_full_path(".mim"));
-          map.shift(shift_back.x(), shift_back.y());
         };
         if (mim.mim_type().type() == 1) {
-          process(open_viii::graphics::background::Map<1>{ e.get_entry_data(".map") });
+          process(
+            open_viii::graphics::background::Map<open_viii::graphics::background::Tile1>{ e.get_entry_data(".map") });
         } else if (mim.mim_type().type() == 2) {
-          process(open_viii::graphics::background::Map<2>{ e.get_entry_data(".map") });
+          process(
+            open_viii::graphics::background::Map<open_viii::graphics::background::Tile2>{ e.get_entry_data(".map") });
         } else if (mim.mim_type().type() == 3) {
-          process(open_viii::graphics::background::Map<3>{ e.get_entry_data(".map") });
+          process(
+            open_viii::graphics::background::Map<open_viii::graphics::background::Tile3>{ e.get_entry_data(".map") });
         }
       });
     }
   }
 
-    const auto end = std::chrono::steady_clock::now();
-    const auto diff = end - start;
-    std::cout << std::chrono::duration <double, std::milli> (diff).count() << " ms" << '\n';
+  const auto end = std::chrono::steady_clock::now();
+  const auto diff = end - start;
+  std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms" << '\n';
 }

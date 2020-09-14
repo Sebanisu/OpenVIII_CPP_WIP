@@ -15,47 +15,32 @@
 #include <bitset>
 #include "OpenVIII/Tools/Tools.h"
 namespace open_viii::graphics::background {
-template<size_t typeT = 0> requires(typeT >= 0 && typeT <= 3) struct Map
+template<typename map_type = Tile1>
+requires(
+  std::is_same_v<map_type, Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct Map
 {
 private:
-  mutable std::vector<Tile1> m_t1{};
-  mutable std::vector<Tile2> m_t2{};
-  mutable std::vector<Tile3> m_t3{};
+  mutable std::vector<map_type> m_tiles{};
+  /**
+   * offset holds the original position of canvas.
+   */
+  mutable Point<std::int16_t> m_offset{};
 
   void remove_end()
   {
     static constexpr auto cmp = [](const auto &x) {
-      static constexpr auto END_X{ 0x7FFFU };
-      [[maybe_unused]] static constexpr auto limit = 1000U;
+      static constexpr auto end_x{ 0x7FFFU };
+      // static constexpr auto limit = 1000U;
 
-      return x.x() == END_X;// || std::abs(x.y()) > limit || std::abs(x.x()) > limit; //|| x.source_x() >limit ||
+      return x.x() == end_x;// || std::abs(x.y()) > limit || std::abs(x.x()) > limit; //|| x.source_x() >limit ||
                             // x.source_y() >limit; //|| !x.draw();
     };
-
-    if constexpr (typeT == 0 || typeT == 1) {
-      std::erase_if(m_t1, cmp);
-    }
-    if constexpr (typeT == 0 || typeT == 2) {
-      std::erase_if(m_t2, cmp);
-    }
-    if constexpr (typeT == 0 || typeT == 3) {
-      std::erase_if(m_t3, cmp);
-    }
+    std::erase_if(m_tiles, cmp);
   }
   void remove_duplicates()
   {
-    if constexpr (typeT == 0 || typeT == 1) {
-      auto last = std::unique(m_t1.begin(), m_t1.end());
-      m_t1.erase(last, m_t1.end());
-    }
-    if constexpr (typeT == 0 || typeT == 2) {
-      auto last = std::unique(m_t2.begin(), m_t2.end());
-      m_t2.erase(last, m_t2.end());
-    }
-    if constexpr (typeT == 0 || typeT == 3) {
-      auto last = std::unique(m_t3.begin(), m_t3.end());
-      m_t3.erase(last, m_t3.end());
-    }
+    auto last = std::unique(m_tiles.begin(), m_tiles.end());
+    m_tiles.erase(last, m_tiles.end());
   }
   void sort()
   {
@@ -95,100 +80,75 @@ private:
       }
       return false;
     };
-    if constexpr (typeT == 0 || typeT == 1) {
-      std::sort(m_t1.begin(), m_t1.end(), cmp);
-    }
-    if constexpr (typeT == 0 || typeT == 2) {
-      std::sort(m_t2.begin(), m_t2.end(), cmp);
-    }
-    if constexpr (typeT == 0 || typeT == 3) {
-      std::sort(m_t3.begin(), m_t3.end(), cmp);
-    }
+    std::sort(m_tiles.begin(), m_tiles.end(), cmp);
+  }
+  void shift_to_origin() const noexcept
+  {
+    m_offset = Point(min_x(), min_y());
+    shift(m_offset.abs());
   }
 
 public:
   Map() = default;
-  explicit Map([[maybe_unused]] std::span<const char> buffer)
+  explicit Map(std::span<const char> buffer)
   {
-    if constexpr (typeT == 0 || typeT == 1) {
-      auto t1 = std::span(
-        reinterpret_cast<const Tile1 *>(std::ranges::data(buffer)), std::ranges::size(buffer) / sizeof(Tile1));
-      m_t1 = { t1.begin(), t1.end() };
-    }
-    if constexpr (typeT == 0 || typeT == 2) {
-      auto t2 = std::span(
-        reinterpret_cast<const Tile2 *>(std::ranges::data(buffer)), std::ranges::size(buffer) / sizeof(Tile2));
-      m_t2 = { t2.begin(), t2.end() };
-    }
-    if constexpr (typeT == 0 || typeT == 3) {
-      auto t3 = std::span(
-        reinterpret_cast<const Tile3 *>(std::ranges::data(buffer)), std::ranges::size(buffer) / sizeof(Tile3));
-      m_t3 = { t3.begin(), t3.end() };
-    }
+    auto tiles = std::span(
+      reinterpret_cast<const map_type *>(std::ranges::data(buffer)), std::ranges::size(buffer) / sizeof(map_type));
+    m_tiles = { tiles.begin(), tiles.end() };
     remove_end();
     remove_duplicates();
     sort();
+    shift_to_origin();
   }
-  [[nodiscard]] const auto &tiles() const noexcept
+  [[nodiscard]] const auto &tiles() const noexcept { return m_tiles; }
+  [[nodiscard]] const auto &min_x() const noexcept
   {
-    if constexpr (typeT == 2) {
-      return m_t2;
-    } else if constexpr (typeT == 3) {
-      return m_t3;
-    } else {
-      return m_t1;
-    }
-  }
-  [[maybe_unused]] [[nodiscard]] const auto &min_x() const noexcept
-  {
-    const auto &t = tiles();
-    return (std::min_element(t.cbegin(), t.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); }))
+    return (std::min_element(
+              m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); }))
       ->x();
   }
   [[nodiscard]] auto minmax_x() const noexcept
   {
-    const auto &t = tiles();
     return std::minmax_element(
-      t.cbegin(), t.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); });
+      m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); });
   }
 
-  [[maybe_unused]] [[nodiscard]] const auto &max_x() const noexcept
+  [[nodiscard]] const auto &max_x() const noexcept
   {
-    const auto &t = tiles();
-    return (std::max_element(t.cbegin(), t.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); }))
+    return (std::max_element(
+              m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); }))
       ->x();
   }
   [[nodiscard]] auto minmax_y() const noexcept
   {
-    const auto &t = tiles();
     return std::minmax_element(
-      t.cbegin(), t.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); });
+      m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); });
   }
-  [[maybe_unused]] [[nodiscard]] const auto &min_y() const noexcept
+  [[nodiscard]] const auto &min_y() const noexcept
   {
-    const auto &t = tiles();
-    return (std::min_element(t.cbegin(), t.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); }))
+    return (std::min_element(
+              m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); }))
       ->y();
   }
 
-  [[maybe_unused]] [[nodiscard]] const auto &max_y() const noexcept
+  [[nodiscard]] const auto &max_y() const noexcept
   {
-    const auto &t = tiles();
-    return (std::max_element(t.cbegin(), t.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); }))
+    return (std::max_element(
+              m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); }))
       ->y();
   }
 
 
   [[nodiscard]] auto used_depth_and_palette() const
   {
-    const auto &t = tiles();
-    using T = typename std::decay<decltype(*t.begin())>::type;
+    using T = typename std::decay<decltype(*m_tiles.begin())>::type;
     std::vector<T> out_s1{};
     static constexpr auto default_size = 16U;
     out_s1.reserve(default_size);
-    std::unique_copy(t.begin(), t.end(), std::back_inserter(out_s1), [](const auto &left, const auto &right) {
-      return left.depth() == right.depth() && left.palette_id() == right.palette_id();
-    });
+    std::unique_copy(
+      m_tiles.begin(), m_tiles.end(), std::back_inserter(out_s1), [](const auto &left, const auto &right) {
+        return left.depth() == right.depth() && left.palette_id() == right.palette_id();
+      });
     std::vector<std::pair<BPPT, std::uint8_t>> out{};
     out.reserve(std::ranges::size(out_s1));
     std::transform(out_s1.begin(), out_s1.end(), std::back_inserter(out), [](const auto &tile) {
@@ -226,7 +186,7 @@ public:
     l_canvas.width(static_cast<std::int32_t>(std::abs(l_max_x->x()) + std::abs(l_min_x->x()) + tile_size));
     return l_canvas;
   }
-  void shift(const auto &x, const auto &y) const noexcept
+  void shift(const std::int16_t &x, const std::int16_t &y) const noexcept
   {
     const auto transform = [&x, &y](auto &range) {
       std::ranges::transform(range, range.begin(), [&x, &y](auto t) {
@@ -235,49 +195,26 @@ public:
         return t;
       });
     };
-    if constexpr (typeT == 1 || typeT == 0) {
-      transform(m_t1);
-    }
-    if constexpr (typeT == 2 || typeT == 0) {
-      transform(m_t2);
-    }
-    if constexpr (typeT == 3 || typeT == 0) {
-      transform(m_t3);
-    }
+    transform(m_tiles);
   }
-  auto shift_to_origin() const noexcept
-  {
-    const auto l_minmax_x = minmax_x();
-    const auto l_minmax_y = minmax_y();
+  void shift(const Point<std::int16_t> &point) const noexcept { shift(point.x(), point.y()); }
 
-    const auto &[l_min_x, l_max_x] = l_minmax_x;
-    const auto &[l_min_y, l_max_y] = l_minmax_y;
-    const auto abs_x = std::abs(l_min_x->x());
-    const auto abs_y = std::abs(l_min_y->y());
-    shift(abs_x, abs_y);
-    return Point(l_min_x->x(), l_min_x->y());
-  }
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const Map &m)
   {
-    return os << std::ranges::size(m.m_t1) << ", " << std::ranges::size(m.m_t2) << ", " << std::ranges::size(m.m_t3)
+    return os << std::ranges::size(m.m_tiles) << ", " << std::ranges::size(m.m_t2) << ", " << std::ranges::size(m.m_t3)
               << '\n';
   }
 
 
-
-
-  [[maybe_unused]] void save_csv([[maybe_unused]] const Mim &in_mim,
-    [[maybe_unused]] const std::string_view &in_path) const
+  void save_csv(const std::string_view &in_path) const
   {
-
-    const auto &ts = tiles();
     auto path = std::filesystem::path(in_path);
     Tools::write_buffer(
-      [this, &ts](std::ostream &os) {
+      [this](std::ostream &os) {
         os
           << R"("Depth","Blend Mode","Blend Other","Layer ID","Texture ID","Palette ID","Animation ID","Animation State","Source X","Source Y","X","Y","Z","PUPU ID")"
           << '\n';
-        std::for_each(std::ranges::cbegin(ts), std::ranges::cend(ts), [this, &os](const auto &t) {
+        std::for_each(std::ranges::cbegin(m_tiles), std::ranges::cend(m_tiles), [this, &os](const auto &t) {
           os << '"' << t.depth() << "\"," << static_cast<uint16_t>(t.blend_mode()) << ','
              << static_cast<uint16_t>(t.blend()) << ',' << static_cast<uint16_t>(t.layer_id()) << ','
              << static_cast<uint16_t>(t.texture_id()) << ',' << static_cast<uint16_t>(t.palette_id()) << ','
@@ -289,8 +226,7 @@ public:
       },
       (path.parent_path() / path.stem()).string() + "_map.csv");
   }
-  [[maybe_unused]] void save_v1([[maybe_unused]] const Mim &in_mim,
-    [[maybe_unused]] const std::string_view &in_path) const
+  void save_v1(const Mim &in_mim, const std::string_view &in_path) const
   {
 
     const auto &ts = tiles();
@@ -309,12 +245,14 @@ public:
           // auto x = t.x();
           // auto y = t.y();
 
-          if (depth != t.depth() || palette != t.palette_id() || !t.draw())
+          if (depth != t.depth() || palette != t.palette_id() || !t.draw()) {
             continue;
+          }
           for (std::uint32_t y = {}; y < t.HEIGHT; y++) {
             for (std::uint32_t x = {}; x < t.WIDTH; x++) {
-              if (t.source_y() < 0 || t.source_x() < 0)
+              if (t.source_y() < 0 || t.source_x() < 0) {
                 continue;
+              }
               auto pixel_in = (static_cast<std::uint32_t>(t.source_x()) + x)
                               + ((static_cast<std::uint32_t>(t.source_y()) + y) * width);
               if (t.depth().bpp4()) {

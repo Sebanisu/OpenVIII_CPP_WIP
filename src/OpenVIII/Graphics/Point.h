@@ -7,7 +7,7 @@
 #include <iostream>
 #include <concepts>
 namespace open_viii::graphics {
-template<std::integral dimT> struct Point
+template<typename dimT> requires(std::integral<dimT> || std::floating_point<dimT>) struct Point
 {
 private:
   mutable dimT m_x{};
@@ -27,6 +27,14 @@ public:
   friend auto operator>(const Point<dimT> &left, const Point<dimT> &right) noexcept
   {
     return left.m_x > right.m_x && left.m_y > right.m_y;
+  }
+  [[nodiscard]] auto abs()
+  {
+    if constexpr (std::signed_integral<dimT> || std::floating_point<dimT>) {
+      return Point<dimT>(static_cast<dimT>(std::abs(m_x)), static_cast<dimT>(std::abs(m_y)));
+    } else {
+      return *this;
+    }
   }
   /**
    * X coordinate.

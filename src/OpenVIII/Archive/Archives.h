@@ -489,7 +489,7 @@ public:
                                FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
           archive.execute_on(filename, lambda);
           if constexpr (nested) {
-            archive.execute_on_nested(filename, lambda);
+            archive.execute_with_nested({}, lambda, filename);
           }
         }
       }

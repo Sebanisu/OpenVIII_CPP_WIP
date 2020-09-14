@@ -12,7 +12,9 @@ namespace open_viii::graphics::background {
  * work with.
  * @tparam map_type there are 3 types of maps
  */
-template<size_t map_type> requires(map_type > 0 && map_type <= 3) struct Deswizzle
+template<typename map_type>
+requires(std::is_same_v<map_type,
+           Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct Deswizzle
 {
 private:
   const Mim &m_mim{};
@@ -62,7 +64,7 @@ private:
           [&](const std::span<const Color16> &data,
             [[maybe_unused]] const std::size_t &raw_width,
             [[maybe_unused]] const std::size_t &raw_height,
-            const std::string& local_filename) {
+            const std::string &local_filename) {
             std::ranges::for_each(m_map.tiles() | std::views::filter([&pupu, &palette](const auto &local_t) -> bool {
               return local_t.draw() && palette == local_t.palette_id() && pupu == local_t;
             }),

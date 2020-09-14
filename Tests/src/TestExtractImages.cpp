@@ -52,9 +52,6 @@ int main()
       } else if (open_viii::Tools::i_ends_with(p, ".sp2")) {
         auto t = open_viii::graphics::Sp2(buffer);
         std::cout << p << '\n' << t << '\n';
-      } else if (open_viii::Tools::i_ends_with(p, ".map")) {
-        auto t = open_viii::graphics::background::Map<1>(buffer);
-        std::cout << p << '\n' << t << '\n';
       } else if (open_viii::Tools::i_ends_with(p, ".mim")) {
         auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
         std::cout << p << '\n' << t << '\n';

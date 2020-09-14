@@ -12,7 +12,7 @@ namespace open_viii::graphics {
  * @tparam dimT Number type.
  * @brief 2D Container that holds top left height and width.
  */
-template<typename dimT> struct Rectangle
+template<typename dimT> requires(std::integral<dimT> || std::floating_point<dimT>) struct Rectangle
 {
 private:
   mutable Point<dimT> m_top_left{};
@@ -41,6 +41,7 @@ public:
    *
    * @param x is new Left coordinate.
    * @return Left coordinate.
+   *
    */
   const auto &x(const dimT &x) const noexcept { return m_top_left.x(x); }
   /**
