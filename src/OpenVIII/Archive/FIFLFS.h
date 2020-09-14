@@ -12,7 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FIFLm_fsH
 #define VIIIARCHIVE_FIFLm_fsH
-
+#include <thread>
 #include "FI.h"
 #include "FL.h"
 #include "FS.h"
@@ -496,7 +496,14 @@ public:
 
     const auto items =
       archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
-    std::for_each(std::execution::seq, items.cbegin(), items.cend(), [this, &archive, &lambda](const auto &item) {
+
+    std::vector<std::jthread> threads{};
+    threads.reserve(std::ranges::size(items)/3);
+//    const auto name_view = items | std::views::transform([](const auto idandpath))
+//    {
+//      std::filesystem::path(idandpath.second)
+//    }
+    std::for_each(std::execution::seq, items.cbegin(), items.cend(), [this, &threads, &archive, &lambda](const auto &item) {
       const auto &[id, strVirtualPath] = item;
       FI_Like auto fi = get_entry_by_index(id);
 
@@ -519,7 +526,7 @@ public:
       }();
       if (retVal == TryAddT::added_to_archive) {
       } else if (retVal == TryAddT::archive_full) {
-        lambda(archive);
+        threads.emplace_back([&lambda](const auto archive_copy){lambda(archive_copy);},archive);
         archive = {};
       }
     });

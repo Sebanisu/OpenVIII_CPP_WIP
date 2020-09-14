@@ -14,9 +14,11 @@
 #include "OpenVIII/Graphics/background/Mim.h"
 #include "OpenVIII/Graphics/background/Map.h"
 #include "OpenVIII/Graphics/background/Deswizzle.h"
+#include <chrono>
 
 int main()
 {
+    const auto start = std::chrono::steady_clock::now();
   for (auto &path : open_viii::Paths::get()) {
     open_viii::Tools::replace_slashes(path);
     if (!std::filesystem::exists(path)) {
@@ -49,7 +51,7 @@ int main()
 
           [[maybe_unused]] const auto shift_back = map.shift_to_origin();
           map.save_csv(mim, e.get_full_path(".map"));
-          open_viii::graphics::background::Deswizzle::save(mim, map, e.get_full_path(".mim"));
+          open_viii::graphics::background::Deswizzle(mim, map, e.get_full_path(".mim"));
           // map.save_v1(mim, e.get_full_path(".mim"));
           map.shift(shift_back.x(), shift_back.y());
         };
@@ -63,4 +65,8 @@ int main()
       });
     }
   }
+
+    const auto end = std::chrono::steady_clock::now();
+    const auto diff = end - start;
+    std::cout << std::chrono::duration <double, std::milli> (diff).count() << " ms" << '\n';
 }

@@ -106,7 +106,8 @@ public:
   [[nodiscard]] explicit operator std::uint64_t() const { return generate(); }
   friend std::ostream &operator<<(std::ostream &os, const Pupu &input)
   {
-    return os << std::uppercase << std::hex << std::setfill('0') << std::setw(16U) << input.generate();
+    return os << std::uppercase << std::hex << std::setfill('0') << std::setw(16U) << input.generate()
+              << std::nouppercase << std::dec << std::setfill(' ') << std::setw(0U);
   }
   constexpr explicit Pupu(std::uint64_t pupu_id) noexcept
   {
@@ -163,6 +164,13 @@ public:
   }
 
   explicit Pupu(std::string_view hex) : Pupu(std::strtoull(std::ranges::data(hex), nullptr, HEX_BASE)) {}
+
+  [[nodiscard]] const std::uint16_t &z() const noexcept { return m_z; }
+  [[nodiscard]] const BPPT &depth() const noexcept { return m_depth; }
+  [[nodiscard]] const std::uint8_t &layer_id() const noexcept { return m_layer_id; }
+  [[nodiscard]] const BlendModeT &blend_mode() const noexcept { return m_blend_mode; }
+  [[nodiscard]] const std::uint8_t &animation_id() const noexcept { return m_animation_id; }
+  [[nodiscard]] const std::uint8_t &animation_state() const noexcept { return m_animation_state; }
 };
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_PUPU_H

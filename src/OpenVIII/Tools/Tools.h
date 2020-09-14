@@ -84,9 +84,8 @@ public:
 
     auto fp = std::ofstream(filename, std::ios::out | std::ios::binary | std::ios::trunc);
     if (fp.is_open()) {
-      std::cout << "Saving: " << filename << "...";
+      std::cout << "Saving: " << filename << "...\n";
       lambda(fp);
-      std::cout << "Saved!\n";
       fp.close();
     } else {
       std::cout << "Failed to Open for saving: " << filename << '\n';
