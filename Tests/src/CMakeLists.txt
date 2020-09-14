@@ -76,3 +76,10 @@ add_executable(TestReswizzleFields
         TestReswizzleFields.cpp TestReswizzleFields.h)
 set_target_properties(TestReswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestReswizzleFields VIIIPaths VIIIArchive VIIIGraphics)
+
+
+##test extract all, uses new code to extract files instead of old versions.
+add_executable(TestExtractALL
+        TestExtractALL.cpp TestExtractALL.h)
+set_target_properties(TestExtractALL PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestExtractALL VIIIPaths VIIIArchive)
