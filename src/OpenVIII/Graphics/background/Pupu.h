@@ -70,6 +70,15 @@ public:
            && right.m_blend_mode == left.blend_mode() && right.m_animation_id == left.animation_id()
            && right.m_animation_state == left.animation_state();
   }
+  template<typename tileT>
+  requires(
+    std::is_convertible_v<tileT,
+      Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) bool AllButZ(const tileT
+      &left) const noexcept
+  {
+    return m_depth == left.depth() && m_layer_id == left.layer_id() && m_blend_mode == left.blend_mode()
+           && m_animation_id == left.animation_id() && m_animation_state == left.animation_state();
+  }
   /**
    * Computes the ID from the values.
    * @return all the values as one uint64
@@ -152,6 +161,7 @@ public:
       [[maybe_unused]] constexpr static auto short_mask = 0xFFFFU;
       return static_cast<std::uint16_t>(extract_common(bits_per_short, short_mask));
     };
+    using namespace literals;
     const auto extract_depth = [&extract_crumb]() {
       switch (extract_crumb()) {
       default:

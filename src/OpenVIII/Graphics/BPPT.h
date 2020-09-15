@@ -35,16 +35,16 @@ private:
   bool m_unused4 : 1 { false };
   bool m_unused5 : 1 { false };
 
-  constexpr static auto BPP4{ 4U };
-  constexpr static auto BPP8{ 8U };
-  constexpr static auto BPP16{ 16U };
-  constexpr static auto BPP24{ 24U };
-
   constexpr static auto RAW8_VALUE = 0b1U;
   constexpr static auto RAW16_VALUE = 0b10U;
   constexpr static auto CLP_VALUE = 0b1000U;
 
 public:
+
+  constexpr static auto BPP4{ 4U };
+  constexpr static auto BPP8{ 8U };
+  constexpr static auto BPP16{ 16U };
+  constexpr static auto BPP24{ 24U };
   consteval friend BPPT operator"" _bpp(unsigned long long int value);
   auto operator<=>(const BPPT &) const = default;
   //  constexpr friend auto operator==(const BPPT &left, const BPPT &right)
@@ -212,25 +212,27 @@ public:
     return os << "{BPP: " << static_cast<int>(input) << ", CLP: " << input.m_color_lookup_table_present << '}';
   }
 };
-consteval BPPT operator""_bpp(unsigned long long int value)
-{
-  BPPT r{};
-  switch (value) {
-  case BPPT::BPP4:
-    r.bpp4(true);
-    break;
-  case BPPT::BPP8:
-    r.bpp8(true);
-    break;
-  case BPPT::BPP16:
-    r.bpp16(true);
-    break;
-  case BPPT::BPP24:
-    r.bpp24(true);
-    break;
+namespace literals {
+  consteval BPPT operator""_bpp(unsigned long long int value)
+  {
+    BPPT r{};
+    switch (value) {
+    case BPPT::BPP4:
+      r.bpp4(true);
+      break;
+    case BPPT::BPP8:
+      r.bpp8(true);
+      break;
+    case BPPT::BPP16:
+      r.bpp16(true);
+      break;
+    case BPPT::BPP24:
+      r.bpp24(true);
+      break;
+    }
+    return r;
   }
-  return r;
-}
+}// namespace literals
 static_assert(sizeof(BPPT) == 1U);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_BPPT_H

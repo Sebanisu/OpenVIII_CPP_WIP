@@ -33,6 +33,7 @@ public:
    */
   static constexpr uint8_t DEFAULT_SKIPPED_PALETTES{ 8U };
   static constexpr uint8_t DEFAULT_TYPE{ 1U };
+  static constexpr uint8_t DEFAULT_BPP{ 8U };
   static constexpr std::uint16_t OUT_HEIGHT{ 256U };
 
   static constexpr std::uint16_t OUT_WIDTH{ 128U };
@@ -61,9 +62,18 @@ public:
   {
     return static_cast<std::size_t>(OUT_WIDTH) * static_cast<std::size_t>(m_texture_pages);
   }
+  [[nodiscard]] std::size_t width(const int &bbp) const noexcept
+  {
+    return (width() * DEFAULT_BPP) / static_cast<std::size_t>(bbp);
+  }
   [[nodiscard]] std::size_t file_size() const noexcept
   {
     return palette_section_size() + (width() * static_cast<std::size_t>(OUT_HEIGHT));
+  }
+  [[nodiscard]] consteval static auto &height() noexcept { return OUT_HEIGHT; }
+  [[nodiscard]] auto canvas(int bpp = DEFAULT_BPP, std::uint8_t scale = 1)
+  {
+    return Rectangle<std::size_t>(0, 0, width(bpp) * scale, height() * scale);
   }
   friend std::ostream &operator<<(std::ostream &os, const MimType &m)
   {

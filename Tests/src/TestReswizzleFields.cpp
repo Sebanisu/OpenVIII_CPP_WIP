@@ -22,7 +22,12 @@
 #include "OpenVIII/MenuGroup/MenuGroupFile.h"
 #include "OpenVIII/Graphics/background/Mim.h"
 #include "OpenVIII/Graphics/background/Map.h"
-
+#include "OpenVIII/Graphics/color.h"
+struct pupu_path
+{
+  open_viii::graphics::background::Pupu pupu{};
+  std::filesystem::path path{};
+};
 int main()
 {
   for (auto &path : open_viii::Paths::get()) {
@@ -57,9 +62,24 @@ int main()
         open_viii::FI_Like auto mim_fi = archive.get_entry_by_index(mims[0].first);
         open_viii::graphics::background::MimType mim_type = open_viii::graphics::background::Mim::get_texture_type(
           mim_fi.uncompressed_size(), directory_path.filename().string());
-        const auto reswizzle = [&directory_path](auto map) {
+
+        const auto reswizzle = [&directory_path, &mim_type]<typename tileT>(
+                                 [[maybe_unused]] const open_viii::graphics::background::Map<tileT> &map) {
+          // I need the pupu's with same bppt and path.
+          std::array<std::vector<pupu_path>, 3> path_grouped_by_bppt{};
+
+          std::vector<std::uint16_t> valid_texture_ids{};
+          const auto tiles = map.tiles();
+          valid_texture_ids.reserve(std::ranges::size(tiles));
+          std::ranges::transform(tiles,std::back_insert_iterator(valid_texture_ids),[](const tileT & tile){
+            return tile.texture_id();
+          });
+          std::ranges::sort(valid_texture_ids);
+          auto last =std::unique(std::ranges::begin(valid_texture_ids),std::ranges::end(valid_texture_ids));
+          valid_texture_ids.erase(last,std::ranges::end(valid_texture_ids));
+
           open_viii::Tools::execute_on_directory(
-            directory_path, {}, { ".ppm" }, [&map](const std::filesystem::path &file_path) {
+            directory_path, {}, { ".ppm" }, [&mim_type, &path_grouped_by_bppt](const std::filesystem::path &file_path) {
               // if(!file_path.has_stem()) {return;}
               auto basename = file_path.stem().string();
               static constexpr auto minsize{ 24 };
@@ -71,12 +91,41 @@ int main()
                 return;
               }
               auto hex = std::string_view(basename).substr(std::ranges::size(basename) - 23, 16);
-              auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
+              //auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
 
-              auto pupu_id = open_viii::graphics::background::Pupu(hex);
-              std::cout << basename << '\t' << suffix << '\t' << hex << '\t' << pupu_id << '\t' << prefix;
-              std::cout << '\n';
+                   auto pp = pupu_path{open_viii::graphics::background::Pupu(hex),file_path};
+                   path_grouped_by_bppt.at(pp.pupu.depth().raw() %3U).emplace_back(std::move(pp));
+//              std::cout << basename << '\t' << suffix << '\t' << hex << '\t' << pupu_id << '\t' << prefix;
+//              std::cout << '\n';
+//              const auto canvas = mim_type.canvas();
+//              const auto area = canvas.area();
+//              auto out = std::vector<open_viii::graphics::Color24<0, 1, 2>>(area);
+//              for (const tileT &tile :
+//                map.tiles() | std::views::filter([&pupu_id](const tileT &t) -> bool { return t == pupu_id; })) {
+//                std::cout << tile.palette_id();
+//              }
             });
+          for(const auto & tex_id : valid_texture_ids) {
+            int bpp = 4;
+            for (const auto &pupu_path_vector : path_grouped_by_bppt) {
+              const auto scale = 1;// scale would come from size of imported image and size of canvas from map.
+              const auto width = mim_type.height() * scale;
+              const auto height = mim_type.height() * scale;
+              const auto area = width * height;
+              auto out = std::vector<open_viii::graphics::Color24<0, 1, 2>>(area);
+
+
+              for (const pupu_path &pp : pupu_path_vector) {
+                std::cout << pp.pupu << ' ' << pp.path << std::endl;
+                for (const tileT &tile :
+                  tiles | std::views::filter([&pp, &tex_id](const tileT &t) -> bool { return pp == t && t.texture_id() == tex_id; })) {
+                  std::cout << tile.palette_id();
+                }
+              }
+              bpp *= 2;// 4,8,16
+            }
+          }
+
         };
         const auto map_buffer = archive.get_entry_data(map_filename);
         if (mim_type.type() == 1) {
