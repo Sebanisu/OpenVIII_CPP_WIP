@@ -48,7 +48,7 @@ private:
 
 public:
   // NEW LZSS
-  // LZSS.C -- A Data Compression Program
+  // LZSS.C -- A Data compression Program
   // (tab = 4 spaces)
   // 4/6/1989 Haruhiko Okumura
   // Use, distribute, and modify this program freely.
