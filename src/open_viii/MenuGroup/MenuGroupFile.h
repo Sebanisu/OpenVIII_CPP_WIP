@@ -29,7 +29,7 @@
 #include "OpenVIII/Graphics/color.h"
 #include "OpenVIII/Graphics/tim.h"
 #include "OpenVIII/Graphics/ppm.h"
-//#include "open_viii/Graphics/tim.h"
+//#include "open_viii/graphics/tim.h"
 #include "OpenVIII/Graphics/ppm.h"
 #include <sstream>
 #include <vector>

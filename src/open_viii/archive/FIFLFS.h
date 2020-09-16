@@ -232,22 +232,22 @@ public:
   //      auto filename = dir / path;
   //      if (filename.has_extension()) {
   //        if (Tools::i_equals(filename.extension().string(), ".lzs")) {
-  //          Graphics::lzs(buffer).Save(filename.string() + ".ppm");
+  //          graphics::lzs(buffer).Save(filename.string() + ".ppm");
   //        }
   //
   //        if (Tools::i_equals(filename.extension().string(), ".tim")) {
-  //          const auto timV = Graphics::tim(buffer);
+  //          const auto timV = graphics::tim(buffer);
   //          std::cout << timV;
   //          timV.Save(filename.string() + ".ppm");
   //        }
   //        if (Tools::i_equals(filename.extension().string(), ".tdw")) {
-  //          const auto timV = Graphics::tdw(buffer);
+  //          const auto timV = graphics::tdw(buffer);
   //          std::cout << timV.TIM();
   //          timV.TIM().Save(filename.string() + ".ppm");
   //        }
   //
   //        if (Tools::i_equals(filename.extension().string(), ".tex")) {
-  //          Graphics::tex(buffer).Save(filename.string() + ".ppm");
+  //          graphics::tex(buffer).Save(filename.string() + ".ppm");
   //        }
   //      }
   //    }

@@ -18,7 +18,7 @@
 namespace open_viii::graphics {
 /**
  * @enum open_viii::graphics::BPPT
- * \ingroup Graphics
+ * \ingroup graphics
  * @brief Contains 4 to 24 bits per pixel flags. Also a CLP flag for color lookup table.
  * @note change to default initiated cpp20 style.
  */

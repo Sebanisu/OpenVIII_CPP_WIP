@@ -17,7 +17,7 @@
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timClutHeader
- * @ingroup Graphics
+ * @ingroup graphics
  * @brief Color Lookup Table Header
  */
 struct TimClutHeader
