@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_RINOALIMITBREAKPART2_HPP
 #define VIIIARCHIVE_RINOALIMITBREAKPART2_HPP
 
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "AttackTypeT.hpp"
 #include "AttackFlagsT.hpp"
 #include "TargetT.hpp"

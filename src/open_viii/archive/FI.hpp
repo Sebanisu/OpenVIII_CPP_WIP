@@ -23,7 +23,7 @@
 #include <array>
 #include <algorithm>
 #include "open_viii/tools/Tools.hpp"
-#include "OpenVIII/CompressionTypeT.hpp"
+#include "open_viii/CompressionTypeT.hpp"
 namespace open_viii::archive {
 /**
  * FI is the file index for the FL and FS files.

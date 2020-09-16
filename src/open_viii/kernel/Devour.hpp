@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_DEVOUR_HPP
 #define VIIIARCHIVE_DEVOUR_HPP
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "BattleOnlyStatusesT.hpp"
 #include "PersistentStatusesT.hpp"
 namespace open_viii::kernel {

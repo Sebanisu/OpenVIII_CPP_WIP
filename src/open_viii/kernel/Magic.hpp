@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_MAGIC_HPP
 #define VIIIARCHIVE_MAGIC_HPP
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "AttackTypeT.hpp"
 #include "TargetT.hpp"
 #include "AttackFlagsT.hpp"

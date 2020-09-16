@@ -15,7 +15,7 @@
 #include <string>
 #include <map>
 #include <filesystem>
-#include "OpenVIII/Archive/ZZZ.hpp"
+#include "open_viii/archive/ZZZ.hpp"
 #include "open_viii/tools/Tools.hpp"
 int main();
 #endif// VIIIARCHIVE_TESTEXTRACTZZZ_HPP

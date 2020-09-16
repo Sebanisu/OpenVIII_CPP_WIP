@@ -15,6 +15,9 @@
 #define VIIIARCHIVE_MIM_HPP
 #include "Tile2.hpp"
 #include "Tile3.hpp"
+#include "open_viii/graphics/Bit4Values.hpp"
+#include "open_viii/graphics/Color.hpp"
+#include "open_viii/graphics/Ppm.hpp"
 #include "MimType.hpp"
 #include <span>
 #include <vector>

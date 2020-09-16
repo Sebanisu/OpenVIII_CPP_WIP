@@ -22,8 +22,8 @@
 #include <iterator>
 #include <cstring>
 #include <span>
-#include "OpenVIII/Compression/LZSS.hpp"
-#include "OpenVIII/Compression/L4Z.hpp"
+#include "open_viii/Compression/LZSS.hpp"
+#include "open_viii/Compression/L4Z.hpp"
 #include "open_viii/tools/Tools.hpp"
 
 namespace open_viii::archive {

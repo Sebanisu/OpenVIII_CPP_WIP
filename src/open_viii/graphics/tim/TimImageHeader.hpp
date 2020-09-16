@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #define VIIIARCHIVE_TIMIMAGEHEADER_HPP
-#include "OpenVIII/Graphics/Rectangle.hpp"
+#include "open_viii/graphics/Rectangle.hpp"
 #include <cstdint>
 namespace open_viii::graphics {
 /**

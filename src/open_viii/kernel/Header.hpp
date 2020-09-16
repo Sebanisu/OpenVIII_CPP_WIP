@@ -22,7 +22,7 @@
 #include <iostream>
 #include <algorithm>
 #include "SectionTypesT.hpp"
-#include "OpenVIII/BulkSectionData.hpp"
+#include "open_viii/BulkSectionData.hpp"
 #include "BattleCommands.hpp"
 #include "Magic.hpp"
 #include "JunctionableGFs.hpp"

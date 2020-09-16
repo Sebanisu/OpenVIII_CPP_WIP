@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_COMMANDABILITIES_HPP
 #define VIIIARCHIVE_COMMANDABILITIES_HPP
 
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 
 namespace open_viii::kernel {
 template<LangT langVal> struct CommandAbilities

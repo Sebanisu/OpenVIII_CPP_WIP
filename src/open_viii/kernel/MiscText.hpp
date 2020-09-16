@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_MISCTEXT_HPP
 #define VIIIARCHIVE_MISCTEXT_HPP
 #include <iostream>
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 
 namespace open_viii::kernel {
 template<LangT langVal> struct MiscText

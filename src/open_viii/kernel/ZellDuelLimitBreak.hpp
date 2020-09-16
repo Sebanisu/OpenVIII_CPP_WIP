@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_ZELLDUELLIMITBREAK_HPP
 #define VIIIARCHIVE_ZELLDUELLIMITBREAK_HPP
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "ElementT.hpp"
 #include "BattleOnlyStatusesT.hpp"
 #include "PersistentStatusesT.hpp"

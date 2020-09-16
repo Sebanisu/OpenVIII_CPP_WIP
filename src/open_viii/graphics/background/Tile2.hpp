@@ -16,7 +16,8 @@
 #include <cstdint>
 #include <array>
 #include <string_view>
-#include "OpenVIII/Graphics/Point.hpp"
+#include "open_viii/graphics/Point.hpp"
+#include "open_viii/graphics/Rectangle.hpp"
 #include "TexIdBuffer.hpp"
 #include "PaletteID.hpp"
 #include "LayerID.hpp"

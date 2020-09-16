@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_SP1_HPP
 #define VIIIARCHIVE_SP1_HPP
-#include "OpenVIII/Graphics/sp1/Sp1Header.hpp"
-#include "OpenVIII/Graphics/sp1/Sp1Entry.hpp"
+#include "open_viii/graphics/sp1/Sp1Header.hpp"
+#include "open_viii/graphics/sp1/Sp1Entry.hpp"
 namespace open_viii::graphics {
 /**
  * SP1 file parsing. This file contains the coords for for the icons. These might need scaled up because the values are

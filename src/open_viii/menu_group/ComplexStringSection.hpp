@@ -18,7 +18,7 @@
 #include <array>
 #include <ostream>
 #include <string_view>
-#include "OpenVIII/Strings/FF8String.hpp"
+#include "open_viii/Strings/FF8String.hpp"
 namespace open_viii::menu_group {
 struct ComplexStringSectionEntry
 {

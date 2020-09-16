@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION000_HPP
 #define VIIIARCHIVE_REFINESECTION000_HPP
-#include "OpenVIII/ItemIdT.hpp"
+#include "open_viii/ItemIdT.hpp"
 #include "RefineSpellID.hpp"
 #include "RefineEntry.hpp"
 #include <iostream>
@@ -31,7 +31,7 @@ namespace open_viii::menu_group {
 //  count,
 //};
 
-struct [[maybe_unused]] RefineSection000// Refine Item to Magic
+struct [[maybe_unused]] RefineSection000// refine Item to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data
    * Ability	    # of Entries  mngrp.bin Location	    Offset	Description

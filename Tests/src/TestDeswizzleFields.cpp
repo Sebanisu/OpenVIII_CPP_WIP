@@ -12,17 +12,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestDeswizzleFields.hpp"
 #include "open_viii/paths/Paths.hpp"
-#include "OpenVIII/Archive/Archives.hpp"
-#include "OpenVIII/Graphics/Lzs.hpp"
-#include "OpenVIII/Graphics/Tim.hpp"
-#include "OpenVIII/Graphics/Tdw.hpp"
-#include "OpenVIII/Graphics/Tex.hpp"
-#include "OpenVIII/Graphics/Sp1.hpp"
-#include "OpenVIII/Graphics/Sp2.hpp"
-#include "OpenVIII/MenuGroup/MenuGroupFile.h"
-#include "OpenVIII/Graphics/background/Mim.hpp"
-#include "OpenVIII/Graphics/background/Map.hpp"
-#include "OpenVIII/Graphics/background/Deswizzle.hpp"
+#include "open_viii/archive/Archives.hpp"
+#include "open_viii/graphics/background/Mim.hpp"
+#include "open_viii/graphics/background/Map.hpp"
+#include "open_viii/graphics/background/Deswizzle.hpp"
 #include <chrono>
 
 int main()

@@ -14,10 +14,10 @@
 #ifndef VIIIARCHIVE_TIM_HPP
 #define VIIIARCHIVE_TIM_HPP
 #include "BPPT.hpp"
-#include "OpenVIII/Graphics/tim/TimHeader.hpp"
-#include "OpenVIII/Graphics/tim/TimClutHeader.hpp"
-#include "OpenVIII/Graphics/Color.hpp"
-#include "OpenVIII/Graphics/Ppm.hpp"
+#include "open_viii/graphics/tim/TimHeader.hpp"
+#include "open_viii/graphics/tim/TimClutHeader.hpp"
+#include "open_viii/graphics/Color.hpp"
+#include "open_viii/graphics/Ppm.hpp"
 #include <sstream>
 #include "Bit4Values.hpp"
 namespace open_viii::graphics {

@@ -13,12 +13,12 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION003_HPP
 #define VIIIARCHIVE_REFINESECTION003_HPP
-#include "OpenVIII/ItemIdT.hpp"
+#include "open_viii/ItemIdT.hpp"
 #include "RefineEntry.hpp"
 #include <array>
 #include <iostream>
 namespace open_viii::menu_group {
-struct [[maybe_unused]] RefineSection003// Refine items to items
+struct [[maybe_unused]] RefineSection003// refine items to items
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_3
    * Ability	        # of Entries	mngrp.bin Location	        Offset	Description

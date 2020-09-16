@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_CHARACTERS_HPP
 #define VIIIARCHIVE_CHARACTERS_HPP
 
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "GenderT.hpp"
 #include "StatGroupNoEVANoHIT.hpp"
 namespace open_viii::kernel {

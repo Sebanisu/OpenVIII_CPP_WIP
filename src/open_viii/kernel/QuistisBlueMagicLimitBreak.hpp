@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAK_HPP
 #define VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAK_HPP
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "ElementT.hpp"
 #include "AttackTypeT.hpp"
 #include "AttackFlagsT.hpp"

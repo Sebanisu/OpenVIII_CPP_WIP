@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_NONJUNCTIONABLEGFS_HPP
 #define VIIIARCHIVE_NONJUNCTIONABLEGFS_HPP
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "ElementT.hpp"
 #include "PersistentStatusesT.hpp"
 #include "BattleOnlyStatusesT.hpp"

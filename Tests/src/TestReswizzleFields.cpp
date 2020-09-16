@@ -12,18 +12,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestReswizzleFields.hpp"
 #include "open_viii/paths/Paths.hpp"
-#include "OpenVIII/Archive/Archives.hpp"
-#include "OpenVIII/Graphics/Lzs.hpp"
-#include "OpenVIII/Graphics/Tim.hpp"
-#include "OpenVIII/Graphics/Tdw.hpp"
-#include "OpenVIII/Graphics/Tex.hpp"
-#include "OpenVIII/Graphics/Sp1.hpp"
-#include "OpenVIII/Graphics/Sp2.hpp"
-#include "OpenVIII/MenuGroup/MenuGroupFile.h"
-#include "OpenVIII/Graphics/background/Mim.hpp"
-#include "OpenVIII/Graphics/background/Map.hpp"
-#include "OpenVIII/Graphics/Color.hpp"
-struct pupu_path
+#include "open_viii/archive/Archives.hpp"
+#include "open_viii/graphics/Ppm.hpp"
+#include "open_viii/graphics/background/Mim.hpp"
+#include "open_viii/graphics/background/Map.hpp"
+struct PupuPath
 {
   open_viii::graphics::background::Pupu pupu{};
   std::filesystem::path path{};
@@ -68,7 +61,7 @@ int main()
                                  [[maybe_unused]] const open_viii::graphics::background::Map<tileT> &map) {
           map.save_csv(output_prefix + "_2.csv");
           // I need the pupu's with same bppt and path.
-          std::array<std::vector<pupu_path>, 3> path_grouped_by_bppt{};
+          std::array<std::vector<PupuPath>, 3> path_grouped_by_bppt{};
 
           std::vector<std::uint16_t> valid_texture_ids{};
           const auto tiles = map.tiles();
@@ -94,7 +87,7 @@ int main()
               auto hex = std::string_view(basename).substr(std::ranges::size(basename) - 23, 16);
               // auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
 
-              auto pp = pupu_path{ open_viii::graphics::background::Pupu(hex), file_path };
+              auto pp = PupuPath{ open_viii::graphics::background::Pupu(hex), file_path };
 
               if (pp.pupu.depth().bpp4()) {
                 path_grouped_by_bppt.at(0).emplace_back(std::move(pp));
@@ -112,7 +105,7 @@ int main()
           for (const auto &tex_id : valid_texture_ids) {
             int bpp = 4;
             for (const auto &pupu_path_vector : path_grouped_by_bppt) {
-              for (const pupu_path &pp : pupu_path_vector) {
+              for (const PupuPath &pp : pupu_path_vector) {
                 // std::cout << pp.pupu << ' ' << pp.path << std::endl;
                 // load file
                 std::ifstream fp{};
@@ -123,7 +116,7 @@ int main()
                 auto buffer = open_viii::Tools::read_buffer<std::string>(fp);
                 auto ppm = open_viii::graphics::Ppm(buffer);
                 // copy tiles used to output buffer.
-                for (const tileT &tile : tiles | std::views::filter([&pp, &tex_id](const tileT &t) -> bool {
+                for (const tileT &tile : tiles | std::views::filter([&tex_id, &pp](const tileT &t) -> bool {
                        return pp.pupu == t && t.texture_id() == tex_id;
                      })) {
                   static constexpr auto tile_size = 16U;

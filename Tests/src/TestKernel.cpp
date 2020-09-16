@@ -11,9 +11,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestKernel.hpp"
-#include "OpenVIII/Archive/Archives.hpp"
+#include "open_viii/archive/Archives.hpp"
 #include "open_viii/paths/Paths.hpp"
-#include "OpenVIII/Kernel/Header.hpp"
+#include "open_viii/Kernel/Header.hpp"
 int main()
 {
   for (auto &path : open_viii::Paths::get()) {

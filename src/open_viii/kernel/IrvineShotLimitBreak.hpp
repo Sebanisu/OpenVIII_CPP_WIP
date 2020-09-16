@@ -19,7 +19,7 @@
 #include "AttackTypeT.hpp"
 #include "AttackFlagsT.hpp"
 #include "TargetT.hpp"
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct IrvineShotLimitBreak
 {

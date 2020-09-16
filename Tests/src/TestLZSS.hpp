@@ -12,7 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIICOMPRESSION_TESTLZSS_H
 #define VIIICOMPRESSION_TESTLZSS_H
-#include "OpenVIII/Compression/LZSS.hpp"
+#include "open_viii/Compression/LZSS.hpp"
 #include <iostream>
 int main();
 #endif// VIIICOMPRESSION_TESTLZSS_H

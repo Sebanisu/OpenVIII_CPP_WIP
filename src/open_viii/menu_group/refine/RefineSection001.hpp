@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION001_HPP
 #define VIIIARCHIVE_REFINESECTION001_HPP
-#include "OpenVIII/ItemIdT.hpp"
+#include "open_viii/ItemIdT.hpp"
 #include "RefineEntry.hpp"
 #include <array>
 #include <iostream>

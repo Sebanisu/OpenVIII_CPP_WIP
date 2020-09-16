@@ -11,32 +11,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_REFINESECTION002_HPP
-#define VIIIARCHIVE_REFINESECTION002_HPP
-#include "RefineSpellID.hpp"
+#ifndef VIIIARCHIVE_REFINESECTION004_HPP
+#define VIIIARCHIVE_REFINESECTION004_HPP
+#include "open_viii/ItemIdT.hpp"
 #include "RefineEntry.hpp"
+#include "RefineCardID.hpp"
+#include <array>
 #include <iostream>
 namespace open_viii::menu_group {
-struct [[maybe_unused]] RefineSection002// Refine Magic to Magic
+struct [[maybe_unused]] RefineSection004// refine cards to items
 {
-  /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_3
+  /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_5
    * Ability	        # of Entries	mngrp.bin Location	        Offset	Description
-   * Mid-Mag-RF	        4 entries	(mngrp.bin loc: 0x2200000)	0x0	Upgrade Magic from low level to mid
-   * level High-Mag-RF	6 entries	(mngrp.bin loc: 0x2200020)	0x20	Upgrade Magic from mid level to high
+   * CardMod	        110 Entries	(mngrp.bin loc: 0x221000)	0x0	Card to Items
    * level
    */
 
 private:
-  static constexpr auto MID_MAG_RF_COUNT = 4U;
-  static constexpr auto HIGH_MAG_RF_COUNT = 6U;
-  std::array<RefineEntry<RefineSpellID, RefineSpellID>, MID_MAG_RF_COUNT> m_mid_mag_rf{};
-  std::array<RefineEntry<RefineSpellID, RefineSpellID>, HIGH_MAG_RF_COUNT> m_high_mag_rf{};
-
+  static constexpr auto CARD_MOD_COUNT = 110U;
+  std::array<RefineEntry<RefineCardID, ItemIdT>, CARD_MOD_COUNT> m_card_mod{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &mid_mag_rf() const noexcept { return m_mid_mag_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &high_mag_rf() const noexcept { return m_high_mag_rf; }
-  [[nodiscard]] static constexpr auto size() { return MID_MAG_RF_COUNT + HIGH_MAG_RF_COUNT; }
+  [[nodiscard]] const auto &card_mod() const noexcept { return m_card_mod; }
+  [[nodiscard]] const auto *operator->() const { return &m_card_mod; }
+  [[nodiscard]] static constexpr auto size() { return CARD_MOD_COUNT; }
   template<LangT langVal, typename T>
   std::ostream &out_array(const T &arr,
     std::ostream &os,
@@ -55,12 +53,10 @@ public:
     bool skip_first_null = false) const
 
   {
-    os << "midMagRF_:\n";
-    out_array<langVal>(m_mid_mag_rf, os, buffer, offset, skip_first_null);
-    os << "highMagRF_:\n";
-    out_array<langVal>(m_high_mag_rf, os, buffer, offset, skip_first_null);
+    os << "cardMod:\n";
+    out_array<langVal>(m_card_mod, os, buffer, offset, skip_first_null);
     return os;
   }
 };
 }// namespace open_viii::menu_group
-#endif// VIIIARCHIVE_REFINESECTION002_HPP
+#endif// VIIIARCHIVE_REFINESECTION004_HPP

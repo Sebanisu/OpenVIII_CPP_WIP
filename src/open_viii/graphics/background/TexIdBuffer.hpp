@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_TEXIDBUFFER_HPP
 #define VIIIARCHIVE_TEXIDBUFFER_HPP
 #include <cstdint>
-#include "OpenVIII/Graphics/BPPT.hpp"
+#include "open_viii/graphics/BPPT.hpp"
 namespace open_viii::graphics::background {
 /**
  * 4 bit paletteID nested inside of 16 bits of data.

@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_MISC_HPP
 #define VIIIARCHIVE_MISC_HPP
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "SequenceAndTimer.hpp"
 #include "CrisisLevelT.hpp"
 namespace open_viii::kernel {

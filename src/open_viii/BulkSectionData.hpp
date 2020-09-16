@@ -15,9 +15,9 @@
 #define VIIIARCHIVE_BULKSECTIONDATA_HPP
 #include <string_view>
 #include <iterator>
-#include "OpenVIII/ItemIdT.hpp"
-#include "OpenVIII/Kernel/BattleItems.hpp"
-#include "OpenVIII/Kernel/NonBattleItems.hpp"
+#include "open_viii/ItemIdT.hpp"
+#include "open_viii/Kernel/BattleItems.hpp"
+#include "open_viii/Kernel/NonBattleItems.hpp"
 
 namespace open_viii {
 

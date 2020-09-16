@@ -11,17 +11,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestMenuGroup.hpp"
-#include "OpenVIII/Archive/Archives.hpp"
+#include "open_viii/archive/Archives.hpp"
 #include "open_viii/paths/Paths.hpp"
-#include "OpenVIII/BulkSectionData.hpp"
-#include "OpenVIII/MenuGroup/MenuGroupHeader.h"
-#include "OpenVIII/MenuGroup/MenuMessages.h"
-#include "OpenVIII/MenuGroup/Refine/RefineSection000.h"
-#include "OpenVIII/MenuGroup/Refine/RefineSection001.h"
-#include "OpenVIII/MenuGroup/Refine/RefineSection002.h"
-#include "OpenVIII/MenuGroup/Refine/RefineSection003.h"
-#include "OpenVIII/MenuGroup/Refine/RefineSection004.h"
-#include "OpenVIII/MenuGroup/MenuGroupFile.h"
+#include "open_viii/BulkSectionData.hpp"
+#include "open_viii/menu_group/MenuGroupHeader.hpp"
+#include "open_viii/menu_group/MenuMessages.hpp"
+#include "open_viii/menu_group/refine/RefineSection000.hpp"
+#include "open_viii/menu_group/refine/RefineSection001.hpp"
+#include "open_viii/menu_group/refine/RefineSection002.hpp"
+#include "open_viii/menu_group/refine/RefineSection003.hpp"
+#include "open_viii/menu_group/refine/RefineSection004.hpp"
+#include "open_viii/menu_group/MenuGroupFile.hpp"
 
 
 int main()

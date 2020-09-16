@@ -13,9 +13,9 @@
 
 #ifndef VIIIARCHIVE_REFINE_HPP
 #define VIIIARCHIVE_REFINE_HPP
-#include "OpenVIII/MenuGroup/Refine/RefineSection000.h"
-#include "OpenVIII/MenuGroup/Refine/RefineSection001.h"
-#include "OpenVIII/MenuGroup/Refine/RefineSection002.h"
-#include "OpenVIII/MenuGroup/Refine/RefineSection003.h"
-#include "OpenVIII/MenuGroup/Refine/RefineSection004.h"
+#include "open_viii/menu_group/refine/RefineSection000.h"
+#include "open_viii/menu_group/refine/RefineSection001.h"
+#include "open_viii/menu_group/refine/RefineSection002.h"
+#include "open_viii/menu_group/refine/RefineSection003.h"
+#include "open_viii/menu_group/refine/RefineSection004.h"
 #endif// VIIIARCHIVE_REFINE_HPP

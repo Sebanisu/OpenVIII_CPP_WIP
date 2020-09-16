@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_ENEMYATTACKS_HPP
 #define VIIIARCHIVE_ENEMYATTACKS_HPP
 
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "BattleOnlyStatusesT.hpp"
 #include "AttackFlagsT.hpp"

@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_GFABILITIES_HPP
 #define VIIIARCHIVE_GFABILITIES_HPP
 
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "StatT.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct GFAbilities

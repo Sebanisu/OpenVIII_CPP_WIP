@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_RECTANGLE_HPP
 #define VIIIARCHIVE_RECTANGLE_HPP
-#include "OpenVIII/Graphics/Point.hpp"
+#include "open_viii/graphics/Point.hpp"
 #include <iostream>
 namespace open_viii::graphics {
 /**

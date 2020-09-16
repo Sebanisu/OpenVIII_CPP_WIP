@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_CHARACTERABILITIES_HPP
 #define VIIIARCHIVE_CHARACTERABILITIES_HPP
 
-#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "CharacterAbilityFlagsT.hpp"
 #include <cstring>
 namespace open_viii::kernel {
