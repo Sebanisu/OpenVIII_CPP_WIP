@@ -14,12 +14,12 @@
 #ifndef VIIIARCHIVE_COMMANDABILITIESDATA_H
 #define VIIIARCHIVE_COMMANDABILITIESDATA_H
 
-#include "OpenVIII/Strings/EncodedStringOffset.h"
-#include "PersistentStatusesT.h"
-#include "BattleOnlyStatusesT.h"
-#include "AttackTypeT.h"
-#include "AttackFlagsT.h"
-#include "ElementT.h"
+#include "OpenVIII/Strings/EncodedStringOffset.hpp"
+#include "PersistentStatusesT.hpp"
+#include "BattleOnlyStatusesT.hpp"
+#include "AttackTypeT.hpp"
+#include "AttackFlagsT.hpp"
+#include "ElementT.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct CommandAbilitiesData
 {

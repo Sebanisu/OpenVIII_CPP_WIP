@@ -11,8 +11,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include "TestExtractSingleZZZ.h"
-#include "OpenVIII/Paths/Paths.h"
+#include "TestExtractSingleZZZ.hpp"
+#include "open_viii/paths/Paths.hpp"
 int main()
 {
   const std::initializer_list<std::string_view> extensions = {

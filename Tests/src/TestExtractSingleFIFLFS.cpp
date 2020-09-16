@@ -12,8 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <string>
-#include "TestExtractSingleFIFLFS.h"
-#include "OpenVIII/Paths/Paths.h"
+#include "TestExtractSingleFIFLFS.hpp"
+#include "open_viii/paths/Paths.hpp"
 int main()
 {
   // test FIFLFS

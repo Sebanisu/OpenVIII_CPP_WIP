@@ -10,10 +10,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include "TestMenuGroup.h"
-#include "OpenVIII/Archive/Archives.h"
-#include "OpenVIII/Paths/Paths.h"
-#include "OpenVIII/BulkSectionData.h"
+#include "TestMenuGroup.hpp"
+#include "OpenVIII/Archive/Archives.hpp"
+#include "open_viii/paths/Paths.hpp"
+#include "OpenVIII/BulkSectionData.hpp"
 #include "OpenVIII/MenuGroup/MenuGroupHeader.h"
 #include "OpenVIII/MenuGroup/MenuMessages.h"
 #include "OpenVIII/MenuGroup/Refine/RefineSection000.h"

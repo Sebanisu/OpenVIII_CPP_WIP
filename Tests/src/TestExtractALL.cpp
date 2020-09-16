@@ -10,9 +10,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include "TestExtractALL.h"
-#include "OpenVIII/Paths/Paths.h"
-#include "OpenVIII/Archive/Archives.h"
+#include "TestExtractALL.hpp"
+#include "open_viii/paths/Paths.hpp"
+#include "OpenVIII/Archive/Archives.hpp"
 
 int main()
 {

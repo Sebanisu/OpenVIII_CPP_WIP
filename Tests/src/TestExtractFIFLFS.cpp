@@ -10,8 +10,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include "TestExtractFIFLFS.h"
-#include "OpenVIII/Paths/Paths.h"
+#include "TestExtractFIFLFS.hpp"
+#include "open_viii/paths/Paths.hpp"
 
 int main()
 {

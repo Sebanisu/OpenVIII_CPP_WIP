@@ -19,7 +19,7 @@
 #include <cctype>
 #include <string_view>
 #include "Color.hpp"
-#include "OpenVIII/concepts.h"
+#include "OpenVIII/Concepts.hpp"
 namespace open_viii::graphics {
 struct Ppm
 {

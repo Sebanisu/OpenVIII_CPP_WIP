@@ -10,9 +10,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include "TestDeswizzleFields.h"
-#include "OpenVIII/Paths/Paths.h"
-#include "OpenVIII/Archive/Archives.h"
+#include "TestDeswizzleFields.hpp"
+#include "open_viii/paths/Paths.hpp"
+#include "OpenVIII/Archive/Archives.hpp"
 #include "OpenVIII/Graphics/Lzs.hpp"
 #include "OpenVIII/Graphics/Tim.hpp"
 #include "OpenVIII/Graphics/Tdw.hpp"

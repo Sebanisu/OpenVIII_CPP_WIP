@@ -10,9 +10,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include "TestArchives.h"
-#include "OpenVIII/Archive/Archives.h"
-#include "OpenVIII/Paths/Paths.h"
+#include "TestArchives.hpp"
+#include "OpenVIII/Archive/Archives.hpp"
+#include "open_viii/paths/Paths.hpp"
 int main()
 {
   for (auto &path : open_viii::Paths::get()) {

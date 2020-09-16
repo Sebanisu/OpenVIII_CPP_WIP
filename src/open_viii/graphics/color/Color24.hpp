@@ -17,8 +17,8 @@
 #include <cstdint>
 #include <bitset>
 #include <limits>
-#include "OpenVIII/concepts.h"
-#include "OpenVIII/Tools/Tools.h"
+#include "OpenVIII/Concepts.hpp"
+#include "open_viii/tools/Tools.hpp"
 namespace open_viii::graphics {
 
 /**
