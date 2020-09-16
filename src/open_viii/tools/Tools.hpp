@@ -346,6 +346,15 @@ public:
   {
     return std::ranges::all_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
   }
+  template <std::unsigned_integral intT, std::invocable<intT,intT> lambdaT>
+  static void for_each_xy(const intT &max_xy, const lambdaT & lambda)
+  {
+    for (intT y{}; y < max_xy; y++) {
+      for (intT x{}; x < max_xy; x++) {
+        lambda(x,y);
+      }
+    }
+  }
 };
 }// namespace open_viii
 #endif// !VIITOOLS_H

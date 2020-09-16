@@ -23,22 +23,23 @@ struct PupuPath
 };
 int main()
 {
-  open_viii::Paths::for_each_path([](const std::filesystem::path &path){
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
 
     open_viii::Tools::execute_on_directories(
       std::filesystem::current_path(), { "ecenter3" }, [&field](const std::filesystem::path &directory_path) {
-        const std::string fi_filename = directory_path.filename().string() + std::string(open_viii::archive::FI::EXT);
-        const std::string fl_filename = directory_path.filename().string() + std::string(open_viii::archive::FL::EXT);
-        const std::string fs_filename = directory_path.filename().string() + std::string(open_viii::archive::FS::EXT);
+        const std::string &dir_name = directory_path.filename().string();
+        const std::string fi_filename = dir_name + std::string(open_viii::archive::FI::EXT);
+        const std::string fl_filename = dir_name + std::string(open_viii::archive::FL::EXT);
+        const std::string fs_filename = dir_name + std::string(open_viii::archive::FS::EXT);
         auto archive = field.get_fiflfs({ fi_filename, fl_filename, fs_filename });
 
         if (!static_cast<bool>(archive)) {
           return;// no archive for this directory.
         }
-        const std::string map_filename = directory_path.filename().string() + std::string(".map");
-        const std::string mim_filename = directory_path.filename().string() + std::string(".mim");
+        const std::string map_filename = dir_name + std::string(".map");
+        const std::string mim_filename = dir_name + std::string(".mim");
         const std::string output_prefix = (directory_path / directory_path.filename()).string();
         // std::cout << map_filename << '\n';
         // std::cout << archive << '\n';
@@ -48,11 +49,11 @@ int main()
         }
         open_viii::FI_Like auto mim_fi = archive.get_entry_by_index(mims[0].first);
         open_viii::graphics::background::MimType mim_type = open_viii::graphics::background::Mim::get_texture_type(
-          mim_fi.uncompressed_size(), directory_path.filename().string());
+          mim_fi.uncompressed_size(), dir_name);
 
-        const auto reswizzle = [&directory_path, &mim_type, &output_prefix]<typename tileT>(
+        const auto reswizzle = [&directory_path, &dir_name, &mim_type, &output_prefix]<typename tileT>(
                                  [[maybe_unused]] const open_viii::graphics::background::Map<tileT> &map) {
-          //map.save_csv(output_prefix + "_2.csv");
+          // map.save_csv(output_prefix + "_2.csv");
           // I need the pupu's with same bppt and path.
           std::array<std::vector<PupuPath>, 3> path_grouped_by_bppt{};
 
@@ -60,13 +61,13 @@ int main()
           const auto tiles = map.tiles();
           valid_texture_ids.reserve(std::ranges::size(tiles));
           std::ranges::transform(
-            tiles, std::back_insert_iterator(valid_texture_ids), [](const tileT &tile) { return tile.texture_id(); });
+            tiles, std::back_insert_iterator(valid_texture_ids), [&dir_name](const tileT &tile) { return tile.texture_id(); });
           std::ranges::sort(valid_texture_ids);
           auto last = std::unique(std::ranges::begin(valid_texture_ids), std::ranges::end(valid_texture_ids));
           valid_texture_ids.erase(last, std::ranges::end(valid_texture_ids));
 
           open_viii::Tools::execute_on_directory(
-            directory_path, {}, { ".ppm" }, [&mim_type, &path_grouped_by_bppt](const std::filesystem::path &file_path) {
+            directory_path, {dir_name}, { ".ppm" }, [&dir_name, &mim_type, &path_grouped_by_bppt](const std::filesystem::path &file_path) {
               // if(!file_path.has_stem()) {return;}
               auto basename = file_path.stem().string();
               static constexpr auto minsize{ 24 };
@@ -78,21 +79,23 @@ int main()
                 return;
               }
               auto hex = std::string_view(basename).substr(std::ranges::size(basename) - 23, 16);
-              // auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
+              auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
+              if(open_viii::Tools::i_equals(prefix,dir_name)) {
+                //std::cout << prefix << '\n';
+                auto pp = PupuPath{ open_viii::graphics::background::Pupu(hex), file_path };
 
-              auto pp = PupuPath{ open_viii::graphics::background::Pupu(hex), file_path };
-
-              if (pp.pupu.depth().bpp4()) {
-                path_grouped_by_bppt.at(0).emplace_back(std::move(pp));
-              } else if (pp.pupu.depth().bpp8()) {
-                path_grouped_by_bppt.at(1).emplace_back(std::move(pp));
-              } else if (pp.pupu.depth().bpp16()) {
-                path_grouped_by_bppt.at(2).emplace_back(std::move(pp));
+                if (pp.pupu.depth().bpp4()) {
+                  path_grouped_by_bppt.at(0).emplace_back(std::move(pp));
+                } else if (pp.pupu.depth().bpp8()) {
+                  path_grouped_by_bppt.at(1).emplace_back(std::move(pp));
+                } else if (pp.pupu.depth().bpp16()) {
+                  path_grouped_by_bppt.at(2).emplace_back(std::move(pp));
+                }
               }
             });
           const auto scale = 1;// scale would come from size of imported image and size of canvas from map.
-          const auto width = mim_type.height() * scale;
-          const auto height = mim_type.height() * scale;
+          const auto width = open_viii::graphics::background::MimType::height() * scale;
+          const auto height = open_viii::graphics::background::MimType::height() * scale;
           const auto area = width * height;
           auto out = std::vector<open_viii::graphics::Color24<0, 1, 2>>(area);
           for (const auto &tex_id : valid_texture_ids) {
@@ -113,18 +116,16 @@ int main()
                        return pp.pupu == t && t.texture_id() == tex_id;
                      })) {
                   static constexpr auto tile_size = 16U;
-                  for (std::size_t y = 0; y < tile_size * scale; y++) {
-                    for (std::size_t x = 0; x < tile_size * scale; x++) {
-                      const auto scaled_tile_y = static_cast<std::size_t>(tile.y() * scale);
-                      const auto scaled_tile_x = static_cast<std::size_t>(tile.x() * scale);
-                      auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
-                      if (!color.is_black()) {
-                        const std::size_t scaled_tile_source_x = tile.source_x() * scale;
-                        const std::size_t scaled_tile_source_y = tile.source_y() * scale;
-                        out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * width)) = color;
-                      }
+                  open_viii::Tools::for_each_xy(tile_size * scale, [&tile,&scale,&ppm,&out](const auto &x, const auto &y) {
+                    const auto scaled_tile_y = static_cast<std::size_t>(tile.y() * scale);
+                    const auto scaled_tile_x = static_cast<std::size_t>(tile.x() * scale);
+                    auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
+                    if (!color.is_black()) {
+                      const std::size_t scaled_tile_source_x = tile.source_x() * scale;
+                      const std::size_t scaled_tile_source_y = tile.source_y() * scale;
+                      out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * width)) = color;
                     }
-                  }
+                  });
                 }
               }
               // save output;
