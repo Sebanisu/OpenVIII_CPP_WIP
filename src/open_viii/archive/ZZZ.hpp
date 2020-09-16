@@ -137,7 +137,7 @@ public:
     }
   }
   [[nodiscard]] static std::vector<std::pair<std::string, open_viii::archive::ZZZ>> get_files_from_path(
-    const std::string_view path)
+    const std::filesystem::path &path)
   {
     const std::filesystem::directory_options options = std::filesystem::directory_options::skip_permission_denied;
 

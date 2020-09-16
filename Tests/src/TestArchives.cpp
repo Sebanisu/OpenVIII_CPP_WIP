@@ -15,11 +15,7 @@
 #include "open_viii/paths/Paths.hpp"
 int main()
 {
-  for (auto &path : open_viii::Paths::get()) {
-    open_viii::Tools::replace_slashes(path);
-    if (!std::filesystem::exists(path)) {
-      continue;
-    }
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
 
@@ -29,13 +25,12 @@ int main()
       [[maybe_unused]] const auto archive = archives.get(result.first);
       for (const auto &item : result.second) { std::cout << "  " << item.first << ", " << item.second << '\n'; }
     }
-    continue;
     [[maybe_unused]] const auto &battle = archives.get<open_viii::archive::ArchiveTypeT::battle>();
     std::cout << battle << std::endl;
     [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
     std::cout << field << std::endl;
-    [[maybe_unused]] const auto &nestedField = archives.get_nested({});
-    for (const auto &nested : nestedField) { std::cout << nested << std::endl; }
+    [[maybe_unused]] const auto &nested_field = archives.get_nested({});
+    for (const auto &nested : nested_field) { std::cout << nested << std::endl; }
     [[maybe_unused]] const auto &magic = archives.get<open_viii::archive::ArchiveTypeT::magic>();
     std::cout << magic << std::endl;
     [[maybe_unused]] const auto &main = archives.get<open_viii::archive::ArchiveTypeT::main>();
@@ -45,10 +40,10 @@ int main()
     [[maybe_unused]] const auto &world = archives.get<open_viii::archive::ArchiveTypeT::world>();
     std::cout << world << std::endl;
 
-    [[maybe_unused]] const auto &zzzMain = archives.get<open_viii::archive::ArchiveTypeT::zzz_main>();
-    std::cout << zzzMain << std::endl;
-    [[maybe_unused]] const auto &zzzOther = archives.get<open_viii::archive::ArchiveTypeT::zzz_other>();
-    std::cout << zzzOther << std::endl;
-  }
+    [[maybe_unused]] const auto &zzz_main = archives.get<open_viii::archive::ArchiveTypeT::zzz_main>();
+    std::cout << zzz_main << std::endl;
+    [[maybe_unused]] const auto &zzz_other = archives.get<open_viii::archive::ArchiveTypeT::zzz_other>();
+    std::cout << zzz_other << std::endl;
+  });
   return 0;
 }

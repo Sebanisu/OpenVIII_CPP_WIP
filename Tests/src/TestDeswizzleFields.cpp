@@ -21,11 +21,7 @@
 int main()
 {
   const auto start = std::chrono::steady_clock::now();
-  for (auto &path : open_viii::Paths::get()) {
-    open_viii::Tools::replace_slashes(path);
-    if (!std::filesystem::exists(path)) {
-      continue;
-    }
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path){
     std::cout << path << std::endl;
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     {
@@ -70,7 +66,7 @@ int main()
         }
       });
     }
-  }
+  });
 
   const auto end = std::chrono::steady_clock::now();
   const auto diff = end - start;

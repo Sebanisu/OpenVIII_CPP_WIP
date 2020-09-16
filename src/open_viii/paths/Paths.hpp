@@ -13,7 +13,11 @@
 #ifndef VIIIARCHIVE_TESTPATHS_H
 #define VIIIARCHIVE_TESTPATHS_H
 #include <array>
+#include <filesystem>
 #include <string>
+#include <ranges>
+#include <algorithm>
+#include "open_viii/tools/Tools.hpp"
 namespace open_viii {
 struct Paths
 {
@@ -30,6 +34,16 @@ public:
       R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s,
       R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s };
     return paths;
+  }
+  template<std::invocable<std::filesystem::path> lambdaT> static auto for_each_path(const lambdaT &lambda)
+  {
+    std::ranges::for_each(get(), [&lambda](std::string &path) {
+      open_viii::Tools::replace_slashes(path);
+      const auto fs_path = std::filesystem::path(path);
+      if (std::filesystem::exists(fs_path)) {
+        lambda(fs_path);
+      }
+    });
   }
 };
 }// namespace open_viii

@@ -26,11 +26,7 @@
 
 int main()
 {
-  for (auto &path : open_viii::Paths::get()) {
-    open_viii::Tools::replace_slashes(path);
-    if (!std::filesystem::exists(path)) {
-      continue;
-    }
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
     constexpr auto coo = open_viii::LangT::en;
     const auto archives = open_viii::archive::Archives<coo>(path);
@@ -52,7 +48,7 @@ int main()
     mngrpfile.test_mes<coo>();
     mngrpfile.test_refine<coo>();
     // mngrpfile.test_tim(menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
-    continue;
+
     // auto mngrphd = open_viii::menu_group::menu_groupHeader{ menu };
     // auto mngrpBuffer = menu.get_entry_data("mngrp.bin");
     // std::cout << "mngrphd.bin " << mngrphd.Sections().size() << " sections\n";
@@ -193,6 +189,6 @@ int main()
     //             }
     //           }
     //    });
-  }
+  });
   return 0;
 }

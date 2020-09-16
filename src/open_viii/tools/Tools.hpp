@@ -24,6 +24,9 @@
 #include "open_viii/Concepts.hpp"
 #include <chrono>
 #include <thread>
+#include <span>
+#include <iostream>
+#include <cstring>
 namespace open_viii {
 struct [[maybe_unused]] Tools
 {
@@ -299,6 +302,20 @@ public:
     return std::ranges::size(haystack) >= std::ranges::size(starting)
            && std::ranges::equal(starting, haystack_view, IEqualPredicate());
   }
+  template<std::ranges::contiguous_range needleT>
+  [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(const std::string_view &haystack, const needleT &needles)
+  {
+    // std::cout << haystack <<std::endl;
+    size_t i{};
+    if (std::ranges::any_of(needles, [&haystack, &i](const auto &needle) -> bool {
+          ++i;
+          return i_ends_with(haystack, needle);
+        })) {
+      return i;// return index of found +1;
+    }
+    return size_t{};// return 0 if not found;
+  }
+
   [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &needles)
   {
@@ -312,7 +329,6 @@ public:
     }
     return size_t{};// return 0 if not found;
   }
-
   [[maybe_unused]] [[nodiscard]] static auto i_starts_with_any(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &needles)
   {

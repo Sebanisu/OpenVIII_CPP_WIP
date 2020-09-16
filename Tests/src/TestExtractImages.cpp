@@ -25,11 +25,7 @@
 
 int main()
 {
-  for (auto &path : open_viii::Paths::get()) {
-    open_viii::Tools::replace_slashes(path);
-    if (!std::filesystem::exists(path)) {
-      continue;
-    }
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path){
     std::cout << path << std::endl;
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] static constexpr auto dump_image = [](std::vector<char> &&in_buffer, std::string &&in_path) {
@@ -73,5 +69,5 @@ int main()
     std::cout << menu << std::endl;
     auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };
     mngrpfile.test_tim(menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
-  }
+  });
 }

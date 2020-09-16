@@ -24,11 +24,7 @@ int main()
   if (needle.empty()) {
     return 1;
   }
-  for (auto &path : open_viii::Paths::get()) {
-    open_viii::Tools::replace_slashes(path);
-    if (!std::filesystem::exists(path)) {
-      continue;
-    }
+  open_viii::Paths::for_each_path([&needle](const std::filesystem::path &path){
     const auto files = open_viii::archive::FIFLFS<true>::get_files_from_path(path);
     for (const auto &entry : files) {
 
@@ -86,7 +82,6 @@ int main()
         }
       }
     }
-  }
-  // std::for_each(std::begin(files), std::end(files), &open_viii::archive::FIFLFS::testPair);
+  });
   return 0;
 }

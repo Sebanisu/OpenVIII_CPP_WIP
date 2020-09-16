@@ -13,14 +13,11 @@
 #include "TestKernel.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/paths/Paths.hpp"
-#include "open_viii/Kernel/Header.hpp"
+#include "open_viii/kernel/Header.hpp"
 int main()
 {
-  for (auto &path : open_viii::Paths::get()) {
-    open_viii::Tools::replace_slashes(path);
-    if (!std::filesystem::exists(path)) {
-      continue;
-    }
+
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
     const auto coo = open_viii::LangT::en;
     const auto archives = open_viii::archive::Archives<coo>(path);
@@ -52,6 +49,6 @@ int main()
         std::cout << '\n';
       }
     });
-  }
+  });
   return 0;
 }

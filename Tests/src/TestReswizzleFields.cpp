@@ -23,16 +23,9 @@ struct PupuPath
 };
 int main()
 {
-  for (auto &path : open_viii::Paths::get()) {
-    open_viii::Tools::replace_slashes(path);
-    if (!std::filesystem::exists(path)) {
-      continue;
-    }
-    // std::cout << path << std::endl;
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path){
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-    //    [[maybe_unused]]const auto ppms =
-    //     open_viii::tools::i_path_extension_ends_with_any(std::filesystem::current_path(),{"test"},{".ppm"});
 
     open_viii::Tools::execute_on_directories(
       std::filesystem::current_path(), { "ecenter3" }, [&field](const std::filesystem::path &directory_path) {
@@ -59,7 +52,7 @@ int main()
 
         const auto reswizzle = [&directory_path, &mim_type, &output_prefix]<typename tileT>(
                                  [[maybe_unused]] const open_viii::graphics::background::Map<tileT> &map) {
-          map.save_csv(output_prefix + "_2.csv");
+          //map.save_csv(output_prefix + "_2.csv");
           // I need the pupu's with same bppt and path.
           std::array<std::vector<PupuPath>, 3> path_grouped_by_bppt{};
 
@@ -140,7 +133,7 @@ int main()
               std::fill(std::ranges::begin(out), std::ranges::end(out), open_viii::graphics::Color24<0, 1, 2>{});
               // increase bpp;
               bpp *= 2;// 4,8,16
-              if (bpp > 16) {
+              if (static_cast<unsigned>(bpp) > open_viii::graphics::BPPT::BPP16) {
                 break;
               }
             }
@@ -155,5 +148,5 @@ int main()
           reswizzle(open_viii::graphics::background::Map<open_viii::graphics::background::Tile3>(map_buffer));
         }
       });
-  }
+  });
 }

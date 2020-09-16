@@ -16,15 +16,11 @@ int main()
 {
   const auto start = std::chrono::steady_clock::now();
   // test ZZZ extract with FIFLFS
-  for (auto &path : open_viii::Paths::get()) {
-    open_viii::Tools::replace_slashes(path);
 
-    if (!std::filesystem::exists(path)) {
-      continue;
-    }
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path){
     const auto files = open_viii::archive::ZZZ::get_files_from_path(path);
     std::for_each(files.begin(), files.end(), &open_viii::archive::ZZZ::test_pair);
-  }
+  });
   const auto end = std::chrono::steady_clock::now();
   const auto diff = end - start;
   std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms" << '\n';
