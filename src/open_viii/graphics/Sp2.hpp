@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_SP2_HPP
 #define VIIIARCHIVE_SP2_HPP
-#include "sp2/sp2Entry.h"
-#include "sp2/sp2Header.h"
+#include "sp2/Sp2Entry.hpp"
+#include "sp2/Sp2Header.hpp"
 #include <cstring>
 namespace open_viii::graphics {
 /**

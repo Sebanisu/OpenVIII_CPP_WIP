@@ -20,9 +20,9 @@
 #include "OpenVIII/Graphics/Sp1.hpp"
 #include "OpenVIII/Graphics/Sp2.hpp"
 #include "OpenVIII/MenuGroup/MenuGroupFile.h"
-#include "OpenVIII/Graphics/background/Mim.h"
-#include "OpenVIII/Graphics/background/Map.h"
-#include "OpenVIII/Graphics/background/Deswizzle.h"
+#include "OpenVIII/Graphics/background/Mim.hpp"
+#include "OpenVIII/Graphics/background/Map.hpp"
+#include "OpenVIII/Graphics/background/Deswizzle.hpp"
 #include <chrono>
 
 int main()

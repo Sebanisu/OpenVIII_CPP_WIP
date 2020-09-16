@@ -11,16 +11,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_TILE3_H
-#define VIIIARCHIVE_TILE3_H
+#ifndef VIIIARCHIVE_TILE3_HPP
+#define VIIIARCHIVE_TILE3_HPP
 #include <cstdint>
 #include <array>
 #include <string_view>
 #include "OpenVIII/Graphics/Point.hpp"
-#include "TexIdBuffer.h"
-#include "PaletteID.h"
-#include "LayerID.h"
-#include "BlendModeT.h"
+#include "TexIdBuffer.hpp"
+#include "PaletteID.hpp"
+#include "LayerID.hpp"
+#include "BlendModeT.hpp"
 namespace open_viii::graphics::background {
 /**
  * @see https://github.com/myst6re/deling/blob/develop/files/BackgroundFile.h#L49
@@ -76,4 +76,4 @@ public:
 };
 static_assert(sizeof(Tile3) == Tile3::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background
-#endif// VIIIARCHIVE_TILE3_H
+#endif// VIIIARCHIVE_TILE3_HPP

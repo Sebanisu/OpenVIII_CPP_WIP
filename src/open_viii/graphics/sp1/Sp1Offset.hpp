@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_SP1OFFSET_H
-#define VIIIARCHIVE_SP1OFFSET_H
+#ifndef VIIIARCHIVE_SP1OFFSET_HPP
+#define VIIIARCHIVE_SP1OFFSET_HPP
 #include <cstdint>
 namespace open_viii::graphics {
 struct Sp1Offset
@@ -28,4 +28,4 @@ public:
 };
 
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_SP1OFFSET_H
+#endif// VIIIARCHIVE_SP1OFFSET_HPP

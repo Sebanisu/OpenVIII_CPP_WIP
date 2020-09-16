@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_PALETTEID_H
-#define VIIIARCHIVE_PALETTEID_H
+#ifndef VIIIARCHIVE_PALETTEID_HPP
+#define VIIIARCHIVE_PALETTEID_HPP
 #include <cstdint>
 namespace open_viii::graphics::background {
 /**
@@ -47,4 +47,4 @@ public:
 };
 static_assert(sizeof(PaletteID) == PaletteID::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background
-#endif// VIIIARCHIVE_PALETTEID_H
+#endif// VIIIARCHIVE_PALETTEID_HPP

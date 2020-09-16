@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_TEXPIXELFORMATHEADER_H
-#define VIIIARCHIVE_TEXPIXELFORMATHEADER_H
+#ifndef VIIIARCHIVE_TEXPIXELFORMATHEADER_HPP
+#define VIIIARCHIVE_TEXPIXELFORMATHEADER_HPP
 #include <cstdint>
 
 namespace open_viii::graphics {
@@ -187,4 +187,4 @@ public:
   [[maybe_unused]] [[nodiscard]] auto alpha_max() const noexcept { return m_alpha_max; }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_TEXPIXELFORMATHEADER_H
+#endif// VIIIARCHIVE_TEXPIXELFORMATHEADER_HPP

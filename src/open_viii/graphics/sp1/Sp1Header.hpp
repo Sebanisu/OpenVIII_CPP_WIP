@@ -11,13 +11,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_SP1HEADER_H
-#define VIIIARCHIVE_SP1HEADER_H
+#ifndef VIIIARCHIVE_SP1HEADER_HPP
+#define VIIIARCHIVE_SP1HEADER_HPP
 #include <cstdint>
 #include <cstring>
 #include <vector>
 #include <span>
-#include "sp1Offset.h"
+#include "Sp1Offset.hpp"
 namespace open_viii::graphics {
 struct Sp1Header
 {
@@ -53,4 +53,4 @@ public:
 };
 
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_SP1HEADER_H
+#endif// VIIIARCHIVE_SP1HEADER_HPP

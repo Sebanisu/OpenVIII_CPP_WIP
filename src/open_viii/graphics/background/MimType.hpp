@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_MIMTYPE_H
-#define VIIIARCHIVE_MIMTYPE_H
+#ifndef VIIIARCHIVE_MIMTYPE_HPP
+#define VIIIARCHIVE_MIMTYPE_HPP
 #include <cstdint>
 #include <array>
 //#include <ranges>
@@ -84,4 +84,4 @@ public:
   }
 };
 }// namespace open_viii::graphics::background
-#endif// VIIIARCHIVE_MIMTYPE_H
+#endif// VIIIARCHIVE_MIMTYPE_HPP

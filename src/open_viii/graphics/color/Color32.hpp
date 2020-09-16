@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_COLOR32_H
-#define VIIIARCHIVE_COLOR32_H
+#ifndef VIIIARCHIVE_COLOR32_HPP
+#define VIIIARCHIVE_COLOR32_HPP
 #include <algorithm>
 #include <cstdint>
 #include <bitset>
@@ -82,4 +82,4 @@ public:
 };
 static_assert(sizeof(Color32<>) == Color32<>::EXPLICIT_SIZE);
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_COLOR32_H
+#endif// VIIIARCHIVE_COLOR32_HPP

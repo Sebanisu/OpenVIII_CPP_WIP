@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_BLENDMODET_H
-#define VIIIARCHIVE_BLENDMODET_H
+#ifndef VIIIARCHIVE_BLENDMODET_HPP
+#define VIIIARCHIVE_BLENDMODET_HPP
 #include <cstdint>
 namespace open_viii::graphics::background {
 enum struct BlendModeT : std::uint8_t {
@@ -23,4 +23,4 @@ enum struct BlendModeT : std::uint8_t {
   none [[maybe_unused]],
 };
 }
-#endif// VIIIARCHIVE_BLENDMODET_H
+#endif// VIIIARCHIVE_BLENDMODET_HPP

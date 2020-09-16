@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_TEXIDBUFFER_H
-#define VIIIARCHIVE_TEXIDBUFFER_H
+#ifndef VIIIARCHIVE_TEXIDBUFFER_HPP
+#define VIIIARCHIVE_TEXIDBUFFER_HPP
 #include <cstdint>
 #include "OpenVIII/Graphics/BPPT.hpp"
 namespace open_viii::graphics::background {
@@ -67,4 +67,4 @@ public:
 };
 static_assert(sizeof(TexIdBuffer) == TexIdBuffer::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background
-#endif// VIIIARCHIVE_TEXIDBUFFER_H
+#endif// VIIIARCHIVE_TEXIDBUFFER_HPP

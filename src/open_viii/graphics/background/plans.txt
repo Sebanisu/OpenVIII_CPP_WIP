@@ -5,12 +5,15 @@ wip 1) find the images in folder.
 done --- The issue i discovered is it's be better to process each directory.
 done --- Right now I'm grabbing each image but if I don't do all the folders together. Then I'm grabbing the .map each time.
 done --- So better is to get folder then get map and then get images out of folder.
---- I need to parse the file names and poop out the pupu id into a vector, I'll probably make a new type to keep from being super confused. Because I want to parse the name once. So I need a good way to store the data beyond a tuple.
-2) filter down to the images with the HEX pupu ID.
-3) read in hex values using pattern = field_hex_mimmap.ext
-4) group the hex values that are the same (depth and same field and same textureID)
-5) filter the tiles for the field that match the hex values read in.
-6) produce a image that is field_depth_textureID. images will be square 256x256.
-7) we copy each tile into the new image. putting it from (x,y) to (src x,y).
-8) if 24 bit treat black as transparent. ppm is 24 bit
-9) if 32 bit treat 0 alpha as transparent black (all 0 for color and alpha).
+done --- I need to parse the file names and poop out the pupu id into a vector, I'll probably make a new type to keep from being super confused. Because I want to parse the name once. So I need a good way to store the data beyond a tuple.
+done 2) filter down to the images with the HEX pupu ID.
+done 3) read in hex values using pattern = field_hex_mimmap.ext
+done 4) group the hex values that are the same (depth and same field and same textureID)
+done 5) filter the tiles for the field that match the hex values read in.
+done 6) produce a image that is field_depth_textureID. images will be square 256x256.
+done 7) we copy each tile into the new image. putting it from (x,y) to (src x,y).
+done 8) if 24 bit treat black as transparent. ppm is 24 bit
+9) if 32 bit treat 0 alpha as transparent black (all 0 for color and alpha). requires adding png support.
+10) add a test to deswizzle the reswizzled images.
+11) add a test to compare the two deswizzled versions and throw if they don't match.
+12) test support for scaling.

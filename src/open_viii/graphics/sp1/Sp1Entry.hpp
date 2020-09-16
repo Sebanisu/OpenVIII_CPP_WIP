@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_SP1ENTRY_H
-#define VIIIARCHIVE_SP1ENTRY_H
+#ifndef VIIIARCHIVE_SP1ENTRY_HPP
+#define VIIIARCHIVE_SP1ENTRY_HPP
 
 #include <cstdint>
 namespace open_viii::graphics {
@@ -49,4 +49,4 @@ public:
 };
 
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_SP1ENTRY_H
+#endif// VIIIARCHIVE_SP1ENTRY_HPP

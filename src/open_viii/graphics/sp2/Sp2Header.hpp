@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_SP2HEADER_H
-#define VIIIARCHIVE_SP2HEADER_H
+#ifndef VIIIARCHIVE_SP2HEADER_HPP
+#define VIIIARCHIVE_SP2HEADER_HPP
 #include <cstdint>
 #include <vector>
 #include <span>
@@ -37,4 +37,4 @@ public:
   [[nodiscard]] auto &size() const noexcept { return m_count; }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_SP2HEADER_H
+#endif// VIIIARCHIVE_SP2HEADER_HPP

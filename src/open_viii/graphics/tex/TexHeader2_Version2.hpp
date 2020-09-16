@@ -11,24 +11,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_LAYERID_H
-#define VIIIARCHIVE_LAYERID_H
+#ifndef VIIIARCHIVE_TEXHEADER2_VERSION2_HPP
+#define VIIIARCHIVE_TEXHEADER2_VERSION2_HPP
 #include <cstdint>
-namespace open_viii::graphics::background {
-struct LayerID
+
+namespace open_viii::graphics {
+
+/**
+ * This appends to texHeader2 if the file is version 2. used by ff8 only.
+ */
+struct TexHeader2Version2
 {
 private:
-  static constexpr std::uint8_t ID_MASK{ 0b1111'1110 };
-  static constexpr std::uint8_t ID_SHIFT{ 1U };
-  std::uint8_t m_data{};
+  /**
+   * Unknown 11 (TEX version 2 only)
+   */
+  std::uint32_t m_unknown_11{};
 
 public:
-  LayerID() = default;
-  friend auto operator==(const LayerID &left, const LayerID &right) { return left.m_data == right.m_data; }
-  [[nodiscard]] std::uint8_t id() const noexcept
-  {
-    return static_cast<std::uint8_t>(static_cast<std::uint8_t>(m_data & ID_MASK) >> ID_SHIFT);
-  }
+  /**
+   * Unknown 11 (TEX version 2 only)
+   */
+  [[maybe_unused]] [[nodiscard]] std::uint32_t unknown_11() const noexcept { return m_unknown_11; }
 };
-}// namespace open_viii::graphics::background
-#endif// VIIIARCHIVE_LAYERID_H
+
+
+}// namespace open_viii::graphics
+
+#endif// VIIIARCHIVE_TEXHEADER2_VERSION2_HPP

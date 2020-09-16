@@ -11,10 +11,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_DESWIZZLE_H
-#define VIIIARCHIVE_DESWIZZLE_H
-#include "Map.h"
-#include "Mim.h"
+#ifndef VIIIARCHIVE_DESWIZZLE_HPP
+#define VIIIARCHIVE_DESWIZZLE_HPP
+#include "Map.hpp"
+#include "Mim.hpp"
 namespace open_viii::graphics::background {
 /**
  * Deswizzle is a temporary struct that is used to take a map and mim and descramble the tiles to something modders can
@@ -135,4 +135,4 @@ public:
   }
 };
 }// namespace open_viii::graphics::background
-#endif// VIIIARCHIVE_DESWIZZLE_H
+#endif// VIIIARCHIVE_DESWIZZLE_HPP

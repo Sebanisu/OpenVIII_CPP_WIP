@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_COLOR_HPP
 #define VIIIARCHIVE_COLOR_HPP
-#include "color/color16.h"
-#include "color/color24.h"
-#include "color/color32.h"
+#include "color/Color16.hpp"
+#include "color/Color24.hpp"
+#include "color/Color32.hpp"
 #endif// VIIIARCHIVE_COLOR_HPP

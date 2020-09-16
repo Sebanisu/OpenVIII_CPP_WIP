@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_TEXHEADER2_H
-#define VIIIARCHIVE_TEXHEADER2_H
+#ifndef VIIIARCHIVE_TEXHEADER2_HPP
+#define VIIIARCHIVE_TEXHEADER2_HPP
 #include <cstdint>
 
 namespace open_viii::graphics {
@@ -124,4 +124,4 @@ public:
 };
 }// namespace open_viii::graphics
 
-#endif// VIIIARCHIVE_TEXHEADER2_H
+#endif// VIIIARCHIVE_TEXHEADER2_HPP

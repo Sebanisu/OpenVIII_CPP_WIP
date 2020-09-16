@@ -11,15 +11,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_MAP_H
-#define VIIIARCHIVE_MAP_H
+#ifndef VIIIARCHIVE_MAP_HPP
+#define VIIIARCHIVE_MAP_HPP
 #include <cstdint>
 #include <filesystem>
-#include "Tile1.h"
-#include "Tile2.h"
-#include "Tile3.h"
-#include "Pupu.h"
-#include "Mim.h"
+#include "Tile1.hpp"
+#include "Tile2.hpp"
+#include "Tile3.hpp"
+#include "Pupu.hpp"
+#include "Mim.hpp"
 #include <bit>
 #include <bitset>
 #include "OpenVIII/Tools/Tools.h"
@@ -296,4 +296,4 @@ public:
 };
 }// namespace open_viii::graphics::background
 
-#endif// VIIIARCHIVE_MAP_H
+#endif// VIIIARCHIVE_MAP_HPP

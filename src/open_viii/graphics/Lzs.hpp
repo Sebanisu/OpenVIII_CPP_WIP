@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_LZS_HPP
 #define VIIIARCHIVE_LZS_HPP
-#include "OpenVIII/Graphics/color/color16.h"
+#include "OpenVIII/Graphics/color/Color16.hpp"
 #include "Rectangle.hpp"
 #include "OpenVIII/Compression/LZSS.h"
 #include <span>

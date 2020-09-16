@@ -11,13 +11,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_PUPU_H
-#define VIIIARCHIVE_PUPU_H
+#ifndef VIIIARCHIVE_PUPU_HPP
+#define VIIIARCHIVE_PUPU_HPP
 #include <cstdint>
 #include <compare>
-#include "Tile1.h"
-#include "Tile2.h"
-#include "Tile3.h"
+#include "Tile1.hpp"
+#include "Tile2.hpp"
+#include "Tile3.hpp"
 namespace open_viii::graphics::background {
 /*
  * A disambiguation ID based on Pupu an application for descrambling and rescrambling the tiles. The values in here
@@ -192,4 +192,4 @@ public:
   [[nodiscard]] const std::uint8_t &animation_state() const noexcept { return m_animation_state; }
 };
 }// namespace open_viii::graphics::background
-#endif// VIIIARCHIVE_PUPU_H
+#endif// VIIIARCHIVE_PUPU_HPP

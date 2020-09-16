@@ -11,11 +11,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_MIM_H
-#define VIIIARCHIVE_MIM_H
-#include "Tile2.h"
-#include "Tile3.h"
-#include "MimType.h"
+#ifndef VIIIARCHIVE_MIM_HPP
+#define VIIIARCHIVE_MIM_HPP
+#include "Tile2.hpp"
+#include "Tile3.hpp"
+#include "MimType.hpp"
 #include <span>
 #include <vector>
 namespace open_viii::graphics::background {
@@ -178,4 +178,4 @@ public:
   }
 };
 }// namespace open_viii::graphics::background
-#endif// VIIIARCHIVE_MIM_H
+#endif// VIIIARCHIVE_MIM_HPP

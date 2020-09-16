@@ -19,10 +19,10 @@
 #include <cstdint>
 #include <cstring>
 #include <ranges>
-#include "OpenVIII/Graphics/tex/texHeader.h"
-#include "OpenVIII/Graphics/tex/texPixelFormatHeader.h"
-#include "OpenVIII/Graphics/tex/texHeader2.h"
-#include "OpenVIII/Graphics/tex/texHeader2_Version2.h"
+#include "OpenVIII/Graphics/tex/TexHeader.hpp"
+#include "OpenVIII/Graphics/tex/TexPixelFormatHeader.hpp"
+#include "OpenVIII/Graphics/tex/TexHeader2.hpp"
+#include "OpenVIII/Graphics/tex/TexHeader2_Version2.hpp"
 namespace open_viii::graphics {
 //{
 //  // Palette Entry (BGRA)
