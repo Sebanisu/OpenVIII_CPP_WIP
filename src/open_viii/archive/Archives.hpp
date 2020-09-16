@@ -488,7 +488,7 @@ public:
         } else if constexpr (std::is_same_v<decltype(archive),
                                FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
           archive.execute_on(filename, lambda);
-          if constexpr (nested && std::is_same_v<decltype(archive),FIFLFS<true>>) {
+          if constexpr (nested && std::is_same_v<decltype(archive), FIFLFS<true>>) {
             archive.execute_with_nested({}, lambda, filename);
           }
         }

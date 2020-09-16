@@ -85,7 +85,7 @@ public:
   void save_entry(const FileData &item, const std::string_view &str_path) const
   {
     auto buffer = FS::get_entry(m_path, item, 0U);
-//    std::cout << '{' << buffer.size() << ", " << str_path << "}\n";
+    //    std::cout << '{' << buffer.size() << ", " << str_path << "}\n";
     Tools::write_buffer(buffer, str_path);
   }
   void test() const
@@ -108,7 +108,7 @@ public:
                                : FileData();
           // getting a prev and next element to check vs cur item. To make sure at least 2 of them match so we don't add
           // an orphan to the FIFLFS archive.
-          //std::cout << '{' << zzzOffset << ", " << zzzSize << ", " << strPath << "}\n";
+          // std::cout << '{' << zzzOffset << ", " << zzzSize << ", " << strPath << "}\n";
           if ((FIFLFS<true>::check_extension(strPath) != 0)
               && ((!next.empty()
                     && FIFLFS<true>::get_base_name(strPath) == FIFLFS<true>::get_base_name(next.get_path_string()))
@@ -164,7 +164,7 @@ public:
   static void test_pair(const std::pair<std::string_view, open_viii::archive::ZZZ> &pair)
   {
     const auto &[name, zzz] = pair;
-    //std::cout << '{' << name << ", " << zzz.m_path << "}\n";
+    // std::cout << '{' << name << ", " << zzz.m_path << "}\n";
     zzz.test();
     // testFLPath(paths.FL(),paths.FI());
   }

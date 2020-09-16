@@ -40,7 +40,6 @@ private:
   constexpr static auto CLP_VALUE = 0b1000U;
 
 public:
-
   constexpr static auto BPP4{ 4U };
   constexpr static auto BPP8{ 8U };
   constexpr static auto BPP16{ 16U };

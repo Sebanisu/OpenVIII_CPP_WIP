@@ -35,7 +35,7 @@ int main()
     //     open_viii::tools::i_path_extension_ends_with_any(std::filesystem::current_path(),{"test"},{".ppm"});
 
     open_viii::Tools::execute_on_directories(
-      std::filesystem::current_path(), {"ecenter3"}, [&field](const std::filesystem::path &directory_path) {
+      std::filesystem::current_path(), { "ecenter3" }, [&field](const std::filesystem::path &directory_path) {
         const std::string fi_filename = directory_path.filename().string() + std::string(open_viii::archive::FI::EXT);
         const std::string fl_filename = directory_path.filename().string() + std::string(open_viii::archive::FL::EXT);
         const std::string fs_filename = directory_path.filename().string() + std::string(open_viii::archive::FS::EXT);

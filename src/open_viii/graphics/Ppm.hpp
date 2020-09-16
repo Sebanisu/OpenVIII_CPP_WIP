@@ -75,7 +75,7 @@ public:
         std::span<const Color24<0, 1, 2>>{ reinterpret_cast<const Color24<0, 1, 2> *>(std::ranges::data(bufferspan)),
           sz };
       m_colors = { std::ranges::cbegin(colorspan), std::ranges::cend(colorspan) };
-      assert(std::ranges::size(m_colors) == m_height*m_width);
+      assert(std::ranges::size(m_colors) == m_height * m_width);
     }
   }
   [[nodiscard]] const auto &colors() { return m_colors; }
