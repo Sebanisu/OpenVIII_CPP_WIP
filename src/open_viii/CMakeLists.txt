@@ -1,5 +1,5 @@
 
-add_subdirectory(Archive)
+add_subdirectory(archive)
 add_subdirectory(Graphics)
 add_subdirectory(Compression)
 add_subdirectory(Kernel)

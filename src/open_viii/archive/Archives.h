@@ -159,7 +159,7 @@ private:
   }
 
   /**
-   * TryToAdd Archive of type to archive member variable.
+   * TryToAdd archive of type to archive member variable.
    * @param archiveType_ Type of valid archive.
    * @param path physical path on the hard drive
    * @param nestedPath path located inside the archive. default {}
@@ -495,6 +495,6 @@ public:
       }
     }
   }
-};// namespace open_viii::Archive
+};// namespace open_viii::archive
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ARCHIVES_H

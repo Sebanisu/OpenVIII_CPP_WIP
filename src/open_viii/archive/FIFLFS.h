@@ -173,7 +173,7 @@ public:
     return TryAddT::not_part_of_archive;
   }
   /**
-   * Try and Add Nested data. There are 3 parts to an Archive so it this adds one and goes to next one till all 3 are
+   * Try and Add Nested data. There are 3 parts to an archive so it this adds one and goes to next one till all 3 are
    * added.
    * @tparam srcT Can be an container of data, or it will be a filesystem path to a file with the data.
    * @tparam datT Data struct with offset, size and compression type.
