@@ -39,7 +39,7 @@ int main()
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
     //    [[maybe_unused]]const auto ppms =
-    //     open_viii::Tools::i_path_extension_ends_with_any(std::filesystem::current_path(),{"test"},{".ppm"});
+    //     open_viii::tools::i_path_extension_ends_with_any(std::filesystem::current_path(),{"test"},{".ppm"});
 
     open_viii::Tools::execute_on_directories(
       std::filesystem::current_path(), {"ecenter3"}, [&field](const std::filesystem::path &directory_path) {

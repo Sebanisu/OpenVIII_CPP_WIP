@@ -231,22 +231,22 @@ public:
   //      auto dir = std::filesystem::path(root);
   //      auto filename = dir / path;
   //      if (filename.has_extension()) {
-  //        if (Tools::i_equals(filename.extension().string(), ".lzs")) {
+  //        if (tools::i_equals(filename.extension().string(), ".lzs")) {
   //          graphics::lzs(buffer).Save(filename.string() + ".ppm");
   //        }
   //
-  //        if (Tools::i_equals(filename.extension().string(), ".tim")) {
+  //        if (tools::i_equals(filename.extension().string(), ".tim")) {
   //          const auto timV = graphics::tim(buffer);
   //          std::cout << timV;
   //          timV.Save(filename.string() + ".ppm");
   //        }
-  //        if (Tools::i_equals(filename.extension().string(), ".tdw")) {
+  //        if (tools::i_equals(filename.extension().string(), ".tdw")) {
   //          const auto timV = graphics::tdw(buffer);
   //          std::cout << timV.TIM();
   //          timV.TIM().Save(filename.string() + ".ppm");
   //        }
   //
-  //        if (Tools::i_equals(filename.extension().string(), ".tex")) {
+  //        if (tools::i_equals(filename.extension().string(), ".tex")) {
   //          graphics::tex(buffer).Save(filename.string() + ".ppm");
   //        }
   //      }
