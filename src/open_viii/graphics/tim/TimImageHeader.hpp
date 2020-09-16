@@ -11,9 +11,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_TIMIMAGEHEADER_H
-#define VIIIARCHIVE_TIMIMAGEHEADER_H
-#include "OpenVIII/Graphics/Rectangle.h"
+#ifndef VIIIARCHIVE_TIMIMAGEHEADER_HPP
+#define VIIIARCHIVE_TIMIMAGEHEADER_HPP
+#include "OpenVIII/Graphics/Rectangle.hpp"
 #include <cstdint>
 namespace open_viii::graphics {
 /**
@@ -49,4 +49,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_TIMIMAGEHEADER_H
+#endif// VIIIARCHIVE_TIMIMAGEHEADER_HPP

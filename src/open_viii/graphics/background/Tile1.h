@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_TILE1_H
 #define VIIIARCHIVE_TILE1_H
 #include <cstdint>
-#include "OpenVIII/Graphics/Point.h"
+#include "OpenVIII/Graphics/Point.hpp"
 #include "TexIdBuffer.h"
 #include "BlendModeT.h"
 #include "LayerID.h"

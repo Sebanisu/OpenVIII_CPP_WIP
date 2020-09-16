@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_SP1_H
-#define VIIIARCHIVE_SP1_H
+#ifndef VIIIARCHIVE_SP1_HPP
+#define VIIIARCHIVE_SP1_HPP
 #include "OpenVIII/Graphics/sp1/sp1Header.h"
 #include "OpenVIII/Graphics/sp1/sp1Entry.h"
 namespace open_viii::graphics {
@@ -61,4 +61,4 @@ public:
 };
 
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_SP1_H
+#endif// VIIIARCHIVE_SP1_HPP

@@ -26,11 +26,11 @@
 #include "OpenVIII/MenuGroup/Refine/RefineSection002.h"
 #include "OpenVIII/MenuGroup/Refine/RefineSection003.h"
 #include "OpenVIII/MenuGroup/Refine/RefineSection004.h"
-#include "OpenVIII/Graphics/color.h"
-#include "OpenVIII/Graphics/tim.h"
-#include "OpenVIII/Graphics/ppm.h"
+#include "OpenVIII/Graphics/Color.hpp"
+#include "OpenVIII/Graphics/Tim.hpp"
+#include "OpenVIII/Graphics/Ppm.hpp"
 //#include "open_viii/graphics/tim.h"
-#include "OpenVIII/Graphics/ppm.h"
+#include "OpenVIII/Graphics/Ppm.hpp"
 #include <sstream>
 #include <vector>
 namespace open_viii::menu_group {

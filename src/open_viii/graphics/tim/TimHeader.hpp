@@ -11,11 +11,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_TIMHEADER_H
-#define VIIIARCHIVE_TIMHEADER_H
+#ifndef VIIIARCHIVE_TIMHEADER_HPP
+#define VIIIARCHIVE_TIMHEADER_HPP
 #include <cstdint>
 #include <iostream>
-#include "OpenVIII/Graphics/BPPT.h"
+#include "OpenVIII/Graphics/BPPT.hpp"
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timHeader
@@ -93,4 +93,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_TIMHEADER_H
+#endif// VIIIARCHIVE_TIMHEADER_HPP

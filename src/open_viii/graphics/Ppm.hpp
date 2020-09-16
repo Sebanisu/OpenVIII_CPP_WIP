@@ -11,14 +11,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_PPM_H
-#define VIIIARCHIVE_PPM_H
+#ifndef VIIIARCHIVE_PPM_HPP
+#define VIIIARCHIVE_PPM_HPP
 #include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <cctype>
 #include <string_view>
-#include "color.h"
+#include "Color.hpp"
 #include "OpenVIII/concepts.h"
 namespace open_viii::graphics {
 struct Ppm
@@ -125,4 +125,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_PPM_H
+#endif// VIIIARCHIVE_PPM_HPP

@@ -13,16 +13,16 @@
 #include "TestReswizzleFields.h"
 #include "OpenVIII/Paths/Paths.h"
 #include "OpenVIII/Archive/Archives.h"
-#include "OpenVIII/Graphics/lzs.h"
-#include "OpenVIII/Graphics/tim.h"
-#include "OpenVIII/Graphics/tdw.h"
-#include "OpenVIII/Graphics/tex.h"
-#include "OpenVIII/Graphics/sp1.h"
-#include "OpenVIII/Graphics/sp2.h"
+#include "OpenVIII/Graphics/Lzs.hpp"
+#include "OpenVIII/Graphics/Tim.hpp"
+#include "OpenVIII/Graphics/Tdw.hpp"
+#include "OpenVIII/Graphics/Tex.hpp"
+#include "OpenVIII/Graphics/Sp1.hpp"
+#include "OpenVIII/Graphics/Sp2.hpp"
 #include "OpenVIII/MenuGroup/MenuGroupFile.h"
 #include "OpenVIII/Graphics/background/Mim.h"
 #include "OpenVIII/Graphics/background/Map.h"
-#include "OpenVIII/Graphics/color.h"
+#include "OpenVIII/Graphics/Color.hpp"
 struct pupu_path
 {
   open_viii::graphics::background::Pupu pupu{};

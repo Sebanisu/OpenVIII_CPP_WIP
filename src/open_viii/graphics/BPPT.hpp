@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_BPPT_H
-#define VIIIARCHIVE_BPPT_H
+#ifndef VIIIARCHIVE_BPPT_HPP
+#define VIIIARCHIVE_BPPT_HPP
 #include <iostream>
 #include <compare>
 namespace open_viii::graphics {
@@ -235,4 +235,4 @@ namespace literals {
 }// namespace literals
 static_assert(sizeof(BPPT) == 1U);
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_BPPT_H
+#endif// VIIIARCHIVE_BPPT_HPP

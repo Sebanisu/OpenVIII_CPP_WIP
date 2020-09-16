@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_SP2_H
-#define VIIIARCHIVE_SP2_H
+#ifndef VIIIARCHIVE_SP2_HPP
+#define VIIIARCHIVE_SP2_HPP
 #include "sp2/sp2Entry.h"
 #include "sp2/sp2Header.h"
 #include <cstring>
@@ -47,4 +47,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_SP2_H
+#endif// VIIIARCHIVE_SP2_HPP

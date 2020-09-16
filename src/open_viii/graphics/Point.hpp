@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_POINT_H
-#define VIIIARCHIVE_POINT_H
+#ifndef VIIIARCHIVE_POINT_HPP
+#define VIIIARCHIVE_POINT_HPP
 #include <iostream>
 #include <concepts>
 namespace open_viii::graphics {
@@ -78,4 +78,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_POINT_H
+#endif// VIIIARCHIVE_POINT_HPP

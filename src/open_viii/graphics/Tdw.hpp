@@ -11,10 +11,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_TDW_H
-#define VIIIARCHIVE_TDW_H
-#include "tim.h"
-#include "Bit4Values.h"
+#ifndef VIIIARCHIVE_TDW_HPP
+#define VIIIARCHIVE_TDW_HPP
+#include "Tim.hpp"
+#include "Bit4Values.hpp"
 #include <cstdint>
 #include <cstring>
 namespace open_viii::graphics {
@@ -83,4 +83,4 @@ public:
   void save(const std::string_view &path) { m_tim.save(path); }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_TDW_H
+#endif// VIIIARCHIVE_TDW_HPP

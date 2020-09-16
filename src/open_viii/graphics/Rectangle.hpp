@@ -11,9 +11,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_RECTANGLE_H
-#define VIIIARCHIVE_RECTANGLE_H
-#include "OpenVIII/Graphics/Point.h"
+#ifndef VIIIARCHIVE_RECTANGLE_HPP
+#define VIIIARCHIVE_RECTANGLE_HPP
+#include "OpenVIII/Graphics/Point.hpp"
 #include <iostream>
 namespace open_viii::graphics {
 /**
@@ -136,4 +136,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_RECTANGLE_H
+#endif// VIIIARCHIVE_RECTANGLE_HPP

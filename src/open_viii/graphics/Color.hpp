@@ -11,9 +11,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_COLOR_H
-#define VIIIARCHIVE_COLOR_H
+#ifndef VIIIARCHIVE_COLOR_HPP
+#define VIIIARCHIVE_COLOR_HPP
 #include "color/color16.h"
 #include "color/color24.h"
 #include "color/color32.h"
-#endif// VIIIARCHIVE_COLOR_H
+#endif// VIIIARCHIVE_COLOR_HPP

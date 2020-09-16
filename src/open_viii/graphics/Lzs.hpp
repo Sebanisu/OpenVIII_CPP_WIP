@@ -11,15 +11,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_LZS_H
-#define VIIIARCHIVE_LZS_H
+#ifndef VIIIARCHIVE_LZS_HPP
+#define VIIIARCHIVE_LZS_HPP
 #include "OpenVIII/Graphics/color/color16.h"
-#include "Rectangle.h"
+#include "Rectangle.hpp"
 #include "OpenVIII/Compression/LZSS.h"
 #include <span>
 #include <cstring>
 #include <vector>
-#include "ppm.h"
+#include "Ppm.hpp"
 namespace open_viii::graphics {
 /**
  * lzs images are LZSS images with a small header (X,Y,H,W) and 16bit colors.
@@ -80,4 +80,4 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Lzs &l) { return os << '{' << l.m_rectangle << "}\n"; }
 };
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_LZS_H
+#endif// VIIIARCHIVE_LZS_HPP

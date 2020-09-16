@@ -11,15 +11,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VIIIARCHIVE_TIM_H
-#define VIIIARCHIVE_TIM_H
-#include "BPPT.h"
-#include "OpenVIII/Graphics/tim/timHeader.h"
-#include "OpenVIII/Graphics/tim/timClutHeader.h"
-#include "OpenVIII/Graphics/color.h"
-#include "OpenVIII/Graphics/ppm.h"
+#ifndef VIIIARCHIVE_TIM_HPP
+#define VIIIARCHIVE_TIM_HPP
+#include "BPPT.hpp"
+#include "OpenVIII/Graphics/tim/TimHeader.hpp"
+#include "OpenVIII/Graphics/tim/TimClutHeader.hpp"
+#include "OpenVIII/Graphics/Color.hpp"
+#include "OpenVIII/Graphics/Ppm.hpp"
 #include <sstream>
-#include "Bit4Values.h"
+#include "Bit4Values.hpp"
 namespace open_viii::graphics {
 /**
  * TIM, or PSX TIM, is an uncompressed raster image file format associated with the Sony PlayStation family of video
@@ -235,4 +235,4 @@ public:
 };
 
 }// namespace open_viii::graphics
-#endif// VIIIARCHIVE_TIM_H
+#endif// VIIIARCHIVE_TIM_HPP
