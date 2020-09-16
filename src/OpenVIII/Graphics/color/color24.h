@@ -74,6 +74,9 @@ public:
               << static_cast<std::size_t>(color.G()) << ", " << static_cast<std::size_t>(color.B()) << ", "
               << static_cast<std::size_t>(color.A()) << '}' << std::dec << std::nouppercase;
   }
+  bool is_black()const noexcept{ return std::ranges::all_of(m_parts,[](const auto& i)->bool{
+      return i == 0;
+    } ); }
 };
 static_assert(sizeof(Color24<>) == Color24<>::EXPLICIT_SIZE);
 

@@ -26,6 +26,9 @@ struct Ppm
 private:
   std::vector<Color24<0, 1, 2>> m_colors{};
 
+  std::uint16_t m_width{};
+  std::uint16_t m_height{};
+
 public:
   explicit Ppm(const std::string &buffer)
   {
@@ -40,10 +43,8 @@ public:
     std::string type{};
     std::string comment{};
     std::string w_h{};
-    std::uint16_t width{};
-    std::uint16_t height{};
     std::string bytesize{};
-    while (std::getline(ss, line)) {
+    while ((std::ranges::empty(bytesize) || std::ranges::empty(w_h)) && std::getline(ss, line)) {
       if (line == "P6") {
         type = line;
         continue;
@@ -56,17 +57,14 @@ public:
         bytesize = line;
         continue;
       }
-      if ([&line, &width, &height, &w_h]() -> bool {
-            char space{};
+      if ([&line, this, &w_h]() -> bool {
             auto lss = std::stringstream(line);
-            lss >> width >> space >> height;
-            return space == '_';
+            lss >> m_width;
+            lss >> m_height;
+            return m_width > 0 || m_height > 0;
           }()) {
         w_h = line;
         continue;
-      }
-      if (!std::ranges::empty(bytesize) && ((height > 0 && width > 0) || !std::ranges::empty(w_h))) {
-        break;
       }
     }
 
@@ -77,6 +75,7 @@ public:
         std::span<const Color24<0, 1, 2>>{ reinterpret_cast<const Color24<0, 1, 2> *>(std::ranges::data(bufferspan)),
           sz };
       m_colors = { std::ranges::cbegin(colorspan), std::ranges::cend(colorspan) };
+      assert(std::ranges::size(m_colors) == m_height*m_width);
     }
   }
   [[nodiscard]] const auto &colors() { return m_colors; }
@@ -87,15 +86,18 @@ public:
     if (!skip_check) {
       if (width == 0 || height == 0 || std::ranges::empty(data)
           || std::all_of(std::execution::par_unseq, data.begin(), data.end(), [](const Color auto &color) -> bool {
-               return color.a() == 0U;
+               return color.a() == 0U || (color.b() == 0U && color.g() == 0U && color.r() == 0U);
              })) {
         return;
       }
     }
 
     auto tmp = std::filesystem::path(input);
-    std::string filename{ (tmp.parent_path() / tmp.stem()).string() + "_" + tmp.extension().string().substr(1)
-                          + ".ppm" };
+
+    std::string filename{ (tmp.parent_path() / tmp.stem()).string() };
+    if (tmp.has_extension())
+      filename += "_" + tmp.extension().string().substr(1);
+    filename += ".ppm";
     if (std::ranges::size(data) < width * height) {
       std::cout << std::ranges::size(data) << ", " << width << '*' << height << '=' << width * height << '\n';
       return;
@@ -112,6 +114,14 @@ public:
         }
       },
       filename);
+  }
+
+  [[nodiscard]] const std::vector<Color24<0, 1, 2>> &colors() const { return m_colors; }
+  [[nodiscard]] const std::uint16_t &width() const { return m_width; }
+  [[nodiscard]] const std::uint16_t &height() const { return m_height; }
+  [[nodiscard]] const Color24<0, 1, 2> &color(const std::size_t &x, const std::size_t &y) const
+  {
+    return m_colors.at(x + (y * static_cast<std::size_t>(m_width)));
   }
 };
 }// namespace open_viii::graphics

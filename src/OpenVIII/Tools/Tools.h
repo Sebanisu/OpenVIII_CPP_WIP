@@ -65,15 +65,23 @@ public:
     memcpy(&item, tmp.data(), sizeof(item));
   }// namespace open_viii
 
-  template<typename dstT = std::vector<char>, typename sizeT>
+  template<std::ranges::contiguous_range dstT = std::vector<char>, std::integral sizeT>
   [[maybe_unused]] static auto read_buffer(std::istream &fp, const sizeT &s)
   {
-    static_assert(std::is_integral_v<sizeT>, "Integral Required");
-    assert(s > 0);
     dstT buf{};
-    buf.resize(s);
-    fp.read(buf.data(), s);
+    if (s <= 0) {
+      return buf;
+    }
+    buf.resize(static_cast<std::size_t>(s));
+    fp.read(std::ranges::data(buf), s);
     return buf;
+  }
+  template<typename dstT = std::vector<char>> [[maybe_unused]] static auto read_buffer(std::istream &fp)
+  {
+    fp.seekg(0, std::ios::end);
+    const auto s = fp.tellg();
+    fp.seekg(0, std::ios::beg);
+    return read_buffer<dstT>(fp, static_cast<long>(s));
   }
   template<typename lambdaT>
   requires(std::invocable<lambdaT, std::ostream &>) [[maybe_unused]] static bool write_buffer(const lambdaT &lambda,
@@ -90,7 +98,7 @@ public:
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     } while (!fp.is_open());
     if (fp.is_open()) {
-      // std::cout << "Saving: " << filename << "...\n";
+      std::cout << (std::string( "Saving: \n") + filename.string() + std::string("\"...\n"));
       lambda(fp);
       fp.close();
     } else {
@@ -105,7 +113,7 @@ public:
     const std::string_view &root = "tmp")
   {
     if (std::ranges::empty(buffer)) {
-      // std::cout << (std::string("Buffer is empty: \"")+ std::string(path) + std::string("\"\n"));
+      //std::cout << (std::string("Buffer is empty: \"")+ std::string(path) + std::string("\"\n"));
       return false;
     }
     return write_buffer(

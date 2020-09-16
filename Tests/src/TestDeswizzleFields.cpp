@@ -37,12 +37,15 @@ int main()
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     {
       const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-      field.execute_with_nested({}, [](const open_viii::archive::FIFLFS<false> &e) {
-        auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(".mim"), e.get_base_name() };
+      field.execute_with_nested({ "ecenter3" }, [](const open_viii::archive::FIFLFS<false> &e) {
+        const std::string &basename = e.get_base_name();
+        const std::string mim_name = basename + ".mim";
+        const std::string map_name = basename + ".map";
+        auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(mim_name), basename };
         // mim.save(e.get_full_path(".mim"));
-        const auto process = [&mim, &e](const auto &map) {
+        const auto process = [&mim, &e, &mim_name, &map_name, &basename](const auto &map) {
           //((open_viii::graphics::background::Map<1>)map).max_x()
-          std::cout << "  " << e.get_base_name() << '\n';
+          std::cout << "  " << basename << '\n';
           //          const auto &[min_x, max_x] = map.minmax_x();
           //          const auto &[min_y, max_y] = map.minmax_y();
           //          std::cout << "  Type: " << static_cast<uint16_t>(mim.mim_type().type()) << '\n';
@@ -58,19 +61,19 @@ int main()
           //          std::cout << "max y: " << max_y->y() << '\n';
           //          std::cout << "canvas: " << map.canvas() << '\n';
 
-          map.save_csv(e.get_full_path(".map"));
-          open_viii::graphics::background::Deswizzle(mim, map, e.get_full_path(".mim"));
+          map.save_csv(e.get_full_path(map_name));
+          open_viii::graphics::background::Deswizzle(mim, map, e.get_full_path(mim_name));
           // map.save_v1(mim, e.get_full_path(".mim"));
         };
         if (mim.mim_type().type() == 1) {
           process(
-            open_viii::graphics::background::Map<open_viii::graphics::background::Tile1>{ e.get_entry_data(".map") });
+            open_viii::graphics::background::Map<open_viii::graphics::background::Tile1>{ e.get_entry_data(map_name) });
         } else if (mim.mim_type().type() == 2) {
           process(
-            open_viii::graphics::background::Map<open_viii::graphics::background::Tile2>{ e.get_entry_data(".map") });
+            open_viii::graphics::background::Map<open_viii::graphics::background::Tile2>{ e.get_entry_data(map_name) });
         } else if (mim.mim_type().type() == 3) {
           process(
-            open_viii::graphics::background::Map<open_viii::graphics::background::Tile3>{ e.get_entry_data(".map") });
+            open_viii::graphics::background::Map<open_viii::graphics::background::Tile3>{ e.get_entry_data(map_name) });
         }
       });
     }
