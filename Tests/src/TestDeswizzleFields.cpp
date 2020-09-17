@@ -31,28 +31,10 @@ int main()
         const std::string mim_name = basename + ".mim";
         const std::string map_name = basename + ".map";
         auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(mim_name), basename };
-        // mim.save(e.get_full_path(".mim"));
         const auto process = [&mim, &e, &mim_name, &map_name, &basename](const auto &map) {
-          //((open_viii::graphics::background::Map<1>)map).max_x()
           std::cout << "  " << basename << '\n';
-          //          const auto &[min_x, max_x] = map.minmax_x();
-          //          const auto &[min_y, max_y] = map.minmax_y();
-          //          std::cout << "  Type: " << static_cast<uint16_t>(mim.mim_type().type()) << '\n';
-          //          std::cout << "min x: " << min_x->x() << '\n';
-          //          std::cout << "min y: " << min_y->y() << '\n';
-          //          std::cout << "max x: " << max_x->x() << '\n';
-          //          std::cout << "max y: " << max_y->y() << '\n';
-          //          std::cout << "canvas: " << map.canvas() << '\n';
-          //
-          //          std::cout << "min x: " << min_x->x() << '\n';
-          //          std::cout << "min y: " << min_y->y() << '\n';
-          //          std::cout << "max x: " << max_x->x() << '\n';
-          //          std::cout << "max y: " << max_y->y() << '\n';
-          //          std::cout << "canvas: " << map.canvas() << '\n';
-
           map.save_csv(e.get_full_path(map_name));
           open_viii::graphics::background::Deswizzle(mim, map, e.get_full_path(mim_name));
-          // map.save_v1(mim, e.get_full_path(".mim"));
         };
         if (mim.mim_type().type() == 1) {
           process(
