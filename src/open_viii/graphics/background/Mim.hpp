@@ -70,7 +70,11 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const Mim &m) { return os << m.m_mim_type; }
   template<typename lambdaT>
-  requires(std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>)
+  requires(std::invocable<lambdaT,
+             std::span<const Color16>,
+             std::size_t,
+             std::size_t,
+             std::string> || std::invocable<lambdaT, std::span<const Color16>, std::size_t>)
     [[maybe_unused]] void get_colors(const std::string_view &filename,
       const BPPT &bpp,
       const uint8_t &palette,
@@ -93,15 +97,27 @@ public:
     const auto image_buffer_bbp4 =
       std::span<const Bit4Values>(reinterpret_cast<const Bit4Values *>(std::ranges::data(image_buffer)),
         std::ranges::size(image_buffer) / sizeof(Bit4Values));
-    const auto path = std::filesystem::path(filename);
 
-    if (dump_palette) {
-      lambda(palette_buffer_bbp16,
-        static_cast<std::size_t>(clut_width()),
-        clut_height(),
-        ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
-      return;
+    const auto path = std::filesystem::path(filename);
+    if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
+      if (dump_palette) {
+        lambda(palette_buffer_bbp16,
+          static_cast<std::size_t>(clut_width()),
+          clut_height(),
+          ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
+        return;
+      }
+    } else if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+      if (dump_palette) {
+        lambda(palette_buffer_bbp16, static_cast<std::size_t>(clut_width()));
+        return;
+      }
     }
+    auto width = m_mim_type.width();
+    auto out_path = [&palette, &path](const int &bpp_num, bool has_palette = true) {
+      return (path.parent_path() / path.stem()).string() + "_" + std::to_string(bpp_num) + "bpp"
+             + (has_palette ? "_" + std::to_string(palette) : "") + ".mim";
+    };
     if (bpp.bpp8()) {
 
       std::vector<Color16> out{};
@@ -113,15 +129,15 @@ public:
           key += static_cast<std::size_t>(palette) * static_cast<std::size_t>(clut_width());
           if (key < std::ranges::size(palette_buffer_bbp16)) {
             return palette_buffer_bbp16[key];
-          } else {
-            return {};
           }
+          return {};
         });
 
-      lambda(out,
-        m_mim_type.width(),
-        std::ranges::size(out) / m_mim_type.width(),
-        ((path.parent_path() / path.stem()).string()) + "_8bpp_" + std::to_string(palette) + ".mim");
+      if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
+        lambda(out, width, std::ranges::size(out) / width, out_path(BPPT::BPP8));
+      } else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+        lambda(out, width);
+      }
 
     } else if (bpp.bpp4()) {
       std::vector<Color16> out{};
@@ -142,16 +158,21 @@ public:
             out.emplace_back();
           }
         });
-      lambda(out,
-        m_mim_type.width() * 2,
-        std::ranges::size(out) / (m_mim_type.width() * 2),
-        ((path.parent_path() / path.stem()).string()) + "_4bpp_" + std::to_string(palette) + ".mim");
+      width *= 2U;
+      if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
+        lambda(out, width, std::ranges::size(out) / width, out_path(BPPT::BPP4));
+      } else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+        lambda(out, width);
+      }
 
     } else if (bpp.bpp16()) {
-      lambda(image_buffer_bbp16,
-        (m_mim_type.width() / 2U),
-        std::ranges::size(image_buffer_bbp16) / (m_mim_type.width() / 2U),
-        ((path.parent_path() / path.stem()).string()) + "_16bpp.mim");
+      width /= 2U;
+      if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
+        lambda(
+          image_buffer_bbp16, (width), std::ranges::size(image_buffer_bbp16) / width, out_path(BPPT::BPP16, false));
+      } else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+        lambda(image_buffer_bbp16, width);
+      }
     }
   }
   [[maybe_unused]] void save([[maybe_unused]] std::string_view filename) const
