@@ -72,13 +72,23 @@ private:
     std::ranges::fill(out, blank);
   }
   bool set_color(std::vector<Color16> &out,
+                 const std::integral auto &index_out,
+                 const Color16 &color) const
+  {
+    if (!color.is_black()) {
+      out.at(index_out) = color;
+      return true;
+    }
+    return false;
+  }
+  bool set_color(std::vector<Color16> &out,
     const std::integral auto &index_out,
     const std::span<const Color16> &in,
     const std::integral auto &index_in) const
   {
     Color16 color = in[index_in];
     if (!color.is_black()) {
-      out.at(index_out) = in[index_in];
+      out.at(index_out) = color;
       return true;
     }
     return false;
@@ -105,26 +115,19 @@ private:
     std::vector<Color16> out(m_canvas.area());
     for_each_pupu([this, &out](const Pupu &pupu) {
       bool drawn = false;
-      for_each_palette([&pupu, &drawn, &out, this](const std::uint8_t &palette) {
-        m_mim.get_colors(
-          m_path,
-          pupu.depth(),
-          palette,
-          [&](const std::span<const Color16> &data,
-            const std::size_t &raw_width) {
-            std::ranges::for_each(m_map.tiles() | std::views::filter([&pupu, &palette](const auto &local_t) -> bool {
-              return local_t.draw() && palette == local_t.palette_id() && pupu == local_t;
-            }),
-              [&pupu, &raw_width, this, &data, &out, &drawn](const auto &t) {
-                open_viii::Tools::for_each_xy(
-                  t.HEIGHT, [&pupu, &raw_width, this, &data, &out, &drawn, &t](const auto &x, const auto &y) {
-                    auto pixel_in = get_input_index(x, y, raw_width, t);
-                    auto pixel_out = get_output_index(x, y, t);
-                    drawn |= set_color(out, pixel_out, data, pixel_in);
-                  });
+      auto raw_width = m_mim.get_raw_width(pupu.depth());
+      for_each_palette([&pupu, &drawn,&raw_width, &out, this](const std::uint8_t &palette) {
+        std::ranges::for_each(m_map.tiles() | std::views::filter([&pupu, &palette](const auto &local_t) -> bool {
+          return local_t.draw() && palette == local_t.palette_id() && pupu == local_t;
+        }),
+          [&pupu, &raw_width, this, &out, &drawn,&palette](const auto &t) {
+            open_viii::Tools::for_each_xy(
+              t.HEIGHT, [&pupu, &raw_width, this, &out, &drawn, &t, &palette](const auto &x, const auto &y) {
+                auto pixel_in = m_mim.get_color(x+t.source_x(),y+t.source_y(),pupu.depth(),palette, t.texture_id());//get_input_index(x, y, raw_width, t);
+                auto pixel_out = get_output_index(x, y, t);
+                drawn |= set_color(out, pixel_out, pixel_in);
               });
-          },
-          false);
+          });
       });
       if (drawn) {
         save_out_buffer_and_clear(out, pupu);

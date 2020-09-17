@@ -26,7 +26,7 @@ int main()
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     {
       const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
-      field.execute_with_nested({ "ecenter3" }, [](const open_viii::archive::FIFLFS<false> &e) {
+      field.execute_with_nested({}, [](const open_viii::archive::FIFLFS<false> &e) {
         const std::string &basename = e.get_base_name();
         const std::string mim_name = basename + ".mim";
         const std::string map_name = basename + ".map";

@@ -96,18 +96,19 @@ public:
     std::filesystem::create_directories(filename.parent_path());
 
     auto fp = std::ofstream{};
-    do {
+    for(;;) {
       fp.open(filename, std::ios::out | std::ios::binary | std::ios::trunc);
+      if(fp.is_open()) {break;}
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    } while (!fp.is_open());
-    if (fp.is_open()) {
-      std::cout << (std::string("Saving: \n") + filename.string() + std::string("\"...\n"));
+    }
+//    if (fp.is_open()) {
+      std::cout << (std::string("Saving: \t\"") + filename.string() + std::string("\"\n"));
       lambda(fp);
       fp.close();
-    } else {
-      std::cout << (std::string("Failed to Open for saving: \"") + filename.string() + std::string("\"\n"));
-      return false;
-    }
+//    } else {
+//      std::cout << (std::string("Failed to Open for saving: \"") + filename.string() + std::string("\"\n"));
+//      return false;
+//    }
     return true;
   }
 

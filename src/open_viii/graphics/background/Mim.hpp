@@ -185,29 +185,42 @@ public:
       }
     }
   }
+  std::size_t get_raw_width(const BPPT &depth) const
+  {
+    const auto width = m_mim_type.width();
+    if(depth.bpp4()) {
+      return width * 2U;
+    }
+    else if(depth.bpp16()) {
+      return width / 2U;
+    }
+    return width;
+  }
     [[nodiscard]] Color16 get_color(const std::unsigned_integral auto &x,const std::unsigned_integral auto& y, const BPPT &depth,const
-    std::unsigned_integral auto &palette=0U) const
+    std::unsigned_integral auto &palette=0U, const std::unsigned_integral auto &texture_id=0U) const
     {
       auto width = m_mim_type.width();
+      auto texture_page_offset = 128U;
+      if(depth.bpp8()) [[likely]]
+      {
+        texture_page_offset *= texture_id;
+        return safe_get_color_from_palette(get_palette_key(static_cast<uint8_t >(m_image_buffer[x+texture_page_offset+(y*width)]),palette));
+      }
       if(depth.bpp4())
       {
-        width *= 2U;
-        const Bit4Values pair = m_image_buffer_bbp4[(x/2U)+(y*width)];
+        texture_page_offset *= 2U * texture_id;
+        const Bit4Values pair = m_image_buffer_bbp4[(x+texture_page_offset)/2U+(y*width)];
         if(x%2U == 0) {
           return safe_get_color_from_palette(get_palette_key(pair.first, palette));
         }
-          else {
-          return safe_get_color_from_palette(get_palette_key(pair.second, palette));
-        }
+        return safe_get_color_from_palette(get_palette_key(pair.second, palette));
       }
-      else if(depth.bpp8()) [[likely]]
-      {
-        return safe_get_color_from_palette(get_palette_key(static_cast<uint8_t >(m_image_buffer[x+(y*width)]),palette));
-      }
-      else if(depth.bpp16()) [[unlikely]]
+      if(depth.bpp16()) [[unlikely]]
       {
         width /= 2U;
-        return m_image_buffer_bbp16[x+(y*width)];
+        texture_page_offset /= 2U;
+        texture_page_offset *= texture_id;
+        return m_image_buffer_bbp16[x+texture_page_offset+(y*width)];
       }
       return {};
     }
