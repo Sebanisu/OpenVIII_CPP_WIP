@@ -42,8 +42,8 @@ public:
     return left.m_xy == right.m_xy && left.m_z == right.m_z && left.m_tex_id_buffer == right.m_tex_id_buffer
            && left.m_palette_id == right.m_palette_id && left.m_source_xy == right.m_source_xy;
   }
-  static constexpr auto HEIGHT{ 16 };
-  static constexpr auto WIDTH{ 16 };
+  static constexpr auto HEIGHT{ 16U };
+  static constexpr auto WIDTH{ 16U };
   static constexpr auto TEXTURE_PAGE_WIDTH{ 128U };
   static constexpr auto AREA = HEIGHT * WIDTH;
   [[nodiscard]] const std::int16_t &x() const noexcept { return m_xy.x(); }

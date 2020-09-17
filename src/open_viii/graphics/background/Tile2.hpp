@@ -45,8 +45,8 @@ public:
            && left.m_palette_id == right.m_palette_id && left.m_source_xy == right.m_source_xy
            && left.m_animation_id == right.m_animation_id && left.m_animation_state == right.m_animation_state;
   }
-  static constexpr auto HEIGHT{ 16 };
-  static constexpr auto WIDTH{ 16 };
+  static constexpr auto HEIGHT{ 16U };
+  static constexpr auto WIDTH{ 16U };
   static constexpr auto TEXTURE_PAGE_WIDTH{ 128U };
   static constexpr auto AREA = HEIGHT * WIDTH;
   [[nodiscard]] const std::int16_t &x() const noexcept { return m_xy.x(); }

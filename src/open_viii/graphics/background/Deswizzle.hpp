@@ -78,22 +78,19 @@ private:
               return local_t.draw() && palette == local_t.palette_id() && pupu == local_t;
             }),
               [&pupu, &raw_width, this, &data, &out, &drawn](const auto &t) {
-                for (std::uint32_t y = {}; y < t.HEIGHT; y++) {
-                  for (std::uint32_t x = {}; x < t.WIDTH; x++) {
-                    if (t.source_x() < 0 || t.source_y() < 0) {
-                      continue;
-                    }
+                open_viii::Tools::for_each_xy(
+                  t.HEIGHT,[&pupu, &raw_width, this, &data, &out, &drawn, &t](const auto &x, const auto &y) {
                     auto pixel_in = (static_cast<std::uint32_t>(t.source_x()) + x)
                                     + ((static_cast<std::uint32_t>(t.source_y()) + y) * raw_width);
+                    unsigned int texture_page_offset = t.TEXTURE_PAGE_WIDTH * t.texture_id();
                     if (t.depth().bpp4()) {
-                      pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
-                    } else if (t.depth().bpp8()) {
-                      pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id();
+                      texture_page_offset *= 2U;
                     }
-
                     else if (t.depth().bpp16()) {
-                      pixel_in += (t.TEXTURE_PAGE_WIDTH * t.texture_id()) / 2U;
+                      texture_page_offset /= 2U;
                     }
+                    pixel_in += texture_page_offset;
+
                     auto pixel_out =
                       (static_cast<std::uint32_t>(t.x()) + x)
                       + ((static_cast<std::uint32_t>(t.y()) + y) * static_cast<std::uint32_t>(m_canvas.width()));
@@ -102,8 +99,7 @@ private:
                       out.at(pixel_out) = data[pixel_in];
                       drawn = true;
                     }
-                  }
-                }
+                  });
               });
             auto p = std::filesystem::path(local_filename);
           },
