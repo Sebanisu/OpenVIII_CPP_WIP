@@ -28,8 +28,12 @@ namespace open_viii::graphics::background {
 struct Mim
 {
 private:
-  std::vector<char> m_buffer{};
-  MimType m_mim_type{};
+  const std::vector<char> m_buffer{};
+  const MimType m_mim_type{};
+  const std::span<const char> m_image_buffer{};
+  const std::span<const Color16> m_palette_buffer{};
+  const std::span<const Bit4Values> m_image_buffer_bbp4{};
+  const std::span<const Color16> m_image_buffer_bbp16{};
 
   [[nodiscard]] static const auto &clut_width() noexcept
   {
@@ -39,7 +43,61 @@ private:
   {
     return ((m_mim_type.palette_section_size() - m_mim_type.bytes_skipped_palettes()) / sizeof(Color16)) / clut_width();
   }
-
+  std::span<const char> set_image_span() const
+  {
+    return std::span<const char>(m_buffer).subspan(m_mim_type.palette_section_size());
+  }
+  std::span<const Color16> set_palette_span() const
+  {
+    const auto palette_buffer_tmp = std::span<const char>(m_buffer).subspan(
+      m_mim_type.bytes_skipped_palettes(), m_mim_type.palette_section_size() - m_mim_type.bytes_skipped_palettes());
+    return { reinterpret_cast<const Color16 *>(std::ranges::data(palette_buffer_tmp)),
+      std::ranges::size(palette_buffer_tmp) / sizeof(Color16) };
+  }
+  std::span<const Bit4Values> set_image_span_bpp4() const
+  {
+    return { reinterpret_cast<const Bit4Values *>(std::ranges::data(m_image_buffer)),
+      std::ranges::size(m_image_buffer) / sizeof(Bit4Values) };
+  }
+  std::span<const Color16> set_image_span_bpp16() const
+  {
+    return { reinterpret_cast<const Color16 *>(std::ranges::data(m_image_buffer)),
+      std::ranges::size(m_image_buffer) / sizeof(Color16) };
+  }
+  [[nodiscard]] Color16 safe_get_color_from_palette(size_t key) const
+  {
+    auto size1 = std::ranges::size(m_palette_buffer);
+    if (key < size1) {
+      return m_palette_buffer[key];
+    }
+    return {};
+  }
+  static std::size_t get_palette_key(const std::uint8_t &key, const std::size_t &palette)
+  {
+    return key + (palette * static_cast<std::size_t>(clut_width()));
+  }
+  [[nodiscard]] std::vector<Color16> get_image_bpp8(const uint8_t &palette) const
+  {
+    std::vector<Color16> out{};
+    out.reserve(std::ranges::size(m_image_buffer));
+    std::ranges::transform(m_image_buffer, std::back_inserter(out), [&palette, this](const char &c) -> Color16 {
+           return safe_get_color_from_palette(get_palette_key(static_cast<uint8_t>(c), palette));
+    });
+    return out;
+  }
+  [[nodiscard]] std::vector<Color16> get_image_bpp4(const uint8_t &palette) const
+  {
+    std::vector<Color16> out{};
+    out.reserve(std::ranges::size(m_image_buffer_bbp4) * 2);
+    std::ranges::for_each(m_image_buffer_bbp4, [&palette, this, &out](const Bit4Values &key) {
+           const auto output = [&out, &palette, this](const auto input) {
+                  out.emplace_back(safe_get_color_from_palette(get_palette_key(input, palette)));
+           };
+           output(key.first);
+           output(key.second);
+    });
+    return out;
+  }
 public:
   static constexpr std::array<MimType, 2> TEXTURE_TYPES{ MimType(24, 13), MimType(16, 12, 0, 2) };
   Mim() = default;
@@ -49,10 +107,11 @@ public:
    * @param buffer is the raw bytes. std::move into object.
    * @param name logo has a unique map type.
    */
-  explicit Mim(std::vector<char> &&buffer, std::string_view name = {}) : m_buffer(std::move(buffer))
-  {
-    m_mim_type = get_texture_type(std::ranges::size(m_buffer), name);
-  }
+  explicit Mim(std::vector<char> &&buffer, std::string_view name = {})
+    : m_buffer(std::move(buffer)), m_mim_type(get_texture_type(std::ranges::size(m_buffer), name)),
+      m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
+      m_image_buffer_bbp4(set_image_span_bpp4()), m_image_buffer_bbp16(set_image_span_bpp16())
+  {}
   [[nodiscard]] const auto &mim_type() const noexcept { return m_mim_type; }
   [[maybe_unused]] [[nodiscard]] static MimType get_texture_type(std::size_t mim_filesize, std::string_view name = {})
   {
@@ -69,6 +128,7 @@ public:
     return {};
   }
   friend std::ostream &operator<<(std::ostream &os, const Mim &m) { return os << m.m_mim_type; }
+
   template<typename lambdaT>
   requires(std::invocable<lambdaT,
              std::span<const Color16>,
@@ -81,26 +141,17 @@ public:
       const lambdaT lambda,
       bool dump_palette = false) const
   {// going to get all the colors for image and run the supplied lambda passing the colors.
-    const auto buffer = std::span<const char>(m_buffer);
-    const auto palette_buffer_tmp = buffer.subspan(
-      m_mim_type.bytes_skipped_palettes(), m_mim_type.palette_section_size() - m_mim_type.bytes_skipped_palettes());
-
-    const auto image_buffer = buffer.subspan(m_mim_type.palette_section_size());
-    const auto palette_buffer_bbp16 =
-      std::span(reinterpret_cast<const Color16 *>(std::ranges::data(palette_buffer_tmp)),
-        std::ranges::size(palette_buffer_tmp) / sizeof(Color16));
     const auto path = std::filesystem::path(filename);
     if (dump_palette) {
       if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
-        lambda(palette_buffer_bbp16,
+        lambda(m_palette_buffer,
           static_cast<std::size_t>(clut_width()),
           clut_height(),
           ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
-        return;
       } else if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
-        lambda(palette_buffer_bbp16, static_cast<std::size_t>(clut_width()));
-        return;
+        lambda(m_palette_buffer, static_cast<std::size_t>(clut_width()));
       }
+      return;
     }
     auto width = m_mim_type.width();
     auto out_path = [&palette, &path](const int &bpp_num, bool has_palette = true) {
@@ -108,22 +159,7 @@ public:
              + (has_palette ? "_" + std::to_string(palette) : "") + ".mim";
     };
     if (bpp.bpp8()) {
-      const auto image_buffer_bbp8 =
-        std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t *>(std::ranges::data(image_buffer)),
-          std::ranges::size(image_buffer) / sizeof(std::uint8_t));
-      std::vector<Color16> out{};
-      out.resize(std::ranges::size(image_buffer_bbp8));
-      std::transform(image_buffer_bbp8.begin(),
-        image_buffer_bbp8.end(),
-        out.begin(),
-        [&palette, &palette_buffer_bbp16](std::size_t key) -> Color16 {
-          key += static_cast<std::size_t>(palette) * static_cast<std::size_t>(clut_width());
-          if (key < std::ranges::size(palette_buffer_bbp16)) {
-            return palette_buffer_bbp16[key];
-          }
-          return {};
-        });
-
+      auto out = get_image_bpp8(palette);
       if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
         lambda(out, width, std::ranges::size(out) / width, out_path(BPPT::BPP8));
       } else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
@@ -131,27 +167,7 @@ public:
       }
 
     } else if (bpp.bpp4()) {
-      const auto image_buffer_bbp4 =
-        std::span<const Bit4Values>(reinterpret_cast<const Bit4Values *>(std::ranges::data(image_buffer)),
-          std::ranges::size(image_buffer) / sizeof(Bit4Values));
-      std::vector<Color16> out{};
-      out.reserve(std::ranges::size(image_buffer_bbp4) * 2);
-      std::for_each(image_buffer_bbp4.begin(),
-        image_buffer_bbp4.end(),
-        [&palette, &palette_buffer_bbp16, &out](const Bit4Values &key) {
-          auto k1 = static_cast<std::size_t>(key.first + (palette * clut_width()));
-          auto k2 = static_cast<std::size_t>(key.second + (palette * clut_width()));
-          if (k1 < std::ranges::size(palette_buffer_bbp16)) {
-            out.emplace_back(palette_buffer_bbp16[k1]);
-          } else {
-            out.emplace_back();
-          }
-          if (k2 < std::ranges::size(palette_buffer_bbp16)) {
-            out.emplace_back(palette_buffer_bbp16[k1]);
-          } else {
-            out.emplace_back();
-          }
-        });
+      std::vector<Color16> out = get_image_bpp4(palette);
       width *= 2U;
       if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
         lambda(out, width, std::ranges::size(out) / width, out_path(BPPT::BPP4));
@@ -160,18 +176,41 @@ public:
       }
 
     } else if (bpp.bpp16()) {
-      const auto image_buffer_bbp16 =
-        std::span<const Color16>(reinterpret_cast<const Color16 *>(std::ranges::data(image_buffer)),
-          std::ranges::size(image_buffer) / sizeof(Color16));
       width /= 2U;
       if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
         lambda(
-          image_buffer_bbp16, (width), std::ranges::size(image_buffer_bbp16) / width, out_path(BPPT::BPP16, false));
+          m_image_buffer_bbp16, (width), std::ranges::size(m_image_buffer_bbp16) / width, out_path(BPPT::BPP16, false));
       } else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
-        lambda(image_buffer_bbp16, width);
+        lambda(m_image_buffer_bbp16, width);
       }
     }
   }
+    [[nodiscard]] Color16 get_color(const std::unsigned_integral auto &x,const std::unsigned_integral auto& y, const BPPT &depth,const
+    std::unsigned_integral auto &palette=0U) const
+    {
+      auto width = m_mim_type.width();
+      if(depth.bpp4())
+      {
+        width *= 2U;
+        const Bit4Values pair = m_image_buffer_bbp4[(x/2U)+(y*width)];
+        if(x%2U == 0) {
+          return safe_get_color_from_palette(get_palette_key(pair.first, palette));
+        }
+          else {
+          return safe_get_color_from_palette(get_palette_key(pair.second, palette));
+        }
+      }
+      else if(depth.bpp8()) [[likely]]
+      {
+        return safe_get_color_from_palette(get_palette_key(static_cast<uint8_t >(m_image_buffer[x+(y*width)]),palette));
+      }
+      else if(depth.bpp16()) [[unlikely]]
+      {
+        width /= 2U;
+        return m_image_buffer_bbp16[x+(y*width)];
+      }
+      return {};
+    }
   [[maybe_unused]] void save([[maybe_unused]] std::string_view filename) const
   {
     static constexpr auto ppm_save = [](const std::span<const Color16> &data,
