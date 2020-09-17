@@ -84,31 +84,20 @@ public:
     const auto buffer = std::span<const char>(m_buffer);
     const auto palette_buffer_tmp = buffer.subspan(
       m_mim_type.bytes_skipped_palettes(), m_mim_type.palette_section_size() - m_mim_type.bytes_skipped_palettes());
+
+    const auto image_buffer = buffer.subspan(m_mim_type.palette_section_size());
     const auto palette_buffer_bbp16 =
       std::span(reinterpret_cast<const Color16 *>(std::ranges::data(palette_buffer_tmp)),
         std::ranges::size(palette_buffer_tmp) / sizeof(Color16));
-    const auto image_buffer = buffer.subspan(m_mim_type.palette_section_size());
-    const auto image_buffer_bbp16 =
-      std::span<const Color16>(reinterpret_cast<const Color16 *>(std::ranges::data(image_buffer)),
-        std::ranges::size(image_buffer) / sizeof(Color16));
-    const auto image_buffer_bbp8 =
-      std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t *>(std::ranges::data(image_buffer)),
-        std::ranges::size(image_buffer) / sizeof(std::uint8_t));
-    const auto image_buffer_bbp4 =
-      std::span<const Bit4Values>(reinterpret_cast<const Bit4Values *>(std::ranges::data(image_buffer)),
-        std::ranges::size(image_buffer) / sizeof(Bit4Values));
-
     const auto path = std::filesystem::path(filename);
-    if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
-      if (dump_palette) {
+    if (dump_palette) {
+      if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
         lambda(palette_buffer_bbp16,
           static_cast<std::size_t>(clut_width()),
           clut_height(),
           ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
         return;
-      }
-    } else if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
-      if (dump_palette) {
+      } else if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
         lambda(palette_buffer_bbp16, static_cast<std::size_t>(clut_width()));
         return;
       }
@@ -119,7 +108,9 @@ public:
              + (has_palette ? "_" + std::to_string(palette) : "") + ".mim";
     };
     if (bpp.bpp8()) {
-
+      const auto image_buffer_bbp8 =
+        std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t *>(std::ranges::data(image_buffer)),
+          std::ranges::size(image_buffer) / sizeof(std::uint8_t));
       std::vector<Color16> out{};
       out.resize(std::ranges::size(image_buffer_bbp8));
       std::transform(image_buffer_bbp8.begin(),
@@ -140,6 +131,9 @@ public:
       }
 
     } else if (bpp.bpp4()) {
+      const auto image_buffer_bbp4 =
+        std::span<const Bit4Values>(reinterpret_cast<const Bit4Values *>(std::ranges::data(image_buffer)),
+          std::ranges::size(image_buffer) / sizeof(Bit4Values));
       std::vector<Color16> out{};
       out.reserve(std::ranges::size(image_buffer_bbp4) * 2);
       std::for_each(image_buffer_bbp4.begin(),
@@ -166,6 +160,9 @@ public:
       }
 
     } else if (bpp.bpp16()) {
+      const auto image_buffer_bbp16 =
+        std::span<const Color16>(reinterpret_cast<const Color16 *>(std::ranges::data(image_buffer)),
+          std::ranges::size(image_buffer) / sizeof(Color16));
       width /= 2U;
       if constexpr (std::invocable<lambdaT, std::span<const Color16>, std::size_t, std::size_t, std::string>) {
         lambda(
