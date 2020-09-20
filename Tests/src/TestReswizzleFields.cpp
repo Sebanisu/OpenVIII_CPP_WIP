@@ -21,6 +21,17 @@ struct PupuPath
   open_viii::graphics::background::Pupu pupu{};
   std::filesystem::path path{};
 };
+static void save_and_clear(std::vector<open_viii::graphics::Color24<0, 1, 2>> &out,
+  const std::unsigned_integral auto &width,
+  const std::unsigned_integral auto &height,
+  const std::unsigned_integral auto &tex_id,
+  const std::unsigned_integral auto &bpp,
+  const std::string &output_prefix)
+{
+  std::string output_name = output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(tex_id);
+  open_viii::graphics::Ppm::save(out, width, height, output_name);
+  std::fill(std::ranges::begin(out), std::ranges::end(out), open_viii::graphics::Color24<0, 1, 2>{});
+}
 int main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
@@ -48,8 +59,8 @@ int main()
           return;// no mim file.
         }
         open_viii::FI_Like auto mim_fi = archive.get_entry_by_index(mims[0].first);
-        open_viii::graphics::background::MimType mim_type = open_viii::graphics::background::Mim::get_texture_type(
-          mim_fi.uncompressed_size(), dir_name);
+        open_viii::graphics::background::MimType mim_type =
+          open_viii::graphics::background::Mim::get_texture_type(mim_fi.uncompressed_size(), dir_name);
 
         const auto reswizzle = [&directory_path, &dir_name, &mim_type, &output_prefix]<typename tileT>(
                                  [[maybe_unused]] const open_viii::graphics::background::Map<tileT> &map) {
@@ -60,14 +71,17 @@ int main()
           std::vector<std::uint16_t> valid_texture_ids{};
           const auto tiles = map.tiles();
           valid_texture_ids.reserve(std::ranges::size(tiles));
-          std::ranges::transform(
-            tiles, std::back_insert_iterator(valid_texture_ids), [&dir_name](const tileT &tile) { return tile.texture_id(); });
+          std::ranges::transform(tiles, std::back_insert_iterator(valid_texture_ids), [&dir_name](const tileT &tile) {
+            return tile.texture_id();
+          });
           std::ranges::sort(valid_texture_ids);
           auto last = std::unique(std::ranges::begin(valid_texture_ids), std::ranges::end(valid_texture_ids));
           valid_texture_ids.erase(last, std::ranges::end(valid_texture_ids));
 
-          open_viii::Tools::execute_on_directory(
-            directory_path, {dir_name}, { ".ppm" }, [&dir_name, &mim_type, &path_grouped_by_bppt](const std::filesystem::path &file_path) {
+          open_viii::Tools::execute_on_directory(directory_path,
+            { dir_name },
+            { ".ppm" },
+            [&dir_name, &mim_type, &path_grouped_by_bppt](const std::filesystem::path &file_path) {
               // if(!file_path.has_stem()) {return;}
               auto basename = file_path.stem().string();
               static constexpr auto minsize{ 24 };
@@ -80,8 +94,8 @@ int main()
               }
               auto hex = std::string_view(basename).substr(std::ranges::size(basename) - 23, 16);
               auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
-              if(open_viii::Tools::i_equals(prefix,dir_name)) {
-                //std::cout << prefix << '\n';
+              if (open_viii::Tools::i_equals(prefix, dir_name)) {
+                // std::cout << prefix << '\n';
                 auto pp = PupuPath{ open_viii::graphics::background::Pupu(hex), file_path };
 
                 if (pp.pupu.depth().bpp4()) {
@@ -93,7 +107,7 @@ int main()
                 }
               }
             });
-          const auto scale = 1;// scale would come from size of imported image and size of canvas from map.
+          const auto scale = 1U;// scale would come from size of imported image and size of canvas from map.
           const auto width = open_viii::graphics::background::MimType::height() * scale;
           const auto height = open_viii::graphics::background::MimType::height() * scale;
           const auto area = width * height;
@@ -116,22 +130,21 @@ int main()
                        return pp.pupu == t && t.texture_id() == tex_id;
                      })) {
                   static constexpr auto tile_size = 16U;
-                  open_viii::Tools::for_each_xy(tile_size * scale, [&tile,&scale,&ppm,&out](const auto &x, const auto &y) {
-                    const auto scaled_tile_y = static_cast<std::size_t>(tile.y() * scale);
-                    const auto scaled_tile_x = static_cast<std::size_t>(tile.x() * scale);
-                    auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
-                    if (!color.is_black()) {
-                      const std::size_t scaled_tile_source_x = tile.source_x() * scale;
-                      const std::size_t scaled_tile_source_y = tile.source_y() * scale;
-                      out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * width)) = color;
-                    }
-                  });
+                  open_viii::Tools::for_each_xy(
+                    tile_size * scale, [&tile, &scale, &ppm, &out](const auto &x, const auto &y) {
+                      const auto scaled_tile_y = static_cast<std::size_t>(tile.y()) * scale;
+                      const auto scaled_tile_x = static_cast<std::size_t>(tile.x()) * scale;
+                      auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
+                      if (!color.is_black()) {
+                        const std::size_t scaled_tile_source_x = tile.source_x() * scale;
+                        const std::size_t scaled_tile_source_y = tile.source_y() * scale;
+                        out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * width)) = color;
+                      }
+                    });
                 }
               }
               // save output;
-              std::string output_name = output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(tex_id);
-              open_viii::graphics::Ppm::save(out, width, height, output_name);
-              std::fill(std::ranges::begin(out), std::ranges::end(out), open_viii::graphics::Color24<0, 1, 2>{});
+              save_and_clear(out, width, height, tex_id, static_cast<unsigned>(bpp), output_prefix);
               // increase bpp;
               bpp *= 2;// 4,8,16
               if (static_cast<unsigned>(bpp) > open_viii::graphics::BPPT::BPP16) {
