@@ -49,8 +49,8 @@ int main()
         if (!static_cast<bool>(archive)) {
           return;// no archive for this directory.
         }
-        const std::string map_filename = dir_name + std::string(".map");
-        const std::string mim_filename = dir_name + std::string(".mim");
+        const std::string map_filename = dir_name + std::string(open_viii::graphics::background::Map<>::EXT);
+        const std::string mim_filename = dir_name + std::string(open_viii::graphics::background::Mim::EXT);
         const std::string output_prefix = (directory_path / directory_path.filename()).string();
         // std::cout << map_filename << '\n';
         // std::cout << archive << '\n';

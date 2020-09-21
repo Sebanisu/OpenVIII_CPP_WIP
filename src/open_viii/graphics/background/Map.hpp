@@ -150,6 +150,7 @@ private:
   }
 
 public:
+  constexpr static auto EXT = std::string_view(".map");
   Map() = default;
   /**
    * Import tiles from a raw buffer.

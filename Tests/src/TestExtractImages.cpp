@@ -57,13 +57,13 @@ int main()
       } else if (open_viii::Tools::i_ends_with(p, ".sp2")) {
         auto t = open_viii::graphics::Sp2(buffer);
         std::cout << p << '\n' << t << '\n';
-      } else if (open_viii::Tools::i_ends_with(p, ".mim")) {
+      } else if (open_viii::Tools::i_ends_with(p, open_viii::graphics::background::Mim::EXT)) {
         auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
         std::cout << p << '\n' << t << '\n';
         t.save(p);
       }
     };
-    archives.execute_on({ ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", ".mim" }, dump_image);
+    archives.execute_on({ ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", open_viii::graphics::background::Mim::EXT }, dump_image);
     // dump images from menu group.
     [[maybe_unused]] const auto &menu = archives.get<open_viii::archive::ArchiveTypeT::menu>();
     std::cout << menu << std::endl;

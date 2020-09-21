@@ -28,13 +28,13 @@ int main()
       const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
       field.execute_with_nested({}, [](const open_viii::archive::FIFLFS<false> &e) {
         const std::string &basename = e.get_base_name();
-        const std::string mim_name = basename + ".mim";
-        const std::string map_name = basename + ".map";
+        const std::string mim_name = basename + open_viii::graphics::background::Mim::EXT.data();
+        const std::string map_name = basename + open_viii::graphics::background::Map<>::EXT.data();
         auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(mim_name), basename };
         const auto process = [&mim, &e, &mim_name, &map_name, &basename](const auto &map) {
           std::cout << "  " << basename << '\n';
           map.save_csv(e.get_full_path(map_name));
-          open_viii::graphics::background::Deswizzle(mim, map, e.get_full_path(mim_name));
+          open_viii::graphics::background::Deswizzle(mim, map, e.get_full_path(mim_name)).save();
         };
         if (mim.mim_type().type() == 1) {
           process(

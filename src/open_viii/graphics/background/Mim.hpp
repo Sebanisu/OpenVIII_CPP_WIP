@@ -90,7 +90,7 @@ private:
     std::vector<Color16> out{};
     out.reserve(std::ranges::size(m_image_buffer_bbp4) * 2);
     std::ranges::for_each(m_image_buffer_bbp4, [&palette, this, &out](const Bit4Values &key) {
-           const auto output = [&out, &palette, this](const auto input) {
+           const auto output = [&out, &palette, this](const uint8_t & input) {
                   out.emplace_back(safe_get_color_from_palette(get_palette_key(input, palette)));
            };
            output(key.first);
@@ -98,8 +98,9 @@ private:
     });
     return out;
   }
-public:
   static constexpr std::array<MimType, 2> TEXTURE_TYPES{ MimType(24, 13), MimType(16, 12, 0, 2) };
+public:
+  constexpr static auto EXT = std::string_view{".mim"};
   Mim() = default;
   /**
    * Load up the raw pixel data, 4bpp, 8bpp or 16bpp Needs at least basename to check or it'll use size of buffer to
@@ -156,7 +157,7 @@ public:
     auto width = m_mim_type.width();
     auto out_path = [&palette, &path](const int &bpp_num, bool has_palette = true) {
       return (path.parent_path() / path.stem()).string() + "_" + std::to_string(bpp_num) + "bpp"
-             + (has_palette ? "_" + std::to_string(palette) : "") + ".mim";
+             + (has_palette ? "_" + std::to_string(palette) : "") + open_viii::graphics::background::Mim::EXT.data();
     };
     if (bpp.bpp8()) {
       auto out = get_image_bpp8(palette);

@@ -29,9 +29,9 @@ private:
   const Mim &m_mim{};
   const Map<map_type> &m_map{};
   const std::string_view &m_path{};
-  std::vector<std::uint8_t> m_unique_palettes{};
-  Rectangle<std::int32_t> m_canvas{};
-  std::vector<Pupu> m_unique_pupus{};
+  const std::vector<std::uint8_t> m_unique_palettes{};
+  const Rectangle<std::int32_t> m_canvas{};
+  const std::vector<Pupu> m_unique_pupus{};
   auto find_unique_palettes()
   {
     const auto &tiles = m_map.tiles();
@@ -71,9 +71,7 @@ private:
     static constexpr auto blank = Color16{};
     std::ranges::fill(out, blank);
   }
-  bool set_color(std::vector<Color16> &out,
-                 const std::integral auto &index_out,
-                 const Color16 &color) const
+  bool set_color(std::vector<Color16> &out, const std::integral auto &index_out, const Color16 &color) const
   {
     if (!color.is_black()) {
       out.at(index_out) = color;
@@ -98,32 +96,44 @@ private:
     return (static_cast<uint32_t>(tile.x()) + x)
            + ((static_cast<uint32_t>(tile.y()) + y) * static_cast<uint32_t>(m_canvas.width()));
   }
-  auto get_input_index(auto &x, auto &y, const size_t &width, auto &tile) const
-  {
-    auto pixel_in =
-      (static_cast<uint32_t>(tile.source_x()) + x) + ((static_cast<uint32_t>(tile.source_y()) + y) * width);
-    unsigned int texture_page_offset = tile.TEXTURE_PAGE_WIDTH * tile.texture_id();
-    if (tile.depth().bpp4()) {
-      texture_page_offset *= 2U;
-    } else if (tile.depth().bpp16()) {
-      texture_page_offset /= 2U;
-    }
-    return pixel_in + texture_page_offset;
-  }
+//  auto get_input_index(auto &x, auto &y, const size_t &width, auto &tile) const
+//  {
+//    auto pixel_in =
+//      (static_cast<uint32_t>(tile.source_x()) + x) + ((static_cast<uint32_t>(tile.source_y()) + y) * width);
+//    unsigned int texture_page_offset = tile.TEXTURE_PAGE_WIDTH * tile.texture_id();
+//    if (tile.depth().bpp4()) {
+//      texture_page_offset *= 2U;
+//    } else if (tile.depth().bpp16()) {
+//      texture_page_offset /= 2U;
+//    }
+//    return pixel_in + texture_page_offset;
+//  }
+
+
+public:
+  Deswizzle(const Mim &in_mim, const Map<map_type> &in_map, const std::string_view &in_path)
+    : m_mim(in_mim), m_map(in_map), m_path(in_path), m_unique_palettes(find_unique_palettes()),
+      m_canvas(in_map.canvas()), m_unique_pupus(find_unique_pupu())
+  {}
+
   void save()
   {
     std::vector<Color16> out(m_canvas.area());
     for_each_pupu([this, &out](const Pupu &pupu) {
       bool drawn = false;
       auto raw_width = m_mim.get_raw_width(pupu.depth());
-      for_each_palette([&pupu, &drawn,&raw_width, &out, this](const std::uint8_t &palette) {
+      for_each_palette([&pupu, &drawn, &raw_width, &out, this](const std::uint8_t &palette) {
         std::ranges::for_each(m_map.tiles() | std::views::filter([&pupu, &palette](const auto &local_t) -> bool {
           return local_t.draw() && palette == local_t.palette_id() && pupu == local_t;
         }),
-          [&pupu, &raw_width, this, &out, &drawn,&palette](const auto &t) {
+          [&pupu, &raw_width, this, &out, &drawn, &palette](const auto &t) {
             open_viii::Tools::for_each_xy(
               t.HEIGHT, [&pupu, &raw_width, this, &out, &drawn, &t, &palette](const auto &x, const auto &y) {
-                auto pixel_in = m_mim.get_color(x+t.source_x(),y+t.source_y(),pupu.depth(),palette, t.texture_id());//get_input_index(x, y, raw_width, t);
+                auto pixel_in = m_mim.get_color(x + t.source_x(),
+                  y + t.source_y(),
+                  pupu.depth(),
+                  palette,
+                  t.texture_id());// get_input_index(x, y, raw_width, t);
                 auto pixel_out = get_output_index(x, y, t);
                 drawn |= set_color(out, pixel_out, pixel_in);
               });
@@ -133,14 +143,6 @@ private:
         save_out_buffer_and_clear(out, pupu);
       }
     });
-  }
-
-public:
-  Deswizzle(const Mim &in_mim, const Map<map_type> &in_map, const std::string_view &in_path)
-    : m_mim(in_mim), m_map(in_map), m_path(in_path), m_unique_palettes(find_unique_palettes()),
-      m_canvas(in_map.canvas()), m_unique_pupus(find_unique_pupu())
-  {
-    save();
   }
 };
 }// namespace open_viii::graphics::background
