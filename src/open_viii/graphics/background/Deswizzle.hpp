@@ -71,14 +71,14 @@ private:
     static constexpr auto blank = Color16{};
     std::ranges::fill(out, blank);
   }
-  bool set_color(std::vector<Color16> &out, const std::integral auto &index_out, const Color16 &color) const
-  {
-    if (!color.is_black()) {
-      out.at(index_out) = color;
-      return true;
-    }
-    return false;
-  }
+//  bool set_color(std::vector<Color16> &out, const std::integral auto &index_out, const Color16 &color) const
+//  {
+//    if (!color.is_black()) {
+//      out.at(index_out) = color;
+//      return true;
+//    }
+//    return false;
+//  }
   bool set_color(std::vector<Color16> &out,
     const std::integral auto &index_out,
     const std::span<const Color16> &in,
