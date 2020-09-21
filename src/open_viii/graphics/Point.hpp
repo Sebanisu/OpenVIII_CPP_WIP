@@ -25,18 +25,9 @@ private:
 public:
   Point() = default;
   Point(const dimT &in_x, const dimT &in_y) noexcept : m_x(in_x), m_y(in_y){};
-  friend auto operator==(const Point<dimT> &left, const Point<dimT> &right) noexcept
-  {
-    return left.m_x == right.m_x && left.m_y == right.m_y;
-  }
-  friend auto operator<(const Point<dimT> &left, const Point<dimT> &right) noexcept
-  {
-    return left.m_x < right.m_x && left.m_y < right.m_y;
-  }
-  friend auto operator>(const Point<dimT> &left, const Point<dimT> &right) noexcept
-  {
-    return left.m_x > right.m_x && left.m_y > right.m_y;
-  }
+  friend auto operator<=>(const Point<dimT> &left, const Point<dimT> &right) noexcept = default;
+  auto operator<=>(const Point<dimT> &right) const noexcept = default;
+
   [[nodiscard]] auto abs()
   {
     if constexpr (std::signed_integral<dimT> || std::floating_point<dimT>) {

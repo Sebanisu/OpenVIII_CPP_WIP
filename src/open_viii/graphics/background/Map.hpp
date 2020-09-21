@@ -35,7 +35,10 @@ private:
    */
   mutable Point<std::int16_t> m_offset{};
 
-  void remove_end()
+  /**
+   * remove invalid tiles from buffer.
+   */
+  void remove_invalid()
   {
     static constexpr auto cmp = [](const auto &x) {
       static constexpr auto end_x{ 0x7FFFU };
@@ -46,11 +49,19 @@ private:
     };
     std::erase_if(m_tiles, cmp);
   }
-  void remove_duplicates()
+  /**
+   * Sort the data and then remove duplicates.
+   */
+  void sort_remove_duplicates()
   {
+    // unique requires sorted data to work.
+    sort();
     auto last = std::unique(m_tiles.begin(), m_tiles.end());
     m_tiles.erase(last, m_tiles.end());
   }
+  /**
+   * Sort in draw order.
+   */
   void sort()
   {
     static constexpr auto cmp = [](const auto &l, const auto &r) -> bool {
@@ -89,27 +100,18 @@ private:
       }
       return false;
     };
-    std::sort(m_tiles.begin(), m_tiles.end(), cmp);
+    std::ranges::sort(m_tiles, cmp);
   }
+  /**
+   * Some tiles are drawn off screen to create a texture we are going to shift everything to at least (0,0)
+   */
   void shift_to_origin() const noexcept
   {
     m_offset = Point(min_x(), min_y());
-    shift(m_offset.abs());
+    if (m_offset.x() < 0 || m_offset.y() < 0) {
+      shift(m_offset.abs());
+    }
   }
-
-public:
-  Map() = default;
-  explicit Map(std::span<const char> buffer)
-  {
-    auto tiles = std::span(
-      reinterpret_cast<const map_type *>(std::ranges::data(buffer)), std::ranges::size(buffer) / sizeof(map_type));
-    m_tiles = { tiles.begin(), tiles.end() };
-    remove_end();
-    remove_duplicates();
-    sort();
-    shift_to_origin();
-  }
-  [[nodiscard]] const auto &tiles() const noexcept { return m_tiles; }
   [[nodiscard]] const auto &min_x() const noexcept
   {
     return (std::min_element(
@@ -122,7 +124,7 @@ public:
       m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); });
   }
 
-  [[nodiscard]] const auto &max_x() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &max_x() const noexcept
   {
     return (std::max_element(
               m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); }))
@@ -140,45 +142,37 @@ public:
       ->y();
   }
 
-  [[nodiscard]] const auto &max_y() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &max_y() const noexcept
   {
     return (std::max_element(
               m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); }))
       ->y();
   }
 
-
-  [[nodiscard]] auto used_depth_and_palette() const
+public:
+  Map() = default;
+  /**
+   * Import tiles from a raw buffer.
+   * @param buffer is a raw char buffer.
+   */
+  explicit Map(const std::vector<char> &buffer)
   {
-    using T = typename std::decay<decltype(*m_tiles.begin())>::type;
-    std::vector<T> out_s1{};
-    static constexpr auto default_size = 16U;
-    out_s1.reserve(default_size);
-    std::unique_copy(
-      m_tiles.begin(), m_tiles.end(), std::back_inserter(out_s1), [](const auto &left, const auto &right) {
-        return left.depth() == right.depth() && left.palette_id() == right.palette_id();
-      });
-    std::vector<std::pair<BPPT, std::uint8_t>> out{};
-    out.reserve(std::ranges::size(out_s1));
-    std::transform(out_s1.begin(), out_s1.end(), std::back_inserter(out), [](const auto &tile) {
-      return std::make_pair(tile.depth(), tile.palette_id());
-    });
-    std::sort(out.begin(), out.end(), [](const auto &left, const auto &right) {
-      if (left.first < right.first) {
-        return true;
-      }
-      if (left.first > right.first) {
-        return false;
-      }
-      if (left.second < right.second) {
-        return true;
-      }
-      return false;
-    });
-    auto last = std::unique(out.begin(), out.end());
-    out.erase(last, out.end());
-    return out;
+    const auto count = std::ranges::size(buffer) / sizeof(map_type);
+    const auto size_in_bytes = count * sizeof(map_type);
+    m_tiles.resize(count);
+    std::memcpy(std::ranges::data(m_tiles), std::ranges::data(buffer), size_in_bytes);
+    remove_invalid();
+    sort_remove_duplicates();
+    shift_to_origin();
   }
+  [[nodiscard]] const auto &tiles() const noexcept { return m_tiles; }
+
+  [[nodiscard]] const auto *operator->() const noexcept { return &m_tiles; }
+
+  /**
+   * Get a rectangle large enough to hold all the tiles.
+   * @return rectangle
+   */
   [[nodiscard]] Rectangle<std::int32_t> canvas() const noexcept
   {
     const auto l_minmax_x = minmax_x();
@@ -188,23 +182,25 @@ public:
     const auto &[l_min_y, l_max_y] = l_minmax_y;
     constexpr static auto tile_size = 16;
 
-    open_viii::graphics::Rectangle<std::int32_t> l_canvas{};
-    l_canvas.x(l_min_x->x());
-    l_canvas.y(l_min_y->y());
-    l_canvas.height(static_cast<std::int32_t>(std::abs(l_max_y->y()) + std::abs(l_min_y->y()) + tile_size));
-    l_canvas.width(static_cast<std::int32_t>(std::abs(l_max_x->x()) + std::abs(l_min_x->x()) + tile_size));
+    open_viii::graphics::Rectangle<std::int32_t> l_canvas{ l_min_x->x(),
+      l_min_y->y(),
+
+      static_cast<std::int32_t>(std::abs(l_max_x->x()) + std::abs(l_min_x->x()) + tile_size),
+      static_cast<std::int32_t>(std::abs(l_max_y->y()) + std::abs(l_min_y->y()) + tile_size) };
     return l_canvas;
   }
+  /**
+   * Shift all the positions of the tiles.
+   * @param x horizontal shift
+   * @param y vertical shift
+   */
   void shift(const std::int16_t &x, const std::int16_t &y) const noexcept
   {
-    const auto transform = [&x, &y](auto &range) {
-      std::ranges::transform(range, range.begin(), [&x, &y](auto t) {
-        t.x(static_cast<std::int16_t>(t.x() + x));
-        t.y(static_cast<std::int16_t>(t.y() + y));
-        return t;
-      });
-    };
-    transform(m_tiles);
+    std::ranges::transform(m_tiles, std::ranges::begin(m_tiles), [&x, &y](auto t) {
+      t.x(static_cast<std::int16_t>(t.x() + x));
+      t.y(static_cast<std::int16_t>(t.y() + y));
+      return t;
+    });
   }
   void shift(const Point<std::int16_t> &point) const noexcept { shift(point.x(), point.y()); }
 
@@ -213,7 +209,6 @@ public:
     return os << std::ranges::size(m.m_tiles) << ", " << std::ranges::size(m.m_t2) << ", " << std::ranges::size(m.m_t3)
               << '\n';
   }
-
 
   void save_csv(const std::string_view &in_path) const
   {
@@ -235,64 +230,98 @@ public:
       },
       (path.parent_path() / path.stem()).string() + "_map.csv");
   }
-  void save_v1(const Mim &in_mim, const std::string_view &in_path) const
-  {
 
-    const auto &ts = tiles();
-    Rectangle<std::int32_t> rect = canvas();
-    const auto dnps = used_depth_and_palette();
-    for (const auto &[depth, palette] : dnps) {
-      const auto ppm_save = [this, &rect, &depth, &palette, &ts](const std::span<const Color16> &data,
-                              const std::size_t &width,
-                              const std::size_t &height,
-                              std::string local_filename) {
-        // Ppm::save(data, width, height, local_filename);
-        std::vector<Color16> out{};
-        out.resize(width * height);
-        bool drawn = false;
-        for (const auto &t : ts) {
-          // auto x = t.x();
-          // auto y = t.y();
-
-          if (depth != t.depth() || palette != t.palette_id() || !t.draw()) {
-            continue;
-          }
-          for (std::uint32_t y = {}; y < t.HEIGHT; y++) {
-            for (std::uint32_t x = {}; x < t.WIDTH; x++) {
-              if (t.source_y() < 0 || t.source_x() < 0) {
-                continue;
-              }
-              auto pixel_in = (static_cast<std::uint32_t>(t.source_x()) + x)
-                              + ((static_cast<std::uint32_t>(t.source_y()) + y) * width);
-              if (t.depth().bpp4()) {
-                pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
-              } else if (t.depth().bpp8()) {
-                pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id();
-              }
-
-              else if (t.depth().bpp16()) {
-                pixel_in += (t.TEXTURE_PAGE_WIDTH * t.texture_id()) / 2U;
-              }
-              auto pixel_out = (static_cast<std::uint32_t>(t.x()) + x)
-                               + ((static_cast<std::uint32_t>(t.y()) + y) * static_cast<std::uint32_t>(rect.width()));
-              Color16 color = data[pixel_in];
-              if (!color.is_black()) {
-                out.at(pixel_out) = data[pixel_in];
-                drawn = true;
-              }
-            }
-          }
-        }
-        if (drawn) {
-          auto p = std::filesystem::path(local_filename);
-          local_filename = (p.parent_path() / p.stem()).string() + "_tiled_mim.map";
-          Ppm::save(
-            out, static_cast<std::uint32_t>(rect.width()), static_cast<std::uint32_t>(rect.height()), local_filename);
-        }
-      };
-      in_mim.get_colors(in_path, depth, palette, ppm_save, false);
-    }
-  }
+  //  [[nodiscard]] auto used_depth_and_palette() const
+  //  {
+  //    using T = typename std::decay<decltype(*m_tiles.begin())>::type;
+  //    std::vector<T> out_s1{};
+  //    static constexpr auto default_size = 16U;
+  //    out_s1.reserve(default_size);
+  //    std::unique_copy(
+  //      m_tiles.begin(), m_tiles.end(), std::back_inserter(out_s1), [](const auto &left, const auto &right) {
+  //        return left.depth() == right.depth() && left.palette_id() == right.palette_id();
+  //      });
+  //    std::vector<std::pair<BPPT, std::uint8_t>> out{};
+  //    out.reserve(std::ranges::size(out_s1));
+  //    std::transform(out_s1.begin(), out_s1.end(), std::back_inserter(out), [](const auto &tile) {
+  //      return std::make_pair(tile.depth(), tile.palette_id());
+  //    });
+  //    std::sort(out.begin(), out.end(), [](const auto &left, const auto &right) {
+  //      if (left.first < right.first) {
+  //        return true;
+  //      }
+  //      if (left.first > right.first) {
+  //        return false;
+  //      }
+  //      if (left.second < right.second) {
+  //        return true;
+  //      }
+  //      return false;
+  //    });
+  //    auto last = std::unique(out.begin(), out.end());
+  //    out.erase(last, out.end());
+  //    return out;
+  //  }
+  //  void save_v1(const Mim &in_mim, const std::string_view &in_path) const
+  //  {
+  //
+  //    const auto &ts = tiles();
+  //    Rectangle<std::int32_t> rect = canvas();
+  //    const auto dnps = used_depth_and_palette();
+  //    for (const auto &[depth, palette] : dnps) {
+  //      const auto ppm_save = [this, &rect, &depth, &palette, &ts](const std::span<const Color16> &data,
+  //                              const std::size_t &width,
+  //                              const std::size_t &height,
+  //                              std::string local_filename) {
+  //        // Ppm::save(data, width, height, local_filename);
+  //        std::vector<Color16> out{};
+  //        out.resize(width * height);
+  //        bool drawn = false;
+  //        for (const auto &t : ts) {
+  //          // auto x = t.x();
+  //          // auto y = t.y();
+  //
+  //          if (depth != t.depth() || palette != t.palette_id() || !t.draw()) {
+  //            continue;
+  //          }
+  //          for (std::uint32_t y = {}; y < t.HEIGHT; y++) {
+  //            for (std::uint32_t x = {}; x < t.WIDTH; x++) {
+  //              if (t.source_y() < 0 || t.source_x() < 0) {
+  //                continue;
+  //              }
+  //              auto pixel_in = (static_cast<std::uint32_t>(t.source_x()) + x)
+  //                              + ((static_cast<std::uint32_t>(t.source_y()) + y) * width);
+  //              if (t.depth().bpp4()) {
+  //                pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
+  //              } else if (t.depth().bpp8()) {
+  //                pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id();
+  //              }
+  //
+  //              else if (t.depth().bpp16()) {
+  //                pixel_in += (t.TEXTURE_PAGE_WIDTH * t.texture_id()) / 2U;
+  //              }
+  //              auto pixel_out = (static_cast<std::uint32_t>(t.x()) + x)
+  //                               + ((static_cast<std::uint32_t>(t.y()) + y) *
+  //                               static_cast<std::uint32_t>(rect.width()));
+  //              Color16 color = data[pixel_in];
+  //              if (!color.is_black()) {
+  //                out.at(pixel_out) = data[pixel_in];
+  //                drawn = true;
+  //              }
+  //            }
+  //          }
+  //        }
+  //        if (drawn) {
+  //          auto p = std::filesystem::path(local_filename);
+  //          local_filename = (p.parent_path() / p.stem()).string() + "_tiled_mim.map";
+  //          Ppm::save(
+  //            out, static_cast<std::uint32_t>(rect.width()), static_cast<std::uint32_t>(rect.height()),
+  //            local_filename);
+  //        }
+  //      };
+  //      in_mim.get_colors(in_path, depth, palette, ppm_save, false);
+  //    }
+  //  }
 };
 }// namespace open_viii::graphics::background
 
