@@ -15,6 +15,7 @@
 #define VIIIARCHIVE_PUPU_HPP
 #include <cstdint>
 #include <compare>
+#include <bit>
 #include "Tile1.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"

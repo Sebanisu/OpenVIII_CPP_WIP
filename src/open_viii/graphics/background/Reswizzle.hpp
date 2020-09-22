@@ -4,23 +4,16 @@
 
 #ifndef VIIIARCHIVE_RESWIZZLE_HPP
 #define VIIIARCHIVE_RESWIZZLE_HPP
-#include <utility>
-
-#include "Map.hpp"
-#include "Mim.hpp"
-namespace open_viii::graphics::background {
+#include "ReswizzleTree.hpp"
+namespace open_viii::graphics::background
+{
 struct Reswizzle
 {
 private:
-  const std::string m_dir_name{};
-  const std::filesystem::path m_dir_path{}
-  const std::string m_fi_filename{};
-
+  const ReswizzleTree m_tree{};
 public:
-  ReswizzleTree(std::filesystem::path dir_path)
-  :
-  m_dir_name(dir_path.filename().string()),
-      m_dir_path(std::move(dir_path)),
+  Reswizzle(ReswizzleTree && tree)
+  : m_tree(std::move(tree))
   {
 
   }

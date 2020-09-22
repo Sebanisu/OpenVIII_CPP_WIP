@@ -11,6 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestReswizzleFields.hpp"
+#include "open_viii/graphics/background/ReswizzleTree.hpp"
 #include "open_viii/paths/Paths.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/graphics/Ppm.hpp"
@@ -39,7 +40,15 @@ int main()
     [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
 
     open_viii::Tools::execute_on_directories(
-      std::filesystem::current_path(), { "ecenter3" }, [&field](const std::filesystem::path &directory_path) {
+      std::filesystem::current_path(), {}, [&field](const std::filesystem::path &directory_path) {
+        const auto archive_ = open_viii::graphics::background::ReswizzleTree{field, directory_path};
+        if(!static_cast<bool>(archive_))
+        {
+          return;
+        }
+        std::cout<<directory_path<<std::endl;
+
+        return;
         const std::string &dir_name = directory_path.filename().string();
         const std::string fi_filename = dir_name + std::string(open_viii::archive::FI::EXT);
         const std::string fl_filename = dir_name + std::string(open_viii::archive::FL::EXT);

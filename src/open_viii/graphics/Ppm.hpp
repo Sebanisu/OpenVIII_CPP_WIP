@@ -13,6 +13,7 @@
 
 #ifndef VIIIARCHIVE_PPM_HPP
 #define VIIIARCHIVE_PPM_HPP
+#include <execution>
 #include <cstdint>
 #include <fstream>
 #include <iostream>

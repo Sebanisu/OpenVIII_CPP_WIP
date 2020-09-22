@@ -178,9 +178,10 @@ public:
     const std::string_view &needle)
   {
     if (std::ranges::size(haystack) >= std::ranges::size(needle)) {
-      const auto sub_range = std::ranges::search(haystack, needle, IEqualPredicate());
-      return std::ranges::size(sub_range) == std::ranges::size(needle);
-      // todo make constexpr in cpp 20
+      const auto last = std::search(haystack.begin(),haystack.end(),needle.begin(),needle.end(),IEqualPredicate());
+      return last!= haystack.end();
+//      const auto sub_range = std::ranges::search(haystack, needle, IEqualPredicate());
+//      return std::ranges::size(sub_range) == std::ranges::size(needle);
     }
     return false;
   }

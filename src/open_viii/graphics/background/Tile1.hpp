@@ -15,6 +15,7 @@
 #define VIIIARCHIVE_TILE1_HPP
 #include <cstdint>
 #include "open_viii/graphics/Point.hpp"
+#include "open_viii/graphics/Rectangle.hpp"
 #include "TexIdBuffer.hpp"
 #include "BlendModeT.hpp"
 #include "LayerID.hpp"
