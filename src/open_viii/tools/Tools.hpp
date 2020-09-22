@@ -372,7 +372,19 @@ public:
   {
     for (intT y{}; y < max_xy; y++) {
       for (intT x{}; x < max_xy; x++) {
-        lambda(x,y);
+        if(lambda(x,y)) {
+          break;
+        }
+      }
+    }
+  }
+  template <std::unsigned_integral intT, std::invocable<intT,intT> lambdaT>
+  static void for_each_xy(const intT &max_x, const intT &max_y, const lambdaT & lambda)
+  {
+    for (intT y{}; y < max_x; y++) {
+      for (intT x{}; x < max_y; x++) {
+        if(lambda(x,y))
+          break;
       }
     }
   }
