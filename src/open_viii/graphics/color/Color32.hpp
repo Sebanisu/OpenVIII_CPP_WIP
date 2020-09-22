@@ -79,6 +79,8 @@ public:
               << static_cast<std::size_t>(color.G()) << ", " << static_cast<std::size_t>(color.B()) << ", "
               << static_cast<std::size_t>(color.A()) << '}' << std::dec << std::nouppercase;
   }
+  friend auto operator<=>(const Color32<r_, g_, b_, a_> &left, const Color32<r_, g_, b_, a_> &right) noexcept = default;
+  auto operator<=>(const Color32<r_, g_, b_, a_> &right) const noexcept = default;
 };
 static_assert(sizeof(Color32<>) == Color32<>::EXPLICIT_SIZE);
 }// namespace open_viii::graphics

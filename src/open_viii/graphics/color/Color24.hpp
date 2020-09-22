@@ -68,6 +68,8 @@ public:
     G(color.G());
     B(color.B());
   }
+  friend auto operator<=>(const Color24<r_, g_, b_> &left, const Color24<r_, g_, b_> &right) noexcept = default;
+  auto operator<=>(const Color24<r_, g_, b_> &right) const noexcept = default;
   friend std::ostream &operator<<(std::ostream &os, const Color24<r_, g_, b_> &color)
   {
     return os << std::uppercase << std::hex << '{' << static_cast<std::size_t>(color.R()) << ", "
