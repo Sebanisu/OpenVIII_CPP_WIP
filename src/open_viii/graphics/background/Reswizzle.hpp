@@ -37,8 +37,13 @@ private:
   const std::uint32_t m_width{};
   const std::uint32_t m_height{};
   const std::uint32_t m_area{};
+  mutable std::array<std::vector<map_type>, 16> m_skip{};
   mutable std::vector<open_viii::graphics::Color24<0, 1, 2>> m_out{};
   mutable bool m_drawn{ false };
+  void empty_skip() const
+  {
+    std::ranges::for_each(m_skip, [](std::vector<map_type> &vector) { vector.clear(); });
+  }
   std::array<std::vector<PupuPath>, 3> find_files()
   {
     std::array<std::vector<PupuPath>, 3> path_grouped_by_bppt{};
@@ -115,6 +120,80 @@ private:
       m_drawn = false;
     }
   }
+  void save_and_clear_out_buffer(const int &bpp, const std::uint16_t &texture_id, const std::uint8_t &palette) const
+  {
+    if (m_drawn) {
+      std::string output_name =
+        m_output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(texture_id) + "_" + std::to_string(palette);
+      Ppm::save(m_out, m_width, m_height, output_name, true);
+      std::fill(std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
+      m_drawn = false;
+    }
+  }
+  void
+    process_main_tiles(const uint16_t &texture_id, const int &bpp, const std::vector<PupuPath> &pupu_path_vector) const
+  {
+    std::ranges::for_each(pupu_path_vector, [this, &bpp, &texture_id](const PupuPath &pupu_path) {
+      const auto ppm = Ppm(pupu_path.read_file());
+      for_each_tile(
+        [this, &ppm](const map_type &tile) {
+          static constexpr auto tile_size = 16U;
+          open_viii::Tools::for_each_xy(tile_size * m_scale, get_set_color_lambda(ppm, tile));
+        },
+        [&pupu_path, &texture_id](
+          const map_type &tile) { return pupu_path.pupu == tile && tile.texture_id() == texture_id; });
+    });
+    save_and_clear_out_buffer(bpp, texture_id);
+  }
+  auto get_clear_color_lambda(const Ppm &ppm, const map_type &tile) const
+  {
+    return [this, &tile, &ppm](const auto &x, const auto &y) -> bool {
+      const auto scaled_tile_y = static_cast<std::size_t>(tile.y()) * this->m_scale;
+      const auto scaled_tile_x = static_cast<std::size_t>(tile.x()) * this->m_scale;
+      auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
+      if (!color.is_black()) {
+        const std::size_t scaled_tile_source_x = tile.source_x() * this->m_scale;
+        const std::size_t scaled_tile_source_y = tile.source_y() * this->m_scale;
+        this->m_out.at(
+          x + scaled_tile_source_x + ((y + scaled_tile_source_y) * this->m_width)) = {};// put the values back to black.
+      }
+      return false;
+    };
+  }
+  auto get_set_color_lambda(const Ppm &ppm, const map_type &tile) const
+  {
+    return [this, &tile, &ppm](const auto &x, const auto &y) -> bool {
+      const auto scaled_tile_y = static_cast<std::size_t>(tile.y()) * m_scale;
+      const auto scaled_tile_x = static_cast<std::size_t>(tile.x()) * m_scale;
+      auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
+      if (!color.is_black()) {
+        const std::size_t scaled_tile_source_x = tile.source_x() * m_scale;
+        const std::size_t scaled_tile_source_y = tile.source_y() * m_scale;
+        const auto &current = m_out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width));
+        if (!current.is_black() && current != color) {
+          Tools::for_each_xy(x + 1, y + 1, get_clear_color_lambda(ppm, tile));
+          return true;// break out.
+        }
+        m_out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width)) = color;
+        m_drawn = true;
+      }
+      return false;
+    };
+  }
+  [[nodiscard]] std::size_t skipped_size() const
+  {
+    const auto array =
+      m_skip | std::views::transform([](const std::vector<map_type> &vector) { return std::ranges::size(vector); });
+
+    return std::reduce(std::ranges::begin(array),
+      std::ranges::end(array),
+      static_cast<std::size_t>(0U),
+      [](const std::size_t &total, const std::size_t &vector_size) { return total + vector_size; });
+  }
+  [[nodiscard]] bool skipped_empty() const
+  {
+    return std::ranges::all_of(m_skip, [](const std::vector<map_type> &vector) { return std::ranges::empty(vector); });
+  }
 
 public:
   Reswizzle(const std::vector<char> &buffer,
@@ -126,12 +205,7 @@ public:
       m_path_grouped_by_bppt(find_files()), m_valid_texture_ids(get_valid_texture_ids()), m_scale(scale),
       m_width(open_viii::graphics::background::MimType::height() * m_scale),
       m_height(open_viii::graphics::background::MimType::height() * m_scale), m_area(m_width * m_height), m_out(m_area)
-  {
-    if (empty()) {
-      return;
-    }
-    std::cout << size() << std::endl;
-  }
+  {}
 
   [[nodiscard]] std::size_t size() const
   {
@@ -152,29 +226,9 @@ public:
   void process() const
   {
     for_each_texture_id([this](const std::uint16_t texture_id) {
-      for_each_pupu_path_vector([this, &texture_id](const int bpp, const std::vector<PupuPath> &pupu_path_vector) {
-        std::ranges::for_each(pupu_path_vector, [this, &bpp, &texture_id](const PupuPath &pupu_path) {
-          const auto ppm = Ppm(pupu_path.read_file());
-          for_each_tile(
-            [this, &ppm](const map_type &tile) {
-              static constexpr auto tile_size = 16U;
-              open_viii::Tools::for_each_xy(tile_size * m_scale, [this, &tile, &ppm](const auto &x, const auto &y) {
-                const auto scaled_tile_y = static_cast<std::size_t>(tile.y()) * m_scale;
-                const auto scaled_tile_x = static_cast<std::size_t>(tile.x()) * m_scale;
-                auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
-                if (!color.is_black()) {
-                  const std::size_t scaled_tile_source_x = tile.source_x() * m_scale;
-                  const std::size_t scaled_tile_source_y = tile.source_y() * m_scale;
-                  m_out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width)) = color;
-                  m_drawn = true;
-                }
-              });
-            },
-            [&pupu_path, &texture_id](
-              const map_type &tile) { return pupu_path.pupu == tile && tile.texture_id() == texture_id; });
-        });
-
-        save_and_clear_out_buffer(bpp, texture_id);
+      for_each_pupu_path_vector([this, &texture_id](const int &bpp, const std::vector<PupuPath> &pupu_path_vector) {
+        process_main_tiles(texture_id, bpp, pupu_path_vector);
+        empty_skip();
       });
     });
   }
