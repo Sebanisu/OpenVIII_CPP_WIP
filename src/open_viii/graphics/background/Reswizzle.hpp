@@ -106,9 +106,14 @@ private:
       [&lambda, this](const std::size_t &index) { lambda(bpp_values.at(index), m_path_grouped_by_bppt.at(index)); });
   }
   template<std::invocable<map_type> lambdaT1, std::invocable<map_type> lambdaT2>
+  void for_each_tile(const std::vector<map_type> &vector, const lambdaT1 &exec, const lambdaT2 &filter) const
+  {
+    std::ranges::for_each(vector | std::views::filter(filter), exec);
+  }
+  template<std::invocable<map_type> lambdaT1, std::invocable<map_type> lambdaT2>
   void for_each_tile(const lambdaT1 &exec, const lambdaT2 &filter) const
   {
-    std::ranges::for_each(m_map.tiles() | std::views::filter(filter), exec);
+    for_each_tile(m_map.tiles(), exec, filter);
   }
 
   void save_and_clear_out_buffer(const int &bpp, const std::uint16_t &texture_id) const
@@ -145,6 +150,32 @@ private:
     });
     save_and_clear_out_buffer(bpp, texture_id);
   }
+  void process_skipped_tiles(const uint16_t &texture_id,
+    const int &bpp,
+    const std::vector<PupuPath> &pupu_path_vector) const
+  {
+    constexpr static std::array<std::uint8_t, 16> indexes = {
+      0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U
+    };
+    std::ranges::for_each(indexes, [this, &bpp, &texture_id, &pupu_path_vector](const uint8_t &palette_id) {
+      if (std::ranges::empty(m_skip.at(palette_id))) {
+        return;
+      }
+      std::ranges::for_each(pupu_path_vector, [this, &bpp, &texture_id, &palette_id](const PupuPath &pupu_path) {
+        const auto ppm = Ppm(pupu_path.read_file());
+        for_each_tile(
+          m_skip.at(palette_id),
+          [this, &ppm](const map_type &tile) {
+            static constexpr auto tile_size = 16U;
+            open_viii::Tools::for_each_xy(tile_size * m_scale, get_set_color_lambda(ppm, tile, true));
+          },
+          [&pupu_path, &texture_id, &palette_id](const map_type &tile) {
+            return pupu_path.pupu == tile && tile.texture_id() == texture_id && tile.palette_id() == palette_id;
+          });
+      });
+      save_and_clear_out_buffer(bpp, texture_id, palette_id);
+    });
+  }
   auto get_clear_color_lambda(const Ppm &ppm, const map_type &tile) const
   {
     return [this, &tile, &ppm](const auto &x, const auto &y) -> bool {
@@ -160,26 +191,29 @@ private:
       return false;
     };
   }
-  auto get_set_color_lambda(const Ppm &ppm, const map_type &tile) const
+  auto get_set_color_lambda(const Ppm &ppm, const map_type &tile, const bool skipped = false) const
   {
-    return [this, &tile, &ppm](const auto &x, const auto &y) -> bool {
-      const auto scaled_tile_y = static_cast<std::size_t>(tile.y()) * m_scale;
-      const auto scaled_tile_x = static_cast<std::size_t>(tile.x()) * m_scale;
+    return [this, &tile, &ppm, skipped](const auto &x, const auto &y) -> bool {
+      const auto scaled_tile_y = scale_dim(tile.y());
+      const auto scaled_tile_x = scale_dim(tile.x());
       auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
       if (!color.is_black()) {
-        const std::size_t scaled_tile_source_x = tile.source_x() * m_scale;
-        const std::size_t scaled_tile_source_y = tile.source_y() * m_scale;
-        const auto &current = m_out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width));
-        if (!current.is_black() && current != color) {
+        const auto scaled_tile_source_x = scale_dim(tile.source_x());
+        const auto scaled_tile_source_y = scale_dim(tile.source_y());
+        const auto dst_index = x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width);
+        const auto &current = m_out.at(dst_index);
+        if (!skipped && !current.is_black()) {
           Tools::for_each_xy(x + 1, y + 1, get_clear_color_lambda(ppm, tile));
+          m_skip.at(tile.palette_id()).push_back(tile);
           return true;// break out.
         }
-        m_out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width)) = color;
+        m_out.at(dst_index) = color;
         m_drawn = true;
       }
       return false;
     };
   }
+  size_t scale_dim(const std::integral auto &value) const { return static_cast<std::size_t>(value) * m_scale; }
   [[nodiscard]] std::size_t skipped_size() const
   {
     const auto array =
@@ -228,6 +262,7 @@ public:
     for_each_texture_id([this](const std::uint16_t texture_id) {
       for_each_pupu_path_vector([this, &texture_id](const int &bpp, const std::vector<PupuPath> &pupu_path_vector) {
         process_main_tiles(texture_id, bpp, pupu_path_vector);
+        process_skipped_tiles(texture_id, bpp, pupu_path_vector);
         empty_skip();
       });
     });
