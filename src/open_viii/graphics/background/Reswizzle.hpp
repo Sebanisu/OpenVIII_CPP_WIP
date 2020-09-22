@@ -38,6 +38,7 @@ private:
   const std::uint32_t m_height{};
   const std::uint32_t m_area{};
   mutable std::vector<open_viii::graphics::Color24<0, 1, 2>> m_out{};
+  mutable bool m_drawn{ false };
   std::array<std::vector<PupuPath>, 3> find_files()
   {
     std::array<std::vector<PupuPath>, 3> path_grouped_by_bppt{};
@@ -49,12 +50,16 @@ private:
         if (std::ranges::size(basename) < minsize) {
           return;
         }
-        auto suffix = std::string_view(basename).substr(std::ranges::size(basename) - 7);
+        constexpr static auto suffix_offset = 7;
+        auto suffix = std::string_view(basename).substr(std::ranges::size(basename) - suffix_offset);
         if (suffix != "_mimmap") {
           return;
         }
-        auto hex = std::string_view(basename).substr(std::ranges::size(basename) - 23, 16);
-        auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - 24);
+        constexpr static auto hex_begin_offset = 23;
+        constexpr static auto hex_length = 16;
+        constexpr static auto hex_begin_offset_and_dash = hex_begin_offset + 1;
+        auto hex = std::string_view(basename).substr(std::ranges::size(basename) - hex_begin_offset, hex_length);
+        auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - hex_begin_offset_and_dash);
         if (open_viii::Tools::i_equals(prefix, m_dir_name)) {
           // std::cout << prefix << '\n';
           auto pp = PupuPath{ open_viii::graphics::background::Pupu(hex), file_path };
@@ -90,8 +95,8 @@ private:
   template<std::invocable<int, std::vector<PupuPath>> lambdaT>
   void for_each_pupu_path_vector(const lambdaT &lambda) const
   {
-    constexpr static std::array<std::size_t,3> index_values = { 0U, 1U, 2U };
-    constexpr static std::array<int,3> bpp_values = { 4, 8, 16 };
+    constexpr static std::array<std::size_t, 3> index_values = { 0U, 1U, 2U };
+    constexpr static std::array<int, 3> bpp_values = { 4, 8, 16 };
     std::ranges::for_each(index_values,
       [&lambda, this](const std::size_t &index) { lambda(bpp_values.at(index), m_path_grouped_by_bppt.at(index)); });
   }
@@ -103,10 +108,14 @@ private:
 
   void save_and_clear_out_buffer(const int &bpp, const std::uint16_t &texture_id) const
   {
-    std::string output_name = m_output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(texture_id);
-    Ppm::save(m_out, m_width, m_height, output_name);
-    std::fill(std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
+    if (m_drawn) {
+      std::string output_name = m_output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(texture_id);
+      Ppm::save(m_out, m_width, m_height, output_name, true);
+      std::fill(std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
+      m_drawn = false;
+    }
   }
+
 public:
   Reswizzle(const std::vector<char> &buffer,
     const std::filesystem::path &dir_path,
@@ -157,6 +166,7 @@ public:
                   const std::size_t scaled_tile_source_x = tile.source_x() * m_scale;
                   const std::size_t scaled_tile_source_y = tile.source_y() * m_scale;
                   m_out.at(x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width)) = color;
+                  m_drawn = true;
                 }
               });
             },
