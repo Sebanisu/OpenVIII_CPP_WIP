@@ -17,11 +17,7 @@
 #include "open_viii/graphics/Ppm.hpp"
 #include "open_viii/graphics/background/Mim.hpp"
 #include "open_viii/graphics/background/Map.hpp"
-struct PupuPath
-{
-  open_viii::graphics::background::Pupu pupu{};
-  std::filesystem::path path{};
-};
+
 static void save_and_clear(std::vector<open_viii::graphics::Color24<0, 1, 2>> &out,
   const std::unsigned_integral auto &width,
   const std::unsigned_integral auto &height,
@@ -41,13 +37,13 @@ int main()
 
     open_viii::Tools::execute_on_directories(
       std::filesystem::current_path(), {}, [&field](const std::filesystem::path &directory_path) {
-        const auto archive_ = open_viii::graphics::background::ReswizzleTree{field, directory_path};
-        if(!static_cast<bool>(archive_))
+        const auto reswizzle_tree = open_viii::graphics::background::ReswizzleTree{field, directory_path};
+        if(!static_cast<bool>(reswizzle_tree))
         {
           return;
         }
         std::cout<<directory_path<<std::endl;
-
+             reswizzle_tree.reswizzle();
         return;
         const std::string &dir_name = directory_path.filename().string();
         const std::string fi_filename = dir_name + std::string(open_viii::archive::FI::EXT);
@@ -71,7 +67,7 @@ int main()
         open_viii::graphics::background::MimType mim_type =
           open_viii::graphics::background::Mim::get_texture_type(mim_fi.uncompressed_size(), dir_name);
 
-        const auto reswizzle = [&directory_path, &dir_name, &mim_type, &output_prefix]<typename tileT>(
+        const auto reswizzle = [&directory_path, &dir_name, &output_prefix]<typename tileT>(
                                  [[maybe_unused]] const open_viii::graphics::background::Map<tileT> &map) {
           // map.save_csv(output_prefix + "_2.csv");
           // I need the pupu's with same bppt and path.
@@ -90,7 +86,7 @@ int main()
           open_viii::Tools::execute_on_directory(directory_path,
             { dir_name },
             { ".ppm" },
-            [&dir_name, &mim_type, &path_grouped_by_bppt](const std::filesystem::path &file_path) {
+            [&dir_name, &path_grouped_by_bppt](const std::filesystem::path &file_path) {
               // if(!file_path.has_stem()) {return;}
               auto basename = file_path.stem().string();
               static constexpr auto minsize{ 24 };

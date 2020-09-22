@@ -79,12 +79,31 @@ public:
     fp.read(std::ranges::data(buf), s);
     return buf;
   }
+
   template<typename dstT = std::vector<char>> [[maybe_unused]] static auto read_buffer(std::istream &fp)
   {
     fp.seekg(0, std::ios::end);
     const auto s = fp.tellg();
     fp.seekg(0, std::ios::beg);
     return read_buffer<dstT>(fp, static_cast<long>(s));
+  }
+  template<std::ranges::contiguous_range dstT = std::vector<char>>
+  [[maybe_unused]] static dstT read_file(const std::filesystem::path &path)
+  {
+    if(!std::filesystem::exists(path))
+    {
+      return {};
+    }
+
+    std::ifstream fp{};
+    for(;;) {
+      fp.open(path.string(), std::ios::in | std::ios::binary);
+      if(fp.is_open()) {break;}
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    auto buffer = open_viii::Tools::read_buffer<dstT>(fp);
+    fp.close();
+    return buffer;
   }
   template<typename lambdaT>
   requires(std::invocable<lambdaT, std::ostream &>) [[maybe_unused]] static bool write_buffer(const lambdaT &lambda,

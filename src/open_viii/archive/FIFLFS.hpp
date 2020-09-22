@@ -47,7 +47,21 @@ private:
   public:
     [[nodiscard]] std::filesystem::path &path() const noexcept { return m_path; }
     [[nodiscard]] std::size_t &offset() const noexcept { return m_offset; }
-    [[nodiscard]] std::size_t &size() const noexcept { return m_size; }// if forced otherwise 0;
+    /**
+     * Size of file
+     * @return size_t
+     */
+    [[nodiscard]] std::size_t &size() const noexcept
+    {
+      if (m_size == 0U) {
+        if (!std::ranges::empty(data())) {
+          m_size = std::ranges::size(data());
+        } else if (std::filesystem::exists(path())) {
+          m_size = std::filesystem::file_size(path());
+        }
+      }
+      return m_size;
+    }
     [[nodiscard]] T &data() const noexcept { return m_data; }
     [[nodiscard]] std::string &base() const noexcept { return m_base; }
     [[nodiscard]] std::filesystem::path &nested_path() const noexcept { return m_nested_path; }
@@ -61,8 +75,8 @@ private:
 
 
     void path(const std::filesystem::path &value) const noexcept { m_path = value; }
-    void offset(std::size_t value) const noexcept { m_offset = value; }
-    void size(std::size_t &value) const noexcept { m_size = value; }// if forced otherwise 0;
+    void offset(const std::size_t &value) const noexcept { m_offset = value; }
+    void size(const std::size_t &value) const noexcept { m_size = value; }
     void data(T &&value) const noexcept { m_data = std::move(value); }
     void base(const std::string &value) const noexcept { m_base = value; }
     void nested_path(const std::filesystem::path &value) const noexcept { m_nested_path = value; }
@@ -79,19 +93,7 @@ private:
   Grouping<std::vector<char>> m_fs{};
   Grouping<std::basic_string<char>> m_fl{};// this is char because the file contains strings.
   mutable size_t m_count{};
-  void get_count(size_t size = 0U) const
-  {
-    if (size == 0U) {
-      size = m_fi.size();
-    }
-    if (size == 0U && std::filesystem::exists(m_fi.path())) {
-      size = std::filesystem::file_size(m_fi.path());
-    }
-    if (size == 0U && !std::ranges::empty(m_fi.data())) {
-      size = std::ranges::size(m_fi.data());
-    }
-    m_count = FI::get_count(size);
-  }
+  void get_count() const noexcept { m_count = FI::get_count(m_fi.size()); }
 
 public:
   [[maybe_unused]] [[nodiscard]] const auto &fi() const noexcept { return m_fi; }
@@ -585,7 +587,7 @@ public:
       archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
     for (const auto &[id, strVirtualPath] : items) {
       TryAddT tryAddT = get_fiflfs(archive, id, strVirtualPath);
-      if(tryAddT == TryAddT::archive_full) {
+      if (tryAddT == TryAddT::archive_full) {
         break;
       }
     }

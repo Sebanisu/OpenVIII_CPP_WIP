@@ -113,7 +113,7 @@ public:
     : FI(buffer, get_start_offset(id, offset))
   {}
 
-  [[nodiscard]] constexpr static size_t get_count(const size_t file_size) noexcept { return file_size / SIZE; }
+  [[nodiscard]] constexpr static size_t get_count(const std::size_t & file_size) noexcept { return file_size / SIZE; }
   // GetCount which is fileSize/Size if file doesn't exist return 0;
   [[maybe_unused]] [[nodiscard]] size_t static get_count(const std::filesystem::path &path)
   {
