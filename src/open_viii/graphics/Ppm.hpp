@@ -58,10 +58,18 @@ public:
         bytesize = line;
         continue;
       }
-      if ([&line, this, &w_h]() -> bool {
-            auto lss = std::stringstream(line);
-            lss >> m_width;
-            lss >> m_height;
+      if ([&line, this, &w_h, &bytesize]() -> bool {
+            const auto count = std::ranges::count(line, ' ');
+            if (count == 1) {// 000 000\n000
+              auto lss = std::stringstream(line);
+              lss >> m_width;
+              lss >> m_height;
+            } else if (count == 2) {// 000 000 000
+              auto lss = std::stringstream(line);
+              lss >> m_width;
+              lss >> m_height;
+              lss >> bytesize;
+            }
             return m_width > 0 || m_height > 0;
           }()) {
         w_h = line;
@@ -72,11 +80,17 @@ public:
     auto bufferspan = (std::span<const char>(buffer)).subspan(static_cast<std::size_t>(ss.tellg()));
     if (std::ranges::size(bufferspan) > 0) {
       auto sz = std::ranges::size(bufferspan) / sizeof(Color24<0, 1, 2>);
-      const auto colorspan =
-        std::span<const Color24<0, 1, 2>>{ reinterpret_cast<const Color24<0, 1, 2> *>(std::ranges::data(bufferspan)),
-          sz };
-      m_colors = { std::ranges::cbegin(colorspan), std::ranges::cend(colorspan) };
-      assert(std::ranges::size(m_colors) == m_height * m_width);
+      //      const auto colorspan =
+      //        std::span<const Color24<0, 1, 2>>{ reinterpret_cast<const Color24<0, 1, 2>
+      //        *>(std::ranges::data(bufferspan)),
+      //          sz };
+      if (sz != m_height * m_width) {
+        std::cerr << sz << " != " << m_height << " * " << m_width << std::endl;
+        assert(sz == m_height * m_width);
+      }
+      m_colors.resize(sz);
+      std::memcpy(std::ranges::data(m_colors), std::ranges::data(bufferspan), sz * sizeof(Color24<0, 1, 2>));
+      // m_colors = { std::ranges::cbegin(colorspan), std::ranges::cend(colorspan) };
     }
   }
   [[nodiscard]] const auto &colors() { return m_colors; }
@@ -96,8 +110,9 @@ public:
     auto tmp = std::filesystem::path(input);
 
     std::string filename{ (tmp.parent_path() / tmp.stem()).string() };
-    if (tmp.has_extension())
+    if (tmp.has_extension()) {
       filename += "_" + tmp.extension().string().substr(1);
+    }
     filename += ".ppm";
     if (std::ranges::size(data) < width * height) {
       std::cout << std::ranges::size(data) << ", " << width << '*' << height << '=' << width * height << '\n';

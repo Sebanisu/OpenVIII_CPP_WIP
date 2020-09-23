@@ -62,7 +62,11 @@ public:
    */
   [[nodiscard]] const auto &y(const dimT &y) const noexcept { return m_y = y; }
 
-
+  Point<dimT> operator/(const Point<dimT> &input) const noexcept
+  {
+    return { input.m_x != 0 ? m_x / input.m_x : 0, input.m_x != 0 ? m_y / input.m_y : 0 };
+  }
+  Point<dimT> operator*(const Point<dimT> &input) const noexcept { return { m_x * input.m_x, m_y * input.m_y }; }
   friend std::ostream &operator<<(std::ostream &os, const Point<dimT> &input)
   {
     return os << '{' << input.m_x << ", " << input.m_y << '}';

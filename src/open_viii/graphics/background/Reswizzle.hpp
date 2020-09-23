@@ -33,13 +33,26 @@ private:
   const std::array<std::vector<PupuPath>, 3> m_path_grouped_by_bppt{};
   const std::vector<std::uint16_t> m_valid_texture_ids{};
 
-  const std::uint8_t m_scale{};// when I can detect the scale this will probably be mutable or I can detect on init
-  const std::uint32_t m_width{};
-  const std::uint32_t m_height{};
-  const std::uint32_t m_area{};
+  mutable std::uint8_t m_scale{};// when I can detect the scale this will probably be mutable or I can detect on init
+  mutable std::uint32_t m_width{};
+  mutable std::uint32_t m_height{};
+  mutable std::uint32_t m_area{};
   mutable std::array<std::vector<map_type>, 16> m_skip{};
   mutable std::vector<open_viii::graphics::Color24<0, 1, 2>> m_out{};
   mutable bool m_drawn{ false };
+
+  uint32_t get_area() const noexcept { return m_width * m_height; }
+  uint16_t get_scaled_dim() const noexcept { return MimType::height() * m_scale; }
+  void update_dims(std::uint8_t scale = 1U) const noexcept
+  {
+    if(scale <1U) {
+      return;
+    }
+    m_scale = scale;
+    m_height = m_width = get_scaled_dim();
+    m_area = get_area();
+    m_out.resize(m_area);
+  }
   void empty_skip() const
   {
     std::ranges::for_each(m_skip, [](std::vector<map_type> &vector) { vector.clear(); });
@@ -240,8 +253,8 @@ public:
     const uint8_t scale = 1U)
     : m_map(buffer), m_dir_path(dir_path), m_dir_name(dir_name), m_output_prefix(output_prefix),
       m_path_grouped_by_bppt(find_files()), m_valid_texture_ids(get_valid_texture_ids()), m_scale(scale),
-      m_width(open_viii::graphics::background::MimType::height() * m_scale),
-      m_height(open_viii::graphics::background::MimType::height() * m_scale), m_area(m_width * m_height), m_out(m_area)
+      m_width(get_scaled_dim()),
+      m_height(get_scaled_dim()), m_area(get_area()), m_out(m_area)
   {}
 
   [[nodiscard]] std::size_t size() const

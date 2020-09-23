@@ -136,6 +136,15 @@ public:
   {
     return os << "{(X, Y) = " << input.m_top_left << ", (Width, Height) = " << input.m_width_height << '}';
   }
+
+  Rectangle<dimT> operator/(const Rectangle<dimT> &input) const noexcept
+  {
+    return { m_top_left / input.m_top_left, m_width_height / input.m_width_height };
+  }
+  Rectangle<dimT> operator*(const Rectangle<dimT> &input) const noexcept
+  {
+    return { m_top_left * input.m_top_left, m_width_height * input.m_width_height };
+  }
 };
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_RECTANGLE_HPP
