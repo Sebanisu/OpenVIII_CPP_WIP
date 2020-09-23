@@ -6,7 +6,7 @@ AlignEscapedNewlines: Left
 AlignOperands: "true"
 AlignTrailingComments: false
 AllowAllParametersOfDeclarationOnNextLine: false
-AllowShortBlocksOnASingleLine: Always
+AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: Never
@@ -95,3 +95,4 @@ SpacesInSquareBrackets: false
 Standard: Latest
 TabWidth: 8
 UseTab: Never
+
