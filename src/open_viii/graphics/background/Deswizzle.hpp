@@ -79,35 +79,35 @@ private:
     }
     return false;
   }
-//  bool set_color(std::vector<Color16> &out,
-//    const std::integral auto &index_out,
-//    const std::span<const Color16> &in,
-//    const std::integral auto &index_in) const
-//  {
-//    Color16 color = in[index_in];
-//    if (!color.is_black()) {
-//      out.at(index_out) = color;
-//      return true;
-//    }
-//    return false;
-//  }
+  //  bool set_color(std::vector<Color16> &out,
+  //    const std::integral auto &index_out,
+  //    const std::span<const Color16> &in,
+  //    const std::integral auto &index_in) const
+  //  {
+  //    Color16 color = in[index_in];
+  //    if (!color.is_black()) {
+  //      out.at(index_out) = color;
+  //      return true;
+  //    }
+  //    return false;
+  //  }
   auto get_output_index(auto &x, auto &y, auto &tile) const
   {
     return (static_cast<uint32_t>(tile.x()) + x)
            + ((static_cast<uint32_t>(tile.y()) + y) * static_cast<uint32_t>(m_canvas.width()));
   }
-//  auto get_input_index(auto &x, auto &y, const size_t &width, auto &tile) const
-//  {
-//    auto pixel_in =
-//      (static_cast<uint32_t>(tile.source_x()) + x) + ((static_cast<uint32_t>(tile.source_y()) + y) * width);
-//    unsigned int texture_page_offset = tile.TEXTURE_PAGE_WIDTH * tile.texture_id();
-//    if (tile.depth().bpp4()) {
-//      texture_page_offset *= 2U;
-//    } else if (tile.depth().bpp16()) {
-//      texture_page_offset /= 2U;
-//    }
-//    return pixel_in + texture_page_offset;
-//  }
+  //  auto get_input_index(auto &x, auto &y, const size_t &width, auto &tile) const
+  //  {
+  //    auto pixel_in =
+  //      (static_cast<uint32_t>(tile.source_x()) + x) + ((static_cast<uint32_t>(tile.source_y()) + y) * width);
+  //    unsigned int texture_page_offset = tile.TEXTURE_PAGE_WIDTH * tile.texture_id();
+  //    if (tile.depth().bpp4()) {
+  //      texture_page_offset *= 2U;
+  //    } else if (tile.depth().bpp16()) {
+  //      texture_page_offset /= 2U;
+  //    }
+  //    return pixel_in + texture_page_offset;
+  //  }
 
 
 public:

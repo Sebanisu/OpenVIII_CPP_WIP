@@ -21,7 +21,7 @@
 int main()
 {
   const auto start = std::chrono::steady_clock::now();
-  open_viii::Paths::for_each_path([](const std::filesystem::path &path){
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     {

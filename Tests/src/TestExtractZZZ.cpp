@@ -17,7 +17,7 @@ int main()
   const auto start = std::chrono::steady_clock::now();
   // test ZZZ extract with FIFLFS
 
-  open_viii::Paths::for_each_path([](const std::filesystem::path &path){
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     const auto files = open_viii::archive::ZZZ::get_files_from_path(path);
     std::for_each(files.begin(), files.end(), &open_viii::archive::ZZZ::test_pair);
   });

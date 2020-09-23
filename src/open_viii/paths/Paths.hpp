@@ -25,14 +25,16 @@ public:
   static auto &get()
   {
     using namespace std::literals::string_literals;
-    static std::array paths = { //R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)"s,
-      //R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)"s,
+    static std::array paths = {
+      // R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)"s,
+      // R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)"s,
       R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"s,
       R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"s,
       R"(/mnt/k/ff82000)"s,
       R"(K:\ff82000)"s,
       R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s,
-      R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s };
+      R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s
+    };
     return paths;
   }
   template<std::invocable<std::filesystem::path> lambdaT> static auto for_each_path(const lambdaT &lambda)

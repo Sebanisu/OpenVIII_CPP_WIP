@@ -30,5 +30,5 @@ template<Color cT1, Color cT2> requires(!std::is_same_v<cT1, cT2>) auto operator
 {
   return left.r() == right.r() && left.g() == right.g() && left.b() == right.b() && left.a() == right.a();
 }
-}// namespace open_viii
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR_HPP

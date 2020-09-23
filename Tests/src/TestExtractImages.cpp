@@ -25,7 +25,7 @@
 
 int main()
 {
-  open_viii::Paths::for_each_path([](const std::filesystem::path &path){
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] static constexpr auto dump_image = [](std::vector<char> &&in_buffer, std::string &&in_path) {
@@ -63,7 +63,8 @@ int main()
         t.save(p);
       }
     };
-    archives.execute_on({ ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", open_viii::graphics::background::Mim::EXT }, dump_image);
+    archives.execute_on(
+      { ".tex", ".lzs", ".tim", ".tdw", ".sp1", ".sp2", open_viii::graphics::background::Mim::EXT }, dump_image);
     // dump images from menu group.
     [[maybe_unused]] const auto &menu = archives.get<open_viii::archive::ArchiveTypeT::menu>();
     std::cout << menu << std::endl;

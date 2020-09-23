@@ -17,7 +17,7 @@ int main()
 {
 
   const auto start = std::chrono::steady_clock::now();
-  open_viii::Paths::for_each_path([](const std::filesystem::path &path){
+  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     const auto files = open_viii::archive::FIFLFS<true>::get_files_from_path(path);
     for (const auto &pair : files) {
       const auto &[name, paths] = pair;

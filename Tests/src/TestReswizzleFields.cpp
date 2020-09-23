@@ -47,6 +47,11 @@ int main()
             std::cout << directory_path << std::endl;
             reswizzle_tree.reswizzle();
           });
+
+          if (threads.size() > 16) {
+            threads.front().join();
+            threads.erase(threads.begin());
+          }
         });
     }
   });

@@ -26,7 +26,7 @@ int main()
     return 1;
   }
   // test ZZZ extract with FIFLFS
-  open_viii::Paths::for_each_path([&needle](const std::filesystem::path &path){
+  open_viii::Paths::for_each_path([&needle](const std::filesystem::path &path) {
     for (const auto &zzz_file_pair : open_viii::archive::ZZZ::get_files_from_path(path)) {
       std::cout << "Searching: " << path << "\n";
       for (const open_viii::archive::FileData &data_item : zzz_file_pair.second.data()) {

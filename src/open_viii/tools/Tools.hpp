@@ -90,15 +90,16 @@ public:
   template<std::ranges::contiguous_range dstT = std::vector<char>>
   [[maybe_unused]] static dstT read_file(const std::filesystem::path &path)
   {
-    if(!std::filesystem::exists(path))
-    {
+    if (!std::filesystem::exists(path)) {
       return {};
     }
 
     std::ifstream fp{};
-    for(;;) {
+    for (;;) {
       fp.open(path.string(), std::ios::in | std::ios::binary);
-      if(fp.is_open()) {break;}
+      if (fp.is_open()) {
+        break;
+      }
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     auto buffer = open_viii::Tools::read_buffer<dstT>(fp);
@@ -115,19 +116,21 @@ public:
     std::filesystem::create_directories(filename.parent_path());
 
     auto fp = std::ofstream{};
-    for(;;) {
+    for (;;) {
       fp.open(filename, std::ios::out | std::ios::binary | std::ios::trunc);
-      if(fp.is_open()) {break;}
+      if (fp.is_open()) {
+        break;
+      }
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
-//    if (fp.is_open()) {
-      std::cout << (std::string("Saving: \t\"") + filename.string() + std::string("\"\n"));
-      lambda(fp);
-      fp.close();
-//    } else {
-//      std::cout << (std::string("Failed to Open for saving: \"") + filename.string() + std::string("\"\n"));
-//      return false;
-//    }
+    //    if (fp.is_open()) {
+    std::cout << (std::string("Saving: \t\"") + filename.string() + std::string("\"\n"));
+    lambda(fp);
+    fp.close();
+    //    } else {
+    //      std::cout << (std::string("Failed to Open for saving: \"") + filename.string() + std::string("\"\n"));
+    //      return false;
+    //    }
     return true;
   }
 
@@ -197,10 +200,10 @@ public:
     const std::string_view &needle)
   {
     if (std::ranges::size(haystack) >= std::ranges::size(needle)) {
-      const auto last = std::search(haystack.begin(),haystack.end(),needle.begin(),needle.end(),IEqualPredicate());
-      return last!= haystack.end();
-//      const auto sub_range = std::ranges::search(haystack, needle, IEqualPredicate());
-//      return std::ranges::size(sub_range) == std::ranges::size(needle);
+      const auto last = std::search(haystack.begin(), haystack.end(), needle.begin(), needle.end(), IEqualPredicate());
+      return last != haystack.end();
+      //      const auto sub_range = std::ranges::search(haystack, needle, IEqualPredicate());
+      //      return std::ranges::size(sub_range) == std::ranges::size(needle);
     }
     return false;
   }
@@ -368,28 +371,26 @@ public:
     return std::ranges::all_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
   }
 
-  template <std::unsigned_integral intT, std::invocable<intT,intT> lambdaT>
-  static void for_each_xy(const intT &max_x, const intT &max_y, const lambdaT & lambda)
+  template<std::unsigned_integral intT, std::invocable<intT, intT> lambdaT>
+  static void for_each_xy(const intT &max_x, const intT &max_y, const lambdaT &lambda)
   {
     for (intT y{}; y < max_x; y++) {
       for (intT x{}; x < max_y; x++) {
-        if constexpr(std::is_same_v<std::invoke_result_t<lambdaT, intT,intT>,bool>) {
+        if constexpr (std::is_same_v<std::invoke_result_t<lambdaT, intT, intT>, bool>) {
           if (lambda(x, y)) {
             break;
           }
-        }
-        else
-        {
+        } else {
           lambda(x, y);
         }
       }
     }
   }
 
-  template <std::unsigned_integral intT, std::invocable<intT,intT> lambdaT>
-  static void for_each_xy(const intT &max_xy, const lambdaT & lambda)
+  template<std::unsigned_integral intT, std::invocable<intT, intT> lambdaT>
+  static void for_each_xy(const intT &max_xy, const lambdaT &lambda)
   {
-    for_each_xy(max_xy,max_xy,lambda);
+    for_each_xy(max_xy, max_xy, lambda);
   }
 };
 }// namespace open_viii

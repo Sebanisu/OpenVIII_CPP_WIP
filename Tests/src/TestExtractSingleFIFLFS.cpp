@@ -24,7 +24,7 @@ int main()
   if (needle.empty()) {
     return 1;
   }
-  open_viii::Paths::for_each_path([&needle](const std::filesystem::path &path){
+  open_viii::Paths::for_each_path([&needle](const std::filesystem::path &path) {
     const auto files = open_viii::archive::FIFLFS<true>::get_files_from_path(path);
     for (const auto &entry : files) {
 

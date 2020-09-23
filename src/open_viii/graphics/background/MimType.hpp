@@ -48,9 +48,11 @@ public:
     : m_palettes(palettes), m_texture_pages(texture_pages), m_skipped_palettes(skipped_palettes), m_type(type)
   {}
 
-  [[nodiscard]] const auto &type() const noexcept {
-    assert(m_type >=0 && m_type <=3);
-    return m_type; }
+  [[nodiscard]] const auto &type() const noexcept
+  {
+    assert(m_type >= 0 && m_type <= 3);
+    return m_type;
+  }
   void type(std::uint8_t new_type) const noexcept { m_type = new_type; }
   [[nodiscard]] std::size_t bytes_skipped_palettes() const noexcept
   {

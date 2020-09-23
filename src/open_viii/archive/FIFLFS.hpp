@@ -455,6 +455,11 @@ public:
           [&lambda](std::vector<char> &&buffer, std::string &&path) { lambda(std::move(buffer), std::move(path)); },
           get_entry_buffer(fi),
           std::string(pair.second));
+        if (threads.size() > 16) {
+          threads.front().join();
+          threads.erase(threads.begin());
+        }
+        // lambda(get_entry_buffer(fi), pair.second);
       });
   }
 
@@ -477,32 +482,6 @@ public:
     }
     return vector;
   }
-
-  //  template<typename lambdaT>
-  //  requires(std::invocable<lambdaT, std::vector<char>, std::string>) void execute_on_nested(
-  //    const std::initializer_list<std::string_view> &filename,
-  //    const lambdaT &lambda) const
-  //  {
-  //    if constexpr (!HasNested) {
-  //      return;
-  //    }
-  //    std::vector<std::jthread> threads{};
-  //    const std::vector<std::pair<unsigned int, std::string>> vector_of_indexs_and_files =
-  //    get_vector_of_indexs_and_files({ archive::FL::EXT });
-  //    threads.reserve(std::ranges::size(vector_of_indexs_and_files)/3);
-  //    const std::string &basename = get_base_name();
-  //    for (const auto& indexs_and_filename : vector_of_indexs_and_files) {
-  //      const FI_Like auto fi = get_entry_by_index(indexs_and_filename.first);
-  //      const auto buffer = get_entry_buffer<std::string>(fi);
-  //      auto results = archive::FL::get_all_entries_data({}, buffer, 0, 0, 0, filename, 1U);
-  //      if (!std::ranges::empty(results)) {
-  //        threads.emplace_back([&lambda](const std::string file_path){
-  //               const auto archives = get_fiflfs_entries();
-  //               for (const auto &archive : archives) { archive.execute_on(file_path, lambda); }
-  //        },{std::filesystem::path(indexs_and_filename.second).stem().string()});
-  //      }
-  //    }
-  //  }
   template<typename lambdaT>
   requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)&&HasNested) void execute_with_nested(
     const std::initializer_list<std::string_view> &filename,
@@ -551,6 +530,10 @@ public:
               nested_filename);
           } else if constexpr (std::invocable<lambdaT, FIFLFS<false>>) {
             threads.emplace_back([&lambda](const FIFLFS<false> archive_copy) { lambda(archive_copy); }, archive);
+          }
+          if (threads.size() > 16) {
+            threads.front().join();
+            threads.erase(threads.begin());
           }
           archive = {};
         }

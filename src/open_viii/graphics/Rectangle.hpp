@@ -33,10 +33,10 @@ public:
     : m_top_left{ in_x, in_y }, m_width_height{ in_width, in_height }
   {}
   Rectangle(const Point<dimT> &xy, const Point<dimT> &hw) noexcept : m_top_left{ xy }, m_width_height{ hw } {}
-//  friend auto operator==(const Rectangle<dimT> &left, const Rectangle<dimT> &right) noexcept
-//  {
-//    return left.m_top_left == right.m_top_left && left.m_width_height == right.m_width_height;
-//  }
+  //  friend auto operator==(const Rectangle<dimT> &left, const Rectangle<dimT> &right) noexcept
+  //  {
+  //    return left.m_top_left == right.m_top_left && left.m_width_height == right.m_width_height;
+  //  }
   friend auto operator<=>(const Rectangle<dimT> &left, const Rectangle<dimT> &right) noexcept = default;
   auto operator<=>(const Rectangle<dimT> &right) const noexcept = default;
   /**
