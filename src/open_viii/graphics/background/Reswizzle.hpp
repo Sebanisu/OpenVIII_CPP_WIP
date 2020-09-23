@@ -37,6 +37,8 @@ private:
   const std::vector<std::uint16_t> m_valid_texture_ids{};
 
   mutable std::uint8_t m_scale{};// when I can detect the scale this will probably be mutable or I can detect on init
+
+  const Point<uint16_t> m_map_width_height{};
   mutable std::uint32_t m_width{};
   mutable std::uint32_t m_height{};
   mutable std::uint32_t m_area{};

@@ -59,7 +59,7 @@ public:
    * @param x is new X coordinate.
    * @return x
    */
-  [[nodiscard]] const auto &x(const dimT &x) const noexcept
+  const auto &x(const dimT &x) const noexcept
   {
     return m_x = x;
   }
@@ -69,11 +69,26 @@ public:
    * @param y is new Y coordinate.
    * @return y
    */
-  [[nodiscard]] const auto &y(const dimT &y) const noexcept
+  const auto &y(const dimT &y) const noexcept
   {
     return m_y = y;
   }
-
+  /**
+   * assuming x and y are width and height
+   * @return area;
+   */
+  auto area() const noexcept
+  {
+    if constexpr(std::unsigned_integral<dimT>) {
+      return static_cast<std::size_t>(m_x) * static_cast<std::size_t>(m_y);
+    }
+    else if constexpr(std::signed_integral<dimT>) {
+      return static_cast<std::intmax_t>(m_x) * static_cast<std::intmax_t>(m_y);
+    }
+    else if constexpr(std::floating_point<dimT>) {
+      return m_x * m_y;
+    }
+  }
   Point<dimT> operator/(const Point<dimT> &input) const noexcept
   {
     return { input.m_x != 0 ? m_x / input.m_x : 0, input.m_x != 0 ? m_y / input.m_y : 0 };

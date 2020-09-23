@@ -14,6 +14,7 @@
 #ifndef VIIIARCHIVE_PPM_HPP
 #define VIIIARCHIVE_PPM_HPP
 #include "Color.hpp"
+#include "Point.hpp"
 #include "open_viii/Concepts.hpp"
 #include <cctype>
 #include <cstdint>
@@ -25,10 +26,9 @@ namespace open_viii::graphics {
 struct Ppm
 {
 private:
+  Point<std::uint16_t> m_width_height{};
   std::vector<Color24<0, 1, 2>> m_colors{};
 
-  std::uint16_t m_width{};
-  std::uint16_t m_height{};
 
 public:
   explicit Ppm(const std::string &buffer)
@@ -60,17 +60,21 @@ public:
       }
       if ([&line, this, &w_h, &bytesize]() -> bool {
             const auto count = std::ranges::count(line, ' ');
+            std::uint16_t width{};
+            std::uint16_t height{};
             if (count == 1) {// 000 000\n000
               auto lss = std::stringstream(line);
-              lss >> m_width;
-              lss >> m_height;
+              lss >> width;
+              lss >> height;
             } else if (count == 2) {// 000 000 000
               auto lss = std::stringstream(line);
-              lss >> m_width;
-              lss >> m_height;
+              lss >> width;
+              lss >> height;
               lss >> bytesize;
             }
-            return m_width > 0 || m_height > 0;
+            m_width_height.x(width);
+            m_width_height.y(height);
+            return width > 0 || height > 0;
           }()) {
         w_h = line;
         continue;
@@ -84,18 +88,14 @@ public:
       //        std::span<const Color24<0, 1, 2>>{ reinterpret_cast<const Color24<0, 1, 2>
       //        *>(std::ranges::data(bufferspan)),
       //          sz };
-      if (sz != m_height * m_width) {
-        std::cerr << sz << " != " << m_height << " * " << m_width << std::endl;
-        assert(sz == m_height * m_width);
+      if (sz != m_width_height.area()) {
+        std::cerr << sz << " != area of " << m_width_height << std::endl;
+        assert(sz == m_width_height.area());
       }
       m_colors.resize(sz);
       std::memcpy(std::ranges::data(m_colors), std::ranges::data(bufferspan), sz * sizeof(Color24<0, 1, 2>));
       // m_colors = { std::ranges::cbegin(colorspan), std::ranges::cend(colorspan) };
     }
-  }
-  [[nodiscard]] const auto &colors()
-  {
-    return m_colors;
   }
   template<std::ranges::contiguous_range cT>
   static void
@@ -134,22 +134,25 @@ public:
       },
       filename);
   }
-
-  [[nodiscard]] const std::vector<Color24<0, 1, 2>> &colors() const
+  [[nodiscard]] const std::vector<Color24<0, 1, 2>> &colors() const noexcept
   {
     return m_colors;
   }
-  [[nodiscard]] const std::uint16_t &width() const
+  [[nodiscard]] const auto &width() const noexcept
   {
-    return m_width;
+    return m_width_height.x();
   }
-  [[nodiscard]] const std::uint16_t &height() const
+  [[nodiscard]] const auto &height() const noexcept
   {
-    return m_height;
+    return m_width_height.y();
+  }
+  [[nodiscard]] const auto &width_height() const noexcept
+  {
+    return m_width_height;
   }
   [[nodiscard]] const Color24<0, 1, 2> &color(const std::size_t &x, const std::size_t &y) const
   {
-    return m_colors.at(x + (y * static_cast<std::size_t>(m_width)));
+    return m_colors.at(x + (y * static_cast<std::size_t>(m_width_height.x())));
   }
 };
 }// namespace open_viii::graphics

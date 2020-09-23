@@ -167,9 +167,9 @@ public:
     return m_width_height.y(height);
   }
 
-  [[nodiscard]] std::size_t area() const noexcept
+  [[nodiscard]] auto area() const noexcept
   {
-    return static_cast<std::size_t>(m_width_height.x()) * static_cast<std::size_t>(m_width_height.y());
+    return m_width_height.area();
   }
   friend std::ostream &operator<<(std::ostream &os, const Rectangle<dimT> &input)
   {
@@ -183,6 +183,14 @@ public:
   Rectangle<dimT> operator*(const Rectangle<dimT> &input) const noexcept
   {
     return { m_top_left * input.m_top_left, m_width_height * input.m_width_height };
+  }
+  const Point<dimT> &top_left() const noexcept
+  {
+    return m_top_left;
+  }
+  const Point<dimT> &width_height() const noexcept
+  {
+    return m_width_height;
   }
 };
 }// namespace open_viii::graphics
