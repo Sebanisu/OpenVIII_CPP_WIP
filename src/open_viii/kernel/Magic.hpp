@@ -13,16 +13,16 @@
 
 #ifndef VIIIARCHIVE_MAGIC_HPP
 #define VIIIARCHIVE_MAGIC_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
-#include "AttackTypeT.hpp"
-#include "TargetT.hpp"
 #include "AttackFlagsT.hpp"
-#include "ElementT.hpp"
+#include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "ElementT.hpp"
+#include "GFGroup.hpp"
+#include "JunctionStatusesT.hpp"
 #include "PersistentStatusesT.hpp"
 #include "StatGroup.hpp"
-#include "JunctionStatusesT.hpp"
-#include "GFGroup.hpp"
+#include "TargetT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct Magic
 {
@@ -110,33 +110,114 @@ private:
   uint16_t m_unknown3{};
 
 public:
-  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto magic_id() const noexcept { return m_magic_id; }
-  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
-  [[nodiscard]] auto attack_type() const noexcept { return m_attack_type; }
-  [[maybe_unused]] [[nodiscard]] auto spell_power() const noexcept { return m_spell_power; }
-  [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
-  [[nodiscard]] auto target() const noexcept { return m_target; }
-  [[nodiscard]] auto attack_flags() const noexcept { return m_attack_flags; }
-  [[maybe_unused]] [[nodiscard]] auto draw_resist() const noexcept { return m_draw_resist; }
-  [[nodiscard]] auto hit_count() const noexcept { return m_hit_count; }
-  [[nodiscard]] auto element() const noexcept { return m_element; }
-  [[nodiscard]] auto unknown2() const noexcept { return m_unknown2; }
-  [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }
-  [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }
-  [[maybe_unused]] [[nodiscard]] auto status_attack() const noexcept { return m_status_attack; }
-  [[maybe_unused]] [[nodiscard]] auto junction_stats() const noexcept { return m_junction_stats; }
-  [[maybe_unused]] [[nodiscard]] auto j_elem_attack_flag() const noexcept { return m_j_elem_attack_flag; }
-  [[maybe_unused]] [[nodiscard]] auto j_elem_attack_value() const noexcept { return m_j_elem_attack_value; }
-  [[maybe_unused]] [[nodiscard]] auto j_elem_defense_flag() const noexcept { return m_j_elem_defense_flag; }
-  [[maybe_unused]] [[nodiscard]] auto j_elem_defense_value() const noexcept { return m_j_elem_defense_value; }
-  [[maybe_unused]] [[nodiscard]] auto j_status_attack_value() const noexcept { return m_j_status_attack_value; }
-  [[maybe_unused]] [[nodiscard]] auto j_status_defense_value() const noexcept { return m_j_status_defense_value; }
-  [[maybe_unused]] [[nodiscard]] auto j_statuses_attack_flag() const noexcept { return m_j_statuses_attack_flag; }
-  [[maybe_unused]] [[nodiscard]] auto j_statuses_defend_flag() const noexcept { return m_j_statuses_defend_flag; }
-  [[maybe_unused]] [[nodiscard]] auto compatibility() const noexcept { return m_compatibility; }
-  [[maybe_unused]] [[nodiscard]] auto unknown3() const noexcept { return m_unknown3; }
+  [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
+  [[nodiscard]] auto magic_id() const noexcept
+  {
+    return m_magic_id;
+  }
+  [[nodiscard]] auto unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
+  [[nodiscard]] auto attack_type() const noexcept
+  {
+    return m_attack_type;
+  }
+  [[maybe_unused]] [[nodiscard]] auto spell_power() const noexcept
+  {
+    return m_spell_power;
+  }
+  [[nodiscard]] auto unknown1() const noexcept
+  {
+    return m_unknown1;
+  }
+  [[nodiscard]] auto target() const noexcept
+  {
+    return m_target;
+  }
+  [[nodiscard]] auto attack_flags() const noexcept
+  {
+    return m_attack_flags;
+  }
+  [[maybe_unused]] [[nodiscard]] auto draw_resist() const noexcept
+  {
+    return m_draw_resist;
+  }
+  [[nodiscard]] auto hit_count() const noexcept
+  {
+    return m_hit_count;
+  }
+  [[nodiscard]] auto element() const noexcept
+  {
+    return m_element;
+  }
+  [[nodiscard]] auto unknown2() const noexcept
+  {
+    return m_unknown2;
+  }
+  [[nodiscard]] auto battle_only_statuses() const noexcept
+  {
+    return m_battle_only_statuses;
+  }
+  [[nodiscard]] auto persistent_statuses() const noexcept
+  {
+    return m_persistent_statuses;
+  }
+  [[maybe_unused]] [[nodiscard]] auto status_attack() const noexcept
+  {
+    return m_status_attack;
+  }
+  [[maybe_unused]] [[nodiscard]] auto junction_stats() const noexcept
+  {
+    return m_junction_stats;
+  }
+  [[maybe_unused]] [[nodiscard]] auto j_elem_attack_flag() const noexcept
+  {
+    return m_j_elem_attack_flag;
+  }
+  [[maybe_unused]] [[nodiscard]] auto j_elem_attack_value() const noexcept
+  {
+    return m_j_elem_attack_value;
+  }
+  [[maybe_unused]] [[nodiscard]] auto j_elem_defense_flag() const noexcept
+  {
+    return m_j_elem_defense_flag;
+  }
+  [[maybe_unused]] [[nodiscard]] auto j_elem_defense_value() const noexcept
+  {
+    return m_j_elem_defense_value;
+  }
+  [[maybe_unused]] [[nodiscard]] auto j_status_attack_value() const noexcept
+  {
+    return m_j_status_attack_value;
+  }
+  [[maybe_unused]] [[nodiscard]] auto j_status_defense_value() const noexcept
+  {
+    return m_j_status_defense_value;
+  }
+  [[maybe_unused]] [[nodiscard]] auto j_statuses_attack_flag() const noexcept
+  {
+    return m_j_statuses_attack_flag;
+  }
+  [[maybe_unused]] [[nodiscard]] auto j_statuses_defend_flag() const noexcept
+  {
+    return m_j_statuses_defend_flag;
+  }
+  [[maybe_unused]] [[nodiscard]] auto compatibility() const noexcept
+  {
+    return m_compatibility;
+  }
+  [[maybe_unused]] [[nodiscard]] auto unknown3() const noexcept
+  {
+    return m_unknown3;
+  }
 
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {

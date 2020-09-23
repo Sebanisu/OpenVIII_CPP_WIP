@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION002_HPP
 #define VIIIARCHIVE_REFINESECTION002_HPP
-#include "RefineSpellID.hpp"
 #include "RefineEntry.hpp"
+#include "RefineSpellID.hpp"
 #include <iostream>
 namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection002// refine Magic to Magic
@@ -34,9 +34,18 @@ private:
 
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &mid_mag_rf() const noexcept { return m_mid_mag_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &high_mag_rf() const noexcept { return m_high_mag_rf; }
-  [[nodiscard]] static constexpr auto size() { return MID_MAG_RF_COUNT + HIGH_MAG_RF_COUNT; }
+  [[maybe_unused]] [[nodiscard]] const auto &mid_mag_rf() const noexcept
+  {
+    return m_mid_mag_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &high_mag_rf() const noexcept
+  {
+    return m_high_mag_rf;
+  }
+  [[nodiscard]] static constexpr auto size()
+  {
+    return MID_MAG_RF_COUNT + HIGH_MAG_RF_COUNT;
+  }
   template<LangT langVal, typename T>
   std::ostream &out_array(const T &arr,
     std::ostream &os,
@@ -45,7 +54,9 @@ public:
     bool skip_first_null = false) const
 
   {
-    for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n'; }
+    for (const auto item : arr) {
+      (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
+    }
     return os;
   }
   template<LangT langVal>

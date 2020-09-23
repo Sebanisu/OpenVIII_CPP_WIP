@@ -24,7 +24,10 @@ private:
   std::uint8_t m_camera_change{};
 
 public:
-  [[nodiscard]] bool checked() const noexcept { return (m_camera_change & HIGH_BIT_MASK) != 0; }
+  [[nodiscard]] bool checked() const noexcept
+  {
+    return (m_camera_change & HIGH_BIT_MASK) != 0;
+  }
   [[nodiscard]] std::uint8_t value() const noexcept
   {
     return static_cast<std::uint8_t>(m_camera_change & OTHER_BITS_MASK);

@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_ZELLDUELLIMITBREAKPARAMS_HPP
 #define VIIIARCHIVE_ZELLDUELLIMITBREAKPARAMS_HPP
-#include <cstdint>
 #include <array>
+#include <cstdint>
 namespace open_viii::kernel {
 struct ZellDuelLimitBreakParams
 {
@@ -125,11 +125,23 @@ private:
   std::array<std::uint8_t, 4> m_data{};
 
 public:
-  [[nodiscard]] constexpr auto at(const size_t &index) const { return m_data.at(index); }
-  [[nodiscard]] constexpr auto size() { return m_data.size(); }
+  [[nodiscard]] constexpr auto at(const size_t &index) const
+  {
+    return m_data.at(index);
+  }
+  [[nodiscard]] constexpr auto size()
+  {
+    return m_data.size();
+  }
   //[[nodiscard]] constexpr auto operator[](const size_t &index) { return data_[index]; }
-  [[nodiscard]] constexpr auto begin() { return m_data.begin(); }
-  [[nodiscard]] constexpr auto end() { return m_data.end(); }
+  [[nodiscard]] constexpr auto begin()
+  {
+    return m_data.begin();
+  }
+  [[nodiscard]] constexpr auto end()
+  {
+    return m_data.end();
+  }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &textSpan)
   {
     os << '{';

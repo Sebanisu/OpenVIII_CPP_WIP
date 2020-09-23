@@ -12,8 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAKPARAMS_HPP
 #define VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAKPARAMS_HPP
-#include "CrisisLevelT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "CrisisLevelT.hpp"
 #include "PersistentStatusesT.hpp"
 #include <array>
 #include <iostream>
@@ -36,10 +36,22 @@ private:
   std::uint8_t m_attack_param{};
 
 public:
-  [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }
-  [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }
-  [[nodiscard]] auto attack_power() const noexcept { return m_attack_power; }
-  [[nodiscard]] auto attack_param() const noexcept { return m_attack_param; }
+  [[nodiscard]] auto battle_only_statuses() const noexcept
+  {
+    return m_battle_only_statuses;
+  }
+  [[nodiscard]] auto persistent_statuses() const noexcept
+  {
+    return m_persistent_statuses;
+  }
+  [[nodiscard]] auto attack_power() const noexcept
+  {
+    return m_attack_power;
+  }
+  [[nodiscard]] auto attack_param() const noexcept
+  {
+    return m_attack_param;
+  }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << '{' << static_cast<std::uint32_t>(battle_only_statuses()) << ", "
@@ -57,7 +69,10 @@ private:
   CrisisLevelT<QuistisBlueMagicLimitBreakParam> m_blue_magic_data{};
 
 public:
-  [[nodiscard]] const auto *operator->() const noexcept { return &m_blue_magic_data; }
+  [[nodiscard]] const auto *operator->() const noexcept
+  {
+    return &m_blue_magic_data;
+  }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << m_blue_magic_data;

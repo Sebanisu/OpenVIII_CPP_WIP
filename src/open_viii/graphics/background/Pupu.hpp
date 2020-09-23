@@ -13,12 +13,12 @@
 
 #ifndef VIIIARCHIVE_PUPU_HPP
 #define VIIIARCHIVE_PUPU_HPP
-#include <cstdint>
-#include <compare>
-#include <bit>
 #include "Tile1.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
+#include <bit>
+#include <compare>
+#include <cstdint>
 namespace open_viii::graphics::background {
 /*
  * A disambiguation ID based on Pupu an application for descrambling and rescrambling the tiles. The values in here
@@ -47,11 +47,26 @@ public:
   {}
 
   auto operator<=>(const Pupu &) const = default;
-  auto operator==(const Pupu &right) const { return nullptr == (*this <=> right); }
-  friend auto operator<=>(const Pupu &left, const BPPT &right) { return left.m_depth <=> right; }
-  friend auto operator<=>(const BPPT &right, const Pupu &left) { return left.m_depth <=> right; }
-  friend auto operator==(const Pupu &left, const BPPT &right) { return nullptr == (left.m_depth <=> right); }
-  friend auto operator==(const BPPT &right, const Pupu &left) { return nullptr == (left.m_depth <=> right); }
+  auto operator==(const Pupu &right) const
+  {
+    return nullptr == (*this <=> right);
+  }
+  friend auto operator<=>(const Pupu &left, const BPPT &right)
+  {
+    return left.m_depth <=> right;
+  }
+  friend auto operator<=>(const BPPT &right, const Pupu &left)
+  {
+    return left.m_depth <=> right;
+  }
+  friend auto operator==(const Pupu &left, const BPPT &right)
+  {
+    return nullptr == (left.m_depth <=> right);
+  }
+  friend auto operator==(const BPPT &right, const Pupu &left)
+  {
+    return nullptr == (left.m_depth <=> right);
+  }
 
   template<typename tileT>
   requires(std::is_convertible_v<tileT,
@@ -122,7 +137,10 @@ public:
     add_short(m_z);
     return pupu_id;
   }
-  [[nodiscard]] explicit operator std::uint64_t() const { return generate(); }
+  [[nodiscard]] explicit operator std::uint64_t() const
+  {
+    return generate();
+  }
   friend std::ostream &operator<<(std::ostream &os, const Pupu &input)
   {
     return os << std::uppercase << std::hex << std::setfill('0') << std::setw(16U) << input.generate()
@@ -185,12 +203,30 @@ public:
 
   explicit Pupu(std::string_view hex) : Pupu(std::strtoull(std::ranges::data(hex), nullptr, HEX_BASE)) {}
 
-  [[nodiscard]] const std::uint16_t &z() const noexcept { return m_z; }
-  [[nodiscard]] const BPPT &depth() const noexcept { return m_depth; }
-  [[nodiscard]] const std::uint8_t &layer_id() const noexcept { return m_layer_id; }
-  [[nodiscard]] const BlendModeT &blend_mode() const noexcept { return m_blend_mode; }
-  [[nodiscard]] const std::uint8_t &animation_id() const noexcept { return m_animation_id; }
-  [[nodiscard]] const std::uint8_t &animation_state() const noexcept { return m_animation_state; }
+  [[nodiscard]] const std::uint16_t &z() const noexcept
+  {
+    return m_z;
+  }
+  [[nodiscard]] const BPPT &depth() const noexcept
+  {
+    return m_depth;
+  }
+  [[nodiscard]] const std::uint8_t &layer_id() const noexcept
+  {
+    return m_layer_id;
+  }
+  [[nodiscard]] const BlendModeT &blend_mode() const noexcept
+  {
+    return m_blend_mode;
+  }
+  [[nodiscard]] const std::uint8_t &animation_id() const noexcept
+  {
+    return m_animation_id;
+  }
+  [[nodiscard]] const std::uint8_t &animation_state() const noexcept
+  {
+    return m_animation_state;
+  }
 };
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_PUPU_HPP

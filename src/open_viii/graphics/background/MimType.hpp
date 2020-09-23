@@ -13,10 +13,10 @@
 
 #ifndef VIIIARCHIVE_MIMTYPE_HPP
 #define VIIIARCHIVE_MIMTYPE_HPP
-#include <cstdint>
-#include <array>
-//#include <ranges>
+#include "open_viii/graphics/Rectangle.hpp"
 #include <algorithm>
+#include <array>
+#include <cstdint>
 namespace open_viii::graphics::background {
 struct MimType
 {
@@ -53,7 +53,10 @@ public:
     assert(m_type >= 0 && m_type <= 3);
     return m_type;
   }
-  void type(std::uint8_t new_type) const noexcept { m_type = new_type; }
+  void type(std::uint8_t new_type) const noexcept
+  {
+    m_type = new_type;
+  }
   [[nodiscard]] std::size_t bytes_skipped_palettes() const noexcept
   {
     return static_cast<std::size_t>(BYTES_PER_PALETTE) * static_cast<std::size_t>(m_skipped_palettes);
@@ -74,7 +77,10 @@ public:
   {
     return palette_section_size() + (width() * static_cast<std::size_t>(OUT_HEIGHT));
   }
-  [[nodiscard]] consteval static auto &height() noexcept { return OUT_HEIGHT; }
+  [[nodiscard]] consteval static auto &height() noexcept
+  {
+    return OUT_HEIGHT;
+  }
   [[nodiscard]] auto canvas(int bpp = DEFAULT_BPP, std::uint8_t scale = 1)
   {
     return Rectangle<std::size_t>(0, 0, width(bpp) * scale, height() * scale);

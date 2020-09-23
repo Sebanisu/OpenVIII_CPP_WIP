@@ -23,8 +23,14 @@ private:
 
 public:
   Sp1Offset() = default;
-  [[nodiscard]] auto offset() const noexcept { return m_offset; }
-  [[nodiscard]] auto count() const noexcept { return m_count; }
+  [[nodiscard]] auto offset() const noexcept
+  {
+    return m_offset;
+  }
+  [[nodiscard]] auto count() const noexcept
+  {
+    return m_count;
+  }
 };
 
 }// namespace open_viii::graphics

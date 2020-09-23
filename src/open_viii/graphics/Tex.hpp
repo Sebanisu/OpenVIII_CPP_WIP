@@ -15,14 +15,14 @@
 #define VIIIARCHIVE_TEX_HPP
 #include "Color.hpp"
 #include "Ppm.hpp"
-#include <span>
+#include "open_viii/graphics/tex/TexHeader.hpp"
+#include "open_viii/graphics/tex/TexHeader2.hpp"
+#include "open_viii/graphics/tex/TexHeader2_Version2.hpp"
+#include "open_viii/graphics/tex/TexPixelFormatHeader.hpp"
 #include <cstdint>
 #include <cstring>
 #include <ranges>
-#include "open_viii/graphics/tex/TexHeader.hpp"
-#include "open_viii/graphics/tex/TexPixelFormatHeader.hpp"
-#include "open_viii/graphics/tex/TexHeader2.hpp"
-#include "open_viii/graphics/tex/TexHeader2_Version2.hpp"
+#include <span>
 namespace open_viii::graphics {
 //{
 //  // Palette Entry (BGRA)
@@ -88,7 +88,10 @@ private:
     }
     return version1size;
   }
-  [[nodiscard]] auto texture_locator() const noexcept { return size_of_palette() + palette_locator(); }
+  [[nodiscard]] auto texture_locator() const noexcept
+  {
+    return size_of_palette() + palette_locator();
+  }
 
   void reset()
   {
@@ -173,7 +176,9 @@ public:
         //        for (const auto &i : tmp) { ret.emplace_back(i); }
         auto c16data = std::span(reinterpret_cast<const Color16 *>(std::ranges::data(m_image_data)),
           std::ranges::size(m_image_data) / sizeof(Color16));
-        for (const auto &i : c16data) { ret.emplace_back(i); }
+        for (const auto &i : c16data) {
+          ret.emplace_back(i);
+        }
         break;
       }
         //      case 24: {
@@ -182,7 +187,9 @@ public:
       case bpp32: {// untested
         auto c32data = std::span(reinterpret_cast<const Color32<2, 1, 0, 3> *>(std::ranges::data(m_image_data)),
           std::ranges::size(m_image_data) / sizeof(Color32<2, 1, 0, 3>));
-        for (const auto &i : c32data) { ret.emplace_back(i); }
+        for (const auto &i : c32data) {
+          ret.emplace_back(i);
+        }
         break;
       }
       }

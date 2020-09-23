@@ -14,10 +14,10 @@
 #ifndef VIIICOMPRESSION_LZSS_H
 #define VIIICOMPRESSION_LZSS_H
 
-#include <vector>
+#include <algorithm>
 #include <array>
 #include <span>
-#include <algorithm>
+#include <vector>
 namespace open_viii::compression {
 struct LZSS
 {
@@ -79,7 +79,9 @@ public:
 
     auto r = N - F;
     auto flags = 0U;
-    const auto testAtEnd = [&iterator, &srcEnd]() { return iterator + 1 > srcEnd; };
+    const auto testAtEnd = [&iterator, &srcEnd]() {
+      return iterator + 1 > srcEnd;
+    };
     while (iterator < srcEnd /*&& (dstSize == 0 || dst.size() < dstSize)*/) {
       if (((flags >>= 1U) & FLAGS_MASK) == 0) {
         if (testAtEnd()) {

@@ -14,8 +14,8 @@
 #ifndef VIIIARCHIVE_CHARACTERABILITIES_HPP
 #define VIIIARCHIVE_CHARACTERABILITIES_HPP
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "CharacterAbilityFlagsT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include <cstring>
 namespace open_viii::kernel {
 template<LangT langVal> struct CharacterAbilities
@@ -35,10 +35,19 @@ private:
   std::array<std::uint8_t, 3> m_character_ability_flags{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
-  [[maybe_unused]] [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
+  [[maybe_unused]] [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[maybe_unused]] [[nodiscard]] auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
 
-  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept
+  {
+    return m_ap_required;
+  }
   [[nodiscard]] auto character_ability_flags() const
   {
     // I think this is okay.

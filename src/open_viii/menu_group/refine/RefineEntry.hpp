@@ -36,13 +36,34 @@ private:
   outputT m_output{};
 
 public:
-  [[nodiscard]] const auto &offset() const noexcept { return m_offset; }
-  [[maybe_unused]] [[nodiscard]] const auto &amount_received() const noexcept { return m_amount_received; }
-  [[nodiscard]] const auto &unknown0() const noexcept { return m_unknown0; }
-  [[nodiscard]] const auto &unknown1() const noexcept { return m_unknown1; }
-  [[nodiscard]] const auto &input() const noexcept { return m_input; }
-  [[maybe_unused]] [[nodiscard]] const auto &amount_required() const noexcept { return m_amount_required; }
-  [[nodiscard]] const auto &output() const noexcept { return m_output; }
+  [[nodiscard]] const auto &offset() const noexcept
+  {
+    return m_offset;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &amount_received() const noexcept
+  {
+    return m_amount_received;
+  }
+  [[nodiscard]] const auto &unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
+  [[nodiscard]] const auto &unknown1() const noexcept
+  {
+    return m_unknown1;
+  }
+  [[nodiscard]] const auto &input() const noexcept
+  {
+    return m_input;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &amount_required() const noexcept
+  {
+    return m_amount_required;
+  }
+  [[nodiscard]] const auto &output() const noexcept
+  {
+    return m_output;
+  }
 
   template<LangT langVal>
   std::ostream &out(std::ostream &os,

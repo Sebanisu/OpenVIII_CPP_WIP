@@ -30,18 +30,27 @@ public:
    * Total Header and Data size
    * @brief size in bytes
    */
-  auto size() const { return m_size; }
+  auto size() const
+  {
+    return m_size;
+  }
   /**
    * Dimensions of data.
    */
-  auto rectangle() const { return m_rectangle; }
+  auto rectangle() const
+  {
+    return m_rectangle;
+  }
 
 
   /**
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] auto data_size() const { return m_size - sizeof(TimImageHeader); };
+  [[nodiscard]] auto data_size() const
+  {
+    return m_size - sizeof(TimImageHeader);
+  };
 
   friend std::ostream &operator<<(std::ostream &os, const TimImageHeader &input)
   {

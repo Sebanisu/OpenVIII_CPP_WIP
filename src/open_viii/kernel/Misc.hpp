@@ -13,9 +13,9 @@
 
 #ifndef VIIIARCHIVE_MISC_HPP
 #define VIIIARCHIVE_MISC_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
-#include "SequenceAndTimer.hpp"
 #include "CrisisLevelT.hpp"
+#include "SequenceAndTimer.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct Misc
 {
@@ -138,53 +138,182 @@ private:
   CrisisLevelT<std::uint8_t> m_shot_timers{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] auto sleep_timer() const noexcept { return m_sleep_timer; }
-  [[maybe_unused]] [[nodiscard]] auto haste_timer() const noexcept { return m_haste_timer; }
-  [[maybe_unused]] [[nodiscard]] auto slow_timer() const noexcept { return m_slow_timer; }
-  [[maybe_unused]] [[nodiscard]] auto stop_timer() const noexcept { return m_stop_timer; }
-  [[maybe_unused]] [[nodiscard]] auto regen_timer() const noexcept { return m_regen_timer; }
-  [[maybe_unused]] [[nodiscard]] auto protect_timer() const noexcept { return m_protect_timer; }
-  [[maybe_unused]] [[nodiscard]] auto shell_timer() const noexcept { return m_shell_timer; }
-  [[maybe_unused]] [[nodiscard]] auto reflect_timer() const noexcept { return m_reflect_timer; }
-  [[maybe_unused]] [[nodiscard]] auto aura_timer() const noexcept { return m_aura_timer; }
-  [[maybe_unused]] [[nodiscard]] auto curse_timer() const noexcept { return m_curse_timer; }
-  [[maybe_unused]] [[nodiscard]] auto doom_timer() const noexcept { return m_doom_timer; }
-  [[maybe_unused]] [[nodiscard]] auto invincible_timer() const noexcept { return m_invincible_timer; }
-  [[maybe_unused]] [[nodiscard]] auto petrifying_timer() const noexcept { return m_petrifying_timer; }
-  [[maybe_unused]] [[nodiscard]] auto float_timer() const noexcept { return m_float_timer; }
-  [[maybe_unused]] [[nodiscard]] auto atb_speed_multiplier() const noexcept { return m_atb_speed_multiplier; }
-  [[maybe_unused]] [[nodiscard]] auto dead_timer() const noexcept { return m_dead_timer; }
-  [[nodiscard]] auto death_limit_effect() const noexcept { return m_death_limit_effect; }
-  [[nodiscard]] auto poison_limit_effect() const noexcept { return m_poison_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto petrify_limit_effect() const noexcept { return m_petrify_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto darkness_limit_effect() const noexcept { return m_darkness_limit_effect; }
-  [[nodiscard]] auto silence_limit_effect() const noexcept { return m_silence_limit_effect; }
-  [[nodiscard]] auto berserk_limit_effect() const noexcept { return m_berserk_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto zombie_limit_effect() const noexcept { return m_zombie_limit_effect; }
+  [[maybe_unused]] [[nodiscard]] auto sleep_timer() const noexcept
+  {
+    return m_sleep_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto haste_timer() const noexcept
+  {
+    return m_haste_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto slow_timer() const noexcept
+  {
+    return m_slow_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto stop_timer() const noexcept
+  {
+    return m_stop_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto regen_timer() const noexcept
+  {
+    return m_regen_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto protect_timer() const noexcept
+  {
+    return m_protect_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto shell_timer() const noexcept
+  {
+    return m_shell_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto reflect_timer() const noexcept
+  {
+    return m_reflect_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto aura_timer() const noexcept
+  {
+    return m_aura_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto curse_timer() const noexcept
+  {
+    return m_curse_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto doom_timer() const noexcept
+  {
+    return m_doom_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto invincible_timer() const noexcept
+  {
+    return m_invincible_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto petrifying_timer() const noexcept
+  {
+    return m_petrifying_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto float_timer() const noexcept
+  {
+    return m_float_timer;
+  }
+  [[maybe_unused]] [[nodiscard]] auto atb_speed_multiplier() const noexcept
+  {
+    return m_atb_speed_multiplier;
+  }
+  [[maybe_unused]] [[nodiscard]] auto dead_timer() const noexcept
+  {
+    return m_dead_timer;
+  }
+  [[nodiscard]] auto death_limit_effect() const noexcept
+  {
+    return m_death_limit_effect;
+  }
+  [[nodiscard]] auto poison_limit_effect() const noexcept
+  {
+    return m_poison_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto petrify_limit_effect() const noexcept
+  {
+    return m_petrify_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto darkness_limit_effect() const noexcept
+  {
+    return m_darkness_limit_effect;
+  }
+  [[nodiscard]] auto silence_limit_effect() const noexcept
+  {
+    return m_silence_limit_effect;
+  }
+  [[nodiscard]] auto berserk_limit_effect() const noexcept
+  {
+    return m_berserk_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto zombie_limit_effect() const noexcept
+  {
+    return m_zombie_limit_effect;
+  }
   [[maybe_unused]] [[nodiscard]] auto unknown_status_limit_effect() const noexcept
   {
     return m_unknown_status_limit_effect;
   }
-  [[maybe_unused]] [[nodiscard]] auto sleep_limit_effect() const noexcept { return m_sleep_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto haste_limit_effect() const noexcept { return m_haste_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto slow_limit_effect() const noexcept { return m_slow_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto stop_limit_effect() const noexcept { return m_stop_limit_effect; }
-  [[nodiscard]] auto regen_limit_effect() const noexcept { return m_regen_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto protect_limit_effect() const noexcept { return m_protect_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto shell_limit_effect() const noexcept { return m_shell_limit_effect; }
-  [[nodiscard]] auto reflect_limit_effect() const noexcept { return m_reflect_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto aura_limit_effect() const noexcept { return m_aura_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto curse_limit_effect() const noexcept { return m_curse_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto doom_limit_effect() const noexcept { return m_doom_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto invincible_limit_effect() const noexcept { return m_invincible_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto petrifying_limit_effect() const noexcept { return m_petrifying_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto float_limit_effect() const noexcept { return m_float_limit_effect; }
-  [[nodiscard]] auto confusion_limit_effect() const noexcept { return m_confusion_limit_effect; }
-  [[nodiscard]] auto drain_limit_effect() const noexcept { return m_drain_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto eject_limit_effect() const noexcept { return m_eject_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto double_limit_effect() const noexcept { return m_double_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto triple_limit_effect() const noexcept { return m_triple_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto defend_limit_effect() const noexcept { return m_defend_limit_effect; }
+  [[maybe_unused]] [[nodiscard]] auto sleep_limit_effect() const noexcept
+  {
+    return m_sleep_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto haste_limit_effect() const noexcept
+  {
+    return m_haste_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto slow_limit_effect() const noexcept
+  {
+    return m_slow_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto stop_limit_effect() const noexcept
+  {
+    return m_stop_limit_effect;
+  }
+  [[nodiscard]] auto regen_limit_effect() const noexcept
+  {
+    return m_regen_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto protect_limit_effect() const noexcept
+  {
+    return m_protect_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto shell_limit_effect() const noexcept
+  {
+    return m_shell_limit_effect;
+  }
+  [[nodiscard]] auto reflect_limit_effect() const noexcept
+  {
+    return m_reflect_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto aura_limit_effect() const noexcept
+  {
+    return m_aura_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto curse_limit_effect() const noexcept
+  {
+    return m_curse_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto doom_limit_effect() const noexcept
+  {
+    return m_doom_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto invincible_limit_effect() const noexcept
+  {
+    return m_invincible_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto petrifying_limit_effect() const noexcept
+  {
+    return m_petrifying_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto float_limit_effect() const noexcept
+  {
+    return m_float_limit_effect;
+  }
+  [[nodiscard]] auto confusion_limit_effect() const noexcept
+  {
+    return m_confusion_limit_effect;
+  }
+  [[nodiscard]] auto drain_limit_effect() const noexcept
+  {
+    return m_drain_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto eject_limit_effect() const noexcept
+  {
+    return m_eject_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto double_limit_effect() const noexcept
+  {
+    return m_double_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto triple_limit_effect() const noexcept
+  {
+    return m_triple_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto defend_limit_effect() const noexcept
+  {
+    return m_defend_limit_effect;
+  }
   [[maybe_unused]] [[nodiscard]] auto unknown_status_limit_effect0() const noexcept
   {
     return m_unknown_status_limit_effect0;
@@ -193,10 +322,22 @@ public:
   {
     return m_unknown_status_limit_effect1;
   }
-  [[maybe_unused]] [[nodiscard]] auto charged_limit_effect() const noexcept { return m_charged_limit_effect; }
-  [[nodiscard]] auto back_attack_limit_effect() const noexcept { return m_back_attack_limit_effect; }
-  [[maybe_unused]] [[nodiscard]] auto duel_timers() const noexcept { return m_duel_timers; }
-  [[maybe_unused]] [[nodiscard]] auto shot_timers() const noexcept { return m_shot_timers; }
+  [[maybe_unused]] [[nodiscard]] auto charged_limit_effect() const noexcept
+  {
+    return m_charged_limit_effect;
+  }
+  [[nodiscard]] auto back_attack_limit_effect() const noexcept
+  {
+    return m_back_attack_limit_effect;
+  }
+  [[maybe_unused]] [[nodiscard]] auto duel_timers() const noexcept
+  {
+    return m_duel_timers;
+  }
+  [[maybe_unused]] [[nodiscard]] auto shot_timers() const noexcept
+  {
+    return m_shot_timers;
+  }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << static_cast<std::uint32_t>(m_sleep_timer) << ", " << static_cast<std::uint32_t>(m_haste_timer) << ", "

@@ -27,12 +27,18 @@ private:
   std::uint8_t m_slot_set_id{};
 
 public:
-  [[nodiscard]] auto slot_set_id() const noexcept { return m_slot_set_id; }
+  [[nodiscard]] auto slot_set_id() const noexcept
+  {
+    return m_slot_set_id;
+  }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << static_cast<uint16_t>(slot_set_id());
   }
-  [[nodiscard]] explicit operator std::uint8_t() const { return m_slot_set_id; }
+  [[nodiscard]] explicit operator std::uint8_t() const
+  {
+    return m_slot_set_id;
+  }
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SLOTSARRAY_HPP

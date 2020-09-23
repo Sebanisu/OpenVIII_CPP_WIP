@@ -14,8 +14,8 @@
 #ifndef VIIIARCHIVE_SLOTSSETS_HPP
 #define VIIIARCHIVE_SLOTSSETS_HPP
 #include "open_viii/Strings/EncodedStringOffset.hpp"
-#include <cstdint>
 #include <array>
+#include <cstdint>
 namespace open_viii::kernel {
 struct Slot
 {
@@ -24,8 +24,14 @@ private:
   std::uint8_t m_count{};
 
 public:
-  [[nodiscard]] auto magic_id() const noexcept { return m_magic_id; }
-  [[nodiscard]] auto count() const noexcept { return m_count; }
+  [[nodiscard]] auto magic_id() const noexcept
+  {
+    return m_magic_id;
+  }
+  [[nodiscard]] auto count() const noexcept
+  {
+    return m_count;
+  }
   friend std::ostream &operator<<(std::ostream &os, const Slot &slot)
   {
     return os << '{' << static_cast<uint16_t>(slot.magic_id()) << ", " << static_cast<uint16_t>(slot.count()) << '}';
@@ -42,9 +48,15 @@ private:
   std::array<Slot, TOTAL> m_slots{};
 
 public:
-  [[nodiscard]] const auto &slots() const noexcept { return m_slots; }
+  [[nodiscard]] const auto &slots() const noexcept
+  {
+    return m_slots;
+  }
 
-  friend std::ostream &operator<<(std::ostream &os, const SlotsSets &set) { return set.out(os, {}); }
+  friend std::ostream &operator<<(std::ostream &os, const SlotsSets &set)
+  {
+    return set.out(os, {});
+  }
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {
 

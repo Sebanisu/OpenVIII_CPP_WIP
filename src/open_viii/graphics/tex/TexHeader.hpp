@@ -140,55 +140,94 @@ public:
   /**
    *Version (must be 1 for ff7 or 2 for ff8)
    */
-  [[nodiscard]] auto version() const noexcept { return m_version; }
+  [[nodiscard]] auto version() const noexcept
+  {
+    return m_version;
+  }
   /**
    * Unknown 1
    */
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_1() const noexcept { return m_unknown_1; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown_1() const noexcept
+  {
+    return m_unknown_1;
+  }
   /**
    * Color Key Flag
    */
-  [[maybe_unused]] [[nodiscard]] const auto &color_key_flag() const noexcept { return m_color_key_flag; }
+  [[maybe_unused]] [[nodiscard]] const auto &color_key_flag() const noexcept
+  {
+    return m_color_key_flag;
+  }
   /**
    * Unknown 2
    */
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_2() const noexcept { return m_unknown_2; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown_2() const noexcept
+  {
+    return m_unknown_2;
+  }
   /**
    * Unknown 3
    */
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_3() const noexcept { return m_unknown_3; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown_3() const noexcept
+  {
+    return m_unknown_3;
+  }
   /**
    * Minimum Number of Bits per Color
    */
-  [[maybe_unused]] [[nodiscard]] const auto &min_bits_per_color() const noexcept { return m_min_bits_per_color; }
+  [[maybe_unused]] [[nodiscard]] const auto &min_bits_per_color() const noexcept
+  {
+    return m_min_bits_per_color;
+  }
   /**
    * Maximum Number of Bits per Color
    */
-  [[maybe_unused]] [[nodiscard]] const auto &max_bits_per_color() const noexcept { return m_max_bits_per_color; }
+  [[maybe_unused]] [[nodiscard]] const auto &max_bits_per_color() const noexcept
+  {
+    return m_max_bits_per_color;
+  }
   /**
    * Minimum Number of Alpha Bits
    */
-  [[maybe_unused]] [[nodiscard]] const auto &min_alpha_bits() const noexcept { return m_min_alpha_bits; }
+  [[maybe_unused]] [[nodiscard]] const auto &min_alpha_bits() const noexcept
+  {
+    return m_min_alpha_bits;
+  }
   /**
    * Maximum Number of Alpha Bits
    */
-  [[maybe_unused]] [[nodiscard]] const auto &max_alpha_bits() const noexcept { return m_max_alpha_bits; }
+  [[maybe_unused]] [[nodiscard]] const auto &max_alpha_bits() const noexcept
+  {
+    return m_max_alpha_bits;
+  }
   /**
    * Minimum Number of Bits per Pixel
    */
-  [[maybe_unused]] [[nodiscard]] const auto &min_bits_per_pixel() const noexcept { return m_min_bits_per_pixel; }
+  [[maybe_unused]] [[nodiscard]] const auto &min_bits_per_pixel() const noexcept
+  {
+    return m_min_bits_per_pixel;
+  }
   /**
    * Maximum Number of Bits per Pixel
    */
-  [[maybe_unused]] [[nodiscard]] const auto &max_bits_per_pixel() const noexcept { return m_max_bits_per_pixel; }
+  [[maybe_unused]] [[nodiscard]] const auto &max_bits_per_pixel() const noexcept
+  {
+    return m_max_bits_per_pixel;
+  }
   /**
    * Unknown 4
    */
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_4() const noexcept { return m_unknown_4; }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown_4() const noexcept
+  {
+    return m_unknown_4;
+  }
   /**
    * Number of Palettes
    */
-  [[maybe_unused]] [[nodiscard]] const auto &num_palettes() const noexcept { return m_num_palettes; }
+  [[maybe_unused]] [[nodiscard]] const auto &num_palettes() const noexcept
+  {
+    return m_num_palettes;
+  }
   /**
    * Number of Colors per Palette
    */
@@ -199,39 +238,66 @@ public:
   /**
    * Bit Depth
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bit_depth() const noexcept { return m_bit_depth; }
+  [[maybe_unused]] [[nodiscard]] const auto &bit_depth() const noexcept
+  {
+    return m_bit_depth;
+  }
   /**
    * Image Width
    */
-  [[maybe_unused]] [[nodiscard]] const auto &image_width() const noexcept { return m_image_width; }
+  [[maybe_unused]] [[nodiscard]] const auto &image_width() const noexcept
+  {
+    return m_image_width;
+  }
   /**
    * Image Height
    */
-  [[maybe_unused]] [[nodiscard]] const auto &image_height() const noexcept { return m_image_height; }
+  [[maybe_unused]] [[nodiscard]] const auto &image_height() const noexcept
+  {
+    return m_image_height;
+  }
   /**
    * Bytes per Row (usually ignored and assumed to be bytes per pixel * width)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bytes_per_row() const noexcept { return m_bytes_per_row; }
+  [[maybe_unused]] [[nodiscard]] const auto &bytes_per_row() const noexcept
+  {
+    return m_bytes_per_row;
+  }
   /**
    * Unknown 5
    */
-  [[nodiscard]] auto unknown_5() const noexcept { return m_unknown_5; }
+  [[nodiscard]] auto unknown_5() const noexcept
+  {
+    return m_unknown_5;
+  }
   /**
    * Palette Flag (indicates the presence of a palette)
    */
-  [[maybe_unused]] [[nodiscard]] bool palette_flag() const noexcept { return m_palette_flag != 0; }
+  [[maybe_unused]] [[nodiscard]] bool palette_flag() const noexcept
+  {
+    return m_palette_flag != 0;
+  }
   /**
    * Bits per Index (always 0 for non_paletted images)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bits_per_index() const noexcept { return m_bits_per_index; }
+  [[maybe_unused]] [[nodiscard]] const auto &bits_per_index() const noexcept
+  {
+    return m_bits_per_index;
+  }
   /**
    * Indexed_to_8bit Flag (never used in FF7)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &indexed_to_8_bit_flag() const noexcept { return m_indexed_to_8_bit_flag; }
+  [[maybe_unused]] [[nodiscard]] const auto &indexed_to_8_bit_flag() const noexcept
+  {
+    return m_indexed_to_8_bit_flag;
+  }
   /**
    * Palette Size (always number of palettes * colors per palette)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &palette_size() const noexcept { return m_palette_size; }
+  [[maybe_unused]] [[nodiscard]] const auto &palette_size() const noexcept
+  {
+    return m_palette_size;
+  }
   /**
    * Number of Colors per Palette again (may be 0 sometimes; the first value will be used anyway)
    */
@@ -242,15 +308,24 @@ public:
   /**
    * Runtime Data 1 (ignored on load)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &runtime_data_1() const noexcept { return m_runtime_data_1; }
+  [[maybe_unused]] [[nodiscard]] const auto &runtime_data_1() const noexcept
+  {
+    return m_runtime_data_1;
+  }
   /**
    * Number of Bits per Pixel
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bits_per_pixel() const noexcept { return m_bits_per_pixel; }
+  [[maybe_unused]] [[nodiscard]] const auto &bits_per_pixel() const noexcept
+  {
+    return m_bits_per_pixel;
+  }
   /**
    * Number of Bytes per Pixel
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bytes_per_pixel() const noexcept { return m_bytes_per_pixel; }
+  [[maybe_unused]] [[nodiscard]] const auto &bytes_per_pixel() const noexcept
+  {
+    return m_bytes_per_pixel;
+  }
   /**
    * Area of image
    * @return Height * Width

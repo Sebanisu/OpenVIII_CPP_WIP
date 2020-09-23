@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_MENUGROUPHEADERSECTION_HPP
 #define VIIIARCHIVE_MENUGROUPHEADERSECTION_HPP
-#include <cstring>
 #include <cstdint>
+#include <cstring>
 #include <string_view>
 namespace open_viii::menu_group {
 struct MenuGroupHeaderSection
@@ -29,8 +29,14 @@ private:
   std::uint32_t m_size{};
 
 public:
-  [[nodiscard]] auto file_offset() const noexcept { return m_file_offset - PERM_OFFSET; }
-  [[nodiscard]] const auto &size() const noexcept { return m_size; }
+  [[nodiscard]] auto file_offset() const noexcept
+  {
+    return m_file_offset - PERM_OFFSET;
+  }
+  [[nodiscard]] const auto &size() const noexcept
+  {
+    return m_size;
+  }
   template<typename charContainer = std::string_view>
   [[nodiscard]] std::string_view get_section_buffer(const charContainer &file_buffer) const
   {

@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_CONCEPTS_HPP
 #define VIIIARCHIVE_CONCEPTS_HPP
-#include <concepts>
 #include "CompressionTypeT.hpp"
+#include <concepts>
 namespace open_viii {
 
 template<typename T> concept Number = std::floating_point<T> || std::integral<T>;

@@ -14,11 +14,11 @@
 #ifndef VIIIARCHIVE_COLOR16_HPP
 #define VIIIARCHIVE_COLOR16_HPP
 
-#include <cstdint>
-#include <bitset>
-#include <limits>
 #include "open_viii/Concepts.hpp"
 #include "open_viii/tools/Tools.hpp"
+#include <bitset>
+#include <cstdint>
+#include <limits>
 namespace open_viii::graphics {
 /**
  *
@@ -41,7 +41,10 @@ private:
   static constexpr std::uint_fast8_t CONVERT_SHIFT = { 3U };
   static constexpr std::uint_fast8_t GET_HIGH_BIT_SHIFT = { 2U };
   static constexpr std::uint_fast8_t LARGEST_5_BIT_VALUE{ 0b0001'1111 };
-  [[nodiscard]] std::bitset<BITS> value_bit() const { return std::bitset<BITS>{ m_value }; }
+  [[nodiscard]] std::bitset<BITS> value_bit() const
+  {
+    return std::bitset<BITS>{ m_value };
+  }
   void value_bit(const std::bitset<BITS> &new_value) const
   {
     m_value = static_cast<std::uint16_t>(new_value.to_ulong());
@@ -92,17 +95,26 @@ public:
    * Color Blue stored as 5 bit.
    * @return 8 bit color value.
    */
-  [[nodiscard]] std::uint8_t b() const { return convert(BLUE_MASK, BLUE_SHIFT); }
+  [[nodiscard]] std::uint8_t b() const
+  {
+    return convert(BLUE_MASK, BLUE_SHIFT);
+  }
   /**
    * Color Green stored as 5 bit.
    * @return 8 bit color value.
    */
-  [[nodiscard]] std::uint8_t g() const { return convert(GREEN_MASK, GREEN_SHIFT); }
+  [[nodiscard]] std::uint8_t g() const
+  {
+    return convert(GREEN_MASK, GREEN_SHIFT);
+  }
   /**
    * Color Red stored as 5 bit.
    * @return 8 bit color value.
    */
-  [[nodiscard]] std::uint8_t r() const { return convert(RED_MASK, RED_SHIFT); }
+  [[nodiscard]] std::uint8_t r() const
+  {
+    return convert(RED_MASK, RED_SHIFT);
+  }
   /**
    * Color Blue stored as 5 bit.
    * @return 8 bit color value.
@@ -140,7 +152,10 @@ public:
    * Special transparency bit
    * @return true or false
    */
-  [[maybe_unused]] [[nodiscard]] bool stp() const { return (value_bit() & STP_MASK).any(); }
+  [[maybe_unused]] [[nodiscard]] bool stp() const
+  {
+    return (value_bit() & STP_MASK).any();
+  }
 
   /**
    * Special transparency bit
@@ -159,12 +174,18 @@ public:
    * @return true if color is black. at least all the color bits are 0.
    */
 
-  [[nodiscard]] bool is_black() const { return (value_bit() & ALL_COLOR_MASK).none(); }
+  [[nodiscard]] bool is_black() const
+  {
+    return (value_bit() & ALL_COLOR_MASK).none();
+  }
 
   /**
    * @return true if color is transparent Black. all bits are 0.
    */
-  [[nodiscard]] [[maybe_unused]] bool is_transparent_black() const { return m_value == 0; }
+  [[nodiscard]] [[maybe_unused]] bool is_transparent_black() const
+  {
+    return m_value == 0;
+  }
   [[nodiscard]] std::uint8_t a() const
   {
     if (is_black()) {

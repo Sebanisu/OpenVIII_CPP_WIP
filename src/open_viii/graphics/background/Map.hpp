@@ -13,16 +13,16 @@
 
 #ifndef VIIIARCHIVE_MAP_HPP
 #define VIIIARCHIVE_MAP_HPP
-#include <cstdint>
-#include <filesystem>
+#include "Mim.hpp"
+#include "Pupu.hpp"
 #include "Tile1.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
-#include "Pupu.hpp"
-#include "Mim.hpp"
+#include "open_viii/tools/Tools.hpp"
 #include <bit>
 #include <bitset>
-#include "open_viii/tools/Tools.hpp"
+#include <cstdint>
+#include <filesystem>
 namespace open_viii::graphics::background {
 template<typename map_type = Tile1>
 requires(
@@ -114,38 +114,52 @@ private:
   }
   [[nodiscard]] const auto &min_x() const noexcept
   {
-    return (std::min_element(
-              m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); }))
+    return (std::min_element(m_tiles.cbegin(),
+              m_tiles.cend(),
+              [](const auto &a, const auto &b) -> bool {
+                return a.x() < b.x();
+              }))
       ->x();
   }
   [[nodiscard]] auto minmax_x() const noexcept
   {
-    return std::minmax_element(
-      m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); });
+    return std::minmax_element(m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool {
+      return a.x() < b.x();
+    });
   }
 
   [[maybe_unused]] [[nodiscard]] const auto &max_x() const noexcept
   {
-    return (std::max_element(
-              m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.x() < b.x(); }))
+    return (std::max_element(m_tiles.cbegin(),
+              m_tiles.cend(),
+              [](const auto &a, const auto &b) -> bool {
+                return a.x() < b.x();
+              }))
       ->x();
   }
   [[nodiscard]] auto minmax_y() const noexcept
   {
-    return std::minmax_element(
-      m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); });
+    return std::minmax_element(m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool {
+      return a.y() < b.y();
+    });
   }
   [[nodiscard]] const auto &min_y() const noexcept
   {
-    return (std::min_element(
-              m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); }))
+    return (std::min_element(m_tiles.cbegin(),
+              m_tiles.cend(),
+              [](const auto &a, const auto &b) -> bool {
+                return a.y() < b.y();
+              }))
       ->y();
   }
 
   [[maybe_unused]] [[nodiscard]] const auto &max_y() const noexcept
   {
-    return (std::max_element(
-              m_tiles.cbegin(), m_tiles.cend(), [](const auto &a, const auto &b) -> bool { return a.y() < b.y(); }))
+    return (std::max_element(m_tiles.cbegin(),
+              m_tiles.cend(),
+              [](const auto &a, const auto &b) -> bool {
+                return a.y() < b.y();
+              }))
       ->y();
   }
 
@@ -166,9 +180,15 @@ public:
     sort_remove_duplicates();
     shift_to_origin();
   }
-  [[nodiscard]] const auto &tiles() const noexcept { return m_tiles; }
+  [[nodiscard]] const auto &tiles() const noexcept
+  {
+    return m_tiles;
+  }
 
-  [[nodiscard]] const auto *operator->() const noexcept { return &m_tiles; }
+  [[nodiscard]] const auto *operator->() const noexcept
+  {
+    return &m_tiles;
+  }
 
   /**
    * Get a rectangle large enough to hold all the tiles.
@@ -203,7 +223,10 @@ public:
       return t;
     });
   }
-  void shift(const Point<std::int16_t> &point) const noexcept { shift(point.x(), point.y()); }
+  void shift(const Point<std::int16_t> &point) const noexcept
+  {
+    shift(point.x(), point.y());
+  }
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const Map &m)
   {

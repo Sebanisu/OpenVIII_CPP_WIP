@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_TDW_HPP
 #define VIIIARCHIVE_TDW_HPP
-#include "Tim.hpp"
 #include "Bit4Values.hpp"
+#include "Tim.hpp"
 #include <cstdint>
 #include <cstring>
 namespace open_viii::graphics {
@@ -29,7 +29,10 @@ private:
   std::uint32_t m_tim_offset{};
   std::vector<Bit4Values> m_widths{};
   Tim m_tim{};
-  [[nodiscard]] auto widths_size() const noexcept { return m_tim_offset - m_widths_offset; }
+  [[nodiscard]] auto widths_size() const noexcept
+  {
+    return m_tim_offset - m_widths_offset;
+  }
 
 public:
   Tdw() = default;
@@ -70,8 +73,14 @@ public:
     }
     return static_cast<std::uint8_t>(m_widths.at(i).second);
   }
-  [[nodiscard]] auto size() const { return std::ranges::size(m_widths) * 2U; }
-  [[nodiscard]] const Tim &tim() const { return m_tim; }
+  [[nodiscard]] auto size() const
+  {
+    return std::ranges::size(m_widths) * 2U;
+  }
+  [[nodiscard]] const Tim &tim() const
+  {
+    return m_tim;
+  }
   friend std::ostream &operator<<(std::ostream &os, const Tdw &t)
   {
     os << t.size() << " char widths: ";
@@ -80,7 +89,10 @@ public:
     }
     return os << '\n' << t.m_tim;
   }
-  void save(const std::string_view &path) { m_tim.save(path); }
+  void save(const std::string_view &path)
+  {
+    m_tim.save(path);
+  }
 };
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TDW_HPP

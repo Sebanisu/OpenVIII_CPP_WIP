@@ -13,11 +13,11 @@
 
 #ifndef VIIIARCHIVE_COLOR32_HPP
 #define VIIIARCHIVE_COLOR32_HPP
-#include <algorithm>
-#include <cstdint>
-#include <bitset>
-#include <limits>
 #include "open_viii/Concepts.hpp"
+#include <algorithm>
+#include <bitset>
+#include <cstdint>
+#include <limits>
 namespace open_viii::graphics {
 // template <size_t valueT>
 // requires (valueT >=0U && valueT <=3U)
@@ -62,15 +62,39 @@ public:
     b(input_color.b());
     a(input_color.a());
   }
-  [[nodiscard]] std::uint8_t r() const { return m_parts.at(r_); }
-  [[nodiscard]] std::uint8_t g() const { return m_parts.at(g_); }
-  [[nodiscard]] std::uint8_t b() const { return m_parts.at(b_); }
-  [[nodiscard]] std::uint8_t a() const { return m_parts.at(a_); }
+  [[nodiscard]] std::uint8_t r() const
+  {
+    return m_parts.at(r_);
+  }
+  [[nodiscard]] std::uint8_t g() const
+  {
+    return m_parts.at(g_);
+  }
+  [[nodiscard]] std::uint8_t b() const
+  {
+    return m_parts.at(b_);
+  }
+  [[nodiscard]] std::uint8_t a() const
+  {
+    return m_parts.at(a_);
+  }
 
-  template<Number T> std::uint8_t r(const T &value) const { return set<r_, T>(value); }
-  template<Number T> std::uint8_t g(const T &value) const { return set<g_, T>(value); }
-  template<Number T> std::uint8_t b(const T &value) const { return set<b_, T>(value); }
-  template<Number T> std::uint8_t a(const T &value) const { return set<a_, T>(value); }
+  template<Number T> std::uint8_t r(const T &value) const
+  {
+    return set<r_, T>(value);
+  }
+  template<Number T> std::uint8_t g(const T &value) const
+  {
+    return set<g_, T>(value);
+  }
+  template<Number T> std::uint8_t b(const T &value) const
+  {
+    return set<b_, T>(value);
+  }
+  template<Number T> std::uint8_t a(const T &value) const
+  {
+    return set<a_, T>(value);
+  }
 
 
   friend std::ostream &operator<<(std::ostream &os, const Color32<r_, g_, b_, a_> &color)

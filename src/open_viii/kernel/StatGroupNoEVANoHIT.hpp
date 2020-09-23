@@ -33,16 +33,40 @@ private:
   {
     return std::is_integral_v<maybeNumberT>;
   }
-  template<typename maybeNumberT> static bool is_integral() { return std::is_integral_v<maybeNumberT>; }
+  template<typename maybeNumberT> static bool is_integral()
+  {
+    return std::is_integral_v<maybeNumberT>;
+  }
 
 public:
-  [[nodiscard]] T &hp() const noexcept { return m_stats.at(HP); }
-  [[nodiscard]] T &str() const noexcept { return m_stats.at(STR); }
-  [[nodiscard]] T &vit() const noexcept { return m_stats.at(VIT); }
-  [[nodiscard]] T &mag() const noexcept { return m_stats.at(MAG); }
-  [[nodiscard]] T &spr() const noexcept { return m_stats.at(SPR); }
-  [[nodiscard]] T &spd() const noexcept { return m_stats.at(SPD); }
-  [[nodiscard]] T &luck() const noexcept { return m_stats.at(LUCK); }
+  [[nodiscard]] T &hp() const noexcept
+  {
+    return m_stats.at(HP);
+  }
+  [[nodiscard]] T &str() const noexcept
+  {
+    return m_stats.at(STR);
+  }
+  [[nodiscard]] T &vit() const noexcept
+  {
+    return m_stats.at(VIT);
+  }
+  [[nodiscard]] T &mag() const noexcept
+  {
+    return m_stats.at(MAG);
+  }
+  [[nodiscard]] T &spr() const noexcept
+  {
+    return m_stats.at(SPR);
+  }
+  [[nodiscard]] T &spd() const noexcept
+  {
+    return m_stats.at(SPD);
+  }
+  [[nodiscard]] T &luck() const noexcept
+  {
+    return m_stats.at(LUCK);
+  }
   friend std::ostream &operator<<(std::ostream &os, const StatGroupNoEVANoHIT<T> &input)
   {
     bool first{ true };

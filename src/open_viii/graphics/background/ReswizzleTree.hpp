@@ -6,10 +6,10 @@
 #define VIIIARCHIVE_RESWIZZLETREE_HPP
 #include <utility>
 
-#include "open_viii/archive/FIFLFS.hpp"
 #include "Map.hpp"
 #include "Mim.hpp"
 #include "Reswizzle.hpp"
+#include "open_viii/archive/FIFLFS.hpp"
 namespace open_viii::graphics::background {
 struct ReswizzleTree
 {
@@ -91,7 +91,10 @@ private:
   //   */
   //  const std::string &output_prefix() const noexcept { return m_output_prefix; }
 
-  const MimType &mim_type() const noexcept { return m_mim_type; }
+  const MimType &mim_type() const noexcept
+  {
+    return m_mim_type;
+  }
   [[nodiscard]] std::vector<char> get_mim_buffer() const
   {
     if (static_cast<bool>(m_archive)) {
@@ -129,18 +132,27 @@ public:
    * true if archive is set and full. false if invalid.
    * @return bool
    */
-  [[nodiscard]] explicit operator bool() const noexcept { return static_cast<bool>(m_archive); }
+  [[nodiscard]] explicit operator bool() const noexcept
+  {
+    return static_cast<bool>(m_archive);
+  }
 
   /**
    * Point to members of the archive
    * @return FIFLFS*
    */
-  [[nodiscard]] const open_viii::archive::FIFLFS<false> *operator->() const noexcept { return &m_archive; }
+  [[nodiscard]] const open_viii::archive::FIFLFS<false> *operator->() const noexcept
+  {
+    return &m_archive;
+  }
   /**
    * Get the archive
    * @return FIFLFS
    */
-  [[nodiscard]] const open_viii::archive::FIFLFS<false> &operator*() const noexcept { return m_archive; }
+  [[nodiscard]] const open_viii::archive::FIFLFS<false> &operator*() const noexcept
+  {
+    return m_archive;
+  }
 
 
   /**

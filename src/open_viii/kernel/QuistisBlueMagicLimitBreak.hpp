@@ -13,10 +13,10 @@
 
 #ifndef VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAK_HPP
 #define VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAK_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
-#include "ElementT.hpp"
-#include "AttackTypeT.hpp"
 #include "AttackFlagsT.hpp"
+#include "AttackTypeT.hpp"
+#include "ElementT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct QuistisBlueMagicLimitBreak
 {
@@ -51,19 +51,58 @@ private:
   std::uint8_t m_unknown4{};
 
 public:
-  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto magic_id() const noexcept { return m_magic_id; }
-  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
-  [[nodiscard]] auto attack_type() const noexcept { return m_attack_type; }
-  [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
-  [[nodiscard]] auto unknown2() const noexcept { return m_unknown2; }
-  [[nodiscard]] auto attack_flags() const noexcept { return m_attack_flags; }
-  [[nodiscard]] auto unknown3() const noexcept { return m_unknown3; }
-  [[nodiscard]] auto element() const noexcept { return m_element; }
-  [[nodiscard]] auto status_attack() const noexcept { return m_status_attack; }
-  [[nodiscard]] auto critical_bonus() const noexcept { return m_critical_bonus; }
-  [[nodiscard]] auto unknown4() const noexcept { return m_unknown4; }
+  [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
+  [[nodiscard]] auto magic_id() const noexcept
+  {
+    return m_magic_id;
+  }
+  [[nodiscard]] auto unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
+  [[nodiscard]] auto attack_type() const noexcept
+  {
+    return m_attack_type;
+  }
+  [[nodiscard]] auto unknown1() const noexcept
+  {
+    return m_unknown1;
+  }
+  [[nodiscard]] auto unknown2() const noexcept
+  {
+    return m_unknown2;
+  }
+  [[nodiscard]] auto attack_flags() const noexcept
+  {
+    return m_attack_flags;
+  }
+  [[nodiscard]] auto unknown3() const noexcept
+  {
+    return m_unknown3;
+  }
+  [[nodiscard]] auto element() const noexcept
+  {
+    return m_element;
+  }
+  [[nodiscard]] auto status_attack() const noexcept
+  {
+    return m_status_attack;
+  }
+  [[nodiscard]] auto critical_bonus() const noexcept
+  {
+    return m_critical_bonus;
+  }
+  [[nodiscard]] auto unknown4() const noexcept
+  {
+    return m_unknown4;
+  }
 
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {

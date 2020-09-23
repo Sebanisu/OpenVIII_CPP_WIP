@@ -12,10 +12,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_ARCHIVE_HPP
 #define VIIIARCHIVE_ARCHIVE_HPP
+#include "Archives.hpp"
 #include "FI.hpp"
+#include "FIFLFS.hpp"
 #include "FL.hpp"
 #include "FS.hpp"
 #include "ZZZ.hpp"
-#include "FIFLFS.hpp"
-#include "Archives.hpp"
 #endif// VIIIARCHIVE_ARCHIVE_HPP

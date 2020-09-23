@@ -13,13 +13,13 @@
 
 #ifndef VIIIARCHIVE_LZS_HPP
 #define VIIIARCHIVE_LZS_HPP
-#include "open_viii/graphics/color/Color16.hpp"
+#include "Ppm.hpp"
 #include "Rectangle.hpp"
 #include "open_viii/Compression/LZSS.hpp"
-#include <span>
+#include "open_viii/graphics/color/Color16.hpp"
 #include <cstring>
+#include <span>
 #include <vector>
-#include "Ppm.hpp"
 namespace open_viii::graphics {
 /**
  * lzs images are LZSS images with a small header (X,Y,H,W) and 16bit colors.
@@ -77,7 +77,10 @@ public:
   {
     Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
   }
-  friend std::ostream &operator<<(std::ostream &os, const Lzs &l) { return os << '{' << l.m_rectangle << "}\n"; }
+  friend std::ostream &operator<<(std::ostream &os, const Lzs &l)
+  {
+    return os << '{' << l.m_rectangle << "}\n";
+  }
 };
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_LZS_HPP

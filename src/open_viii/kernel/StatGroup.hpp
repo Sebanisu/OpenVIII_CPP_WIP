@@ -14,8 +14,8 @@
 #ifndef VIIIARCHIVE_STATGROUP_HPP
 #define VIIIARCHIVE_STATGROUP_HPP
 #include <array>
-#include <iostream>
 #include <concepts>
+#include <iostream>
 namespace open_viii::kernel {
 template<typename T> requires(std::unsigned_integral<T> || std::ranges::contiguous_range<T>) struct StatGroup
 {
@@ -38,15 +38,42 @@ private:
   // template<typename maybeNumberT> static bool is_integral() { return std::is_integral_v<maybeNumberT>; }
 
 public:
-  [[maybe_unused]] [[nodiscard]] T &hp() const noexcept { return m_stats.at(HP); }
-  [[nodiscard]] T &str() const noexcept { return m_stats.at(STR); }
-  [[maybe_unused]] [[nodiscard]] T &vit() const noexcept { return m_stats.at(VIT); }
-  [[nodiscard]] T &mag() const noexcept { return m_stats.at(MAG); }
-  [[nodiscard]] T &spr() const noexcept { return m_stats.at(SPR); }
-  [[nodiscard]] T &spd() const noexcept { return m_stats.at(SPD); }
-  [[maybe_unused]] [[nodiscard]] T &eva() const noexcept { return m_stats.at(EVA); }
-  [[nodiscard]] T &hit() const noexcept { return m_stats.at(HIT); }
-  [[maybe_unused]] [[nodiscard]] T &luck() const noexcept { return m_stats.at(LUCK); }
+  [[maybe_unused]] [[nodiscard]] T &hp() const noexcept
+  {
+    return m_stats.at(HP);
+  }
+  [[nodiscard]] T &str() const noexcept
+  {
+    return m_stats.at(STR);
+  }
+  [[maybe_unused]] [[nodiscard]] T &vit() const noexcept
+  {
+    return m_stats.at(VIT);
+  }
+  [[nodiscard]] T &mag() const noexcept
+  {
+    return m_stats.at(MAG);
+  }
+  [[nodiscard]] T &spr() const noexcept
+  {
+    return m_stats.at(SPR);
+  }
+  [[nodiscard]] T &spd() const noexcept
+  {
+    return m_stats.at(SPD);
+  }
+  [[maybe_unused]] [[nodiscard]] T &eva() const noexcept
+  {
+    return m_stats.at(EVA);
+  }
+  [[nodiscard]] T &hit() const noexcept
+  {
+    return m_stats.at(HIT);
+  }
+  [[maybe_unused]] [[nodiscard]] T &luck() const noexcept
+  {
+    return m_stats.at(LUCK);
+  }
   friend std::ostream &operator<<(std::ostream &os, const StatGroup<T> &input)
   {
     bool first{ true };

@@ -13,9 +13,9 @@
 
 #ifndef VIIIARCHIVE_DEVOUR_HPP
 #define VIIIARCHIVE_DEVOUR_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "BattleOnlyStatusesT.hpp"
 #include "PersistentStatusesT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 enum class PercentQuantityT : std::uint8_t {
   // 0% = 0x00
@@ -82,7 +82,10 @@ private:
   std::uint8_t m_raised_stat_hp_quantity{};
 
 public:
-  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
+  [[nodiscard]] auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
   [[nodiscard]] auto damage_or_heal() const noexcept
   {
     return (m_damage_or_heal & 0x1U) == 0;
@@ -115,10 +118,22 @@ public:
     }
     return out;
   }
-  [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }// statuses 8-39
-  [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }// statuses 0-7
-  [[maybe_unused]] [[nodiscard]] auto devour_stat_flag() const noexcept { return m_devour_stat_flag; }
-  [[maybe_unused]] [[nodiscard]] auto raised_stat_hp_quantity() const noexcept { return m_raised_stat_hp_quantity; }
+  [[nodiscard]] auto battle_only_statuses() const noexcept
+  {
+    return m_battle_only_statuses;
+  }// statuses 8-39
+  [[nodiscard]] auto persistent_statuses() const noexcept
+  {
+    return m_persistent_statuses;
+  }// statuses 0-7
+  [[maybe_unused]] [[nodiscard]] auto devour_stat_flag() const noexcept
+  {
+    return m_devour_stat_flag;
+  }
+  [[maybe_unused]] [[nodiscard]] auto raised_stat_hp_quantity() const noexcept
+  {
+    return m_raised_stat_hp_quantity;
+  }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto description = m_description_offset.decoded_string<langVal>(buffer);

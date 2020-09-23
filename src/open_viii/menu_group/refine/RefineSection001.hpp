@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION001_HPP
 #define VIIIARCHIVE_REFINESECTION001_HPP
-#include "open_viii/ItemIdT.hpp"
 #include "RefineEntry.hpp"
+#include "open_viii/ItemIdT.hpp"
 #include <array>
 #include <iostream>
 namespace open_viii::menu_group {
@@ -47,13 +47,34 @@ private:
   std::array<RefineEntry<ItemIdT, ItemIdT>, TOOL_RF_COUNT> m_tool_rf{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &recov_med_rf() const noexcept { return m_recov_med_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &st_med_rf() const noexcept { return m_st_med_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &ammo_rf() const noexcept { return m_ammo_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &forbid_med_rf() const noexcept { return m_forbid_med_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &gf_recov_rf() const noexcept { return m_gf_recov_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &gf_abl_med_rf() const noexcept { return m_gf_abl_med_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &tool_rf() const noexcept { return m_tool_rf; }
+  [[maybe_unused]] [[nodiscard]] const auto &recov_med_rf() const noexcept
+  {
+    return m_recov_med_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &st_med_rf() const noexcept
+  {
+    return m_st_med_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &ammo_rf() const noexcept
+  {
+    return m_ammo_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &forbid_med_rf() const noexcept
+  {
+    return m_forbid_med_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &gf_recov_rf() const noexcept
+  {
+    return m_gf_recov_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &gf_abl_med_rf() const noexcept
+  {
+    return m_gf_abl_med_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &tool_rf() const noexcept
+  {
+    return m_tool_rf;
+  }
   [[nodiscard]] static constexpr auto size()
   {
     return RECOV_MED_RF_COUNT + ST_MED_RF_COUNT + AMMO_RF_COUNT + FORBID_MED_RF_COUNT + GF_RECOV_RF_COUNT
@@ -68,7 +89,9 @@ public:
     bool skip_first_null = false) const
 
   {
-    for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n'; }
+    for (const auto item : arr) {
+      (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
+    }
     return os;
   }
   template<LangT langVal>

@@ -21,7 +21,10 @@ struct MenuMessagesSection
 private:
   std::vector<EncodedStringOffset> m_data{};
 
-  [[nodiscard]] auto *data() { return m_data.data(); }
+  [[nodiscard]] auto *data()
+  {
+    return m_data.data();
+  }
 
 public:
   MenuMessagesSection() = default;
@@ -29,10 +32,22 @@ public:
   //  {
   //    data_.resize(count);
   //  }
-  void resize(const size_t count) { m_data.resize(count); }
-  [[nodiscard]] auto begin() const { return m_data.begin(); }
-  [[nodiscard]] auto end() const { return m_data.end(); }
-  [[nodiscard]] auto size() const { return m_data.size(); }
+  void resize(const size_t count)
+  {
+    m_data.resize(count);
+  }
+  [[nodiscard]] auto begin() const
+  {
+    return m_data.begin();
+  }
+  [[nodiscard]] auto end() const
+  {
+    return m_data.end();
+  }
+  [[nodiscard]] auto size() const
+  {
+    return m_data.size();
+  }
   //  [[nodiscard]] auto & at(const size_t & index)
   //  {
   //    return data_.at(index);

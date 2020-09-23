@@ -12,19 +12,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FL_HPP
 #define VIIIARCHIVE_FL_HPP
+#include "open_viii/tools/Tools.hpp"
+#include <cassert>
+#include <filesystem>
+#include <fstream>
+#include <initializer_list>
+#include <iostream>
+#include <optional>
 #include <ranges>
 #include <set>
-#include <string>
-#include <filesystem>
-#include <iostream>
-#include <fstream>
-#include <string>
 #include <sstream>
+#include <string>
 #include <vector>
-#include <optional>
-#include <cassert>
-#include <initializer_list>
-#include "open_viii/tools/Tools.hpp"
 
 namespace open_viii::archive {
 //

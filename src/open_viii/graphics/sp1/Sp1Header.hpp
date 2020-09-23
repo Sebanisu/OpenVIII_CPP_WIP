@@ -13,11 +13,11 @@
 
 #ifndef VIIIARCHIVE_SP1HEADER_HPP
 #define VIIIARCHIVE_SP1HEADER_HPP
+#include "Sp1Offset.hpp"
 #include <cstdint>
 #include <cstring>
-#include <vector>
 #include <span>
-#include "Sp1Offset.hpp"
+#include <vector>
 namespace open_viii::graphics {
 struct Sp1Header
 {
@@ -48,8 +48,14 @@ public:
       std::memcpy(std::ranges::data(m_offsets), std::ranges::data(buffer), sz);
     }
   }
-  [[nodiscard]] auto size() const noexcept { return m_offset_count; }
-  [[nodiscard]] const auto &offsets() const noexcept { return m_offsets; }
+  [[nodiscard]] auto size() const noexcept
+  {
+    return m_offset_count;
+  }
+  [[nodiscard]] const auto &offsets() const noexcept
+  {
+    return m_offsets;
+  }
 };
 
 }// namespace open_viii::graphics

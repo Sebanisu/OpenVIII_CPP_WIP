@@ -11,9 +11,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <vector>
 #include "lz4/lib/lz4.h"
 #include <concepts>
+#include <vector>
 
 #ifndef VIIICOMPRESSION_L4Z_H
 #define VIIICOMPRESSION_L4Z_H

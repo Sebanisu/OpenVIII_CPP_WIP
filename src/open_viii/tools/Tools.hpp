@@ -13,20 +13,20 @@
 
 #ifndef VIITOOLS_H
 #define VIITOOLS_H
-#include <concepts>
-#include <string>
-#include <algorithm>
-#include <fstream>
-#include <istream>
-#include <filesystem>
-#include <cassert>
-#include <ranges>
 #include "open_viii/Concepts.hpp"
+#include <algorithm>
+#include <cassert>
 #include <chrono>
-#include <thread>
-#include <span>
-#include <iostream>
+#include <concepts>
 #include <cstring>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <istream>
+#include <ranges>
+#include <span>
+#include <string>
+#include <thread>
 namespace open_viii {
 struct [[maybe_unused]] Tools
 {
@@ -143,8 +143,9 @@ public:
       return false;
     }
     return write_buffer(
-      [&buffer](
-        std::ostream &fp) { fp.write(std::ranges::data(buffer), static_cast<long>(std::ranges::size(buffer))); },
+      [&buffer](std::ostream &fp) {
+        fp.write(std::ranges::data(buffer), static_cast<long>(std::ranges::size(buffer)));
+      },
       path,
       root);
   }
@@ -188,7 +189,9 @@ public:
   template<typename T, std::ranges::contiguous_range T2>
   [[maybe_unused]] constexpr static bool any_of(const T &needle, const T2 &haystack)
   {
-    return std::ranges::any_of(haystack, [&needle](const auto &value) -> bool { return value == needle; });
+    return std::ranges::any_of(haystack, [&needle](const auto &value) -> bool {
+      return value == needle;
+    });
   }
   [[maybe_unused]] constexpr static void replace_slashes(std::string &haystack)
   {
@@ -368,7 +371,9 @@ public:
   [[maybe_unused]] [[nodiscard]] static auto i_find_all(const std::string_view &haystack,
     const std::initializer_list<std::string_view> &needles)
   {
-    return std::ranges::all_of(needles, [&haystack](const auto &needle) -> bool { return i_find(haystack, needle); });
+    return std::ranges::all_of(needles, [&haystack](const auto &needle) -> bool {
+      return i_find(haystack, needle);
+    });
   }
 
   template<std::unsigned_integral intT, std::invocable<intT, intT> lambdaT>

@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestExtractALL.hpp"
-#include "open_viii/paths/Paths.hpp"
 #include "open_viii/archive/Archives.hpp"
+#include "open_viii/paths/Paths.hpp"
 
 int main()
 {

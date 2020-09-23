@@ -14,9 +14,9 @@
 #ifndef VIIIARCHIVE_MENUMESSAGES_HPP
 #define VIIIARCHIVE_MENUMESSAGES_HPP
 #include "MenuMessagesSection.hpp"
+#include <array>
 #include <cstdint>
 #include <cstring>
-#include <array>
 #include <vector>
 namespace open_viii::menu_group {
 struct MenuMessages
@@ -29,11 +29,26 @@ private:
   std::array<MenuMessagesSection, DEFAULT_SIZE> m_sub_sections{};
 
 public:
-  [[nodiscard]] auto size() const noexcept { return m_size; }
-  [[nodiscard]] auto sections() const noexcept { return m_sections; }
-  [[maybe_unused]] [[nodiscard]] auto sub_sections() const noexcept { return m_sub_sections; }
-  [[nodiscard]] auto begin() const noexcept { return m_sub_sections.begin(); }
-  [[nodiscard]] auto end() const noexcept { return m_sub_sections.end(); }
+  [[nodiscard]] auto size() const noexcept
+  {
+    return m_size;
+  }
+  [[nodiscard]] auto sections() const noexcept
+  {
+    return m_sections;
+  }
+  [[maybe_unused]] [[nodiscard]] auto sub_sections() const noexcept
+  {
+    return m_sub_sections;
+  }
+  [[nodiscard]] auto begin() const noexcept
+  {
+    return m_sub_sections.begin();
+  }
+  [[nodiscard]] auto end() const noexcept
+  {
+    return m_sub_sections.end();
+  }
   template<typename T = std::vector<char>> explicit MenuMessages(const T &buffer)
   {
     // TODO remove pointer; use span instead of template.

@@ -14,9 +14,9 @@
 #ifndef VIIIARCHIVE_CHARACTERS_HPP
 #define VIIIARCHIVE_CHARACTERS_HPP
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "GenderT.hpp"
 #include "StatGroupNoEVANoHIT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct Characters
 {
@@ -82,17 +82,38 @@ private:
   StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> m_stats{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
+  [[maybe_unused]] [[nodiscard]] const auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
   [[maybe_unused]] [[nodiscard]] const auto &crisis_level_hp_multiplier() const noexcept
   {
     return m_crisis_level_hp_multiplier;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &gender() const noexcept { return m_gender; }
-  [[maybe_unused]] [[nodiscard]] const auto &limit_break_id() const noexcept { return m_limit_break_id; }
-  [[maybe_unused]] [[nodiscard]] const auto &limit_break_param() const noexcept { return m_limit_break_param; }
-  [[maybe_unused]] [[nodiscard]] const auto &exp() const noexcept { return m_exp; }
-  [[maybe_unused]] [[nodiscard]] const auto &stats() const noexcept { return m_stats; }
-  [[nodiscard]] auto operator->() const noexcept { return &m_stats; }
+  [[maybe_unused]] [[nodiscard]] const auto &gender() const noexcept
+  {
+    return m_gender;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &limit_break_id() const noexcept
+  {
+    return m_limit_break_id;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &limit_break_param() const noexcept
+  {
+    return m_limit_break_param;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &exp() const noexcept
+  {
+    return m_exp;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &stats() const noexcept
+  {
+    return m_stats;
+  }
+  [[nodiscard]] auto operator->() const noexcept
+  {
+    return &m_stats;
+  }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

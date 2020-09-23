@@ -13,11 +13,11 @@
 
 #ifndef VIIIARCHIVE_NONJUNCTIONABLEGFS_HPP
 #define VIIIARCHIVE_NONJUNCTIONABLEGFS_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "AttackTypeT.hpp"
+#include "BattleOnlyStatusesT.hpp"
 #include "ElementT.hpp"
 #include "PersistentStatusesT.hpp"
-#include "BattleOnlyStatusesT.hpp"
-#include "AttackTypeT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct NonJunctionableGFs
 {
@@ -112,21 +112,63 @@ private:
   std::uint8_t m_power_mod{};// (used in damage formula)
   std::uint8_t m_level_mod{};// (used in damage formula)
 public:
-  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto magic_id() const noexcept { return m_magic_id; }
-  [[nodiscard]] auto attack_type() const noexcept { return m_attack_type; }
-  [[maybe_unused]] [[nodiscard]] auto gf_power() const noexcept { return m_gf_power; }// (used in damage formula)
-  [[nodiscard]] auto status_attack_enabler() const noexcept { return m_status_attack_enabler; }
-  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
-  [[maybe_unused]] [[nodiscard]] auto status_flags() const noexcept { return m_status_flags; }
-  [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
-  [[nodiscard]] auto unknown2() const noexcept { return m_unknown2; }
-  [[nodiscard]] auto element() const noexcept { return m_element; }
-  [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }
-  [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }
+  [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] auto magic_id() const noexcept
+  {
+    return m_magic_id;
+  }
+  [[nodiscard]] auto attack_type() const noexcept
+  {
+    return m_attack_type;
+  }
+  [[maybe_unused]] [[nodiscard]] auto gf_power() const noexcept
+  {
+    return m_gf_power;
+  }// (used in damage formula)
+  [[nodiscard]] auto status_attack_enabler() const noexcept
+  {
+    return m_status_attack_enabler;
+  }
+  [[nodiscard]] auto unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
+  [[maybe_unused]] [[nodiscard]] auto status_flags() const noexcept
+  {
+    return m_status_flags;
+  }
+  [[nodiscard]] auto unknown1() const noexcept
+  {
+    return m_unknown1;
+  }
+  [[nodiscard]] auto unknown2() const noexcept
+  {
+    return m_unknown2;
+  }
+  [[nodiscard]] auto element() const noexcept
+  {
+    return m_element;
+  }
+  [[nodiscard]] auto battle_only_statuses() const noexcept
+  {
+    return m_battle_only_statuses;
+  }
+  [[nodiscard]] auto persistent_statuses() const noexcept
+  {
+    return m_persistent_statuses;
+  }
   // [[nodiscard]] auto Unknown3() const noexcept { return Unknown3_; } // assuming this is part of persistent statuses.
-  [[nodiscard]] auto power_mod() const noexcept { return m_power_mod; }// (used in damage formula)
-  [[maybe_unused]] [[nodiscard]] auto level_mod() const noexcept { return m_level_mod; }// (used in damage formula)
+  [[nodiscard]] auto power_mod() const noexcept
+  {
+    return m_power_mod;
+  }// (used in damage formula)
+  [[maybe_unused]] [[nodiscard]] auto level_mod() const noexcept
+  {
+    return m_level_mod;
+  }// (used in damage formula)
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

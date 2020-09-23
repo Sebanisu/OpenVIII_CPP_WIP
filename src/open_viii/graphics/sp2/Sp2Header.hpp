@@ -14,9 +14,9 @@
 #ifndef VIIIARCHIVE_SP2HEADER_HPP
 #define VIIIARCHIVE_SP2HEADER_HPP
 #include <cstdint>
-#include <vector>
-#include <span>
 #include <ranges>
+#include <span>
+#include <vector>
 namespace open_viii::graphics {
 struct Sp2Header
 {
@@ -33,8 +33,14 @@ public:
     m_offsets.resize(m_count);
     std::memcpy(std::ranges::data(m_offsets), std::ranges::data(buffer), sizeof(std::uint32_t) * m_count);
   }
-  [[nodiscard]] const auto &offsets() const noexcept { return m_offsets; }
-  [[nodiscard]] auto &size() const noexcept { return m_count; }
+  [[nodiscard]] const auto &offsets() const noexcept
+  {
+    return m_offsets;
+  }
+  [[nodiscard]] auto &size() const noexcept
+  {
+    return m_count;
+  }
 };
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP2HEADER_HPP

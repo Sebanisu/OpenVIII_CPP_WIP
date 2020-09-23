@@ -14,10 +14,10 @@
 #ifndef VIIIARCHIVE_WEAPONS_HPP
 #define VIIIARCHIVE_WEAPONS_HPP
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "AttackTypeT.hpp"
 #include "CharactersT.hpp"
 #include "RenzokukenFinishersT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include <cstdint>
 
 namespace open_viii::kernel {
@@ -67,17 +67,50 @@ private:
   std::uint8_t m_melee_weapon{};
 
 public:
-  [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
-  [[maybe_unused]] [[nodiscard]] const auto &renzokuken_finishers() const noexcept { return m_renzokuken_finishers; }
-  [[nodiscard]] const auto &unknown() const noexcept { return m_unknown; }
-  [[maybe_unused]] [[nodiscard]] const auto &character_id() const noexcept { return m_character_id; }
-  [[nodiscard]] const auto &attack_type() const noexcept { return m_attack_type; }
-  [[maybe_unused]] [[nodiscard]] const auto &attack_power() const noexcept { return m_attack_power; }
-  [[maybe_unused]] [[nodiscard]] const auto &attack_parameter() const noexcept { return m_attack_parameter; }
-  [[maybe_unused]] [[nodiscard]] const auto &str_bonus() const noexcept { return m_str_bonus; }
-  [[maybe_unused]] [[nodiscard]] const auto &weapon_tier() const noexcept { return m_weapon_tier; }
-  [[maybe_unused]] [[nodiscard]] const auto &critical_bonus() const noexcept { return m_critical_bonus; }
-  [[maybe_unused]] [[nodiscard]] const auto &melee_weapon() const noexcept { return m_melee_weapon != 0; }
+  [[nodiscard]] const auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &renzokuken_finishers() const noexcept
+  {
+    return m_renzokuken_finishers;
+  }
+  [[nodiscard]] const auto &unknown() const noexcept
+  {
+    return m_unknown;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &character_id() const noexcept
+  {
+    return m_character_id;
+  }
+  [[nodiscard]] const auto &attack_type() const noexcept
+  {
+    return m_attack_type;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &attack_power() const noexcept
+  {
+    return m_attack_power;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &attack_parameter() const noexcept
+  {
+    return m_attack_parameter;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &str_bonus() const noexcept
+  {
+    return m_str_bonus;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &weapon_tier() const noexcept
+  {
+    return m_weapon_tier;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &critical_bonus() const noexcept
+  {
+    return m_critical_bonus;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &melee_weapon() const noexcept
+  {
+    return m_melee_weapon != 0;
+  }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

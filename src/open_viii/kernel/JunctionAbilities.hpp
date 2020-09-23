@@ -14,9 +14,9 @@
 #ifndef VIIIARCHIVE_JUNCTIONABILITIES_HPP
 #define VIIIARCHIVE_JUNCTIONABILITIES_HPP
 
+#include "JunctionFlagsT.hpp"
 #include "open_viii/Strings/EncodedStringOffset.hpp"
 #include <cstring>
-#include "JunctionFlagsT.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct JunctionAbilities
 {
@@ -34,9 +34,18 @@ private:
   std::array<std::uint8_t, 3> m_junction_flags{};
 
 public:
-  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
+  [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
+  [[nodiscard]] auto ap_required() const noexcept
+  {
+    return m_ap_required;
+  }
   [[nodiscard]] auto junction_flags() const
   {
     JunctionFlagsT out{};

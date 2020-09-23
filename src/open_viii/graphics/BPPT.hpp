@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_BPPT_HPP
 #define VIIIARCHIVE_BPPT_HPP
-#include <iostream>
 #include <compare>
+#include <iostream>
 namespace open_viii::graphics {
 /**
  * @enum open_viii::graphics::BPPT
@@ -170,8 +170,14 @@ public:
    * Test that one of the valid states is true.
    * @return true if is a valid state.
    */
-  [[nodiscard]] constexpr bool check() const noexcept { return bpp4() || bpp8() || bpp16() || bpp24(); }
-  [[nodiscard]] constexpr explicit operator bool() const noexcept { return check(); }
+  [[nodiscard]] constexpr bool check() const noexcept
+  {
+    return bpp4() || bpp8() || bpp16() || bpp24();
+  }
+  [[nodiscard]] constexpr explicit operator bool() const noexcept
+  {
+    return check();
+  }
   [[nodiscard]] constexpr explicit operator int() const
   {
     //[[maybe_unused]] static constexpr auto size_ = sizeof(BPPT);

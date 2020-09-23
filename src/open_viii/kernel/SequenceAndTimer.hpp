@@ -23,8 +23,14 @@ private:
   std::uint8_t m_timer{};
 
 public:
-  [[nodiscard]] auto sequence() const noexcept { return m_sequence; }
-  [[nodiscard]] auto timer() const noexcept { return m_timer; }
+  [[nodiscard]] auto sequence() const noexcept
+  {
+    return m_sequence;
+  }
+  [[nodiscard]] auto timer() const noexcept
+  {
+    return m_timer;
+  }
   friend std::ostream &operator<<(std::ostream &os, const SequenceAndTimer &input)
   {
     return os << '{' << static_cast<std::uint32_t>(input.sequence()) << ", "

@@ -12,17 +12,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_ZZZ_HPP
 #define VIIIARCHIVE_ZZZ_HPP
-#include <string>
 #include "FI.hpp"
+#include "FIFLFS.hpp"
+#include "FileData.hpp"
 #include "open_viii/tools/Tools.hpp"
+#include <algorithm>
 #include <filesystem>
-#include <set>
 #include <fstream>
 #include <iostream>
 #include <iterator>
-#include <algorithm>
-#include "FIFLFS.hpp"
-#include "FileData.hpp"
+#include <set>
+#include <string>
 namespace open_viii::archive {
 /**
  * @see https://github.com/myst6re/qt-zzz
@@ -40,8 +40,14 @@ private:
 
 public:
   constexpr static auto EXT = ".zzz";
-  [[maybe_unused]] [[nodiscard]] const auto &data() const noexcept { return m_data; }
-  [[maybe_unused]] [[nodiscard]] const auto &path() const noexcept { return m_path; }
+  [[maybe_unused]] [[nodiscard]] const auto &data() const noexcept
+  {
+    return m_data;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &path() const noexcept
+  {
+    return m_path;
+  }
   ZZZ(const ZZZ &) = default;
   ZZZ &operator=(const ZZZ &) = default;
   ZZZ(ZZZ &&) = default;

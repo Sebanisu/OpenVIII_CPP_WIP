@@ -13,12 +13,12 @@
 
 #ifndef VIIIARCHIVE_MIM_HPP
 #define VIIIARCHIVE_MIM_HPP
+#include "MimType.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
 #include "open_viii/graphics/Bit4Values.hpp"
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Ppm.hpp"
-#include "MimType.hpp"
 #include <span>
 #include <vector>
 namespace open_viii::graphics::background {
@@ -114,7 +114,10 @@ public:
       m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
       m_image_buffer_bbp4(set_image_span_bpp4()), m_image_buffer_bbp16(set_image_span_bpp16())
   {}
-  [[nodiscard]] const auto &mim_type() const noexcept { return m_mim_type; }
+  [[nodiscard]] const auto &mim_type() const noexcept
+  {
+    return m_mim_type;
+  }
   [[maybe_unused]] [[nodiscard]] static MimType get_texture_type(std::size_t mim_filesize, std::string_view name = {})
   {
     for (auto m : TEXTURE_TYPES) {
@@ -129,7 +132,10 @@ public:
     }
     return {};
   }
-  friend std::ostream &operator<<(std::ostream &os, const Mim &m) { return os << m.m_mim_type; }
+  friend std::ostream &operator<<(std::ostream &os, const Mim &m)
+  {
+    return os << m.m_mim_type;
+  }
 
   template<typename lambdaT>
   requires(std::invocable<lambdaT,

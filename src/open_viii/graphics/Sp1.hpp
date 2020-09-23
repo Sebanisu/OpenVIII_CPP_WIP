@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_SP1_HPP
 #define VIIIARCHIVE_SP1_HPP
-#include "open_viii/graphics/sp1/Sp1Header.hpp"
 #include "open_viii/graphics/sp1/Sp1Entry.hpp"
+#include "open_viii/graphics/sp1/Sp1Header.hpp"
 namespace open_viii::graphics {
 /**
  * SP1 file parsing. This file contains the coords for for the icons. These might need scaled up because the values are
@@ -45,8 +45,14 @@ public:
       s = s.subspan(1);
     }
   }
-  [[nodiscard]] const auto &at(const size_t i) const { return m_entries.at(i); }
-  [[nodiscard]] auto size() const { return std::ranges::size(m_entries); }
+  [[nodiscard]] const auto &at(const size_t i) const
+  {
+    return m_entries.at(i);
+  }
+  [[nodiscard]] auto size() const
+  {
+    return std::ranges::size(m_entries);
+  }
   friend std::ostream &operator<<(std::ostream &os, const Sp1 &s)
   {
     os << "{ Entry Groups Count: " << s.size() << " {";
@@ -54,7 +60,9 @@ public:
       if (std::ranges::size(eg) > 1) {
         os << " Entry Count: " << std::ranges::size(eg) << ", ";
       }
-      for (const auto &e : eg) { os << e; }
+      for (const auto &e : eg) {
+        os << e;
+      }
     }
     return os << "}\n";
   }

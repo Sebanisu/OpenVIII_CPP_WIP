@@ -14,13 +14,13 @@
 #ifndef VIIIARCHIVE_ENEMYATTACKS_HPP
 #define VIIIARCHIVE_ENEMYATTACKS_HPP
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
-#include "PersistentStatusesT.hpp"
-#include "BattleOnlyStatusesT.hpp"
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
-#include "ElementT.hpp"
+#include "BattleOnlyStatusesT.hpp"
 #include "CameraChange.hpp"
+#include "ElementT.hpp"
+#include "PersistentStatusesT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct EnemyAttacks
 {
@@ -58,20 +58,62 @@ private:
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-31
 
 public:
-  [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] const auto &magic_id() const noexcept { return m_magic_id; }
-  [[maybe_unused]] [[nodiscard]] const auto &camera_change() const noexcept { return m_camera_change; }
-  [[nodiscard]] const auto &unknown0() const noexcept { return m_unknown0; }
-  [[nodiscard]] const auto &attack_type() const noexcept { return m_attack_type; }
-  [[maybe_unused]] [[nodiscard]] const auto &attack_power() const noexcept { return m_attack_power; }
-  [[nodiscard]] const auto &attack_flags() const noexcept { return m_attack_flags; }
-  [[nodiscard]] const auto &unknown1() const noexcept { return m_unknown1; }
-  [[nodiscard]] const auto &element() const noexcept { return m_element; }
-  [[nodiscard]] const auto &unknown2() const noexcept { return m_unknown2; }
-  [[nodiscard]] const auto &status_attack_enabler() const noexcept { return m_status_attack_enabler; }
-  [[maybe_unused]] [[nodiscard]] const auto &attack_parameter() const noexcept { return m_attack_parameter; }
-  [[nodiscard]] const auto &persistent_statuses() const noexcept { return m_persistent_statuses; }// statuses 0-7
-  [[nodiscard]] const auto &battle_only_statuses() const noexcept { return m_battle_only_statuses; }// statuses 8-31
+  [[nodiscard]] const auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] const auto &magic_id() const noexcept
+  {
+    return m_magic_id;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &camera_change() const noexcept
+  {
+    return m_camera_change;
+  }
+  [[nodiscard]] const auto &unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
+  [[nodiscard]] const auto &attack_type() const noexcept
+  {
+    return m_attack_type;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &attack_power() const noexcept
+  {
+    return m_attack_power;
+  }
+  [[nodiscard]] const auto &attack_flags() const noexcept
+  {
+    return m_attack_flags;
+  }
+  [[nodiscard]] const auto &unknown1() const noexcept
+  {
+    return m_unknown1;
+  }
+  [[nodiscard]] const auto &element() const noexcept
+  {
+    return m_element;
+  }
+  [[nodiscard]] const auto &unknown2() const noexcept
+  {
+    return m_unknown2;
+  }
+  [[nodiscard]] const auto &status_attack_enabler() const noexcept
+  {
+    return m_status_attack_enabler;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &attack_parameter() const noexcept
+  {
+    return m_attack_parameter;
+  }
+  [[nodiscard]] const auto &persistent_statuses() const noexcept
+  {
+    return m_persistent_statuses;
+  }// statuses 0-7
+  [[nodiscard]] const auto &battle_only_statuses() const noexcept
+  {
+    return m_battle_only_statuses;
+  }// statuses 8-31
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

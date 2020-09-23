@@ -13,14 +13,14 @@
 
 #ifndef VIIIARCHIVE_PPM_HPP
 #define VIIIARCHIVE_PPM_HPP
-#include <execution>
-#include <cstdint>
-#include <fstream>
-#include <iostream>
-#include <cctype>
-#include <string_view>
 #include "Color.hpp"
 #include "open_viii/Concepts.hpp"
+#include <cctype>
+#include <cstdint>
+#include <execution>
+#include <fstream>
+#include <iostream>
+#include <string_view>
 namespace open_viii::graphics {
 struct Ppm
 {
@@ -93,7 +93,10 @@ public:
       // m_colors = { std::ranges::cbegin(colorspan), std::ranges::cend(colorspan) };
     }
   }
-  [[nodiscard]] const auto &colors() { return m_colors; }
+  [[nodiscard]] const auto &colors()
+  {
+    return m_colors;
+  }
   template<std::ranges::contiguous_range cT>
   static void
     save(const cT &data, std::size_t width, std::size_t height, const std::string_view &input, bool skip_check = false)
@@ -132,9 +135,18 @@ public:
       filename);
   }
 
-  [[nodiscard]] const std::vector<Color24<0, 1, 2>> &colors() const { return m_colors; }
-  [[nodiscard]] const std::uint16_t &width() const { return m_width; }
-  [[nodiscard]] const std::uint16_t &height() const { return m_height; }
+  [[nodiscard]] const std::vector<Color24<0, 1, 2>> &colors() const
+  {
+    return m_colors;
+  }
+  [[nodiscard]] const std::uint16_t &width() const
+  {
+    return m_width;
+  }
+  [[nodiscard]] const std::uint16_t &height() const
+  {
+    return m_height;
+  }
   [[nodiscard]] const Color24<0, 1, 2> &color(const std::size_t &x, const std::size_t &y) const
   {
     return m_colors.at(x + (y * static_cast<std::size_t>(m_width)));

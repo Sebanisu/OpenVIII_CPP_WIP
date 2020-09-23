@@ -14,12 +14,12 @@
 #ifndef VIIIARCHIVE_COMMANDABILITIESDATA_H
 #define VIIIARCHIVE_COMMANDABILITIESDATA_H
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
-#include "PersistentStatusesT.hpp"
-#include "BattleOnlyStatusesT.hpp"
-#include "AttackTypeT.hpp"
 #include "AttackFlagsT.hpp"
+#include "AttackTypeT.hpp"
+#include "BattleOnlyStatusesT.hpp"
 #include "ElementT.hpp"
+#include "PersistentStatusesT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct CommandAbilitiesData
 {
@@ -51,16 +51,46 @@ private:
   BattleOnlyStatusesT m_battle_only_statuses{};
 
 public:
-  [[nodiscard]] auto magic_id() const noexcept { return m_magic_id; }
-  [[nodiscard]] auto unknown() const noexcept { return m_unknown; }
-  [[nodiscard]] auto attack_type() const noexcept { return m_attack_type; }
-  [[maybe_unused]] [[nodiscard]] auto attack_power() const noexcept { return m_attack_power; }
-  [[nodiscard]] auto attack_flags() const noexcept { return m_attack_flags; }
-  [[nodiscard]] auto hit_count() const noexcept { return m_hit_count; }
-  [[nodiscard]] auto element() const noexcept { return m_element; }
-  [[nodiscard]] auto status_attack_enabler() const noexcept { return m_status_attack_enabler; }
-  [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }
-  [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }
+  [[nodiscard]] auto magic_id() const noexcept
+  {
+    return m_magic_id;
+  }
+  [[nodiscard]] auto unknown() const noexcept
+  {
+    return m_unknown;
+  }
+  [[nodiscard]] auto attack_type() const noexcept
+  {
+    return m_attack_type;
+  }
+  [[maybe_unused]] [[nodiscard]] auto attack_power() const noexcept
+  {
+    return m_attack_power;
+  }
+  [[nodiscard]] auto attack_flags() const noexcept
+  {
+    return m_attack_flags;
+  }
+  [[nodiscard]] auto hit_count() const noexcept
+  {
+    return m_hit_count;
+  }
+  [[nodiscard]] auto element() const noexcept
+  {
+    return m_element;
+  }
+  [[nodiscard]] auto status_attack_enabler() const noexcept
+  {
+    return m_status_attack_enabler;
+  }
+  [[nodiscard]] auto persistent_statuses() const noexcept
+  {
+    return m_persistent_statuses;
+  }
+  [[nodiscard]] auto battle_only_statuses() const noexcept
+  {
+    return m_battle_only_statuses;
+  }
 
   std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
   {

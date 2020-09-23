@@ -31,17 +31,50 @@ private:
   std::uint8_t m_unknown6{};
 
 public:
-  [[nodiscard]] auto count() const noexcept { return m_count; }
-  [[maybe_unused]] [[nodiscard]] auto x() const noexcept { return m_x; }
-  [[maybe_unused]] [[nodiscard]] auto y() const noexcept { return m_y; }
-  [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
-  [[nodiscard]] auto unknown2() const noexcept { return m_unknown2; }
-  [[nodiscard]] auto width() const noexcept { return m_width; }
-  [[nodiscard]] auto height() const noexcept { return m_height; }
-  [[maybe_unused]] [[nodiscard]] auto unknown3() const noexcept { return m_unknown3; }
-  [[nodiscard]] auto unknown4() const noexcept { return m_unknown4; }
-  [[maybe_unused]] [[nodiscard]] auto unknown5() const noexcept { return m_unknown5; }
-  [[maybe_unused]] [[nodiscard]] auto unknown6() const noexcept { return m_unknown6; }
+  [[nodiscard]] auto count() const noexcept
+  {
+    return m_count;
+  }
+  [[maybe_unused]] [[nodiscard]] auto x() const noexcept
+  {
+    return m_x;
+  }
+  [[maybe_unused]] [[nodiscard]] auto y() const noexcept
+  {
+    return m_y;
+  }
+  [[nodiscard]] auto unknown1() const noexcept
+  {
+    return m_unknown1;
+  }
+  [[nodiscard]] auto unknown2() const noexcept
+  {
+    return m_unknown2;
+  }
+  [[nodiscard]] auto width() const noexcept
+  {
+    return m_width;
+  }
+  [[nodiscard]] auto height() const noexcept
+  {
+    return m_height;
+  }
+  [[maybe_unused]] [[nodiscard]] auto unknown3() const noexcept
+  {
+    return m_unknown3;
+  }
+  [[nodiscard]] auto unknown4() const noexcept
+  {
+    return m_unknown4;
+  }
+  [[maybe_unused]] [[nodiscard]] auto unknown5() const noexcept
+  {
+    return m_unknown5;
+  }
+  [[maybe_unused]] [[nodiscard]] auto unknown6() const noexcept
+  {
+    return m_unknown6;
+  }
   Sp2Entry() = default;
   friend std::ostream &operator<<(std::ostream &os, const Sp2Entry &e)
   {

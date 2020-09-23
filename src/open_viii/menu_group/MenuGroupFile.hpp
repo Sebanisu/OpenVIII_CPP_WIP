@@ -13,23 +13,22 @@
 
 #ifndef VIIIARCHIVE_MENUGROUPFILE_HPP
 #define VIIIARCHIVE_MENUGROUPFILE_HPP
+#include "ComplexStringSection.hpp"
 #include "MenuGroupHeader.hpp"
-#include "open_viii/archive/Archives.hpp"
-#include "open_viii/tools/Tools.hpp"
 #include "MenuGroupSectionT.hpp"
 #include "MenuMessages.hpp"
-#include "open_viii/SectionData.hpp"
 #include "open_viii/BulkSectionData.hpp"
-#include "ComplexStringSection.hpp"
+#include "open_viii/SectionData.hpp"
+#include "open_viii/archive/Archives.hpp"
+#include "open_viii/graphics/Color.hpp"
+#include "open_viii/graphics/Ppm.hpp"
+#include "open_viii/graphics/Tim.hpp"
 #include "open_viii/menu_group/refine/RefineSection000.hpp"
 #include "open_viii/menu_group/refine/RefineSection001.hpp"
 #include "open_viii/menu_group/refine/RefineSection002.hpp"
 #include "open_viii/menu_group/refine/RefineSection003.hpp"
 #include "open_viii/menu_group/refine/RefineSection004.hpp"
-#include "open_viii/graphics/Color.hpp"
-#include "open_viii/graphics/Tim.hpp"
-#include "open_viii/graphics/Ppm.hpp"
-#include "open_viii/graphics/Ppm.hpp"
+#include "open_viii/tools/Tools.hpp"
 #include <sstream>
 #include <vector>
 namespace open_viii::menu_group {

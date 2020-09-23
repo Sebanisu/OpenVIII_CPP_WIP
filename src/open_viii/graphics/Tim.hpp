@@ -14,12 +14,12 @@
 #ifndef VIIIARCHIVE_TIM_HPP
 #define VIIIARCHIVE_TIM_HPP
 #include "BPPT.hpp"
-#include "open_viii/graphics/tim/TimHeader.hpp"
-#include "open_viii/graphics/tim/TimClutHeader.hpp"
+#include "Bit4Values.hpp"
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Ppm.hpp"
+#include "open_viii/graphics/tim/TimClutHeader.hpp"
+#include "open_viii/graphics/tim/TimHeader.hpp"
 #include <sstream>
-#include "Bit4Values.hpp"
 namespace open_viii::graphics {
 /**
  * TIM, or PSX TIM, is an uncompressed raster image file format associated with the Sony PlayStation family of video
@@ -139,22 +139,43 @@ public:
     }
     return {};// invalid value
   }
-  [[nodiscard]] auto height() const { return m_tim_image_header.rectangle().height(); }
+  [[nodiscard]] auto height() const
+  {
+    return m_tim_image_header.rectangle().height();
+  }
   [[nodiscard]] auto area() const
   {
     return width() * static_cast<std::size_t>(m_tim_image_header.rectangle().height());
   }
-  [[maybe_unused]] [[nodiscard]] auto x() const { return m_tim_image_header.rectangle().x(); }
-  [[maybe_unused]] [[nodiscard]] auto y() const { return m_tim_image_header.rectangle().y(); }
+  [[maybe_unused]] [[nodiscard]] auto x() const
+  {
+    return m_tim_image_header.rectangle().x();
+  }
+  [[maybe_unused]] [[nodiscard]] auto y() const
+  {
+    return m_tim_image_header.rectangle().y();
+  }
 
-  [[maybe_unused]] [[nodiscard]] auto clut_x() const { return m_tim_clut_header.rectangle().x(); }
-  [[maybe_unused]] [[nodiscard]] auto clut_y() const { return m_tim_clut_header.rectangle().y(); }
+  [[maybe_unused]] [[nodiscard]] auto clut_x() const
+  {
+    return m_tim_clut_header.rectangle().x();
+  }
+  [[maybe_unused]] [[nodiscard]] auto clut_y() const
+  {
+    return m_tim_clut_header.rectangle().y();
+  }
   [[nodiscard]] auto size() const
   {
     return sizeof(m_tim_header) + m_tim_clut_header.size() + m_tim_image_header.size();
   }
-  [[nodiscard]] auto clut_rows() const { return m_tim_clut_header.rectangle().height(); }
-  [[maybe_unused]] [[nodiscard]] auto clut_colors() const { return m_tim_clut_header.rectangle().width(); }
+  [[nodiscard]] auto clut_rows() const
+  {
+    return m_tim_clut_header.rectangle().height();
+  }
+  [[maybe_unused]] [[nodiscard]] auto clut_colors() const
+  {
+    return m_tim_clut_header.rectangle().width();
+  }
 
   friend std::ostream &operator<<(std::ostream &os, const Tim &input)
   {
@@ -205,14 +226,18 @@ public:
       const auto sz = std::ranges::size(m_tim_image_data) / sizeof(Color16);
       const auto s = std::span(reinterpret_cast<const Color16 *>(std::ranges::data(m_tim_image_data)), sz);
 
-      for (const Color auto i : s) { output.emplace_back(i); }
+      for (const Color auto i : s) {
+        output.emplace_back(i);
+      }
       //      for (size_t i{}; i < std::min(outSize, timImageData_.size() / sizeof(color16)); i++) {
       //        output.emplace_back(get_colorT<color16>(i));
       //      }
       break;
     }
     case bpp24: {
-      for (size_t i{}; i < out_size; i++) { output.emplace_back(get_color_t<Color24<2, 1, 0>>(i)); }
+      for (size_t i{}; i < out_size; i++) {
+        output.emplace_back(get_color_t<Color24<2, 1, 0>>(i));
+      }
       break;
     }
     }

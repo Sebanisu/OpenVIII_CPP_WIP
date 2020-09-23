@@ -13,17 +13,17 @@
 #ifndef VIIIARCHIVE_FI_HPP
 #define VIIIARCHIVE_FI_HPP
 
+#include "open_viii/CompressionTypeT.hpp"
+#include "open_viii/tools/Tools.hpp"
+#include <algorithm>
+#include <array>
+#include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <vector>
-#include <span>
-#include <filesystem>
-#include <cstring>
 #include <iterator>
-#include <array>
-#include <algorithm>
-#include "open_viii/tools/Tools.hpp"
-#include "open_viii/CompressionTypeT.hpp"
+#include <span>
+#include <vector>
 namespace open_viii::archive {
 /**
  * FI is the file index for the FL and FS files.
@@ -46,11 +46,20 @@ public:
 
   constexpr static const auto EXT = std::string_view(".FI");
 
-  [[nodiscard]] constexpr auto uncompressed_size() const noexcept { return m_uncompressed_size; }
+  [[nodiscard]] constexpr auto uncompressed_size() const noexcept
+  {
+    return m_uncompressed_size;
+  }
 
-  [[nodiscard]] constexpr auto offset() const noexcept { return m_offset; }
+  [[nodiscard]] constexpr auto offset() const noexcept
+  {
+    return m_offset;
+  }
 
-  [[nodiscard]] constexpr auto compression_type() const noexcept { return m_compression_type; }
+  [[nodiscard]] constexpr auto compression_type() const noexcept
+  {
+    return m_compression_type;
+  }
 
   constexpr FI() noexcept = default;
 
@@ -113,7 +122,10 @@ public:
     : FI(buffer, get_start_offset(id, offset))
   {}
 
-  [[nodiscard]] constexpr static size_t get_count(const std::size_t &file_size) noexcept { return file_size / SIZE; }
+  [[nodiscard]] constexpr static size_t get_count(const std::size_t &file_size) noexcept
+  {
+    return file_size / SIZE;
+  }
   // GetCount which is fileSize/Size if file doesn't exist return 0;
   [[maybe_unused]] [[nodiscard]] size_t static get_count(const std::filesystem::path &path)
   {

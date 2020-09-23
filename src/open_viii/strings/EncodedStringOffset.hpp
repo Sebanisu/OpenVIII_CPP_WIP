@@ -13,9 +13,9 @@
 
 #ifndef VIIIARCHIVE_ENCODEDSTRINGOFFSET_HPP
 #define VIIIARCHIVE_ENCODEDSTRINGOFFSET_HPP
+#include "FF8String.hpp"
 #include <cstdint>
 #include <string_view>
-#include "FF8String.hpp"
 
 namespace open_viii {
 struct EncodedStringOffset
@@ -81,7 +81,10 @@ public:
     return FF8String<langVal>::decode(raw_bytes(buffer, offset, skip_first_null));
   }
 
-  [[nodiscard]] auto offset() const noexcept { return m_offset; }
+  [[nodiscard]] auto offset() const noexcept
+  {
+    return m_offset;
+  }
 };
 }// namespace open_viii
 #endif// VIIIARCHIVE_ENCODEDSTRINGOFFSET_HPP

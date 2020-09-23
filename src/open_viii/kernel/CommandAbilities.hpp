@@ -36,13 +36,31 @@ private:
   std::uint8_t m_unknown1{};
 
 public:
-  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
+  [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
 
-  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
-  [[maybe_unused]] [[nodiscard]] auto index_to_battle_command() const noexcept { return m_index_to_battle_command; }
-  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
-  [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept
+  {
+    return m_ap_required;
+  }
+  [[maybe_unused]] [[nodiscard]] auto index_to_battle_command() const noexcept
+  {
+    return m_index_to_battle_command;
+  }
+  [[nodiscard]] auto unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
+  [[nodiscard]] auto unknown1() const noexcept
+  {
+    return m_unknown1;
+  }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

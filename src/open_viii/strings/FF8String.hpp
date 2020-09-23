@@ -12,10 +12,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FF8STRING_HPP
 #define VIIIARCHIVE_FF8STRING_HPP
-#include <string_view>
+#include "LangT.hpp"
 #include <array>
 #include <sstream>
-#include "LangT.hpp"
+#include <string_view>
 
 using namespace std::string_view_literals;
 namespace open_viii {
@@ -547,7 +547,10 @@ public:
       return EU_CODE_PAGE;
     }
   }
-  [[nodiscard]] auto static decode(uint8_t key) noexcept { return get_code_page().at(key); }
+  [[nodiscard]] auto static decode(uint8_t key) noexcept
+  {
+    return get_code_page().at(key);
+  }
   [[nodiscard]] auto static decode(const std::span<const char> &buffer)
   {
     using u8stringstream = std::basic_stringstream<char8_t, std::char_traits<char8_t>>;

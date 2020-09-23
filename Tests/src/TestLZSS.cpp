@@ -30,7 +30,9 @@ int main()
     if (random_chars.empty()) {
       return true;
     }
-    std::generate(random_chars.begin(), random_chars.end(), [&dis, &gen]() { return static_cast<char>(dis(gen)); });
+    std::generate(random_chars.begin(), random_chars.end(), [&dis, &gen]() {
+      return static_cast<char>(dis(gen));
+    });
     // instead of storing compressed variable we just pass it directly into Decompress();
     auto uncompressed = open_viii::compression::LZSS::decompress(open_viii::compression::LZSS::compress(random_chars));
     if (std::equal(random_chars.begin(), random_chars.end(), uncompressed.begin())) {

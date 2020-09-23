@@ -13,11 +13,11 @@
 
 #ifndef VIIIARCHIVE_BULKSECTIONDATA_HPP
 #define VIIIARCHIVE_BULKSECTIONDATA_HPP
-#include <string_view>
-#include <iterator>
 #include "open_viii/ItemIdT.hpp"
 #include "open_viii/Kernel/BattleItems.hpp"
 #include "open_viii/Kernel/NonBattleItems.hpp"
+#include <iterator>
+#include <string_view>
 
 namespace open_viii {
 
@@ -36,7 +36,9 @@ public:
   {}
   [[nodiscard]] size_t size() const
   {
-    const auto calcSize = [this]() { return std::ranges::size(m_span) / sizeof(spanT); };
+    const auto calcSize = [this]() {
+      return std::ranges::size(m_span) / sizeof(spanT);
+    };
     if constexpr (max == 0U) {
       return calcSize();
     } else {
@@ -84,8 +86,14 @@ public:
   //  {
   //    return at(size()-1);
   //  }
-  [[maybe_unused]] auto &span() const noexcept { return m_span; }
-  [[maybe_unused]] auto &text_span() const noexcept { return m_text_span; }
+  [[maybe_unused]] auto &span() const noexcept
+  {
+    return m_span;
+  }
+  [[maybe_unused]] auto &text_span() const noexcept
+  {
+    return m_text_span;
+  }
 };
 template<typename spanT, size_t max = 0U>
 requires(sizeof(spanT) > 0U) struct BulkSectionDataIterator

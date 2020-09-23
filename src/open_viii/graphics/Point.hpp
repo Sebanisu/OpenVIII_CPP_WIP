@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_POINT_HPP
 #define VIIIARCHIVE_POINT_HPP
-#include <iostream>
 #include <concepts>
+#include <iostream>
 namespace open_viii::graphics {
 template<typename dimT> requires(std::integral<dimT> || std::floating_point<dimT>) struct Point
 {
@@ -40,33 +40,48 @@ public:
    * X coordinate.
    * @return x
    */
-  [[nodiscard]] const auto &x() const noexcept { return m_x; }
+  [[nodiscard]] const auto &x() const noexcept
+  {
+    return m_x;
+  }
 
   /**
    * Y coordinate.
    * @return y
    */
-  [[nodiscard]] const auto &y() const noexcept { return m_y; }
+  [[nodiscard]] const auto &y() const noexcept
+  {
+    return m_y;
+  }
 
   /**
    *
    * @param x is new X coordinate.
    * @return x
    */
-  [[nodiscard]] const auto &x(const dimT &x) const noexcept { return m_x = x; }
+  [[nodiscard]] const auto &x(const dimT &x) const noexcept
+  {
+    return m_x = x;
+  }
 
   /**
    *
    * @param y is new Y coordinate.
    * @return y
    */
-  [[nodiscard]] const auto &y(const dimT &y) const noexcept { return m_y = y; }
+  [[nodiscard]] const auto &y(const dimT &y) const noexcept
+  {
+    return m_y = y;
+  }
 
   Point<dimT> operator/(const Point<dimT> &input) const noexcept
   {
     return { input.m_x != 0 ? m_x / input.m_x : 0, input.m_x != 0 ? m_y / input.m_y : 0 };
   }
-  Point<dimT> operator*(const Point<dimT> &input) const noexcept { return { m_x * input.m_x, m_y * input.m_y }; }
+  Point<dimT> operator*(const Point<dimT> &input) const noexcept
+  {
+    return { m_x * input.m_x, m_y * input.m_y };
+  }
   friend std::ostream &operator<<(std::ostream &os, const Point<dimT> &input)
   {
     return os << '{' << input.m_x << ", " << input.m_y << '}';

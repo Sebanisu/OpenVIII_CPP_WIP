@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_TEXIDBUFFER_HPP
 #define VIIIARCHIVE_TEXIDBUFFER_HPP
-#include <cstdint>
 #include "open_viii/graphics/BPPT.hpp"
+#include <cstdint>
 namespace open_viii::graphics::background {
 /**
  * 4 bit paletteID nested inside of 16 bits of data.
@@ -36,14 +36,23 @@ private:
 
 public:
   TexIdBuffer() = default;
-  friend auto operator==(const TexIdBuffer &left, const TexIdBuffer &right) { return left.m_data == right.m_data; }
+  friend auto operator==(const TexIdBuffer &left, const TexIdBuffer &right)
+  {
+    return left.m_data == right.m_data;
+  }
 
-  [[nodiscard]] std::uint8_t id() const noexcept { return static_cast<std::uint8_t>(m_data & ID_MASK); }
+  [[nodiscard]] std::uint8_t id() const noexcept
+  {
+    return static_cast<std::uint8_t>(m_data & ID_MASK);
+  }
   [[nodiscard]] std::uint8_t blend() const noexcept
   {
     return static_cast<std::uint8_t>(static_cast<std::uint16_t>(m_data & BLEND_MASK) >> BLEND_SHIFT);
   }
-  [[nodiscard]] bool draw() const noexcept { return (m_data & DRAW_MASK) != 0; }
+  [[nodiscard]] bool draw() const noexcept
+  {
+    return (m_data & DRAW_MASK) != 0;
+  }
   [[nodiscard]] BPPT depth() const noexcept
   {
     auto raw = static_cast<std::uint8_t>(static_cast<std::uint16_t>(m_data & DEPTH_MASK) >> DEPTH_SHIFT);

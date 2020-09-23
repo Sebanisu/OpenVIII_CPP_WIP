@@ -48,18 +48,27 @@ public:
    * colors (4bpp) there is multiple groups of 16 in the table.
    * @brief Dimensions of the color lookup table.
    */
-  [[nodiscard]] auto rectangle() const { return m_image_header.rectangle(); }
+  [[nodiscard]] auto rectangle() const
+  {
+    return m_image_header.rectangle();
+  }
   /**
    * Total size of Color Lookup Table including header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] auto size() const { return m_image_header.size(); };
+  [[nodiscard]] auto size() const
+  {
+    return m_image_header.size();
+  };
 
   /**
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] auto data_size() const { return m_image_header.data_size(); }
+  [[nodiscard]] auto data_size() const
+  {
+    return m_image_header.data_size();
+  }
   /**
    * Test X and Y of rectangle to see if they are valid values.
    * Width is usually number of colors should be 16 or 256.

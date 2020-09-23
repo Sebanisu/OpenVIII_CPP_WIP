@@ -12,11 +12,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_HPP
 #define VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_HPP
-#include <string>
+#include "open_viii/archive/FIFLFS.hpp"
+#include "open_viii/tools/Tools.hpp"
 #include <algorithm>
 #include <filesystem>
 #include <map>
-#include "open_viii/archive/FIFLFS.hpp"
-#include "open_viii/tools/Tools.hpp"
+#include <string>
 int main();
 #endif// VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_HPP

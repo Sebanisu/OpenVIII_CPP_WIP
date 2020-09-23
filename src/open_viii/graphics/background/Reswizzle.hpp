@@ -5,21 +5,24 @@
 #ifndef VIIIARCHIVE_RESWIZZLE_HPP
 #define VIIIARCHIVE_RESWIZZLE_HPP
 
-#include <numeric>
-#include <string>
-#include <string_view>
-#include <filesystem>
-#include <concepts>
-#include <ranges>
 #include "Map.hpp"
 #include "Pupu.hpp"
 #include "open_viii/graphics/Ppm.hpp"
+#include <concepts>
+#include <filesystem>
+#include <numeric>
+#include <ranges>
+#include <string>
+#include <string_view>
 namespace open_viii::graphics::background {
 struct PupuPath
 {
   open_viii::graphics::background::Pupu pupu{};
   std::filesystem::path path{};
-  auto read_file() const { return open_viii::Tools::read_file<std::string>(path); }
+  auto read_file() const
+  {
+    return open_viii::Tools::read_file<std::string>(path);
+  }
 };
 template<typename map_type>
 requires(std::is_same_v<map_type,
@@ -41,11 +44,17 @@ private:
   mutable std::vector<open_viii::graphics::Color24<0, 1, 2>> m_out{};
   mutable bool m_drawn{ false };
 
-  uint32_t get_area() const noexcept { return m_width * m_height; }
-  uint16_t get_scaled_dim() const noexcept { return MimType::height() * m_scale; }
+  uint32_t get_area() const noexcept
+  {
+    return m_width * m_height;
+  }
+  uint16_t get_scaled_dim() const noexcept
+  {
+    return MimType::height() * m_scale;
+  }
   void update_dims(std::uint8_t scale = 1U) const noexcept
   {
-    if(scale <1U) {
+    if (scale < 1U) {
       return;
     }
     m_scale = scale;
@@ -55,7 +64,9 @@ private:
   }
   void empty_skip() const
   {
-    std::ranges::for_each(m_skip, [](std::vector<map_type> &vector) { vector.clear(); });
+    std::ranges::for_each(m_skip, [](std::vector<map_type> &vector) {
+      vector.clear();
+    });
   }
   std::array<std::vector<PupuPath>, 3> find_files()
   {
@@ -98,8 +109,9 @@ private:
     std::vector<std::uint16_t> valid_texture_ids{};
     const auto tiles = m_map.tiles();
     valid_texture_ids.reserve(std::ranges::size(tiles));
-    std::ranges::transform(
-      tiles, std::back_insert_iterator(valid_texture_ids), [](const map_type &tile) { return tile.texture_id(); });
+    std::ranges::transform(tiles, std::back_insert_iterator(valid_texture_ids), [](const map_type &tile) {
+      return tile.texture_id();
+    });
     std::ranges::sort(valid_texture_ids);
     auto last = std::unique(std::ranges::begin(valid_texture_ids), std::ranges::end(valid_texture_ids));
     valid_texture_ids.erase(last, std::ranges::end(valid_texture_ids));
@@ -115,8 +127,9 @@ private:
   {
     constexpr static std::array<std::size_t, 3> index_values = { 0U, 1U, 2U };
     constexpr static std::array<int, 3> bpp_values = { 4, 8, 16 };
-    std::ranges::for_each(index_values,
-      [&lambda, this](const std::size_t &index) { lambda(bpp_values.at(index), m_path_grouped_by_bppt.at(index)); });
+    std::ranges::for_each(index_values, [&lambda, this](const std::size_t &index) {
+      lambda(bpp_values.at(index), m_path_grouped_by_bppt.at(index));
+    });
   }
   template<std::invocable<map_type> lambdaT1, std::invocable<map_type> lambdaT2>
   void for_each_tile(const std::vector<map_type> &vector, const lambdaT1 &exec, const lambdaT2 &filter) const
@@ -158,8 +171,9 @@ private:
             static constexpr auto tile_size = 16U;
             open_viii::Tools::for_each_xy(tile_size * m_scale, get_set_color_lambda(ppm, tile));
           },
-          [&pupu_path, &texture_id](
-            const map_type &tile) { return pupu_path.pupu == tile && tile.texture_id() == texture_id; });
+          [&pupu_path, &texture_id](const map_type &tile) {
+            return pupu_path.pupu == tile && tile.texture_id() == texture_id;
+          });
       });
     });
     save_and_clear_out_buffer(texture_id);
@@ -229,20 +243,28 @@ private:
       return false;
     };
   }
-  size_t scale_dim(const std::integral auto &value) const { return static_cast<std::size_t>(value) * m_scale; }
+  size_t scale_dim(const std::integral auto &value) const
+  {
+    return static_cast<std::size_t>(value) * m_scale;
+  }
   [[nodiscard]] std::size_t skipped_size() const
   {
-    const auto array =
-      m_skip | std::views::transform([](const std::vector<map_type> &vector) { return std::ranges::size(vector); });
+    const auto array = m_skip | std::views::transform([](const std::vector<map_type> &vector) {
+      return std::ranges::size(vector);
+    });
 
     return std::reduce(std::ranges::begin(array),
       std::ranges::end(array),
       static_cast<std::size_t>(0U),
-      [](const std::size_t &total, const std::size_t &vector_size) { return total + vector_size; });
+      [](const std::size_t &total, const std::size_t &vector_size) {
+        return total + vector_size;
+      });
   }
   [[nodiscard]] bool skipped_empty() const
   {
-    return std::ranges::all_of(m_skip, [](const std::vector<map_type> &vector) { return std::ranges::empty(vector); });
+    return std::ranges::all_of(m_skip, [](const std::vector<map_type> &vector) {
+      return std::ranges::empty(vector);
+    });
   }
 
 public:
@@ -253,8 +275,7 @@ public:
     const uint8_t scale = 1U)
     : m_map(buffer), m_dir_path(dir_path), m_dir_name(dir_name), m_output_prefix(output_prefix),
       m_path_grouped_by_bppt(find_files()), m_valid_texture_ids(get_valid_texture_ids()), m_scale(scale),
-      m_width(get_scaled_dim()),
-      m_height(get_scaled_dim()), m_area(get_area()), m_out(m_area)
+      m_width(get_scaled_dim()), m_height(get_scaled_dim()), m_area(get_area()), m_out(m_area)
   {}
 
   [[nodiscard]] std::size_t size() const
@@ -266,12 +287,15 @@ public:
     return std::reduce(std::ranges::begin(array),
       std::ranges::end(array),
       static_cast<std::size_t>(0U),
-      [](const std::size_t &total, const std::size_t &vector_size) { return total + vector_size; });
+      [](const std::size_t &total, const std::size_t &vector_size) {
+        return total + vector_size;
+      });
   }
   [[nodiscard]] bool empty() const
   {
-    return std::ranges::all_of(
-      m_path_grouped_by_bppt, [](const std::vector<PupuPath> &vector) { return std::ranges::empty(vector); });
+    return std::ranges::all_of(m_path_grouped_by_bppt, [](const std::vector<PupuPath> &vector) {
+      return std::ranges::empty(vector);
+    });
   }
   void process() const
   {

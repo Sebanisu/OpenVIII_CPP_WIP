@@ -13,47 +13,47 @@
 
 #ifndef VIIIARCHIVE_KERNEL_HEADER_H
 #define VIIIARCHIVE_KERNEL_HEADER_H
-#include <vector>
-#include <string_view>
-#include <string>
-#include <array>
-#include <cstring>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include "SectionTypesT.hpp"
-#include "open_viii/BulkSectionData.hpp"
 #include "BattleCommands.hpp"
-#include "Magic.hpp"
-#include "JunctionableGFs.hpp"
-#include "EnemyAttacks.hpp"
-#include "Weapons.hpp"
-#include "RenzokukenFinishers.hpp"
-#include "Characters.hpp"
 #include "BattleItems.hpp"
-#include "NonBattleItems.hpp"
-#include "NonJunctionableGFs.hpp"
-#include "CommandAbilitiesData.h"
-#include "JunctionAbilities.hpp"
-#include "CommandAbilities.hpp"
-#include "StatPercentIncreaseAbilities.hpp"
 #include "CharacterAbilities.hpp"
-#include "PartyAbilities.hpp"
-#include "GFAbilities.hpp"
-#include "MenuAbilities.hpp"
-#include "TeamLagunaLimitBreaks.hpp"
-#include "QuistisBlueMagicLimitBreak.hpp"
-#include "IrvineShotLimitBreak.hpp"
-#include "ZellDuelLimitBreak.hpp"
-#include "RinoaLimitBreakPart1.hpp"
-#include "RinoaLimitBreakPart2.hpp"
-#include "SlotsArray.hpp"
-#include "SlotsSets.hpp"
+#include "Characters.hpp"
+#include "CommandAbilities.hpp"
+#include "CommandAbilitiesData.h"
 #include "Devour.hpp"
+#include "EnemyAttacks.hpp"
+#include "GFAbilities.hpp"
+#include "IrvineShotLimitBreak.hpp"
+#include "JunctionAbilities.hpp"
+#include "JunctionableGFs.hpp"
+#include "Magic.hpp"
+#include "MenuAbilities.hpp"
 #include "Misc.hpp"
 #include "MiscText.hpp"
+#include "NonBattleItems.hpp"
+#include "NonJunctionableGFs.hpp"
+#include "PartyAbilities.hpp"
+#include "QuistisBlueMagicLimitBreak.hpp"
 #include "QuistisBlueMagicLimitBreakParams.hpp"
+#include "RenzokukenFinishers.hpp"
+#include "RinoaLimitBreakPart1.hpp"
+#include "RinoaLimitBreakPart2.hpp"
+#include "SectionTypesT.hpp"
+#include "SlotsArray.hpp"
+#include "SlotsSets.hpp"
+#include "StatPercentIncreaseAbilities.hpp"
+#include "TeamLagunaLimitBreaks.hpp"
+#include "Weapons.hpp"
+#include "ZellDuelLimitBreak.hpp"
 #include "ZellDuelLimitBreakParams.hpp"
+#include "open_viii/BulkSectionData.hpp"
+#include <algorithm>
+#include <array>
+#include <cstring>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <string_view>
+#include <vector>
 // will be moving kernel into it"s own project once it"svs more fully baked.
 namespace open_viii::kernel {
 
@@ -315,9 +315,18 @@ public:
         &m_section_offsets.emplace_back(), m_buffer.data() + (sizeof(sectionCount) * (i++)), sizeof(sectionCount));
     }
   }
-  [[nodiscard]] const auto &buffer() const noexcept { return m_buffer; }
-  [[nodiscard]] auto section_count() const noexcept { return m_section_offsets.size(); }
-  [[nodiscard]] const auto &section_offsets() const noexcept { return m_section_offsets; }
+  [[nodiscard]] const auto &buffer() const noexcept
+  {
+    return m_buffer;
+  }
+  [[nodiscard]] auto section_count() const noexcept
+  {
+    return m_section_offsets.size();
+  }
+  [[nodiscard]] const auto &section_offsets() const noexcept
+  {
+    return m_section_offsets;
+  }
 
 
   template<int First = static_cast<int>(SectionTypesT::first),

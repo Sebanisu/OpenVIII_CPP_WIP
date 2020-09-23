@@ -14,8 +14,8 @@
 #ifndef VIIIARCHIVE_GFABILITIES_HPP
 #define VIIIARCHIVE_GFABILITIES_HPP
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "StatT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct GFAbilities
 {
@@ -38,12 +38,30 @@ private:
   uint8_t m_increase_value{};
 
 public:
-  [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] const auto &description_offset() const noexcept { return m_description_offset; }
-  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
-  [[maybe_unused]] [[nodiscard]] auto enable_boost() const noexcept { return m_enable_boost != 0; }
-  [[maybe_unused]] [[nodiscard]] auto stat_to_increase() const noexcept { return m_stat_to_increase; }
-  [[maybe_unused]] [[nodiscard]] auto increase_value() const noexcept { return m_increase_value; }
+  [[nodiscard]] const auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] const auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept
+  {
+    return m_ap_required;
+  }
+  [[maybe_unused]] [[nodiscard]] auto enable_boost() const noexcept
+  {
+    return m_enable_boost != 0;
+  }
+  [[maybe_unused]] [[nodiscard]] auto stat_to_increase() const noexcept
+  {
+    return m_stat_to_increase;
+  }
+  [[maybe_unused]] [[nodiscard]] auto increase_value() const noexcept
+  {
+    return m_increase_value;
+  }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

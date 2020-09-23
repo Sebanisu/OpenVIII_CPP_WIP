@@ -13,10 +13,10 @@
 
 #ifndef VIIIARCHIVE_UNLOCKABLEABILITY_HPP
 #define VIIIARCHIVE_UNLOCKABLEABILITY_HPP
-#include <cstdint>
-#include <iostream>
 #include "AbilitiesT.hpp"
 #include "UnlockerT.hpp"
+#include <cstdint>
+#include <iostream>
 namespace open_viii::kernel {
 struct UnlockableAbility
 {
@@ -26,9 +26,18 @@ private:
   AbilitiesT m_ability{};
 
 public:
-  [[nodiscard]] auto unlocker() const noexcept { return m_unlocker; }
-  [[nodiscard]] auto unknown() const noexcept { return m_unknown; }
-  [[nodiscard]] auto ability() const noexcept { return m_ability; }
+  [[nodiscard]] auto unlocker() const noexcept
+  {
+    return m_unlocker;
+  }
+  [[nodiscard]] auto unknown() const noexcept
+  {
+    return m_unknown;
+  }
+  [[nodiscard]] auto ability() const noexcept
+  {
+    return m_ability;
+  }
   friend auto &operator<<(std::ostream &os, const UnlockableAbility &ua)
   {
     return os << '{' << static_cast<std::uint32_t>(ua.unlocker()) << ", " << static_cast<std::uint32_t>(ua.unknown())

@@ -24,7 +24,10 @@ private:
 
 public:
   LayerID() = default;
-  friend auto operator==(const LayerID &left, const LayerID &right) { return left.m_data == right.m_data; }
+  friend auto operator==(const LayerID &left, const LayerID &right)
+  {
+    return left.m_data == right.m_data;
+  }
   [[nodiscard]] std::uint8_t id() const noexcept
   {
     return static_cast<std::uint8_t>(static_cast<std::uint8_t>(m_data & ID_MASK) >> ID_SHIFT);

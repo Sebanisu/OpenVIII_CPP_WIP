@@ -35,13 +35,31 @@ private:
   std::uint8_t m_unknown0{};
 
 public:
-  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
+  [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
 
-  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept { return m_ap_required; }
-  [[maybe_unused]] [[nodiscard]] auto stat_to_increase() const noexcept { return m_stat_to_increase; }
-  [[maybe_unused]] [[nodiscard]] auto increased_value() const noexcept { return m_increased_value; }
-  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
+  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept
+  {
+    return m_ap_required;
+  }
+  [[maybe_unused]] [[nodiscard]] auto stat_to_increase() const noexcept
+  {
+    return m_stat_to_increase;
+  }
+  [[maybe_unused]] [[nodiscard]] auto increased_value() const noexcept
+  {
+    return m_increased_value;
+  }
+  [[nodiscard]] auto unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

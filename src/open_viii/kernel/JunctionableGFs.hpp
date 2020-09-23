@@ -1,13 +1,13 @@
 #ifndef VIIIARCHIVE_JUNCTIONABLEGFS_HPP
 #define VIIIARCHIVE_JUNCTIONABLEGFS_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
-#include "AttackTypeT.hpp"
 #include "AttackFlagsT.hpp"
+#include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
-#include "PersistentStatusesT.hpp"
 #include "ElementT.hpp"
 #include "GFGroup.hpp"
+#include "PersistentStatusesT.hpp"
 #include "UnlockableAbility.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct JunctionableGFs
 {
@@ -162,37 +162,115 @@ private:
   std::uint8_t m_level_mod{};
 
 public:
-  [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] const auto &description_offset() const noexcept { return m_description_offset; }
-  [[nodiscard]] const auto &magic_id() const noexcept { return m_magic_id; }
-  [[nodiscard]] const auto &attack_type() const noexcept { return m_attack_type; }
-  [[maybe_unused]] [[nodiscard]] const auto &gf_power() const noexcept { return m_gf_power; }
-  [[nodiscard]] const auto &unknown0() const noexcept { return m_unknown0; }
-  [[nodiscard]] const auto &attack_flags() const noexcept { return m_attack_flags; }
-  [[nodiscard]] const auto &unknown1() const noexcept { return m_unknown1; }
-  [[nodiscard]] const auto &unknown2() const noexcept { return m_unknown2; }
-  [[nodiscard]] const auto &element() const noexcept { return m_element; }
-  [[nodiscard]] const auto &persistent_statuses() const noexcept { return m_persistent_statuses; }
-  [[nodiscard]] const auto &battle_only_statuses() const noexcept { return m_battle_only_statuses; }
-  [[maybe_unused]] [[nodiscard]] const auto &gfhp_modifier() const noexcept { return m_gf_hp_modifier; }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown3() const noexcept { return m_unknown3; }
-  [[nodiscard]] const auto &unknown4() const noexcept { return m_unknown4; }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown5() const noexcept { return m_unknown5; }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown6() const noexcept { return m_unknown6; }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown7() const noexcept { return m_unknown7; }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown8() const noexcept { return m_unknown8; }
-  [[nodiscard]] const auto &status_attack_enabler() const noexcept { return m_status_attack_enabler; }
+  [[nodiscard]] const auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] const auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
+  [[nodiscard]] const auto &magic_id() const noexcept
+  {
+    return m_magic_id;
+  }
+  [[nodiscard]] const auto &attack_type() const noexcept
+  {
+    return m_attack_type;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &gf_power() const noexcept
+  {
+    return m_gf_power;
+  }
+  [[nodiscard]] const auto &unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
+  [[nodiscard]] const auto &attack_flags() const noexcept
+  {
+    return m_attack_flags;
+  }
+  [[nodiscard]] const auto &unknown1() const noexcept
+  {
+    return m_unknown1;
+  }
+  [[nodiscard]] const auto &unknown2() const noexcept
+  {
+    return m_unknown2;
+  }
+  [[nodiscard]] const auto &element() const noexcept
+  {
+    return m_element;
+  }
+  [[nodiscard]] const auto &persistent_statuses() const noexcept
+  {
+    return m_persistent_statuses;
+  }
+  [[nodiscard]] const auto &battle_only_statuses() const noexcept
+  {
+    return m_battle_only_statuses;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &gfhp_modifier() const noexcept
+  {
+    return m_gf_hp_modifier;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown3() const noexcept
+  {
+    return m_unknown3;
+  }
+  [[nodiscard]] const auto &unknown4() const noexcept
+  {
+    return m_unknown4;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown5() const noexcept
+  {
+    return m_unknown5;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown6() const noexcept
+  {
+    return m_unknown6;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown7() const noexcept
+  {
+    return m_unknown7;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown8() const noexcept
+  {
+    return m_unknown8;
+  }
+  [[nodiscard]] const auto &status_attack_enabler() const noexcept
+  {
+    return m_status_attack_enabler;
+  }
   template<size_t i> [[nodiscard]] const auto &unlockable_abilities() const noexcept
   {
     static_assert(i < MAX_ABILITIES);
     return m_unlockable_abilities.at(i);
   }
-  [[nodiscard]] const auto &unlockable_abilities() const noexcept { return m_unlockable_abilities; }
-  [[maybe_unused]] [[nodiscard]] const auto &compatibility() const noexcept { return m_compatibility; }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown9() const noexcept { return m_unknown9; }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown10() const noexcept { return m_unknown10; }
-  [[nodiscard]] const auto &power_mod() const noexcept { return m_power_mod; }
-  [[maybe_unused]] [[nodiscard]] const auto &level_mod() const noexcept { return m_level_mod; }
+  [[nodiscard]] const auto &unlockable_abilities() const noexcept
+  {
+    return m_unlockable_abilities;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &compatibility() const noexcept
+  {
+    return m_compatibility;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown9() const noexcept
+  {
+    return m_unknown9;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown10() const noexcept
+  {
+    return m_unknown10;
+  }
+  [[nodiscard]] const auto &power_mod() const noexcept
+  {
+    return m_power_mod;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &level_mod() const noexcept
+  {
+    return m_level_mod;
+  }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

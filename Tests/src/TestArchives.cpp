@@ -23,14 +23,18 @@ int main()
     for (const auto &result : results) {
       std::cout << result.first << ":\n";
       [[maybe_unused]] const auto archive = archives.get(result.first);
-      for (const auto &item : result.second) { std::cout << "  " << item.first << ", " << item.second << '\n'; }
+      for (const auto &item : result.second) {
+        std::cout << "  " << item.first << ", " << item.second << '\n';
+      }
     }
     [[maybe_unused]] const auto &battle = archives.get<open_viii::archive::ArchiveTypeT::battle>();
     std::cout << battle << std::endl;
     [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
     std::cout << field << std::endl;
     [[maybe_unused]] const auto &nested_field = archives.get_nested({});
-    for (const auto &nested : nested_field) { std::cout << nested << std::endl; }
+    for (const auto &nested : nested_field) {
+      std::cout << nested << std::endl;
+    }
     [[maybe_unused]] const auto &magic = archives.get<open_viii::archive::ArchiveTypeT::magic>();
     std::cout << magic << std::endl;
     [[maybe_unused]] const auto &main = archives.get<open_viii::archive::ArchiveTypeT::main>();

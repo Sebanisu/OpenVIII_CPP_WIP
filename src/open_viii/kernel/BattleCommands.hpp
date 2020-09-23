@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_BATTLECOMMANDS_HPP
 #define VIIIARCHIVE_BATTLECOMMANDS_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "TargetT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 
 namespace open_viii::kernel {
 template<LangT langVal> struct BattleCommands
@@ -39,12 +39,30 @@ private:
 
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &name_offset() const noexcept { return m_name_offset; }
-  [[maybe_unused]] [[nodiscard]] const auto &description_offset() const noexcept { return m_description_offset; }
-  [[maybe_unused]] [[nodiscard]] const auto &ability_data_id() const noexcept { return m_ability_data_id; }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_flags() const noexcept { return m_unknown_flags; }
-  [[maybe_unused]] [[nodiscard]] const auto &get_target() const noexcept { return m_target; }
-  [[nodiscard]] auto unknown() const noexcept { return m_unknown; }
+  [[maybe_unused]] [[nodiscard]] const auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &ability_data_id() const noexcept
+  {
+    return m_ability_data_id;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &unknown_flags() const noexcept
+  {
+    return m_unknown_flags;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &get_target() const noexcept
+  {
+    return m_target;
+  }
+  [[nodiscard]] auto unknown() const noexcept
+  {
+    return m_unknown;
+  }
 
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {

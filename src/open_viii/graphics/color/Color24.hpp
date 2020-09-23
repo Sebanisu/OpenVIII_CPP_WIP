@@ -14,11 +14,11 @@
 #ifndef VIIIARCHIVE_COLOR24_HPP
 #define VIIIARCHIVE_COLOR24_HPP
 
-#include <cstdint>
-#include <bitset>
-#include <limits>
 #include "open_viii/Concepts.hpp"
 #include "open_viii/tools/Tools.hpp"
+#include <bitset>
+#include <cstdint>
+#include <limits>
 namespace open_viii::graphics {
 
 /**
@@ -49,13 +49,34 @@ private:
   }
 
 public:
-  [[nodiscard]] std::uint8_t r() const { return m_parts.at(r_); }
-  [[nodiscard]] std::uint8_t g() const { return m_parts.at(g_); }
-  [[nodiscard]] std::uint8_t b() const { return m_parts.at(b_); }
-  [[nodiscard]] std::uint8_t a() const { return std::numeric_limits<std::uint8_t>::max(); }
-  template<Number T> std::uint8_t r(const T &value) const { return set<r_, T>(value); }
-  template<Number T> std::uint8_t g(const T &value) const { return set<g_, T>(value); }
-  template<Number T> std::uint8_t b(const T &value) const { return set<b_, T>(value); }
+  [[nodiscard]] std::uint8_t r() const
+  {
+    return m_parts.at(r_);
+  }
+  [[nodiscard]] std::uint8_t g() const
+  {
+    return m_parts.at(g_);
+  }
+  [[nodiscard]] std::uint8_t b() const
+  {
+    return m_parts.at(b_);
+  }
+  [[nodiscard]] std::uint8_t a() const
+  {
+    return std::numeric_limits<std::uint8_t>::max();
+  }
+  template<Number T> std::uint8_t r(const T &value) const
+  {
+    return set<r_, T>(value);
+  }
+  template<Number T> std::uint8_t g(const T &value) const
+  {
+    return set<g_, T>(value);
+  }
+  template<Number T> std::uint8_t b(const T &value) const
+  {
+    return set<b_, T>(value);
+  }
   //  template<Number T> [[maybe_unused]] [[nodiscard]] std::uint8_t a([[maybe_unused]] const T &unused) const
   //  {
   //    return std::numeric_limits<std::uint8_t>::max();
@@ -78,7 +99,9 @@ public:
   }
   bool is_black() const noexcept
   {
-    return std::ranges::all_of(m_parts, [](const auto &i) -> bool { return i == 0; });
+    return std::ranges::all_of(m_parts, [](const auto &i) -> bool {
+      return i == 0;
+    });
   }
 };
 static_assert(sizeof(Color24<>) == Color24<>::EXPLICIT_SIZE);

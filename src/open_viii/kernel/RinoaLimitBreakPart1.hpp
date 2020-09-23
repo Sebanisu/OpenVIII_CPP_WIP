@@ -14,8 +14,8 @@
 #ifndef VIIIARCHIVE_RINOALIMITBREAKPART1_HPP
 #define VIIIARCHIVE_RINOALIMITBREAKPART1_HPP
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "TargetT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct RinoaLimitBreakPart1
 {
@@ -38,12 +38,30 @@ private:
 
 
 public:
-  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
-  [[maybe_unused]] [[nodiscard]] auto unknown_flags0() const noexcept { return m_unknown_flags0; }
-  [[nodiscard]] auto target() const noexcept { return m_target; }
-  [[maybe_unused]] [[nodiscard]] auto ability_data_id() const noexcept { return m_ability_data_id; }
-  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
+  [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
+  [[maybe_unused]] [[nodiscard]] auto unknown_flags0() const noexcept
+  {
+    return m_unknown_flags0;
+  }
+  [[nodiscard]] auto target() const noexcept
+  {
+    return m_target;
+  }
+  [[maybe_unused]] [[nodiscard]] auto ability_data_id() const noexcept
+  {
+    return m_ability_data_id;
+  }
+  [[nodiscard]] auto unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

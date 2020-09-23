@@ -13,12 +13,12 @@
 
 #ifndef VIIIARCHIVE_COMPLEXSTRINGSECTION_HPP
 #define VIIIARCHIVE_COMPLEXSTRINGSECTION_HPP
+#include "open_viii/Strings/FF8String.hpp"
+#include <array>
 #include <cstdint>
 #include <cstring>
-#include <array>
 #include <ostream>
 #include <string_view>
-#include "open_viii/Strings/FF8String.hpp"
 namespace open_viii::menu_group {
 struct ComplexStringSectionEntry
 {
@@ -50,8 +50,14 @@ private:
   std::uint16_t m_index{};
 
 public:
-  [[nodiscard]] auto offset() const noexcept { return m_offset; }
-  [[nodiscard]] auto index() const noexcept { return m_index; }
+  [[nodiscard]] auto offset() const noexcept
+  {
+    return m_offset;
+  }
+  [[nodiscard]] auto index() const noexcept
+  {
+    return m_index;
+  }
   friend std::ostream &operator<<(std::ostream &os, const ComplexStringSectionOffsets &item)
   {
     return os << '{' << item.index() << ", " << item.offset() << '}';
@@ -76,7 +82,10 @@ public:
       m_buffer = buffer.subspan(sizeof(m_count));
     }
   }
-  [[nodiscard]] auto size() const { return m_count; }
+  [[nodiscard]] auto size() const
+  {
+    return m_count;
+  }
   [[nodiscard]] ComplexStringSectionOffsets at(const size_t &id) const
   {
     ComplexStringSectionOffsets d{};

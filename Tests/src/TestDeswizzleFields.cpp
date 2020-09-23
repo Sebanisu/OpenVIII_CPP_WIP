@@ -11,11 +11,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestDeswizzleFields.hpp"
-#include "open_viii/paths/Paths.hpp"
 #include "open_viii/archive/Archives.hpp"
-#include "open_viii/graphics/background/Mim.hpp"
-#include "open_viii/graphics/background/Map.hpp"
 #include "open_viii/graphics/background/Deswizzle.hpp"
+#include "open_viii/paths/Paths.hpp"
 #include <chrono>
 
 int main()

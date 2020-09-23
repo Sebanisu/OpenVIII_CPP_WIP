@@ -12,12 +12,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TESTPATHS_H
 #define VIIIARCHIVE_TESTPATHS_H
+#include "open_viii/tools/Tools.hpp"
+#include <algorithm>
 #include <array>
 #include <filesystem>
-#include <string>
 #include <ranges>
-#include <algorithm>
-#include "open_viii/tools/Tools.hpp"
+#include <string>
 namespace open_viii {
 struct Paths
 {

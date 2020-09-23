@@ -13,9 +13,9 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION000_HPP
 #define VIIIARCHIVE_REFINESECTION000_HPP
-#include "open_viii/ItemIdT.hpp"
-#include "RefineSpellID.hpp"
 #include "RefineEntry.hpp"
+#include "RefineSpellID.hpp"
+#include "open_viii/ItemIdT.hpp"
 #include <iostream>
 namespace open_viii::menu_group {
 // enum struct Refine000T
@@ -63,14 +63,38 @@ private:
   std::array<RefineEntry<ItemIdT, RefineSpellID>, FORBID_MAG_RF_COUNT> m_forbid_mag_rf{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &t_mag_rf() const noexcept { return m_t_mag_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &i_mag_rf() const noexcept { return m_i_mag_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &f_mag_rf() const noexcept { return m_f_mag_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &l_mag_rf() const noexcept { return m_l_mag_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &time_mag_rf() const noexcept { return m_time_mag_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &st_mag_rf() const noexcept { return m_st_mag_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &supt_rf() const noexcept { return m_supt_rf; }
-  [[maybe_unused]] [[nodiscard]] const auto &forbid_mag_rf() const noexcept { return m_forbid_mag_rf; }
+  [[maybe_unused]] [[nodiscard]] const auto &t_mag_rf() const noexcept
+  {
+    return m_t_mag_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &i_mag_rf() const noexcept
+  {
+    return m_i_mag_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &f_mag_rf() const noexcept
+  {
+    return m_f_mag_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &l_mag_rf() const noexcept
+  {
+    return m_l_mag_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &time_mag_rf() const noexcept
+  {
+    return m_time_mag_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &st_mag_rf() const noexcept
+  {
+    return m_st_mag_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &supt_rf() const noexcept
+  {
+    return m_supt_rf;
+  }
+  [[maybe_unused]] [[nodiscard]] const auto &forbid_mag_rf() const noexcept
+  {
+    return m_forbid_mag_rf;
+  }
   [[nodiscard]] static constexpr auto size()
   {
     return T_MAG_RF_COUNT + I_MAG_RF_COUNT + F_MAG_RF_COUNT + L_MAG_RF_COUNT + TIME_MAG_RF_COUNT + ST_MAG_RF_COUNT

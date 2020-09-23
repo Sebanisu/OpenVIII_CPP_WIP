@@ -14,17 +14,17 @@
 #define VIIIARCHIVE_FS_HPP
 
 #include "FI.hpp"
+#include "open_viii/Compression/L4Z.hpp"
+#include "open_viii/Compression/LZSS.hpp"
+#include "open_viii/tools/Tools.hpp"
+#include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <filesystem>
-#include <memory>
-#include <utility>
 #include <iterator>
-#include <cstring>
+#include <memory>
 #include <span>
-#include "open_viii/Compression/LZSS.hpp"
-#include "open_viii/Compression/L4Z.hpp"
-#include "open_viii/tools/Tools.hpp"
+#include <utility>
 
 namespace open_viii::archive {
 struct FS

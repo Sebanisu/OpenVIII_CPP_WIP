@@ -35,7 +35,9 @@ private:
   auto find_unique_palettes()
   {
     const auto &tiles = m_map.tiles();
-    auto pupu_view = tiles | std::views::transform([](const auto &tile) { return tile.palette_id(); });
+    auto pupu_view = tiles | std::views::transform([](const auto &tile) {
+      return tile.palette_id();
+    });
     auto out = std::vector<uint8_t>(std::ranges::begin(pupu_view), std::ranges::end(pupu_view));
     std::sort(out.begin(), out.end());
     auto last = std::unique(std::ranges::begin(out), std::ranges::end(out));
@@ -45,7 +47,9 @@ private:
   auto find_unique_pupu()
   {
     const auto &tiles = m_map.tiles();
-    auto pupu_view = tiles | std::views::transform([](const auto &tile) { return Pupu(tile); });
+    auto pupu_view = tiles | std::views::transform([](const auto &tile) {
+      return Pupu(tile);
+    });
     auto out = std::vector<Pupu>(std::ranges::begin(pupu_view), std::ranges::end(pupu_view));
     std::sort(out.begin(), out.end());
     auto last = std::unique(std::ranges::begin(out), std::ranges::end(out));

@@ -61,22 +61,70 @@ private:
   //  template<typename maybeNumberT> static bool is_integral() { return std::is_integral_v<maybeNumberT>; }
 
 public:
-  [[nodiscard]] T &quetzalcoatl() const noexcept { return m_gfs.at(QUETZALCOATL); }
-  [[nodiscard]] T &shiva() const noexcept { return m_gfs.at(SHIVA); }
-  [[nodiscard]] T &ifrit() const noexcept { return m_gfs.at(IFRIT); }
-  [[nodiscard]] T &siren() const noexcept { return m_gfs.at(SIREN); }
-  [[nodiscard]] T &brothers() const noexcept { return m_gfs.at(BROTHERS); }
-  [[nodiscard]] T &diablos() const noexcept { return m_gfs.at(DIABLOS); }
-  [[nodiscard]] T &carbuncle() const noexcept { return m_gfs.at(CARBUNCLE); }
-  [[nodiscard]] T &leviathan() const noexcept { return m_gfs.at(LEVIATHAN); }
-  [[nodiscard]] T &pandemona() const noexcept { return m_gfs.at(PANDEMONA); }
-  [[nodiscard]] T &cerberus() const noexcept { return m_gfs.at(CERBERUS); }
-  [[nodiscard]] T &alexander() const noexcept { return m_gfs.at(ALEXANDER); }
-  [[nodiscard]] T &doomtrain() const noexcept { return m_gfs.at(DOOMTRAIN); }
-  [[nodiscard]] T &bahamut() const noexcept { return m_gfs.at(BAHAMUT); }
-  [[nodiscard]] T &cactuar() const noexcept { return m_gfs.at(CACTUAR); }
-  [[nodiscard]] T &tonberry() const noexcept { return m_gfs.at(TONBERRY); }
-  [[nodiscard]] T &eden() const noexcept { return m_gfs.at(EDEN); }
+  [[nodiscard]] T &quetzalcoatl() const noexcept
+  {
+    return m_gfs.at(QUETZALCOATL);
+  }
+  [[nodiscard]] T &shiva() const noexcept
+  {
+    return m_gfs.at(SHIVA);
+  }
+  [[nodiscard]] T &ifrit() const noexcept
+  {
+    return m_gfs.at(IFRIT);
+  }
+  [[nodiscard]] T &siren() const noexcept
+  {
+    return m_gfs.at(SIREN);
+  }
+  [[nodiscard]] T &brothers() const noexcept
+  {
+    return m_gfs.at(BROTHERS);
+  }
+  [[nodiscard]] T &diablos() const noexcept
+  {
+    return m_gfs.at(DIABLOS);
+  }
+  [[nodiscard]] T &carbuncle() const noexcept
+  {
+    return m_gfs.at(CARBUNCLE);
+  }
+  [[nodiscard]] T &leviathan() const noexcept
+  {
+    return m_gfs.at(LEVIATHAN);
+  }
+  [[nodiscard]] T &pandemona() const noexcept
+  {
+    return m_gfs.at(PANDEMONA);
+  }
+  [[nodiscard]] T &cerberus() const noexcept
+  {
+    return m_gfs.at(CERBERUS);
+  }
+  [[nodiscard]] T &alexander() const noexcept
+  {
+    return m_gfs.at(ALEXANDER);
+  }
+  [[nodiscard]] T &doomtrain() const noexcept
+  {
+    return m_gfs.at(DOOMTRAIN);
+  }
+  [[nodiscard]] T &bahamut() const noexcept
+  {
+    return m_gfs.at(BAHAMUT);
+  }
+  [[nodiscard]] T &cactuar() const noexcept
+  {
+    return m_gfs.at(CACTUAR);
+  }
+  [[nodiscard]] T &tonberry() const noexcept
+  {
+    return m_gfs.at(TONBERRY);
+  }
+  [[nodiscard]] T &eden() const noexcept
+  {
+    return m_gfs.at(EDEN);
+  }
   friend auto &operator<<(std::ostream &os, const GFGroup<T> &in)
   {
     os << '{';

@@ -13,9 +13,9 @@
 
 #ifndef VIIIARCHIVE_REFINESECTION004_HPP
 #define VIIIARCHIVE_REFINESECTION004_HPP
-#include "open_viii/ItemIdT.hpp"
-#include "RefineEntry.hpp"
 #include "RefineCardID.hpp"
+#include "RefineEntry.hpp"
+#include "open_viii/ItemIdT.hpp"
 #include <array>
 #include <iostream>
 namespace open_viii::menu_group {
@@ -32,9 +32,18 @@ private:
   std::array<RefineEntry<RefineCardID, ItemIdT>, CARD_MOD_COUNT> m_card_mod{};
 
 public:
-  [[nodiscard]] const auto &card_mod() const noexcept { return m_card_mod; }
-  [[nodiscard]] const auto *operator->() const { return &m_card_mod; }
-  [[nodiscard]] static constexpr auto size() { return CARD_MOD_COUNT; }
+  [[nodiscard]] const auto &card_mod() const noexcept
+  {
+    return m_card_mod;
+  }
+  [[nodiscard]] const auto *operator->() const
+  {
+    return &m_card_mod;
+  }
+  [[nodiscard]] static constexpr auto size()
+  {
+    return CARD_MOD_COUNT;
+  }
   template<LangT langVal, typename T>
   std::ostream &out_array(const T &arr,
     std::ostream &os,
@@ -43,7 +52,9 @@ public:
     bool skip_first_null = false) const
 
   {
-    for (const auto item : arr) { (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n'; }
+    for (const auto item : arr) {
+      (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
+    }
     return os;
   }
   template<LangT langVal>

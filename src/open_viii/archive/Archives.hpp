@@ -14,9 +14,9 @@
 #define VIIIARCHIVE_ARCHIVES_HPP
 #include "FIFLFS.hpp"
 #include "ZZZ.hpp"
-#include <type_traits>
-#include <string_view>
 #include "open_viii/Strings/LangCommon.hpp"
+#include <string_view>
+#include <type_traits>
 #include <variant>
 namespace open_viii::archive {
 // There are 6 main FIFLFS archives and 2 main zzz archives for ff8 and ff8 remaster.
@@ -90,7 +90,10 @@ private:
   /**
    * Set default language.
    */
-  void set_lang() { m_lang = LangCommon::to_string<langVal>(); }
+  void set_lang()
+  {
+    m_lang = LangCommon::to_string<langVal>();
+  }
   /**
    * Search for lang.dat from steam 2013 release. TODO find cross platform way to get to remaster config.txt
    * @param path location of ff8
@@ -446,7 +449,9 @@ public:
             auto nestedResult = archive.get_all_nested_entries_data(filename);
             if (!std::ranges::empty(nestedResult)) {
               vector.reserve(std::ranges::size(nestedResult) + std::ranges::size(vector));
-              for (auto &item : nestedResult) { vector.emplace_back(std::move(item)); }
+              for (auto &item : nestedResult) {
+                vector.emplace_back(std::move(item));
+              }
             }
           }
         }

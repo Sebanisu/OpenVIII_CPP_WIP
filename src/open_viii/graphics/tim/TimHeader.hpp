@@ -13,9 +13,9 @@
 
 #ifndef VIIIARCHIVE_TIMHEADER_HPP
 #define VIIIARCHIVE_TIMHEADER_HPP
+#include "open_viii/graphics/BPPT.hpp"
 #include <cstdint>
 #include <iostream>
-#include "open_viii/graphics/BPPT.hpp"
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timHeader
@@ -72,7 +72,10 @@ public:
   /**
    * @return bits per pixel flags and CLP flag
    */
-  [[nodiscard]] auto bpp() const { return m_bpp; }
+  [[nodiscard]] auto bpp() const
+  {
+    return m_bpp;
+  }
   /**
    * All none values should be 0. version_ should be versionVal_. tag_ should be tagVal_. Only valid values for bpp are
    * 4bpp with CLP, 8bpp with CLP, 16bpp, or 24 bpp.

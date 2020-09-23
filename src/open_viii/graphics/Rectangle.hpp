@@ -42,11 +42,17 @@ public:
   /**
    * @return Left coordinate.
    */
-  [[maybe_unused]] [[nodiscard]] const auto &left() const noexcept { return m_top_left.x(); }
+  [[maybe_unused]] [[nodiscard]] const auto &left() const noexcept
+  {
+    return m_top_left.x();
+  }
   /**
    * @return Left coordinate.
    */
-  [[nodiscard]] const auto &x() const noexcept { return m_top_left.x(); }
+  [[nodiscard]] const auto &x() const noexcept
+  {
+    return m_top_left.x();
+  }
 
   /**
    *
@@ -54,32 +60,50 @@ public:
    * @return Left coordinate.
    *
    */
-  const auto &x(const dimT &x) const noexcept { return m_top_left.x(x); }
+  const auto &x(const dimT &x) const noexcept
+  {
+    return m_top_left.x(x);
+  }
   /**
    *
    * @param x is new Left coordinate.
    * @return Left coordinate.
    */
-  const auto &left(const dimT &x) const noexcept { return m_top_left.x(x); }
+  const auto &left(const dimT &x) const noexcept
+  {
+    return m_top_left.x(x);
+  }
   /**
    * @return Top coordinate.
    */
-  [[maybe_unused]] [[nodiscard]] const auto &top() const noexcept { return m_top_left.y(); }
+  [[maybe_unused]] [[nodiscard]] const auto &top() const noexcept
+  {
+    return m_top_left.y();
+  }
   /**
    * @return Top coordinate.
    */
-  [[nodiscard]] const auto &y() const noexcept { return m_top_left.y(); }
+  [[nodiscard]] const auto &y() const noexcept
+  {
+    return m_top_left.y();
+  }
   /**
    *
    * @param y is new Top coordinate.
    * @return Top coordinate.
    */
-  const auto &y(const dimT &y) const noexcept { return m_top_left.y(y); }
+  const auto &y(const dimT &y) const noexcept
+  {
+    return m_top_left.y(y);
+  }
 
   /**
    * @return Right coordinate.
    */
-  [[nodiscard]] auto right() const noexcept { return m_top_left.x() + m_width_height.y(); }
+  [[nodiscard]] auto right() const noexcept
+  {
+    return m_top_left.x() + m_width_height.y();
+  }
 
   /**
    * @return Set Right coordinate.
@@ -105,28 +129,43 @@ public:
   /**
    * @return Bottom coordinate.
    */
-  [[maybe_unused]] [[nodiscard]] auto bottom() const noexcept { return m_top_left.y() + m_width_height.y(); }
+  [[maybe_unused]] [[nodiscard]] auto bottom() const noexcept
+  {
+    return m_top_left.y() + m_width_height.y();
+  }
   /**
    * @return Width.
    */
-  [[nodiscard]] const auto &width() const noexcept { return m_width_height.x(); }
+  [[nodiscard]] const auto &width() const noexcept
+  {
+    return m_width_height.x();
+  }
 
   /**
    *
    * @param width is new Width value.
    * @return Width.
    */
-  const auto &width(const dimT &width) const noexcept { return m_width_height.x(width); }
+  const auto &width(const dimT &width) const noexcept
+  {
+    return m_width_height.x(width);
+  }
   /**
    * @return Height.
    */
-  [[nodiscard]] const auto &height() const noexcept { return m_width_height.y(); }
+  [[nodiscard]] const auto &height() const noexcept
+  {
+    return m_width_height.y();
+  }
   /**
    *
    * @param height is new Height value.
    * @return Height.
    */
-  const auto &height(const dimT &height) const noexcept { return m_width_height.y(height); }
+  const auto &height(const dimT &height) const noexcept
+  {
+    return m_width_height.y(height);
+  }
 
   [[nodiscard]] std::size_t area() const noexcept
   {

@@ -13,8 +13,8 @@
 
 #ifndef VIIIARCHIVE_MISCTEXT_HPP
 #define VIIIARCHIVE_MISCTEXT_HPP
-#include <iostream>
 #include "open_viii/Strings/EncodedStringOffset.hpp"
+#include <iostream>
 
 namespace open_viii::kernel {
 template<LangT langVal> struct MiscText
@@ -30,7 +30,10 @@ private:
   // EncodedStringOffset m_description_offset{};
 
 public:
-  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
+  [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
   //[[nodiscard]] auto &DescriptionOffset() const noexcept { return m_description_offset; }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {

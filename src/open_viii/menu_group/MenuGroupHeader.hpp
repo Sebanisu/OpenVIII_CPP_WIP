@@ -14,10 +14,10 @@
 #ifndef VIIIARCHIVE_MENUGROUPHEADER_HPP
 #define VIIIARCHIVE_MENUGROUPHEADER_HPP
 #include "MenuGroupHeaderSection.hpp"
+#include <array>
 #include <cstdint>
 #include <cstring>
 #include <string_view>
-#include <array>
 namespace open_viii::menu_group {
 struct MenuGroupHeader
 {
@@ -28,8 +28,14 @@ private:
 
 public:
   constexpr static std::string_view FILENAME = "mngrphd.bin";
-  static constexpr auto size() { return COUNT; }
-  [[nodiscard]] const auto &sections() const { return m_sections; }
+  static constexpr auto size()
+  {
+    return COUNT;
+  }
+  [[nodiscard]] const auto &sections() const
+  {
+    return m_sections;
+  }
 
   MenuGroupHeader() = default;
   template<typename mainT> explicit MenuGroupHeader(const mainT &main)

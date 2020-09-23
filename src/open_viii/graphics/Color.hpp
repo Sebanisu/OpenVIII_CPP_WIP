@@ -13,10 +13,10 @@
 
 #ifndef VIIIARCHIVE_COLOR_HPP
 #define VIIIARCHIVE_COLOR_HPP
-#include "open_viii/Concepts.hpp"
 #include "color/Color16.hpp"
 #include "color/Color24.hpp"
 #include "color/Color32.hpp"
+#include "open_viii/Concepts.hpp"
 namespace open_viii::graphics {
 /**
  * Compare two colors that aren't the same type. Because the color types declare their own compare methods.

@@ -11,12 +11,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestReswizzleFields.hpp"
-#include "open_viii/graphics/background/ReswizzleTree.hpp"
-#include "open_viii/paths/Paths.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/graphics/Ppm.hpp"
-#include "open_viii/graphics/background/Mim.hpp"
 #include "open_viii/graphics/background/Map.hpp"
+#include "open_viii/graphics/background/Mim.hpp"
+#include "open_viii/graphics/background/ReswizzleTree.hpp"
+#include "open_viii/paths/Paths.hpp"
 
 static void save_and_clear(std::vector<open_viii::graphics::Color24<0, 1, 2>> &out,
   const std::unsigned_integral auto &width,

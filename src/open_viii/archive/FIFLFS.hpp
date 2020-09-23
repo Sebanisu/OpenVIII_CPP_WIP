@@ -12,21 +12,21 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FIFLm_fsH
 #define VIIIARCHIVE_FIFLm_fsH
-#include <thread>
 #include "FI.hpp"
 #include "FL.hpp"
 #include "FS.hpp"
+#include <algorithm>
+#include <execution>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <utility>
-#include <string>
-#include <algorithm>
-#include <set>
-#include <map>
 #include <iterator>
+#include <map>
 #include <ranges>
-#include <execution>
+#include <set>
+#include <string>
+#include <thread>
+#include <utility>
 
 namespace open_viii::archive {
 
@@ -45,8 +45,14 @@ private:
     mutable std::filesystem::path m_nested_path{};
 
   public:
-    [[nodiscard]] std::filesystem::path &path() const noexcept { return m_path; }
-    [[nodiscard]] std::size_t &offset() const noexcept { return m_offset; }
+    [[nodiscard]] std::filesystem::path &path() const noexcept
+    {
+      return m_path;
+    }
+    [[nodiscard]] std::size_t &offset() const noexcept
+    {
+      return m_offset;
+    }
     /**
      * Size of file
      * @return size_t
@@ -62,9 +68,18 @@ private:
       }
       return m_size;
     }
-    [[nodiscard]] T &data() const noexcept { return m_data; }
-    [[nodiscard]] std::string &base() const noexcept { return m_base; }
-    [[nodiscard]] std::filesystem::path &nested_path() const noexcept { return m_nested_path; }
+    [[nodiscard]] T &data() const noexcept
+    {
+      return m_data;
+    }
+    [[nodiscard]] std::string &base() const noexcept
+    {
+      return m_base;
+    }
+    [[nodiscard]] std::filesystem::path &nested_path() const noexcept
+    {
+      return m_nested_path;
+    }
 
     //    void path(std::filesystem::path && value) const noexcept{ m_path = value; }
     //    void offset(std::size_t && value) const noexcept{ m_offset = value; }
@@ -74,15 +89,36 @@ private:
     //    void nested_path(std::filesystem::path && value) const noexcept{ m_nested_path = value; }
 
 
-    void path(const std::filesystem::path &value) const noexcept { m_path = value; }
-    void offset(const std::size_t &value) const noexcept { m_offset = value; }
-    void size(const std::size_t &value) const noexcept { m_size = value; }
-    void data(T &&value) const noexcept { m_data = std::move(value); }
-    void base(const std::string &value) const noexcept { m_base = value; }
-    void nested_path(const std::filesystem::path &value) const noexcept { m_nested_path = value; }
+    void path(const std::filesystem::path &value) const noexcept
+    {
+      m_path = value;
+    }
+    void offset(const std::size_t &value) const noexcept
+    {
+      m_offset = value;
+    }
+    void size(const std::size_t &value) const noexcept
+    {
+      m_size = value;
+    }
+    void data(T &&value) const noexcept
+    {
+      m_data = std::move(value);
+    }
+    void base(const std::string &value) const noexcept
+    {
+      m_base = value;
+    }
+    void nested_path(const std::filesystem::path &value) const noexcept
+    {
+      m_nested_path = value;
+    }
 
     //    // Assigns basename and returns it.
-    [[maybe_unused]] std::string get_base_name() const noexcept { return m_base = FIFLFS::get_base_name(m_path); }
+    [[maybe_unused]] std::string get_base_name() const noexcept
+    {
+      return m_base = FIFLFS::get_base_name(m_path);
+    }
     explicit operator bool() const
     {
       return (!std::ranges::empty(m_path) && std::filesystem::exists(m_path)) || !std::ranges::empty(m_data)
@@ -93,17 +129,32 @@ private:
   Grouping<std::vector<char>> m_fs{};
   Grouping<std::basic_string<char>> m_fl{};// this is char because the file contains strings.
   mutable size_t m_count{};
-  void get_count() const noexcept { m_count = FI::get_count(m_fi.size()); }
+  void get_count() const noexcept
+  {
+    m_count = FI::get_count(m_fi.size());
+  }
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &fi() const noexcept { return m_fi; }
+  [[maybe_unused]] [[nodiscard]] const auto &fi() const noexcept
+  {
+    return m_fi;
+  }
 
-  [[maybe_unused]] [[nodiscard]] const auto &fs() const noexcept { return m_fs; }
+  [[maybe_unused]] [[nodiscard]] const auto &fs() const noexcept
+  {
+    return m_fs;
+  }
 
-  [[maybe_unused]] [[nodiscard]] const auto &fl() const noexcept { return m_fl; }
+  [[maybe_unused]] [[nodiscard]] const auto &fl() const noexcept
+  {
+    return m_fl;
+  }
 
 
-  [[nodiscard]] bool all_set() const { return m_fi && m_fs && m_fl; }
+  [[nodiscard]] bool all_set() const
+  {
+    return m_fi && m_fs && m_fl;
+  }
 
   FIFLFS() = default;
 
@@ -128,7 +179,10 @@ public:
   }
 
 
-  explicit operator bool() const noexcept { return all_set(); }
+  explicit operator bool() const noexcept
+  {
+    return all_set();
+  }
   /*
    * 0 = didn't add
    * 1 = added
@@ -452,7 +506,9 @@ public:
       [this, &lambda, &threads](const std::pair<unsigned int, std::string> &pair) {
         auto fi = get_entry_by_index(pair.first);
         threads.emplace_back(
-          [&lambda](std::vector<char> &&buffer, std::string &&path) { lambda(std::move(buffer), std::move(path)); },
+          [&lambda](std::vector<char> &&buffer, std::string &&path) {
+            lambda(std::move(buffer), std::move(path));
+          },
           get_entry_buffer(fi),
           std::string(pair.second));
         if (threads.size() > 16) {
@@ -529,7 +585,11 @@ public:
               archive,
               nested_filename);
           } else if constexpr (std::invocable<lambdaT, FIFLFS<false>>) {
-            threads.emplace_back([&lambda](const FIFLFS<false> archive_copy) { lambda(archive_copy); }, archive);
+            threads.emplace_back(
+              [&lambda](const FIFLFS<false> archive_copy) {
+                lambda(archive_copy);
+              },
+              archive);
           }
           if (threads.size() > 16) {
             threads.front().join();

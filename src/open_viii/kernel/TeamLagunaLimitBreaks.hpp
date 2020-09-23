@@ -14,13 +14,13 @@
 #ifndef VIIIARCHIVE_TEAMLAGUNALIMITBREAKS_HPP
 #define VIIIARCHIVE_TEAMLAGUNALIMITBREAKS_HPP
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
-#include "TargetT.hpp"
-#include "ElementT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "ElementT.hpp"
 #include "PersistentStatusesT.hpp"
+#include "TargetT.hpp"
+#include "open_viii/Strings/EncodedStringOffset.hpp"
 
 namespace open_viii::kernel {
 template<LangT langVal> struct TeamLagunaLimitBreaks
@@ -64,23 +64,74 @@ private:
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
 
 public:
-  [[nodiscard]] auto &name_offset() const noexcept { return m_name_offset; }
-  [[nodiscard]] auto &description_offset() const noexcept { return m_description_offset; }
-  [[nodiscard]] auto magic_id() const noexcept { return m_magic_id; }
-  [[nodiscard]] auto attack_type() const noexcept { return m_attack_type; }
-  [[nodiscard]] auto attack_power() const noexcept { return m_attack_power; }
-  [[nodiscard]] auto unknown0() const noexcept { return m_unknown0; }
-  [[nodiscard]] auto unknown1() const noexcept { return m_unknown1; }
-  [[nodiscard]] auto target() const noexcept { return m_target; }
-  [[nodiscard]] auto attack_flags() const noexcept { return m_attack_flags; }
-  [[nodiscard]] auto hit_count() const noexcept { return m_hit_count; }
-  [[nodiscard]] auto element() const noexcept { return m_element; }
-  [[nodiscard]] auto element_attack_percent() const noexcept { return m_element_attack_percent; }
-  [[nodiscard]] auto status_attack_enabler() const noexcept { return m_status_attack_enabler; }
-  [[nodiscard]] auto persistent_statuses() const noexcept { return m_persistent_statuses; }// statuses 0-7
-  [[nodiscard]] auto unknown2() const noexcept { return m_unknown2; }
-  [[nodiscard]] auto unknown3() const noexcept { return m_unknown3; }
-  [[nodiscard]] auto battle_only_statuses() const noexcept { return m_battle_only_statuses; }// statuses 8-39
+  [[nodiscard]] auto &name_offset() const noexcept
+  {
+    return m_name_offset;
+  }
+  [[nodiscard]] auto &description_offset() const noexcept
+  {
+    return m_description_offset;
+  }
+  [[nodiscard]] auto magic_id() const noexcept
+  {
+    return m_magic_id;
+  }
+  [[nodiscard]] auto attack_type() const noexcept
+  {
+    return m_attack_type;
+  }
+  [[nodiscard]] auto attack_power() const noexcept
+  {
+    return m_attack_power;
+  }
+  [[nodiscard]] auto unknown0() const noexcept
+  {
+    return m_unknown0;
+  }
+  [[nodiscard]] auto unknown1() const noexcept
+  {
+    return m_unknown1;
+  }
+  [[nodiscard]] auto target() const noexcept
+  {
+    return m_target;
+  }
+  [[nodiscard]] auto attack_flags() const noexcept
+  {
+    return m_attack_flags;
+  }
+  [[nodiscard]] auto hit_count() const noexcept
+  {
+    return m_hit_count;
+  }
+  [[nodiscard]] auto element() const noexcept
+  {
+    return m_element;
+  }
+  [[nodiscard]] auto element_attack_percent() const noexcept
+  {
+    return m_element_attack_percent;
+  }
+  [[nodiscard]] auto status_attack_enabler() const noexcept
+  {
+    return m_status_attack_enabler;
+  }
+  [[nodiscard]] auto persistent_statuses() const noexcept
+  {
+    return m_persistent_statuses;
+  }// statuses 0-7
+  [[nodiscard]] auto unknown2() const noexcept
+  {
+    return m_unknown2;
+  }
+  [[nodiscard]] auto unknown3() const noexcept
+  {
+    return m_unknown3;
+  }
+  [[nodiscard]] auto battle_only_statuses() const noexcept
+  {
+    return m_battle_only_statuses;
+  }// statuses 8-39
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
