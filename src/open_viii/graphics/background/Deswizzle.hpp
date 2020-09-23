@@ -78,6 +78,7 @@ private:
   bool set_color(std::vector<Color16> &out, const std::integral auto &index_out, const Color16 &color) const
   {
     if (!color.is_black()) {
+      assert(out.at(index_out).is_black());
       out.at(index_out) = color;
       return true;
     }

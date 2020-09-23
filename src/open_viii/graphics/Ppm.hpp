@@ -22,16 +22,20 @@
 #include <fstream>
 #include <iostream>
 #include <string_view>
+#include <utility>
 namespace open_viii::graphics {
 struct Ppm
 {
 private:
   Point<std::uint16_t> m_width_height{};
   std::vector<Color24<0, 1, 2>> m_colors{};
+  const std::filesystem::path m_path{};
 
 
 public:
-  explicit Ppm(const std::string &buffer)
+  Ppm() = default;
+  explicit Ppm(const std::string &buffer, std::filesystem::path path= {})
+  : m_path(std::move(path))
   {
     // the support is mostly limited to the same type that is made by the save function.
     // I can't use span because span_stream does not exist yet it missed cpp20... so this will need to be a string
@@ -80,7 +84,6 @@ public:
         continue;
       }
     }
-
     auto bufferspan = (std::span<const char>(buffer)).subspan(static_cast<std::size_t>(ss.tellg()));
     if (std::ranges::size(bufferspan) > 0) {
       auto sz = std::ranges::size(bufferspan) / sizeof(Color24<0, 1, 2>);
@@ -89,7 +92,8 @@ public:
       //        *>(std::ranges::data(bufferspan)),
       //          sz };
       if (sz != m_width_height.area()) {
-        std::cerr << sz << " != area of " << m_width_height << std::endl;
+
+        std::cerr << m_path << "\n\t" << sz << " != area of " << m_width_height << std::endl;
         assert(sz == m_width_height.area());
       }
       m_colors.resize(sz);
@@ -97,6 +101,7 @@ public:
       // m_colors = { std::ranges::cbegin(colorspan), std::ranges::cend(colorspan) };
     }
   }
+  explicit Ppm(const std::filesystem::path &path) : Ppm(Tools::read_file<std::string>(path),path) {}
   template<std::ranges::contiguous_range cT>
   static void save(
     const cT &data, std::size_t width, std::size_t height, const std::string_view &input, bool skip_check = false)

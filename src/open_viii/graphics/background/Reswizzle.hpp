@@ -19,10 +19,10 @@ struct PupuPath
 {
   open_viii::graphics::background::Pupu pupu{};
   std::filesystem::path path{};
-  auto read_file() const
-  {
-    return open_viii::Tools::read_file<std::string>(path);
-  }
+//  auto read_file() const
+//  {
+//    return open_viii::Tools::read_file<std::string>(path);
+//  }
 };
 template<typename map_type>
 requires(std::is_same_v<map_type,
@@ -66,7 +66,7 @@ private:
   }
   Ppm get_ppm(const PupuPath &pupu_path) const
   {
-    return Ppm(pupu_path.read_file());
+    return Ppm(pupu_path.path);
   }
   void update_dims(const Ppm &ppm) const
   {
