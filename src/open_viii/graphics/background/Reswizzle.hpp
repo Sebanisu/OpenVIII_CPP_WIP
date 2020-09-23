@@ -14,13 +14,13 @@
 #include "Map.hpp"
 #include "Pupu.hpp"
 #include "open_viii/graphics/Ppm.hpp"
+namespace open_viii::graphics::background {
 struct PupuPath
 {
   open_viii::graphics::background::Pupu pupu{};
   std::filesystem::path path{};
   auto read_file() const { return open_viii::Tools::read_file<std::string>(path); }
 };
-namespace open_viii::graphics::background {
 template<typename map_type>
 requires(std::is_same_v<map_type,
            Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct Reswizzle
@@ -119,7 +119,7 @@ private:
   void save_and_clear_out_buffer(const int &bpp, const std::uint16_t &texture_id) const
   {
     if (m_drawn) {
-      std::string output_name = m_output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(texture_id);
+      std::string output_name = m_output_prefix + "(" + std::to_string(bpp) + "_" + std::to_string(texture_id) + ")";
       Ppm::save(m_out, m_width, m_height, output_name, true);
       std::fill(std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
       m_drawn = false;
@@ -128,8 +128,8 @@ private:
   void save_and_clear_out_buffer(const int &bpp, const std::uint16_t &texture_id, const std::uint8_t &palette) const
   {
     if (m_drawn) {
-      std::string output_name =
-        m_output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(texture_id) + "_" + std::to_string(palette);
+      std::string output_name = m_output_prefix + "(" + std::to_string(bpp) + "_" + std::to_string(texture_id) + "_"
+                                + std::to_string(palette) + ")";
       Ppm::save(m_out, m_width, m_height, output_name, true);
       std::fill(std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
       m_drawn = false;
@@ -155,7 +155,9 @@ private:
     const std::vector<PupuPath> &pupu_path_vector) const
   {
     constexpr static std::array<std::uint8_t, 16> indexes = {
-      0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U
+      0U, 1U, 2U, 3U, 4U, 5U, 6U,
+      7U, 8U, 9U, 10U, 11U, 12U,
+      13U, 14U, 15U
     };
     std::ranges::for_each(indexes, [this, &bpp, &texture_id, &pupu_path_vector](const uint8_t &palette_id) {
       if (std::ranges::empty(m_skip.at(palette_id))) {
