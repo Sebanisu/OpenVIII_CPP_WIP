@@ -23,8 +23,8 @@ struct EncodedStringOffset
 private:
   std::uint16_t m_offset{};
 
-  [[nodiscard]] static intmax_t
-    find_string_size(const std::span<const char> &buffer, const intmax_t offset, bool skip_first_null)
+  [[nodiscard]] static intmax_t find_string_size(
+    const std::span<const char> &buffer, const intmax_t offset, bool skip_first_null)
   {
     if (offset < 0 || static_cast<std::size_t>(offset) > std::ranges::size(buffer)) {
       return -1;
@@ -50,8 +50,8 @@ private:
     //    }
     return static_cast<signed>(std::ranges::size(buffer)) - offset;
   }
-  [[nodiscard]] static auto
-    get_string_at_offset(const std::span<const char> &buffer, intmax_t offset, bool skip_first_null)
+  [[nodiscard]] static auto get_string_at_offset(
+    const std::span<const char> &buffer, intmax_t offset, bool skip_first_null)
   {
     using namespace std::literals::string_view_literals;
 
@@ -66,8 +66,8 @@ private:
   }
 
 public:
-  [[nodiscard]] auto
-    raw_bytes(const std::span<const char> &buffer, const intmax_t offset = 0, bool skip_first_null = false) const
+  [[nodiscard]] auto raw_bytes(
+    const std::span<const char> &buffer, const intmax_t offset = 0, bool skip_first_null = false) const
   {
     if (m_offset == INT16_MAX) {
       return std::span<const char>{};
@@ -75,8 +75,8 @@ public:
     return get_string_at_offset(buffer, static_cast<intmax_t>(m_offset) + offset, skip_first_null);
   }
   template<LangT langVal>
-  [[nodiscard]] auto
-    decoded_string(const std::span<const char> &buffer, const intmax_t offset = 0, bool skip_first_null = false) const
+  [[nodiscard]] auto decoded_string(
+    const std::span<const char> &buffer, const intmax_t offset = 0, bool skip_first_null = false) const
   {
     return FF8String<langVal>::decode(raw_bytes(buffer, offset, skip_first_null));
   }

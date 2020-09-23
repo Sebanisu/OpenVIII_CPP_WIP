@@ -107,9 +107,8 @@ public:
     return buffer;
   }
   template<typename lambdaT>
-  requires(std::invocable<lambdaT, std::ostream &>) [[maybe_unused]] static bool write_buffer(const lambdaT &lambda,
-    const std::string_view &path,
-    const std::string_view &root = "tmp")
+  requires(std::invocable<lambdaT, std::ostream &>) [[maybe_unused]] static bool write_buffer(
+    const lambdaT &lambda, const std::string_view &path, const std::string_view &root = "tmp")
   {
     auto dir = std::filesystem::path(root);
     auto filename = dir / path;
@@ -153,8 +152,8 @@ public:
   /*
   Case Insensitive strings equal
   */
-  [[maybe_unused]] [[nodiscard]] constexpr static bool i_equals(const std::string_view &str1,
-    const std::string_view &str2)
+  [[maybe_unused]] [[nodiscard]] constexpr static bool i_equals(
+    const std::string_view &str1, const std::string_view &str2)
   {
     return std::ranges::equal(str1, str2, IEqualPredicate());
   }
@@ -163,9 +162,8 @@ public:
   // I use this to make the separator on windows or linux matches the strings.
   template<typename needleType, typename replacementType, std::ranges::range T>
   requires(std::is_convertible_v<replacementType, needleType> &&std::is_convertible_v<needleType, replacementType>)
-    [[maybe_unused]] constexpr static void replace_all(T &haystack,
-      const needleType &needle,
-      const replacementType &replacement) noexcept
+    [[maybe_unused]] constexpr static void replace_all(
+      T &haystack, const needleType &needle, const replacementType &replacement) noexcept
   {
     static_assert(std::is_integral<needleType>::value && std::is_integral<replacementType>::value,
       "Should be dealing with chars so is integral should cover that.");
@@ -199,8 +197,8 @@ public:
     // replace_all(haystack, '\\', std::filesystem::path::preferred_separator);
   }
 
-  [[maybe_unused]] [[nodiscard]] static constexpr auto i_find(const std::string_view &haystack,
-    const std::string_view &needle)
+  [[maybe_unused]] [[nodiscard]] static constexpr auto i_find(
+    const std::string_view &haystack, const std::string_view &needle)
   {
     if (std::ranges::size(haystack) >= std::ranges::size(needle)) {
       const auto last = std::search(haystack.begin(), haystack.end(), needle.begin(), needle.end(), IEqualPredicate());
@@ -227,10 +225,8 @@ public:
    * @param lambda f(std::filesystem:: path)
    */
   template<typename lambdaT>
-  requires(std::invocable<lambdaT, std::filesystem::path>)
-    [[maybe_unused]] static void execute_on_directories(const std::filesystem::path &dir,
-      std::initializer_list<std::string_view> path_contains,
-      const lambdaT &lambda)
+  requires(std::invocable<lambdaT, std::filesystem::path>) [[maybe_unused]] static void execute_on_directories(
+    const std::filesystem::path &dir, std::initializer_list<std::string_view> path_contains, const lambdaT &lambda)
   {
     std::ranges::for_each(
       std::filesystem::recursive_directory_iterator(dir), [&path_contains, &lambda](const auto &item) {
@@ -313,8 +309,8 @@ public:
       });
     return out;
   }
-  [[maybe_unused]] [[nodiscard]] static constexpr auto i_ends_with(const std::string_view &haystack,
-    const std::string_view &ending)
+  [[maybe_unused]] [[nodiscard]] static constexpr auto i_ends_with(
+    const std::string_view &haystack, const std::string_view &ending)
   {
     [[maybe_unused]] const auto ending_view = ending | std::views::reverse;
     [[maybe_unused]] const auto haystack_view =
@@ -322,8 +318,8 @@ public:
     return std::ranges::size(haystack) >= std::ranges::size(ending)
            && std::ranges::equal(ending_view, haystack_view, IEqualPredicate());
   }
-  [[maybe_unused]] [[nodiscard]] static auto i_starts_with(const std::string_view &haystack,
-    const std::string_view &starting)
+  [[maybe_unused]] [[nodiscard]] static auto i_starts_with(
+    const std::string_view &haystack, const std::string_view &starting)
   {
     [[maybe_unused]] const auto haystack_view = haystack | std::views::take(std::ranges::size(starting));
     return std::ranges::size(haystack) >= std::ranges::size(starting)
@@ -343,8 +339,8 @@ public:
     return size_t{};// return 0 if not found;
   }
 
-  [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(const std::string_view &haystack,
-    const std::initializer_list<std::string_view> &needles)
+  [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(
+    const std::string_view &haystack, const std::initializer_list<std::string_view> &needles)
   {
     // std::cout << haystack <<std::endl;
     size_t i{};
@@ -356,8 +352,8 @@ public:
     }
     return size_t{};// return 0 if not found;
   }
-  [[maybe_unused]] [[nodiscard]] static auto i_starts_with_any(const std::string_view &haystack,
-    const std::initializer_list<std::string_view> &needles)
+  [[maybe_unused]] [[nodiscard]] static auto i_starts_with_any(
+    const std::string_view &haystack, const std::initializer_list<std::string_view> &needles)
   {
     size_t i{};
     if (std::ranges::any_of(needles, [&haystack, &i](const auto &needle) -> bool {
@@ -368,8 +364,8 @@ public:
     }
     return size_t{};// return 0 if not found;
   }
-  [[maybe_unused]] [[nodiscard]] static auto i_find_all(const std::string_view &haystack,
-    const std::initializer_list<std::string_view> &needles)
+  [[maybe_unused]] [[nodiscard]] static auto i_find_all(
+    const std::string_view &haystack, const std::initializer_list<std::string_view> &needles)
   {
     return std::ranges::all_of(needles, [&haystack](const auto &needle) -> bool {
       return i_find(haystack, needle);

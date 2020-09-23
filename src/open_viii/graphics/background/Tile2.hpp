@@ -122,9 +122,9 @@ public:
     return { static_cast<std::uint16_t>(m_xy.x()), std::uint16_t(m_xy.y()), WIDTH, HEIGHT };
   }
   constexpr static auto EXPLICIT_SIZE{ 16U };
-  static constexpr std::array FORCE_TYPE_VALUES = { std::string_view("test10"),
-    std::string_view("test11"),
-    std::string_view("test12") };
+  static constexpr std::array FORCE_TYPE_VALUES = {
+    std::string_view("test10"), std::string_view("test11"), std::string_view("test12")
+  };
 };
 static_assert(sizeof(Tile2) == Tile2::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background

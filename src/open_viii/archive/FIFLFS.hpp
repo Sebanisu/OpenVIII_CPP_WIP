@@ -241,10 +241,8 @@ public:
    */
   template<typename srcT, FI_Like datT = archive::FI>
   requires(std::convertible_to<srcT, std::filesystem::path> || std::ranges::contiguous_range<srcT>) TryAddT
-    try_add_nested(const srcT &src,
-      const size_t src_offset,
-      const std::filesystem::path &file_entry,
-      const datT &fi) const
+    try_add_nested(
+      const srcT &src, const size_t src_offset, const std::filesystem::path &file_entry, const datT &fi) const
   {
 
     const auto set = [&file_entry](auto &ds) {
@@ -492,8 +490,7 @@ public:
 
   template<typename lambdaT>
   requires(std::invocable<lambdaT, std::vector<char>, std::string>) void execute_on(
-    const std::initializer_list<std::string_view> &filename,
-    const lambdaT &lambda) const
+    const std::initializer_list<std::string_view> &filename, const lambdaT &lambda) const
   {
 
     std::vector<std::jthread> threads{};
@@ -600,8 +597,8 @@ public:
       });
   }
 
-  [[nodiscard]] TryAddT
-    get_fiflfs(auto &archive, const std::uint32_t id, const std::string_view &str_virtual_path) const
+  [[nodiscard]] TryAddT get_fiflfs(
+    auto &archive, const std::uint32_t id, const std::string_view &str_virtual_path) const
   {
     FI_Like auto fi = get_entry_by_index(id);
 

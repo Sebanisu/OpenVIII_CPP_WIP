@@ -110,9 +110,12 @@ public:
    * @param name logo has a unique map type.
    */
   explicit Mim(std::vector<char> &&buffer, std::string_view name = {})
-    : m_buffer(std::move(buffer)), m_mim_type(get_texture_type(std::ranges::size(m_buffer), name)),
-      m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
-      m_image_buffer_bbp4(set_image_span_bpp4()), m_image_buffer_bbp16(set_image_span_bpp16())
+    : m_buffer(std::move(buffer)),
+      m_mim_type(get_texture_type(std::ranges::size(m_buffer), name)),
+      m_image_buffer(set_image_span()),
+      m_palette_buffer(set_palette_span()),
+      m_image_buffer_bbp4(set_image_span_bpp4()),
+      m_image_buffer_bbp16(set_image_span_bpp16())
   {}
   [[nodiscard]] const auto &mim_type() const noexcept
   {

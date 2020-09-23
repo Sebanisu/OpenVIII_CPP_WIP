@@ -243,8 +243,8 @@ private:
   }
 
 public:
-  [[nodiscard]] constexpr std::variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
-    get(const std::string_view &name, bool zzz = false) const
+  [[nodiscard]] constexpr std::variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>> get(
+    const std::string_view &name, bool zzz = false) const
   {
     if (!zzz) {
       if (get_string<ArchiveTypeT::battle>() == name) {

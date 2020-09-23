@@ -120,13 +120,16 @@ private:
 
 public:
   ReswizzleTree(const open_viii::archive::FIFLFS<true> &field, const std::filesystem::path &dir_path)
-    : m_dir_path(dir_path), m_dir_name(dir_path.filename().string()),
-      m_fi_filename(get_path_with_ext(archive::FI::EXT)), m_fl_filename(get_path_with_ext(open_viii::archive::FL::EXT)),
+    : m_dir_path(dir_path),
+      m_dir_name(dir_path.filename().string()),
+      m_fi_filename(get_path_with_ext(archive::FI::EXT)),
+      m_fl_filename(get_path_with_ext(open_viii::archive::FL::EXT)),
       m_fs_filename(get_path_with_ext(open_viii::archive::FS::EXT)),
       m_map_filename(get_path_with_ext(open_viii::graphics::background::Map<>::EXT).substr(1)),
       m_mim_filename(get_path_with_ext(open_viii::graphics::background::Mim::EXT).substr(1)),
       m_output_prefix((m_dir_path / m_dir_name).string()),
-      m_archive(field.get_fiflfs({ m_fi_filename, m_fl_filename, m_fs_filename })), m_mim_type(get_mim_type())
+      m_archive(field.get_fiflfs({ m_fi_filename, m_fl_filename, m_fs_filename })),
+      m_mim_type(get_mim_type())
   {}
   /**
    * true if archive is set and full. false if invalid.

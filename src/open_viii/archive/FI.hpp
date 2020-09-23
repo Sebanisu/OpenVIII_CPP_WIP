@@ -66,9 +66,8 @@ public:
   template<FI_Like fiT>
   constexpr explicit FI(const fiT &fi)
     : m_uncompressed_size{ static_cast<decltype(m_uncompressed_size)>(fi.uncompressed_size()) },
-      m_offset{ static_cast<decltype(m_offset)>(fi.offset()) }, m_compression_type{
-        static_cast<decltype(m_compression_type)>(fi.compression_type())
-      }
+      m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
+      m_compression_type{ static_cast<decltype(m_compression_type)>(fi.compression_type()) }
   {}
   constexpr FI(const unsigned int &uncompressed_size,
     const unsigned int &offset,

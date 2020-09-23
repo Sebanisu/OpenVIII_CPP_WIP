@@ -29,8 +29,8 @@ struct L4Z
    * @return uncompressed char buffer.
    */
   template<typename dstT = std::vector<char>, std::integral srcSizeT, std::integral dstSizeT>
-  [[nodiscard]] [[maybe_unused]] static dstT
-    decompress(const char *src_data, const srcSizeT &src_size, const dstSizeT &dst_size)
+  [[nodiscard]] [[maybe_unused]] static dstT decompress(
+    const char *src_data, const srcSizeT &src_size, const dstSizeT &dst_size)
   {
     if (src_size < 0 || dst_size < 0) {
       return {};

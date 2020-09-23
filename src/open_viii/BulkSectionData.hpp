@@ -14,8 +14,8 @@
 #ifndef VIIIARCHIVE_BULKSECTIONDATA_HPP
 #define VIIIARCHIVE_BULKSECTIONDATA_HPP
 #include "open_viii/ItemIdT.hpp"
-#include "open_viii/Kernel/BattleItems.hpp"
-#include "open_viii/Kernel/NonBattleItems.hpp"
+#include "open_viii/kernel/BattleItems.hpp"
+#include "open_viii/kernel/NonBattleItems.hpp"
 #include <iterator>
 #include <string_view>
 
@@ -30,19 +30,19 @@ private:
   std::span<const char> m_text_span{};
 
 public:
-  [[maybe_unused]] explicit BulkSectionData(const std::span<const char> &span,
-    const std::span<const char> &text_span = {})
+  [[maybe_unused]] explicit BulkSectionData(
+    const std::span<const char> &span, const std::span<const char> &text_span = {})
     : m_span{ span }, m_text_span{ text_span }
   {}
   [[nodiscard]] size_t size() const
   {
-    const auto calcSize = [this]() {
+    const auto calc_size = [this]() {
       return std::ranges::size(m_span) / sizeof(spanT);
     };
     if constexpr (max == 0U) {
-      return calcSize();
+      return calc_size();
     } else {
-      const auto c = calcSize();
+      const auto c = calc_size();
       if (max > c) {
         return c;
       }
@@ -95,10 +95,10 @@ public:
     return m_text_span;
   }
 };
-template<typename spanT, size_t max = 0U>
-requires(sizeof(spanT) > 0U) struct BulkSectionDataIterator
-  : public std::iterator<std::input_iterator_tag, BulkSectionData<spanT, max>>
-{
-};
+//template<typename spanT, size_t max = 0U>
+//requires(sizeof(spanT) > 0U) struct BulkSectionDataIterator
+//  : public std::iterator<std::input_iterator_tag, BulkSectionData<spanT, max>>
+//{
+//};
 }// namespace open_viii
 #endif// VIIIARCHIVE_BULKSECTIONDATA_HPP

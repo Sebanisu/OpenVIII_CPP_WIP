@@ -79,13 +79,11 @@ public:
    */
   auto area() const noexcept
   {
-    if constexpr(std::unsigned_integral<dimT>) {
+    if constexpr (std::unsigned_integral<dimT>) {
       return static_cast<std::size_t>(m_x) * static_cast<std::size_t>(m_y);
-    }
-    else if constexpr(std::signed_integral<dimT>) {
+    } else if constexpr (std::signed_integral<dimT>) {
       return static_cast<std::intmax_t>(m_x) * static_cast<std::intmax_t>(m_y);
-    }
-    else if constexpr(std::floating_point<dimT>) {
+    } else if constexpr (std::floating_point<dimT>) {
       return m_x * m_y;
     }
   }

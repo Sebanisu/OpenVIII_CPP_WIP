@@ -206,8 +206,7 @@ public:
   }
   template<typename lambdaT>
   requires(std::invocable<lambdaT, std::vector<char>, std::string>) void execute_on(
-    const std::initializer_list<std::string_view> &filename,
-    const lambdaT &lambda)
+    const std::initializer_list<std::string_view> &filename, const lambdaT &lambda)
   {
     for (const open_viii::archive::FileData &dataItem : data()) {
       {

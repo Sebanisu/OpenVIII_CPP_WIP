@@ -73,8 +73,8 @@ private:
   std::array<std::string_view, SECTION_COUNT> m_data{};
 
 public:
-  ComplexStringSection([[maybe_unused]] const std::span<const char> &buffer,
-    const std::array<std::string_view, SECTION_COUNT> &data)
+  ComplexStringSection(
+    [[maybe_unused]] const std::span<const char> &buffer, const std::array<std::string_view, SECTION_COUNT> &data)
     : m_data{ data }
   {
     if (std::ranges::size(buffer) > sizeof(m_count)) {

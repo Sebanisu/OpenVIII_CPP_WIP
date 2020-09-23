@@ -116,8 +116,12 @@ private:
 
 public:
   Deswizzle(const Mim &in_mim, const Map<map_type> &in_map, const std::string_view &in_path)
-    : m_mim(in_mim), m_map(in_map), m_path(in_path), m_unique_palettes(find_unique_palettes()),
-      m_canvas(in_map.canvas()), m_unique_pupus(find_unique_pupu())
+    : m_mim(in_mim),
+      m_map(in_map),
+      m_path(in_path),
+      m_unique_palettes(find_unique_palettes()),
+      m_canvas(in_map.canvas()),
+      m_unique_pupus(find_unique_pupu())
   {}
 
   void save()

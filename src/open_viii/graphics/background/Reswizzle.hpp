@@ -275,9 +275,17 @@ public:
     const std::string_view &dir_name,
     const std::string &output_prefix,
     const uint8_t scale = 1U)
-    : m_map(buffer), m_dir_path(dir_path), m_dir_name(dir_name), m_output_prefix(output_prefix),
-      m_path_grouped_by_bppt(find_files()), m_valid_texture_ids(get_valid_texture_ids()), m_scale(scale),
-      m_width(get_scaled_dim()), m_height(get_scaled_dim()), m_area(get_area()), m_out(m_area)
+    : m_map(buffer),
+      m_dir_path(dir_path),
+      m_dir_name(dir_name),
+      m_output_prefix(output_prefix),
+      m_path_grouped_by_bppt(find_files()),
+      m_valid_texture_ids(get_valid_texture_ids()),
+      m_scale(scale),
+      m_width(get_scaled_dim()),
+      m_height(get_scaled_dim()),
+      m_area(get_area()),
+      m_out(m_area)
   {}
 
   [[nodiscard]] std::size_t size() const

@@ -98,8 +98,8 @@ public:
     }
   }
   template<std::ranges::contiguous_range cT>
-  static void
-    save(const cT &data, std::size_t width, std::size_t height, const std::string_view &input, bool skip_check = false)
+  static void save(
+    const cT &data, std::size_t width, std::size_t height, const std::string_view &input, bool skip_check = false)
   {// how do i make the concept reject ranges that aren't of Colors? I'm at least checking for Color down below.
     if (!skip_check) {
       if (width == 0 || height == 0 || std::ranges::empty(data)

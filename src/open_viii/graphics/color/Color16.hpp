@@ -63,9 +63,8 @@ private:
     value_bit((value_bit() & mask.flip()) | val);
   }
   template<typename T>
-  requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) void set(T input,
-    std::bitset<BITS> mask,
-    const std::uint_fast8_t &shift) const
+  requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) void set(
+    T input, std::bitset<BITS> mask, const std::uint_fast8_t &shift) const
   {
     std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(
       std::clamp(input, static_cast<T>(0), static_cast<T>(std::numeric_limits<std::uint8_t>::max()))) };
