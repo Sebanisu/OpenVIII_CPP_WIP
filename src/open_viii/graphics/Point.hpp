@@ -24,9 +24,20 @@ private:
 
 public:
   Point() = default;
-  Point(const dimT &in_x, const dimT &in_y) noexcept : m_x(in_x), m_y(in_y){};
+  //  Point(const Point<dimT> &) = default;
+  //  Point(Point<dimT> &&) noexcept = default;
+  //  Point<dimT>& operator=(const Point<dimT>&) = default;
+  //  Point<dimT>& operator=(Point<dimT>&&) noexcept = default;
+  //  virtual ~Point<dimT>() = delete;
   friend auto operator<=>(const Point<dimT> &left, const Point<dimT> &right) noexcept = default;
   auto operator<=>(const Point<dimT> &right) const noexcept = default;
+  template<typename T>
+  requires((std::integral<T> || std::floating_point<T>)&&!std::is_same_v<T, dimT>) explicit Point(const Point<T> &r)
+  {
+    m_x = static_cast<dimT>(r.x());
+    m_y = static_cast<dimT>(r.y());
+  }
+  Point(const dimT &in_x, const dimT &in_y) noexcept : m_x(in_x), m_y(in_y){};
 
   [[nodiscard]] auto abs()
   {
@@ -89,7 +100,8 @@ public:
   }
   Point<dimT> operator/(const Point<dimT> &input) const noexcept
   {
-    return { input.m_x != 0 ? m_x / input.m_x : 0, input.m_x != 0 ? m_y / input.m_y : 0 };
+    return { (input.m_x != static_cast<dimT>(0) ? static_cast<dimT>(m_x / input.m_x) : static_cast<dimT>(0)),
+             (input.m_y != static_cast<dimT>(0) ? static_cast<dimT>(m_y / input.m_y) : static_cast<dimT>(0)) };
   }
   Point<dimT> operator*(const Point<dimT> &input) const noexcept
   {

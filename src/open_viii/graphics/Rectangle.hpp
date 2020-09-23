@@ -29,6 +29,21 @@ private:
 
 public:
   Rectangle() = default;
+//  Rectangle(const Rectangle<dimT> &) = default;
+//  Rectangle(Rectangle<dimT> &&) noexcept = default;
+//  Rectangle<dimT>& operator=(const Rectangle<dimT>&) = default;
+//  Rectangle<dimT>& operator=(Rectangle<dimT>&&) noexcept = default;
+//  virtual ~Rectangle<dimT>() = delete;
+  friend auto operator<=>(const Rectangle<dimT> &left, const Rectangle<dimT> &right) noexcept = default;
+  auto operator<=>(const Rectangle<dimT> &right) const noexcept = default;
+
+  template<typename T>
+  requires((std::integral<T> || std::floating_point<T>)&&!std::is_same_v<T, dimT>) explicit Rectangle(
+    const Rectangle<T> &r)
+  {
+    m_top_left = static_cast<Point<dimT>>(r.m_top_left);
+    m_width_height = static_cast<Point<dimT>>(r.m_width_height);
+  }
   Rectangle(const dimT &in_x, const dimT &in_y, const dimT &in_width, const dimT &in_height) noexcept
     : m_top_left{ in_x, in_y }, m_width_height{ in_width, in_height }
   {}
@@ -37,8 +52,6 @@ public:
   //  {
   //    return left.m_top_left == right.m_top_left && left.m_width_height == right.m_width_height;
   //  }
-  friend auto operator<=>(const Rectangle<dimT> &left, const Rectangle<dimT> &right) noexcept = default;
-  auto operator<=>(const Rectangle<dimT> &right) const noexcept = default;
   /**
    * @return Left coordinate.
    */

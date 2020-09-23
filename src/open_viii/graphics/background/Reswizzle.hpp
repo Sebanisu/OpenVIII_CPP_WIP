@@ -56,13 +56,23 @@ private:
   }
   void update_dims(std::uint8_t scale = 1U) const noexcept
   {
-    if (scale < 1U) {
+    if (scale < 1U || scale == m_scale) {
       return;
     }
     m_scale = scale;
     m_height = m_width = get_scaled_dim();
     m_area = get_area();
     m_out.resize(m_area);
+  }
+  Ppm get_ppm(const PupuPath &pupu_path) const
+  {
+    return Ppm(pupu_path.read_file());
+  }
+  void update_dims(const Ppm &ppm) const
+  {
+    auto scale_point = (ppm.width_height() / m_map_width_height);
+    assert(scale_point.x() == scale_point.y());
+    update_dims(static_cast<uint8_t>(scale_point.x()));
   }
   void empty_skip() const
   {
@@ -167,7 +177,9 @@ private:
   {
     for_each_pupu_path_vector([this, &texture_id](const int &bpp, const std::vector<PupuPath> &pupu_path_vector) {
       std::ranges::for_each(pupu_path_vector, [this, &bpp, &texture_id](const PupuPath &pupu_path) {
-        const auto ppm = Ppm(pupu_path.read_file());
+        const auto ppm = get_ppm(pupu_path);
+        update_dims(ppm);
+
         for_each_tile(
           [this, &ppm](const map_type &tile) {
             static constexpr auto tile_size = 16U;
@@ -180,6 +192,8 @@ private:
     });
     save_and_clear_out_buffer(texture_id);
   }
+
+
   void process_skipped_tiles(const uint16_t &texture_id) const
   {
     constexpr static std::array<std::uint8_t, 16> indexes = {
@@ -193,7 +207,8 @@ private:
       for_each_pupu_path_vector(
         [this, &texture_id, &palette_id](const int &bpp, const std::vector<PupuPath> &pupu_path_vector) {
           std::ranges::for_each(pupu_path_vector, [this, &bpp, &texture_id, &palette_id](const PupuPath &pupu_path) {
-            const auto ppm = Ppm(pupu_path.read_file());
+            const auto ppm = get_ppm(pupu_path);
+            update_dims(ppm);
             for_each_tile(
               m_skip.at(palette_id),
               [this, &ppm](const map_type &tile) {
@@ -282,10 +297,11 @@ public:
       m_path_grouped_by_bppt(find_files()),
       m_valid_texture_ids(get_valid_texture_ids()),
       m_scale(scale),
+      m_map_width_height(m_map.canvas().width_height()),
       m_width(get_scaled_dim()),
       m_height(get_scaled_dim()),
       m_area(get_area()),
-      m_out(m_area)
+      m_out(static_cast<std::size_t>(m_area))
   {}
 
   [[nodiscard]] std::size_t size() const
