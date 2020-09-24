@@ -74,7 +74,7 @@ public:
   explicit Color16(std::uint16_t raw_color) : m_value(raw_color) {}
   friend auto operator<=>(const Color16 &left, const Color16 &right) noexcept = default;
   auto operator<=>(const Color16 &right) const noexcept = default;
-  template<Color cT> explicit Color16(cT color)
+  template<Color cT> requires(!std::is_same_v<Color16, cT>) explicit Color16(cT color)
   {
     r(color.r());
     g(color.g());
