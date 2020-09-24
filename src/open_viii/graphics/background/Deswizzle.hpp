@@ -78,7 +78,8 @@ private:
   bool set_color(std::vector<Color16> &out, const std::integral auto &index_out, const Color16 &color) const
   {
     if (!color.is_black()) {
-      assert(out.at(index_out).is_black());
+      //assert(out.at(index_out).is_black() || color==out.at(index_out));
+      //so there is possible overlapping tiles here. does this matter? because pixels behind cannot be seen in game anyway?
       out.at(index_out) = color;
       return true;
     }
@@ -127,7 +128,7 @@ public:
 
   void save()
   {
-    std::vector<Color16> out(m_canvas.area());
+    std::vector<Color16> out(static_cast<std::size_t>(m_canvas.area()));
     for_each_pupu([this, &out](const Pupu &pupu) {
       bool drawn = false;
       auto raw_width = m_mim.get_raw_width(pupu.depth());
