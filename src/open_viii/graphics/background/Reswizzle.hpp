@@ -33,7 +33,8 @@ private:
   const std::filesystem::path &m_dir_path{};
   const std::string_view m_dir_name{};
   const std::string &m_output_prefix{};
-  const std::array<std::vector<PupuPath>, 3> m_path_grouped_by_bppt{};
+  static constexpr std::size_t PUPUPATH_GROUP_COUNT = 3U;
+  const std::array<std::vector<PupuPath>, PUPUPATH_GROUP_COUNT> m_path_grouped_by_bppt{};
   const std::vector<std::uint16_t> m_valid_texture_ids{};
 
   mutable std::uint8_t m_scale{};// when I can detect the scale this will probably be mutable or I can detect on init
@@ -42,7 +43,8 @@ private:
   mutable std::uint32_t m_width{};
   mutable std::uint32_t m_height{};
   mutable std::uint32_t m_area{};
-  mutable std::array<std::vector<map_type>, 16> m_skip{};
+  static constexpr std::size_t PALETTE_COUNT = 16U;
+  mutable std::array<std::vector<map_type>, PALETTE_COUNT> m_skip{};
   mutable std::vector<open_viii::graphics::Color24<0, 1, 2>> m_out{};
   mutable bool m_drawn{ false };
 
@@ -137,9 +139,9 @@ private:
   template<std::invocable<int, std::vector<PupuPath>> lambdaT>
   void for_each_pupu_path_vector(const lambdaT &lambda) const
   {
-    constexpr static std::array<std::size_t, 3> index_values = { 0U, 1U, 2U };
+    constexpr static auto indexes = std::ranges::views::iota(0U,PUPUPATH_GROUP_COUNT);
     constexpr static std::array<int, 3> bpp_values = { 4, 8, 16 };
-    std::ranges::for_each(index_values, [&lambda, this](const std::size_t &index) {
+    std::ranges::for_each(indexes, [&lambda, this](const std::size_t &index) {
       lambda(bpp_values.at(index), m_path_grouped_by_bppt.at(index));
     });
   }
@@ -196,10 +198,7 @@ private:
 
   void process_skipped_tiles(const uint16_t &texture_id) const
   {
-    constexpr static std::array<std::uint8_t, 16> indexes = {
-      0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U
-    };
-
+    constexpr static auto indexes = std::ranges::views::iota(0U,PALETTE_COUNT);
     std::ranges::for_each(indexes, [this, &texture_id](const uint8_t &palette_id) {
       if (std::ranges::empty(m_skip.at(palette_id))) {
         return;
