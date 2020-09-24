@@ -15,9 +15,8 @@
 #define VIIIARCHIVE_COLOR16_HPP
 
 #include "open_viii/Concepts.hpp"
-#include "open_viii/tools/Tools.hpp"
-#include <bitset>
 #include <cstdint>
+#include <iostream>
 #include <limits>
 namespace open_viii::graphics {
 /**
@@ -27,13 +26,13 @@ namespace open_viii::graphics {
 struct Color16
 {
 private:
-  static constexpr auto BITS = 16U;
-  mutable uint16_t m_value{};
-  static constexpr std::bitset<BITS> BLUE_MASK{ 0x7C00 };
-  static constexpr std::bitset<BITS> GREEN_MASK{ 0x3E0 };
-  static constexpr std::bitset<BITS> RED_MASK{ 0x1F };
-  [[maybe_unused]] static constexpr std::bitset<BITS> STP_MASK{ 0x8000U };
-  static constexpr std::bitset<BITS> ALL_COLOR_MASK{ 0x7FFF };
+  [[maybe_unused]] static constexpr auto BITS = 16U;
+  mutable std::uint16_t m_value{};
+  static constexpr std::uint16_t BLUE_MASK{ 0x7C00 };
+  static constexpr std::uint16_t GREEN_MASK{ 0x3E0 };
+  static constexpr std::uint16_t RED_MASK{ 0x1F };
+  [[maybe_unused]] static constexpr std::uint16_t STP_MASK{ 0x8000U };
+  static constexpr std::uint16_t ALL_COLOR_MASK{ 0x7FFF };
   static constexpr std::uint_fast8_t BLUE_SHIFT{ 10U };
   static constexpr std::uint_fast8_t GREEN_SHIFT{ 5U };
   static constexpr std::uint_fast8_t RED_SHIFT = { 0U };
@@ -41,36 +40,33 @@ private:
   static constexpr std::uint_fast8_t CONVERT_SHIFT = { 3U };
   static constexpr std::uint_fast8_t GET_HIGH_BIT_SHIFT = { 2U };
   static constexpr std::uint_fast8_t LARGEST_5_BIT_VALUE{ 0b0001'1111 };
-  [[nodiscard]] std::bitset<BITS> value_bit() const
-  {
-    return std::bitset<BITS>{ m_value };
-  }
-  void value_bit(const std::bitset<BITS> &new_value) const
-  {
-    m_value = static_cast<std::uint16_t>(new_value.to_ulong());
-  }
-  [[nodiscard]] std::uint8_t convert(const std::bitset<BITS> &mask, const std::uint_fast8_t &shift) const
-  {
-    auto temp = ((value_bit() & mask) >> shift);
-    return static_cast<std::uint8_t>(((temp << CONVERT_SHIFT) | temp >> GET_HIGH_BIT_SHIFT).to_ulong());
-  }
 
-  template<std::floating_point T> void set(T input, std::bitset<BITS> mask, const std::uint_fast8_t &shift) const
+  [[nodiscard]] std::uint8_t convert(const std::uint16_t &mask, const std::uint_fast8_t &shift) const
   {
-    std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(
+    auto temp = static_cast<std::uint16_t>(static_cast<std::uint16_t>(m_value & mask) >> shift);
+    return static_cast<std::uint8_t>(
+      (static_cast<std::uint16_t>(temp << CONVERT_SHIFT) | static_cast<std::uint16_t>(temp >> GET_HIGH_BIT_SHIFT)));
+  }
+  template<std::unsigned_integral T> static constexpr T flip(const T input)
+  {
+    return std::numeric_limits<T>::max() - input;
+  }
+  template<std::floating_point T> void set(T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
+  {
+    std::uint16_t val{ static_cast<std::uint_fast8_t>(
       std::clamp(input, static_cast<T>(0.0F), static_cast<T>(1.0F)) * LARGEST_5_BIT_VALUE) };
     val <<= shift;
-    value_bit((value_bit() & mask.flip()) | val);
+    m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
   }
   template<typename T>
   requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) void set(
-    T input, std::bitset<BITS> mask, const std::uint_fast8_t &shift) const
+    T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
   {
-    std::bitset<BITS> val{ static_cast<std::uint_fast8_t>(
+    std::uint16_t val{ static_cast<std::uint_fast8_t>(
       std::clamp(input, static_cast<T>(0), static_cast<T>(std::numeric_limits<std::uint8_t>::max()))) };
     val >>= CONVERT_SHIFT;
     val <<= shift;
-    value_bit((value_bit() & mask.flip()) | val);
+    m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
   }
 
 public:
@@ -153,7 +149,7 @@ public:
    */
   [[maybe_unused]] [[nodiscard]] bool stp() const
   {
-    return (value_bit() & STP_MASK).any();
+    return (m_value & STP_MASK) != 0;
   }
 
   /**
@@ -163,9 +159,9 @@ public:
   [[maybe_unused]] bool stp(bool enabled) const
   {
     if (enabled) {
-      value_bit(value_bit() | STP_MASK);
+      m_value |= STP_MASK;
     } else {
-      value_bit(value_bit() & ALL_COLOR_MASK);
+      m_value |= ALL_COLOR_MASK;
     }
     return enabled;
   }
@@ -175,7 +171,7 @@ public:
 
   [[nodiscard]] bool is_black() const
   {
-    return (value_bit() & ALL_COLOR_MASK).none();
+    return (m_value & ALL_COLOR_MASK) == 0;
   }
 
   /**
@@ -187,10 +183,7 @@ public:
   }
   [[nodiscard]] std::uint8_t a() const
   {
-    if (is_black()) {
-      return 0;
-    }
-    return std::numeric_limits<std::uint8_t>::max();
+    return is_black() ? 0U : std::numeric_limits<std::uint8_t>::max();
   }
   friend std::ostream &operator<<(std::ostream &os, const Color16 &color)
   {
