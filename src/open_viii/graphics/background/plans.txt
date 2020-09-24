@@ -9,3 +9,9 @@ TODO:
 10) add a test to deswizzle the reswizzled images.
 11) add a test to compare the two deswizzled versions and throw if they don't match.
 12) test support for scaling.
+
+16bit color conversion could maybe be faster. I need to test it.
+
+mim improvement?
+I know some things at compile time. I could a use factory method and templates to define mim with constant size std::array.
+Though that is alot of stack size. though the data buffer is already in the heap so this is probably not that useful
