@@ -32,7 +32,7 @@ private:
   const std::vector<std::uint8_t> m_unique_palettes{};
   const Rectangle<std::int32_t> m_canvas{};
   const std::vector<Pupu> m_unique_pupus{};
-  auto find_unique_palettes()
+  auto find_unique_palettes() const
   {
     const auto &tiles = m_map.tiles();
     auto pupu_view = tiles | std::views::transform([](const auto &tile) {
@@ -44,7 +44,7 @@ private:
     out.erase(last, std::ranges::end(out));
     return out;
   }
-  auto find_unique_pupu()
+  auto find_unique_pupu() const
   {
     const auto &tiles = m_map.tiles();
     auto pupu_view = tiles | std::views::transform([](const auto &tile) {
@@ -56,11 +56,11 @@ private:
     out.erase(last, std::ranges::end(out));
     return out;
   }
-  template<typename lambdaT> void for_each_pupu(const lambdaT &lambda)
+  template<typename lambdaT> void for_each_pupu(const lambdaT &lambda) const
   {
     std::ranges::for_each(m_unique_pupus, lambda);
   }
-  template<typename lambdaT> void for_each_palette(const lambdaT &lambda)
+  template<typename lambdaT> void for_each_palette(const lambdaT &lambda) const
   {
     std::ranges::for_each(m_unique_palettes, lambda);
   }
@@ -85,35 +85,11 @@ private:
     }
     return false;
   }
-  //  bool set_color(std::vector<Color16> &out,
-  //    const std::integral auto &index_out,
-  //    const std::span<const Color16> &in,
-  //    const std::integral auto &index_in) const
-  //  {
-  //    Color16 color = in[index_in];
-  //    if (!color.is_black()) {
-  //      out.at(index_out) = color;
-  //      return true;
-  //    }
-  //    return false;
-  //  }
   auto get_output_index(auto &x, auto &y, auto &tile) const
   {
     return (static_cast<uint32_t>(tile.x()) + x)
            + ((static_cast<uint32_t>(tile.y()) + y) * static_cast<uint32_t>(m_canvas.width()));
   }
-  //  auto get_input_index(auto &x, auto &y, const size_t &width, auto &tile) const
-  //  {
-  //    auto pixel_in =
-  //      (static_cast<uint32_t>(tile.source_x()) + x) + ((static_cast<uint32_t>(tile.source_y()) + y) * width);
-  //    unsigned int texture_page_offset = tile.TEXTURE_PAGE_WIDTH * tile.texture_id();
-  //    if (tile.depth().bpp4()) {
-  //      texture_page_offset *= 2U;
-  //    } else if (tile.depth().bpp16()) {
-  //      texture_page_offset /= 2U;
-  //    }
-  //    return pixel_in + texture_page_offset;
-  //  }
 
 
 public:
@@ -126,7 +102,7 @@ public:
       m_unique_pupus(find_unique_pupu())
   {}
 
-  void save()
+  void save() const
   {
     std::vector<Color16> out(static_cast<std::size_t>(m_canvas.area()));
     for_each_pupu([this, &out](const Pupu &pupu) {

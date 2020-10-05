@@ -6,6 +6,7 @@
 #define VIIIARCHIVE_RESWIZZLETREE_HPP
 #include <utility>
 
+#include "Deswizzle.hpp"
 #include "Map.hpp"
 #include "Mim.hpp"
 #include "Reswizzle.hpp"
@@ -33,13 +34,6 @@ private:
   [[nodiscard]] MimType get_mim_type() const
   {
     if (static_cast<bool>(m_archive)) {
-      //      {
-      //        std::cout << m_archive << std::endl;
-      //        for (const std::pair<unsigned int, std::string> &pair : m_archive.get_vector_of_indexs_and_files({})) {
-      //          std::cout << '\t' << pair.first << '\t' << pair.second << std::endl;
-      //        }
-      //        std::cout << m_mim_filename << '\n';
-      //      }
       std::vector<std::pair<unsigned int, std::string>> mims =
         m_archive.get_vector_of_indexs_and_files({ m_mim_filename });
       for (const std::pair<unsigned int, std::string> &pair : mims) {
@@ -53,43 +47,6 @@ private:
     }
     return {};
   }
-  //  /**
-  //   * name of directory
-  //   * @return string
-  //   */
-  //  const std::string &dir_name() const noexcept { return m_dir_name; }
-  //  /**
-  //   * filename of fi file
-  //   * @return string
-  //   */
-  //  const std::string &fi_filename() const noexcept { return m_fi_filename; }
-  //  /**
-  //   * filename of fl file
-  //   * @return string
-  //   */
-  //  const std::string &fl_filename() const noexcept { return m_fl_filename; }
-  //  /**
-  //   * filename of fs file
-  //   * @return string
-  //   */
-  //  const std::string &fs_filename() const noexcept { return m_fs_filename; }
-  //  /**
-  //   * filename of map file
-  //   * @return string
-  //   */
-  //  const std::string &map_filename() const noexcept { return m_map_filename; }
-  //  /**
-  //   * filename of mim file
-  //   * @return string
-  //   */
-  //  const std::string &mim_filename() const noexcept { return m_mim_filename; }
-  //  /**
-  //   * This will put the give you a path you can append what you want to and save. It'll be in the same directory with
-  //   the
-  //   * same prefix.
-  //   * @return string of the path minus extension.
-  //   */
-  //  const std::string &output_prefix() const noexcept { return m_output_prefix; }
 
   const MimType &mim_type() const noexcept
   {
@@ -116,6 +73,19 @@ private:
   {
     const auto r = Reswizzle<map_type>(get_map_buffer(), m_dir_path, m_dir_name, m_output_prefix);
     r.process();
+  }
+  template<typename map_type>
+  requires(
+    std::is_same_v<map_type,
+      Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void deswizzle_with_type() const
+  {
+
+    const auto mim = Mim(get_mim_buffer(),m_mim_filename);
+    const auto map = Map<map_type>(get_map_buffer());
+    const auto r = Deswizzle(mim, map , m_mim_filename);
+    r.save();
+    // const auto r = Deswizzle<map_type>(get_map_buffer(), m_dir_path, m_dir_name, m_output_prefix);
+    // r.process();
   }
 
 public:
@@ -169,6 +139,19 @@ public:
       reswizzle_with_type<Tile2>();
     } else if (m_mim_type.type() == 3) {
       reswizzle_with_type<Tile3>();
+    }
+  }
+  /**
+   * spawn a deswizzle object using the mim_type to decide what template arguments should be.
+   */
+  void deswizzle() const
+  {
+    if (m_mim_type.type() == 1) {
+      deswizzle_with_type<Tile1>();
+    } else if (m_mim_type.type() == 2) {
+      deswizzle_with_type<Tile2>();
+    } else if (m_mim_type.type() == 3) {
+      deswizzle_with_type<Tile3>();
     }
   }
 };
