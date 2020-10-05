@@ -45,7 +45,7 @@ int main()
               return;
             }
             std::cout << directory_path << std::endl;
-            reswizzle_tree.reswizzle();
+            reswizzle_tree.deswizzle();
           });
 
           if (threads.size() > 16) {

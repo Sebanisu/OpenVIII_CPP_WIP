@@ -28,7 +28,7 @@ requires(std::is_same_v<map_type,
 private:
   const Mim &m_mim{};
   const Map<map_type> &m_map{};
-  const std::string_view &m_path{};
+  const std::string m_path{};
   const std::vector<std::uint8_t> m_unique_palettes{};
   const Rectangle<std::int32_t> m_canvas{};
   const std::vector<Pupu> m_unique_pupus{};
@@ -93,7 +93,7 @@ private:
 
 
 public:
-  Deswizzle(const Mim &in_mim, const Map<map_type> &in_map, const std::string_view &in_path)
+  Deswizzle(const Mim &in_mim, const Map<map_type> &in_map, const std::string &in_path)
     : m_mim(in_mim),
       m_map(in_map),
       m_path(in_path),
