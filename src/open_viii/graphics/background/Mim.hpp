@@ -206,7 +206,8 @@ public:
     const auto width = m_mim_type.width();
     if (depth.bpp4()) {
       return width * 2U;
-    } else if (depth.bpp16()) {
+    }
+    if (depth.bpp16()) {
       return width / 2U;
     }
     return width;
@@ -218,7 +219,8 @@ public:
     const std::unsigned_integral auto &texture_id = 0U) const
   {
     auto width = m_mim_type.width();
-    auto texture_page_offset = 128U;
+    constexpr static auto offset_interval = 128U;
+    auto texture_page_offset = offset_interval;
     if (depth.bpp8()) [[likely]] {
       texture_page_offset *= texture_id;
       return safe_get_color_from_palette(
