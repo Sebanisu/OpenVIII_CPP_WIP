@@ -103,6 +103,11 @@ private:
 public:
   constexpr static auto EXT = std::string_view{ ".mim" };
   Mim() = default;
+  ~Mim() = default;
+  Mim(Mim&&) = delete;
+  Mim(const Mim &) = delete;
+  Mim & operator=(const Mim &) = delete;
+  Mim & operator=(Mim &&) = delete;
   /**
    * Load up the raw pixel data, 4bpp, 8bpp or 16bpp Needs at least basename to check or it'll use size of buffer to
    * find type 1 or 2. Type is used to know which map to load.
