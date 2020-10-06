@@ -13,6 +13,8 @@
 
 #ifndef VIIIARCHIVE_DESWIZZLE_HPP
 #define VIIIARCHIVE_DESWIZZLE_HPP
+#include <utility>
+
 #include "Map.hpp"
 #include "Mim.hpp"
 namespace open_viii::graphics::background {
@@ -21,12 +23,12 @@ namespace open_viii::graphics::background {
  * work with.
  * @tparam map_type there are 3 types of maps
  */
-template<typename map_type>
+template<typename map_type, typename mim_type = Mim>
 requires(std::is_same_v<map_type,
            Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct Deswizzle
 {
 private:
-  const Mim &m_mim{};
+  const mim_type &m_mim{};
   const Map<map_type> &m_map{};
   const std::string m_path{};
   const std::vector<std::uint8_t> m_unique_palettes{};
@@ -93,10 +95,10 @@ private:
 
 
 public:
-  Deswizzle(const Mim &in_mim, const Map<map_type> &in_map, const std::string &in_path)
+  Deswizzle(const mim_type &in_mim, const Map<map_type> &in_map, std::string in_path)
     : m_mim(in_mim),
       m_map(in_map),
-      m_path(in_path),
+      m_path(std::move(in_path)),
       m_unique_palettes(find_unique_palettes()),
       m_canvas(in_map.canvas()),
       m_unique_pupus(find_unique_pupu())
