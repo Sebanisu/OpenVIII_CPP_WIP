@@ -15,7 +15,7 @@
 #include "open_viii/graphics/Ppm.hpp"
 #include "open_viii/graphics/background/Map.hpp"
 #include "open_viii/graphics/background/Mim.hpp"
-#include "open_viii/graphics/background/ReswizzleTree.hpp"
+#include "open_viii/graphics/background/SwizzleTree.hpp"
 #include "open_viii/paths/Paths.hpp"
 
 static void save_and_clear(std::vector<open_viii::graphics::Color24<0, 1, 2>> &out,
@@ -40,7 +40,7 @@ int main()
       open_viii::Tools::execute_on_directories(
         std::filesystem::current_path(), {}, [&field, &threads](const std::filesystem::path &directory_path) {
           threads.emplace_back([&field, directory_path]() {
-            const auto reswizzle_tree = open_viii::graphics::background::ReswizzleTree{ field, directory_path };
+            const auto reswizzle_tree = open_viii::graphics::background::SwizzleTree{ field, directory_path };
             if (!static_cast<bool>(reswizzle_tree)) {
               return;
             }

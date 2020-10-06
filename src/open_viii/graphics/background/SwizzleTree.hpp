@@ -2,8 +2,8 @@
 // Created by pcvii on 9/21/2020.
 //
 
-#ifndef VIIIARCHIVE_RESWIZZLETREE_HPP
-#define VIIIARCHIVE_RESWIZZLETREE_HPP
+#ifndef VIIIARCHIVE_SWIZZLETREE_HPP
+#define VIIIARCHIVE_SWIZZLETREE_HPP
 #include <utility>
 
 #include "Deswizzle.hpp"
@@ -12,7 +12,7 @@
 #include "Reswizzle.hpp"
 #include "open_viii/archive/FIFLFS.hpp"
 namespace open_viii::graphics::background {
-struct ReswizzleTree
+struct SwizzleTree
 {
 private:
   const std::filesystem::path m_dir_path{};
@@ -89,7 +89,7 @@ private:
   }
 
 public:
-  ReswizzleTree(const open_viii::archive::FIFLFS<true> &field, const std::filesystem::path &dir_path)
+  SwizzleTree(const open_viii::archive::FIFLFS<true> &field, const std::filesystem::path &dir_path)
     : m_dir_path(dir_path),
       m_dir_name(dir_path.filename().string()),
       m_fi_filename(get_path_with_ext(archive::FI::EXT)),
@@ -156,4 +156,4 @@ public:
   }
 };
 }// namespace open_viii::graphics::background
-#endif// VIIIARCHIVE_RESWIZZLETREE_HPP
+#endif// VIIIARCHIVE_SWIZZLETREE_HPP

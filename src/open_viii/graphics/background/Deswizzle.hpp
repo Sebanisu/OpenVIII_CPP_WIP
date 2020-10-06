@@ -16,7 +16,7 @@
 #include <utility>
 
 #include "Map.hpp"
-#include "Mim.hpp"
+#include "MimFromPath.hpp"
 namespace open_viii::graphics::background {
 /**
  * Deswizzle is a temporary struct that is used to take a map and mim and descramble the tiles to something modders can
