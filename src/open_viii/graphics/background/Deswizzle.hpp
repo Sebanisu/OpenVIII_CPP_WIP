@@ -66,7 +66,7 @@ private:
   {
     std::ranges::for_each(m_unique_palettes, lambda);
   }
-  void save_out_buffer_and_clear(std::vector<Color16> &out, const Pupu &pupu) const
+  void save_out_buffer_and_clear(std::vector<Color24<0,1,2>> &out, const Pupu &pupu) const
   {
     auto path_v = std::filesystem::path(m_path);
     std::stringstream ss{};
@@ -74,15 +74,22 @@ private:
     ss << (path_v.parent_path() / path_v.stem()).string() << '_' << std::uppercase << std::hex << std::setfill('0')
        << std::setw(hex_width) << pupu << ".mimmap";
     Ppm::save(out, static_cast<uint32_t>(m_canvas.width()), static_cast<uint32_t>(m_canvas.height()), ss.str(), true);
-    static constexpr auto blank = Color16{};
+    static constexpr auto blank = Color24<0,1,2>{};
     std::ranges::fill(out, blank);
   }
-  bool set_color(std::vector<Color16> &out, const std::integral auto &index_out, const Color16 &color) const
+  template <Color cT>
+  bool set_color(std::vector<Color24<0,1,2>> &out, const std::integral auto &index_out, const cT &color) const
   {
     if (!color.is_black()) {
       //assert(out.at(index_out).is_black() || color==out.at(index_out));
       //so there is possible overlapping tiles here. does this matter? because pixels behind cannot be seen in game anyway?
-      out.at(index_out) = color;
+      if constexpr (std::is_same_v<cT,Color24<0,1,2>>) {
+        out.at(index_out) = color;
+      }
+      else
+      {
+        out.at(index_out) = static_cast<Color24<0,1,2>>(color);
+      }
       return true;
     }
     return false;
@@ -106,7 +113,7 @@ public:
 
   void save() const
   {
-    std::vector<Color16> out(static_cast<std::size_t>(m_canvas.area()));
+    std::vector<Color24<0,1,2>> out(static_cast<std::size_t>(m_canvas.area()));
     for_each_pupu([this, &out](const Pupu &pupu) {
       bool drawn = false;
       auto raw_width = m_mim.get_raw_width(pupu.depth());

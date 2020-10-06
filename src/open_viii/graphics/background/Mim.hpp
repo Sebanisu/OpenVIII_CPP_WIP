@@ -203,7 +203,10 @@ public:
   }
   std::size_t get_raw_width(const BPPT &depth) const
   {
-    const auto width = m_mim_type.width();
+    return get_raw_width(depth,m_mim_type.width());
+  }
+  static std::size_t get_raw_width(const BPPT &depth, std::size_t width)
+  {
     if (depth.bpp4()) {
       return width * 2U;
     }
