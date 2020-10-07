@@ -5,7 +5,8 @@
 #ifndef VIIIARCHIVE_MIMFROMPATH_HPP
 #define VIIIARCHIVE_MIMFROMPATH_HPP
 #include "Mim.hpp"
-
+#include <array>
+#include "open_viii/graphics/Ppm.hpp"
 namespace open_viii::graphics::background {
 /**
  * This surfaces the same interface as Mim but the backend will handle multiple images located in path.
@@ -13,7 +14,10 @@ namespace open_viii::graphics::background {
 struct MimFromPath
 {
 private:
+  static constexpr auto MAX_PALETTES_PLUS_1 = 17U;
+  static constexpr auto MAX_TEXTURE_PAGES = 13U;
   MimType m_mim_type{};
+  std::array<std::array<Ppm,MAX_PALETTES_PLUS_1>,MAX_TEXTURE_PAGES> m_textures{};
 
 public:
   MimFromPath() = default;

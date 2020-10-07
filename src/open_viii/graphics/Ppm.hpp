@@ -30,9 +30,8 @@ private:
   Point<std::uint16_t> m_width_height{};
   std::vector<Color24<0, 1, 2>> m_colors{};
   const std::filesystem::path m_path{};
-
-
 public:
+
   Ppm() = default;
   explicit Ppm(const std::string &buffer, std::filesystem::path path= {})
   : m_path(std::move(path))
@@ -102,6 +101,10 @@ public:
     }
   }
   explicit Ppm(const std::filesystem::path &path) : Ppm(Tools::read_file<std::string>(path),path) {}
+  bool empty()
+  {
+    return std::ranges::empty(m_colors) || m_width_height.x() <= 0 || m_width_height.y() <= 0;
+  }
   template<std::ranges::contiguous_range cT>
   static void save(
     const cT &data, std::size_t width, std::size_t height, const std::string_view &input, bool skip_check = false)
@@ -158,6 +161,10 @@ public:
   [[nodiscard]] const Color24<0, 1, 2> &color(const std::size_t &x, const std::size_t &y) const
   {
     return m_colors.at(x + (y * static_cast<std::size_t>(m_width_height.x())));
+  }
+  const Color24<0, 1, 2> & at(const size_t i)
+  {
+    return m_colors.at(i);
   }
 };
 }// namespace open_viii::graphics
