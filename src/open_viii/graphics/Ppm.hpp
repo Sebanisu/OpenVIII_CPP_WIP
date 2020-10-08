@@ -29,10 +29,11 @@ struct Ppm
 private:
   Point<std::uint16_t> m_width_height{};
   std::vector<Color24<0, 1, 2>> m_colors{};
-  const std::filesystem::path m_path{};
+  std::filesystem::path m_path{};
 public:
 
   Ppm() = default;
+  explicit Ppm(const std::filesystem::path &path) : Ppm(Tools::read_file<std::string>(path),path) {}
   explicit Ppm(const std::string &buffer, std::filesystem::path path= {})
   : m_path(std::move(path))
   {
@@ -93,14 +94,15 @@ public:
       if (sz != m_width_height.area()) {
 
         std::cerr << m_path << "\n\t" << sz << " != area of " << m_width_height << std::endl;
-        assert(sz == m_width_height.area());
+        //assert(sz == m_width_height.area());
+        m_width_height = {}; // instead of throwing reset the value and quit.
+        return;
       }
       m_colors.resize(sz);
       std::memcpy(std::ranges::data(m_colors), std::ranges::data(bufferspan), sz * sizeof(Color24<0, 1, 2>));
       // m_colors = { std::ranges::cbegin(colorspan), std::ranges::cend(colorspan) };
     }
   }
-  explicit Ppm(const std::filesystem::path &path) : Ppm(Tools::read_file<std::string>(path),path) {}
   bool empty()
   {
     return std::ranges::empty(m_colors) || m_width_height.x() <= 0 || m_width_height.y() <= 0;

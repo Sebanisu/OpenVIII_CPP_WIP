@@ -84,7 +84,7 @@ private:
   {
 
     //const auto mim = Mim(get_mim_buffer(),m_mim_filename);
-    const auto mim = MimFromPath{m_mim_type};
+    const auto mim = MimFromPath{m_mim_type,m_dir_path, m_dir_name, m_output_prefix};
     const auto map = Map<map_type>{get_map_buffer()};
     const auto r = Deswizzle(mim, map , m_output_prefix);
     r.save();
