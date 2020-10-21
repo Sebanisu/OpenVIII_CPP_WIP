@@ -77,6 +77,12 @@ add_executable(TestReswizzleFields
 set_target_properties(TestReswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestReswizzleFields VIIIPaths VIIIArchive VIIIGraphics)
 
+##test image ReDeswizzle of fields like pupu
+add_executable(TestReDeswizzleFields
+        TestReDeswizzleFields.cpp TestReDeswizzleFields.hpp)
+set_target_properties(TestReDeswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestReDeswizzleFields VIIIPaths VIIIArchive VIIIGraphics)
+
 
 ##test extract all, uses new code to extract files instead of old versions.
 add_executable(TestExtractALL

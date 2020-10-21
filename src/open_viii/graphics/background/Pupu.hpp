@@ -13,6 +13,7 @@
 
 #ifndef VIIIARCHIVE_PUPU_HPP
 #define VIIIARCHIVE_PUPU_HPP
+#include "IntegralStorage.hpp"
 #include "Tile1.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
@@ -34,6 +35,9 @@ private:
   std::uint8_t m_animation_id{};
   std::uint8_t m_animation_state{};
   constexpr static int HEX_BASE = 16;
+  static constexpr int BIT4 = 4;
+  static constexpr int BIT8 = 8;
+  static constexpr int BIT16 = 16;
 
 public:
   Pupu() = default;
@@ -105,41 +109,14 @@ public:
    */
   [[nodiscard]] std::uint64_t generate() const noexcept
   {
-    constexpr auto bits_per_long = static_cast<int>(sizeof(std::uint64_t) * 8);
-    auto bits = bits_per_long;
-    std::uint64_t pupu_id{};
-    [[maybe_unused]] const auto add_common = [&bits, &pupu_id](
-                                               const std::uint64_t value, const int &shift, const uint64_t &mask) {
-      bits -= shift;
-      pupu_id |= std::rotl((value & mask), bits);
-    };
-    [[maybe_unused]] const auto add_crumb = [&add_common](const auto &value) {
-      static constexpr auto bits_per_crumb = static_cast<int>(sizeof(std::uint8_t) * 8) / 4;// 0-3
-      static constexpr auto crumb_mask = 0x3U;
-      add_common(value, bits_per_crumb, crumb_mask);
-    };
-    [[maybe_unused]] const auto add_nibble = [&add_common](const auto &value) {
-      static constexpr auto bits_per_nibble = static_cast<int>(sizeof(std::uint8_t) * 8) / 2;// 0-15
-      static constexpr auto nibble_mask = 0xFU;
-      add_common(static_cast<std::uint64_t>(value), bits_per_nibble, nibble_mask);
-    };
-    [[maybe_unused]] const auto add_byte = [&add_common](const auto &value) {
-      static constexpr auto bits_per_byte = static_cast<int>(sizeof(std::uint8_t) * 8);// 0-255
-      static constexpr auto byte_mask = 0xFFU;
-      add_common(value, bits_per_byte, byte_mask);
-    };
-    [[maybe_unused]] const auto add_short = [&add_common](const auto &value) {
-      static constexpr auto bits_per_short = static_cast<int>(sizeof(std::uint16_t) * 8);
-      [[maybe_unused]] static constexpr auto short_mask = 0xFFFFU;
-      add_common(value, bits_per_short, short_mask);
-    };
-    add_crumb(m_depth.raw());
-    add_nibble(m_layer_id);
-    add_nibble(m_blend_mode);
-    add_byte(m_animation_id);
-    add_byte(m_animation_state);
-    add_short(m_z);
-    return pupu_id;
+    const integral_storage::Writer<std::uint64_t> pupu_writer{};
+    pupu_writer.add_depth(m_depth);
+    pupu_writer.add_uint<BIT4>(m_layer_id);
+    pupu_writer.add_uint<BIT4>(static_cast<std::uint8_t>(m_blend_mode));
+    pupu_writer.add_uint<BIT8>(m_animation_id);
+    pupu_writer.add_uint<BIT8>(m_animation_state);
+    pupu_writer.add_uint<BIT16>(m_z);
+    return pupu_writer.get_id();
   }
   [[nodiscard]] explicit operator std::uint64_t() const
   {
@@ -150,59 +127,18 @@ public:
     return os << std::uppercase << std::hex << std::setfill('0') << std::setw(16U) << input.generate()
               << std::nouppercase << std::dec << std::setfill(' ') << std::setw(0U);
   }
-  constexpr explicit Pupu(std::uint64_t pupu_id) noexcept
+  constexpr explicit Pupu(const std::uint64_t & pupu_id) noexcept
   {
     if (pupu_id == 0) {
       return;
     }
-    constexpr auto bits_per_long = static_cast<int>(sizeof(std::uint64_t) * 8);
-
-    int bits = bits_per_long;
-
-    [[maybe_unused]] const auto extract_common = [&bits, &pupu_id](const int &shift, const uint64_t &mask) {
-      bits -= shift;
-      return std::rotr(pupu_id, bits) & mask;
-    };
-    [[maybe_unused]] const auto extract_crumb = [&extract_common]() -> std::uint8_t {
-      static constexpr auto bits_per_crumb = static_cast<int>(sizeof(std::uint8_t) * 8) / 4;// 0-3
-      [[maybe_unused]] static constexpr auto crumb_mask = 0x3U;
-      return static_cast<std::uint8_t>(extract_common(bits_per_crumb, crumb_mask));
-    };
-    [[maybe_unused]] const auto extract_nibble = [&extract_common]() -> std::uint8_t {
-      static constexpr auto bits_per_nibble = static_cast<int>(sizeof(std::uint8_t) * 8) / 2;// 0-15
-      [[maybe_unused]] static constexpr auto nibble_mask = 0xFU;
-      return static_cast<std::uint8_t>(extract_common(bits_per_nibble, nibble_mask));
-    };
-
-    [[maybe_unused]] const auto extract_byte = [&extract_common]() -> std::uint8_t {
-      static constexpr auto bits_per_byte = static_cast<int>(sizeof(std::uint8_t) * 8);// 0-255
-      [[maybe_unused]] static constexpr auto byte_mask = 0xFFU;
-      return static_cast<std::uint8_t>(extract_common(bits_per_byte, byte_mask));
-    };
-    [[maybe_unused]] const auto extract_short = [&extract_common]() -> std::uint16_t {
-      static constexpr auto bits_per_short = static_cast<int>(sizeof(std::uint16_t) * 8);
-      [[maybe_unused]] constexpr static auto short_mask = 0xFFFFU;
-      return static_cast<std::uint16_t>(extract_common(bits_per_short, short_mask));
-    };
-    using namespace literals;
-    const auto extract_depth = [&extract_crumb]() {
-      switch (extract_crumb()) {
-      default:
-        return 4_bpp;
-      case 1:
-        return 8_bpp;
-      case 2:
-        return 16_bpp;
-      case 3:
-        return 24_bpp;
-      }
-    };
-    m_depth = extract_depth();
-    m_layer_id = extract_nibble();
-    m_blend_mode = static_cast<BlendModeT>(extract_nibble());
-    m_animation_id = extract_byte();
-    m_animation_state = extract_byte();
-    m_z = extract_short();
+    integral_storage::Reader<std::uint64_t> pupu_reader{pupu_id};
+    m_depth = pupu_reader.extract_depth();
+    m_layer_id = pupu_reader.extract_uint<BIT4>();
+    m_blend_mode = static_cast<BlendModeT>(pupu_reader.extract_uint<BIT4>());
+    m_animation_id = pupu_reader.extract_uint<BIT8>();
+    m_animation_state = pupu_reader.extract_uint<BIT8>();
+    m_z = pupu_reader.extract_uint<BIT16>();
   }
 
   explicit Pupu(std::string_view hex) : Pupu(std::strtoull(std::ranges::data(hex), nullptr, HEX_BASE)) {}

@@ -65,7 +65,7 @@ private:
     std::uint16_t val{ static_cast<std::uint_fast8_t>(
       std::clamp(input, static_cast<T>(0), static_cast<T>(std::numeric_limits<std::uint8_t>::max()))) };
     val >>= CONVERT_SHIFT;
-    val <<= shift;
+    val = static_cast<decltype(val)>(val << shift);
     m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
   }
 

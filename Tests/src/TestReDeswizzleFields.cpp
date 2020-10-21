@@ -10,7 +10,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include "TestReswizzleFields.hpp"
+#include "TestReDeswizzleFields.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/graphics/Ppm.hpp"
 #include "open_viii/graphics/background/Map.hpp"
@@ -40,12 +40,12 @@ int main()
       open_viii::Tools::execute_on_directories(
         std::filesystem::current_path(), {}, [&field, &threads](const std::filesystem::path &directory_path) {
           threads.emplace_back([&field, directory_path]() {
-            const auto reswizzle_tree = open_viii::graphics::background::SwizzleTree{ field, directory_path };
-            if (!static_cast<bool>(reswizzle_tree)) {
+            const auto swizzle_tree = open_viii::graphics::background::SwizzleTree{ field, directory_path };
+            if (!static_cast<bool>(swizzle_tree)) {
               return;
             }
             std::cout << directory_path << std::endl;
-            reswizzle_tree.reswizzle();
+            swizzle_tree.deswizzle();
           });
 
           if (threads.size() > 16) {

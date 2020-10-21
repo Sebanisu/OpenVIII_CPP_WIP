@@ -387,11 +387,73 @@ public:
       }
     }
   }
-
   template<std::unsigned_integral intT, std::invocable<intT, intT> lambdaT>
   static void for_each_xy(const intT &max_xy, const lambdaT &lambda)
   {
     for_each_xy(max_xy, max_xy, lambda);
+  }
+  /**
+   * @see https://godbolt.org/z/qdqeP3
+   */
+  template<std::integral retT = std::uint64_t> static consteval retT largest_bit_value()
+  {
+    constexpr auto bits_per_byte = 8U;
+    return sizeof(retT) * bits_per_byte;
+  }
+  template<std::integral retT = std::uint64_t> static consteval retT largest_bit_value(int i)
+  {
+    if constexpr (std::signed_integral<retT>) {
+      using unsigned_retT = typename std::make_unsigned<retT>::type;
+      return static_cast<retT>(largest_bit_value<unsigned_retT>(i));
+    } else {
+      retT return_value{};
+      constexpr auto max = largest_bit_value<retT>();
+      // std::cout << max<< '\n';
+      if (max < static_cast<unsigned>(i)) {
+        i = static_cast<signed>(max);
+      }
+      while (i-- > 0) {
+        return_value = static_cast<retT>(static_cast<retT>(return_value << 1U) | 1U);
+        // std::cout << i+1 << '\t' << return_value << '\n';
+      }
+      return return_value;
+    }
+  }
+  /**
+   * @see https://godbolt.org/z/qdqeP3
+   */
+  template<std::integral retT = std::uint64_t> static consteval retT flip_bits(retT i)
+  {
+    if constexpr (std::signed_integral<retT>) {
+      using unsigned_retT = typename std::make_unsigned<retT>::type;
+      return static_cast<retT>(flip_bits<unsigned_retT>(i));
+    } else {
+      constexpr auto max = std::numeric_limits<retT>::max();
+      return static_cast<retT>(max - i);
+    }
+  }
+/**
+ *
+ * @tparam bit_count number of bits in mask
+ * @return smallest integral that holds largest bitmask.
+ * @see https://godbolt.org/z/djG1fz
+ */
+  template<int bit_count> static consteval auto get_mask()
+  {
+    constexpr auto bit_count_8 = 8;
+    constexpr auto bit_count_16 = 16;
+    constexpr auto bit_count_32 = 32;
+    if constexpr (bit_count <= 0) {
+      return uint8_t(0U);
+    } else if constexpr (bit_count >= 1 && bit_count <= bit_count_8) {
+      return largest_bit_value<std::uint8_t>(bit_count);
+    } else if constexpr (bit_count > bit_count_8 && bit_count <= bit_count_16) {
+      return largest_bit_value<std::uint16_t>(bit_count);
+    } else if constexpr (bit_count > bit_count_16 && bit_count <= bit_count_32) {
+      return largest_bit_value<std::uint32_t>(bit_count);
+    } else if constexpr (bit_count > bit_count_32 /* && bit_count <= 64*/) {
+      return largest_bit_value<std::uint64_t>(bit_count);
+    }
   }
 };
 }// namespace open_viii

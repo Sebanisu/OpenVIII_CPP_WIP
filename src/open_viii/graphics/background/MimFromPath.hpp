@@ -93,7 +93,7 @@ private:
             palette = static_cast<std::uint8_t>(std::strtol(std::ranges::data(number), nullptr, base));
           } break;
           }
-          //maybe should throw if not 0 or 1.
+          // maybe should throw if not 0 or 1.
           last = found + 1;
           found = suffix.find_first_of(search_params, last);
         }
@@ -127,8 +127,16 @@ public:
     [[maybe_unused]] const std::uint8_t &palette,
     [[maybe_unused]] const std::uint8_t &texture_id) const
   {
+    const auto &palette_texture = m_textures.at(texture_id, palette);
+    if (!palette_texture.empty()) {
+      const auto color = palette_texture.color(x, y);
 
-    return Color24{};
+      if (!color.is_black()) {
+        return color;
+      }
+    }
+    const auto &default_texture = m_textures.at(texture_id, DEFAULT_PALETTE);
+    return default_texture.color(x, y);
   }
 };
 }// namespace open_viii::graphics::background
