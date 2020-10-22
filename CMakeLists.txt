@@ -18,31 +18,30 @@ elseif (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++2a /W4")
     # change to latest for cpp20 pre release
 endif (CMAKE_COMPILER_IS_GNUCXX)
-add_subdirectory(External)
-find_package(Git QUIET)
-if (GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
-    # Update submodules as needed
-    option(GIT_SUBMODULE "Check submodules during build" ON)
-    if (GIT_SUBMODULE)
-        message(STATUS "Submodule foreach reset")
-        execute_process(COMMAND ${GIT_EXECUTABLE} submodule foreach git reset --hard
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                RESULT_VARIABLE GIT_SUBMOD_RESULT)
-        message(STATUS "Submodule foreach git pull")
-        execute_process(COMMAND ${GIT_EXECUTABLE} submodule foreach git pull origin master
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                RESULT_VARIABLE GIT_SUBMOD_RESULT)
-        if (NOT GIT_SUBMOD_RESULT EQUAL "0")
-            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        endif ()
-        #        message(STATUS "Submodule update")
-        #        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-        #                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        #                RESULT_VARIABLE GIT_SUBMOD_RESULT)
-        #        if (NOT GIT_SUBMOD_RESULT EQUAL "0")
-        #            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        #        endif ()
-    endif ()
-endif ()
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG release-1.8.0
+)
+FetchContent_MakeAvailable(googletest)
+
+
+FetchContent_Declare(
+        lz4_lib
+        GIT_REPOSITORY https://github.com/lz4/lz4.git
+        GIT_TAG v1.9.2
+)
+FetchContent_MakeAvailable(lz4_lib)
+
+FetchContent_GetProperties(lz4_lib)
+
+add_library(External_lz4
+        ${lz4_lib_SOURCE_DIR}/lib/lz4.h
+        ${lz4_lib_SOURCE_DIR}/lib/lz4.c
+        )
+
+set_target_properties(External_lz4 PROPERTIES LINKER_LANGUAGE CXX)
+target_include_directories(External_lz4 PUBLIC ${lz4_lib_SOURCE_DIR})
 add_subdirectory(src)
 add_subdirectory(Tests)
