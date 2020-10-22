@@ -13,12 +13,15 @@ namespace open_viii::graphics::background {
  */
 struct MimFromPath
 {
-private:
+public:
   struct TexturesByPalettes
   {
   public:
     static constexpr auto MAX_PALETTES_PLUS_1 = 18U;
-    auto &at(const size_t &palette) const
+  private:
+    mutable std::array<Ppm, MAX_PALETTES_PLUS_1> m_palettes{};
+  public:
+    [[nodiscard]] auto &at(const size_t &palette) const
     {
       return m_palettes.at(palette);
     }
@@ -28,20 +31,34 @@ private:
       m_palettes.at(palette) = std::move(value);
     }
 
-  private:
-    mutable std::array<Ppm, MAX_PALETTES_PLUS_1> m_palettes{};
+    [[nodiscard]] auto & to_array() const noexcept
+    {
+      return m_palettes;
+    }
+    friend std::ostream & operator <<(std::ostream & os, const TexturesByPalettes & data)
+    {
+      std::ranges::for_each(data.to_array(),[&os](const Ppm & ppm)
+      {
+        if(!ppm.empty()) {
+          os << ppm;
+        }
+      });
+      return os;
+    }
   };
-
   struct PalettesByTexturePages
   {
 
   public:
     static constexpr auto MAX_TEXTURE_PAGES = 14U;
-    auto &at(const size_t &texture_page) const
+  private:
+    mutable std::array<TexturesByPalettes, MAX_TEXTURE_PAGES> m_texture_pages{};
+  public:
+    [[nodiscard]] auto &at(const size_t &texture_page) const
     {
       return m_texture_pages.at(texture_page);
     }
-    auto &at(const size_t &texture_page, const size_t &palette) const
+    [[nodiscard]] auto &at(const size_t &texture_page, const size_t &palette) const
     {
       return m_texture_pages.at(texture_page).at(palette);
     }
@@ -51,9 +68,21 @@ private:
       m_texture_pages.at(texture_page).set(palette, std::move(value));
     }
 
-  private:
-    mutable std::array<TexturesByPalettes, MAX_TEXTURE_PAGES> m_texture_pages{};
+    [[nodiscard]] auto & to_array() const noexcept
+    {
+      return m_texture_pages;
+    }
+    friend std::ostream & operator <<(std::ostream & os, const PalettesByTexturePages & data)
+    {
+      std::ranges::for_each(data.to_array(),[&os](const TexturesByPalettes & tbp)
+      {
+          os << tbp;
+        });
+      return os;
+    }
   };
+
+private:
   static constexpr auto DEFAULT_PALETTE = TexturesByPalettes::MAX_PALETTES_PLUS_1 - 1;
   const MimType m_mim_type{};
   const std::filesystem::path &m_dir_path{};
@@ -67,7 +96,7 @@ private:
     open_viii::Tools::execute_on_directory(m_dir_path,
       { m_dir_name },
       { ".ppm" },
-      [textures, this]([[maybe_unused]] const std::filesystem::path &file_path) {
+      [&textures, this]([[maybe_unused]] const std::filesystem::path &file_path) {
         const auto filename = file_path.filename().stem().string();
         if (!filename.ends_with(')')) {
           return;
@@ -97,11 +126,14 @@ private:
           last = found + 1;
           found = suffix.find_first_of(search_params, last);
         }
-        std::cout << "texture page: " << static_cast<uint16_t>(texture_page)
-                  << "\t palette: " << static_cast<uint16_t>(palette) << '\n';
+        std::cout << "texture page: " << std::setw(2U)<< static_cast<uint16_t>(texture_page)
+                  << "\t palette: " << std::setw(2U)<< static_cast<uint16_t>(palette)
+                  << "\t path: \"" << file_path.string() << '"'
+                  << '\n';
         // Load the image into the correct part of array.
         textures.set(texture_page, palette, Ppm(file_path));
       });
+    std::cout << textures << '\n';
     return textures;
   }
 
