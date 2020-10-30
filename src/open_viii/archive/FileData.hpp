@@ -67,7 +67,7 @@ public:
   // size of this file entry in the zzz file.
   [[maybe_unused]] [[nodiscard]] constexpr auto total_size()
   {
-    return sizeof(unsigned int) + std::size(m_filename) + sizeof(m_offset) + sizeof(m_size);
+    return sizeof(unsigned int) + std::ranges::size(m_filename) + sizeof(m_offset) + sizeof(m_size);
   }
   // gets path as a std::filesystem::path
   [[maybe_unused]] [[nodiscard]] auto get_path() const

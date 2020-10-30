@@ -32,7 +32,7 @@ int main()
     //      sectionOffsets.begin(), sectionOffsets.end(),[](const auto &value) { std::cout << value << std::endl; });
     //    kernel.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::first),
     //      static_cast<int>(open_viii::kernel::SectionTypesT::count)>([](const std::string_view &string,const
-    //      std::span<const char> & span, const auto & data) { std::cout << "  " << string << " - " << std::size(span)
+    //      std::span<const char> & span, const auto & data) { std::cout << "  " << string << " - " << std::ranges::size(span)
     //      << " bytes\n";
     //
     //      return data;

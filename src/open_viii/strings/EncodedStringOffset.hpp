@@ -55,9 +55,9 @@ private:
   {
     using namespace std::literals::string_view_literals;
 
-    if (offset >= 0 && !std::empty(buffer) && std::size(buffer) > static_cast<size_t>(offset)) {
+    if (offset >= 0 && !std::empty(buffer) && std::ranges::size(buffer) > static_cast<size_t>(offset)) {
       auto size = find_string_size(buffer, offset, skip_first_null);
-      if (size > 0 && std::size(buffer) > (static_cast<size_t>(offset) + static_cast<size_t>(size))) {
+      if (size > 0 && std::ranges::size(buffer) > (static_cast<size_t>(offset) + static_cast<size_t>(size))) {
         // return std::span<const char>(buffer.data() + static_cast<size_t>(offset), static_cast<size_t>(size));
         return buffer.subspan(static_cast<size_t>(offset), static_cast<size_t>(size));
       }

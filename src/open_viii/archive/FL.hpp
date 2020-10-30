@@ -44,7 +44,7 @@ private:
    */
   constexpr static void clean_string(std::string &input, const bool &skip_fixed = true) noexcept
   {
-    if (std::size(input) > 4) {
+    if (std::ranges::size(input) > 4) {
 
       if (Tools::i_starts_with(std::string_view(input).substr(0, 2), "c:")) {
         input.erase(0, 3);// remove c:\ from the start of the strings.
@@ -134,7 +134,7 @@ public:
     // shorter length and then what ever str < str2 does.
 
 
-    if (std::empty(data) || (std::size(data) == 1U && data[0] == '\0')) {
+    if (std::empty(data) || (std::ranges::size(data) == 1U && data[0] == '\0')) {
       auto fp = std::ifstream(path, std::ios::in);
       if (fp.is_open()) {
         process(fp);

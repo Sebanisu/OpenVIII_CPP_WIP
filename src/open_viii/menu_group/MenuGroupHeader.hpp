@@ -41,10 +41,10 @@ public:
   template<typename mainT> explicit MenuGroupHeader(const mainT &main)
   {
     auto buffer = main.get_entry_data(FILENAME);
-    if (std::size(buffer) < sizeof(std::uint32_t) || SIZE != std::size(buffer)) {
+    if (std::ranges::size(buffer) < sizeof(std::uint32_t) || SIZE != std::ranges::size(buffer)) {
       return;
     }
-    std::memcpy(m_sections.data(), buffer.data(), std::size(buffer));
+    std::memcpy(m_sections.data(), buffer.data(), std::ranges::size(buffer));
   }
 };
 }// namespace open_viii::menu_group

@@ -58,9 +58,9 @@ public:
       exit(1);
     }
     ptr += sizeof(m_size);
-    std::memcpy(m_sections.data(), ptr, std::size(m_sections) * sizeof(std::uint16_t));
+    std::memcpy(m_sections.data(), ptr, std::ranges::size(m_sections) * sizeof(std::uint16_t));
     ptr += sizeof(m_sections);
-    for (size_t i = 0; i < std::size(m_sections); i++) {
+    for (size_t i = 0; i < std::ranges::size(m_sections); i++) {
       //[Count of Subsections] = [Start of file] + [Section value]
       if (m_sections.at(i) == 0U) {
         continue;

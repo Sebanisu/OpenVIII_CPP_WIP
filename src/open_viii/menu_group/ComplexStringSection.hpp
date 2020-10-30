@@ -89,7 +89,7 @@ public:
   [[nodiscard]] ComplexStringSectionOffsets at(const size_t &id) const
   {
     ComplexStringSectionOffsets d{};
-    if (id >= m_count || sizeof(d) * id >= std::size(m_buffer)) {
+    if (id >= m_count || sizeof(d) * id >= std::ranges::size(m_buffer)) {
       return {};// throw?
     }
     memcpy(&d, m_buffer.data() + (sizeof(d) * id), sizeof(d));

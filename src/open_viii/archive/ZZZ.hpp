@@ -78,8 +78,8 @@ public:
     std::sort(m_data.begin(), m_data.end(), [](const FileData &left, const FileData &right) {
       const auto right_string = right.get_path_string();
       const auto left_string = left.get_path_string();
-      const auto right_size = std::size(right_string);
-      const auto left_size = std::size(left_string);
+      const auto right_size = std::ranges::size(right_string);
+      const auto left_size = std::ranges::size(left_string);
       if (left_size == right_size) {
         return left_string < right_string;
       }
@@ -177,7 +177,7 @@ public:
 
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const ZZZ &data)
   {
-    return os << '{' << data.path().stem().string() << " zzz {" << std::size(data.data())
+    return os << '{' << data.path().stem().string() << " zzz {" << std::ranges::size(data.data())
               << " File Entries from : " << data.path() << "}}";
   }
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const std::optional<ZZZ> &data)
