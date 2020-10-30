@@ -76,7 +76,7 @@ public:
   {
     auto length = [this]() {
       if constexpr (static_cast<int>(sectionType) >= (static_cast<int>(SectionTypesT::count) - 1)) {
-        return std::size(m_buffer) - m_section_offsets.at(static_cast<size_t>(sectionType));
+        return std::ranges::size(m_buffer) - m_section_offsets.at(static_cast<size_t>(sectionType));
       } else {
         return static_cast<size_t>(m_section_offsets.at(static_cast<size_t>(sectionType) + 1)
                                    - m_section_offsets.at(static_cast<size_t>(sectionType)));
@@ -296,23 +296,23 @@ public:
     }
   }
 
-  template<typename mainT> explicit Header(const mainT &main)
+  template<FIFLFS_Has_get_entry_data mainT> explicit Header(const mainT &main)
   {
     m_buffer = main.get_entry_data(FILE_NAME);
-    if (std::size(m_buffer) < sizeof(std::uint32_t)) {
+    auto buffer_span = std::span<const char>(m_buffer);
+    if (std::ranges::size(buffer_span) < sizeof(std::uint32_t)) {
       return;
     }
-    std::uint32_t sectionCount{};
-    std::memcpy(&sectionCount, m_buffer.data(), sizeof(sectionCount));
-    if (std::size(m_buffer) < sizeof(std::uint32_t) * (sectionCount + 1)) {
+    std::uint32_t section_count{};
+    std::memcpy(&section_count, std::ranges::data(buffer_span), sizeof(section_count));
+    if (std::ranges::size(buffer_span) < sizeof(std::uint32_t) * (section_count+1)) {
       return;
     }
-    m_section_offsets.reserve(sectionCount);
-    size_t i{ 1 };
-    // todo: remove pointers. use span.
-    while (sectionCount-- > 0) {
+    m_section_offsets.reserve(section_count);
+    while (section_count-- > 0) {
+      buffer_span = buffer_span.subspan(sizeof(section_count));
       std::memcpy(
-        &m_section_offsets.emplace_back(), m_buffer.data() + (sizeof(sectionCount) * (i++)), sizeof(sectionCount));
+        &m_section_offsets.emplace_back(),  std::ranges::data(buffer_span), sizeof(section_count));
     }
   }
   [[nodiscard]] const auto &buffer() const noexcept
