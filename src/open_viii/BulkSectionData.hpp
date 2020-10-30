@@ -21,7 +21,7 @@
 
 namespace open_viii {
 
-template<typename spanT, size_t max = 0U> requires(sizeof(spanT) > 0U) struct BulkSectionData
+template<typename spanT, size_t max = 0U> struct BulkSectionData
 {
 private:
   // data
@@ -49,7 +49,6 @@ public:
       return max;
     }
   }
-
   template<typename T = std::size_t> requires(std::integral<T> && !std::signed_integral<T>) auto at(const T id_v) const
   {
     auto id = static_cast<size_t>(id_v);
@@ -77,15 +76,6 @@ public:
     memcpy(&r, m_span.data() + (id * sizeof(spanT)), sizeof(spanT));
     return r;
   }
-
-  //  auto &begin() const
-  //  {
-  //    return at(0);
-  //  }
-  //  auto &end() const
-  //  {
-  //    return at(size()-1);
-  //  }
   [[maybe_unused]] auto &span() const noexcept
   {
     return m_span;
@@ -95,10 +85,5 @@ public:
     return m_text_span;
   }
 };
-//template<typename spanT, size_t max = 0U>
-//requires(sizeof(spanT) > 0U) struct BulkSectionDataIterator
-//  : public std::iterator<std::input_iterator_tag, BulkSectionData<spanT, max>>
-//{
-//};
 }// namespace open_viii
 #endif// VIIIARCHIVE_BULKSECTIONDATA_HPP
