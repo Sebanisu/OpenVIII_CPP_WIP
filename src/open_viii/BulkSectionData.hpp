@@ -49,7 +49,7 @@ public:
       return max;
     }
   }
-  template<typename T = std::size_t> requires(std::integral<T> && !std::signed_integral<T>) auto at(const T id_v) const
+  template<std::unsigned_integral T = std::size_t> auto at(const T id_v) const
   {
     auto id = static_cast<size_t>(id_v);
     if constexpr (std::is_same_v<T, ItemIdT>) {
