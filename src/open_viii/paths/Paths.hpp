@@ -46,8 +46,13 @@ public:
     std::ranges::for_each(get(), [&lambda](std::string &path) {
       open_viii::Tools::replace_slashes(path);
       const auto fs_path = std::filesystem::path(path);
-      if (std::filesystem::exists(fs_path)) {
+      std::error_code ec{};
+      if (std::filesystem::exists(fs_path, ec)) {
         lambda(fs_path);
+      }
+      if(ec) {
+        std::cerr << ec.message() << std::endl;
+        ec.clear();
       }
     });
   }

@@ -5,28 +5,26 @@
 #ifndef VIIIARCHIVE_FILESECTIONTYPE_HPP
 #define VIIIARCHIVE_FILESECTIONTYPE_HPP
 #include <cinttypes>
+#include <string_view>
 
 namespace open_viii {
-enum struct FileSectionTypeT : std::uint32_t {
-  none = 0,
+struct FileSectionTypeT{
+public:
+  constexpr static auto NONE = std::string_view("");
   /**
    * Cam file
    * @remark F8P
    */
-  cam = 0x503846,
-  cam2 = 0x463850,
+  constexpr static auto CAM = std::string_view("F8P");
   /**
    * Bink Video
    */
-  bik = 0x4B4942,
+
+  constexpr static auto BIK = std::string_view("BIK");
   /**
    * Bink Video Version 2.
    */
-  kb2 = 0X32424B,
-  /**
-   * 3 Byte Mask to take uint and extract only the part we need.
-   */
-  mask_3b = 0xFFFFFF
+  constexpr static auto KB2 = std::string_view("KB2");
 };
 }
 #endif// VIIIARCHIVE_FILESECTIONTYPE_HPP
