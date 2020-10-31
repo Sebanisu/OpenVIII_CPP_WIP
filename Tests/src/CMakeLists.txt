@@ -89,3 +89,10 @@ add_executable(TestExtractALL
         TestExtractALL.cpp TestExtractALL.hpp)
 set_target_properties(TestExtractALL PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractALL VIIIPaths VIIIArchive)
+
+
+##test extract all, uses new code to extract files instead of old versions.
+add_executable(TestExtractPAK
+        TestExtractPAK.cpp TestExtractPAK.hpp)
+set_target_properties(TestExtractPAK PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestExtractPAK VIIIPaths)
