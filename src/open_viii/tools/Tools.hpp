@@ -106,6 +106,26 @@ public:
     fp.close();
     return buffer;
   }
+
+  template<typename lambdaT>
+  requires(std::invocable<lambdaT, std::istream &>) [[maybe_unused]] static bool read_buffer(
+    const lambdaT &lambda, const std::filesystem::path &path)
+  {
+
+    auto fp = std::ifstream{};
+    for (;;) {
+      fp.open(path, std::ios::in | std::ios::binary);
+      if (fp.is_open()) {
+        break;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    std::cout << (std::string("Loading: \t\"") + path.string() + std::string("\"\n"));
+    lambda(fp);
+    fp.close();
+    return true;
+  }
+
   template<typename lambdaT>
   requires(std::invocable<lambdaT, std::ostream &>) [[maybe_unused]] static bool write_buffer(
     const lambdaT &lambda, const std::string_view &path, const std::string_view &root = "tmp")
