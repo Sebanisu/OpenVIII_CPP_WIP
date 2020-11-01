@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <iostream>
 #include <ranges>
+#include <utility>
 #include <vector>
 namespace open_viii {
 /**
@@ -66,17 +67,17 @@ private:
   std::filesystem::path m_file_path{};
 
 public:
-  Pak(const std::filesystem::path &path) : m_file_path(path)
+  explicit Pak(std::filesystem::path path) : m_file_path(std::move(path))
   {
-    static constexpr auto default_size = 7U;
-    m_movies.reserve(default_size);
+//    static constexpr auto default_size = 7U;
+//    m_movies.reserve(default_size);
     //  _readFunctions = new Dictionary<Type, Func<BinaryReader, Type, FileSection>>()
     //  {
     //    {Type.Cam, ReadCam },
     //    {Type.Bik, ReadBik },
     //    {Type.Kb2, ReadKb2 },
     //  };
-    read(path);
+    read();
   }
 
 
@@ -93,7 +94,7 @@ public:
    * Current path
    * @return ref to path of pak file.
    */
-  [[nodiscard]] const auto &file_path() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &file_path() const noexcept
   {
     return m_file_path;
   }
@@ -102,7 +103,7 @@ public:
    * Each Movie has 1 cam and 2 versions of the video.
    * @return vector of movies.
    */
-  [[nodiscard]] const auto &movies() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &movies() const noexcept
   {
     return m_movies;
   }
@@ -211,7 +212,7 @@ public:
    * Read complete pak file for offsets and sizes of each section.
    * @param path File path info
    */
-  void read(std::filesystem::path path)
+  void read()
   {
     Tools::read_buffer(
       [this](std::istream &is) {
@@ -251,13 +252,14 @@ public:
               fs.Offset = static_cast<std::int64_t>(is.tellg()) - 4;
 
               {
-                const auto sz = sizeof(std::uint32_t);
+                static constexpr auto sz = sizeof(std::uint32_t);
                 std::array<char, sz> tmp{};
 
                 is.read(std::ranges::data(tmp), sz);
                 std::memcpy(&fs.Size, std::ranges::data(tmp), sz);
 
-                fs.Size += 8U;
+                static constexpr auto header_size = 8U;
+                fs.Size += header_size;
 
                 is.read(std::ranges::data(tmp), sz);
                 std::memcpy(&fs.Frames, std::ranges::data(tmp), sz);
@@ -342,7 +344,7 @@ public:
           }
         }
       },
-      path);
+      m_file_path);
   }
   friend std::ostream &operator<<(std::ostream &os, const Pak &pak)
   {
