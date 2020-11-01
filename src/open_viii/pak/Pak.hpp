@@ -143,16 +143,19 @@ public:
                   }
                   return true;
                 }()) {
-              Tools::write_buffer(
-                [&is, &fs](std::ostream &os) {
-                  std::cout << "Extracting \"" << fs.FileName << "\"\n";
-                  is.seekg(fs.Offset, std::ios::beg);
-                  std::vector<char> tmp{};
-                  tmp.resize(fs.Size);
-                  is.read(std::ranges::data(tmp), static_cast<std::intmax_t>(fs.Size));
-                  os.write(std::ranges::data(tmp), static_cast<std::intmax_t>(fs.Size));
-                },
-                out_path.string());
+
+              if(!std::ranges::empty(fs.FileName) && fs.Size>0U) {
+                Tools::write_buffer(
+                  [&is, &fs](std::ostream &os) {
+                    std::cout << "Extracting \"" << fs.FileName << "\"\n";
+                    is.seekg(fs.Offset, std::ios::beg);
+                    std::vector<char> tmp{};
+                    tmp.resize(fs.Size);
+                    is.read(std::ranges::data(tmp), static_cast<std::intmax_t>(fs.Size));
+                    os.write(std::ranges::data(tmp), static_cast<std::intmax_t>(fs.Size));
+                  },
+                  out_path.string());
+              }
             }
           };
 
@@ -232,7 +235,7 @@ public:
           };
           auto type = get_type();
           if (std::ranges::equal(type, FileSectionTypeT::BIK) || std::ranges::equal(type, FileSectionTypeT::KB2)) {
-            std::cout << "bink\n";
+            //std::cout << "bink\n";
             /**
              * Read Bink video offset and size
              */
@@ -291,7 +294,7 @@ public:
             }();
 
           } else if (std::ranges::equal(type, FileSectionTypeT::CAM)) {
-            std::cout << "cam\n";
+           // std::cout << "cam\n";
             /**
              * Read cam file offset and size
              */
@@ -351,10 +354,12 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const Pak &pak)
   {
-    std::ranges::for_each(pak.m_movies, [&os, i = 0](const MovieClip &item) mutable {
-      os << i++ << ": " << item << '\n';
+    os << pak.m_file_path << '\n';
+    os<<"{| class=\"wikitable sortable\"\n! FileName !! Frames !! Offset !! Size !! Type\n";
+    std::ranges::for_each(pak.m_movies, [&os](const MovieClip &item) mutable {
+      os << item;
     });
-    return os;
+    return os << "|}\n";
   }
 };
 }// namespace open_viii

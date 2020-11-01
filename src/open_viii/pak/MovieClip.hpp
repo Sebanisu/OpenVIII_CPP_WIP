@@ -26,7 +26,15 @@ public:
   FileSection Cam;
   friend std::ostream &operator<<(std::ostream &os, const MovieClip &movie_clip)
   {
-    return os << "(BinkHigh)=" << movie_clip.BinkHigh << ", (BinkLow)=" << movie_clip.BinkLow << ", (Cam)=" << movie_clip.Cam << '\n';
+    const auto out = [&os](const FileSection &section) {
+      if (section.Size > 0) {
+        os << "|-\n" << section;
+      }
+    };
+    out(movie_clip.Cam);
+    out(movie_clip.BinkHigh);
+    out(movie_clip.BinkLow);
+    return os;
   }
 };
 }// namespace open_viii

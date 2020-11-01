@@ -82,36 +82,39 @@ public:
 
   template<typename dstT = std::vector<char>> [[maybe_unused]] static auto read_buffer(std::istream &fp)
   {
-    fp.seekg(0, std::ios::end);
-    const auto s = fp.tellg();
-    fp.seekg(0, std::ios::beg);
-    return read_buffer<dstT>(fp, static_cast<long>(s));
+    fp.seekg(0, std::ios::end);// seek to end;
+    const auto size_of_file = fp.tellg();// read filesize
+    fp.seekg(0, std::ios::beg);// seek to beginning
+    return read_buffer<dstT>(fp, static_cast<long>(size_of_file));// read entire file
   }
   template<std::ranges::contiguous_range dstT = std::vector<char>>
   [[maybe_unused]] static dstT read_file(const std::filesystem::path &path)
   {
-    if (!std::filesystem::exists(path)) {
-      return {};
-    }
+    dstT buffer{};
+    read_buffer(
+      [&buffer](std::istream &fp) {
+        buffer = read_buffer<dstT>(fp);
+      },
+      path);
 
-    std::ifstream fp{};
-    for (;;) {
-      fp.open(path.string(), std::ios::in | std::ios::binary);
-      if (fp.is_open()) {
-        break;
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    auto buffer = open_viii::Tools::read_buffer<dstT>(fp);
-    fp.close();
+
     return buffer;
   }
 
   template<typename lambdaT>
-  requires(std::invocable<lambdaT, std::istream &>) [[maybe_unused]] static bool read_buffer(
-    const lambdaT &lambda, const std::filesystem::path &path)
+  requires(std::invocable<lambdaT, std::istream &>)
+    [[maybe_unused]] static bool read_buffer(const lambdaT &lambda, const std::filesystem::path &path)
   {
-
+    std::error_code ec{};
+    if (!std::filesystem::exists(path,ec)) {
+      return false;
+    }
+    if(ec)
+    {
+      std::cerr << ec.message() << std::endl;
+      ec.clear();
+      return false;
+    }
     auto fp = std::ifstream{};
     for (;;) {
       fp.open(path, std::ios::in | std::ios::binary);
@@ -452,12 +455,12 @@ public:
       return static_cast<retT>(max - i);
     }
   }
-/**
- *
- * @tparam bit_count number of bits in mask
- * @return smallest integral that holds largest bitmask.
- * @see https://godbolt.org/z/djG1fz
- */
+  /**
+   *
+   * @tparam bit_count number of bits in mask
+   * @return smallest integral that holds largest bitmask.
+   * @see https://godbolt.org/z/djG1fz
+   */
   template<int bit_count> static consteval auto get_mask()
   {
     constexpr auto bit_count_8 = 8;

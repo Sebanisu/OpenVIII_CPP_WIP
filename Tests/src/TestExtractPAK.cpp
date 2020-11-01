@@ -21,6 +21,7 @@ int main()
       std::cout << p <<std::endl;
       open_viii::Pak pak{p};
       std::cout << pak << std::endl;
+      pak.extract("movies");
     });
   });
   return 0;
