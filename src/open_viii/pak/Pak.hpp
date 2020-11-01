@@ -206,7 +206,10 @@ public:
         m_disc_cache = *b - '0';
       }
     }
-    return m_disc_cache;
+    if(m_disc_cache <= 0) {
+      return 4;
+}
+    return m_disc_cache-1;
   }
   /**
    * Read complete pak file for offsets and sizes of each section.
