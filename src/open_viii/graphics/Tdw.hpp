@@ -69,9 +69,9 @@ public:
     bool first = (i % 2U == 0U);
     i /= 2U;
     if (first) {
-      return static_cast<std::uint8_t>(m_widths.at(i).first);
+      return m_widths.at(i).first();
     }
-    return static_cast<std::uint8_t>(m_widths.at(i).second);
+    return m_widths.at(i).second();
   }
   [[nodiscard]] auto size() const
   {
@@ -85,7 +85,7 @@ public:
   {
     os << t.size() << " char widths: ";
     for (const Bit4Values &w : t.m_widths) {
-      os << static_cast<std::uint32_t>(w.first) << ", " << static_cast<std::uint32_t>(w.second) << ", ";
+      os << static_cast<std::uint32_t>(w.first()) << ", " << static_cast<std::uint32_t>(w.second()) << ", ";
     }
     return os << '\n' << t.m_tim;
   }

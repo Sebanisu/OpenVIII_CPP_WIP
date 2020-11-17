@@ -210,8 +210,8 @@ public:
         //          output.emplace_back(get_color(row, static_cast<std::uint8_t>(((bs & oct2) >> 4U).to_ulong())));
         //        }
         const auto values = s[i];
-        output.emplace_back(get_color(row, values.first));
-        output.emplace_back(get_color(row, values.second));
+        output.emplace_back(get_color(row, values.first()));
+        output.emplace_back(get_color(row, values.second()));
       }
       break;
     }

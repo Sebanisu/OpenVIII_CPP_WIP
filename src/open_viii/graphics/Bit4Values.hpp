@@ -13,12 +13,90 @@
 
 #ifndef VIIIARCHIVE_4BITVALUES_H
 #define VIIIARCHIVE_4BITVALUES_H
+#include <cstdint>
+#include <type_traits>
+#include <utility>
 namespace open_viii::graphics {
 struct Bit4Values
 {
+private:
+  static constexpr std::uint8_t MASK_4_BIT = 0xFU;
+  static constexpr std::uint8_t OFFSET_MASK_4_BIT = 0xF0U;
+  static constexpr std::uint8_t SHIFT_8_BITS = 8U;
+
+  std::uint8_t m_first : 4U {};
+  std::uint8_t m_second : 4U {};
+
 public:
-  std::uint8_t first : 4U {};
-  std::uint8_t second : 4U {};
+  Bit4Values() = default;
+  Bit4Values(const std::uint8_t &in_first, const std::uint8_t &in_second)
+    : m_first(in_first & MASK_4_BIT), m_second(in_second & MASK_4_BIT)
+  {}
+  explicit Bit4Values(const std::uint8_t &in_raw)
+    : m_first(static_cast<std::uint8_t>((in_raw >> SHIFT_8_BITS)) & MASK_4_BIT), m_second(in_raw & MASK_4_BIT)
+  {}
+  explicit operator std::uint8_t() const noexcept
+  {
+    return static_cast<std::uint8_t>(
+      static_cast<std::uint8_t>(static_cast<std::uint8_t>(m_first << SHIFT_8_BITS) & OFFSET_MASK_4_BIT) | (m_second));
+  }
+  /**
+   *required to structured binding support
+   */
+  template<std::size_t I> requires(I < 2) [[nodiscard]] auto get() const noexcept
+  {
+    if constexpr (I == 0) {
+      return m_first;
+    } else if constexpr (I == 1) {
+      return m_second;
+    }
+  }
+
+  //  template<int I>
+  //  [[nodiscard]] std::tuple_element_t<I, std::uint8_t> get(){
+  //    static_assert(I < 2,"only 2 items");
+  //    if      constexpr(I == 0) return first;
+  //    else if constexpr(I == 1) return second;
+  //  }
+
+  [[nodiscard]] std::uint8_t first() const noexcept
+  {
+    return m_first;
+  }
+
+  [[nodiscard]] std::uint8_t second() const noexcept
+  {
+    return m_second;
+  }
+
+  std::uint8_t first(const std::uint8_t &value) noexcept
+  {
+    return m_first = value & MASK_4_BIT;
+  }
+
+  std::uint8_t second(const std::uint8_t &value) noexcept
+  {
+    return m_second = value & MASK_4_BIT;
+  }
+  static constexpr std::size_t EXPECTED_SIZE = 1U;
 };
+static_assert(sizeof(Bit4Values) == Bit4Values::EXPECTED_SIZE);
 }// namespace open_viii::graphics
+
+namespace std {
+/**
+ *required to structured binding support
+ */
+template<> struct tuple_size<open_viii::graphics::Bit4Values> : std::integral_constant<size_t, 2>
+{
+};
+
+/**
+ *required to structured binding support
+ */
+template<size_t I> struct tuple_element<I, open_viii::graphics::Bit4Values>
+{
+  using type = uint8_t;
+};
+}// namespace std
 #endif// VIIIARCHIVE_4BITVALUES_H

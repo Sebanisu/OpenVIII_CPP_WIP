@@ -7,6 +7,7 @@
 #include "GpuFlags.hpp"
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Point.hpp"
+#include "open_viii/graphics/Bit4Values.hpp"
 #include <bit>
 #include <cstdint>
 namespace open_viii::battle::stage {
@@ -23,7 +24,7 @@ private:
   graphics::Point<std::uint8_t> m_uv2{};
   std::uint16_t m_raw_clut{};
   graphics::Point<std::uint8_t> m_uv3{};
-  std::uint8_t m_raw_texture_page{};
+  graphics::Bit4Values m_raw_texture_page{};
   std::uint8_t m_raw_hide{};
   graphics::Color24<0, 1, 2> m_color{};
   GpuFlags m_raw_gpu{};
@@ -42,7 +43,7 @@ public:
   }
   [[nodiscard]] std::uint8_t texture_page() const noexcept
   {
-    return (m_raw_texture_page & MASK_4_BIT);
+    return m_raw_texture_page.second();
   }
   [[nodiscard]] auto color() const noexcept
   {

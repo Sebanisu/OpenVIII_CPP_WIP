@@ -93,8 +93,8 @@ private:
       const auto output = [&out, &palette, this](const uint8_t &input) {
         out.emplace_back(safe_get_color_from_palette(get_palette_key(input, palette)));
       };
-      output(key.first);
-      output(key.second);
+      output(key.first());
+      output(key.second());
     });
     return out;
   }
@@ -233,9 +233,9 @@ public:
       texture_page_offset *= 2U * texture_id;
       const Bit4Values pair = m_image_buffer_bbp4[(x + texture_page_offset) / 2U + (y * width)];
       if (x % 2U == 0) {
-        return safe_get_color_from_palette(get_palette_key(pair.first, palette));
+        return safe_get_color_from_palette(get_palette_key(pair.first(), palette));
       }
-      return safe_get_color_from_palette(get_palette_key(pair.second, palette));
+      return safe_get_color_from_palette(get_palette_key(pair.second(), palette));
     }
     if (depth.bpp16()) {
       width /= 2U;
