@@ -13,6 +13,7 @@
 
 #ifndef VIIIARCHIVE_POINT_HPP
 #define VIIIARCHIVE_POINT_HPP
+#include <algorithm>
 #include <concepts>
 #include <iostream>
 namespace open_viii::graphics {
@@ -29,7 +30,7 @@ public:
   //  Point<dimT>& operator=(const Point<dimT>&) = default;
   //  Point<dimT>& operator=(Point<dimT>&&) noexcept = default;
   //  virtual ~Point<dimT>() = delete;
-  friend auto operator<=>(const Point<dimT> &left, const Point<dimT> &right) noexcept = default;
+  // friend auto operator<=>(const Point<dimT> &left, const Point<dimT> &right) noexcept = default;
   auto operator<=>(const Point<dimT> &right) const noexcept = default;
   template<typename T>
   requires((std::integral<T> || std::floating_point<T>)&&!std::is_same_v<T, dimT>) explicit Point(const Point<T> &r)
@@ -105,11 +106,40 @@ public:
   }
   Point<dimT> operator*(const Point<dimT> &input) const noexcept
   {
-    return { m_x * input.m_x, m_y * input.m_y };
+    return { static_cast<dimT>(m_x * input.m_x), static_cast<dimT>(m_y * input.m_y) };
+  }
+
+  Point<dimT> operator-(const Point<dimT> &input) const noexcept
+  {
+    return { static_cast<dimT>(m_x - input.m_x), static_cast<dimT>(m_y - input.m_y) };
+  }
+  Point<dimT> operator+(const Point<dimT> &input) const noexcept
+  {
+    return { static_cast<dimT>(m_x + input.m_x), static_cast<dimT>(m_y + input.m_y) };
   }
   friend std::ostream &operator<<(std::ostream &os, const Point<dimT> &input)
   {
     return os << '{' << input.m_x << ", " << input.m_y << '}';
+  }
+
+  /**
+   * compares two points for max.
+   * @param lhs another point
+   * @return the max
+   */
+  Point<dimT> max(const Point<dimT> &lhs) const noexcept
+  {
+    return { std::max(m_x, lhs.x()), std::max(m_y, lhs.y()) };
+  }
+
+  /**
+   * compares two points for min.
+   * @param lhs another point
+   * @return the min
+   */
+  Point<dimT> min(const Point<dimT> &lhs) const noexcept
+  {
+    return { std::min(m_x, lhs.x()), std::min(m_y, lhs.y()) };
   }
 };
 }// namespace open_viii::graphics

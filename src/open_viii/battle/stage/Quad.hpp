@@ -5,9 +5,10 @@
 #ifndef VIIIARCHIVE_QUAD_HPP
 #define VIIIARCHIVE_QUAD_HPP
 #include "GpuFlags.hpp"
+#include "open_viii/graphics/Bit4Values.hpp"
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Point.hpp"
-#include "open_viii/graphics/Bit4Values.hpp"
+#include "open_viii/graphics/Rectangle.hpp"
 #include <bit>
 #include <cstdint>
 namespace open_viii::battle::stage {
@@ -33,6 +34,7 @@ private:
 
   static constexpr std::uint8_t MASK_4_BIT = 0xFU;
   static constexpr int SHIFT_2_BIT = 2;
+  static constexpr std::size_t COUNT = 4U;
 
 public:
   [[nodiscard]] static constexpr std::uint8_t clut(const std::uint16_t &in_clut_raw) noexcept
@@ -55,32 +57,67 @@ public:
   {
     return m_raw_hide != 0U;
   }
-  [[nodiscard]] auto uv(const std::uint8_t &index) const noexcept
+
+  template<std::size_t I> requires(I < COUNT) [[nodiscard]] auto uv() const noexcept
   {
-    switch (index) {
-    case 0:
+    if constexpr (I == 0U) {
       return m_uv1;
-    case 1:
+    } else if constexpr (I == 1U) {
       return m_uv2;
-    case 2:
+    } else if constexpr (I == 2U) {
       return m_uv3;
-    case 3:
+    } else if constexpr (I == 3U) {
       return m_uv4;
     }
   }
-
-  [[nodiscard]] auto face_indice(const std::uint8_t &index) const noexcept
+  template<std::size_t I> requires(I < COUNT) [[nodiscard]] const auto &face_indice() const noexcept
   {
-    switch (index) {
-    case 0:
+    if constexpr (I == 0U) {
       return m_face_indice_a;
-    case 1:
+    } else if constexpr (I == 1U) {
       return m_face_indice_b;
-    case 2:
+    } else if constexpr (I == 2U) {
       return m_face_indice_c;
-    case 3:
+    } else if constexpr (I == 3U) {
       return m_face_indice_d;
     }
+  }
+  /**
+   * find max_uv
+   * @tparam current should be 0 at start, it is a placeholder for which value we are looking at.
+   * @return return the max UV value. More exactly it'll be the max U and max V values.
+   */
+  template<std::size_t current = 0U> auto max_uv()
+  {
+    if constexpr (current + 1 < COUNT) {
+      const auto &a = uv<current>();
+      return a.max(max_uv<current + 1>());
+    } else {
+      return uv<current>();
+    }
+  }
+  /**
+   * find min_uv
+   * @tparam current should be 0 at start, it is a placeholder for which value we are looking at.
+   * @return return the min UV value. More exactly it'll be the min U and min V values.
+   */
+  template<std::size_t current = 0U> auto min_uv()
+  {
+    if constexpr (current + 1 < COUNT) {
+      const auto &a = uv<current>();
+      return a.min(min_uv<current + 1>());
+    } else {
+      return uv<current>();
+    }
+  }
+  /**
+   * returns a rectangle containing the triangle.
+   * @return
+   */
+  auto rectangle()
+  {
+    auto min_uv_value = min_uv();
+    return graphics::Rectangle(min_uv_value, max_uv() - min_uv_value);
   }
   static constexpr std::size_t EXPECTED_SIZE = 24U;
 };
