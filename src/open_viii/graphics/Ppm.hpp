@@ -181,11 +181,9 @@ public:
     }
     return black;
   }
-  friend std::ostream & operator <<(std::ostream & os, const Ppm & ppm)
+  friend std::ostream &operator<<(std::ostream &os, const Ppm &ppm)
   {
-    return os << "(Width, Height): " << ppm.m_width_height
-              << "\t"<<ppm.m_path <<'\n';
-
+    return os << "(Width, Height): " << ppm.m_width_height << "\t" << ppm.m_path << '\n';
   }
 };
 }// namespace open_viii::graphics

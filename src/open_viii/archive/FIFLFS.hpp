@@ -508,10 +508,10 @@ public:
           },
           get_entry_buffer(fi),
           std::string(pair.second));
-//        while (threads.size() > 64) {
-//          threads.front().join();
-//          threads.erase(threads.begin());
-//        }
+        //        while (threads.size() > 64) {
+        //          threads.front().join();
+        //          threads.erase(threads.begin());
+        //        }
         // lambda(get_entry_buffer(fi), pair.second);
       });
   }
@@ -588,10 +588,10 @@ public:
               },
               archive);
           }
-//          while (threads.size() > 64) {
-//            threads.front().join();
-//            threads.erase(threads.begin());
-//          }
+          //          while (threads.size() > 64) {
+          //            threads.front().join();
+          //            threads.erase(threads.begin());
+          //          }
           archive = {};
         }
       });

@@ -127,12 +127,12 @@ public:
     return os << std::uppercase << std::hex << std::setfill('0') << std::setw(16U) << input.generate()
               << std::nouppercase << std::dec << std::setfill(' ') << std::setw(0U);
   }
-  constexpr explicit Pupu(const std::uint64_t & pupu_id) noexcept
+  constexpr explicit Pupu(const std::uint64_t &pupu_id) noexcept
   {
     if (pupu_id == 0) {
       return;
     }
-    integral_storage::Reader<std::uint64_t> pupu_reader{pupu_id};
+    integral_storage::Reader<std::uint64_t> pupu_reader{ pupu_id };
     m_depth = pupu_reader.extract_depth();
     m_layer_id = pupu_reader.extract_uint<BIT4>();
     m_blend_mode = static_cast<BlendModeT>(pupu_reader.extract_uint<BIT4>());

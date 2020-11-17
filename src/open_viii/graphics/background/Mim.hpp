@@ -104,10 +104,10 @@ public:
   constexpr static auto EXT = std::string_view{ ".mim" };
   Mim() = default;
   ~Mim() = default;
-  Mim(Mim&&) = delete;
+  Mim(Mim &&) = delete;
   Mim(const Mim &) = delete;
-  Mim & operator=(const Mim &) = delete;
-  Mim & operator=(Mim &&) = delete;
+  Mim &operator=(const Mim &) = delete;
+  Mim &operator=(Mim &&) = delete;
   /**
    * Load up the raw pixel data, 4bpp, 8bpp or 16bpp Needs at least basename to check or it'll use size of buffer to
    * find type 1 or 2. Type is used to know which map to load.
@@ -203,7 +203,7 @@ public:
   }
   std::size_t get_raw_width(const BPPT &depth) const
   {
-    return get_raw_width(depth,m_mim_type.width());
+    return get_raw_width(depth, m_mim_type.width());
   }
   static std::size_t get_raw_width(const BPPT &depth, std::size_t width)
   {
@@ -224,7 +224,7 @@ public:
     auto width = m_mim_type.width();
     constexpr static auto offset_interval = 128U;
     auto texture_page_offset = offset_interval;
-    if (depth.bpp8()) [[likely]] {
+    if (depth.bpp8()) {
       texture_page_offset *= texture_id;
       return safe_get_color_from_palette(
         get_palette_key(static_cast<uint8_t>(m_image_buffer[x + texture_page_offset + (y * width)]), palette));
@@ -237,7 +237,7 @@ public:
       }
       return safe_get_color_from_palette(get_palette_key(pair.second, palette));
     }
-    if (depth.bpp16()) [[unlikely]] {
+    if (depth.bpp16()) {
       width /= 2U;
       texture_page_offset /= 2U;
       texture_page_offset *= texture_id;

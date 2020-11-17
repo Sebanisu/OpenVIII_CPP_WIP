@@ -106,11 +106,10 @@ public:
     [[maybe_unused]] static bool read_buffer(const lambdaT &lambda, const std::filesystem::path &path)
   {
     std::error_code ec{};
-    if (!std::filesystem::exists(path,ec)) {
+    if (!std::filesystem::exists(path, ec)) {
       return false;
     }
-    if(ec)
-    {
+    if (ec) {
       std::cerr << ec.message() << std::endl;
       ec.clear();
       return false;

@@ -101,7 +101,7 @@ public:
   Point<dimT> operator/(const Point<dimT> &input) const noexcept
   {
     return { (input.m_x != static_cast<dimT>(0) ? static_cast<dimT>(m_x / input.m_x) : static_cast<dimT>(0)),
-             (input.m_y != static_cast<dimT>(0) ? static_cast<dimT>(m_y / input.m_y) : static_cast<dimT>(0)) };
+      (input.m_y != static_cast<dimT>(0) ? static_cast<dimT>(m_y / input.m_y) : static_cast<dimT>(0)) };
   }
   Point<dimT> operator*(const Point<dimT> &input) const noexcept
   {

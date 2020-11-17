@@ -40,7 +40,7 @@ public:
 
   friend std::ostream &operator<<(std::ostream &os, const FileSection &file_section)
   {
-    if(!std::ranges::empty(file_section.FileName) && file_section.Size > 0) {
+    if (!std::ranges::empty(file_section.FileName) && file_section.Size > 0) {
       return os << "|" << file_section.FileName << "||" << file_section.Frames << "||" << std::hex
                 << file_section.Offset << std::dec << "||" << file_section.Size << "||" << file_section.Type << '\n';
     }

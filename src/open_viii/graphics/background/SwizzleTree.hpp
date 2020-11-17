@@ -13,7 +13,8 @@
 #include "open_viii/archive/FIFLFS.hpp"
 namespace open_viii::graphics::background {
 /**
- * Load all subfolders and find the matching path inside the field archive. Then allow deswizzle or reswizzle of the folder.
+ * Load all subfolders and find the matching path inside the field archive. Then allow deswizzle or reswizzle of the
+ * folder.
  */
 struct SwizzleTree
 {
@@ -83,10 +84,10 @@ private:
       Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void deswizzle_with_type() const
   {
 
-    //const auto mim = Mim(get_mim_buffer(),m_mim_filename);
-    const auto mim = MimFromPath{m_mim_type,m_dir_path, m_dir_name, m_output_prefix};
-    const auto map = Map<map_type>{get_map_buffer()};
-    const auto r = Deswizzle(mim, map , m_output_prefix);
+    // const auto mim = Mim(get_mim_buffer(),m_mim_filename);
+    const auto mim = MimFromPath{ m_mim_type, m_dir_path, m_dir_name, m_output_prefix };
+    const auto map = Map<map_type>{ get_map_buffer() };
+    const auto r = Deswizzle(mim, map, m_output_prefix);
     r.save();
     // const auto r = Deswizzle<map_type>(get_map_buffer(), m_dir_path, m_dir_name, m_output_prefix);
     // r.process();

@@ -180,8 +180,8 @@ int main()
     //      static_cast<int>(open_viii::kernel::SectionTypesT::Count)>([](auto string, auto span, auto data) {
     //           if constexpr (!std::is_null_pointer_v<decltype(
     //           data)> && !std::is_null_pointer_v<decltype(string)> && !std::is_null_pointer_v<decltype(span)>) {
-    //             std::cout << string << " ( " << std::ranges::size(span) << "bytes) has " << data.Count() << "entries\n";
-    //             for (size_t i = 0; i < data.Count(); i++) {
+    //             std::cout << string << " ( " << std::ranges::size(span) << "bytes) has " << data.Count() <<
+    //             "entries\n"; for (size_t i = 0; i < data.Count(); i++) {
     //               auto entry = data.at(i);
     //               std::cout << i << ": ";
     //               entry.Out(std::cout, data.TextSpan());

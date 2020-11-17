@@ -29,11 +29,11 @@ private:
 
 public:
   Rectangle() = default;
-//  Rectangle(const Rectangle<dimT> &) = default;
-//  Rectangle(Rectangle<dimT> &&) noexcept = default;
-//  Rectangle<dimT>& operator=(const Rectangle<dimT>&) = default;
-//  Rectangle<dimT>& operator=(Rectangle<dimT>&&) noexcept = default;
-//  virtual ~Rectangle<dimT>() = delete;
+  //  Rectangle(const Rectangle<dimT> &) = default;
+  //  Rectangle(Rectangle<dimT> &&) noexcept = default;
+  //  Rectangle<dimT>& operator=(const Rectangle<dimT>&) = default;
+  //  Rectangle<dimT>& operator=(Rectangle<dimT>&&) noexcept = default;
+  //  virtual ~Rectangle<dimT>() = delete;
   friend auto operator<=>(const Rectangle<dimT> &left, const Rectangle<dimT> &right) noexcept = default;
   auto operator<=>(const Rectangle<dimT> &right) const noexcept = default;
 

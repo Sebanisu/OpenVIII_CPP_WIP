@@ -8,7 +8,8 @@
 #include <string_view>
 
 namespace open_viii {
-struct FileSectionTypeT{
+struct FileSectionTypeT
+{
 public:
   constexpr static auto NONE = std::string_view("");
   /**
@@ -26,5 +27,5 @@ public:
    */
   constexpr static auto KB2 = std::string_view("KB2");
 };
-}
+}// namespace open_viii
 #endif// VIIIARCHIVE_FILESECTIONTYPE_HPP

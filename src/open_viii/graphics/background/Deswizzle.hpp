@@ -28,7 +28,7 @@ requires(std::is_same_v<map_type,
            Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct Deswizzle
 {
 private:
-  using outColorT = Color24<0,1,2>;
+  using outColorT = Color24<0, 1, 2>;
   const mim_type &m_mim{};
   const Map<map_type> &m_map{};
   const std::string m_path{};
@@ -78,17 +78,16 @@ private:
     static constexpr auto blank = outColorT{};
     std::ranges::fill(out, blank);
   }
-  template <Color cT>
+  template<Color cT>
   bool set_color(std::vector<outColorT> &out, const std::integral auto &index_out, const cT &color) const
   {
     if (!color.is_black()) {
-      //assert(out.at(index_out).is_black() || color==out.at(index_out));
-      //so there is possible overlapping tiles here. does this matter? because pixels behind cannot be seen in game anyway?
-      if constexpr (std::is_same_v<cT,outColorT>) {
+      // assert(out.at(index_out).is_black() || color==out.at(index_out));
+      // so there is possible overlapping tiles here. does this matter? because pixels behind cannot be seen in game
+      // anyway?
+      if constexpr (std::is_same_v<cT, outColorT>) {
         out.at(index_out) = color;
-      }
-      else
-      {
+      } else {
         out.at(index_out) = static_cast<outColorT>(color);
       }
       return true;

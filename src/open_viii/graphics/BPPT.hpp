@@ -20,14 +20,13 @@ namespace open_viii::graphics {
  * @enum open_viii::graphics::BPPT
  * \ingroup graphics
  * @brief Contains 4 to 24 bits per pixel flags. Also a CLP flag for color lookup table.
- * @note change to default initiated cpp20 style.
  */
 struct BPPT
 {
 private:
   mutable bool m_bpp8 : 1 { false };
   mutable bool m_bpp16 : 1 { false };
-  mutable bool m_unused1 : 1 { false };
+  mutable bool m_unused1 : 1 { false };// might be used sometimes. for some files. I think it could be for multi format
   mutable bool m_color_lookup_table_present : 1 { false };
 
   bool m_unused2 : 1 { false };
@@ -45,7 +44,7 @@ public:
   constexpr static auto BPP16{ 16U };
   constexpr static auto BPP24{ 24U };
 
-  //consteval friend BPPT operator"" _bpp(unsigned long long int value);
+  // consteval friend BPPT operator"" _bpp(unsigned long long int value);
   auto operator<=>(const BPPT &) const = default;
   [[nodiscard]] constexpr bool unused() const noexcept
   {

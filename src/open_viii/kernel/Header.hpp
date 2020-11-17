@@ -305,14 +305,13 @@ public:
     }
     std::uint32_t section_count{};
     std::memcpy(&section_count, std::ranges::data(buffer_span), sizeof(section_count));
-    if (std::ranges::size(buffer_span) < sizeof(std::uint32_t) * (section_count+1)) {
+    if (std::ranges::size(buffer_span) < sizeof(std::uint32_t) * (section_count + 1)) {
       return;
     }
     m_section_offsets.reserve(section_count);
     while (section_count-- > 0) {
       buffer_span = buffer_span.subspan(sizeof(section_count));
-      std::memcpy(
-        &m_section_offsets.emplace_back(),  std::ranges::data(buffer_span), sizeof(section_count));
+      std::memcpy(&m_section_offsets.emplace_back(), std::ranges::data(buffer_span), sizeof(section_count));
     }
   }
   [[nodiscard]] const auto &buffer() const noexcept

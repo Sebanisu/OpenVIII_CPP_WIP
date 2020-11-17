@@ -38,14 +38,12 @@ int main()
     {
       open_viii::Tools::execute_on_directories(
         std::filesystem::current_path(), {}, [&field](const std::filesystem::path &directory_path) {
-
-            const auto swizzle_tree = open_viii::graphics::background::SwizzleTree{ field, directory_path };
-            if (!static_cast<bool>(swizzle_tree)) {
-              return;
-            }
-            std::cout << directory_path << std::endl;
-            swizzle_tree.deswizzle();
-
+          const auto swizzle_tree = open_viii::graphics::background::SwizzleTree{ field, directory_path };
+          if (!static_cast<bool>(swizzle_tree)) {
+            return;
+          }
+          std::cout << directory_path << std::endl;
+          swizzle_tree.deswizzle();
         });
     }
   });

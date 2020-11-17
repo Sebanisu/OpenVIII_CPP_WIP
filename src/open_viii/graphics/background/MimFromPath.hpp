@@ -18,8 +18,10 @@ public:
   {
   public:
     static constexpr auto MAX_PALETTES_PLUS_1 = 18U;
+
   private:
     mutable std::array<Ppm, MAX_PALETTES_PLUS_1> m_palettes{};
+
   public:
     [[nodiscard]] auto &at(const size_t &palette) const
     {
@@ -31,15 +33,14 @@ public:
       m_palettes.at(palette) = std::move(value);
     }
 
-    [[nodiscard]] auto & to_array() const noexcept
+    [[nodiscard]] auto &to_array() const noexcept
     {
       return m_palettes;
     }
-    friend std::ostream & operator <<(std::ostream & os, const TexturesByPalettes & data)
+    friend std::ostream &operator<<(std::ostream &os, const TexturesByPalettes &data)
     {
-      std::ranges::for_each(data.to_array(),[&os](const Ppm & ppm)
-      {
-        if(!ppm.empty()) {
+      std::ranges::for_each(data.to_array(), [&os](const Ppm &ppm) {
+        if (!ppm.empty()) {
           os << ppm;
         }
       });
@@ -51,8 +52,10 @@ public:
 
   public:
     static constexpr auto MAX_TEXTURE_PAGES = 14U;
+
   private:
     mutable std::array<TexturesByPalettes, MAX_TEXTURE_PAGES> m_texture_pages{};
+
   public:
     [[nodiscard]] auto &at(const size_t &texture_page) const
     {
@@ -68,16 +71,15 @@ public:
       m_texture_pages.at(texture_page).set(palette, std::move(value));
     }
 
-    [[nodiscard]] auto & to_array() const noexcept
+    [[nodiscard]] auto &to_array() const noexcept
     {
       return m_texture_pages;
     }
-    friend std::ostream & operator <<(std::ostream & os, const PalettesByTexturePages & data)
+    friend std::ostream &operator<<(std::ostream &os, const PalettesByTexturePages &data)
     {
-      std::ranges::for_each(data.to_array(),[&os](const TexturesByPalettes & tbp)
-      {
-          os << tbp;
-        });
+      std::ranges::for_each(data.to_array(), [&os](const TexturesByPalettes &tbp) {
+        os << tbp;
+      });
       return os;
     }
   };
@@ -126,10 +128,9 @@ private:
           last = found + 1;
           found = suffix.find_first_of(search_params, last);
         }
-        std::cout << "texture page: " << std::setw(2U)<< static_cast<uint16_t>(texture_page)
-                  << "\t palette: " << std::setw(2U)<< static_cast<uint16_t>(palette)
-                  << "\t path: \"" << file_path.string() << '"'
-                  << '\n';
+        std::cout << "texture page: " << std::setw(2U) << static_cast<uint16_t>(texture_page)
+                  << "\t palette: " << std::setw(2U) << static_cast<uint16_t>(palette) << "\t path: \""
+                  << file_path.string() << '"' << '\n';
         // Load the image into the correct part of array.
         textures.set(texture_page, palette, Ppm(file_path));
       });

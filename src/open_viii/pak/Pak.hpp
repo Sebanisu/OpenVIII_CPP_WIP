@@ -69,8 +69,8 @@ private:
 public:
   explicit Pak(std::filesystem::path path) : m_file_path(std::move(path))
   {
-//    static constexpr auto default_size = 7U;
-//    m_movies.reserve(default_size);
+    //    static constexpr auto default_size = 7U;
+    //    m_movies.reserve(default_size);
     //  _readFunctions = new Dictionary<Type, Func<BinaryReader, Type, FileSection>>()
     //  {
     //    {Type.Cam, ReadCam },
@@ -144,7 +144,7 @@ public:
                   return true;
                 }()) {
 
-              if(!std::ranges::empty(fs.FileName) && fs.Size>0U) {
+              if (!std::ranges::empty(fs.FileName) && fs.Size > 0U) {
                 Tools::write_buffer(
                   [&is, &fs](std::ostream &os) {
                     std::cout << "Extracting \"" << fs.FileName << "\"\n";
@@ -209,10 +209,10 @@ public:
         m_disc_cache = *b - '0';
       }
     }
-    if(m_disc_cache <= 0) {
+    if (m_disc_cache <= 0) {
       return 4;
-}
-    return m_disc_cache-1;
+    }
+    return m_disc_cache - 1;
   }
   /**
    * Read complete pak file for offsets and sizes of each section.
@@ -235,7 +235,7 @@ public:
           };
           auto type = get_type();
           if (std::ranges::equal(type, FileSectionTypeT::BIK) || std::ranges::equal(type, FileSectionTypeT::KB2)) {
-            //std::cout << "bink\n";
+            // std::cout << "bink\n";
             /**
              * Read Bink video offset and size
              */
@@ -294,7 +294,7 @@ public:
             }();
 
           } else if (std::ranges::equal(type, FileSectionTypeT::CAM)) {
-           // std::cout << "cam\n";
+            // std::cout << "cam\n";
             /**
              * Read cam file offset and size
              */
@@ -331,21 +331,22 @@ public:
 
               // There is only one cam per movie. Checking for possibility of only one video instead of the normal 2 per
               // movie.
-//              if (std::ranges::empty(movie.Cam.Type)) {
-//                //              //add existing movie to movies list.
-//                m_movies.emplace_back(std::move(movie));
-//                // start from scratch
-//                movie = {};
-//              }
+              //              if (std::ranges::empty(movie.Cam.Type)) {
+              //                //              //add existing movie to movies list.
+              //                m_movies.emplace_back(std::move(movie));
+              //                // start from scratch
+              //                movie = {};
+              //              }
               fs.Size = static_cast<std::uint32_t>(is.tellg() - fs.Offset);
               fs.FileName = generate_file_name(".cam");
               fs.Frames = frames;
               movie.Cam = fs;
             }();
 
-          } else if(!is.eof()) {
+          } else if (!is.eof()) {
             std::cerr << "location: " << std::hex << is.tellg() << std::endl;
-            std::cerr << "unknown\t\"" << type[0]  << type[1]  << type[2] << std::dec <<"\""<< std::endl;;
+            std::cerr << "unknown\t\"" << type[0] << type[1] << type[2] << std::dec << "\"" << std::endl;
+            ;
             return;
           }
         }
@@ -355,7 +356,7 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Pak &pak)
   {
     os << pak.m_file_path << '\n';
-    os<<"{| class=\"wikitable sortable\"\n! FileName !! Frames !! Offset !! Size !! Type\n";
+    os << "{| class=\"wikitable sortable\"\n! FileName !! Frames !! Offset !! Size !! Type\n";
     std::ranges::for_each(pak.m_movies, [&os](const MovieClip &item) mutable {
       os << item;
     });

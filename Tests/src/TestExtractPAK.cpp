@@ -17,9 +17,9 @@ int main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    open_viii::Tools::execute_on_directory(path,{},{".pak"},[](const std::filesystem::path & p){
-      std::cout << p <<std::endl;
-      open_viii::Pak pak{p};
+    open_viii::Tools::execute_on_directory(path, {}, { ".pak" }, [](const std::filesystem::path &p) {
+      std::cout << p << std::endl;
+      open_viii::Pak pak{ p };
       std::cout << pak << std::endl;
       pak.extract("movies");
     });

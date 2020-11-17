@@ -52,7 +52,7 @@ template<typename T> concept Color_A = requires(T a)
 
 template<typename T> concept Color = Color_A<T> &&Color_B<T> &&Color_G<T> &&Color_R<T>;
 
-template<typename T> concept FIFLFS_Has_get_entry_data = requires (T a)
+template<typename T> concept FIFLFS_Has_get_entry_data = requires(T a)
 {
   a.get_entry_data(std::string_view(""));
 };

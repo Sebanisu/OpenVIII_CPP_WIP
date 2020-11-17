@@ -34,8 +34,8 @@ public:
       R"(K:\ff82000)"s,
       R"(/mnt/d/games/ff82000)"s,
       R"(D:\games\ff82000)"s,
-      R"(/mnt/e/)"s, //CD
-      R"(e:\)"s, //CD
+      R"(/mnt/e/)"s,// CD
+      R"(e:\)"s,// CD
       R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s,
       R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s
     };
@@ -50,7 +50,7 @@ public:
       if (std::filesystem::exists(fs_path, ec)) {
         lambda(fs_path);
       }
-      if(ec) {
+      if (ec) {
         std::cerr << ec.message() << std::endl;
         ec.clear();
       }

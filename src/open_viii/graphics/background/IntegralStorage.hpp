@@ -46,7 +46,7 @@ public:
   {
     return m_pupu_id == 0U;
   }
-  const intT & get_id() const noexcept
+  const intT &get_id() const noexcept
   {
     return m_pupu_id;
   }
@@ -65,10 +65,7 @@ private:
 
 public:
   Writer() = default;
-  constexpr explicit Writer(intT input_pupu_id)
-  : m_data(IntegralStorageCommon(input_pupu_id))
-  {
-  }
+  constexpr explicit Writer(intT input_pupu_id) : m_data(IntegralStorageCommon(input_pupu_id)) {}
   [[nodiscard]] auto &data() const noexcept
   {
     return m_data;
@@ -96,7 +93,7 @@ public:
     }
   }
 
-  const intT & get_id() const noexcept
+  const intT &get_id() const noexcept
   {
     return m_data.get_id();
   }
@@ -116,10 +113,7 @@ private:
 
 public:
   Reader() = default;
-  constexpr explicit Reader(intT input_pupu_id)
-  : m_data(IntegralStorageCommon(input_pupu_id))
-  {
-  }
+  constexpr explicit Reader(intT input_pupu_id) : m_data(IntegralStorageCommon(input_pupu_id)) {}
   [[nodiscard]] const auto &data() const noexcept
   {
     return m_data;
@@ -161,7 +155,7 @@ public:
     }
   }
 
-  const intT & get_id() const noexcept
+  const intT &get_id() const noexcept
   {
     return m_data.get_id();
   }
