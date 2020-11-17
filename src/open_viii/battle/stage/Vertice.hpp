@@ -2,13 +2,13 @@
 // Created by pcvii on 11/17/2020.
 //
 
-#ifndef VIIIARCHIVE_VERTEX_HPP
-#define VIIIARCHIVE_VERTEX_HPP
+#ifndef VIIIARCHIVE_VERTICE_HPP
+#define VIIIARCHIVE_VERTICE_HPP
 #include "open_viii/Concepts.hpp"
 #include <cstdint>
 #include <ostream>
 namespace open_viii::battle::stage {
-template<Number mainNumberT = std::int16_t> struct Vertex
+template<Number mainNumberT = std::int16_t> struct Vertice
 {
 private:
   mainNumberT m_x{};
@@ -16,11 +16,11 @@ private:
   mainNumberT m_z{};
 
 public:
-  Vertex() = default;
-  Vertex(mainNumberT in_x, mainNumberT in_y, mainNumberT in_z) : m_x(in_x), m_y(in_y), m_z(in_z) {}
+  Vertice() = default;
+  Vertice(mainNumberT in_x, mainNumberT in_y, mainNumberT in_z) : m_x(in_x), m_y(in_y), m_z(in_z) {}
 
   template<Number numberT>
-  explicit Vertex(Vertex<numberT> lhs)
+  explicit Vertice(Vertice<numberT> lhs)
     : m_x(static_cast<mainNumberT>(lhs.x())),
       m_y(static_cast<mainNumberT>(lhs.y())),
       m_z(static_cast<mainNumberT>(lhs.z()))
@@ -28,28 +28,28 @@ public:
 
   template<Number numberT> auto operator/(numberT lhs)
   {
-    return Vertex<numberT>{
+    return Vertice<numberT>{
       static_cast<numberT>(m_x) / lhs, static_cast<numberT>(m_y) / lhs, static_cast<numberT>(m_z) / lhs
     };
   }
 
   template<Number numberT> auto operator*(numberT lhs)
   {
-    return Vertex<numberT>{
+    return Vertice<numberT>{
       static_cast<numberT>(m_x) * lhs, static_cast<numberT>(m_y) * lhs, static_cast<numberT>(m_z) * lhs
     };
   }
 
   template<Number numberT> auto operator-(numberT lhs)
   {
-    return Vertex<numberT>{
+    return Vertice<numberT>{
       static_cast<numberT>(m_x) - lhs, static_cast<numberT>(m_y) - lhs, static_cast<numberT>(m_z) - lhs
     };
   }
 
   template<Number numberT> auto operator+(numberT lhs)
   {
-    return Vertex<numberT>{
+    return Vertice<numberT>{
       static_cast<numberT>(m_x) + lhs, static_cast<numberT>(m_y) + lhs, static_cast<numberT>(m_z) + lhs
     };
   }
@@ -80,10 +80,10 @@ public:
     m_z = in_z;
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const Vertex<mainNumberT> &lhs)
+  friend std::ostream &operator<<(std::ostream &os, const Vertice<mainNumberT> &lhs)
   {
     return os << '(' << lhs.x() << ", " << lhs.y() << ", " << lhs.z() << ')';
   }
 };
 }// namespace open_viii::battle::stage
-#endif// VIIIARCHIVE_VERTEX_HPP
+#endif// VIIIARCHIVE_VERTICE_HPP

@@ -3,19 +3,17 @@
 //
 
 #include "TestBattle.hpp"
-#include "open_viii/battle/stage/Quad.hpp"
-#include "open_viii/battle/stage/Triangle.hpp"
-#include "open_viii/battle/stage/Vertex.hpp"
+#include "open_viii/battle/stage/Geometries.hpp"
 #include <array>
 #include <iostream>
 int main()
 {
-  auto v = open_viii::battle::stage::Vertex<std::int16_t>{ -1, 2, -3 };
+  auto v = open_viii::battle::stage::Vertice<std::int16_t>{ -1, 2, -3 };
   auto v2 = v / 2.1F;
   auto v3 = v / 3.1;
   auto v4 = v * 2.1F;
   auto v5 = v * 3.1;
-  auto v6 = static_cast<open_viii::battle::stage::Vertex<std::uint16_t>>(v);
+  auto v6 = static_cast<open_viii::battle::stage::Vertice<std::uint16_t>>(v);
   std::cout << v << '\n' << v2 << '\n' << v3 << '\n' << v4 << '\n' << v5 << '\n' << v6 << '\n';
 
   static constexpr std::array<std::uint16_t, 16U> clutids = {

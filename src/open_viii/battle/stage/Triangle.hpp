@@ -33,6 +33,7 @@ private:
   static constexpr std::uint8_t MASK_4_BIT = 0xFU;
   static constexpr int SHIFT_2_BIT = 2;
   static constexpr std::size_t COUNT = 3U;
+
 public:
   [[nodiscard]] static constexpr std::uint8_t clut(const std::uint16_t &in_clut_raw) noexcept
   {
@@ -77,7 +78,7 @@ public:
   }
   /**
    * find max_uv
-   * @tparam current should be 0 at start, it is a placeholder for which value we are looking at. 
+   * @tparam current should be 0 at start, it is a placeholder for which value we are looking at.
    * @return return the max UV value. More exactly it'll be the max U and max V values.
    */
   template<std::size_t current = 0U> auto max_uv()
@@ -91,7 +92,7 @@ public:
   }
   /**
    * find min_uv
-   * @tparam current should be 0 at start, it is a placeholder for which value we are looking at. 
+   * @tparam current should be 0 at start, it is a placeholder for which value we are looking at.
    * @return return the min UV value. More exactly it'll be the min U and min V values.
    */
   template<std::size_t current = 0U> auto min_uv()
@@ -105,12 +106,12 @@ public:
   }
   /**
    * returns a rectangle containing the triangle.
-   * @return 
+   * @return
    */
   auto rectangle()
   {
     auto min_uv_value = min_uv();
-    return graphics::Rectangle(min_uv_value,max_uv()- min_uv_value);
+    return graphics::Rectangle(min_uv_value, max_uv() - min_uv_value);
   }
   static constexpr std::size_t EXPECTED_SIZE = 20U;
 };
