@@ -96,3 +96,9 @@ add_executable(TestExtractPAK
         TestExtractPAK.cpp TestExtractPAK.hpp)
 set_target_properties(TestExtractPAK PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractPAK VIIIPaths)
+
+##test battle, uses new code to extract files instead of old versions.
+add_executable(TestBattle
+        TestBattle.cpp TestBattle.hpp)
+set_target_properties(TestBattle PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestBattle VIIIPaths VIIIBattle)

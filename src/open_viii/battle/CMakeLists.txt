@@ -1,0 +1,2 @@
+add_library(VIIIBattle INTERFACE)
+target_link_libraries(VIIIBattle INTERFACE)

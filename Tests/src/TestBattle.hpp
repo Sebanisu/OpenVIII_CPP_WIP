@@ -1,0 +1,8 @@
+//
+// Created by pcvii on 11/17/2020.
+//
+
+#ifndef VIIIARCHIVE_TESTBATTLE_HPP
+#define VIIIARCHIVE_TESTBATTLE_HPP
+int main();
+#endif// VIIIARCHIVE_TESTBATTLE_HPP
