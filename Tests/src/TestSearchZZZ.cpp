@@ -11,7 +11,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include "TestExtractSingleZZZ.hpp"
+#include "TestSearchZZZ.hpp"
 #include "open_viii/paths/Paths.hpp"
 int main()
 {

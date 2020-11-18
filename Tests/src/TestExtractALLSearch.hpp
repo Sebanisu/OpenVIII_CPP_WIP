@@ -10,13 +10,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_HPP
-#define VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_HPP
-#include "open_viii/archive/FIFLFS.hpp"
-#include "open_viii/tools/Tools.hpp"
-#include <algorithm>
-#include <filesystem>
-#include <map>
-#include <string>
+#ifndef VIIIARCHIVE_TESTEXTRACTALLSEARCH_HPP
+#define VIIIARCHIVE_TESTEXTRACTALLSEARCH_HPP
 int main();
-#endif// VIIIARCHIVE_TESTEXTRACTSINGLEFIFLFS_HPP
+#endif// VIIIARCHIVE_TESTEXTRACTALLSEARCH_HPP

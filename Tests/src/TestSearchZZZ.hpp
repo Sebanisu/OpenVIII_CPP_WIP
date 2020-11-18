@@ -10,8 +10,8 @@
 ////
 //// You should have received a copy of the GNU General Public License
 //// along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef VIIIARCHIVE_TESTEXTRACTSINGLEZZZ_HPP
-#define VIIIARCHIVE_TESTEXTRACTSINGLEZZZ_HPP
+#ifndef VIIIARCHIVE_TESTSEARCHZZZ_HPP
+#define VIIIARCHIVE_TESTSEARCHZZZ_HPP
 #include "open_viii/archive/ZZZ.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include <filesystem>
@@ -19,4 +19,4 @@
 #include <string>
 int main();
 
-#endif// VIIIARCHIVE_TESTEXTRACTSINGLEZZZ_HPP
+#endif// VIIIARCHIVE_TESTSEARCHZZZ_HPP

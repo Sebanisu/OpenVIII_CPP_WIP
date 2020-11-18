@@ -6,11 +6,11 @@ set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractFIFLFS VIIIArchive VIIIPaths)
 #
 ##test app for trying to extract a single file from the FIFLFS archives.
-add_executable(TestExtractSingleFIFLFS
-        TestExtractSingleFIFLFS.hpp
-        TestExtractSingleFIFLFS.cpp)
-set_target_properties(TestExtractSingleFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractSingleFIFLFS VIIIArchive VIIIPaths)
+add_executable(TestExtractALLSearch
+        TestExtractALLSearch.hpp
+        TestExtractALLSearch.cpp)
+set_target_properties(TestExtractALLSearch PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestExtractALLSearch VIIIArchive VIIIPaths)
 
 #
 ##test app for trying to extract a all files from the ZZZ and FIFLFS archives.
@@ -30,10 +30,10 @@ target_link_libraries(TestArchives VIIIArchive VIIIPaths)
 
 #
 ##test searching threw zzz contents and nested fi fl fs files.
-add_executable(TestExtractSingleZZZ
-        TestExtractSingleZZZ.hpp TestExtractSingleZZZ.cpp)
-set_target_properties(TestExtractSingleZZZ PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractSingleZZZ VIIIArchive VIIIPaths)
+add_executable(TestSearchZZZ
+        TestSearchZZZ.hpp TestSearchZZZ.cpp)
+set_target_properties(TestSearchZZZ PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestSearchZZZ VIIIArchive VIIIPaths)
 #test app LZSS compression and decompression by passing random vector<char> to it with gradually increasing lengths.
 
 add_executable(TestLZSS

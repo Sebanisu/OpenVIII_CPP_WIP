@@ -40,5 +40,8 @@ int main()
   open_viii::graphics::Bit4Values b4v = {1,5};
   auto [a,b] = b4v;
   std::cout << '(' << static_cast<std::uint16_t>(a) << ',' << static_cast<std::uint16_t>(b) << ")\n";
+
+
+
   return 0;
 }

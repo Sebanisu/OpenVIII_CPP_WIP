@@ -348,7 +348,7 @@ public:
            && std::ranges::equal(starting, haystack_view, IEqualPredicate());
   }
   template<std::ranges::contiguous_range needleT>
-  [[maybe_unused]] [[nodiscard]] static auto i_ends_with_any(const std::string_view &haystack, const needleT &needles)
+  [[maybe_unused]] [[nodiscard]] static size_t i_ends_with_any(const std::string_view &haystack, const needleT &needles)
   {
     // std::cout << haystack <<std::endl;
     size_t i{};
