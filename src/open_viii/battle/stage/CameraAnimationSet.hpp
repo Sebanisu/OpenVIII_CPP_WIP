@@ -4,8 +4,8 @@
 
 #ifndef VIIIARCHIVE_CAMERAANIMATIONSET_HPP
 #define VIIIARCHIVE_CAMERAANIMATIONSET_HPP
-#include <vector>
 #include <cstdint>
+#include <vector>
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#CameraAnimationSet
  */

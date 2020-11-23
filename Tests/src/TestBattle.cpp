@@ -37,11 +37,18 @@ int main()
   for (const auto &clutid : clutids) {
     std::cout << static_cast<uint16_t>(open_viii::battle::stage::Triangle::clut(clutid)) << '\n';
   }
-  open_viii::graphics::Bit4Values b4v = {1,5};
-  auto [a,b] = b4v;
+  open_viii::graphics::Bit4Values b4v = { 1, 5 };
+  auto [a, b] = b4v;
   std::cout << '(' << static_cast<std::uint16_t>(a) << ',' << static_cast<std::uint16_t>(b) << ")\n";
 
+  open_viii::battle::stage::Triangle triangle{};
+  open_viii::battle::stage::Quad quad{};
 
+  [[maybe_unused]] const auto testmin = open_viii::graphics::min_uv(triangle);
+
+  [[maybe_unused]] const auto testmax = open_viii::graphics::max_uv(quad);
+
+  [[maybe_unused]] const auto rect = open_viii::graphics::rectangle(triangle);
 
   return 0;
 }

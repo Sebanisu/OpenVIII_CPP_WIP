@@ -16,6 +16,7 @@
 #include "CompressionTypeT.hpp"
 #include <concepts>
 #include <string_view>
+#include <type_traits>
 namespace open_viii {
 
 template<typename T> concept Number = std::floating_point<T> || std::integral<T>;
@@ -81,5 +82,21 @@ template<typename T> concept FI_Like_CompressionType = requires(T a)
 };
 
 template<typename T> concept FI_Like = FI_Like_CompressionType<T> &&FI_Like_Offset<T> &&FI_Like_UncompressedSize<T>;
+
+template<typename T> concept Point_Like = (requires (T a)
+{{a.x()}->Number;} &&
+  requires (T a)
+  {{a.y()}->Number;}
+);
+template<typename T> concept integral_no_ref_no_cv = std::integral<std::remove_cvref_t<T>>;
+template<typename T, std::size_t current = 0U> concept Shape_Like = (
+  requires(T a){{a.template uv<current>()}->Point_Like;} &&
+    requires(T a){{a.template face_indice<current>()}->integral_no_ref_no_cv;}
+  && requires(T a) {{a.COUNT};}
+
+  );
+
+template<typename lambdaT, typename pointT>
+concept TakesTwoPointsReturnsPoint = Point_Like<pointT> &&std::is_invocable_r_v<pointT, lambdaT, pointT, pointT>;
 }// namespace open_viii
 #endif// VIIIARCHIVE_CONCEPTS_HPP

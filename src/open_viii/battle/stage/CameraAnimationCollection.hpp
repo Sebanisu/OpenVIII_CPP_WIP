@@ -17,5 +17,5 @@ private:
   std::vector<std::uint16_t> m_offsets_to_sets{};
   std::uint16_t m_camera_end{};
 };
-}
+}// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERAANIMATIONCOLLECTION_HPP

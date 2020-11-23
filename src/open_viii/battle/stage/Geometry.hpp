@@ -6,8 +6,7 @@
 #define VIIIARCHIVE_GEOMETRY_HPP
 #include "GeometryHeader1.hpp"
 #include "GeometryHeader2.hpp"
-#include "Quad.hpp"
-#include "Triangle.hpp"
+#include "Shapes.hpp"
 #include "Vertice.hpp"
 #include <vector>
 namespace open_viii::battle::stage {

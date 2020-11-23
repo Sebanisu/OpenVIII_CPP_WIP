@@ -13,11 +13,12 @@
 
 #ifndef VIIIARCHIVE_POINT_HPP
 #define VIIIARCHIVE_POINT_HPP
+#include "open_viii/Concepts.hpp"
 #include <algorithm>
 #include <concepts>
 #include <iostream>
 namespace open_viii::graphics {
-template<typename dimT> requires(std::integral<dimT> || std::floating_point<dimT>) struct Point
+template<Number dimT> struct Point
 {
 private:
   mutable dimT m_x{};
@@ -52,7 +53,7 @@ public:
    * X coordinate.
    * @return x
    */
-  [[nodiscard]] const auto &x() const noexcept
+  [[nodiscard]] auto x() const noexcept
   {
     return m_x;
   }
@@ -61,7 +62,7 @@ public:
    * Y coordinate.
    * @return y
    */
-  [[nodiscard]] const auto &y() const noexcept
+  [[nodiscard]] auto y() const noexcept
   {
     return m_y;
   }
@@ -71,7 +72,7 @@ public:
    * @param x is new X coordinate.
    * @return x
    */
-  const auto &x(const dimT &x) const noexcept
+  auto x(const dimT &x) const noexcept
   {
     return m_x = x;
   }
@@ -81,7 +82,7 @@ public:
    * @param y is new Y coordinate.
    * @return y
    */
-  const auto &y(const dimT &y) const noexcept
+  auto y(const dimT &y) const noexcept
   {
     return m_y = y;
   }
@@ -121,26 +122,26 @@ public:
   {
     return os << '{' << input.m_x << ", " << input.m_y << '}';
   }
-
-  /**
-   * compares two points for max.
-   * @param lhs another point
-   * @return the max
-   */
-  Point<dimT> max(const Point<dimT> &lhs) const noexcept
-  {
-    return { std::max(m_x, lhs.x()), std::max(m_y, lhs.y()) };
-  }
-
-  /**
-   * compares two points for min.
-   * @param lhs another point
-   * @return the min
-   */
-  Point<dimT> min(const Point<dimT> &lhs) const noexcept
-  {
-    return { std::min(m_x, lhs.x()), std::min(m_y, lhs.y()) };
-  }
 };
+
+/**
+ * compares two points for max.
+ * @param lhs another point
+ * @return the max
+ */
+template<Number dimT> static Point<dimT> max(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
+{
+  return { std::max(rhs.x(), lhs.x()), std::max(rhs.y(), lhs.y()) };
+}
+
+/**
+ * compares two points for min.
+ * @param lhs another point
+ * @return the min
+ */
+template<Number dimT> static Point<dimT> min(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
+{
+  return { std::min(rhs.x(), lhs.x()), std::min(rhs.y(), lhs.y()) };
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_POINT_HPP

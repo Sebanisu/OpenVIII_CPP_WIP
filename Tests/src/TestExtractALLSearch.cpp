@@ -27,14 +27,14 @@ int main()
   }
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([&needle](const std::filesystem::path &path) {
-         std::cout << path << std::endl;
-         const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
-         [[maybe_unused]] static constexpr auto dump = [](std::vector<char> &&rvalue_buffer, std::string &&rvalue_path) {
-                std::vector<char> in_buffer{ std::move(rvalue_buffer) };
-                std::string in_path{ std::move(rvalue_path) };
-                open_viii::Tools::write_buffer(in_buffer, in_path);
-         };
-         archives.execute_on({needle}, dump);
+    std::cout << path << std::endl;
+    const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
+    [[maybe_unused]] static constexpr auto dump = [](std::vector<char> &&rvalue_buffer, std::string &&rvalue_path) {
+      std::vector<char> in_buffer{ std::move(rvalue_buffer) };
+      std::string in_path{ std::move(rvalue_path) };
+      open_viii::Tools::write_buffer(in_buffer, in_path);
+    };
+    archives.execute_on({ needle }, dump);
   });
   const auto end = std::chrono::steady_clock::now();
   const auto diff = end - start;

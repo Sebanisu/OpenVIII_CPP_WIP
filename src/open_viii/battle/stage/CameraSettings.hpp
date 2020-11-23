@@ -15,5 +15,5 @@ struct CameraSettings
   static constexpr auto UNK_SIZE = 24U;
   const std::array<char, UNK_SIZE> m_unk{};
 };
-}
+}// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERASETTINGS_HPP
