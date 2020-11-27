@@ -24,30 +24,22 @@ namespace open_viii::graphics {
 template<typename dimT> requires(std::integral<dimT> || std::floating_point<dimT>) struct Rectangle
 {
 private:
-  mutable Point<dimT> m_top_left{};
-  mutable Point<dimT> m_width_height{};
+  Point<dimT> m_top_left{};
+  Point<dimT> m_width_height{};
 
 public:
-  Rectangle() = default;
-  //  Rectangle(const Rectangle<dimT> &) = default;
-  //  Rectangle(Rectangle<dimT> &&) noexcept = default;
-  //  Rectangle<dimT>& operator=(const Rectangle<dimT>&) = default;
-  //  Rectangle<dimT>& operator=(Rectangle<dimT>&&) noexcept = default;
-  //  virtual ~Rectangle<dimT>() = delete;
-  friend auto operator<=>(const Rectangle<dimT> &left, const Rectangle<dimT> &right) noexcept = default;
-  auto operator<=>(const Rectangle<dimT> &right) const noexcept = default;
+  constexpr Rectangle() = default;
+  constexpr auto operator<=>(const Rectangle<dimT> &right) const noexcept = default;
 
-  template<typename T>
-  requires((std::integral<T> || std::floating_point<T>)&&!std::is_same_v<T, dimT>) explicit Rectangle(
-    const Rectangle<T> &r)
+  template<Number T> requires(!std::is_same_v<T, dimT>) constexpr explicit Rectangle(const Rectangle<T> &r)
   {
     m_top_left = static_cast<Point<dimT>>(r.m_top_left);
     m_width_height = static_cast<Point<dimT>>(r.m_width_height);
   }
-  Rectangle(const dimT &in_x, const dimT &in_y, const dimT &in_width, const dimT &in_height) noexcept
+  constexpr Rectangle(const dimT &in_x, const dimT &in_y, const dimT &in_width, const dimT &in_height) noexcept
     : m_top_left{ in_x, in_y }, m_width_height{ in_width, in_height }
   {}
-  Rectangle(const Point<dimT> &xy, const Point<dimT> &hw) noexcept : m_top_left{ xy }, m_width_height{ hw } {}
+  constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw) noexcept : m_top_left{ xy }, m_width_height{ hw } {}
   //  friend auto operator==(const Rectangle<dimT> &left, const Rectangle<dimT> &right) noexcept
   //  {
   //    return left.m_top_left == right.m_top_left && left.m_width_height == right.m_width_height;
@@ -55,14 +47,14 @@ public:
   /**
    * @return Left coordinate.
    */
-  [[maybe_unused]] [[nodiscard]] const auto &left() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto left() const noexcept
   {
-    return m_top_left.x();
+    return x();
   }
   /**
    * @return Left coordinate.
    */
-  [[nodiscard]] const auto &x() const noexcept
+  [[nodiscard]] constexpr auto x() const noexcept
   {
     return m_top_left.x();
   }
@@ -73,30 +65,30 @@ public:
    * @return Left coordinate.
    *
    */
-  const auto &x(const dimT &x) const noexcept
+  void x(const dimT &in_x) noexcept
   {
-    return m_top_left.x(x);
+    m_top_left.x(in_x);
   }
   /**
    *
    * @param x is new Left coordinate.
    * @return Left coordinate.
    */
-  const auto &left(const dimT &x) const noexcept
+  void left(const dimT &in_x) const noexcept
   {
-    return m_top_left.x(x);
+    x(in_x);
   }
   /**
    * @return Top coordinate.
    */
-  [[maybe_unused]] [[nodiscard]] const auto &top() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto top() const noexcept
   {
-    return m_top_left.y();
+    return y();
   }
   /**
    * @return Top coordinate.
    */
-  [[nodiscard]] const auto &y() const noexcept
+  [[nodiscard]] constexpr auto y() const noexcept
   {
     return m_top_left.y();
   }
@@ -105,15 +97,26 @@ public:
    * @param y is new Top coordinate.
    * @return Top coordinate.
    */
-  const auto &y(const dimT &y) const noexcept
+  void y(const dimT &in_y) noexcept
   {
-    return m_top_left.y(y);
+    m_top_left.y(in_y);
   }
+
+  /**
+   *
+   * @param y is new Top coordinate.
+   * @return Top coordinate.
+   */
+  void top(const dimT &in_y) noexcept
+  {
+    y(in_y);
+  }
+
 
   /**
    * @return Right coordinate.
    */
-  [[nodiscard]] auto right() const noexcept
+  [[nodiscard]] constexpr auto right() const noexcept
   {
     return m_top_left.x() + m_width_height.y();
   }
@@ -121,35 +124,35 @@ public:
   /**
    * @return Set Right coordinate.
    */
-  auto right(const dimT right) const noexcept
+  void right(const dimT right) noexcept
   {
     if (right >= m_top_left.x()) {
-      return m_width_height.X(m_top_left.x() - right);
+      m_width_height.X(m_top_left.x() - right);
     }
-    return m_width_height.X(right - m_top_left.x());
+    m_width_height.X(right - m_top_left.x());
   }
 
   /**
    * @return Set Bottom coordinate.
    */
-  [[maybe_unused]] auto bottom(const dimT bottom) const noexcept
+  void bottom(const dimT bottom) noexcept
   {
     if (bottom >= m_top_left.y()) {
-      return m_width_height.Y(m_top_left.y() - bottom);
+      m_width_height.Y(m_top_left.y() - bottom);
     }
-    return m_width_height.Y(bottom - m_top_left.y());
+    m_width_height.Y(bottom - m_top_left.y());
   }
   /**
    * @return Bottom coordinate.
    */
-  [[maybe_unused]] [[nodiscard]] auto bottom() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto bottom() const noexcept
   {
     return m_top_left.y() + m_width_height.y();
   }
   /**
    * @return Width.
    */
-  [[nodiscard]] const auto &width() const noexcept
+  [[nodiscard]] constexpr auto width() const noexcept
   {
     return m_width_height.x();
   }
@@ -159,14 +162,14 @@ public:
    * @param width is new Width value.
    * @return Width.
    */
-  const auto &width(const dimT &width) const noexcept
+  void width(const dimT &in_width) noexcept
   {
-    return m_width_height.x(width);
+    return m_width_height.x(in_width);
   }
   /**
    * @return Height.
    */
-  [[nodiscard]] const auto &height() const noexcept
+  [[nodiscard]] constexpr auto height() const noexcept
   {
     return m_width_height.y();
   }
@@ -175,12 +178,12 @@ public:
    * @param height is new Height value.
    * @return Height.
    */
-  const auto &height(const dimT &height) const noexcept
+  void height(dimT in_height) const noexcept
   {
-    return m_width_height.y(height);
+    m_width_height.y(in_height);
   }
 
-  [[nodiscard]] auto area() const noexcept
+  [[nodiscard]] constexpr auto area() const noexcept
   {
     return m_width_height.area();
   }
@@ -189,19 +192,19 @@ public:
     return os << "{(X, Y) = " << input.m_top_left << ", (Width, Height) = " << input.m_width_height << '}';
   }
 
-  Rectangle<dimT> operator/(const Rectangle<dimT> &input) const noexcept
+  Rectangle<dimT> constexpr operator/(const Rectangle<dimT> &input) const noexcept
   {
     return { m_top_left / input.m_top_left, m_width_height / input.m_width_height };
   }
-  Rectangle<dimT> operator*(const Rectangle<dimT> &input) const noexcept
+  Rectangle<dimT> constexpr operator*(const Rectangle<dimT> &input) const noexcept
   {
     return { m_top_left * input.m_top_left, m_width_height * input.m_width_height };
   }
-  const Point<dimT> &top_left() const noexcept
+  constexpr Point<dimT> top_left() const noexcept
   {
     return m_top_left;
   }
-  const Point<dimT> &width_height() const noexcept
+  constexpr Point<dimT> width_height() const noexcept
   {
     return m_width_height;
   }

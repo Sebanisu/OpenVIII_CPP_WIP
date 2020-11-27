@@ -28,14 +28,14 @@ private:
   std::uint8_t m_second : 4U {};
 
 public:
-  Bit4Values() = default;
-  Bit4Values(const std::uint8_t &in_first, const std::uint8_t &in_second)
+  constexpr Bit4Values() = default;
+  constexpr Bit4Values(const std::uint8_t &in_first, const std::uint8_t &in_second)
     : m_first(in_first & MASK_4_BIT), m_second(in_second & MASK_4_BIT)
   {}
-  explicit Bit4Values(const std::uint8_t &in_raw)
+  constexpr explicit Bit4Values(const std::uint8_t &in_raw)
     : m_first(static_cast<std::uint8_t>((in_raw >> SHIFT_8_BITS)) & MASK_4_BIT), m_second(in_raw & MASK_4_BIT)
   {}
-  explicit operator std::uint8_t() const noexcept
+  constexpr explicit operator std::uint8_t() const noexcept
   {
     return static_cast<std::uint8_t>(
       static_cast<std::uint8_t>(static_cast<std::uint8_t>(m_first << SHIFT_8_BITS) & OFFSET_MASK_4_BIT) | (m_second));
@@ -43,7 +43,7 @@ public:
   /**
    *required to structured binding support
    */
-  template<std::size_t I> requires(I < 2) [[nodiscard]] auto get() const noexcept
+  template<std::size_t I> requires(I < 2) [[nodiscard]] constexpr auto get() const noexcept
   {
     if constexpr (I == 0) {
       return m_first;
@@ -59,12 +59,12 @@ public:
   //    else if constexpr(I == 1) return second;
   //  }
 
-  [[nodiscard]] std::uint8_t first() const noexcept
+  [[nodiscard]] constexpr std::uint8_t first() const noexcept
   {
     return m_first;
   }
 
-  [[nodiscard]] std::uint8_t second() const noexcept
+  [[nodiscard]] constexpr std::uint8_t second() const noexcept
   {
     return m_second;
   }

@@ -18,7 +18,8 @@ template<std::size_t current = 0U,
   Point_Like pointT = graphics::Point<std::uint8_t>,
   Shape_Like shapeT,
   TakesTwoPointsReturnsPoint<pointT> lambdaT>
-requires(current < shapeT::COUNT) [[nodiscard]] static pointT for_each_uv(const shapeT &shape, const lambdaT &lambda)
+requires(current < shapeT::COUNT) [[nodiscard]] constexpr static pointT
+  for_each_uv(const shapeT &shape, const lambdaT &lambda)
 {
   if constexpr (current + 1U < shapeT::COUNT) {
     return std::invoke(lambda, shape.template uv<current>(), for_each_uv<current + 1>(shape, lambda));
@@ -31,7 +32,7 @@ requires(current < shapeT::COUNT) [[nodiscard]] static pointT for_each_uv(const 
 //   * @return return the max UV value. More exactly it'll be the max U and max V values.
 //   */
 template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
-[[nodiscard]] static pointT max_uv(const shapeT &shape)
+[[nodiscard]] constexpr static pointT max_uv(const shapeT &shape)
 {
   return for_each_uv(shape, [](const pointT &a, const pointT &b) {
     return graphics::max(a, b);
@@ -42,7 +43,7 @@ template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
  * @return return the min UV value. More exactly it'll be the min U and min V values.
  */
 template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
-[[nodiscard]] static pointT min_uv(const shapeT &shape)
+[[nodiscard]] constexpr static pointT min_uv(const shapeT &shape)
 {
   return for_each_uv(shape, [](const pointT &a, const pointT &b) {
     return graphics::min(a, b);
@@ -52,7 +53,7 @@ template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
  * returns a rectangle containing the triangle.
  * @return
  */
-[[nodiscard]] static auto rectangle(const Shape_Like auto &shape)
+[[nodiscard]] constexpr static auto rectangle(const Shape_Like auto &shape)
 {
   const auto min_uv_value = min_uv(shape);
   return Rectangle(min_uv_value, max_uv(shape) - min_uv_value);

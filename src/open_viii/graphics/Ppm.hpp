@@ -157,11 +157,11 @@ public:
   {
     return m_colors;
   }
-  [[nodiscard]] const auto &width() const noexcept
+  [[nodiscard]] constexpr auto width() const noexcept
   {
     return m_width_height.x();
   }
-  [[nodiscard]] const auto &height() const noexcept
+  [[nodiscard]] constexpr auto height() const noexcept
   {
     return m_width_height.y();
   }

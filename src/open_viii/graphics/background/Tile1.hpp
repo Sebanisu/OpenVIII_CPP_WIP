@@ -50,21 +50,21 @@ public:
   static constexpr auto WIDTH{ 16U };
   static constexpr auto TEXTURE_PAGE_WIDTH{ 128U };
   static constexpr auto AREA = HEIGHT * WIDTH;
-  [[nodiscard]] const std::int16_t &x() const noexcept
+  [[nodiscard]] constexpr std::int16_t x() const noexcept
   {
     return m_xy.x();
   }
-  [[nodiscard]] const std::int16_t &y() const noexcept
+  [[nodiscard]] constexpr std::int16_t y() const noexcept
   {
     return m_xy.y();
   }
-  const std::int16_t &x(std::int16_t in_x) const noexcept
+  void x(std::int16_t in_x) noexcept
   {
-    return m_xy.x(in_x);
+    m_xy.x(in_x);
   }
-  const std::int16_t &y(std::int16_t in_y) const noexcept
+  void y(std::int16_t in_y) noexcept
   {
-    return m_xy.y(in_y);
+    m_xy.y(in_y);
   }
   [[nodiscard]] const std::uint16_t &z() const noexcept
   {
@@ -90,11 +90,11 @@ public:
   {
     return m_palette_id.id();
   }
-  [[nodiscard]] const std::uint8_t &source_x() const noexcept
+  [[nodiscard]] constexpr std::uint8_t source_x() const noexcept
   {
     return m_source_xy.x();
   }
-  [[nodiscard]] const std::uint8_t &source_y() const noexcept
+  [[nodiscard]] constexpr std::uint8_t source_y() const noexcept
   {
     return m_source_xy.y();
   }

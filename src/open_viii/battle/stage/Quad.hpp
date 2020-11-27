@@ -59,7 +59,7 @@ public:
     return m_raw_hide != 0U;
   }
 
-  template<std::size_t I> requires(I < COUNT) [[nodiscard]] auto uv() const noexcept
+  template<std::size_t I> requires(I < COUNT) [[nodiscard]] constexpr auto uv() const noexcept
   {
     if constexpr (I == 0U) {
       return m_uv1;
@@ -71,7 +71,7 @@ public:
       return m_uv4;
     }
   }
-  template<std::size_t I> requires(I < COUNT) [[nodiscard]] auto face_indice() const noexcept
+  template<std::size_t I> requires(I < COUNT) [[nodiscard]] constexpr auto face_indice() const noexcept
   {
     if constexpr (I == 0U) {
       return m_face_indice_a;

@@ -41,24 +41,24 @@ public:
   {
     return (std::rotl(in_clut_raw, SHIFT_2_BIT) & MASK_4_BIT);
   }
-  [[nodiscard]] std::uint8_t clut() const noexcept
+  [[nodiscard]] constexpr std::uint8_t clut() const noexcept
   {
     return clut(m_raw_clut);
   }
-  [[nodiscard]] std::uint8_t texture_page() const noexcept
+  [[nodiscard]] constexpr std::uint8_t texture_page() const noexcept
   {
     return m_raw_texture_page.second();
   }
-  [[nodiscard]] auto color() const noexcept
+  [[nodiscard]] constexpr auto color() const noexcept
   {
     return m_color;
   }
-  [[nodiscard]] bool hide() const noexcept
+  [[nodiscard]] constexpr bool hide() const noexcept
   {
     return m_raw_hide != 0U;
   }
 
-  template<std::size_t I> requires(I < COUNT) [[nodiscard]] auto uv() const noexcept
+  template<std::size_t I> requires(I < COUNT) [[nodiscard]] constexpr auto uv() const noexcept
   {
     if constexpr (I == 0U) {
       return m_uv1;
@@ -68,7 +68,7 @@ public:
       return m_uv3;
     }
   }
-  template<std::size_t I> requires(I < COUNT) [[nodiscard]] auto face_indice() const noexcept
+  template<std::size_t I> requires(I < COUNT) [[nodiscard]] constexpr auto face_indice() const noexcept
   {
     if constexpr (I == 0U) {
       return m_face_indice_a;

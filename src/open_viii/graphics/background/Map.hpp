@@ -112,7 +112,7 @@ private:
       shift(m_offset.abs());
     }
   }
-  [[nodiscard]] const auto &min_x() const noexcept
+  [[nodiscard]] constexpr auto min_x() const noexcept
   {
     return (std::min_element(m_tiles.cbegin(),
               m_tiles.cend(),
@@ -128,7 +128,7 @@ private:
     });
   }
 
-  [[maybe_unused]] [[nodiscard]] const auto &max_x() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto max_x() const noexcept
   {
     return (std::max_element(m_tiles.cbegin(),
               m_tiles.cend(),
@@ -143,7 +143,7 @@ private:
       return a.y() < b.y();
     });
   }
-  [[nodiscard]] const auto &min_y() const noexcept
+  [[nodiscard]] constexpr auto min_y() const noexcept
   {
     return (std::min_element(m_tiles.cbegin(),
               m_tiles.cend(),
@@ -153,7 +153,7 @@ private:
       ->y();
   }
 
-  [[maybe_unused]] [[nodiscard]] const auto &max_y() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto max_y() const noexcept
   {
     return (std::max_element(m_tiles.cbegin(),
               m_tiles.cend(),

@@ -41,14 +41,14 @@ int main()
   auto [a, b] = b4v;
   std::cout << '(' << static_cast<std::uint16_t>(a) << ',' << static_cast<std::uint16_t>(b) << ")\n";
 
-  open_viii::battle::stage::Triangle triangle{};
-  open_viii::battle::stage::Quad quad{};
+  constexpr open_viii::battle::stage::Triangle triangle{};
+  constexpr open_viii::battle::stage::Quad quad{};
 
-  [[maybe_unused]] const auto testmin = open_viii::graphics::min_uv(triangle);
+  [[maybe_unused]] constexpr auto testmin = open_viii::graphics::min_uv(triangle);
 
-  [[maybe_unused]] const auto testmax = open_viii::graphics::max_uv(quad);
+  [[maybe_unused]] constexpr auto testmax = open_viii::graphics::max_uv(quad);
 
-  [[maybe_unused]] const auto rect = open_viii::graphics::rectangle(triangle);
+  [[maybe_unused]] constexpr auto rect = open_viii::graphics::rectangle(triangle);
 
   return 0;
 }

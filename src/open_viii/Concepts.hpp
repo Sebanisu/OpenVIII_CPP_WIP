@@ -92,11 +92,12 @@ template<typename T> concept integral_no_ref_no_cv = std::integral<std::remove_c
 template<typename T, std::size_t current = 0U> concept Shape_Like = (
   requires(T a){{a.template uv<current>()}->Point_Like;} &&
     requires(T a){{a.template face_indice<current>()}->integral_no_ref_no_cv;}
-  && requires(T a) {{a.COUNT};}
+  && requires(T a) {{a.COUNT>0U};}
 
   );
 
 template<typename lambdaT, typename pointT>
-concept TakesTwoPointsReturnsPoint = Point_Like<pointT> &&std::is_invocable_r_v<pointT, lambdaT, pointT, pointT>;
+concept TakesTwoPointsReturnsPoint = Point_Like<pointT> &&std::regular_invocable<lambdaT, pointT, pointT>
+  &&Point_Like<std::invoke_result_t<lambdaT, pointT, pointT>>;
 }// namespace open_viii
 #endif// VIIIARCHIVE_CONCEPTS_HPP
