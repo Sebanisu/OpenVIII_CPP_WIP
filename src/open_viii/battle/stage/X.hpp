@@ -7,6 +7,7 @@
 #include "open_viii/graphics/Tim.hpp"
 #include <algorithm>
 #include <array>
+#include <iterator>
 #include <ranges>
 #include <string>
 #include <string_view>
@@ -34,10 +35,10 @@ public:
   {
     std::cout << m_path << '\n';
     {
+      const auto &buffer_begin = std::ranges::begin(m_buffer);
       const auto buffer_end = std::ranges::end(m_buffer);
-      const auto search = [this, &buffer_end](const std::span<const char> &needle, auto lambda) {
-        const auto start =
-          std::search(std::ranges::begin(m_buffer), buffer_end, std::ranges::begin(needle), std::ranges::end(needle));
+      const auto search = [this, &buffer_begin, &buffer_end](const std::span<const char> &needle, auto lambda) {
+        const auto start = std::search(buffer_begin, buffer_end, std::ranges::begin(needle), std::ranges::end(needle));
 
         const auto match = start == buffer_end;
         const auto message = [&match]() {
@@ -52,6 +53,12 @@ public:
         }
         return start;
       };
+
+      const auto offset = [&buffer_begin](const auto &start) {
+        std::cout << "Offset: "<<std::hex << std::uppercase << std::distance(buffer_begin, start) << std::dec << std::nouppercase
+                  << '\n';
+      };
+
       std::cout << "TIM: ";
       const auto tim_start = search(TIM_START, [this, &buffer_end](const auto &start) {
         const auto &span = std::span<const char>(start, buffer_end);
@@ -59,16 +66,19 @@ public:
         std::cout << span.size() << " bytes" << std::endl;
         std::cout << m_tim << std::endl;
       });
+      offset(tim_start);
 
       std::cout << "MODEL: ";
       const auto model_start = search(MODEL_START, [this, &tim_start](const auto &start) {
         std::cout << std::span<const char>(start, tim_start).size() << " bytes" << std::endl;
       });
+      offset(model_start);
 
       std::cout << "CAMERA: ";
-      search(CAMERA_START, [this, &model_start](const auto &start) {
+      const auto camera_start = search(CAMERA_START, [this, &model_start](const auto &start) {
         std::cout << std::span<const char>(start, model_start).size() << " bytes" << std::endl;
       });
+      offset(camera_start);
     }
   }
 };
