@@ -13,6 +13,7 @@
 
 #include "lib/lz4.h"
 #include <concepts>
+#include <span>
 #include <vector>
 
 #ifndef VIIICOMPRESSION_L4Z_H
