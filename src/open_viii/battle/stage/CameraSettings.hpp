@@ -6,6 +6,7 @@
 #define VIIIARCHIVE_CAMERASETTINGS_HPP
 #include <array>
 #include <cstdint>
+#include <ostream>
 namespace open_viii::battle::stage {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Camera_Setting
@@ -13,7 +14,15 @@ namespace open_viii::battle::stage {
 struct CameraSettings
 {
   static constexpr auto UNK_SIZE = 24U;
-  const std::array<char, UNK_SIZE> m_unk{};
+  std::array<char, UNK_SIZE> m_unk{};
+  friend std::ostream &operator<<(std::ostream &os, const CameraSettings &in)
+  {
+    os << '{' << std::hex << std::uppercase;
+    std::ranges::for_each(in.m_unk, [&os](const char &c) {
+      os << static_cast<std::uint16_t>(c);
+    });
+    return os << std::dec << std::nouppercase << "}\n";
+  }
 };
 }// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERASETTINGS_HPP

@@ -27,6 +27,7 @@
 #include <span>
 #include <string>
 #include <thread>
+#include <type_traits>
 namespace open_viii {
 struct [[maybe_unused]] Tools
 {
@@ -60,14 +61,54 @@ public:
     auto sv = u8_to_sv(s8);
     return { sv.begin(), sv.end() };
   }
-  template<typename trivialType> [[maybe_unused]] static void read_val(std::istream &fp, trivialType &item)
+
+  template<typename trivialType>
+  requires(std::is_trivial_v<trivialType>) [[nodiscard]] static trivialType read_val(std::istream &fp)
   {
-    static_assert(std::is_trivial_v<trivialType>);
+    trivialType item{};
     std::array<char, sizeof(item)> tmp{};
     fp.read(tmp.data(), tmp.size());
-    memcpy(&item, tmp.data(), sizeof(item));
-  }// namespace open_viii
+    if constexpr (requires { std::ranges::data(item); }) {
 
+      memcpy(std::ranges::data(item), std::ranges::data(tmp), sizeof(*std::ranges::data(item))*std::ranges::size(item));
+    } else {
+      memcpy(&item, std::ranges::data(tmp), sizeof(item));
+    }
+    return item;
+  }
+
+  template<typename trivialType> static void read_val(std::istream &fp, trivialType &item)
+  {
+    std::array<char, sizeof(item)> tmp{};
+    fp.read(tmp.data(), tmp.size());
+    if constexpr (requires { std::ranges::data(item); }) {
+      memcpy(std::ranges::data(item), std::ranges::data(tmp), sizeof(*std::ranges::data(item))*std::ranges::size(item));
+    } else {
+      memcpy(&item, std::ranges::data(tmp), sizeof(item));
+    }
+  }
+
+  template<typename trivialType> [[nodiscard]] static trivialType read_val(const std::span<const char> &span)
+  {
+    trivialType item{};
+    const auto tmp{ span.subspan(0, sizeof(trivialType)) };
+    if constexpr (requires { std::ranges::data(item); }) {
+      memcpy(std::ranges::data(item), std::ranges::data(tmp), sizeof(*std::ranges::data(item))*std::ranges::size(item));
+    } else {
+      memcpy(&item, std::ranges::data(tmp), sizeof(item));
+    }
+    return item;
+  }
+  template<typename trivialType> static void read_val(const std::span<const char> &span, trivialType &item)
+  {
+    const auto tmp{ span.subspan(0, sizeof(trivialType)) };
+
+    if constexpr (requires { std::ranges::data(item); }) {
+      memcpy(std::ranges::data(item), std::ranges::data(tmp), sizeof(*std::ranges::data(item))*std::ranges::size(item));
+    } else {
+      memcpy(&item, std::ranges::data(tmp), sizeof(item));
+    }
+  }
   template<std::ranges::contiguous_range dstT = std::vector<char>, std::integral sizeT>
   [[maybe_unused]] static auto read_buffer(std::istream &fp, const sizeT &s)
   {
