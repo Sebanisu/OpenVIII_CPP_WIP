@@ -35,12 +35,13 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const CameraAnimationCollection &in)
   {
     os << '{' << in.m_number_of_sets << ',' << std::hex << std::uppercase << '{';
-    std::ranges::for_each(in.m_offsets_to_sets, [&os, first = true] (const std::uint16_t &c) mutable {
+    bool first = true;
+    std::ranges::for_each(in.m_offsets_to_sets, [&os, &first](const std::uint16_t &c) {
       if (!first) {
         os << ',';
-        first = false;
       }
 
+      first = false;
       os << static_cast<std::uint16_t>(c);
     });
     return os << std::dec << std::nouppercase << '}' << ',' << in.m_camera_end << "}\n";

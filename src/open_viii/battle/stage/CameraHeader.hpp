@@ -18,12 +18,15 @@ private:
   std::uint16_t m_offset_camera_settings{};
   std::uint16_t m_offset_camera_animation_collection{};
   std::uint16_t m_camera_data_size{};
-  static constexpr std::uint16_t EXPECTED_OFFSETS_COUNT{ 0x0200U };
+  static constexpr std::uint16_t EXPECTED_OFFSETS_COUNT{ 0x2U };
+  static constexpr std::uint16_t EXPECTED_OFFSET_CAMERA_SETTINGS{ 0x8U };
+  static constexpr std::uint16_t EXPECTED_OFFSET_CAMERA_ANIMATION_COLLECTION{ 0x8U };
 
 public:
   [[nodiscard]] bool constexpr check() const noexcept
   {
-    return m_offsets_count == EXPECTED_OFFSETS_COUNT;
+    return m_offsets_count == EXPECTED_OFFSETS_COUNT && m_offset_camera_settings == EXPECTED_OFFSET_CAMERA_SETTINGS
+           && m_offset_camera_animation_collection == EXPECTED_OFFSET_CAMERA_ANIMATION_COLLECTION;
   }
   [[nodiscard]] constexpr std::uint16_t offsets_count() const noexcept
   {
