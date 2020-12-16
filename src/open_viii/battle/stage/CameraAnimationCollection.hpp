@@ -41,7 +41,7 @@ public:
     m_camera_animation_set.reserve(m_set_count);
     std::ranges::transform(
       m_set_offsets, std::back_inserter(m_camera_animation_set), [&backup_span](const std::uint16_t &offset) {
-        return Tools::read_val<CameraAnimationSet>(backup_span.subspan(offset+2U));
+        return Tools::read_val<CameraAnimationSet>(backup_span.subspan(offset+2U)); // skipping 2U makes it match the values in open_viii
       });
   }
   friend std::ostream &operator<<(std::ostream &os, const CameraAnimationCollection &in)
