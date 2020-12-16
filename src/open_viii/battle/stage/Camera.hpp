@@ -28,10 +28,23 @@ public:
   {
     // can be constexpr with bitcast. memcpy is not constexpr.
   }
+
+  [[nodiscard]] const CameraHeader &camera_header() const noexcept
+  {
+    return m_camera_header;
+  }
+  [[nodiscard]] const CameraSettings &camera_settings() const noexcept
+  {
+    return m_camera_settings;
+  }
+  [[nodiscard]] const CameraAnimationCollection &camera_animation_collection() const noexcept
+  {
+    return m_camera_animation_collection;
+  }
   friend std::ostream &operator<<(std::ostream &os, const Camera &in)
   {
-    return os << '{' << in.m_camera_header << ',' << in.m_camera_settings << in.m_camera_animation_collection << ','
-              << "}\n";
+    return os << "{\n\t\t HEADER: " << in.m_camera_header << "\n\t\t SETTINGS: " << in.m_camera_settings
+              << "\n\t\t COLLECTION: " << in.m_camera_animation_collection << "}";
   }
 };
 }// namespace open_viii::battle::stage

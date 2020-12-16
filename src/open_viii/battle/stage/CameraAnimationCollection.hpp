@@ -4,6 +4,7 @@
 
 #ifndef VIIIARCHIVE_CAMERAANIMATIONCOLLECTION_HPP
 #define VIIIARCHIVE_CAMERAANIMATIONCOLLECTION_HPP
+#include "CameraAnimationSet.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include <cstdint>
 #include <ostream>
@@ -16,35 +17,60 @@ namespace open_viii::battle::stage {
 struct CameraAnimationCollection
 {
 private:
-  std::uint16_t m_number_of_sets{};
-  std::vector<std::uint16_t> m_offsets_to_sets{};
+  std::uint16_t m_set_count{};
+  std::vector<std::uint16_t> m_set_offsets{};
   std::uint16_t m_camera_end{};
+  std::vector<CameraAnimationSet> m_camera_animation_set{};
 
 public:
   constexpr CameraAnimationCollection() = default;
   explicit CameraAnimationCollection(std::span<const char> span)
   {
+    // const auto start = span.begin();
+    const auto backup_span = span;
     // std::ranges::data
-    Tools::read_val(span, m_number_of_sets);
+    Tools::read_val(span, m_set_count);
     span = span.subspan(sizeof(std::uint16_t));
-    m_offsets_to_sets.resize(m_number_of_sets);
-    Tools::read_val(span, m_offsets_to_sets);
-    span = span.subspan(sizeof(std::uint16_t) * m_number_of_sets);
+    m_set_offsets.resize(m_set_count);
+    Tools::read_val(span, m_set_offsets);
+    span = span.subspan(sizeof(std::uint16_t) * m_set_count);
     Tools::read_val(span, m_camera_end);
+    // const auto size{sizeof(CameraAnimationSet) * m_set_count};
+    span = span.subspan(sizeof(std::uint16_t));
+    // TODO sets aren't grouped together will need to use offsets
+    m_camera_animation_set.reserve(m_set_count);
+    std::ranges::transform(
+      m_set_offsets, std::back_inserter(m_camera_animation_set), [&backup_span](const std::uint16_t &offset) {
+        return Tools::read_val<CameraAnimationSet>(backup_span.subspan(offset+2U));
+      });
   }
   friend std::ostream &operator<<(std::ostream &os, const CameraAnimationCollection &in)
   {
-    os << '{' << in.m_number_of_sets << ',' << std::hex << std::uppercase << '{';
-    bool first = true;
-    std::ranges::for_each(in.m_offsets_to_sets, [&os, &first](const std::uint16_t &c) {
-      if (!first) {
-        os << ',';
-      }
+    os << "{\n\t\t\t SET COUNT: " << in.m_set_count << "\n\t\t\t SET OFFSETS: " << '[';
+    {
+      bool first = true;
+      std::ranges::for_each(in.m_set_offsets, [&os, &first](const std::uint16_t &c) {
+        if (!first) {
+          os << ',';
+        }
 
-      first = false;
-      os << static_cast<std::uint16_t>(c);
-    });
-    return os << std::dec << std::nouppercase << '}' << ',' << in.m_camera_end << "}\n";
+        first = false;
+        os << "0x" << std::hex << std::uppercase << static_cast<std::uint16_t>(c) << std::dec << std::nouppercase;
+      });
+    }
+    os << ']' << "\n\t\t\t END: " << in.m_camera_end << "\n\t\t\t SETS: " << '[';
+    {
+      bool first = true;
+      std::ranges::for_each(in.m_camera_animation_set, [&os, &first](const CameraAnimationSet &c) {
+        if (!first) {
+          os << ",";
+        }
+        os << "\n\t\t\t\t";
+        first = false;
+        os << c;
+      });
+    }
+    return os << "]";
   }
 };
 }// namespace open_viii::battle::stage

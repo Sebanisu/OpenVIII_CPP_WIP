@@ -41,6 +41,17 @@ private:
   };
 
 public:
+  static void for_each_two(std::ranges::forward_range auto one,std::ranges::forward_range auto two, auto lambda)
+  {
+    auto itt_one = one.begin();
+    auto itt_two = two.begin();
+    while(itt_one < one.end() && itt_two < two.end())
+    {
+      lambda(*itt_one,*itt_two);
+      ++itt_one;
+      ++itt_two;
+    }
+  }
   /**
    * Workaround there is no way to currently to print a utf8 string... streams are char only pretty much.
    * @param s8 utf8 string_view

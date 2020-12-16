@@ -17,12 +17,13 @@ struct CameraSettings
   std::array<char, UNK_SIZE> m_unk{};
   friend std::ostream &operator<<(std::ostream &os, const CameraSettings &in)
   {
-    os << '{' << std::hex << std::uppercase;
+    os << "{0x" << std::hex << std::uppercase;
     std::ranges::for_each(in.m_unk, [&os](const char &c) {
       os << static_cast<std::uint16_t>(c);
     });
-    return os << std::dec << std::nouppercase << "}\n";
+    return os << std::dec << std::nouppercase << "}";
   }
 };
+static_assert(sizeof(CameraSettings) == CameraSettings::UNK_SIZE);
 }// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERASETTINGS_HPP

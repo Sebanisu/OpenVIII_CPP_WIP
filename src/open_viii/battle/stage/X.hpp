@@ -40,7 +40,7 @@ public:
     {
       const auto &buffer_begin = std::ranges::begin(m_buffer);
       const auto buffer_end = std::ranges::end(m_buffer);
-      const auto search = [this, &buffer_begin, &buffer_end](const std::span<const char> &needle, auto lambda) {
+      const auto search = [&buffer_begin, &buffer_end](const std::span<const char> &needle, auto lambda) {
         const auto start = std::search(buffer_begin, buffer_end, std::ranges::begin(needle), std::ranges::end(needle));
 
         const auto match = start == buffer_end;
@@ -59,8 +59,11 @@ public:
       };
 
       const auto offset = [&buffer_begin](const auto &start) {
-        std::cout << "\tOffset: " << std::hex << std::uppercase << std::distance(buffer_begin, start) << std::dec
-                  << std::nouppercase << '\n';
+        std::cout
+          << "\tOffset: " << std::hex << std::uppercase << std::distance(buffer_begin.base(), start.base()) << std::dec
+          << std::nouppercase
+          << '\n';// base() isn't in visual studio so i might need to cast
+                  // buffer_begin to a span so they are the same type. base() converts the iterator to the pointer.
       };
 
       std::cout << "TIM: ";
@@ -72,24 +75,28 @@ public:
       });
       offset(tim_start);
 
-      std::cout << "MODEL: ";
-      const auto model_start = search(MODEL_START, [this, &tim_start](const auto &start) {
-        std::cout << "\tSIZE: " << std::span<const char>(start, tim_start).size() << " bytes" << std::endl;
-      });
-      offset(model_start);
-
       std::cout << "CAMERA: ";
-      const auto camera_start = search(CAMERA_START, [this, &model_start](const auto &start) {
-        auto span = std::span<const char>(start, model_start);
+      const auto camera_start = search(CAMERA_START, [this, &tim_start](const auto &start) {
+        auto span = std::span<const char>(start, tim_start);
 
-        std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
 
         m_camera = Camera(span);
         std::cout << "\tINFO: " << m_camera << std::endl;
       });
       offset(camera_start);
+      const auto camera_size = m_camera.camera_header().camera_data_size();
+      std::cout << "\tSIZE: " << camera_size << " bytes" << std::endl;
+
+      std::cout << "MODEL: \n";
+      const auto model_start = [&tim_start, &camera_size, &camera_start]() {
+        const auto span = std::span<char>(camera_start, tim_start).subspan(camera_size);
+        std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
+        return std::ranges::begin(span);
+      }();
+      offset(model_start);
+
       if (m_tim.check()) {
-        m_tim.save(m_path);
+        // m_tim.save(m_path);
       }
     }
   }
