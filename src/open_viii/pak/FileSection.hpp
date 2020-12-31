@@ -79,7 +79,7 @@ public:
   /**
    * Get Mutable Frame Count
    */
-  [[nodiscard]] auto & mutable_frames() noexcept
+  [[nodiscard]] auto &mutable_frames() noexcept
   {
     return m_frames;
   }

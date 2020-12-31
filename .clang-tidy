@@ -1,5 +1,5 @@
 ---
-Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm-*,-llvmlibc*,readability-identifier-naming,-hicpp-multiway-paths-covered'
+Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm-*,-llvmlibc*,readability-identifier-naming,-hicpp-multiway-paths-covered,-readability-convert-member-functions-to-static,-altera-struct-pack-align'
 CheckOptions:
   - { key: readability-identifier-naming.NamespaceCase,            value: lower_case }
   - { key: readability-identifier-naming.ClassCase,                value: CamelCase }
