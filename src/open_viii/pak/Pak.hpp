@@ -240,13 +240,13 @@ public:
          */
         MovieClip movie{};
         while (!is.eof()) {
-          const auto get_type = [&is]() {
-            const auto sz = sizeof(std::uint32_t) - 1;
-            std::array<char, sz> tmp{};
-            is.read(std::ranges::data(tmp), sz);
-            return tmp;
-          };
-          auto type = get_type();
+//          const auto get_type = [&is]() {
+//            const auto sz = sizeof(std::uint32_t) - 1;
+//            std::array<char, sz> tmp{};
+//            is.read(std::ranges::data(tmp), sz);
+//            return tmp;
+//          };
+          auto type = FileSectionTypeT::get_type(is);
           if (std::ranges::equal(type, FileSectionTypeT::BIK)
               || std::ranges::equal(type, FileSectionTypeT::KB2)) {
             // std::cout << "bink\n";
@@ -327,7 +327,7 @@ public:
             /**
              * Read cam file offset and size
              */
-            [&is, this, &get_type, &movie]() -> void {
+            [&is, this, &movie]() -> void {
               FileSection fs{};
               fs.type(FileSectionTypeT::CAM);
               fs.offset(static_cast<std::int64_t>(is.tellg()) - 3);
@@ -347,8 +347,8 @@ public:
               // there seems to be 1 or more extra frames. Check for those.
 
 
-              while ([&get_type]() {
-                auto b = get_type();
+              while ([&is]() {
+                auto b = FileSectionTypeT::get_type(is);
                 return !std::ranges::equal(b, FileSectionTypeT::BIK)
                        && !std::ranges::equal(b, FileSectionTypeT::KB2);
               }()) {
