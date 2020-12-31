@@ -189,8 +189,9 @@ public:
   {
     using namespace std::string_literals;
     static constexpr auto length = 2U;
-    return "disc"s + Tools::to_string_with_padding(get_disc_number(), length) + "_"s
-           + Tools::to_string_with_padding(count(), length) + suffix + extension;
+    return "disc"s + Tools::to_string_with_padding(get_disc_number(), length)
+           + "_"s + Tools::to_string_with_padding(count(), length) + suffix
+           + extension;
   }
   /**
    * Extract number from filename. typically there is 1 digit for the disc
