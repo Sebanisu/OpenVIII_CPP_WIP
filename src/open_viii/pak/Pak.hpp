@@ -249,63 +249,60 @@ public:
   { /**
      * Read Bink video offset and size
      */
-    [&is, &type, this, &movie]() -> void {
-      char version = Tools::read_val<char>(is);
-      //              is.read(&version, sizeof(version));
+    char version = Tools::read_val<char>(is);
 
-      FileSection fs{};
+    FileSection fs{};
 
-      if (std::ranges::equal(type, FileSectionTypeT::BIK)
-          && Tools::any_of(version, BIK1)) {
-        fs.type(FileSectionTypeT::BIK);
-      } else if (std::ranges::equal(type, FileSectionTypeT::KB2)
-                 && Tools::any_of(version, BIK2)) {
-        fs.type(FileSectionTypeT::KB2);
-      } else {
-        std::cerr << "location: " << std::hex << is.tellg() << std::endl;
-        std::cerr << "bink version and type mismatch...\t" << fs.type() << '\t'
-                  << static_cast<int32_t>(version) << std::dec << std::endl;
-        return;
+    if (std::ranges::equal(type, FileSectionTypeT::BIK)
+        && Tools::any_of(version, BIK1)) {
+      fs.type(FileSectionTypeT::BIK);
+    } else if (std::ranges::equal(type, FileSectionTypeT::KB2)
+               && Tools::any_of(version, BIK2)) {
+      fs.type(FileSectionTypeT::KB2);
+    } else {
+      std::cerr << "location: " << std::hex << is.tellg() << std::endl;
+      std::cerr << "bink version and type mismatch...\t" << fs.type() << '\t'
+                << static_cast<int32_t>(version) << std::dec << std::endl;
+      return;
+    }
+    fs.offset(static_cast<int64_t>(is.tellg()) - 4);
+
+
+    fs.size(Tools::read_val<uint32_t>(is));
+
+    static constexpr auto header_size = 8U;
+    fs.size(fs.size() + header_size);
+
+    fs.frames(Tools::read_val<uint32_t>(is));
+
+    is.seekg(fs.offset() + fs.size(), std::ios::beg);
+
+    using namespace std::string_literals;
+    static constexpr auto get_ext = [](const std::string_view &t) {
+      if (t == FileSectionTypeT::BIK) {
+        return ".bik"s;
       }
-      fs.offset(static_cast<int64_t>(is.tellg()) - 4);
-
-      {
-        fs.size(Tools::read_val<uint32_t>(is));
-
-        static constexpr auto header_size = 8U;
-        fs.size(fs.size() + header_size);
-
-        fs.frames(Tools::read_val<uint32_t>(is));
-      }
-      is.seekg(fs.offset() + fs.size(), std::ios::beg);
-
-      using namespace std::string_literals;
-      static constexpr auto get_ext = [](const std::string_view &t) {
-        if (t == FileSectionTypeT::BIK) {
-          return ".bik"s;
-        }
-        return ".bk2"s;
-      };
-      if (std::ranges::empty(movie.bink_high().type())) {
+      return ".bk2"s;
+    };
+    if (std::ranges::empty(movie.bink_high().type())) {
+      movie.bink_high(std::move(fs));
+      movie.mutable_bink_high().file_name(
+        generate_file_name(get_ext(movie.bink_high().type()), "h"s));
+    } else {
+      if (fs.size() > movie.bink_high().size()) {
+        movie.swap_bink();
         movie.bink_high(std::move(fs));
-        movie.mutable_bink_high().file_name(
-          generate_file_name(get_ext(movie.bink_high().type()), "h"s));
       } else {
-        if (fs.size() > movie.bink_high().size()) {
-          movie.swap_bink();
-          movie.bink_high(std::move(fs));
-        } else {
-          movie.bink_low(std::move(fs));
-        }
-
-        movie.mutable_bink_high().file_name(
-          generate_file_name(get_ext(movie.bink_high().type()), "h"s));
-        movie.mutable_bink_low().file_name(
-          generate_file_name(get_ext(movie.bink_low().type()), "l"s));
-        m_movies.push_back(movie);
-        movie = {};
+        movie.bink_low(std::move(fs));
       }
-    }();
+
+      movie.mutable_bink_high().file_name(
+        generate_file_name(get_ext(movie.bink_high().type()), "h"s));
+      movie.mutable_bink_low().file_name(
+        generate_file_name(get_ext(movie.bink_low().type()), "l"s));
+      m_movies.push_back(movie);
+      movie = {};
+    }
   }
   /**
    * Read complete pak file for offsets and sizes of each section.
@@ -320,16 +317,9 @@ public:
          */
         MovieClip movie{};
         while (!is.eof()) {
-          //          const auto get_type = [&is]() {
-          //            const auto sz = sizeof(std::uint32_t) - 1;
-          //            std::array<char, sz> tmp{};
-          //            is.read(std::ranges::data(tmp), sz);
-          //            return tmp;
-          //          };
           auto type = FileSectionTypeT::get_type(is);
           if (FileSectionTypeT::valid_type(
                 type, FileSectionTypeT::BIK, FileSectionTypeT::KB2)) {
-            // std::cout << "bink\n";
             get_bik(is, movie, type);
 
           } else if (std::ranges::equal(type, FileSectionTypeT::CAM)) {
