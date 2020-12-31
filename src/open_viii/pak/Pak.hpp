@@ -240,12 +240,12 @@ public:
          */
         MovieClip movie{};
         while (!is.eof()) {
-//          const auto get_type = [&is]() {
-//            const auto sz = sizeof(std::uint32_t) - 1;
-//            std::array<char, sz> tmp{};
-//            is.read(std::ranges::data(tmp), sz);
-//            return tmp;
-//          };
+          //          const auto get_type = [&is]() {
+          //            const auto sz = sizeof(std::uint32_t) - 1;
+          //            std::array<char, sz> tmp{};
+          //            is.read(std::ranges::data(tmp), sz);
+          //            return tmp;
+          //          };
           auto type = FileSectionTypeT::get_type(is);
           if (std::ranges::equal(type, FileSectionTypeT::BIK)
               || std::ranges::equal(type, FileSectionTypeT::KB2)) {
@@ -294,12 +294,12 @@ public:
                 //                std::ranges::data(tmp), sz);
               }
               is.seekg(fs.offset() + fs.size(), std::ios::beg);
-
+              using namespace std::string_literals;
               if (std::ranges::empty(movie.bink_high().type())) {
                 movie.bink_high(std::move(fs));
                 movie.mutable_bink_high().file_name(generate_file_name(
-                  movie.bink_high().type() == FileSectionTypeT::BIK ? ".bik"
-                                                                    : ".bk2",
+                  movie.bink_high().type() == FileSectionTypeT::BIK ? ".bik"s
+                                                                    : ".bk2"s,
                   "h"));
               } else {
                 if (fs.size() > movie.bink_high().size()) {
@@ -310,12 +310,12 @@ public:
                 }
 
                 movie.mutable_bink_high().file_name(generate_file_name(
-                  movie.bink_high().type() == FileSectionTypeT::BIK ? ".bik"
-                                                                    : ".bk2",
+                  movie.bink_high().type() == FileSectionTypeT::BIK ? ".bik"s
+                                                                    : ".bk2"s,
                   "h"));
                 movie.mutable_bink_low().file_name(generate_file_name(
-                  movie.bink_low().type() == FileSectionTypeT::BIK ? ".bik"
-                                                                   : ".bk2",
+                  movie.bink_low().type() == FileSectionTypeT::BIK ? ".bik"s
+                                                                   : ".bk2"s,
                   "l"));
                 m_movies.push_back(movie);
                 movie = {};
@@ -349,8 +349,8 @@ public:
 
               while ([&is]() {
                 auto b = FileSectionTypeT::get_type(is);
-                return !std::ranges::equal(b, FileSectionTypeT::BIK)
-                       && !std::ranges::equal(b, FileSectionTypeT::KB2);
+                return !FileSectionTypeT::valid_type(
+                  b, FileSectionTypeT::BIK, FileSectionTypeT::KB2);
               }()) {
                 is.seekg(CAM_SECTION_SIZE - 3, std::ios::cur);
                 frames++;
