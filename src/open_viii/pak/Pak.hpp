@@ -185,7 +185,7 @@ public:
    * @return std::string
    */
   std::string generate_file_name(
-    const std::string &extension, const std::string &suffix = "")
+    const std::string &extension, const std::string &suffix = {})
   {
     /**
      * number values should be 2 digit.
