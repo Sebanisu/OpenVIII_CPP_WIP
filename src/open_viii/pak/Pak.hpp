@@ -187,23 +187,10 @@ public:
   std::string generate_file_name(
     const std::string &extension, const std::string &suffix = {})
   {
-    /**
-     * number values should be 2 digit.
-     */
-    const auto pad = [](std::integral auto i) -> std::string {
-      if (i >= 0) {
-        std::string return_val = std::to_string(i);
-        static constexpr auto breakpoint = 10;
-        if (i < breakpoint) {
-          return_val = "0" + return_val;
-        }
-
-        return return_val;
-      }
-      return "00";
-    };
-    return std::string("disc") + pad(get_disc_number()) + std::string("_")
-           + pad(count()) + suffix + extension;
+    using namespace std::string_literals;
+    static constexpr auto length = 2U;
+    return "disc"s + Tools::to_string_with_padding(get_disc_number(), length) + "_"s
+           + Tools::to_string_with_padding(count(), length) + suffix + extension;
   }
   /**
    * Extract number from filename. typically there is 1 digit for the disc

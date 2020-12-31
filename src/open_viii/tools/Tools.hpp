@@ -89,7 +89,7 @@ requires(std::is_trivial_v<trivialType>) [[nodiscard]] static trivialType
 }
 template<typename trivialType>
 requires(std::is_trivial_v<trivialType>) [[nodiscard]] static trivialType
-read_val(std::istream &fp)
+  read_val(std::istream &fp)
 {
   return read_val<trivialType, sizeof(trivialType)>(fp);
 }
@@ -597,6 +597,26 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
       }
       lambda(item);
     });
+}
+/**
+ * use std::to_string and pad the value.
+ * @param value initial integer value.
+ * @param total_length default {}, sets the desired length
+ * @param pad_character default 0
+ * @return string value of number padded.
+ * @see
+ * https://stackoverflow.com/questions/53475501/how-to-zero-pre-fill-for-stdto-string-function
+ */
+template<std::integral intT>
+std::string to_string_with_padding(const intT &value,
+  const std::size_t total_length = {},
+  const char pad_character = '0')
+{
+  auto str = std::to_string(value);
+  if (str.length() < total_length)
+    str.insert(
+      str.front() == '-' ? 1 : 0, total_length - str.length(), pad_character);
+  return str;
 }
 }// namespace open_viii::Tools
 #endif// !VIITOOLS_H
