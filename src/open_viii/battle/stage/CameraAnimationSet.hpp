@@ -36,19 +36,22 @@ public:
   {
     return &m_animation_offsets;
   }
-  friend std::ostream &operator<<(std::ostream &os, const CameraAnimationSet &in)
+  friend std::ostream &operator<<(
+    std::ostream &os, const CameraAnimationSet &in)
   {
     os << '[';
     {
       bool first = true;
-      std::ranges::for_each(in.m_animation_offsets, [&os, &first](const std::uint16_t &c) {
-        if (!first) {
-          os << ',';
-        }
+      std::ranges::for_each(
+        in.m_animation_offsets, [&os, &first](const std::uint16_t &c) {
+          if (!first) {
+            os << ',';
+          }
 
-        first = false;
-        os << "0x" << std::hex << std::uppercase << static_cast<std::uint16_t>(c) <<  std::nouppercase << std::dec;
-      });
+          first = false;
+          os << "0x" << std::hex << std::uppercase
+             << static_cast<std::uint16_t>(c) << std::nouppercase << std::dec;
+        });
     }
     return os << "]";
   }

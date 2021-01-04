@@ -20,13 +20,17 @@ private:
   std::uint16_t m_camera_data_size{};
   static constexpr std::uint16_t EXPECTED_OFFSET_COUNT{ 0x2U };
   static constexpr std::uint16_t EXPECTED_OFFSET_CAMERA_SETTINGS{ 0x8U };
-  static constexpr std::uint16_t EXPECTED_OFFSET_CAMERA_ANIMATION_COLLECTION{ 0x8U };
+  static constexpr std::uint16_t EXPECTED_OFFSET_CAMERA_ANIMATION_COLLECTION{
+    0x8U
+  };
 
 public:
   [[nodiscard]] bool constexpr check() const noexcept
   {
-    return m_offset_count == EXPECTED_OFFSET_COUNT && m_offset_camera_settings == EXPECTED_OFFSET_CAMERA_SETTINGS
-           && m_offset_camera_animation_collection == EXPECTED_OFFSET_CAMERA_ANIMATION_COLLECTION;
+    return m_offset_count == EXPECTED_OFFSET_COUNT
+           && m_offset_camera_settings == EXPECTED_OFFSET_CAMERA_SETTINGS
+           && m_offset_camera_animation_collection
+                == EXPECTED_OFFSET_CAMERA_ANIMATION_COLLECTION;
   }
   [[nodiscard]] constexpr std::uint16_t offset_count() const noexcept
   {
@@ -36,7 +40,8 @@ public:
   {
     return m_offset_camera_settings;
   }
-  [[nodiscard]] constexpr std::uint16_t offset_camera_animation_collection() const noexcept
+  [[nodiscard]] constexpr std::uint16_t
+    offset_camera_animation_collection() const noexcept
   {
     return m_offset_camera_animation_collection;
   }
@@ -46,10 +51,12 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const CameraHeader &in)
   {
-    return os << "{\n\t\t\tOFFSET COUNT: " << in.m_offset_count << "\n\t\t\tSETTINGS OFFSET: 0x" << std::hex
-              << std::uppercase << in.m_offset_camera_settings << std::dec << std::nouppercase
+    return os << "{\n\t\t\tOFFSET COUNT: " << in.m_offset_count
+              << "\n\t\t\tSETTINGS OFFSET: 0x" << std::hex << std::uppercase
+              << in.m_offset_camera_settings << std::dec << std::nouppercase
               << "\n\t\t\tCOLLECTION OFFSET: 0x" << std::hex << std::uppercase
-              << in.m_offset_camera_animation_collection << std::dec << std::nouppercase
+              << in.m_offset_camera_animation_collection << std::dec
+              << std::nouppercase
               << "\n\t\t\tDATA SIZE: " << in.m_camera_data_size << "}";
   }
 };

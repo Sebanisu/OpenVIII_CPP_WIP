@@ -11,12 +11,12 @@
 #include <iostream>
 [[maybe_unused]] static void test_vertice()
 {
-  auto v = open_viii::battle::stage::Vertice<std::int16_t>{ -1, 2, -3 };
+  auto v = open_viii::graphics::Vertice<std::int16_t>{ -1, 2, -3 };
   auto v2 = v / 2.1F;
   auto v3 = v / 3.1;
   auto v4 = v * 2.1F;
   auto v5 = v * 3.1;
-  auto v6 = static_cast<open_viii::battle::stage::Vertice<std::uint16_t>>(v);
+  auto v6 = static_cast<open_viii::graphics::Vertice<std::uint16_t>>(v);
   std::cout << v << '\n' << v2 << '\n' << v3 << '\n' << v4 << '\n' << v5 << '\n' << v6 << '\n';
 }
 [[maybe_unused]] static void test_clut_ids()

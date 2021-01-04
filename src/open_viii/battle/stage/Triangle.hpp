@@ -37,7 +37,8 @@ private:
 
 public:
   static constexpr std::size_t COUNT = 3U;
-  [[nodiscard]] static constexpr std::uint8_t clut(const std::uint16_t &in_clut_raw) noexcept
+  [[nodiscard]] static constexpr std::uint8_t clut(
+    const std::uint16_t &in_clut_raw) noexcept
   {
     return (std::rotl(in_clut_raw, SHIFT_2_BIT) & MASK_4_BIT);
   }
@@ -58,7 +59,8 @@ public:
     return m_raw_hide != 0U;
   }
 
-  template<std::size_t I> requires(I < COUNT) [[nodiscard]] constexpr auto uv() const noexcept
+  template<std::size_t I>
+  requires(I < COUNT) [[nodiscard]] constexpr auto uv() const noexcept
   {
     if constexpr (I == 0U) {
       return m_uv1;
@@ -68,7 +70,8 @@ public:
       return m_uv3;
     }
   }
-  template<std::size_t I> requires(I < COUNT) [[nodiscard]] constexpr auto face_indice() const noexcept
+  template<std::size_t I>
+  requires(I < COUNT) [[nodiscard]] constexpr auto face_indice() const noexcept
   {
     if constexpr (I == 0U) {
       return m_face_indice_a;

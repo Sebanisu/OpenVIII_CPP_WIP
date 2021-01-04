@@ -28,7 +28,9 @@ private:
 
   static constexpr std::array<char, 5U> TIM_START{ 0x10, 0x0, 0x0, 0x0, 0x09 };
   static constexpr std::array<char, 4U> MODEL_START{ 0x06, 0x0, 0x0, 0x0 };
-  static constexpr std::array<char, 6U> CAMERA_START{ 0x02, 0x0, 0x08, 0x0, 0x20, 0x0 };
+  static constexpr std::array<char, 6U> CAMERA_START{
+    0x02, 0x0, 0x08, 0x0, 0x20, 0x0
+  };
 
 public:
   static constexpr auto EXT = std::string_view(".x");
@@ -40,8 +42,12 @@ public:
     {
       const auto &buffer_begin = std::ranges::begin(m_buffer);
       const auto buffer_end = std::ranges::end(m_buffer);
-      const auto search = [&buffer_begin, &buffer_end](const std::span<const char> &needle, auto lambda) {
-        const auto start = std::search(buffer_begin, buffer_end, std::ranges::begin(needle), std::ranges::end(needle));
+      const auto search = [&buffer_begin, &buffer_end](
+                            const std::span<const char> &needle, auto lambda) {
+        const auto start = std::search(buffer_begin,
+          buffer_end,
+          std::ranges::begin(needle),
+          std::ranges::end(needle));
 
         const auto match = start == buffer_end;
         const auto message = [&match]() {
@@ -59,37 +65,41 @@ public:
       };
 
       const auto offset = [&buffer_begin](const auto &start) {
-        std::cout
-          << "\tOffset: " << std::hex << std::uppercase << std::distance(buffer_begin.base(), start.base()) << std::dec
-          << std::nouppercase
-          << '\n';// base() isn't in visual studio so i might need to cast
-                  // buffer_begin to a span so they are the same type. base() converts the iterator to the pointer.
+        std::cout << "\tOffset: " << std::hex << std::uppercase
+                  << std::distance(buffer_begin.base(), start.base())
+                  << std::dec << std::nouppercase
+                  << '\n';// base() isn't in visual studio so i might need to
+                          // cast buffer_begin to a span so they are the same
+                          // type. base() converts the iterator to the pointer.
       };
 
       std::cout << "TIM: ";
-      const auto tim_start = search(TIM_START, [this, &buffer_end](const auto &start) {
-        const auto &span = std::span<const char>(start, buffer_end);
-        m_tim = graphics::Tim(span);
-        std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
-        std::cout << "\tINFO: " << m_tim << std::endl;
-      });
+      const auto tim_start =
+        search(TIM_START, [this, &buffer_end](const auto &start) {
+          const auto &span = std::span<const char>(start, buffer_end);
+          m_tim = graphics::Tim(span);
+          std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
+          std::cout << "\tINFO: " << m_tim << std::endl;
+        });
       offset(tim_start);
 
       std::cout << "CAMERA: ";
-      const auto camera_start = search(CAMERA_START, [this, &tim_start](const auto &start) {
-        auto span = std::span<const char>(start, tim_start);
+      const auto camera_start =
+        search(CAMERA_START, [this, &tim_start](const auto &start) {
+          auto span = std::span<const char>(start, tim_start);
 
 
-        m_camera = Camera(span);
-        std::cout << "\tINFO: " << m_camera << std::endl;
-      });
+          m_camera = Camera(span);
+          std::cout << "\tINFO: " << m_camera << std::endl;
+        });
       offset(camera_start);
       const auto camera_size = m_camera.camera_header().camera_data_size();
       std::cout << "\tSIZE: " << camera_size << " bytes" << std::endl;
 
       std::cout << "MODEL: \n";
       const auto model_start = [&tim_start, &camera_size, &camera_start]() {
-        const auto span = std::span<char>(camera_start, tim_start).subspan(camera_size);
+        const auto span =
+          std::span<char>(camera_start, tim_start).subspan(camera_size);
         std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
         return std::ranges::begin(span);
       }();

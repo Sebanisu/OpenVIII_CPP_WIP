@@ -15,10 +15,11 @@
 varies (just after above)	2 bytes	uint16 / number of triangles
 varies (just after above)	2 bytes	uint16 / number of quads
 varies (just after above)	4 bytes	padding
-varies (just after above)	number of triangles * 20	Triangle data. If NumOfTriangles = 0, then instead of
-any triangle data, there's quad data.
-varies (just after above)	number of quads * 24	Triangle data. If NumOfQuads = 0, then instead of any quad data,
-there's either next header 01 00 01 00, or end of group.
+varies (just after above)	number of triangles * 20	Triangle data.
+If NumOfTriangles = 0, then instead of any triangle data, there's quad data.
+varies (just after above)	number of quads * 24	Triangle data. If
+NumOfQuads = 0, then instead of any quad data, there's either next header 01 00
+01 00, or end of group.
  */
 namespace open_viii::battle::stage {
 struct GeometryHeader2
