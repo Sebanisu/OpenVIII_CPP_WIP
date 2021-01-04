@@ -4,6 +4,7 @@
 
 #ifndef VIIIARCHIVE_MOVIECLIP_HPP
 #define VIIIARCHIVE_MOVIECLIP_HPP
+#include "Cam.hpp"
 #include "FileSection.hpp"
 #include <iostream>
 namespace open_viii {
@@ -21,7 +22,12 @@ private:
   /**
    * Cam file
    */
-  FileSection m_cam;
+  Cam m_cam;
+
+  /**
+   * Cam file file section data
+   */
+  FileSection m_cam_fs;
 
 public:
   /**
@@ -76,30 +82,56 @@ public:
   /**
    * Get Cam file
    */
-  [[nodiscard]] const FileSection &cam() const noexcept
+  [[nodiscard]] const auto &cam() const noexcept
   {
     return m_cam;
   }
   /**
    * Get Mutable Cam file
    */
-  [[nodiscard]] FileSection &mutable_cam() noexcept
+  [[nodiscard]] auto &mutable_cam() noexcept
   {
     return m_cam;
   }
   /**
    * Set Cam file
    */
-  void cam(FileSection &&in_cam) noexcept
+  void cam(Cam &&in_cam) noexcept
   {
     m_cam = std::move(in_cam);
   }
+
+
+  /**
+   * Get Cam file
+   */
+  [[nodiscard]] const auto &cam_fs() const noexcept
+  {
+    return m_cam_fs;
+  }
+  /**
+   * Get Mutable Cam file
+   */
+  [[nodiscard]] auto &mutable_cam_fs() noexcept
+  {
+    return m_cam_fs;
+  }
+  /**
+   * Set Cam file
+   */
+  void cam_fs(FileSection &&in_cam_fs) noexcept
+  {
+    m_cam_fs = std::move(in_cam_fs);
+  }
   friend std::ostream &operator<<(std::ostream &os, const MovieClip &movie_clip)
   {
-    const auto out = [&os](const FileSection &section) {
-      if (section.size() > 0) {
-        os << "|-\n" << section;
+    const auto out = [&os](const auto &section) {
+      if constexpr (requires(decltype(section) t) { t.size(); }) {
+        if (section.size() == 0) {
+          return;
+        }
       }
+      os << "|-\n" << section;
     };
     out(movie_clip.bink_high());
     out(movie_clip.bink_low());

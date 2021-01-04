@@ -169,7 +169,7 @@ public:
               }
             };
 
-            e(item.cam());
+            e(item.cam_fs());
             e(item.bink_high());
             if constexpr (ENABLE_EXTRACT_LOW_RES) {
               e(item.bink_low());
@@ -242,7 +242,8 @@ public:
     fs.size(static_cast<uint32_t>(is.tellg() - fs.offset()));
     fs.file_name(generate_file_name(".cam"s));
     fs.frames(frames);
-    movie.cam(std::move(fs));
+    movie.cam(Cam(is,fs));
+    movie.cam_fs(std::move(fs));
   }
   void get_bik(
     std::istream &is, MovieClip &movie, const std::span<const char> &type)

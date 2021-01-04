@@ -7,7 +7,7 @@
 #include "open_viii/Concepts.hpp"
 #include <cstdint>
 #include <ostream>
-namespace open_viii::battle::stage {
+namespace open_viii::graphics {
 template<Number mainNumberT = std::int16_t> struct Vertice
 {
 private:
@@ -17,7 +17,9 @@ private:
 
 public:
   Vertice() = default;
-  Vertice(mainNumberT in_x, mainNumberT in_y, mainNumberT in_z) : m_x(in_x), m_y(in_y), m_z(in_z) {}
+  Vertice(mainNumberT in_x, mainNumberT in_y, mainNumberT in_z)
+    : m_x(in_x), m_y(in_y), m_z(in_z)
+  {}
 
   template<Number numberT>
   explicit Vertice(Vertice<numberT> lhs)
@@ -28,30 +30,30 @@ public:
 
   template<Number numberT> auto operator/(numberT lhs)
   {
-    return Vertice<numberT>{
-      static_cast<numberT>(m_x) / lhs, static_cast<numberT>(m_y) / lhs, static_cast<numberT>(m_z) / lhs
-    };
+    return Vertice<numberT>{ static_cast<numberT>(m_x) / lhs,
+      static_cast<numberT>(m_y) / lhs,
+      static_cast<numberT>(m_z) / lhs };
   }
 
   template<Number numberT> auto operator*(numberT lhs)
   {
-    return Vertice<numberT>{
-      static_cast<numberT>(m_x) * lhs, static_cast<numberT>(m_y) * lhs, static_cast<numberT>(m_z) * lhs
-    };
+    return Vertice<numberT>{ static_cast<numberT>(m_x) * lhs,
+      static_cast<numberT>(m_y) * lhs,
+      static_cast<numberT>(m_z) * lhs };
   }
 
   template<Number numberT> auto operator-(numberT lhs)
   {
-    return Vertice<numberT>{
-      static_cast<numberT>(m_x) - lhs, static_cast<numberT>(m_y) - lhs, static_cast<numberT>(m_z) - lhs
-    };
+    return Vertice<numberT>{ static_cast<numberT>(m_x) - lhs,
+      static_cast<numberT>(m_y) - lhs,
+      static_cast<numberT>(m_z) - lhs };
   }
 
   template<Number numberT> auto operator+(numberT lhs)
   {
-    return Vertice<numberT>{
-      static_cast<numberT>(m_x) + lhs, static_cast<numberT>(m_y) + lhs, static_cast<numberT>(m_z) + lhs
-    };
+    return Vertice<numberT>{ static_cast<numberT>(m_x) + lhs,
+      static_cast<numberT>(m_y) + lhs,
+      static_cast<numberT>(m_z) + lhs };
   }
 
   [[nodiscard]] auto x() const noexcept
@@ -80,7 +82,8 @@ public:
     m_z = in_z;
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const Vertice<mainNumberT> &lhs)
+  friend std::ostream &operator<<(
+    std::ostream &os, const Vertice<mainNumberT> &lhs)
   {
     return os << '(' << lhs.x() << ", " << lhs.y() << ", " << lhs.z() << ')';
   }

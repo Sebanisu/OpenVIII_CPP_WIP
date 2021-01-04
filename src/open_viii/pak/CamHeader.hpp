@@ -8,7 +8,9 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <ostream>
 #include <string_view>
+#include <type_traits>
 namespace open_viii {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK#CAM_files
@@ -21,26 +23,82 @@ private:
   std::uint16_t m_count{};
 
 public:
-  CamHeader() = default;
-  [[nodiscard]] constexpr start() const noexcept
+  constexpr CamHeader() = default;
+
+  /**
+   * Get Start "F8P" 3 bytes
+   */
+  [[nodiscard]] constexpr auto start() const noexcept
   {
     return m_start;
   }
-
-  [[nodiscard]] constexpr unk() const noexcept
+  /**
+   * Set Start "F8P" 3 bytes
+   */
+  void start(std::array<char, 3U> in_start) noexcept
+  {
+    m_start = in_start;
+  }
+  /**
+   * Get Unknown 3 bytes
+   */
+  [[nodiscard]] constexpr auto unk() const noexcept
   {
     return m_unk;
   }
-
-  [[nodiscard]] constexpr count() const noexcept
+  /**
+   * Set Unknown 3 bytes
+   */
+  void unk(std::array<char, 3U> in_unk) noexcept
+  {
+    m_unk = in_unk;
+  }
+  /**
+   * Get Count of frames. Sometimes there are extra frames in the file.
+   */
+  [[nodiscard]] constexpr auto count() const noexcept
   {
     return m_count;
   }
-  constexpr static std::string_view EXPECTED_START{ "F8U" };
+  /**
+   * Set Count of frames.
+   */
+  void count(std::uint16_t in_count) noexcept
+  {
+    m_count = in_count;
+  }
+
+  /**
+   * Expected "F8P" start marker
+   */
+  constexpr static std::string_view EXPECTED_START{ "F8P" };
+
+  /**
+   * verify start() == "F8P"
+   */
+  [[nodiscard]] constexpr bool valid_start() const noexcept
+  {
+    return std::ranges::equal(m_start, EXPECTED_START);
+  }
+  /**
+   * Expected Size of struct in bytes
+   */
   constexpr static auto EXPECTED_SIZE{ 8U };
+
+
+  friend std::ostream &operator<<(std::ostream &os, const CamHeader &cam_header)
+  {
+
+    return os << '{' << cam_header.m_start[0] << cam_header.m_start[1]
+              << cam_header.m_start[2] << ',' << cam_header.m_unk[0]
+              << cam_header.m_unk[1] << cam_header.m_unk[2] << ','
+              << cam_header.m_count << '}';
+  }
 };
-static_assert(
-  std::ranges::equal(CamHeader().start(), CamHeader::EXPECTED_START));
-static_assert(sizeof(CamHeader) == CamHeader::EXPECTED_SIZE));
+static_assert(CamHeader().valid_start());
+
+static_assert(std::is_trivially_copyable_v<CamHeader>);
+static_assert(std::is_default_constructible_v<CamHeader>);
+static_assert(sizeof(CamHeader) == CamHeader::EXPECTED_SIZE);
 }// namespace open_viii
 #endif// VIIIARCHIVE_CAMHEADER_HPP

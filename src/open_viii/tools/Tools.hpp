@@ -70,9 +70,9 @@ static std::string_view u8_to_sv(const std::u8string_view &s8)
 }
 
 
-template<typename trivialType, auto sizeOfType>
-requires(std::is_trivial_v<trivialType>) [[nodiscard]] static trivialType
-  read_val(std::istream &fp)
+template<is_trivially_copyable_and_default_constructible trivialType,
+  auto sizeOfType>
+[[nodiscard]] static trivialType read_val(std::istream &fp)
 {
   trivialType item{};
   std::array<char, sizeOfType> tmp{};
@@ -87,42 +87,72 @@ requires(std::is_trivial_v<trivialType>) [[nodiscard]] static trivialType
   }
   return item;
 }
-template<typename trivialType>
-requires(std::is_trivial_v<trivialType>) [[nodiscard]] static trivialType
-  read_val(std::istream &fp)
+template<is_trivially_copyable_and_default_constructible trivialType>
+[[nodiscard]] static trivialType read_val(std::istream &fp)
 {
   return read_val<trivialType, sizeof(trivialType)>(fp);
 }
 
-template<typename trivialType>
+template<is_trivially_copyable trivialType>
 static void read_val(std::istream &fp, trivialType &item)
 {
   std::array<char, sizeof(item)> tmp{};
   fp.read(tmp.data(), tmp.size());
-  if constexpr (requires { std::ranges::data(item); }) {
-    memcpy(std::ranges::data(item),
-      std::ranges::data(tmp),
-      sizeof(*std::ranges::data(item)) * std::ranges::size(item));
-  } else {
+
     memcpy(&item, std::ranges::data(tmp), sizeof(item));
-  }
+
 }
 
 template<typename trivialType>
-[[nodiscard]] static trivialType read_val(const std::span<const char> &span)
+requires(requires(
+  trivialType item) { std::ranges::data(item); })
+static void read_val(std::istream &fp, trivialType &item)
+{
+//  if constexpr( requires(trivialType t){std::is_same_v<char,decltype(*std::ranges::data(t))>;})
+//  {}
+// if container is type char could just write directly to it.
+  const auto size = sizeof(*std::ranges::data(item)) * std::ranges::size(item);
+  std::vector<char> tmp(size);
+
+  fp.read(std::ranges::data(tmp), static_cast<long>(size));
+
+    memcpy(std::ranges::data(item),
+           std::ranges::data(tmp),
+           size);
+
+}
+
+template<typename trivialType>
+requires(is_trivially_copyable_and_default_constructible<trivialType>)
+  [[nodiscard]] static trivialType read_val(const std::span<const char> &span)
 {
   trivialType item{};
-  const auto tmp{ span.subspan(0, sizeof(trivialType)) };
-  if constexpr (requires { std::ranges::data(item); }) {
-    memcpy(std::ranges::data(item),
-      std::ranges::data(tmp),
-      sizeof(*std::ranges::data(item)) * std::ranges::size(item));
-  } else {
-    memcpy(&item, std::ranges::data(tmp), sizeof(item));
-  }
+  memcpy(&item, std::ranges::data(span), sizeof(item));
   return item;
 }
+
 template<typename trivialType>
+requires(std::is_default_constructible_v<trivialType> &&requires(
+  trivialType item) { std::ranges::data(item); })
+  [[nodiscard]] static trivialType
+  read_val(const std::span<const char> &span, std::size_t size = 0U)
+{
+  trivialType item{};
+  const auto element_size = sizeof(*std::ranges::data(item));
+  if constexpr (requires(trivialType i) { i.resize(0); }) {
+    if (size != 0U) {
+      item.resize(size);
+    } else {
+      item.resize(std::ranges::size(span) / element_size);
+    }
+  }
+  memcpy(std::ranges::data(item),
+    std::ranges::data(span),
+    element_size * std::ranges::size(item));
+
+  return item;
+}
+template<is_trivially_copyable trivialType>
 static void read_val(const std::span<const char> &span, trivialType &item)
 {
   const auto tmp{ span.subspan(0, sizeof(trivialType)) };

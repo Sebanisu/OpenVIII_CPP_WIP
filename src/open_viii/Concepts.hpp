@@ -99,5 +99,10 @@ template<typename T, std::size_t current = 0U> concept Shape_Like = (
 template<typename lambdaT, typename pointT>
 concept TakesTwoPointsReturnsPoint = Point_Like<pointT> &&std::regular_invocable<lambdaT, pointT, pointT>
   &&Point_Like<std::invoke_result_t<lambdaT, pointT, pointT>>;
+
+template<typename trivialType>
+concept is_trivially_copyable = std::is_trivially_copyable_v<trivialType>;
+template<typename trivialType>
+concept is_trivially_copyable_and_default_constructible = std::is_trivially_copyable_v<trivialType> && std::is_default_constructible_v<trivialType>;
 }// namespace open_viii
 #endif// VIIIARCHIVE_CONCEPTS_HPP
