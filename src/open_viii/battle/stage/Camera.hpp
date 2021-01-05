@@ -20,8 +20,8 @@ private:
   CameraAnimationCollection m_camera_animation_collection{};
 
 public:
-  consteval Camera() = default;
-  Camera(const std::span<const char> &data)
+  Camera() = default;
+  explicit Camera(const std::span<const char> &data)
     : m_camera_header(Tools::read_val<CameraHeader>(data)),
       m_camera_settings(
         Tools::read_val<CameraSettings>(data.subspan(sizeof(CameraHeader)))),

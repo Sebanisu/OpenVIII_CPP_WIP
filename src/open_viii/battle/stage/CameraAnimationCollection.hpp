@@ -49,21 +49,22 @@ public:
           offset + 2U));// skipping 2U makes it match the values in open_viii
       });
     m_camera_animation.resize(m_set_count);
-    for (std::size_t j{};
-         j < m_camera_animation.size() && j < m_camera_animation_set.size();
-         j++) {
-      const auto &set = m_camera_animation_set.at(j);
-      const auto &offset = m_set_offsets.at(j);
-      m_camera_animation.at(j).reserve(CameraAnimationSet::size());
-      for (std::size_t i{}; i < CameraAnimationSet::size(); i++) {
-        const auto start_of_animation = offset + 2U + set.at(i);
-        //        const auto full_pos =
-        //          sizeof(CameraHeader) + sizeof(CameraSettings) +
-        //          start_of_animation;
-        m_camera_animation.at(j).emplace_back(Tools::read_val<CameraAnimation>(
-          backup_span.subspan(start_of_animation)));
-      }
-    }
+//    for (std::size_t j{};
+//         j < m_camera_animation.size() && j < m_camera_animation_set.size();
+//         j++) {
+//      const auto &set = m_camera_animation_set.at(j);
+//      const auto &offset = m_set_offsets.at(j);
+//      m_camera_animation.at(j).reserve(CameraAnimationSet::size());
+//      for (std::size_t i{}; i < CameraAnimationSet::size(); i++) {
+//        const auto start_of_animation = offset + 2U + set.at(i);
+//        //        const auto full_pos =
+//        //          sizeof(CameraHeader) + sizeof(CameraSettings) +
+//        //          start_of_animation;
+//        m_camera_animation.at(j).emplace_back(Tools::read_val<CameraAnimation>(
+//          backup_span.subspan(start_of_animation)));
+//      }
+      //TODO rework this. It does not work
+//    }
   }
   friend std::ostream &operator<<(
     std::ostream &os, const CameraAnimationCollection &in)

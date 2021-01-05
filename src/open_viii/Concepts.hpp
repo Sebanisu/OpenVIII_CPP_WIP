@@ -19,7 +19,8 @@
 #include <type_traits>
 namespace open_viii {
 
-template<typename T> concept Number = std::floating_point<T> || std::integral<T>;
+template<typename T>
+concept Number = std::floating_point<T> || std::integral<T>;
 
 template<typename T> concept Color_R = requires(T a)
 {
@@ -51,7 +52,8 @@ template<typename T> concept Color_A = requires(T a)
   ->std::convertible_to<std::uint8_t>;
 };
 
-template<typename T> concept Color = Color_A<T> &&Color_B<T> &&Color_G<T> &&Color_R<T>;
+template<typename T>
+concept Color = Color_A<T> &&Color_B<T> &&Color_G<T> &&Color_R<T>;
 
 template<typename T> concept FIFLFS_Has_get_entry_data = requires(T a)
 {
@@ -81,14 +83,17 @@ template<typename T> concept FI_Like_CompressionType = requires(T a)
   ->std::convertible_to<CompressionTypeT>;
 };
 
-template<typename T> concept FI_Like = FI_Like_CompressionType<T> &&FI_Like_Offset<T> &&FI_Like_UncompressedSize<T>;
+template<typename T>
+concept FI_Like =
+  FI_Like_CompressionType<T> &&FI_Like_Offset<T> &&FI_Like_UncompressedSize<T>;
 
 template<typename T> concept Point_Like = (requires (T a)
 {{a.x()}->Number;} &&
   requires (T a)
   {{a.y()}->Number;}
 );
-template<typename T> concept integral_no_ref_no_cv = std::integral<std::remove_cvref_t<T>>;
+template<typename T>
+concept integral_no_ref_no_cv = std::integral<std::remove_cvref_t<T>>;
 template<typename T, std::size_t current = 0U> concept Shape_Like = (
   requires(T a){{a.template uv<current>()}->Point_Like;} &&
     requires(T a){{a.template face_indice<current>()}->integral_no_ref_no_cv;}
@@ -97,12 +102,35 @@ template<typename T, std::size_t current = 0U> concept Shape_Like = (
   );
 
 template<typename lambdaT, typename pointT>
-concept TakesTwoPointsReturnsPoint = Point_Like<pointT> &&std::regular_invocable<lambdaT, pointT, pointT>
-  &&Point_Like<std::invoke_result_t<lambdaT, pointT, pointT>>;
+concept TakesTwoPointsReturnsPoint =
+  Point_Like<pointT> &&std::regular_invocable<lambdaT, pointT, pointT>
+    &&Point_Like<std::invoke_result_t<lambdaT, pointT, pointT>>;
 
 template<typename trivialType>
 concept is_trivially_copyable = std::is_trivially_copyable_v<trivialType>;
 template<typename trivialType>
-concept is_trivially_copyable_and_default_constructible = std::is_trivially_copyable_v<trivialType> && std::is_default_constructible_v<trivialType>;
+concept is_default_constructible = std::is_default_constructible_v<trivialType>;
+template<typename trivialType> concept has_data = requires(trivialType item)
+{
+  std::ranges::data(item);
+};
+template<typename trivialType> concept has_size = requires(trivialType item)
+{
+  std::ranges::size(item);
+};
+template<typename trivialType>
+concept has_data_and_size = has_data<trivialType> &&has_size<trivialType>;
+
+template<typename trivialType>
+concept is_trivially_copyable_and_default_constructible =
+  is_trivially_copyable<trivialType>
+    &&std::is_default_constructible_v<trivialType>;
+
+template<typename trivialType>
+concept is_default_constructible_has_data_and_size =
+  is_trivially_copyable<trivialType> &&std::is_default_constructible_v<
+    trivialType> &&has_data_and_size<trivialType>;
+
+
 }// namespace open_viii
 #endif// VIIIARCHIVE_CONCEPTS_HPP

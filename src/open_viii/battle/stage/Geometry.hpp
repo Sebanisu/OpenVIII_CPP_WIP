@@ -32,7 +32,7 @@ struct Geometry
 {
 private:
   GeometryHeader1 m_geometry_header1{};
-  std::vector<Vertice<std::int16_t>>
+  std::vector<graphics::Vertice<std::int16_t>>
     m_vertices{};// use calc pad after reading this to see how many bytes to
                  // skip
   GeometryHeader2 m_geometry_header2{};
