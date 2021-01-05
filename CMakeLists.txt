@@ -28,6 +28,7 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 #FetchContent_MakeAvailable(googletest)
 
 include(lz4.cmake)
+include(googletest.cmake)
 
 add_subdirectory(src)
 add_subdirectory(Tests)
