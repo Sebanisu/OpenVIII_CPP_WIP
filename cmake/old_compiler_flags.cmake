@@ -1,11 +1,11 @@
 
-if (MSVC)
-    # warning level 4 and all warnings as errors
-    add_compile_options($<$<CONFIG:DEBUG>:/MDd> $<$<CONFIG:RELEASE>:/O2> /W4 /WX)
-else()
-    # lots of warnings and all warnings as errors
-    add_compile_options($<$<CONFIG:DEBUG>:-g> $<$<CONFIG:RELEASE>:-O3> -Wall -Wextra -Wshadow -Wpedantic -Wconversion -Wold-style-cast -Wunused -Wcast-align -Werror -Wuseless-cast -Wlogical-op -Wsign-conversion -Wduplicated-cond -Wduplicated-branches -Wnull-dereference -Wdouble-promotion -Wconversion -Woverloaded-virtual -Wnon-virtual-dtor -Wformat=2 -fsanitize=address,undefined -pthread)
-endif()
+#if (MSVC)
+#    # warning level 4 and all warnings as errors
+#    add_compile_options($<$<CONFIG:DEBUG>:/MDd> $<$<CONFIG:RELEASE>:/O2> /W4 /WX)
+#else()
+#    # lots of warnings and all warnings as errors
+#    add_compile_options($<$<CONFIG:DEBUG>:-g> $<$<CONFIG:RELEASE>:-O3> -Wall -Wextra -Wshadow -Wpedantic -Wconversion -Wold-style-cast -Wunused -Wcast-align -Werror -Wuseless-cast -Wlogical-op -Wsign-conversion -Wduplicated-cond -Wduplicated-branches -Wnull-dereference -Wdouble-promotion -Wconversion -Woverloaded-virtual -Wnon-virtual-dtor -Wformat=2 -fsanitize=address,undefined -pthread)
+#endif()
 
 # Set default compile flags for GCC
 #if (CMAKE_COMPILER_IS_GNUCXX)

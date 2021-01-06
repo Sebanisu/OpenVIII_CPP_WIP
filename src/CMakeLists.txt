@@ -1,4 +1,4 @@
-include(../compiler_flags.cmake)
+#include(../old_compiler_flags.cmake)
 add_subdirectory(open_viii)
 target_include_directories(VIIITools INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(VIIICompression INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

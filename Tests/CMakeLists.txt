@@ -1,2 +1,2 @@
-#include(../compiler_flags.cmake)
+#include(../old_compiler_flags.cmake)
 add_subdirectory(src)
