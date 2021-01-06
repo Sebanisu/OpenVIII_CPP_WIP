@@ -21,11 +21,8 @@ set(BUILD_GTEST ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
 
-
-################################
-# Tests
-################################
-# Add test cpp file
-#add_executable(${TESTNAME} testgtest.cpp)
-# Link test executable against gtest & gtest_main
-#target_link_libraries(${TESTNAME} gtest gtest_main)
+FetchContent_GetProperties(googletest)
+#add_library(googletest_lib INTERFACE)
+#target_link_libraries(googletest_lib INTERFACE gtest gtest_main)
+#target_include_directories(googletest_lib INTERFACE ${googletest_SOURCE_DIR}/googletest/include)
+##target_include_directories(gtest_main INTERFACE ${googletest_SOURCE_DIR}/googletest/include)
