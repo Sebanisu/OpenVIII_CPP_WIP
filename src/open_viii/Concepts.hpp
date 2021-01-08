@@ -17,6 +17,7 @@
 #include <concepts>
 #include <string_view>
 #include <type_traits>
+#include <vector>
 namespace open_viii {
 
 template<typename T>
@@ -130,7 +131,36 @@ template<typename trivialType>
 concept is_default_constructible_has_data_and_size =
   is_trivially_copyable<trivialType> &&std::is_default_constructible_v<
     trivialType> &&has_data_and_size<trivialType>;
+template<typename Type> concept has_resize = requires(Type a)
+{
+  a.resize(static_cast<std::size_t>(0U));
+};
+template<typename lambdaT>
+concept Foreach_Archive_Lambda =
+  std::invocable<lambdaT, std::vector<char>, std::string>;
 
-
+// template<typename a_type, typename lambdaT>
+// concept Optional_Archive_Execute_On = (
+//  Foreach_Archive_Lambda<lambdaT> && requires(a_type a) { a.has_value(); }
+//  && requires(a_type a,
+//    const std::initializer_list<std::string_view> &filename,
+//    lambdaT lambda) { a->execute_on(filename, lambda); });
+//
+// template<typename a_type, typename lambdaT>
+// concept Archive_Execute_On =
+//  (Foreach_Archive_Lambda<
+//     lambdaT> && requires(a_type a, const
+//     std::initializer_list<std::string_view> &filename, lambdaT lambda) {
+//    a.execute_on(filename, lambda);
+//  });
+//
+// template<bool nested, typename a_type, typename lambdaT>
+// concept Nested_Archive_Execute_On =
+//  (nested
+//    && Foreach_Archive_Lambda<
+//      lambdaT> && requires(a_type a, const
+//      std::initializer_list<std::string_view> &filename, lambdaT lambda) {
+//         a.execute_with_nested({}, filename, lambda);
+//       });
 }// namespace open_viii
 #endif// VIIIARCHIVE_CONCEPTS_HPP
