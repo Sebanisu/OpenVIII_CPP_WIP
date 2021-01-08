@@ -42,7 +42,7 @@ add_executable(TestLZSS
         TestLZSS.cpp
         )
 set_target_properties(TestLZSS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestLZSS VIIICompression project_warnings)
+target_link_libraries(TestLZSS VIIICompression Threads::Threads project_warnings)
 
 ##test kernel.bin
 add_executable(TestKernel
@@ -62,21 +62,21 @@ target_link_libraries(TestMenuGroup VIIIStrings VIIIMenuGroup VIIIPaths VIIIArch
 add_executable(TestExtractImages
         TestExtractImages.cpp TestExtractImages.hpp)
 set_target_properties(TestExtractImages PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractImages VIIIPaths VIIIArchive VIIIGraphics project_warnings)
+target_link_libraries(TestExtractImages VIIIPaths VIIIArchive VIIIGraphics Threads::Threads project_warnings)
 
 
 ##test image Deswizzle of fields like pupu
 add_executable(TestDeswizzleFields
         TestDeswizzleFields.cpp TestDeswizzleFields.hpp)
 set_target_properties(TestDeswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestDeswizzleFields VIIIPaths VIIIArchive VIIIGraphics project_warnings)
+target_link_libraries(TestDeswizzleFields VIIIPaths VIIIArchive VIIIGraphics Threads::Threads project_warnings)
 
 
 ##test image Reswizzle of fields like pupu
 add_executable(TestReswizzleFields
         TestReswizzleFields.cpp TestReswizzleFields.hpp)
 set_target_properties(TestReswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestReswizzleFields VIIIPaths VIIIArchive VIIIGraphics project_warnings)
+target_link_libraries(TestReswizzleFields VIIIPaths VIIIArchive VIIIGraphics Threads::Threads project_warnings)
 
 ##test image ReDeswizzle of fields like pupu
 add_executable(TestReDeswizzleFields
@@ -89,7 +89,7 @@ target_link_libraries(TestReDeswizzleFields VIIIPaths VIIIArchive VIIIGraphics T
 add_executable(TestExtractALL
         TestExtractALL.cpp TestExtractALL.hpp)
 set_target_properties(TestExtractALL PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractALL VIIIPaths VIIIArchive project_warnings)
+target_link_libraries(TestExtractALL VIIIPaths VIIIArchive Threads::Threads project_warnings)
 
 
 ##test extract all, uses new code to extract files instead of old versions.
@@ -102,4 +102,4 @@ target_link_libraries(TestExtractPAK VIIIPaths project_warnings)
 add_executable(TestBattle
         TestBattle.cpp TestBattle.hpp)
 set_target_properties(TestBattle PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestBattle VIIIPaths VIIIBattle VIIIArchive project_warnings)
+target_link_libraries(TestBattle VIIIPaths VIIIBattle VIIIArchive Threads::Threads  project_warnings)
