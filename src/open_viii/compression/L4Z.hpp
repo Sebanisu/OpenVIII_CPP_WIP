@@ -12,7 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "lib/lz4.h"
-#include <concepts>
+#include "open_viii/Concepts.hpp"
+#include <ranges>
 #include <span>
 #include <vector>
 
@@ -30,6 +31,7 @@ struct L4Z
    * @return uncompressed char buffer.
    */
   template<typename dstT = std::vector<char>, std::integral srcSizeT, std::integral dstSizeT>
+  requires (is_default_constructible<dstT> && has_resize<dstT> && std::ranges::contiguous_range<dstT>)
   [[nodiscard]] [[maybe_unused]] static dstT decompress(
     const char *src_data, const srcSizeT &src_size, const dstSizeT &dst_size)
   {
