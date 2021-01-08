@@ -64,7 +64,7 @@ public:
       dstT buffer = Tools::read_buffer<dstT>(fp, compSize);
 
 
-      return compression::L4Z::decompress<dstT>(buffer.data(), compSize, fi.uncompressed_size());
+      return compression::l4z::decompress<dstT>(buffer.data(), compSize, fi.uncompressed_size());
     }
     }
     fp.close();
@@ -119,7 +119,7 @@ public:
       const auto compSize = sectSize - skipBytes;
       data = data.subspan(sizeof(sectSize) + skipBytes, compSize);
 
-      return compression::L4Z::decompress<dstT>(data, fi.uncompressed_size());
+      return compression::l4z::decompress<dstT>(data, fi.uncompressed_size());
     }
     }
     return {};

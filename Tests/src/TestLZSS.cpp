@@ -11,7 +11,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestLZSS.hpp"
-#include "open_viii/compression/L4Z.hpp"
 #include "open_viii/compression/LZSS.hpp"
 #include <iostream>
 #include <random>
@@ -78,34 +77,34 @@ static void fuzz_loop_decompress_lzss(const std::atomic_bool &stop)
   while (!stop && run_once(i++)) {}// inplace lambda
 }
 
-static void fuzz_loop_decompress_lz4(const std::atomic_bool &stop)
-{
-
-  // test LZSS
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<unsigned char> dis(0U);
-
-  size_t i{ 0 };
-  std::cout << "Testing LZ4 by passing a random std::vector<char> to Decompress()...\n";
-  static const auto run_once = [&dis, &gen](const size_t &size) {
-    if (size <= 0) {
-      return true;
-    }
-    std::vector<char> random_chars = std::vector<char>(size);
-    if (random_chars.empty()) {
-      return true;
-    }
-    std::generate(random_chars.begin(), random_chars.end(), [&dis, &gen]() {
-      return static_cast<char>(dis(gen));
-    });
-    // decompress random input see if a error happens. Unsure if this is doing anything because LZ4 expects things.
-    auto uncompressed = open_viii::compression::L4Z::decompress(random_chars, size);// LZ4 expects to know the size.
-    std::cout << "\rSuccessfully uncompressed data w/o crash: " << size << " bytes" << std::flush;
-    return true;
-  };
-  while (!stop && run_once(i++)) {}// inplace lambda
-}
+//static void fuzz_loop_decompress_lz4(const std::atomic_bool &stop)
+//{
+//
+//  // test LZSS
+//  std::random_device rd;
+//  std::mt19937 gen(rd());
+//  std::uniform_int_distribution<unsigned char> dis(0U);
+//
+//  size_t i{ 0 };
+//  std::cout << "Testing LZ4 by passing a random std::vector<char> to Decompress()...\n";
+//  static const auto run_once = [&dis, &gen](const size_t &size) {
+//    if (size <= 0) {
+//      return true;
+//    }
+//    std::vector<char> random_chars = std::vector<char>(size);
+//    if (random_chars.empty()) {
+//      return true;
+//    }
+//    std::generate(random_chars.begin(), random_chars.end(), [&dis, &gen]() {
+//      return static_cast<char>(dis(gen));
+//    });
+//    // decompress random input see if a error happens. Unsure if this is doing anything because LZ4 expects things.
+//    auto uncompressed = open_viii::compression::l4z::decompress(random_chars, size);// LZ4 expects to know the size.
+//    std::cout << "\rSuccessfully uncompressed data w/o crash: " << size << " bytes" << std::flush;
+//    return true;
+//  };
+//  while (!stop && run_once(i++)) {}// inplace lambda
+//}
 int main()
 {
   std::atomic_bool stop{ false };
@@ -126,15 +125,15 @@ int main()
     stop = true;
   }
 
-  std::cout << '\n';
-  stop = false;
-  {
-    auto thread = std::jthread{ [&stop]() {
-      fuzz_loop_decompress_lz4(stop);
-    } };
-    std::cin.get();
-    stop = true;
-  }
+//  std::cout << '\n';
+//  stop = false;
+//  {
+//    auto thread = std::jthread{ [&stop]() {
+//      fuzz_loop_decompress_lz4(stop);
+//    } };
+//    std::cin.get();
+//    stop = true;
+//  }
 
   return 0;
 }
