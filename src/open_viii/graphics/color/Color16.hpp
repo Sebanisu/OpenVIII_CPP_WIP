@@ -15,6 +15,7 @@
 #define VIIIARCHIVE_COLOR16_HPP
 
 #include "open_viii/Concepts.hpp"
+#include <compare>
 #include <cstdint>
 #include <iostream>
 #include <limits>

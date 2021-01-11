@@ -14,7 +14,6 @@
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/graphics/Ppm.hpp"
 #include "open_viii/graphics/background/Map.hpp"
-#include "open_viii/graphics/background/Mim.hpp"
 #include "open_viii/graphics/background/SwizzleTree.hpp"
 #include "open_viii/paths/Paths.hpp"
 

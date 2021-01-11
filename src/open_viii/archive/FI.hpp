@@ -137,11 +137,11 @@ public:
   ////      std::ranges::data(buffer),
   ////      sizeof(m_uncompressed_size));
   ////    if (m_uncompressed_size > 0) {// if size is 0 than no point in reading
-  ///more. /      buffer = buffer.subspan(sizeof(m_uncompressed_size)); /
-  ///std::memcpy(&m_offset, std::ranges::data(buffer), sizeof(m_offset)); /
-  ///buffer = buffer.subspan(sizeof(m_offset)); /
-  ///std::memcpy(&m_compression_type, /        std::ranges::data(buffer), /
-  ///sizeof(m_compression_type)); /    }
+  /// more. /      buffer = buffer.subspan(sizeof(m_uncompressed_size)); /
+  /// std::memcpy(&m_offset, std::ranges::data(buffer), sizeof(m_offset)); /
+  /// buffer = buffer.subspan(sizeof(m_offset)); /
+  /// std::memcpy(&m_compression_type, /        std::ranges::data(buffer), /
+  /// sizeof(m_compression_type)); /    }
   //  }
   //  /**
   //   * Construct a FI entry

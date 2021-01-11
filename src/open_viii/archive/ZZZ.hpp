@@ -128,14 +128,13 @@ public:
           // << strPath << "}\n";
           if ((FIFLFS<true>::check_extension(strPath) != 0)
               && ((!next.empty()
-                    && FIFLFS<true>::get_base_name(strPath)
-                         == FIFLFS<true>::get_base_name(next.get_path_string()))
+                    && tools::get_base_name(strPath)
+                         == tools::get_base_name(next.get_path_string()))
                   ||
 
                   (!prev.empty()
-                    && FIFLFS<true>::get_base_name(strPath)
-                         == FIFLFS<true>::get_base_name(
-                           prev.get_path_string())))) {
+                    && tools::get_base_name(strPath)
+                         == tools::get_base_name(prev.get_path_string())))) {
 
             std::filesystem::path fs_path(strPath);
             {

@@ -82,7 +82,7 @@ public:
     return m_image_header.rectangle().x() % XDIVISABLE_BY == 0
            && m_image_header.rectangle().y() <= MAX_Y;
     //&& tools::any_of(imageHeader_.rectangle().width(), ValidWidth_); // some
-    //non standard sizes.
+    // non standard sizes.
   }
 
   friend std::ostream &operator<<(std::ostream &os, const TimClutHeader &input)

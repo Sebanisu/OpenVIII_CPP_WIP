@@ -15,6 +15,7 @@
 #define VIIIARCHIVE_POINT_HPP
 #include "open_viii/Concepts.hpp"
 #include <algorithm>
+#include <compare>
 #include <concepts>
 #include <iostream>
 namespace open_viii::graphics {

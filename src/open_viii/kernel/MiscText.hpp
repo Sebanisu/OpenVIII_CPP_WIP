@@ -35,7 +35,7 @@ public:
     return m_name_offset;
   }
   //[[nodiscard]] auto &DescriptionOffset() const noexcept { return
-  //m_description_offset; }
+  // m_description_offset; }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);

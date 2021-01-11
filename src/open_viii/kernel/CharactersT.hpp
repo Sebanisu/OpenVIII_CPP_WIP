@@ -29,7 +29,7 @@ enum class CharactersT : std::uint8_t {
   edea_kramer = 0x7,
   laguna_loire = 0x8,// = Squall_Leonhart, //Laguna always replaces squall
   kiros_seagill = 0x9,// unsure who kiros and ward replace. I think it's whom
-                      // ever is with squall.
+  // ever is with squall.
   ward_zabac = 0xA,
   blank = 0xFF,
 };

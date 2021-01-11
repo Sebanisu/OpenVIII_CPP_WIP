@@ -13,7 +13,9 @@
 
 #ifndef VIIIARCHIVE_RECTANGLE_HPP
 #define VIIIARCHIVE_RECTANGLE_HPP
+#include "open_viii/Concepts.hpp"
 #include "open_viii/graphics/Point.hpp"
+#include <compare>
 #include <iostream>
 namespace open_viii::graphics {
 /**
@@ -21,8 +23,7 @@ namespace open_viii::graphics {
  * @tparam dimT Number type.
  * @brief 2D Container that holds top left height and width.
  */
-template<typename dimT>
-requires(std::integral<dimT> || std::floating_point<dimT>) struct Rectangle
+template<Number dimT> struct Rectangle
 {
 private:
   Point<dimT> m_top_left{};
@@ -33,28 +34,23 @@ public:
   constexpr auto operator<=>(
     const Rectangle<dimT> &right) const noexcept = default;
 
+
+  constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw)
+    : m_top_left(xy), m_width_height(hw)
+  {}
   template<Number T>
   requires(!std::is_same_v<T, dimT>) constexpr explicit Rectangle(
     const Rectangle<T> &r)
-  {
-    m_top_left = static_cast<Point<dimT>>(r.m_top_left);
-    m_width_height = static_cast<Point<dimT>>(r.m_width_height);
-  }
+    : Rectangle(static_cast<Point<dimT>>(r.m_top_left),
+      static_cast<Point<dimT>>(r.m_width_height))
+  {}
   constexpr Rectangle(const dimT &in_x,
     const dimT &in_y,
     const dimT &in_width,
     const dimT &in_height) noexcept
-    : m_top_left{ in_x, in_y }, m_width_height{ in_width, in_height }
+    : Rectangle(Point<dimT>(in_x, in_y), Point<dimT>(in_width, in_height))
   {}
-  constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw) noexcept
-    : m_top_left{ xy }, m_width_height{ hw }
-  {}
-  //  friend auto operator==(const Rectangle<dimT> &left, const Rectangle<dimT>
-  //  &right) noexcept
-  //  {
-  //    return left.m_top_left == right.m_top_left && left.m_width_height ==
-  //    right.m_width_height;
-  //  }
+
   /**
    * @return Left coordinate.
    */

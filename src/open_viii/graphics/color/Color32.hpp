@@ -16,6 +16,7 @@
 #include "open_viii/Concepts.hpp"
 #include <algorithm>
 #include <bitset>
+#include <compare>
 #include <cstdint>
 #include <limits>
 namespace open_viii::graphics {

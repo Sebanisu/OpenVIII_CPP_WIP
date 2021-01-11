@@ -439,5 +439,16 @@ std::string to_string_with_padding(const intT &value,
       str.front() == '-' ? 1 : 0, total_length - str.length(), pad_character);
   return str;
 }
+
+[[maybe_unused]] [[nodiscard]] std::string static get_base_name(
+  const std::filesystem::path &path)
+{
+  if (path.string().empty()) {
+    return {};
+  }
+  auto name = path.filename().stem().string();
+  std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+  return name;
+}
 }// namespace open_viii::tools
 #endif// !VIITOOLS_H

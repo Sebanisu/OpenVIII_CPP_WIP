@@ -134,7 +134,7 @@ public:
     return m_data.size();
   }
   //[[nodiscard]] constexpr auto operator[](const size_t &index) { return
-  //data_[index]; }
+  // data_[index]; }
   [[nodiscard]] constexpr auto begin()
   {
     return m_data.begin();

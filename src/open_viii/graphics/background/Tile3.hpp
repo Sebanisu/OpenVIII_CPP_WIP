@@ -45,9 +45,9 @@ public:
            && left.m_palette_id == right.m_palette_id
            && left.m_source_xy == right.m_source_xy;
   }
-  static constexpr auto HEIGHT{ 16U };
-  static constexpr auto WIDTH{ 16U };
-  static constexpr auto TEXTURE_PAGE_WIDTH{ 128U };
+  static constexpr auto HEIGHT = 16U;
+  static constexpr auto WIDTH = 16U;
+  static constexpr auto TEXTURE_PAGE_WIDTH = 128U;
   static constexpr auto AREA = HEIGHT * WIDTH;
   [[nodiscard]] constexpr std::int16_t x() const noexcept
   {
@@ -114,14 +114,15 @@ public:
   {
     return 0U;
   }
-  [[nodiscard]] Rectangle<std::int32_t> rectangle() const noexcept
+  [[nodiscard]] auto rectangle() const noexcept
   {
-    return { source_x(), source_y(), WIDTH, HEIGHT };
+    return graphics::Rectangle<std::int32_t>{
+      source_x(), source_y(), WIDTH, HEIGHT
+    };
   }
-  [[maybe_unused]] [[nodiscard]] Rectangle<std::uint16_t>
-    out_rectangle() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto out_rectangle() const noexcept
   {
-    return { static_cast<std::uint16_t>(m_xy.x()),
+    return Rectangle<std::uint16_t>{ static_cast<std::uint16_t>(m_xy.x()),
       std::uint16_t(m_xy.y()),
       WIDTH,
       HEIGHT };
