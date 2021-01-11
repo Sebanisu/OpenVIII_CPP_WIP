@@ -237,7 +237,7 @@ public:
   void save_csv(const std::string_view &in_path) const
   {
     auto path = std::filesystem::path(in_path);
-    Tools::write_buffer(
+    tools::write_buffer(
       [this](std::ostream &os) {
         os
           << R"("Depth","Blend Mode","Blend Other","Layer ID","Texture ID","Palette ID","Animation ID","Animation State","Source X","Source Y","X","Y","Z","PUPU ID")"

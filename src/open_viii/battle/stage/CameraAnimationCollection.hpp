@@ -32,12 +32,12 @@ public:
     // const auto start = span.begin();
     const auto backup_span = span;
     // std::ranges::data
-    Tools::read_val(span, m_set_count);
+    tools::read_val(span, m_set_count);
     span = span.subspan(sizeof(std::uint16_t));
     m_set_offsets.resize(m_set_count);
-    Tools::read_val(span, m_set_offsets);
+    tools::read_val(span, m_set_offsets);
     span = span.subspan(sizeof(std::uint16_t) * m_set_count);
-    Tools::read_val(span, m_camera_end);
+    tools::read_val(span, m_camera_end);
     // const auto size{sizeof(CameraAnimationSet) * m_set_count};
     span = span.subspan(sizeof(std::uint16_t));
     // TODO sets aren't grouped together will need to use offsets
@@ -45,7 +45,7 @@ public:
     std::ranges::transform(m_set_offsets,
       std::back_inserter(m_camera_animation_set),
       [&backup_span](const std::uint16_t &offset) {
-        return Tools::read_val<CameraAnimationSet>(backup_span.subspan(
+        return tools::read_val<CameraAnimationSet>(backup_span.subspan(
           offset + 2U));// skipping 2U makes it match the values in open_viii
       });
     m_camera_animation.resize(m_set_count);
@@ -60,7 +60,7 @@ public:
 //        //        const auto full_pos =
 //        //          sizeof(CameraHeader) + sizeof(CameraSettings) +
 //        //          start_of_animation;
-//        m_camera_animation.at(j).emplace_back(Tools::read_val<CameraAnimation>(
+//        m_camera_animation.at(j).emplace_back(tools::read_val<CameraAnimation>(
 //          backup_span.subspan(start_of_animation)));
 //      }
       //TODO rework this. It does not work

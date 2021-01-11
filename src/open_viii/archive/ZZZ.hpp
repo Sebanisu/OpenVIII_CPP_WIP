@@ -56,7 +56,7 @@ public:
   constexpr ZZZ() = default;
   explicit ZZZ(const std::filesystem::path &path)
   {
-    if (!(path.has_extension() && Tools::i_equals(path.extension().string(), EXT)) || !std::filesystem::exists(path)) {
+    if (!(path.has_extension() && tools::i_equals(path.extension().string(), EXT)) || !std::filesystem::exists(path)) {
       return;
     }
 
@@ -67,7 +67,7 @@ public:
       return;
     }
     m_path = path;
-    Tools::read_val(fp, count);
+    tools::read_val(fp, count);
     m_data.reserve(count);
     for (auto i = 0U; fp.is_open() && !fp.eof() && i < count; i++) {
       if ((m_data.emplace_back(fp).empty())) {
@@ -92,7 +92,7 @@ public:
   {
     auto buffer = FS::get_entry(m_path, item, 0U);
     //    std::cout << '{' << buffer.size() << ", " << str_path << "}\n";
-    Tools::write_buffer(buffer, str_path);
+    tools::write_buffer(buffer, str_path);
   }
   void test() const
   {
@@ -151,7 +151,7 @@ public:
     tmp.reserve(2);// main and other
     int i{};
     for (const auto &file_entry : std::filesystem::directory_iterator(path, options)) {
-      if (!(file_entry.path().has_extension() && Tools::i_equals(file_entry.path().extension().string(), EXT))) {
+      if (!(file_entry.path().has_extension() && tools::i_equals(file_entry.path().extension().string(), EXT))) {
         continue;
       }
       // todo check for language codes to choose correct files
@@ -196,7 +196,7 @@ public:
     for (const open_viii::archive::FileData &data_item : data()) {
       {
         auto path_string = data_item.get_path_string();
-        if (open_viii::Tools::i_find_any(path_string, filename)) {
+        if (open_viii::tools::i_find_any(path_string, filename)) {
           vector.emplace_back(std::make_pair(i, path_string));
         }
       }
@@ -211,7 +211,7 @@ public:
     for (const open_viii::archive::FileData &dataItem : data()) {
       {
         auto pathString = dataItem.get_path_string();
-        if (open_viii::Tools::i_find_any(pathString, filename)) {
+        if (open_viii::tools::i_find_any(pathString, filename)) {
           lambda(FS::get_entry(m_path, dataItem), std::string(pathString));
         }
       }

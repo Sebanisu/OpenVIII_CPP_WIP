@@ -36,7 +36,7 @@ template<bool rewind = false> static auto get_type(std::istream &is)
 {
   static constexpr auto sz = 3U;
   const auto get_type_int = [&is]() {
-    return Tools::read_val<std::array<char, sz>>(is);
+    return tools::read_val<std::array<char, sz>>(is);
   };
   if constexpr (rewind) {
     const auto ret = get_type_int();

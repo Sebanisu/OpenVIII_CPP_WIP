@@ -44,7 +44,7 @@ public:
   template<std::invocable<std::filesystem::path> lambdaT> static auto for_each_path(const lambdaT &lambda)
   {
     std::ranges::for_each(get(), [&lambda](std::string &path) {
-      open_viii::Tools::replace_slashes(path);
+      open_viii::tools::replace_slashes(path);
       const auto fs_path = std::filesystem::path(path);
       std::error_code ec{};
       if (std::filesystem::exists(fs_path, ec)) {

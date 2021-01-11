@@ -108,7 +108,7 @@ private:
 
 public:
   Ppm() = default;
-  explicit Ppm(const std::filesystem::path &path) : Ppm(Tools::read_file<std::string>(path), path) {}
+  explicit Ppm(const std::filesystem::path &path) : Ppm(tools::read_file<std::string>(path), path) {}
   explicit Ppm(const std::string &buffer, std::filesystem::path path = {})
     : m_path(std::move(path)), m_width_height(get_width_height(buffer)), m_colors(get_colors(buffer))
   {}
@@ -142,7 +142,7 @@ public:
     }
 
 
-    Tools::write_buffer(
+    tools::write_buffer(
       [&data, &width, &height](std::ostream &ss) {
         ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
         for (const Color auto &color : data) {// organize the data in ram first then write all at once.

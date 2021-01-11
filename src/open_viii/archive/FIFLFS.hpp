@@ -172,10 +172,10 @@ public:
     if (m_count == 0 || id < m_count) {
       const auto offset = archive::FI::get_start_offset(id, m_fi.offset());
       if (!std::ranges::empty(m_fi.data())) {
-        return Tools::read_val<archive::FI>(m_fi.data(), offset);
+        return tools::read_val<archive::FI>(m_fi.data(), offset);
         //return archive::FI(m_fi.data(), id, m_fi.offset());
       }
-      return Tools::read_val<archive::FI>(m_fi.path(), offset);
+      return tools::read_val<archive::FI>(m_fi.path(), offset);
       //return archive::FI(m_fi.path(), id, m_fi.offset());
     }
     return {};
@@ -259,7 +259,7 @@ public:
       case 1: {
         set(m_fl);
         m_fl.data(FS::get_entry<std::string>(src, fi, src_offset));
-        FL::clean_buffer(m_fl.data());
+        fl::clean_buffer(m_fl.data());
         break;
       }
       case 2: {
@@ -327,7 +327,7 @@ public:
     //    std::cout << "Getting Filenames from : " << m_fl.path() << '\n';
     FIFLFS archive{};
     using namespace std::string_view_literals;
-    auto items = archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, {});
+    auto items = archive::fl::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, {});
     for (const auto &item : items) {
       const auto &[id, strVirtualPath] = item;
       // std::cout << "try_add_nested: {" << id << ", " << strVirtualPath << "}\n";
@@ -375,7 +375,7 @@ public:
           exit(EXIT_FAILURE);
         }
         //        std::cout << '{' << id << ", " << buffer.size() << ", " << strVirtualPath << "}" << std::endl;
-        Tools::write_buffer(buffer, strVirtualPath);
+        tools::write_buffer(buffer, strVirtualPath);
         // saveIMG(buffer, strVirtualPath);
       }
     }
@@ -404,8 +404,8 @@ public:
   }
   auto static check_extension(const std::filesystem::path &path)
   {
-    return Tools::i_ends_with_any(
-      path.string(), { open_viii::archive::FL::EXT, open_viii::archive::FS::EXT, open_viii::archive::FI::EXT });
+    return tools::i_ends_with_any(
+      path.string(), { open_viii::archive::fl::EXT, open_viii::archive::FS::EXT, open_viii::archive::FI::EXT });
   }
 
 
@@ -475,9 +475,9 @@ public:
   [[nodiscard]] auto get_entry_id_and_path(const std::string_view &filename) const
   {
     if (std::ranges::empty(m_fl.data())) {
-      return open_viii::archive::FL::get_entry(m_fl.path(), { filename }, m_fl.offset(), m_fl.size(), m_count);
+      return open_viii::archive::fl::get_entry(m_fl.path(), { filename }, m_fl.offset(), m_fl.size(), m_count);
     }
-    return open_viii::archive::FL::get_entry_data(
+    return open_viii::archive::fl::get_entry_data(
       m_fl.path(), m_fl.data(), { filename }, m_fl.offset(), m_fl.size(), m_count);
   }
   template<typename outT = std::vector<char>> [[nodiscard]] outT get_entry_data(const std::string_view &filename) const
@@ -488,7 +488,7 @@ public:
   [[nodiscard]] std::vector<std::pair<unsigned int, std::string>> get_vector_of_indexs_and_files(
     const std::initializer_list<std::string_view> &filename) const
   {
-    return archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
+    return archive::fl::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
   }
 
   template<typename lambdaT>
@@ -526,12 +526,12 @@ public:
       return {};
     }
     std::vector<std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>> vector{};
-    const std::vector<std::pair<unsigned int, std::string>> fls = get_vector_of_indexs_and_files({ archive::FL::EXT });
+    const std::vector<std::pair<unsigned int, std::string>> fls = get_vector_of_indexs_and_files({ archive::fl::EXT });
     const std::string &basename = get_base_name();
     for (const auto &fl : fls) {
       const auto fi = get_entry_by_index(fl.first);
       const auto buffer = get_entry_buffer<std::string>(fi);
-      auto results = archive::FL::get_all_entries_data({}, buffer, 0, 0, 0, filename);
+      auto results = archive::fl::get_all_entries_data({}, buffer, 0, 0, 0, filename);
       if (!std::ranges::empty(results)) {
         vector.emplace_back(std::make_pair(basename + "::" + get_base_name(fl.second), std::move(results)));
       }
@@ -547,7 +547,7 @@ public:
     FIFLFS<false> archive{};
 
     const auto items =
-      archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
+      archive::fl::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
 
     std::vector<std::jthread> threads{};
     threads.reserve(std::ranges::size(items) / 3);
@@ -627,7 +627,7 @@ public:
   {
     FIFLFS<false> archive{};
     const auto items =
-      archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
+      archive::fl::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
     for (const auto &[id, strVirtualPath] : items) {
       TryAddT tryAddT = get_fiflfs(archive, id, strVirtualPath);
       if (tryAddT == TryAddT::archive_full) {
@@ -644,7 +644,7 @@ public:
     FIFLFS<false> archive{};
 
     const auto items =
-      archive::FL::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
+      archive::fl::get_all_entries_data(m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
     for (const auto &[id, strVirtualPath] : items) {
       switch (get_fiflfs(archive, id, strVirtualPath)) {
       default:

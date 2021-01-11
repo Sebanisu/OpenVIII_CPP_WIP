@@ -31,33 +31,33 @@ int main()
     [[maybe_unused]] static constexpr auto dump_image = [](std::vector<char> &&in_buffer, std::string &&in_path) {
       std::vector<char> buffer{ std::move(in_buffer) };
       std::string p{ std::move(in_path) };
-      if (open_viii::Tools::i_ends_with(p, ".lzs")) {
+      if (open_viii::tools::i_ends_with(p, ".lzs")) {
         auto t = open_viii::graphics::Lzs(buffer);
         std::cout << p << '\n' << t << '\n';
         t.save(p);
-      } else if (open_viii::Tools::i_ends_with(p, ".tim")) {
+      } else if (open_viii::tools::i_ends_with(p, ".tim")) {
         auto t = open_viii::graphics::Tim(buffer);
         std::cout << p << '\n' << t << '\n';
         if (t.width() == 0 || t.height() == 0) {
-          open_viii::Tools::write_buffer(buffer, p);
+          open_viii::tools::write_buffer(buffer, p);
         } else {
           t.save(p);
         }
-      } else if (open_viii::Tools::i_ends_with(p, ".tex")) {
+      } else if (open_viii::tools::i_ends_with(p, ".tex")) {
         auto t = open_viii::graphics::Tex(buffer);
         std::cout << p << '\n' << t << '\n';
         t.save(p);
-      } else if (open_viii::Tools::i_ends_with(p, ".tdw")) {
+      } else if (open_viii::tools::i_ends_with(p, ".tdw")) {
         auto t = open_viii::graphics::Tdw(buffer);
         std::cout << p << '\n' << t << '\n';
         t.save(p);
-      } else if (open_viii::Tools::i_ends_with(p, ".sp1")) {
+      } else if (open_viii::tools::i_ends_with(p, ".sp1")) {
         auto t = open_viii::graphics::Sp1(buffer);
         std::cout << p << '\n' << t << '\n';
-      } else if (open_viii::Tools::i_ends_with(p, ".sp2")) {
+      } else if (open_viii::tools::i_ends_with(p, ".sp2")) {
         auto t = open_viii::graphics::Sp2(buffer);
         std::cout << p << '\n' << t << '\n';
-      } else if (open_viii::Tools::i_ends_with(p, open_viii::graphics::background::Mim::EXT)) {
+      } else if (open_viii::tools::i_ends_with(p, open_viii::graphics::background::Mim::EXT)) {
         auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
         std::cout << p << '\n' << t << '\n';
         t.save(p);

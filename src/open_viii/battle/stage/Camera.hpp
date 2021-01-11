@@ -22,9 +22,9 @@ private:
 public:
   Camera() = default;
   explicit Camera(const std::span<const char> &data)
-    : m_camera_header(Tools::read_val<CameraHeader>(data)),
+    : m_camera_header(tools::read_val<CameraHeader>(data)),
       m_camera_settings(
-        Tools::read_val<CameraSettings>(data.subspan(sizeof(CameraHeader)))),
+        tools::read_val<CameraSettings>(data.subspan(sizeof(CameraHeader)))),
       m_camera_animation_collection(
         data.subspan(sizeof(CameraHeader) + sizeof(CameraSettings)))
   {

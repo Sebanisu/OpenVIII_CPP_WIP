@@ -36,7 +36,7 @@ int main()
     const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
     {
-      open_viii::Tools::execute_on_directories(
+      open_viii::tools::execute_on_directories(
         std::filesystem::current_path(), {}, [&field](const std::filesystem::path &directory_path) {
           const auto swizzle_tree = open_viii::graphics::background::SwizzleTree{ field, directory_path };
           if (!static_cast<bool>(swizzle_tree)) {

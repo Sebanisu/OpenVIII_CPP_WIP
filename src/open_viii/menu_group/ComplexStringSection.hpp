@@ -39,7 +39,7 @@ public:
   template<LangT langVal> std::ostream &out(std::ostream &os) const
   {
     const auto temp = FF8String<langVal>::decode(m_buffer);
-    return os << Tools::u8_to_sv(temp);
+    return os << tools::u8_to_sv(temp);
   }
 };
 struct ComplexStringSectionOffsets

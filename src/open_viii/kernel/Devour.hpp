@@ -138,7 +138,7 @@ public:
   {
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(description)) {
-      os << Tools::u8_to_sv(description);
+      os << tools::u8_to_sv(description);
     }
     return os << ", " << static_cast<std::uint32_t>(damage_or_heal()) << ", " << percent_quantity() << ", "
               << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "

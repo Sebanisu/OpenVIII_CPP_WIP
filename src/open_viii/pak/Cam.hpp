@@ -25,10 +25,10 @@ private:
 public:
   Cam() = default;
   Cam(std::istream &is, const std::size_t &m_frame_count)
-  : m_header(Tools::read_val<CamHeader>(is))
+  : m_header(tools::read_val<CamHeader>(is))
   {
     m_frames.resize(m_frame_count);
-    Tools::read_val(is,m_frames);
+    tools::read_val(is,m_frames);
   }
   Cam(std::istream &is,const FileSection & fs)
     : Cam([&fs](std::istream &in_is)->std::istream &{in_is.seekg(fs.offset()); return in_is;}(is),fs.frames())

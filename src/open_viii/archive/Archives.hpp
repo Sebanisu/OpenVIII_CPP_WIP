@@ -211,7 +211,7 @@ private:
     };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
       if (path.has_extension()
-          && Tools::i_equals(path.extension().string(), ZZZ::EXT)) {
+          && tools::i_equals(path.extension().string(), ZZZ::EXT)) {
         archive.emplace(path);
         return true;
       }
@@ -246,8 +246,8 @@ private:
             auto langStarting =
               std::filesystem::path(langStartingFilter.string() + m_lang);
 
-            if (Tools::i_starts_with(pathString, langStartingFilter.string())
-                && !Tools::i_starts_with(pathString, langStarting.string())) {
+            if (tools::i_starts_with(pathString, langStartingFilter.string())
+                && !tools::i_starts_with(pathString, langStarting.string())) {
               continue;
             }
             auto localPath = std::filesystem::path(pathString);
@@ -255,7 +255,7 @@ private:
               static_cast<intmax_t>(ArchiveTypeT::zzz_main) - 1>(
               [&localPath, &dataItem, &path, this](
                 const ArchiveTypeT &test, const auto &stem) {
-                if (!(open_viii::Tools::i_equals(
+                if (!(open_viii::tools::i_equals(
                       stem, localPath.stem().string()))) {
                   return;
                 }
@@ -450,7 +450,7 @@ public:
       if (localPath.has_stem()) {
         static_for([&localPath, this](
                      const ArchiveTypeT &test, const auto &stem) {
-          if (!(open_viii::Tools::i_equals(stem, localPath.stem().string()))) {
+          if (!(open_viii::tools::i_equals(stem, localPath.stem().string()))) {
             return;
           }
           try_add(test, localPath);

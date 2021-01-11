@@ -66,7 +66,8 @@ public:
   constexpr FI() noexcept = default;
 
   template<FI_Like fiT>
-  constexpr explicit FI(const fiT &fi)
+  requires (!std::is_same_v<fiT,FI>)
+  constexpr explicit FI(const fiT &fi) noexcept
     : m_uncompressed_size{ static_cast<decltype(m_uncompressed_size)>(
       fi.uncompressed_size()) },
       m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
@@ -94,10 +95,10 @@ public:
 //    }
 //    fp.seekg(start_offset);
 //
-//    Tools::read_val(fp, m_uncompressed_size);
+//    tools::read_val(fp, m_uncompressed_size);
 //    if (m_uncompressed_size > 0) {// if size is 0 than no point in reading more.
-//      Tools::read_val(fp, m_offset);
-//      Tools::read_val(fp, m_compression_type);
+//      tools::read_val(fp, m_offset);
+//      tools::read_val(fp, m_compression_type);
 //    }
 //    if (close) {
 //      fp.close();
@@ -119,12 +120,12 @@ public:
 //   */
 //  explicit FI(
 //    std::span<const char> buffer, const std::size_t &start_offset = 0U)
-//    : m_uncompressed_size(Tools::read_val<decltype(m_uncompressed_size)>(
+//    : m_uncompressed_size(tools::read_val<decltype(m_uncompressed_size)>(
 //      buffer.subspan(start_offset))),
-//      m_offset(Tools::read_val<decltype(m_offset)>(
+//      m_offset(tools::read_val<decltype(m_offset)>(
 //        buffer.subspan(start_offset + sizeof(m_uncompressed_size)))),
 //      m_compression_type(
-//        Tools::read_val<decltype(m_compression_type)>(buffer.subspan(
+//        tools::read_val<decltype(m_compression_type)>(buffer.subspan(
 //          start_offset + sizeof(m_uncompressed_size) + sizeof(m_offset))))
 //  {
 ////    if (start_offset + SIZE > std::ranges::size(buffer)) {

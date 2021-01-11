@@ -98,7 +98,7 @@ public:
     : m_dir_path(dir_path),
       m_dir_name(dir_path.filename().string()),
       m_fi_filename(get_path_with_ext(archive::FI::EXT)),
-      m_fl_filename(get_path_with_ext(open_viii::archive::FL::EXT)),
+      m_fl_filename(get_path_with_ext(open_viii::archive::fl::EXT)),
       m_fs_filename(get_path_with_ext(open_viii::archive::FS::EXT)),
       m_map_filename(get_path_with_ext(open_viii::graphics::background::Map<>::EXT).substr(1)),
       m_mim_filename(get_path_with_ext(open_viii::graphics::background::Mim::EXT).substr(1)),

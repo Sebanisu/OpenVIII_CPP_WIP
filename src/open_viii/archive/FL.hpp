@@ -26,7 +26,7 @@
 #include <vector>
 
 
-namespace open_viii::archive::FL {
+namespace open_viii::archive::fl {
 /**
  * FL files contain internal file structure paths. As a flat text file. This
  * class is used to search the strings for a filename or grab all the entries.
@@ -47,14 +47,14 @@ constexpr static void clean_string(
 {
   if (std::ranges::size(input) > 4) {
 
-    if (Tools::i_starts_with(std::string_view(input).substr(0, 2), "c:")) {
+    if (tools::i_starts_with(std::string_view(input).substr(0, 2), "c:")) {
       input.erase(0, 3);// remove c:\ from the start of the strings.
     }
     if (skip_fixed) {
       if (input.at(input.size() - 1) == '\r') {
         input.pop_back();
       }// remove the carriage return character
-      Tools::replace_slashes(input);
+      tools::replace_slashes(input);
     }
   }
 }
@@ -121,7 +121,7 @@ constexpr const static auto EXT = std::string_view(".FL");
                return false;
              }();
              id++) {
-          if (!Tools::i_find_any(inner_path, needle)) {
+          if (!tools::i_find_any(inner_path, needle)) {
             continue;
           }
 
@@ -235,7 +235,7 @@ static void clean_buffer(std::string &buffer)
   // remove carriage returns
   buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
   // change slashes to preferred
-  Tools::replace_slashes(buffer);
+  tools::replace_slashes(buffer);
 }
-}// namespace open_viii::archive::FL
+}// namespace open_viii::archive::fl
 #endif// !VIIIARCHIVE_FL_HPP

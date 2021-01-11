@@ -122,7 +122,7 @@ public:
           return local_t.draw() && palette == local_t.palette_id() && pupu == local_t;
         }),
           [&pupu, &raw_width, this, &out, &drawn, &palette](const auto &t) {
-            open_viii::Tools::for_each_xy(
+            open_viii::tools::for_each_xy(
               t.HEIGHT, [&pupu, &raw_width, this, &out, &drawn, &t, &palette](const auto &x, const auto &y) {
                 auto pixel_in = m_mim.get_color(x + t.source_x(),
                   y + t.source_y(),

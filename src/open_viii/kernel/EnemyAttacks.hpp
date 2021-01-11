@@ -118,7 +118,7 @@ public:
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
-      os << Tools::u8_to_sv(name) << ", ";
+      os << tools::u8_to_sv(name) << ", ";
     }
     return os << static_cast<std::uint32_t>(m_magic_id) << ", " << m_camera_change << ", "
               << static_cast<std::uint32_t>(m_unknown0) << ", " << static_cast<std::uint32_t>(m_attack_type) << ", "

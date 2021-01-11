@@ -130,9 +130,9 @@ public:
   {
     for (auto m : TEXTURE_TYPES) {
       if (m.file_size() == mim_filesize) {
-        if (Tools::i_find_any(name, Tile3::FORCE_TYPE_VALUES)) {
+        if (tools::i_find_any(name, Tile3::FORCE_TYPE_VALUES)) {
           m.type(3);
-        } else if (Tools::i_find_any(name, Tile2::FORCE_TYPE_VALUES)) {
+        } else if (tools::i_find_any(name, Tile2::FORCE_TYPE_VALUES)) {
           m.type(2);
         }
         return m;

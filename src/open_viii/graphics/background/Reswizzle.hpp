@@ -21,7 +21,7 @@ struct PupuPath
   std::filesystem::path path{};
   //  auto read_file() const
   //  {
-  //    return open_viii::Tools::read_file<std::string>(path);
+  //    return open_viii::tools::read_file<std::string>(path);
   //  }
 };
 template<typename map_type>
@@ -85,7 +85,7 @@ private:
   auto find_pupu_image_file_paths() const
   {
     std::vector<PupuPath> pupu_paths{};
-    open_viii::Tools::execute_on_directory(
+    open_viii::tools::execute_on_directory(
       m_dir_path, { m_dir_name }, { ".ppm" }, [&pupu_paths, this](const std::filesystem::path &file_path) {
         // if(!file_path.has_stem()) {return;}
         auto basename = file_path.stem().string();
@@ -103,7 +103,7 @@ private:
         constexpr static auto hex_begin_offset_and_dash = hex_begin_offset + 1;
         auto hex = std::string_view(basename).substr(std::ranges::size(basename) - hex_begin_offset, hex_length);
         auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - hex_begin_offset_and_dash);
-        if (open_viii::Tools::i_equals(prefix, m_dir_name)) {
+        if (open_viii::tools::i_equals(prefix, m_dir_name)) {
           // std::cout << prefix << '\n';
           pupu_paths.emplace_back(PupuPath{ open_viii::graphics::background::Pupu(hex), file_path });
         }
@@ -167,7 +167,7 @@ private:
       for_each_tile(
         [this, &ppm](const map_type &tile) {
           static constexpr auto tile_size = 16U;
-          open_viii::Tools::for_each_xy(tile_size * m_scale, get_set_color_lambda(ppm, tile));
+          open_viii::tools::for_each_xy(tile_size * m_scale, get_set_color_lambda(ppm, tile));
         },
         [&pupu_path, &texture_id](const map_type &tile) {
           return pupu_path.pupu == tile && tile.texture_id() == texture_id;
@@ -192,7 +192,7 @@ private:
           m_skip.at(palette_id),
           [this, &ppm](const map_type &tile) {
             static constexpr auto tile_size = 16U;
-            open_viii::Tools::for_each_xy(tile_size * m_scale, get_set_color_lambda(ppm, tile, true));
+            open_viii::tools::for_each_xy(tile_size * m_scale, get_set_color_lambda(ppm, tile, true));
           },
           [&pupu_path, &texture_id, &palette_id](const map_type &tile) {
             return pupu_path.pupu == tile && tile.texture_id() == texture_id && tile.palette_id() == palette_id;
@@ -228,7 +228,7 @@ private:
         const auto dst_index = x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width);
         const auto &current = m_out.at(dst_index);
         if (!skipped && !current.is_black()) {
-          Tools::for_each_xy(x + 1, y + 1, get_clear_color_lambda(ppm, tile));
+          tools::for_each_xy(x + 1, y + 1, get_clear_color_lambda(ppm, tile));
           m_skip.at(tile.palette_id()).push_back(tile);
           return true;// break out.
         }

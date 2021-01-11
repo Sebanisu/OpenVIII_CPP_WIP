@@ -205,7 +205,7 @@ public:
 
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto get_section() const
   {
-    if constexpr (Tools::any_of(sectionT, COMPLEX_VALUE_ARRAY) || sectionT == MenuGroupSectionT::complex_map) {
+    if constexpr (tools::any_of(sectionT, COMPLEX_VALUE_ARRAY) || sectionT == MenuGroupSectionT::complex_map) {
 
       const auto map{ get_section_internal<MenuGroupSectionT::complex_map>().get_section_buffer(m_data_buffer) };
       const std::array data = { get_section_internal<MenuGroupSectionT::complex01>().get_section_buffer(m_data_buffer),
@@ -225,9 +225,9 @@ public:
         if constexpr (sectionT == MenuGroupSectionT::tkmnmes1 || sectionT == MenuGroupSectionT::tkmnmes2
                       || sectionT == MenuGroupSectionT::tkmnmes3) {
           return SectionData<MenuMessages>(MenuMessages{ section_buffer }, section_buffer);
-        } else if constexpr (Tools::any_of(sectionT, TIM_VALUE_ARRAY)) {
+        } else if constexpr (tools::any_of(sectionT, TIM_VALUE_ARRAY)) {
           return graphics::Tim(section_buffer);
-        } else if constexpr (Tools::any_of(sectionT, MES_VALUE_ARRAY)) {
+        } else if constexpr (tools::any_of(sectionT, MES_VALUE_ARRAY)) {
           return SectionData<MenuMessagesSection>(MenuMessagesSection{ section_buffer }, section_buffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
           return get_refine<open_viii::menu_group::RefineSection000, MenuGroupSectionT::refine_text0>(section_buffer);
@@ -283,7 +283,7 @@ public:
           continue;
         }
         const auto temp = subSection.template decoded_string<langVal>(mes.text_span(), 0, true);
-        std::cout << "    " << id - 1 << ": {" << subSection.offset() << "} " << Tools::u8_to_sv(temp) << '\n';
+        std::cout << "    " << id - 1 << ": {" << subSection.offset() << "} " << tools::u8_to_sv(temp) << '\n';
       }
     });
   }
@@ -303,7 +303,7 @@ public:
               continue;
             }
             const auto temp = subSection.template decoded_string<langVal>(tkmnmesPair.text_span(), offset, true);
-            std::cout << "    " << stringNumber++ << ": {" << subSection.offset() << "} " << Tools::u8_to_sv(temp)
+            std::cout << "    " << stringNumber++ << ": {" << subSection.offset() << "} " << tools::u8_to_sv(temp)
                       << '\n';
           }
         }

@@ -44,12 +44,12 @@ static dstT get_entry(
 
   switch (fi.compression_type()) {
   case CompressionTypeT::none: {
-    return Tools::read_buffer<dstT>(fp, fi.uncompressed_size());
+    return tools::read_buffer<dstT>(fp, fi.uncompressed_size());
   }
   case CompressionTypeT::lzss: {
     unsigned int compSize{ 0 };
-    Tools::read_val(fp, compSize);
-    dstT buffer = Tools::read_buffer<dstT>(fp, compSize);
+    tools::read_val(fp, compSize);
+    dstT buffer = tools::read_buffer<dstT>(fp, compSize);
     return compression::LZSS::decompress<dstT>(buffer, fi.uncompressed_size());
   }
   case CompressionTypeT::lz4: {
@@ -57,11 +57,11 @@ static dstT get_entry(
     // L4Z header contains size of total section as uint32, 4 byte string
     // the size of the compressed data is the first value minus 8. the second
     // value is something i'm unsure of
-    Tools::read_val(fp, sectSize);
+    tools::read_val(fp, sectSize);
     constexpr static auto skipSize = 8U;
     fp.seekg(skipSize, std::ios::cur);
     const auto compSize = sectSize - skipSize;
-    dstT buffer = Tools::read_buffer<dstT>(fp, compSize);
+    dstT buffer = tools::read_buffer<dstT>(fp, compSize);
 
 
     return compression::l4z::decompress<dstT>(
@@ -101,7 +101,7 @@ static dstT get_entry(
       break;
     }
 
-    const auto compSize = Tools::read_val<std::uint32_t>(data);
+    const auto compSize = tools::read_val<std::uint32_t>(data);
     if (compSize + sizeof(compSize) > std::ranges::size(data)) {
       break;
     }
@@ -116,7 +116,7 @@ static dstT get_entry(
       break;
     }
 
-    std::uint32_t sectSize = Tools::read_val<std::uint32_t>(data);
+    std::uint32_t sectSize = tools::read_val<std::uint32_t>(data);
     //std::memcpy(&sectSize, std::ranges::data(data), sizeof(sectSize));
     if (sectSize > std::ranges::size(data)) {
       break;

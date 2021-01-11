@@ -13,7 +13,8 @@
 
 #ifndef VIITOOLS_H
 #define VIITOOLS_H
-#include "open_viii/Concepts.hpp"
+#include "Read.hpp"
+#include "Write.hpp"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -28,24 +29,24 @@
 #include <string>
 #include <thread>
 #include <type_traits>
-namespace open_viii::Tools {
-constexpr static auto toupper_equals_predicate = [](const auto &ch1,
+namespace open_viii::tools {
+constexpr static auto TOUPPER_EQUALS_PREDICATE = [](const auto &ch1,
                                                    const auto &ch2) -> bool {
   return ::toupper(ch1) == ::toupper(ch2);
 };
 
-static void for_each_two(std::ranges::forward_range auto one,
-  std::ranges::forward_range auto two,
-  auto lambda)
-{
-  auto itt_one = one.begin();
-  auto itt_two = two.begin();
-  while (itt_one < one.end() && itt_two < two.end()) {
-    lambda(*itt_one, *itt_two);
-    ++itt_one;
-    ++itt_two;
-  }
-}
+//static void for_each_two(std::ranges::forward_range auto one,
+//  std::ranges::forward_range auto two,
+//  auto lambda)
+//{
+//  auto itt_one = one.begin();
+//  auto itt_two = two.begin();
+//  while (itt_one < one.end() && itt_two < two.end()) {
+//    lambda(*itt_one, *itt_two);
+//    ++itt_one;
+//    ++itt_two;
+//  }
+//}
 /**
  * Workaround there is no way to currently to print a utf8 string... streams are
  * char only pretty much.
@@ -70,226 +71,8 @@ static std::string_view u8_to_sv(const std::u8string_view &s8)
 }
 
 
-template<is_trivially_copyable_and_default_constructible trivialType,
-  auto sizeOfType>
-[[nodiscard]] static trivialType read_val(std::istream &fp)
-{
-  trivialType item{};
-  std::array<char, sizeOfType> tmp{};
-  fp.read(tmp.data(), tmp.size());
-  if constexpr (requires { std::ranges::data(item); }) {
-
-    memcpy(std::ranges::data(item),
-      std::ranges::data(tmp),
-      sizeof(*std::ranges::data(item)) * std::ranges::size(item));
-  } else {
-    memcpy(&item, std::ranges::data(tmp), sizeOfType);
-  }
-  return item;
-}
-template<is_trivially_copyable_and_default_constructible trivialType>
-[[nodiscard]] static trivialType read_val(std::istream &fp)
-{
-  return read_val<trivialType, sizeof(trivialType)>(fp);
-}
-
-template<is_trivially_copyable trivialType>
-static void read_val(std::istream &fp, trivialType &item)
-{
-  std::array<char, sizeof(item)> tmp{};
-  fp.read(tmp.data(), tmp.size());
-
-    memcpy(&item, std::ranges::data(tmp), sizeof(item));
-
-}
-
-template<typename trivialType>
-requires(requires(
-  trivialType item) { std::ranges::data(item); })
-static void read_val(std::istream &fp, trivialType &item)
-{
-//  if constexpr( requires(trivialType t){std::is_same_v<char,decltype(*std::ranges::data(t))>;})
-//  {}
-// if container is type char could just write directly to it.
-  const auto size = sizeof(*std::ranges::data(item)) * std::ranges::size(item);
-  std::vector<char> tmp(size);
-
-  fp.read(std::ranges::data(tmp), static_cast<long>(size));
-
-    memcpy(std::ranges::data(item),
-           std::ranges::data(tmp),
-           size);
-
-}
-
-template<is_trivially_copyable trivialType>
-static void read_val(const std::span<const char> &span, trivialType &item)
-{
-  memcpy(&item, std::ranges::data(span), sizeof(trivialType));
-}
-template<is_trivially_copyable_and_default_constructible trivialType>
-  [[nodiscard]] static trivialType read_val(const std::span<const char> &span, std::size_t offset = 0U)
-{
-  trivialType item{};
-  read_val<trivialType>(span.subspan(offset),item);
-  return item;
-}
 
 
-
-
-template<has_data_and_size trivialType>
-static void read_val(const std::span<const char> &span, trivialType &item, std::size_t size = 0U)
-{
-  const auto element_size = sizeof(*std::ranges::data(item));
-  if constexpr (requires(trivialType i) { i.resize(0); }) {
-    if (size != 0U) {
-      item.resize(size);
-    } else {
-      item.resize(std::ranges::size(span) / element_size);
-    }
-  }
-  memcpy(std::ranges::data(item),
-         std::ranges::data(span),
-         element_size * std::ranges::size(item));
-}
-
-template<is_default_constructible_has_data_and_size trivialType>
-[[nodiscard]] static trivialType
-read_val(const std::span<const char> &span, std::size_t size = 0U)
-{
-  trivialType item{};
-  read_val(span,item,size);
-  return item;
-}
-template<std::ranges::contiguous_range dstT = std::vector<char>,
-  std::integral sizeT>
-[[maybe_unused]] static auto read_buffer(std::istream &fp, const sizeT &s)
-{
-  dstT buf{};
-  if (s <= 0) {
-    return buf;
-  }
-  buf.resize(static_cast<std::size_t>(s));
-  fp.read(std::ranges::data(buf), s);
-  return buf;
-}
-
-template<typename dstT = std::vector<char>>
-[[maybe_unused]] static auto read_buffer(std::istream &fp)
-{
-  fp.seekg(0, std::ios::end);// seek to end;
-  const auto size_of_file = fp.tellg();// read filesize
-  fp.seekg(0, std::ios::beg);// seek to beginning
-  return read_buffer<dstT>(
-    fp, static_cast<long>(size_of_file));// read entire file
-}
-template<std::ranges::contiguous_range dstT = std::vector<char>>
-[[maybe_unused]] static dstT read_file(const std::filesystem::path &path)
-{
-  dstT buffer{};
-  read_buffer(
-    [&buffer](std::istream &fp) {
-      buffer = read_buffer<dstT>(fp);
-    },
-    path);
-
-
-  return buffer;
-}
-
-template<typename lambdaT>
-requires(std::invocable<lambdaT, std::istream &>)
-  [[maybe_unused]] static bool read_buffer(
-    const lambdaT &lambda, const std::filesystem::path &path)
-{
-  std::error_code ec{};
-  if (!std::filesystem::exists(path, ec)) {
-    return false;
-  }
-  if (ec) {
-    std::cerr << ec.message() << std::endl;
-    ec.clear();
-    return false;
-  }
-  auto fp = std::ifstream{};
-  for (;;) {
-    fp.open(path, std::ios::in | std::ios::binary);
-    if (fp.is_open()) {
-      break;
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-  }
-  std::cout << (std::string("Loading: \t\"") + path.string()
-                + std::string("\"\n"));
-  lambda(fp);
-  fp.close();
-  return true;
-}
-
-
-template<is_trivially_copyable_and_default_constructible trivialType>
-[[nodiscard]] static trivialType read_val(const std::filesystem::path &path, const std::size_t & offset)
-{
-  trivialType item{};
-  if(!read_buffer([&offset,&item](std::istream & is){
-        is.seekg(static_cast<long>(offset));
-        read_val(is,item);
-      },path))
-  {
-    // failed to read;
-  }
-  return item;
-}
-
-template<typename lambdaT>
-requires(std::invocable<lambdaT, std::ostream &>)
-  [[maybe_unused]] static bool write_buffer(const lambdaT &lambda,
-    const std::string_view &path,
-    const std::string_view &root = "tmp")
-{
-  auto dir = std::filesystem::path(root);
-  auto filename = dir / path;
-  std::filesystem::create_directories(filename.parent_path());
-
-  auto fp = std::ofstream{};
-  for (;;) {
-    fp.open(filename, std::ios::out | std::ios::binary | std::ios::trunc);
-    if (fp.is_open()) {
-      break;
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-  }
-  //    if (fp.is_open()) {
-  std::cout << (std::string("Saving: \t\"") + filename.string()
-                + std::string("\"\n"));
-  lambda(fp);
-  fp.close();
-  //    } else {
-  //      std::cout << (std::string("Failed to Open for saving: \"") +
-  //      filename.string() + std::string("\"\n")); return false;
-  //    }
-  return true;
-}
-
-[[maybe_unused]] static bool write_buffer(
-  [[maybe_unused]] const std::span<const char> &buffer,
-  const std::string_view &path,
-  const std::string_view &root = "tmp")
-{
-  if (std::ranges::empty(buffer)) {
-    // std::cout << (std::string("Buffer is empty: \"")+ std::string(path) +
-    // std::string("\"\n"));
-    return false;
-  }
-  return write_buffer(
-    [&buffer](std::ostream &fp) {
-      fp.write(std::ranges::data(buffer),
-        static_cast<long>(std::ranges::size(buffer)));
-    },
-    path,
-    root);
-}
 
 /*
 Case Insensitive strings equal
@@ -297,7 +80,7 @@ Case Insensitive strings equal
 [[maybe_unused]] [[nodiscard]] constexpr static bool i_equals(
   const std::string_view &str1, const std::string_view &str2)
 {
-  return std::ranges::equal(str1, str2, toupper_equals_predicate);
+  return std::ranges::equal(str1, str2, TOUPPER_EQUALS_PREDICATE);
 }
 
 // Replace all of one char to another char. Arguments will be static_cast to the
@@ -358,7 +141,7 @@ template<typename T, std::ranges::contiguous_range T2>
       haystack.end(),
       needle.begin(),
       needle.end(),
-      toupper_equals_predicate);
+      TOUPPER_EQUALS_PREDICATE);
     return last != haystack.end();
   }
   return false;
@@ -392,7 +175,7 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
   std::ranges::for_each(std::filesystem::recursive_directory_iterator(dir),
     [&path_contains, &lambda](const auto &item) {
       if (std::filesystem::is_directory(item)
-          && Tools::i_find_any(item.path().string(), path_contains)) {
+          && tools::i_find_any(item.path().string(), path_contains)) {
         lambda(item.path());
       }
     });
@@ -463,16 +246,14 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
     | std::views::take(std::ranges::size(ending));
   return std::ranges::size(haystack) >= std::ranges::size(ending)
          && std::ranges::equal(
-           ending_view, haystack_view, toupper_equals_predicate);
+           ending_view, haystack_view, TOUPPER_EQUALS_PREDICATE);
 }
 [[maybe_unused]] [[nodiscard]] static bool i_starts_with(
-  const std::string_view &haystack, const std::string_view &starting)
+   const std::span<const char>  & haystack, const std::string_view &starting)
 {
-  [[maybe_unused]] const auto haystack_view =
-    haystack | std::views::take(std::ranges::size(starting));
   return std::ranges::size(haystack) >= std::ranges::size(starting)
          && std::ranges::equal(
-           starting, haystack_view, toupper_equals_predicate);
+           starting, haystack.subspan(std::ranges::size(starting)), TOUPPER_EQUALS_PREDICATE);
 }
 template<std::ranges::contiguous_range needleT>
 [[maybe_unused]] [[nodiscard]] static size_t i_ends_with_any(
@@ -660,5 +441,5 @@ std::string to_string_with_padding(const intT &value,
       str.front() == '-' ? 1 : 0, total_length - str.length(), pad_character);
   return str;
 }
-}// namespace open_viii::Tools
+}// namespace open_viii::tools
 #endif// !VIITOOLS_H

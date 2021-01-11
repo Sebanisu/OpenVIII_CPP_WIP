@@ -37,7 +37,7 @@ int main()
     [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
     {
       std::vector<std::jthread> threads{};
-      open_viii::Tools::execute_on_directories(
+      open_viii::tools::execute_on_directories(
         std::filesystem::current_path(), {}, [&field, &threads](const std::filesystem::path &directory_path) {
           threads.emplace_back([&field, directory_path]() {
             const auto reswizzle_tree = open_viii::graphics::background::SwizzleTree{ field, directory_path };

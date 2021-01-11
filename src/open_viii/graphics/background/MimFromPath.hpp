@@ -95,7 +95,7 @@ private:
   auto get_textures() const
   {
     PalettesByTexturePages textures{};
-    open_viii::Tools::execute_on_directory(m_dir_path,
+    open_viii::tools::execute_on_directory(m_dir_path,
       { m_dir_name },
       { ".ppm" },
       [&textures, this]([[maybe_unused]] const std::filesystem::path &file_path) {

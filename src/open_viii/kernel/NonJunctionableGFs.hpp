@@ -173,7 +173,7 @@ public:
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
-      os << Tools::u8_to_sv(name);
+      os << tools::u8_to_sv(name);
     }
     return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", " << static_cast<std::uint32_t>(m_attack_type)
               << ", " << static_cast<std::uint32_t>(m_gf_power)// (used in damage formula)

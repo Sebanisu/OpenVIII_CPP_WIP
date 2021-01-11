@@ -139,7 +139,7 @@ public:
   void extract(std::filesystem::path dest_path)
   {
     std::cout << "Extracting \"" << m_file_path.string() << "\"\n";
-    Tools::read_buffer(
+    tools::read_buffer(
       [this, &dest_path](std::istream &is) {
         std::ranges::for_each(
           m_movies, [&is, &dest_path](const MovieClip &item) {
@@ -153,7 +153,7 @@ public:
                   }()) {
 
                 if (!std::ranges::empty(fs.file_name()) && fs.size() > 0U) {
-                  Tools::write_buffer(
+                  tools::write_buffer(
                     [&is, &fs](std::ostream &os) {
                       std::cout << "Extracting \"" << fs.file_name() << "\"\n";
                       is.seekg(fs.offset(), std::ios::beg);
@@ -189,8 +189,8 @@ public:
   {
     using namespace std::string_literals;
     static constexpr auto length = 2U;
-    return "disc"s + Tools::to_string_with_padding(get_disc_number(), length)
-           + "_"s + Tools::to_string_with_padding(count(), length) + suffix
+    return "disc"s + tools::to_string_with_padding(get_disc_number(), length)
+           + "_"s + tools::to_string_with_padding(count(), length) + suffix
            + extension;
   }
   /**
@@ -224,7 +224,7 @@ public:
     fs.offset(static_cast<int64_t>(is.tellg()) - 3);
 
     is.seekg(3, std::ios::cur);
-    auto frames = Tools::read_val<uint16_t>(is);
+    auto frames = tools::read_val<uint16_t>(is);
 
     is.seekg(frames * CAM_SECTION_SIZE, std::ios::cur);
 
@@ -250,15 +250,15 @@ public:
   { /**
      * Read Bink video offset and size
      */
-    char version = Tools::read_val<char>(is);
+    char version = tools::read_val<char>(is);
 
     FileSection fs{};
 
     if (std::ranges::equal(type, FileSectionTypeT::BIK)
-        && Tools::any_of(version, BIK1)) {
+        && tools::any_of(version, BIK1)) {
       fs.type(FileSectionTypeT::BIK);
     } else if (std::ranges::equal(type, FileSectionTypeT::KB2)
-               && Tools::any_of(version, BIK2)) {
+               && tools::any_of(version, BIK2)) {
       fs.type(FileSectionTypeT::KB2);
     } else {
       std::cerr << "location: " << std::hex << is.tellg() << std::endl;
@@ -269,12 +269,12 @@ public:
     fs.offset(static_cast<int64_t>(is.tellg()) - 4);
 
 
-    fs.size(Tools::read_val<uint32_t>(is));
+    fs.size(tools::read_val<uint32_t>(is));
 
     static constexpr auto header_size = 8U;
     fs.size(fs.size() + header_size);
 
-    fs.frames(Tools::read_val<uint32_t>(is));
+    fs.frames(tools::read_val<uint32_t>(is));
 
     is.seekg(fs.offset() + fs.size(), std::ios::beg);
 
@@ -311,7 +311,7 @@ public:
    */
   void read()
   {
-    Tools::read_buffer(
+    tools::read_buffer(
       [this](std::istream &is) {
         /**
          * Current working tmp movie clip

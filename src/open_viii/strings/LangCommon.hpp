@@ -43,19 +43,19 @@ public:
   [[maybe_unused]] [[nodiscard]] static constexpr LangT from_string(std::string_view str_val) noexcept
   {
     if (str_val.size() == 2) {
-      if (open_viii::Tools::i_equals(str_val, EN)) {
+      if (open_viii::tools::i_equals(str_val, EN)) {
         return LangT::en;
       }
-      if (open_viii::Tools::i_equals(str_val, DE)) {
+      if (open_viii::tools::i_equals(str_val, DE)) {
         return LangT::de;
       }
-      if (open_viii::Tools::i_equals(str_val, FR)) {
+      if (open_viii::tools::i_equals(str_val, FR)) {
         return LangT::fr;
       }
-      if (open_viii::Tools::i_equals(str_val, IT)) {
+      if (open_viii::tools::i_equals(str_val, IT)) {
         return LangT::it;
       }
-      if (open_viii::Tools::i_equals(str_val, JP)) {
+      if (open_viii::tools::i_equals(str_val, JP)) {
         return LangT::jp;
       }
     }

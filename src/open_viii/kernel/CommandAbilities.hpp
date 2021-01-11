@@ -66,10 +66,10 @@ public:
     auto name = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
-      os << Tools::u8_to_sv(name);
+      os << tools::u8_to_sv(name);
     }
     if (!std::empty(description)) {
-      os << ", " << Tools::u8_to_sv(description);
+      os << ", " << tools::u8_to_sv(description);
     }
     os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
        << static_cast<std::uint32_t>(m_index_to_battle_command) << ", " << static_cast<std::uint32_t>(m_unknown0)

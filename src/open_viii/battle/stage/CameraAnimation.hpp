@@ -35,12 +35,12 @@ public:
   {
     //read methods
     const auto read = [&span]<typename T>(T &val) -> T & {
-      Tools::read_val(span, val);
+      tools::read_val(span, val);
       span = span.subspan(sizeof(T));
       return val;
     };
     const auto r_read = [&span]<typename T>() -> T {
-      const auto res = Tools::read_val<T>(span);
+      const auto res = tools::read_val<T>(span);
       span = span.subspan(sizeof(T));
       return res;
     };
