@@ -38,11 +38,14 @@ public:
     return m_size;
   }
   template<typename charContainer = std::string_view>
-  [[nodiscard]] std::string_view get_section_buffer(const charContainer &file_buffer) const
+  [[nodiscard]] std::string_view get_section_buffer(
+    const charContainer &file_buffer) const
   {
     const uint32_t adj_offset = file_offset();
     if (m_size == INVALID_SIZE || m_file_offset == INVALID_FILE_OFFSET
-        || static_cast<std::size_t>(adj_offset) + static_cast<std::size_t>(m_size) > std::ranges::size(file_buffer)) {
+        || static_cast<std::size_t>(adj_offset)
+               + static_cast<std::size_t>(m_size)
+             > std::ranges::size(file_buffer)) {
       return {};// returns empty buffer if invalid or error.
     }
     std::cout << '<' << adj_offset << ',' << m_size << ">\n";

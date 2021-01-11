@@ -37,9 +37,10 @@ enum class ArchiveTypeT : std::uint8_t {
   end = count,
   begin = battle
 };
-//static constexpr bool ValidArchiveTypeT(ArchiveTypeT archiveType)
+// static constexpr bool ValidArchiveTypeT(ArchiveTypeT archiveType)
 //  {
-//    return archiveType < ArchiveTypeT::end && archiveType >= ArchiveTypeT::begin;
+//    return archiveType < ArchiveTypeT::end && archiveType >=
+//    ArchiveTypeT::begin;
 //  }
 
 
@@ -280,80 +281,80 @@ private:
   }
 
 public:
-    [[nodiscard]] std::variant<std::monostate, FIFLFS<true>,
-    FIFLFS<false>, std::optional<ZZZ>> get(
-      const std::string_view &name, bool zzz = false) const
-    {
-      if (!zzz) {
-        if (get_string<ArchiveTypeT::battle>() == name) {
-          return get<ArchiveTypeT::battle>();
-        }
-
-        if (get_string<ArchiveTypeT::field>() == name) {
-          return get<ArchiveTypeT::field>();
-        }
-
-        if (get_string<ArchiveTypeT::magic>() == name) {
-          return get<ArchiveTypeT::magic>();
-        }
-
-        if (get_string<ArchiveTypeT::main>() == name) {
-          return get<ArchiveTypeT::main>();
-        }
-        if (get_string<ArchiveTypeT::menu>() == name) {
-          return get<ArchiveTypeT::menu>();
-        }
-        if (get_string<ArchiveTypeT::world>() == name) {
-          return get<ArchiveTypeT::world>();
-        }
-        if (get_string<ArchiveTypeT::field>().starts_with(name)) {
-          std::cout << " -- nested -- " << name << '\n';
-          return std::monostate{};
-        }
-      } else {
-        if (get_string<ArchiveTypeT::zzz_main>() == name) {
-          return get<ArchiveTypeT::zzz_main>();
-        }
-        if (get_string<ArchiveTypeT::zzz_other>() == name) {
-          return get<ArchiveTypeT::zzz_other>();
-        }
-      }
-      return std::monostate{};
-    }
-    [[maybe_unused]] [[nodiscard]] std::variant<std::monostate,
-    FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
-      get(const ArchiveTypeT &type) const
-    {
-      if (ArchiveTypeT::battle == type) {
+  [[nodiscard]] std::
+    variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
+    get(const std::string_view &name, bool zzz = false) const
+  {
+    if (!zzz) {
+      if (get_string<ArchiveTypeT::battle>() == name) {
         return get<ArchiveTypeT::battle>();
       }
 
-      if (ArchiveTypeT::field == type) {
+      if (get_string<ArchiveTypeT::field>() == name) {
         return get<ArchiveTypeT::field>();
       }
 
-      if (ArchiveTypeT::magic == type) {
+      if (get_string<ArchiveTypeT::magic>() == name) {
         return get<ArchiveTypeT::magic>();
       }
 
-      if (ArchiveTypeT::main == type) {
+      if (get_string<ArchiveTypeT::main>() == name) {
         return get<ArchiveTypeT::main>();
       }
-      if (ArchiveTypeT::menu == type) {
+      if (get_string<ArchiveTypeT::menu>() == name) {
         return get<ArchiveTypeT::menu>();
       }
-      if (ArchiveTypeT::world == type) {
+      if (get_string<ArchiveTypeT::world>() == name) {
         return get<ArchiveTypeT::world>();
       }
-      if (ArchiveTypeT::zzz_main == type) {
+      if (get_string<ArchiveTypeT::field>().starts_with(name)) {
+        std::cout << " -- nested -- " << name << '\n';
+        return std::monostate{};
+      }
+    } else {
+      if (get_string<ArchiveTypeT::zzz_main>() == name) {
         return get<ArchiveTypeT::zzz_main>();
       }
-      if (ArchiveTypeT::zzz_other == type) {
+      if (get_string<ArchiveTypeT::zzz_other>() == name) {
         return get<ArchiveTypeT::zzz_other>();
       }
-
-      return std::monostate{};
     }
+    return std::monostate{};
+  }
+  [[maybe_unused]] [[nodiscard]] std::
+    variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
+    get(const ArchiveTypeT &type) const
+  {
+    if (ArchiveTypeT::battle == type) {
+      return get<ArchiveTypeT::battle>();
+    }
+
+    if (ArchiveTypeT::field == type) {
+      return get<ArchiveTypeT::field>();
+    }
+
+    if (ArchiveTypeT::magic == type) {
+      return get<ArchiveTypeT::magic>();
+    }
+
+    if (ArchiveTypeT::main == type) {
+      return get<ArchiveTypeT::main>();
+    }
+    if (ArchiveTypeT::menu == type) {
+      return get<ArchiveTypeT::menu>();
+    }
+    if (ArchiveTypeT::world == type) {
+      return get<ArchiveTypeT::world>();
+    }
+    if (ArchiveTypeT::zzz_main == type) {
+      return get<ArchiveTypeT::zzz_main>();
+    }
+    if (ArchiveTypeT::zzz_other == type) {
+      return get<ArchiveTypeT::zzz_other>();
+    }
+
+    return std::monostate{};
+  }
 
   template<ArchiveTypeT archiveType_>
   requires(test_valid_archive_type_t(
@@ -574,66 +575,68 @@ public:
     }
   }
 
-//  template<bool nested = true,
-//    ArchiveTypeT Current,
-//    ArchiveTypeT... Remainder,
-//    Foreach_Archive_Lambda lambdaT>
-//  requires(test_valid_archive_type_t(Current)) void execute_on_2(const std::initializer_list<std::
-//                                                 string_view> &filename,
-//    const lambdaT &lambda) const
-//  {
-//    auto archive = get<Current>();
-//    using a_type = decltype(archive);
-//    if constexpr (
-//      requires(a_type a) { a.has_value(); }
-//      && requires(a_type a) { a->execute_on(filename, lambda); }) {
-//      if (archive.has_value()) {
-//        archive->execute_on(filename, lambda);
-//      }
-//    } else if constexpr (requires(
-//                           a_type a) { a.execute_on(filename, lambda); }) {
-//      archive.execute_on(filename, lambda);
-//    }
-//    if constexpr (nested && requires(decltype(archive) a) {
-//                    a.execute_with_nested({}, filename, lambda);
-//                  }) {
-//      archive.execute_with_nested({},
-//        lambda,
-//        filename);// if nested is false this function does not exist.
-//    }
-//    if constexpr (sizeof...(Remainder)) {
-//      execute_on_2<nested, Remainder...>(filename, lambda);
-//    }
-//  }
-//  template<bool nested = true, Foreach_Archive_Lambda lambdaT>
-//  void execute_on_2(const std::initializer_list<std::string_view>
-//                                        &filename,
-//    const lambdaT &lambda) const
-//  {
-//    execute_on_2<nested,
-//      ArchiveTypeT::battle,
-//      ArchiveTypeT::field,
-//      ArchiveTypeT::magic,
-//      ArchiveTypeT::main,
-//      ArchiveTypeT::menu,
-//      ArchiveTypeT::world,
-//      ArchiveTypeT::zzz_main,
-//      ArchiveTypeT::zzz_other>(filename, lambda);
-//  }
-//  template<bool nested = true,
-//    std::intmax_t Current = static_cast<std::intmax_t>(ArchiveTypeT::begin),
-//    Foreach_Archive_Lambda lambdaT>
-//  void execute_on_2(const std::initializer_list<std::string_view>
-//                  &filename, const lambdaT &lambda) const
-//  {
-//    constexpr auto archiveType =
-//      std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(Current)>{};
-//    if constexpr(test_valid_archive_type_t(archiveType))
-//    {
-//      execute_on_2<archiveType>(filename,lambda);
-//      execute_on_2<1+Current>(filename,lambda);
-//    }
-//  }
+  //  template<bool nested = true,
+  //    ArchiveTypeT Current,
+  //    ArchiveTypeT... Remainder,
+  //    Foreach_Archive_Lambda lambdaT>
+  //  requires(test_valid_archive_type_t(Current)) void execute_on_2(const
+  //  std::initializer_list<std::
+  //                                                 string_view> &filename,
+  //    const lambdaT &lambda) const
+  //  {
+  //    auto archive = get<Current>();
+  //    using a_type = decltype(archive);
+  //    if constexpr (
+  //      requires(a_type a) { a.has_value(); }
+  //      && requires(a_type a) { a->execute_on(filename, lambda); }) {
+  //      if (archive.has_value()) {
+  //        archive->execute_on(filename, lambda);
+  //      }
+  //    } else if constexpr (requires(
+  //                           a_type a) { a.execute_on(filename, lambda); }) {
+  //      archive.execute_on(filename, lambda);
+  //    }
+  //    if constexpr (nested && requires(decltype(archive) a) {
+  //                    a.execute_with_nested({}, filename, lambda);
+  //                  }) {
+  //      archive.execute_with_nested({},
+  //        lambda,
+  //        filename);// if nested is false this function does not exist.
+  //    }
+  //    if constexpr (sizeof...(Remainder)) {
+  //      execute_on_2<nested, Remainder...>(filename, lambda);
+  //    }
+  //  }
+  //  template<bool nested = true, Foreach_Archive_Lambda lambdaT>
+  //  void execute_on_2(const std::initializer_list<std::string_view>
+  //                                        &filename,
+  //    const lambdaT &lambda) const
+  //  {
+  //    execute_on_2<nested,
+  //      ArchiveTypeT::battle,
+  //      ArchiveTypeT::field,
+  //      ArchiveTypeT::magic,
+  //      ArchiveTypeT::main,
+  //      ArchiveTypeT::menu,
+  //      ArchiveTypeT::world,
+  //      ArchiveTypeT::zzz_main,
+  //      ArchiveTypeT::zzz_other>(filename, lambda);
+  //  }
+  //  template<bool nested = true,
+  //    std::intmax_t Current = static_cast<std::intmax_t>(ArchiveTypeT::begin),
+  //    Foreach_Archive_Lambda lambdaT>
+  //  void execute_on_2(const std::initializer_list<std::string_view>
+  //                  &filename, const lambdaT &lambda) const
+  //  {
+  //    constexpr auto archiveType =
+  //      std::integral_constant<ArchiveTypeT,
+  //      static_cast<ArchiveTypeT>(Current)>{};
+  //    if constexpr(test_valid_archive_type_t(archiveType))
+  //    {
+  //      execute_on_2<archiveType>(filename,lambda);
+  //      execute_on_2<1+Current>(filename,lambda);
+  //    }
+  //  }
 };
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ARCHIVES_HPP

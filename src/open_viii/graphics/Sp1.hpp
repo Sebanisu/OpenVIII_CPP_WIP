@@ -17,8 +17,9 @@
 #include "open_viii/graphics/sp1/Sp1Header.hpp"
 namespace open_viii::graphics {
 /**
- * SP1 file parsing. This file contains the coords for for the icons. These might need scaled up because the values are
- * made for the original size image. 256x256
+ * SP1 file parsing. This file contains the coords for for the icons. These
+ * might need scaled up because the values are made for the original size image.
+ * 256x256
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/Menu_sp2
  */
 struct Sp1
@@ -41,7 +42,9 @@ public:
         m_entries = {};
         return;
       }
-      std::memcpy(std::ranges::data(current), std::ranges::data(buffer.subspan(offset.offset())), sz);
+      std::memcpy(std::ranges::data(current),
+        std::ranges::data(buffer.subspan(offset.offset())),
+        sz);
       s = s.subspan(1);
     }
   }

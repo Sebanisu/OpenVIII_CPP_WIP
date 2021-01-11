@@ -26,15 +26,16 @@ namespace open_viii::graphics {
 //  return true;
 //}
 /**
- * 32 bit colors, Each color is 8 bits, or 1 bytes. You may choose the order of the colors. The indexes must be unique.
+ * 32 bit colors, Each color is 8 bits, or 1 bytes. You may choose the order of
+ * the colors. The indexes must be unique.
  * @tparam r_ red index
  * @tparam g_ green index
  * @tparam b_ blue index
  * @tparam a_ alpha index
  */
 template<size_t r_ = 0U, size_t g_ = 1U, size_t b_ = 2U, size_t a_ = 3U>
-requires(
-  r_ < 4U && g_ < 4U && b_ < 4U && r_ != g_ && r_ != b_ && g_ != b_ && a_ != g_ && a_ != b_ && a_ != r_) struct Color32
+requires(r_ < 4U && g_ < 4U && b_ < 4U && r_ != g_ && r_ != b_ && g_ != b_
+         && a_ != g_ && a_ != b_ && a_ != r_) struct Color32
 {
 public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 4U };
@@ -44,13 +45,16 @@ private:
   template<size_t index, std::floating_point T> std::uint8_t set(T value) const
   {
     return m_parts[index] = static_cast<std::uint8_t>(
-             std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F)) * std::numeric_limits<std::uint8_t>::max());
+             std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F))
+             * std::numeric_limits<std::uint8_t>::max());
   }
   template<size_t index, typename T>
-  requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) std::uint8_t set(T value) const
+  requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) std::uint8_t
+    set(T value) const
   {
-    return m_parts[index] = static_cast<std::uint8_t>(
-             std::clamp(value, static_cast<T>(0U), static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
+    return m_parts[index] = static_cast<std::uint8_t>(std::clamp(value,
+             static_cast<T>(0U),
+             static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
   }
 
 public:
@@ -97,14 +101,20 @@ public:
   }
 
 
-  friend std::ostream &operator<<(std::ostream &os, const Color32<r_, g_, b_, a_> &color)
+  friend std::ostream &operator<<(
+    std::ostream &os, const Color32<r_, g_, b_, a_> &color)
   {
-    return os << std::uppercase << std::hex << '{' << static_cast<std::size_t>(color.R()) << ", "
-              << static_cast<std::size_t>(color.G()) << ", " << static_cast<std::size_t>(color.B()) << ", "
-              << static_cast<std::size_t>(color.A()) << '}' << std::dec << std::nouppercase;
+    return os << std::uppercase << std::hex << '{'
+              << static_cast<std::size_t>(color.R()) << ", "
+              << static_cast<std::size_t>(color.G()) << ", "
+              << static_cast<std::size_t>(color.B()) << ", "
+              << static_cast<std::size_t>(color.A()) << '}' << std::dec
+              << std::nouppercase;
   }
-  friend auto operator<=>(const Color32<r_, g_, b_, a_> &left, const Color32<r_, g_, b_, a_> &right) noexcept = default;
-  auto operator<=>(const Color32<r_, g_, b_, a_> &right) const noexcept = default;
+  friend auto operator<=>(const Color32<r_, g_, b_, a_> &left,
+    const Color32<r_, g_, b_, a_> &right) noexcept = default;
+  auto operator<=>(
+    const Color32<r_, g_, b_, a_> &right) const noexcept = default;
 };
 static_assert(sizeof(Color32<>) == Color32<>::EXPLICIT_SIZE);
 }// namespace open_viii::graphics

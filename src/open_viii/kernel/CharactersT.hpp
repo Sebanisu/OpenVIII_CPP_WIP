@@ -16,7 +16,8 @@
 #include <cstdint>
 namespace open_viii::kernel {
 enum class CharactersT : std::uint8_t {
-  // I noticed some values were in order of these characters so I made those values into arrays
+  // I noticed some values were in order of these characters so I made those
+  // values into arrays
   // and put the character names into an enum.
   squall_leonhart = 0x0,
   zell_dincht = 0x1,
@@ -27,7 +28,8 @@ enum class CharactersT : std::uint8_t {
   seifer_almasy = 0x6,
   edea_kramer = 0x7,
   laguna_loire = 0x8,// = Squall_Leonhart, //Laguna always replaces squall
-  kiros_seagill = 0x9,// unsure who kiros and ward replace. I think it's whom ever is with squall.
+  kiros_seagill = 0x9,// unsure who kiros and ward replace. I think it's whom
+                      // ever is with squall.
   ward_zabac = 0xA,
   blank = 0xFF,
 };

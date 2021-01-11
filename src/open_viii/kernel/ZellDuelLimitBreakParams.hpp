@@ -133,7 +133,8 @@ public:
   {
     return m_data.size();
   }
-  //[[nodiscard]] constexpr auto operator[](const size_t &index) { return data_[index]; }
+  //[[nodiscard]] constexpr auto operator[](const size_t &index) { return
+  //data_[index]; }
   [[nodiscard]] constexpr auto begin()
   {
     return m_data.begin();
@@ -142,7 +143,8 @@ public:
   {
     return m_data.end();
   }
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &textSpan)
+  std::ostream &out(
+    std::ostream &os, [[maybe_unused]] const std::span<const char> &textSpan)
   {
     os << '{';
     bool first = true;

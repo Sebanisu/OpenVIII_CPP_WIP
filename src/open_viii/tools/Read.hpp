@@ -6,6 +6,7 @@
 #define VIIIARCHIVE_READ_HPP
 
 #include "open_viii/Concepts.hpp"
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -13,7 +14,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <cstring>
 namespace open_viii::tools {
 
 template<is_trivially_copyable_and_default_constructible trivialType,
@@ -108,8 +108,8 @@ template<is_default_constructible_has_data_and_size trivialType>
 }
 template<std::ranges::contiguous_range dstT = std::vector<char>,
   std::integral sizeT>
-requires has_resize<dstT>
-[[maybe_unused]] static auto read_buffer(std::istream &fp, const sizeT &s)
+requires has_resize<dstT> [[maybe_unused]] static auto read_buffer(
+  std::istream &fp, const sizeT &s)
 {
   dstT buf{};
   if (s <= 0) {

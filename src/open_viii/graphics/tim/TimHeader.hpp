@@ -77,22 +77,25 @@ public:
     return m_bpp;
   }
   /**
-   * All none values should be 0. version_ should be versionVal_. tag_ should be tagVal_. Only valid values for bpp are
-   * 4bpp with CLP, 8bpp with CLP, 16bpp, or 24 bpp.
+   * All none values should be 0. version_ should be versionVal_. tag_ should be
+   * tagVal_. Only valid values for bpp are 4bpp with CLP, 8bpp with CLP, 16bpp,
+   * or 24 bpp.
    * @brief Test member variables for valid values.
    * @return true if Check test passes.
    */
   [[nodiscard]] bool check() const
   {
     return m_none0 == 0 && m_none1 == 0 && m_none2 == 0 && m_none3 == 0
-           && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL && m_version == VERSION_VAL && m_bpp.check();
+           && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL
+           && m_version == VERSION_VAL && m_bpp.check();
   }
 
   friend std::ostream &operator<<(std::ostream &os, const TimHeader &input)
   {
     //[[maybe_unused]]static constexpr auto size_ = sizeof(input);
     return os << "{ Tag: " << static_cast<uint32_t>(input.m_tag)
-              << ", Version: " << static_cast<uint32_t>(input.m_version) << ", " << input.m_bpp << '}';
+              << ", Version: " << static_cast<uint32_t>(input.m_version) << ", "
+              << input.m_bpp << '}';
   }
 };
 }// namespace open_viii::graphics

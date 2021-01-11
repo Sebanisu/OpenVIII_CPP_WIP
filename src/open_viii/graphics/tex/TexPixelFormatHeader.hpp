@@ -17,7 +17,8 @@
 
 namespace open_viii::graphics {
 /**
- * Pixel format header. This tells how the colors are laid out. These are usually always the same.
+ * Pixel format header. This tells how the colors are laid out. These are
+ * usually always the same.
  */
 struct TexPixelFormatHeader
 {

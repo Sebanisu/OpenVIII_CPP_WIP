@@ -25,13 +25,18 @@ private:
 public:
   Cam() = default;
   Cam(std::istream &is, const std::size_t &m_frame_count)
-  : m_header(tools::read_val<CamHeader>(is))
+    : m_header(tools::read_val<CamHeader>(is))
   {
     m_frames.resize(m_frame_count);
-    tools::read_val(is,m_frames);
+    tools::read_val(is, m_frames);
   }
-  Cam(std::istream &is,const FileSection & fs)
-    : Cam([&fs](std::istream &in_is)->std::istream &{in_is.seekg(fs.offset()); return in_is;}(is),fs.frames())
+  Cam(std::istream &is, const FileSection &fs)
+    : Cam(
+      [&fs](std::istream &in_is) -> std::istream & {
+        in_is.seekg(fs.offset());
+        return in_is;
+      }(is),
+      fs.frames())
   {}
   explicit Cam(std::istream &is)
     : Cam(is, [&is]() {
@@ -44,17 +49,17 @@ public:
   {}
   friend std::ostream &operator<<(std::ostream &os, const Cam &cam)
   {
-    os<<cam.m_header<<'\n';
-    os<<'{';
-    std::ranges::for_each(cam.m_frames,[&os, not_first=false] (const auto & frame) mutable
-    {
-        if(!not_first) {
+    os << cam.m_header << '\n';
+    os << '{';
+    std::ranges::for_each(
+      cam.m_frames, [&os, not_first = false](const auto &frame) mutable {
+        if (!not_first) {
           not_first = true;
-          os<<',';
+          os << ',';
         }
-        os<<frame<<'\n';
+        os << frame << '\n';
       });
-    os<<'}';
+    os << '}';
     return os;
   }
 };

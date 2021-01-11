@@ -34,7 +34,9 @@ public:
     uint16_t length{};
     std::memcpy(m_unknown.data(), buffer.data(), sizeof(m_unknown));
     std::memcpy(&length, buffer.data() + sizeof(m_unknown), sizeof(length));
-    m_buffer = std::string_view{ buffer.data() + sizeof(m_unknown) + sizeof(length), length };
+    m_buffer =
+      std::string_view{ buffer.data() + sizeof(m_unknown) + sizeof(length),
+        length };
   }
   template<LangT langVal> std::ostream &out(std::ostream &os) const
   {
@@ -58,7 +60,8 @@ public:
   {
     return m_index;
   }
-  friend std::ostream &operator<<(std::ostream &os, const ComplexStringSectionOffsets &item)
+  friend std::ostream &operator<<(
+    std::ostream &os, const ComplexStringSectionOffsets &item)
   {
     return os << '{' << item.index() << ", " << item.offset() << '}';
   }
@@ -73,8 +76,8 @@ private:
   std::array<std::string_view, SECTION_COUNT> m_data{};
 
 public:
-  ComplexStringSection(
-    [[maybe_unused]] const std::span<const char> &buffer, const std::array<std::string_view, SECTION_COUNT> &data)
+  ComplexStringSection([[maybe_unused]] const std::span<const char> &buffer,
+    const std::array<std::string_view, SECTION_COUNT> &data)
     : m_data{ data }
   {
     if (std::ranges::size(buffer) > sizeof(m_count)) {

@@ -120,14 +120,22 @@ public:
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name) << ", ";
     }
-    return os << static_cast<std::uint32_t>(m_magic_id) << ", " << m_camera_change << ", "
-              << static_cast<std::uint32_t>(m_unknown0) << ", " << static_cast<std::uint32_t>(m_attack_type) << ", "
-              << static_cast<std::uint32_t>(m_attack_power) << ", " << static_cast<std::uint32_t>(m_attack_flags)
-              << ", " << static_cast<std::uint32_t>(m_unknown1) << ", " << static_cast<std::uint32_t>(m_element) << ", "
-              << static_cast<std::uint32_t>(m_unknown2) << ", " << static_cast<std::uint32_t>(m_status_attack_enabler)
-              << ", " << static_cast<std::uint32_t>(m_attack_parameter) << ", "
-              << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
-              << ", " << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-31
+    return os << static_cast<std::uint32_t>(m_magic_id) << ", "
+              << m_camera_change << ", "
+              << static_cast<std::uint32_t>(m_unknown0) << ", "
+              << static_cast<std::uint32_t>(m_attack_type) << ", "
+              << static_cast<std::uint32_t>(m_attack_power) << ", "
+              << static_cast<std::uint32_t>(m_attack_flags) << ", "
+              << static_cast<std::uint32_t>(m_unknown1) << ", "
+              << static_cast<std::uint32_t>(m_element) << ", "
+              << static_cast<std::uint32_t>(m_unknown2) << ", "
+              << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+              << static_cast<std::uint32_t>(m_attack_parameter) << ", "
+              << static_cast<std::uint32_t>(
+                   m_persistent_statuses)// statuses 0-7
+              << ", "
+              << static_cast<std::uint32_t>(
+                   m_battle_only_statuses)// statuses 8-31
       ;
   }
 };

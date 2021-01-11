@@ -24,7 +24,8 @@
 #include <string_view>
 namespace open_viii::graphics::background {
 /**
- * @see https://github.com/myst6re/deling/blob/develop/files/BackgroundFile.h#L49
+ * @see
+ * https://github.com/myst6re/deling/blob/develop/files/BackgroundFile.h#L49
  */
 struct Tile2
 {
@@ -41,9 +42,12 @@ public:
   Tile2() = default;
   friend auto operator==(const Tile2 &left, const Tile2 &right)
   {
-    return left.m_xy == right.m_xy && left.m_z == right.m_z && left.m_tex_id_buffer == right.m_tex_id_buffer
-           && left.m_palette_id == right.m_palette_id && left.m_source_xy == right.m_source_xy
-           && left.m_animation_id == right.m_animation_id && left.m_animation_state == right.m_animation_state;
+    return left.m_xy == right.m_xy && left.m_z == right.m_z
+           && left.m_tex_id_buffer == right.m_tex_id_buffer
+           && left.m_palette_id == right.m_palette_id
+           && left.m_source_xy == right.m_source_xy
+           && left.m_animation_id == right.m_animation_id
+           && left.m_animation_state == right.m_animation_state;
   }
   static constexpr auto HEIGHT{ 16U };
   static constexpr auto WIDTH{ 16U };
@@ -117,14 +121,18 @@ public:
   {
     return { source_x(), source_y(), WIDTH, HEIGHT };
   }
-  [[maybe_unused]] [[nodiscard]] Rectangle<std::uint16_t> out_rectangle() const noexcept
+  [[maybe_unused]] [[nodiscard]] Rectangle<std::uint16_t>
+    out_rectangle() const noexcept
   {
-    return { static_cast<std::uint16_t>(m_xy.x()), std::uint16_t(m_xy.y()), WIDTH, HEIGHT };
+    return { static_cast<std::uint16_t>(m_xy.x()),
+      std::uint16_t(m_xy.y()),
+      WIDTH,
+      HEIGHT };
   }
   constexpr static auto EXPLICIT_SIZE{ 16U };
-  static constexpr std::array FORCE_TYPE_VALUES = {
-    std::string_view("test10"), std::string_view("test11"), std::string_view("test12")
-  };
+  static constexpr std::array FORCE_TYPE_VALUES = { std::string_view("test10"),
+    std::string_view("test11"),
+    std::string_view("test12") };
 };
 static_assert(sizeof(Tile2) == Tile2::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background

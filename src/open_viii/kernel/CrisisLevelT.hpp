@@ -46,7 +46,8 @@ public:
   {
     return m_levels.at(3);
   }
-  friend std::ostream &operator<<(std::ostream &os, const CrisisLevelT<T> &input)
+  friend std::ostream &operator<<(
+    std::ostream &os, const CrisisLevelT<T> &input)
   {
 
     os << '{';

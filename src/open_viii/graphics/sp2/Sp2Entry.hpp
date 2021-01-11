@@ -78,11 +78,16 @@ public:
   Sp2Entry() = default;
   friend std::ostream &operator<<(std::ostream &os, const Sp2Entry &e)
   {
-    return os << "{ " << static_cast<std::size_t>(e.m_count) << " (X, Y) = (" << static_cast<std::size_t>(e.m_x) << ", "
-              << static_cast<std::size_t>(e.m_y) << "), (W, H) = (" << static_cast<std::size_t>(e.m_width) << ", "
-              << static_cast<std::size_t>(e.m_height) << "), Unk(" << static_cast<std::size_t>(e.m_unknown1) << ", "
-              << static_cast<std::size_t>(e.m_unknown2) << ", " << static_cast<std::size_t>(e.m_unknown3) << ", "
-              << static_cast<std::size_t>(e.m_unknown4) << ", " << static_cast<std::size_t>(e.m_unknown5) << ", "
+    return os << "{ " << static_cast<std::size_t>(e.m_count) << " (X, Y) = ("
+              << static_cast<std::size_t>(e.m_x) << ", "
+              << static_cast<std::size_t>(e.m_y) << "), (W, H) = ("
+              << static_cast<std::size_t>(e.m_width) << ", "
+              << static_cast<std::size_t>(e.m_height) << "), Unk("
+              << static_cast<std::size_t>(e.m_unknown1) << ", "
+              << static_cast<std::size_t>(e.m_unknown2) << ", "
+              << static_cast<std::size_t>(e.m_unknown3) << ", "
+              << static_cast<std::size_t>(e.m_unknown4) << ", "
+              << static_cast<std::size_t>(e.m_unknown5) << ", "
               << static_cast<std::size_t>(e.m_unknown6) << ") }";
   }
 };

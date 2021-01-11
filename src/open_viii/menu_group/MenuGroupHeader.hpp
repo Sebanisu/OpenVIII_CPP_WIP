@@ -41,7 +41,8 @@ public:
   template<typename mainT> explicit MenuGroupHeader(const mainT &main)
   {
     auto buffer = main.get_entry_data(FILENAME);
-    if (std::ranges::size(buffer) < sizeof(std::uint32_t) || SIZE != std::ranges::size(buffer)) {
+    if (std::ranges::size(buffer) < sizeof(std::uint32_t)
+        || SIZE != std::ranges::size(buffer)) {
       return;
     }
     std::memcpy(m_sections.data(), buffer.data(), std::ranges::size(buffer));

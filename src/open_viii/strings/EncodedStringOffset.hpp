@@ -24,9 +24,12 @@ private:
   std::uint16_t m_offset{};
 
   [[nodiscard]] static intmax_t find_string_size(
-    const std::span<const char> &buffer, const intmax_t offset, bool skip_first_null)
+    const std::span<const char> &buffer,
+    const intmax_t offset,
+    bool skip_first_null)
   {
-    if (offset < 0 || static_cast<std::size_t>(offset) > std::ranges::size(buffer)) {
+    if (offset < 0
+        || static_cast<std::size_t>(offset) > std::ranges::size(buffer)) {
       return -1;
     }
     intmax_t i{};
@@ -39,8 +42,9 @@ private:
       }
       i++;
     }
-    //    auto first = buffer.begin() + offset;// clang tidy says to add * but don't do that. msvc doesn't return a
-    //    pointer. auto last = buffer.end(); for (intmax_t i = 0; first != last; ++first, i++) {
+    //    auto first = buffer.begin() + offset;// clang tidy says to add * but
+    //    don't do that. msvc doesn't return a pointer. auto last =
+    //    buffer.end(); for (intmax_t i = 0; first != last; ++first, i++) {
     //      if (skip_first_null && i == 0) {
     //        continue;
     //      }
@@ -55,30 +59,39 @@ private:
   {
     using namespace std::literals::string_view_literals;
 
-    if (offset >= 0 && !std::empty(buffer) && std::ranges::size(buffer) > static_cast<size_t>(offset)) {
+    if (offset >= 0 && !std::empty(buffer)
+        && std::ranges::size(buffer) > static_cast<size_t>(offset)) {
       auto size = find_string_size(buffer, offset, skip_first_null);
-      if (size > 0 && std::ranges::size(buffer) > (static_cast<size_t>(offset) + static_cast<size_t>(size))) {
-        // return std::span<const char>(buffer.data() + static_cast<size_t>(offset), static_cast<size_t>(size));
-        return buffer.subspan(static_cast<size_t>(offset), static_cast<size_t>(size));
+      if (size > 0
+          && std::ranges::size(buffer)
+               > (static_cast<size_t>(offset) + static_cast<size_t>(size))) {
+        // return std::span<const char>(buffer.data() +
+        // static_cast<size_t>(offset), static_cast<size_t>(size));
+        return buffer.subspan(
+          static_cast<size_t>(offset), static_cast<size_t>(size));
       }
     }
     return std::span<const char>{};
   }
 
 public:
-  [[nodiscard]] auto raw_bytes(
-    const std::span<const char> &buffer, const intmax_t offset = 0, bool skip_first_null = false) const
+  [[nodiscard]] auto raw_bytes(const std::span<const char> &buffer,
+    const intmax_t offset = 0,
+    bool skip_first_null = false) const
   {
     if (m_offset == INT16_MAX) {
       return std::span<const char>{};
     }
-    return get_string_at_offset(buffer, static_cast<intmax_t>(m_offset) + offset, skip_first_null);
+    return get_string_at_offset(
+      buffer, static_cast<intmax_t>(m_offset) + offset, skip_first_null);
   }
   template<LangT langVal>
-  [[nodiscard]] auto decoded_string(
-    const std::span<const char> &buffer, const intmax_t offset = 0, bool skip_first_null = false) const
+  [[nodiscard]] auto decoded_string(const std::span<const char> &buffer,
+    const intmax_t offset = 0,
+    bool skip_first_null = false) const
   {
-    return FF8String<langVal>::decode(raw_bytes(buffer, offset, skip_first_null));
+    return FF8String<langVal>::decode(
+      raw_bytes(buffer, offset, skip_first_null));
   }
 
   [[nodiscard]] auto offset() const noexcept

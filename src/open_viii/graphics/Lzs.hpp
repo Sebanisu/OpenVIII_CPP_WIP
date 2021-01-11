@@ -42,7 +42,8 @@ public:
       }
       std::memcpy(&comp_size, std::ranges::data(buffer), sz32);
       if (comp_size + sz32 != std::ranges::size(buffer)) {
-        std::cout << "wrong size: " << comp_size << ", " << std::ranges::size(buffer) << '\n';
+        std::cout << "wrong size: " << comp_size << ", "
+                  << std::ranges::size(buffer) << '\n';
         return;
       }
       buffer = buffer.subspan(sz32, comp_size);// skip the size value.
@@ -55,7 +56,8 @@ public:
         return;
       }
       std::memcpy(&m_rectangle, std::ranges::data(adj), szrec);
-      std::cout << "size of uncompressed before: " << std::ranges::size(adj) << ", new size: ";
+      std::cout << "size of uncompressed before: " << std::ranges::size(adj)
+                << ", new size: ";
       adj = adj.subspan(szrec);
       std::cout << std::ranges::size(adj) << '\n';
       std::cout << m_rectangle << '\n';
@@ -70,7 +72,8 @@ public:
       }
       m_colors.resize(min_size);
       std::cout << std::ranges::size(m_colors) << ", " << area << '\n';
-      std::memcpy(std::ranges::data(m_colors), std::ranges::data(adj), min_size);
+      std::memcpy(
+        std::ranges::data(m_colors), std::ranges::data(adj), min_size);
     }
   }
   [[maybe_unused]] void save(const std::string_view &filename) const

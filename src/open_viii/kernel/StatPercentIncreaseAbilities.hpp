@@ -71,8 +71,9 @@ public:
       os << ", " << tools::u8_to_sv(description);
     }
     return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
-              << static_cast<std::uint32_t>(m_stat_to_increase) << ", " << static_cast<std::uint32_t>(m_increased_value)
-              << ", " << static_cast<std::uint32_t>(m_unknown0);
+              << static_cast<std::uint32_t>(m_stat_to_increase) << ", "
+              << static_cast<std::uint32_t>(m_increased_value) << ", "
+              << static_cast<std::uint32_t>(m_unknown0);
   }
 };
 }// namespace open_viii::kernel

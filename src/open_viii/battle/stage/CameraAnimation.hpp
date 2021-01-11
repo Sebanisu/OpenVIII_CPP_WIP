@@ -33,7 +33,7 @@ public:
   CameraAnimation() = default;
   explicit CameraAnimation(std::span<char const> span)
   {
-    //read methods
+    // read methods
     const auto read = [&span]<typename T>(T &val) -> T & {
       tools::read_val(span, val);
       span = span.subspan(sizeof(T));
@@ -44,7 +44,7 @@ public:
       span = span.subspan(sizeof(T));
       return res;
     };
-    //start reading
+    // start reading
     read(m_main_controller);
     if (m_main_controller.end()) {
       return;

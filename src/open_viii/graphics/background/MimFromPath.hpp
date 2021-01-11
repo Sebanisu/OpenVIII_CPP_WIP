@@ -9,7 +9,8 @@
 #include <array>
 namespace open_viii::graphics::background {
 /**
- * This surfaces the same interface as Mim but the backend will handle multiple images located in path.
+ * This surfaces the same interface as Mim but the backend will handle multiple
+ * images located in path.
  */
 struct MimFromPath
 {
@@ -37,7 +38,8 @@ public:
     {
       return m_palettes;
     }
-    friend std::ostream &operator<<(std::ostream &os, const TexturesByPalettes &data)
+    friend std::ostream &operator<<(
+      std::ostream &os, const TexturesByPalettes &data)
     {
       std::ranges::for_each(data.to_array(), [&os](const Ppm &ppm) {
         if (!ppm.empty()) {
@@ -61,12 +63,14 @@ public:
     {
       return m_texture_pages.at(texture_page);
     }
-    [[nodiscard]] auto &at(const size_t &texture_page, const size_t &palette) const
+    [[nodiscard]] auto &at(
+      const size_t &texture_page, const size_t &palette) const
     {
       return m_texture_pages.at(texture_page).at(palette);
     }
 
-    void set(const size_t &texture_page, const size_t &palette, Ppm &&value) const
+    void set(
+      const size_t &texture_page, const size_t &palette, Ppm &&value) const
     {
       m_texture_pages.at(texture_page).set(palette, std::move(value));
     }
@@ -75,17 +79,20 @@ public:
     {
       return m_texture_pages;
     }
-    friend std::ostream &operator<<(std::ostream &os, const PalettesByTexturePages &data)
+    friend std::ostream &operator<<(
+      std::ostream &os, const PalettesByTexturePages &data)
     {
-      std::ranges::for_each(data.to_array(), [&os](const TexturesByPalettes &tbp) {
-        os << tbp;
-      });
+      std::ranges::for_each(
+        data.to_array(), [&os](const TexturesByPalettes &tbp) {
+          os << tbp;
+        });
       return os;
     }
   };
 
 private:
-  static constexpr auto DEFAULT_PALETTE = TexturesByPalettes::MAX_PALETTES_PLUS_1 - 1;
+  static constexpr auto DEFAULT_PALETTE =
+    TexturesByPalettes::MAX_PALETTES_PLUS_1 - 1;
   const MimType m_mim_type{};
   const std::filesystem::path &m_dir_path{};
   const std::string_view m_dir_name{};
@@ -98,13 +105,16 @@ private:
     open_viii::tools::execute_on_directory(m_dir_path,
       { m_dir_name },
       { ".ppm" },
-      [&textures, this]([[maybe_unused]] const std::filesystem::path &file_path) {
+      [&textures, this](
+        [[maybe_unused]] const std::filesystem::path &file_path) {
         const auto filename = file_path.filename().stem().string();
         if (!filename.ends_with(')')) {
           return;
         }
-        const auto view_of_filename = std::string_view(filename);// substring of a view is better than string.
-        const auto suffix = view_of_filename.substr(std::ranges::size(m_dir_name));
+        const auto view_of_filename = std::string_view(
+          filename);// substring of a view is better than string.
+        const auto suffix =
+          view_of_filename.substr(std::ranges::size(m_dir_name));
         if (!suffix.starts_with('(')) {
           return;
         }
@@ -118,18 +128,22 @@ private:
           constexpr static auto base = 10;
           switch (i) {
           case 0: {
-            texture_page = static_cast<std::uint8_t>(std::strtol(std::ranges::data(number), nullptr, base));
+            texture_page = static_cast<std::uint8_t>(
+              std::strtol(std::ranges::data(number), nullptr, base));
           } break;
           case 1: {
-            palette = static_cast<std::uint8_t>(std::strtol(std::ranges::data(number), nullptr, base));
+            palette = static_cast<std::uint8_t>(
+              std::strtol(std::ranges::data(number), nullptr, base));
           } break;
           }
           // maybe should throw if not 0 or 1.
           last = found + 1;
           found = suffix.find_first_of(search_params, last);
         }
-        std::cout << "texture page: " << std::setw(2U) << static_cast<uint16_t>(texture_page)
-                  << "\t palette: " << std::setw(2U) << static_cast<uint16_t>(palette) << "\t path: \""
+        std::cout << "texture page: " << std::setw(2U)
+                  << static_cast<uint16_t>(texture_page)
+                  << "\t palette: " << std::setw(2U)
+                  << static_cast<uint16_t>(palette) << "\t path: \""
                   << file_path.string() << '"' << '\n';
         // Load the image into the correct part of array.
         textures.set(texture_page, palette, Ppm(file_path));

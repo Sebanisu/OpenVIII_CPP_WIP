@@ -41,20 +41,25 @@ private:
   static constexpr std::uint_fast8_t GET_HIGH_BIT_SHIFT = { 2U };
   static constexpr std::uint_fast8_t LARGEST_5_BIT_VALUE{ 0b0001'1111 };
 
-  [[nodiscard]] std::uint8_t convert(const std::uint16_t &mask, const std::uint_fast8_t &shift) const
+  [[nodiscard]] std::uint8_t convert(
+    const std::uint16_t &mask, const std::uint_fast8_t &shift) const
   {
-    auto temp = static_cast<std::uint16_t>(static_cast<std::uint16_t>(m_value & mask) >> shift);
+    auto temp = static_cast<std::uint16_t>(
+      static_cast<std::uint16_t>(m_value & mask) >> shift);
     return static_cast<std::uint8_t>(
-      (static_cast<std::uint16_t>(temp << CONVERT_SHIFT) | static_cast<std::uint16_t>(temp >> GET_HIGH_BIT_SHIFT)));
+      (static_cast<std::uint16_t>(temp << CONVERT_SHIFT)
+        | static_cast<std::uint16_t>(temp >> GET_HIGH_BIT_SHIFT)));
   }
   template<std::unsigned_integral T> static constexpr T flip(const T input)
   {
     return std::numeric_limits<T>::max() - input;
   }
-  template<std::floating_point T> void set(T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
+  template<std::floating_point T>
+  void set(T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
   {
     std::uint16_t val{ static_cast<std::uint_fast8_t>(
-      std::clamp(input, static_cast<T>(0.0F), static_cast<T>(1.0F)) * LARGEST_5_BIT_VALUE) };
+      std::clamp(input, static_cast<T>(0.0F), static_cast<T>(1.0F))
+      * LARGEST_5_BIT_VALUE) };
     val <<= shift;
     m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
   }
@@ -62,8 +67,9 @@ private:
   requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) void set(
     T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
   {
-    std::uint16_t val{ static_cast<std::uint_fast8_t>(
-      std::clamp(input, static_cast<T>(0), static_cast<T>(std::numeric_limits<std::uint8_t>::max()))) };
+    std::uint16_t val{ static_cast<std::uint_fast8_t>(std::clamp(input,
+      static_cast<T>(0),
+      static_cast<T>(std::numeric_limits<std::uint8_t>::max()))) };
     val >>= CONVERT_SHIFT;
     val = static_cast<decltype(val)>(val << shift);
     m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
@@ -72,9 +78,11 @@ private:
 public:
   Color16() = default;
   explicit Color16(std::uint16_t raw_color) : m_value(raw_color) {}
-  friend auto operator<=>(const Color16 &left, const Color16 &right) noexcept = default;
+  friend auto operator<=>(
+    const Color16 &left, const Color16 &right) noexcept = default;
   auto operator<=>(const Color16 &right) const noexcept = default;
-  template<Color cT> requires(!std::is_same_v<Color16, cT>) explicit Color16(cT color)
+  template<Color cT>
+  requires(!std::is_same_v<Color16, cT>) explicit Color16(cT color)
   {
     r(color.r());
     g(color.g());
@@ -187,9 +195,12 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const Color16 &color)
   {
-    return os << std::uppercase << std::hex << '{' << static_cast<std::size_t>(color.r()) << ", "
-              << static_cast<std::size_t>(color.g()) << ", " << static_cast<std::size_t>(color.b()) << ", "
-              << static_cast<std::size_t>(color.a()) << '}' << std::dec << std::nouppercase;
+    return os << std::uppercase << std::hex << '{'
+              << static_cast<std::size_t>(color.r()) << ", "
+              << static_cast<std::size_t>(color.g()) << ", "
+              << static_cast<std::size_t>(color.b()) << ", "
+              << static_cast<std::size_t>(color.a()) << '}' << std::dec
+              << std::nouppercase;
   }
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 2U };
 };

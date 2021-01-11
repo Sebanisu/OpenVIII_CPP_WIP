@@ -218,8 +218,10 @@ public:
               << cam_frame.m_z << ',' << cam_frame.m_z_z << ','
               << cam_frame.m_space << ',' << cam_frame.m_pan << ','
 
-              << cam_frame.m_zoom << ',' << cam_frame.m_zoom2 << ','
-              << std::hex<< std::uppercase<<"0x"<<(static_cast<uint16_t>(cam_frame.m_render_mode)&0xFFU) << std::dec<<std::nouppercase << ','
+              << cam_frame.m_zoom << ',' << cam_frame.m_zoom2 << ',' << std::hex
+              << std::uppercase << "0x"
+              << (static_cast<uint16_t>(cam_frame.m_render_mode) & 0xFFU)
+              << std::dec << std::nouppercase << ','
               << std::string_view(
                    cam_frame.m_end.begin(), cam_frame.m_end.end())
               << '}';

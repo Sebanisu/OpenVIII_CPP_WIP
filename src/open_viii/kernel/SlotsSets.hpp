@@ -34,7 +34,8 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const Slot &slot)
   {
-    return os << '{' << static_cast<uint16_t>(slot.magic_id()) << ", " << static_cast<uint16_t>(slot.count()) << '}';
+    return os << '{' << static_cast<uint16_t>(slot.magic_id()) << ", "
+              << static_cast<uint16_t>(slot.count()) << '}';
   }
 };
 struct SlotsSets
@@ -57,7 +58,8 @@ public:
   {
     return set.out(os, {});
   }
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &os,
+    [[maybe_unused]] const std::span<const char> &buffer) const
   {
 
     os << '{';

@@ -21,14 +21,17 @@ namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection001// Item to Item
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_2
-   * Ability	    # of Entries  mngrp.bin Location	        Offset  Description
-   * Recov Med-RF   9 Entries	  (mngrp.bin loc: 0x21F800)	0x0	Item to Recovery Items
-   * ST Med-RF      12 Entries	  (mngrp.bin loc: 0x21F848)	0x48	Item to Status Removal Items
-   * Ammo-RF	    16 Entries	  (mngrp.bin loc: 0x21F8A8)	0xA8	Item to Ammo Item
-   * Forbid Med-RF  20 Entries	  (mngrp.bin loc: 0x21F928)	0x128	Item to Forbidden Medicine
-   * GFRecov Med-RF 12 Entries	  (mngrp.bin loc: 0x21F9C8)	0x1C8	Item to GF Recovery Items
-   * GFAbl Med-RF   42 Entries	  (mngrp.bin loc: 0x21FA28)	0x228	Item to GF Ability Medicine Items
-   * Tool-RF	    32 Entries	  (mngrp.bin loc: 0x21FB78)	0x378	Item to Tool Items
+   * Ability	    # of Entries  mngrp.bin Location	        Offset
+   * Description Recov Med-RF   9 Entries	  (mngrp.bin loc: 0x21F800)
+   * 0x0	Item to Recovery Items
+   * ST Med-RF      12 Entries	  (mngrp.bin loc: 0x21F848)	0x48	Item to
+   * Status Removal Items Ammo-RF	    16 Entries	  (mngrp.bin loc:
+   * 0x21F8A8)	0xA8	Item to Ammo Item Forbid Med-RF  20 Entries
+   * (mngrp.bin loc: 0x21F928)	0x128	Item to Forbidden Medicine GFRecov
+   * Med-RF 12 Entries	  (mngrp.bin loc: 0x21F9C8)	0x1C8	Item to GF
+   * Recovery Items GFAbl Med-RF   42 Entries	  (mngrp.bin loc: 0x21FA28)
+   * 0x228	Item to GF Ability Medicine Items Tool-RF	    32 Entries
+   * (mngrp.bin loc: 0x21FB78)	0x378	Item to Tool Items
    * */
 private:
   static constexpr auto RECOV_MED_RF_COUNT = 9U;
@@ -38,12 +41,15 @@ private:
   static constexpr auto GF_RECOV_RF_COUNT = 12U;
   static constexpr auto GF_ABL_MED_RF_COUNT = 42U;
   static constexpr auto TOOL_RF_COUNT = 32U;
-  std::array<RefineEntry<ItemIdT, ItemIdT>, RECOV_MED_RF_COUNT> m_recov_med_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, RECOV_MED_RF_COUNT>
+    m_recov_med_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, ST_MED_RF_COUNT> m_st_med_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, AMMO_RF_COUNT> m_ammo_rf{};
-  std::array<RefineEntry<ItemIdT, ItemIdT>, FORBID_MED_RF_COUNT> m_forbid_med_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, FORBID_MED_RF_COUNT>
+    m_forbid_med_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, GF_RECOV_RF_COUNT> m_gf_recov_rf{};
-  std::array<RefineEntry<ItemIdT, ItemIdT>, GF_ABL_MED_RF_COUNT> m_gf_abl_med_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, GF_ABL_MED_RF_COUNT>
+    m_gf_abl_med_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, TOOL_RF_COUNT> m_tool_rf{};
 
 public:
@@ -77,8 +83,9 @@ public:
   }
   [[nodiscard]] static constexpr auto size()
   {
-    return RECOV_MED_RF_COUNT + ST_MED_RF_COUNT + AMMO_RF_COUNT + FORBID_MED_RF_COUNT + GF_RECOV_RF_COUNT
-           + GF_ABL_MED_RF_COUNT + TOOL_RF_COUNT;
+    return RECOV_MED_RF_COUNT + ST_MED_RF_COUNT + AMMO_RF_COUNT
+           + FORBID_MED_RF_COUNT + GF_RECOV_RF_COUNT + GF_ABL_MED_RF_COUNT
+           + TOOL_RF_COUNT;
   }
 
   template<LangT langVal, typename T>

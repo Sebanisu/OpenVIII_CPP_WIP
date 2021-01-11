@@ -18,7 +18,8 @@
 #include <cstring>
 namespace open_viii::graphics {
 /**
- * @see http://wiki.ffrtt.ru/index.php?title=FF8/Menu_sp2#Layout_of_face.sp2_and_cardanm.sp2:
+ * @see
+ * http://wiki.ffrtt.ru/index.php?title=FF8/Menu_sp2#Layout_of_face.sp2_and_cardanm.sp2:
  */
 struct Sp2
 {
@@ -33,7 +34,9 @@ public:
     m_entries.resize(header.size());
     std::span<Sp2Entry> s{ m_entries };
     for (const std::uint32_t offset : header.offsets()) {
-      std::memcpy(std::ranges::data(s), std::ranges::data(buffer.subspan(offset)), sizeof(Sp2Entry));
+      std::memcpy(std::ranges::data(s),
+        std::ranges::data(buffer.subspan(offset)),
+        sizeof(Sp2Entry));
       s = s.subspan(1);
     }
   }

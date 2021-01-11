@@ -21,7 +21,8 @@ namespace open_viii::graphics {
  * @tparam dimT Number type.
  * @brief 2D Container that holds top left height and width.
  */
-template<typename dimT> requires(std::integral<dimT> || std::floating_point<dimT>) struct Rectangle
+template<typename dimT>
+requires(std::integral<dimT> || std::floating_point<dimT>) struct Rectangle
 {
 private:
   Point<dimT> m_top_left{};
@@ -29,20 +30,30 @@ private:
 
 public:
   constexpr Rectangle() = default;
-  constexpr auto operator<=>(const Rectangle<dimT> &right) const noexcept = default;
+  constexpr auto operator<=>(
+    const Rectangle<dimT> &right) const noexcept = default;
 
-  template<Number T> requires(!std::is_same_v<T, dimT>) constexpr explicit Rectangle(const Rectangle<T> &r)
+  template<Number T>
+  requires(!std::is_same_v<T, dimT>) constexpr explicit Rectangle(
+    const Rectangle<T> &r)
   {
     m_top_left = static_cast<Point<dimT>>(r.m_top_left);
     m_width_height = static_cast<Point<dimT>>(r.m_width_height);
   }
-  constexpr Rectangle(const dimT &in_x, const dimT &in_y, const dimT &in_width, const dimT &in_height) noexcept
+  constexpr Rectangle(const dimT &in_x,
+    const dimT &in_y,
+    const dimT &in_width,
+    const dimT &in_height) noexcept
     : m_top_left{ in_x, in_y }, m_width_height{ in_width, in_height }
   {}
-  constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw) noexcept : m_top_left{ xy }, m_width_height{ hw } {}
-  //  friend auto operator==(const Rectangle<dimT> &left, const Rectangle<dimT> &right) noexcept
+  constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw) noexcept
+    : m_top_left{ xy }, m_width_height{ hw }
+  {}
+  //  friend auto operator==(const Rectangle<dimT> &left, const Rectangle<dimT>
+  //  &right) noexcept
   //  {
-  //    return left.m_top_left == right.m_top_left && left.m_width_height == right.m_width_height;
+  //    return left.m_top_left == right.m_top_left && left.m_width_height ==
+  //    right.m_width_height;
   //  }
   /**
    * @return Left coordinate.
@@ -187,18 +198,24 @@ public:
   {
     return m_width_height.area();
   }
-  friend std::ostream &operator<<(std::ostream &os, const Rectangle<dimT> &input)
+  friend std::ostream &operator<<(
+    std::ostream &os, const Rectangle<dimT> &input)
   {
-    return os << "{(X, Y) = " << input.m_top_left << ", (Width, Height) = " << input.m_width_height << '}';
+    return os << "{(X, Y) = " << input.m_top_left
+              << ", (Width, Height) = " << input.m_width_height << '}';
   }
 
-  Rectangle<dimT> constexpr operator/(const Rectangle<dimT> &input) const noexcept
+  Rectangle<dimT> constexpr operator/(
+    const Rectangle<dimT> &input) const noexcept
   {
-    return { m_top_left / input.m_top_left, m_width_height / input.m_width_height };
+    return { m_top_left / input.m_top_left,
+      m_width_height / input.m_width_height };
   }
-  Rectangle<dimT> constexpr operator*(const Rectangle<dimT> &input) const noexcept
+  Rectangle<dimT> constexpr operator*(
+    const Rectangle<dimT> &input) const noexcept
   {
-    return { m_top_left * input.m_top_left, m_width_height * input.m_width_height };
+    return { m_top_left * input.m_top_left,
+      m_width_height * input.m_width_height };
   }
   constexpr Point<dimT> top_left() const noexcept
   {

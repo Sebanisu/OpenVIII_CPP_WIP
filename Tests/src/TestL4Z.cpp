@@ -31,7 +31,7 @@ static void fuzz_loop_check_compress_and_decompress(
     if (size <= 0) {
       return true;
     }
-    const auto random_chars = [&dis, &gen, &size]() -> std::vector<char>  {
+    const auto random_chars = [&dis, &gen, &size]() -> std::vector<char> {
       if (size == 0) {
         return {};
       }
@@ -45,7 +45,8 @@ static void fuzz_loop_check_compress_and_decompress(
     // instead of storing compressed variable we just pass it directly into
     // Decompress();
     auto uncompressed = open_viii::compression::l4z::decompress(
-      open_viii::compression::l4z::compress(random_chars),std::ranges::size(random_chars));
+      open_viii::compression::l4z::compress(random_chars),
+      std::ranges::size(random_chars));
     if (std::equal(
           random_chars.begin(), random_chars.end(), uncompressed.begin())) {
       std::cout << "\rSuccessfully compressed and uncompressed data: " << size

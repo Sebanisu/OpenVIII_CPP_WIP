@@ -49,7 +49,8 @@ public:
   {
     return m_sub_sections.end();
   }
-  template<typename T = std::vector<char>> explicit MenuMessages(const T &buffer)
+  template<typename T = std::vector<char>>
+  explicit MenuMessages(const T &buffer)
   {
     // TODO remove pointer; use span instead of template.
     auto *ptr = buffer.data();
@@ -58,7 +59,9 @@ public:
       exit(1);
     }
     ptr += sizeof(m_size);
-    std::memcpy(m_sections.data(), ptr, std::ranges::size(m_sections) * sizeof(std::uint16_t));
+    std::memcpy(m_sections.data(),
+      ptr,
+      std::ranges::size(m_sections) * sizeof(std::uint16_t));
     ptr += sizeof(m_sections);
     for (size_t i = 0; i < std::ranges::size(m_sections); i++) {
       //[Count of Subsections] = [Start of file] + [Section value]
@@ -68,12 +71,15 @@ public:
       ptr = buffer.data() + m_sections.at(i);
       std::uint16_t subSectionCount{};
       std::memcpy(&subSectionCount, ptr, sizeof(subSectionCount));
-      std::string_view b{ ptr + sizeof(std::uint16_t), subSectionCount * sizeof(std::uint16_t) };
+      std::string_view b{ ptr + sizeof(std::uint16_t),
+        subSectionCount * sizeof(std::uint16_t) };
       m_sub_sections.at(i).set_data(b, subSectionCount);
       //      ptr += sizeof(subSectionCount);
       //      m_sub_sections.at(i).resize(subSectionCount);
-      //      std::memcpy(m_sub_sections.at(i).data(), ptr, m_sub_sections.at(i).size() * sizeof(EncodedStringOffset));
-      //[Start of string location] = [Start of file] + [Section value] + [Subsection value]
+      //      std::memcpy(m_sub_sections.at(i).data(), ptr,
+      //      m_sub_sections.at(i).size() * sizeof(EncodedStringOffset));
+      //[Start of string location] = [Start of file] + [Section value] +
+      //[Subsection value]
     }
   }
 };

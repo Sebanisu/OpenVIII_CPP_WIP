@@ -31,7 +31,9 @@ public:
     std::memcpy(&m_count, std::ranges::data(buffer), sizeof(m_count));
     buffer = buffer.subspan(sizeof(m_count));
     m_offsets.resize(m_count);
-    std::memcpy(std::ranges::data(m_offsets), std::ranges::data(buffer), sizeof(std::uint32_t) * m_count);
+    std::memcpy(std::ranges::data(m_offsets),
+      std::ranges::data(buffer),
+      sizeof(std::uint32_t) * m_count);
   }
   [[nodiscard]] const auto &offsets() const noexcept
   {

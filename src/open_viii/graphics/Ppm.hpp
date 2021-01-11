@@ -34,19 +34,23 @@ private:
   Point<std::uint16_t> get_width_height(const std::string &buffer)
   {
     Point<std::uint16_t> point{};
-    // the support is mostly limited to the same type that is made by the save function.
-    // I can't use span because span_stream does not exist yet it missed cpp20... so this will need to be a string
-    // stream? I know not to use std::regex but i'm feeling like that's better than what I'm doing here. heh.
+    // the support is mostly limited to the same type that is made by the save
+    // function. I can't use span because span_stream does not exist yet it
+    // missed cpp20... so this will need to be a string stream? I know not to
+    // use std::regex but i'm feeling like that's better than what I'm doing
+    // here. heh.
 
-    // sample header ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
-    // sample header ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << " 255\n";
+    // sample header ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height
+    // << "\n255\n"; sample header ss << "P6\n# THIS IS A COMMENT\n" << width <<
+    // " " << height << " 255\n";
     auto ss = std::stringstream(buffer);
     std::string line{};
     std::string type{};
     std::string comment{};
     std::string w_h{};
     std::string bytesize{};
-    while ((std::ranges::empty(bytesize) || std::ranges::empty(w_h)) && std::getline(ss, line)) {
+    while ((std::ranges::empty(bytesize) || std::ranges::empty(w_h))
+           && std::getline(ss, line)) {
       if (line == "P6") {
         type = line;
         continue;
@@ -84,9 +88,11 @@ private:
     const auto start = ss.tellg();
     ss.seekg(0, std::ios::end);
     const auto end = ss.tellg();
-    const auto sz = static_cast<std::size_t>(end - start) / sizeof(Color24<0, 1, 2>);
+    const auto sz =
+      static_cast<std::size_t>(end - start) / sizeof(Color24<0, 1, 2>);
     if (sz != point.area()) {
-      std::cerr << m_path << "\n\t" << sz << " != area of " << point << std::endl;
+      std::cerr << m_path << "\n\t" << sz << " != area of " << point
+                << std::endl;
       // assert(sz == m_width_height.area());
       return {};// instead of throwing reset the value and quit.
     }
@@ -99,32 +105,48 @@ private:
     static constexpr auto color_size = sizeof(Color24<0, 1, 2>);
     const auto size_of_bytes = area * color_size;
     if (area > 0 && std::ranges::size(buffer_span) > size_of_bytes) {
-      buffer_span = buffer_span.subspan(std::ranges::size(buffer_span) - size_of_bytes, size_of_bytes);
+      buffer_span = buffer_span.subspan(
+        std::ranges::size(buffer_span) - size_of_bytes, size_of_bytes);
       colors.resize(area);
-      std::memcpy(std::ranges::data(colors), std::ranges::data(buffer_span), size_of_bytes);
+      std::memcpy(std::ranges::data(colors),
+        std::ranges::data(buffer_span),
+        size_of_bytes);
     }
     return colors;
   }
 
 public:
   Ppm() = default;
-  explicit Ppm(const std::filesystem::path &path) : Ppm(tools::read_file<std::string>(path), path) {}
+  explicit Ppm(const std::filesystem::path &path)
+    : Ppm(tools::read_file<std::string>(path), path)
+  {}
   explicit Ppm(const std::string &buffer, std::filesystem::path path = {})
-    : m_path(std::move(path)), m_width_height(get_width_height(buffer)), m_colors(get_colors(buffer))
+    : m_path(std::move(path)),
+      m_width_height(get_width_height(buffer)),
+      m_colors(get_colors(buffer))
   {}
   bool empty() const noexcept
   {
-    return std::ranges::empty(m_colors) || m_width_height.x() <= 0 || m_width_height.y() <= 0;
+    return std::ranges::empty(m_colors) || m_width_height.x() <= 0
+           || m_width_height.y() <= 0;
   }
   template<std::ranges::contiguous_range cT>
-  static void save(
-    const cT &data, std::size_t width, std::size_t height, const std::string_view &input, bool skip_check = false)
-  {// how do i make the concept reject ranges that aren't of Colors? I'm at least checking for Color down below.
+  static void save(const cT &data,
+    std::size_t width,
+    std::size_t height,
+    const std::string_view &input,
+    bool skip_check = false)
+  {// how do i make the concept reject ranges that aren't of Colors? I'm at
+   // least checking for Color down below.
     if (!skip_check) {
       if (width == 0 || height == 0 || std::ranges::empty(data)
-          || std::all_of(std::execution::par_unseq, data.begin(), data.end(), [](const Color auto &color) -> bool {
-               return color.a() == 0U || (color.b() == 0U && color.g() == 0U && color.r() == 0U);
-             })) {
+          || std::all_of(std::execution::par_unseq,
+            data.begin(),
+            data.end(),
+            [](const Color auto &color) -> bool {
+              return color.a() == 0U
+                     || (color.b() == 0U && color.g() == 0U && color.r() == 0U);
+            })) {
         return;
       }
     }
@@ -137,15 +159,18 @@ public:
     }
     filename += ".ppm";
     if (std::ranges::size(data) < width * height) {
-      std::cout << std::ranges::size(data) << ", " << width << '*' << height << '=' << width * height << '\n';
+      std::cout << std::ranges::size(data) << ", " << width << '*' << height
+                << '=' << width * height << '\n';
       return;
     }
 
 
     tools::write_buffer(
       [&data, &width, &height](std::ostream &ss) {
-        ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height << "\n255\n";
-        for (const Color auto &color : data) {// organize the data in ram first then write all at once.
+        ss << "P6\n# THIS IS A COMMENT\n"
+           << width << " " << height << "\n255\n";
+        for (const Color auto &color :
+          data) {// organize the data in ram first then write all at once.
           ss << color.r();
           ss << color.g();
           ss << color.b();
@@ -169,7 +194,8 @@ public:
   {
     return m_width_height;
   }
-  [[nodiscard]] const Color24<0, 1, 2> &color(const std::size_t &x, const std::size_t &y) const noexcept
+  [[nodiscard]] const Color24<0, 1, 2> &color(
+    const std::size_t &x, const std::size_t &y) const noexcept
   {
     return at(x + (y * static_cast<std::size_t>(m_width_height.x())));
   }
@@ -183,7 +209,8 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const Ppm &ppm)
   {
-    return os << "(Width, Height): " << ppm.m_width_height << "\t" << ppm.m_path << '\n';
+    return os << "(Width, Height): " << ppm.m_width_height << "\t" << ppm.m_path
+              << '\n';
   }
 };
 }// namespace open_viii::graphics

@@ -242,7 +242,7 @@ public:
     fs.size(static_cast<uint32_t>(is.tellg() - fs.offset()));
     fs.file_name(generate_file_name(".cam"s));
     fs.frames(frames);
-    movie.cam(Cam(is,fs));
+    movie.cam(Cam(is, fs));
     movie.cam_fs(std::move(fs));
   }
   void get_bik(

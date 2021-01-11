@@ -111,4 +111,4 @@ target_link_libraries(TestExtractPAK VIIIPaths project_warnings)
 add_executable(TestBattle
         TestBattle.cpp TestBattle.hpp)
 set_target_properties(TestBattle PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestBattle VIIIPaths VIIIBattle VIIIArchive Threads::Threads  project_warnings)
+target_link_libraries(TestBattle VIIIPaths VIIIBattle VIIIArchive Threads::Threads project_warnings)

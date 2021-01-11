@@ -64,10 +64,14 @@ public:
   Sp1Entry() = default;
   friend std::ostream &operator<<(std::ostream &os, const Sp1Entry &e)
   {
-    return os << "{ (X, Y) = (" << static_cast<std::size_t>(e.m_x) << ", " << static_cast<std::size_t>(e.m_y)
-              << "), (W, H) = (" << static_cast<std::size_t>(e.m_width) << ", " << static_cast<std::size_t>(e.m_height)
-              << "), (Offset X, Offset Y) = (" << static_cast<std::size_t>(e.m_offset_x) << ", "
-              << static_cast<std::size_t>(e.m_offset_y) << ") Unk(" << static_cast<std::size_t>(e.m_unknown1) << ", "
+    return os << "{ (X, Y) = (" << static_cast<std::size_t>(e.m_x) << ", "
+              << static_cast<std::size_t>(e.m_y) << "), (W, H) = ("
+              << static_cast<std::size_t>(e.m_width) << ", "
+              << static_cast<std::size_t>(e.m_height)
+              << "), (Offset X, Offset Y) = ("
+              << static_cast<std::size_t>(e.m_offset_x) << ", "
+              << static_cast<std::size_t>(e.m_offset_y) << ") Unk("
+              << static_cast<std::size_t>(e.m_unknown1) << ", "
               << static_cast<std::size_t>(e.m_unknown2) << ") }";
   }
 };

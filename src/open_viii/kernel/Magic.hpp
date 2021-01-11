@@ -231,14 +231,21 @@ public:
     }
     return os
 
-           << ", " << static_cast<std::uint32_t>(m_magic_id) << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
-           << static_cast<std::uint32_t>(m_attack_type) << ", " << static_cast<std::uint32_t>(m_spell_power) << ", "
-           << static_cast<std::uint32_t>(m_unknown1) << ", " << static_cast<std::uint32_t>(m_target) << ", "
-           << static_cast<std::uint32_t>(m_attack_flags) << ", " << static_cast<std::uint32_t>(m_draw_resist) << ", "
-           << static_cast<std::uint32_t>(m_hit_count) << ", " << static_cast<std::uint32_t>(m_element) << ", "
-           << static_cast<std::uint32_t>(m_unknown2) << ", " << static_cast<std::uint32_t>(m_battle_only_statuses)
-           << ", " << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
-           << static_cast<std::uint32_t>(m_status_attack) << ", " << m_junction_stats << ", "
+           << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+           << static_cast<std::uint32_t>(m_unknown0) << ", "
+           << static_cast<std::uint32_t>(m_attack_type) << ", "
+           << static_cast<std::uint32_t>(m_spell_power) << ", "
+           << static_cast<std::uint32_t>(m_unknown1) << ", "
+           << static_cast<std::uint32_t>(m_target) << ", "
+           << static_cast<std::uint32_t>(m_attack_flags) << ", "
+           << static_cast<std::uint32_t>(m_draw_resist) << ", "
+           << static_cast<std::uint32_t>(m_hit_count) << ", "
+           << static_cast<std::uint32_t>(m_element) << ", "
+           << static_cast<std::uint32_t>(m_unknown2) << ", "
+           << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
+           << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
+           << static_cast<std::uint32_t>(m_status_attack) << ", "
+           << m_junction_stats << ", "
            << static_cast<std::uint32_t>(m_j_elem_attack_flag) << ", "
            << static_cast<std::uint32_t>(m_j_elem_attack_value) << ", "
            << static_cast<std::uint32_t>(m_j_elem_defense_flag) << ", "
@@ -246,8 +253,8 @@ public:
            << static_cast<std::uint32_t>(m_j_status_attack_value) << ", "
            << static_cast<std::uint32_t>(m_j_status_defense_value) << ", "
            << static_cast<std::uint32_t>(m_j_statuses_attack_flag) << ", "
-           << static_cast<std::uint32_t>(m_j_statuses_defend_flag) << ", " << m_compatibility << ", "
-           << static_cast<std::uint32_t>(m_unknown3);
+           << static_cast<std::uint32_t>(m_j_statuses_defend_flag) << ", "
+           << m_compatibility << ", " << static_cast<std::uint32_t>(m_unknown3);
   }
 };
 }// namespace open_viii::kernel

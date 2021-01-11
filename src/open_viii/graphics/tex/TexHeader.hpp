@@ -17,7 +17,8 @@
 
 namespace open_viii::graphics {
 /**
- * Header see version to know if the extra value is present in header 2. Tells how the data is laid out in the file.
+ * Header see version to know if the extra value is present in header 2. Tells
+ * how the data is laid out in the file.
  */
 
 struct TexHeader
@@ -116,7 +117,8 @@ private:
    */
   std::uint32_t m_palette_size{};
   /**
-   * Number of Colors per Palette again (may be 0 sometimes; the first value will be used anyway)
+   * Number of Colors per Palette again (may be 0 sometimes; the first value
+   * will be used anyway)
    */
   std::uint32_t m_num_colors_per_palette_dup{};
   /**
@@ -231,7 +233,8 @@ public:
   /**
    * Number of Colors per Palette
    */
-  [[maybe_unused]] [[nodiscard]] const auto &num_colors_per_palette() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    num_colors_per_palette() const noexcept
   {
     return m_num_colors_per_palette;
   }
@@ -287,7 +290,8 @@ public:
   /**
    * Indexed_to_8bit Flag (never used in FF7)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &indexed_to_8_bit_flag() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    indexed_to_8_bit_flag() const noexcept
   {
     return m_indexed_to_8_bit_flag;
   }
@@ -299,9 +303,11 @@ public:
     return m_palette_size;
   }
   /**
-   * Number of Colors per Palette again (may be 0 sometimes; the first value will be used anyway)
+   * Number of Colors per Palette again (may be 0 sometimes; the first value
+   * will be used anyway)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &num_colors_per_palette_dup() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    num_colors_per_palette_dup() const noexcept
   {
     return m_num_colors_per_palette_dup;
   }
@@ -332,7 +338,8 @@ public:
    */
   [[maybe_unused]] [[nodiscard]] std::size_t image_area() const noexcept
   {
-    return static_cast<std::size_t>(m_image_width) * static_cast<std::size_t>(m_image_height);
+    return static_cast<std::size_t>(m_image_width)
+           * static_cast<std::size_t>(m_image_height);
   }
   /**
    * Test for valid values.

@@ -24,7 +24,9 @@ public:
   static constexpr std::string_view IT{ "it" };
   static constexpr std::string_view JP{ "jp" };
   static constexpr std::string_view EMPTY{ "" };
-  template<LangT langVal> [[maybe_unused]] [[nodiscard]] static constexpr std::string_view to_string() noexcept
+  template<LangT langVal>
+  [[maybe_unused]] [[nodiscard]] static constexpr std::string_view
+    to_string() noexcept
   {
     if constexpr (langVal == LangT::en) {
       return EN;
@@ -40,7 +42,8 @@ public:
       return EMPTY;
     }
   }
-  [[maybe_unused]] [[nodiscard]] static constexpr LangT from_string(std::string_view str_val) noexcept
+  [[maybe_unused]] [[nodiscard]] static constexpr LangT from_string(
+    std::string_view str_val) noexcept
   {
     if (str_val.size() == 2) {
       if (open_viii::tools::i_equals(str_val, EN)) {

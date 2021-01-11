@@ -6,8 +6,8 @@
 #define VIIIARCHIVE_WRITE_HPP
 
 #include "open_viii/Concepts.hpp"
-#include <string_view>
 #include <fstream>
+#include <string_view>
 namespace open_viii::tools {
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::ostream &>)
@@ -51,11 +51,11 @@ requires(std::invocable<lambdaT, std::ostream &>)
   }
   return write_buffer(
     [&buffer](std::ostream &fp) {
-           fp.write(std::ranges::data(buffer),
-                    static_cast<long>(std::ranges::size(buffer)));
+      fp.write(std::ranges::data(buffer),
+        static_cast<long>(std::ranges::size(buffer)));
     },
     path,
     root);
 }
-}
+}// namespace open_viii::tools
 #endif// VIIIARCHIVE_WRITE_HPP

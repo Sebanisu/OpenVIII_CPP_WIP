@@ -22,9 +22,9 @@ namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection004// refine cards to items
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_5
-   * Ability	        # of Entries	mngrp.bin Location	        Offset	Description
-   * CardMod	        110 Entries	(mngrp.bin loc: 0x221000)	0x0	Card to Items
-   * level
+   * Ability	        # of Entries	mngrp.bin Location	        Offset
+   * Description CardMod	        110 Entries	(mngrp.bin loc:
+   * 0x221000)	0x0	Card to Items level
    */
 
 private:

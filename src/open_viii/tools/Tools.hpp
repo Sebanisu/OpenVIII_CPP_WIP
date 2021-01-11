@@ -35,7 +35,7 @@ constexpr static auto TOUPPER_EQUALS_PREDICATE = [](const auto &ch1,
   return ::toupper(ch1) == ::toupper(ch2);
 };
 
-//static void for_each_two(std::ranges::forward_range auto one,
+// static void for_each_two(std::ranges::forward_range auto one,
 //  std::ranges::forward_range auto two,
 //  auto lambda)
 //{
@@ -69,9 +69,6 @@ static std::string_view u8_to_sv(const std::u8string_view &s8)
   auto sv = u8_to_sv(s8);
   return { sv.begin(), sv.end() };
 }
-
-
-
 
 
 /*
@@ -249,11 +246,12 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
            ending_view, haystack_view, TOUPPER_EQUALS_PREDICATE);
 }
 [[maybe_unused]] [[nodiscard]] static bool i_starts_with(
-   const std::span<const char>  & haystack, const std::string_view &starting)
+  const std::span<const char> &haystack, const std::string_view &starting)
 {
   return std::ranges::size(haystack) >= std::ranges::size(starting)
-         && std::ranges::equal(
-           starting, haystack.subspan(std::ranges::size(starting)), TOUPPER_EQUALS_PREDICATE);
+         && std::ranges::equal(starting,
+           haystack.subspan(std::ranges::size(starting)),
+           TOUPPER_EQUALS_PREDICATE);
 }
 template<std::ranges::contiguous_range needleT>
 [[maybe_unused]] [[nodiscard]] static size_t i_ends_with_any(

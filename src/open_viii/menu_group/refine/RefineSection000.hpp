@@ -34,15 +34,17 @@ namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection000// refine Item to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data
-   * Ability	    # of Entries  mngrp.bin Location	    Offset	Description
-   * T Mag-RF	    7 entries	  (mngrp.bin loc: 0x21F000)	0x0	    Item to Thunder/Wind Magic
-   * I Mag-RF	    7 entries	  (mngrp.bin loc: 0x21F038)	0x38	Item to Ice/Water Magic
-   * F Mag-RF	    10 entries	  (mngrp.bin loc: 0x21F070)	0x70	Item to Fire/Flare Magic
-   * L Mag-RF	    21 entries	  (mngrp.bin loc: 0x21F0C0)	0xC0	Item to Life Magic
-   * Time Mag-RF    14 entries	  (mngrp.bin loc: 0x21F168)	0x168	Item to Time Magic
-   * ST Mag-RF	    17 entries	  (mngrp.bin loc: 0x21F1D8)	0x1D8	Item to Status Magic
-   * Supt Mag-RF    20 entries	  (mngrp.bin loc: 0x21F260)	0x260	Items to Support Magic
-   * Forbid Mag-RF  6 entries	  (mngrp.bin loc: 0x21F300)	0x300	Items to Forbidden Magic
+   * Ability	    # of Entries  mngrp.bin Location	    Offset
+   * Description T Mag-RF	    7 entries	  (mngrp.bin loc: 0x21F000)
+   * 0x0	    Item to Thunder/Wind Magic I Mag-RF	    7 entries
+   * (mngrp.bin loc: 0x21F038)	0x38	Item to Ice/Water Magic F Mag-RF
+   * 10 entries	  (mngrp.bin loc: 0x21F070)	0x70	Item to Fire/Flare Magic
+   * L Mag-RF	    21 entries	  (mngrp.bin loc: 0x21F0C0)	0xC0	Item to
+   * Life Magic Time Mag-RF    14 entries	  (mngrp.bin loc: 0x21F168)
+   * 0x168	Item to Time Magic ST Mag-RF	    17 entries	  (mngrp.bin
+   * loc: 0x21F1D8)	0x1D8	Item to Status Magic Supt Mag-RF    20 entries
+   * (mngrp.bin loc: 0x21F260)	0x260	Items to Support Magic Forbid Mag-RF  6
+   * entries	  (mngrp.bin loc: 0x21F300)	0x300	Items to Forbidden Magic
    */
 private:
   static constexpr auto T_MAG_RF_COUNT = 7U;
@@ -57,10 +59,13 @@ private:
   std::array<RefineEntry<ItemIdT, RefineSpellID>, I_MAG_RF_COUNT> m_i_mag_rf{};
   std::array<RefineEntry<ItemIdT, RefineSpellID>, F_MAG_RF_COUNT> m_f_mag_rf{};
   std::array<RefineEntry<ItemIdT, RefineSpellID>, L_MAG_RF_COUNT> m_l_mag_rf{};
-  std::array<RefineEntry<ItemIdT, RefineSpellID>, TIME_MAG_RF_COUNT> m_time_mag_rf{};
-  std::array<RefineEntry<ItemIdT, RefineSpellID>, ST_MAG_RF_COUNT> m_st_mag_rf{};
+  std::array<RefineEntry<ItemIdT, RefineSpellID>, TIME_MAG_RF_COUNT>
+    m_time_mag_rf{};
+  std::array<RefineEntry<ItemIdT, RefineSpellID>, ST_MAG_RF_COUNT>
+    m_st_mag_rf{};
   std::array<RefineEntry<ItemIdT, RefineSpellID>, SUPT_RF_COUNT> m_supt_rf{};
-  std::array<RefineEntry<ItemIdT, RefineSpellID>, FORBID_MAG_RF_COUNT> m_forbid_mag_rf{};
+  std::array<RefineEntry<ItemIdT, RefineSpellID>, FORBID_MAG_RF_COUNT>
+    m_forbid_mag_rf{};
 
 public:
   [[maybe_unused]] [[nodiscard]] const auto &t_mag_rf() const noexcept
@@ -97,8 +102,9 @@ public:
   }
   [[nodiscard]] static constexpr auto size()
   {
-    return T_MAG_RF_COUNT + I_MAG_RF_COUNT + F_MAG_RF_COUNT + L_MAG_RF_COUNT + TIME_MAG_RF_COUNT + ST_MAG_RF_COUNT
-           + SUPT_RF_COUNT + FORBID_MAG_RF_COUNT;
+    return T_MAG_RF_COUNT + I_MAG_RF_COUNT + F_MAG_RF_COUNT + L_MAG_RF_COUNT
+           + TIME_MAG_RF_COUNT + ST_MAG_RF_COUNT + SUPT_RF_COUNT
+           + FORBID_MAG_RF_COUNT;
   }
   template<LangT langVal, typename T>
   std::ostream &out_array(const T &arr,

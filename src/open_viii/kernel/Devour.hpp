@@ -73,8 +73,9 @@ template<LangT langVal> struct Devour
    * */
 private:
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_damage_or_heal{};// HP and Status; If last on right bit is set heal, and if not dmg. Rest looks like
-                                  // 0b‭00011110‬.
+  std::uint8_t
+    m_damage_or_heal{};// HP and Status; If last on right bit is set heal, and
+                       // if not dmg. Rest looks like 0b‭00011110‬.
   PercentQuantityT m_percent_quantity{};
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
   PersistentStatusesT m_persistent_statuses{};// statuses 0-7
@@ -90,10 +91,13 @@ public:
   {
     return (m_damage_or_heal & 0x1U) == 0;
   }// HP and Status //false is damage, true is heal.
-  [[nodiscard]] auto percent_quantity() const noexcept// clang tidy thinks this can be made static...
+  [[nodiscard]] auto percent_quantity()
+    const noexcept// clang tidy thinks this can be made static...
   {
     const auto flag_set = [this](const PercentQuantityT &flag) {
-      return (static_cast<uint8_t>(m_percent_quantity) & static_cast<uint8_t>(flag)) != 0;
+      return (static_cast<uint8_t>(m_percent_quantity)
+               & static_cast<uint8_t>(flag))
+             != 0;
     };
     float out{};
     if (flag_set(PercentQuantityT::full)) {
@@ -140,7 +144,8 @@ public:
     if (!std::empty(description)) {
       os << tools::u8_to_sv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(damage_or_heal()) << ", " << percent_quantity() << ", "
+    return os << ", " << static_cast<std::uint32_t>(damage_or_heal()) << ", "
+              << percent_quantity() << ", "
               << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
               << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
               << static_cast<std::uint32_t>(m_devour_stat_flag) << ", "

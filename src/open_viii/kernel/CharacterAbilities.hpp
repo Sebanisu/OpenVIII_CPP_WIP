@@ -31,7 +31,8 @@ private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
   std::uint8_t m_ap_required{};
-  // uint32_t characterAbilityFlags_ : 3;// cpp20 allows default member initializers for bitfields add {} in cpp20.
+  // uint32_t characterAbilityFlags_ : 3;// cpp20 allows default member
+  // initializers for bitfields add {} in cpp20.
   std::array<std::uint8_t, 3> m_character_ability_flags{};
 
 public:
@@ -54,8 +55,10 @@ public:
     // The size of the enum is 4 bytes but the field is 3 bytes.
     // return static_cast<CharacterAbilityFlagsT>(characterAbilityFlags_);
     CharacterAbilityFlagsT out{};
-    std::memcpy(&out, m_character_ability_flags.data(), m_character_ability_flags.size());
-    // out = static_cast<CharacterAbilityFlagsT>(static_cast<uint32_t>(out) << 1U);
+    std::memcpy(
+      &out, m_character_ability_flags.data(), m_character_ability_flags.size());
+    // out = static_cast<CharacterAbilityFlagsT>(static_cast<uint32_t>(out) <<
+    // 1U);
     return out;
   }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
@@ -70,7 +73,8 @@ public:
     }
 
     auto test = character_ability_flags();
-    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", " << static_cast<uint32_t>(test);
+    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
+              << static_cast<uint32_t>(test);
   }
 };
 }// namespace open_viii::kernel

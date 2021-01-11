@@ -135,7 +135,9 @@ template<typename Type> concept has_resize = requires(Type a)
   a.resize(static_cast<std::size_t>(0U));
 };
 template<typename trivialType>
-concept is_default_constructible_has_data_size_resize = is_default_constructible_has_data_and_size<trivialType> && has_resize<trivialType>;
+concept is_default_constructible_has_data_size_resize =
+  is_default_constructible_has_data_and_size<trivialType>
+    &&has_resize<trivialType>;
 template<typename lambdaT>
 concept Foreach_Archive_Lambda =
   std::invocable<lambdaT, std::vector<char>, std::string>;

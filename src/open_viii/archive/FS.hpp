@@ -29,7 +29,8 @@
 namespace open_viii::archive::FS {
 static constexpr auto EXT = std::string_view(".FS");
 
-template<is_default_constructible_has_data_size_resize dstT = std::vector<char>, FI_Like fiT = FI>
+template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
+  FI_Like fiT = FI>
 static dstT get_entry(
   const std::filesystem::path &path, const fiT &fi, const size_t &offset = 0U)
 {
@@ -71,7 +72,8 @@ static dstT get_entry(
   fp.close();
   return {};
 }
-template<is_default_constructible_has_data_size_resize dstT = std::vector<char>, FI_Like fiT = FI>
+template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
+  FI_Like fiT = FI>
 static dstT get_entry(
   std::span<const char> data, const fiT &fi, const size_t &offset)
 {
@@ -117,7 +119,7 @@ static dstT get_entry(
     }
 
     std::uint32_t sectSize = tools::read_val<std::uint32_t>(data);
-    //std::memcpy(&sectSize, std::ranges::data(data), sizeof(sectSize));
+    // std::memcpy(&sectSize, std::ranges::data(data), sizeof(sectSize));
     if (sectSize > std::ranges::size(data)) {
       break;
     }

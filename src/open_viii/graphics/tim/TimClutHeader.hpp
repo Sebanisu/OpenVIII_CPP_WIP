@@ -24,7 +24,8 @@ struct TimClutHeader
 {
 private:
   /**
-   * X value must be divisible by 4, the spec says 16 this but theres some values that aren't standard.
+   * X value must be divisible by 4, the spec says 16 this but theres some
+   * values that aren't standard.
    * @brief X value must be divisible by 4;
    */
   static constexpr auto XDIVISABLE_BY{ 4U };
@@ -34,9 +35,10 @@ private:
   static constexpr auto MAX_Y{ 511U };
 
   /**
-   * 4 bit can only read up to 16 values and 8 bit can only read up to 256 values. But There are larger other sizes. The
-   * game uses
-   * @brief Valid width values; some non-standard width values exist so this isn't used.
+   * 4 bit can only read up to 16 values and 8 bit can only read up to 256
+   * values. But There are larger other sizes. The game uses
+   * @brief Valid width values; some non-standard width values exist so this
+   * isn't used.
    */
   [[maybe_unused]] static constexpr std::array VALID_WIDTH = { 16U, 256U };
 
@@ -44,8 +46,9 @@ private:
 
 public:
   /**
-   * Typically the width = number of colors, and height = number of color lookup tables. Sometimes if there is only 16
-   * colors (4bpp) there is multiple groups of 16 in the table.
+   * Typically the width = number of colors, and height = number of color lookup
+   * tables. Sometimes if there is only 16 colors (4bpp) there is multiple
+   * groups of 16 in the table.
    * @brief Dimensions of the color lookup table.
    */
   [[nodiscard]] auto rectangle() const
@@ -76,14 +79,18 @@ public:
    */
   [[nodiscard]] bool check() const
   {
-    return m_image_header.rectangle().x() % XDIVISABLE_BY == 0 && m_image_header.rectangle().y() <= MAX_Y;
-    //&& tools::any_of(imageHeader_.rectangle().width(), ValidWidth_); // some non standard sizes.
+    return m_image_header.rectangle().x() % XDIVISABLE_BY == 0
+           && m_image_header.rectangle().y() <= MAX_Y;
+    //&& tools::any_of(imageHeader_.rectangle().width(), ValidWidth_); // some
+    //non standard sizes.
   }
 
   friend std::ostream &operator<<(std::ostream &os, const TimClutHeader &input)
   {
-    return os << input.m_image_header << " {Colors:" << input.m_image_header.rectangle().width()
-              << ", Tables: " << input.m_image_header.rectangle().height() << '}';
+    return os << input.m_image_header
+              << " {Colors:" << input.m_image_header.rectangle().width()
+              << ", Tables: " << input.m_image_header.rectangle().height()
+              << '}';
   }
 };
 }// namespace open_viii::graphics

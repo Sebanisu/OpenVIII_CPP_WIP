@@ -52,13 +52,16 @@ public:
   {
     return m_attack_param;
   }
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &os,
+    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    return os << '{' << static_cast<std::uint32_t>(battle_only_statuses()) << ", "
-              << static_cast<std::uint32_t>(persistent_statuses()) << ", " << static_cast<std::uint32_t>(attack_power())
-              << ", " << static_cast<std::uint32_t>(attack_param()) << '}';
+    return os << '{' << static_cast<std::uint32_t>(battle_only_statuses())
+              << ", " << static_cast<std::uint32_t>(persistent_statuses())
+              << ", " << static_cast<std::uint32_t>(attack_power()) << ", "
+              << static_cast<std::uint32_t>(attack_param()) << '}';
   }
-  friend std::ostream &operator<<(std::ostream &os, const QuistisBlueMagicLimitBreakParam &input)
+  friend std::ostream &operator<<(
+    std::ostream &os, const QuistisBlueMagicLimitBreakParam &input)
   {
     return input.out(os, "");
   }
@@ -73,7 +76,8 @@ public:
   {
     return &m_blue_magic_data;
   }
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &os,
+    [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << m_blue_magic_data;
   }

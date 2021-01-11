@@ -242,7 +242,8 @@ public:
   {
     return m_status_attack_enabler;
   }
-  template<size_t i> [[nodiscard]] const auto &unlockable_abilities() const noexcept
+  template<size_t i>
+  [[nodiscard]] const auto &unlockable_abilities() const noexcept
   {
     static_assert(i < MAX_ABILITIES);
     return m_unlockable_abilities.at(i);
@@ -281,15 +282,23 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", " << static_cast<std::uint32_t>(m_attack_type) << ", "
-       << static_cast<std::uint32_t>(m_gf_power) << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
-       << static_cast<std::uint32_t>(m_attack_flags) << ", " << static_cast<std::uint32_t>(m_unknown1) << ", "
-       << static_cast<std::uint32_t>(m_unknown2) << ", " << static_cast<std::uint32_t>(m_element) << ", "
+    os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+       << static_cast<std::uint32_t>(m_attack_type) << ", "
+       << static_cast<std::uint32_t>(m_gf_power) << ", "
+       << static_cast<std::uint32_t>(m_unknown0) << ", "
+       << static_cast<std::uint32_t>(m_attack_flags) << ", "
+       << static_cast<std::uint32_t>(m_unknown1) << ", "
+       << static_cast<std::uint32_t>(m_unknown2) << ", "
+       << static_cast<std::uint32_t>(m_element) << ", "
        << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
-       << static_cast<std::uint32_t>(m_battle_only_statuses) << ", " << static_cast<std::uint32_t>(m_gf_hp_modifier)
-       << ", " << static_cast<std::uint32_t>(m_unknown3) << ", " << static_cast<std::uint32_t>(m_unknown4) << ", "
-       << static_cast<std::uint32_t>(m_unknown5) << ", " << static_cast<std::uint32_t>(m_unknown6) << ", "
-       << static_cast<std::uint32_t>(m_unknown7) << ", " << static_cast<std::uint32_t>(m_unknown8) << ", "
+       << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
+       << static_cast<std::uint32_t>(m_gf_hp_modifier) << ", "
+       << static_cast<std::uint32_t>(m_unknown3) << ", "
+       << static_cast<std::uint32_t>(m_unknown4) << ", "
+       << static_cast<std::uint32_t>(m_unknown5) << ", "
+       << static_cast<std::uint32_t>(m_unknown6) << ", "
+       << static_cast<std::uint32_t>(m_unknown7) << ", "
+       << static_cast<std::uint32_t>(m_unknown8) << ", "
        << static_cast<std::uint32_t>(m_status_attack_enabler) << ", ";
     bool first = true;
     for (const auto &item : m_unlockable_abilities) {
@@ -300,8 +309,10 @@ public:
       }
       os << item;
     }
-    return os << ", " << m_compatibility << ", " << static_cast<std::uint32_t>(m_unknown9) << ", "
-              << static_cast<std::uint32_t>(m_unknown10) << ", " << static_cast<std::uint32_t>(m_power_mod) << ", "
+    return os << ", " << m_compatibility << ", "
+              << static_cast<std::uint32_t>(m_unknown9) << ", "
+              << static_cast<std::uint32_t>(m_unknown10) << ", "
+              << static_cast<std::uint32_t>(m_power_mod) << ", "
               << static_cast<std::uint32_t>(m_level_mod);
   }
 };

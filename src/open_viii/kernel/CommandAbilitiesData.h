@@ -92,12 +92,16 @@ public:
     return m_battle_only_statuses;
   }
 
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &os,
+    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    return os << m_magic_id << ", " << m_unknown << ", " << static_cast<std::uint32_t>(m_attack_type) << ", "
-              << static_cast<std::uint32_t>(m_attack_power) << ", " << static_cast<std::uint32_t>(m_attack_flags)
-              << ", " << static_cast<std::uint32_t>(m_hit_count) << ", " << static_cast<std::uint32_t>(m_element)
-              << ", " << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+    return os << m_magic_id << ", " << m_unknown << ", "
+              << static_cast<std::uint32_t>(m_attack_type) << ", "
+              << static_cast<std::uint32_t>(m_attack_power) << ", "
+              << static_cast<std::uint32_t>(m_attack_flags) << ", "
+              << static_cast<std::uint32_t>(m_hit_count) << ", "
+              << static_cast<std::uint32_t>(m_element) << ", "
+              << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
               << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
               << static_cast<std::uint32_t>(m_battle_only_statuses);
   }

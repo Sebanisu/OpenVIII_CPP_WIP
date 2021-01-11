@@ -279,7 +279,8 @@ private:
     u8" S"sv,
     u8"ag"sv };
 
-  static constexpr std::array<std::u8string_view, 256> JP_CODE_PAGE = { u8"\x00"sv,
+  static constexpr std::array<std::u8string_view, 256> JP_CODE_PAGE = {
+    u8"\x00"sv,
     u8"\x01"sv,
     u8"\n"sv,
     u8"\x03"sv,
@@ -534,10 +535,12 @@ private:
     u8"，"sv,
     u8"："sv,
     u8"～"sv,
-    u8"ー"sv };
+    u8"ー"sv
+  };
 
 public:
-  // static constexpr std::array LangCodes = { "en"sv, "fr"sv, "es"sv, "it"sv, "de"sv, "jp" };
+  // static constexpr std::array LangCodes = { "en"sv, "fr"sv, "es"sv, "it"sv,
+  // "de"sv, "jp" };
 
   static constexpr auto &get_code_page()
   {
@@ -553,7 +556,8 @@ public:
   }
   [[nodiscard]] auto static decode(const std::span<const char> &buffer)
   {
-    using u8stringstream = std::basic_stringstream<char8_t, std::char_traits<char8_t>>;
+    using u8stringstream =
+      std::basic_stringstream<char8_t, std::char_traits<char8_t>>;
     if (std::empty(buffer)) {
       return std::u8string{};
     }

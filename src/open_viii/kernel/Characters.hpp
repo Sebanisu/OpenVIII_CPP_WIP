@@ -24,15 +24,11 @@ template<LangT langVal> struct Characters
    * https://github.com/DarkShinryu/doomtrain/wiki/Characters
    * Offset	Length	Description
    * 0x0000	2 bytes	Offset to character name
-   * Squall and Rinoa have name offsets of 0xFFFF because their name is in the save game data rather than kernel.bin.
-   * 0x0002	1 byte	Crisis level hp multiplier
-   * 0x0003	1 byte	Gender
-   *  0x00 - Male
-   *  0x01 - Female
-   * 0x0004	1 byte	Limit Break ID
-   * 0x0005	1 byte	Limit Break Param
-   * used for the power of each renzokuken hit before finisher
-   * 0x0006	2 bytes	EXP modifier
+   * Squall and Rinoa have name offsets of 0xFFFF because their name is in the
+   * save game data rather than kernel.bin. 0x0002	1 byte	Crisis level hp
+   * multiplier 0x0003	1 byte	Gender 0x00 - Male 0x01 - Female 0x0004	1 byte
+   * Limit Break ID 0x0005	1 byte	Limit Break Param used for the power of
+   * each renzokuken hit before finisher 0x0006	2 bytes	EXP modifier
    * 0x0008	4 bytes	HP
    * 0x000C	4 bytes	STR
    * 0x0010	4 bytes	VIT
@@ -86,7 +82,8 @@ public:
   {
     return m_name_offset;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &crisis_level_hp_multiplier() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    crisis_level_hp_multiplier() const noexcept
   {
     return m_crisis_level_hp_multiplier;
   }
@@ -120,10 +117,13 @@ public:
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);
     }
-    return os << ", " << static_cast<std::uint32_t>(m_crisis_level_hp_multiplier) << ", "
-              << static_cast<std::uint32_t>(m_gender) << ", " << static_cast<std::uint32_t>(m_limit_break_id) << ", "
-              << static_cast<std::uint32_t>(m_limit_break_param) << ", {" << static_cast<std::uint32_t>(m_exp[0])
-              << ", " << static_cast<std::uint32_t>(m_exp[1]) << "}, " << m_stats;
+    return os << ", "
+              << static_cast<std::uint32_t>(m_crisis_level_hp_multiplier)
+              << ", " << static_cast<std::uint32_t>(m_gender) << ", "
+              << static_cast<std::uint32_t>(m_limit_break_id) << ", "
+              << static_cast<std::uint32_t>(m_limit_break_param) << ", {"
+              << static_cast<std::uint32_t>(m_exp[0]) << ", "
+              << static_cast<std::uint32_t>(m_exp[1]) << "}, " << m_stats;
   }
 };
 }// namespace open_viii::kernel

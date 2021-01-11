@@ -139,16 +139,22 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", " << static_cast<std::uint32_t>(m_attack_type)
-              << ", " << static_cast<std::uint32_t>(m_attack_power) << ", " << static_cast<std::uint32_t>(m_unknown0)
-              << ", " << static_cast<std::uint32_t>(m_unknown1) << ", " << static_cast<std::uint32_t>(m_target) << ", "
-              << static_cast<std::uint32_t>(m_attack_flags) << ", " << static_cast<std::uint32_t>(m_hit_count) << ", "
-              << static_cast<std::uint32_t>(m_element) << ", " << static_cast<std::uint32_t>(m_element_attack_percent)
-              << ", " << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+    return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+              << static_cast<std::uint32_t>(m_attack_type) << ", "
+              << static_cast<std::uint32_t>(m_attack_power) << ", "
+              << static_cast<std::uint32_t>(m_unknown0) << ", "
+              << static_cast<std::uint32_t>(m_unknown1) << ", "
+              << static_cast<std::uint32_t>(m_target) << ", "
+              << static_cast<std::uint32_t>(m_attack_flags) << ", "
+              << static_cast<std::uint32_t>(m_hit_count) << ", "
+              << static_cast<std::uint32_t>(m_element) << ", "
+              << static_cast<std::uint32_t>(m_element_attack_percent) << ", "
+              << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
               << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
               << static_cast<std::uint32_t>(m_used_item_index) << ", "
               << static_cast<std::uint32_t>(m_critical_increase) << ", "
-              << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
+              << static_cast<std::uint32_t>(
+                   m_battle_only_statuses)// statuses 8-39
 
       ;
   }

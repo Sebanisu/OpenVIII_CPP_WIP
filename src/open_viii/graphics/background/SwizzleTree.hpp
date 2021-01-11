@@ -13,8 +13,8 @@
 #include "open_viii/archive/FIFLFS.hpp"
 namespace open_viii::graphics::background {
 /**
- * Load all subfolders and find the matching path inside the field archive. Then allow deswizzle or reswizzle of the
- * folder.
+ * Load all subfolders and find the matching path inside the field archive. Then
+ * allow deswizzle or reswizzle of the folder.
  */
 struct SwizzleTree
 {
@@ -30,10 +30,12 @@ private:
   const open_viii::archive::FIFLFS<false> m_archive{};
   const MimType m_mim_type{};
 
-  [[nodiscard]] std::string get_path_with_ext(const std::string_view &extension) const
+  [[nodiscard]] std::string get_path_with_ext(
+    const std::string_view &extension) const
   {
     return "\\" + m_dir_name + std::string(extension);
-    // the FL files contain \\ I change to / in post for easy dumping to linux and support of filesystem.
+    // the FL files contain \\ I change to / in post for easy dumping to linux
+    // and support of filesystem.
   }
   [[nodiscard]] MimType get_mim_type() const
   {
@@ -46,7 +48,8 @@ private:
       if (std::ranges::empty(mims)) {
         return {};// no mim file.
       }
-      open_viii::FI_Like auto mim_fi = m_archive.get_entry_by_index(mims[0].first);
+      open_viii::FI_Like auto mim_fi =
+        m_archive.get_entry_by_index(mims[0].first);
       return Mim::get_texture_type(mim_fi.uncompressed_size(), m_dir_name);
     }
     return {};
@@ -73,37 +76,46 @@ private:
   template<typename map_type>
   requires(
     std::is_same_v<map_type,
-      Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void reswizzle_with_type() const
+      Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void reswizzle_with_type()
+    const
   {
-    const auto r = Reswizzle<map_type>(get_map_buffer(), m_dir_path, m_dir_name, m_output_prefix);
+    const auto r = Reswizzle<map_type>(
+      get_map_buffer(), m_dir_path, m_dir_name, m_output_prefix);
     r.process();
   }
   template<typename map_type>
   requires(
     std::is_same_v<map_type,
-      Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void deswizzle_with_type() const
+      Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void deswizzle_with_type()
+    const
   {
 
     // const auto mim = Mim(get_mim_buffer(),m_mim_filename);
-    const auto mim = MimFromPath{ m_mim_type, m_dir_path, m_dir_name, m_output_prefix };
+    const auto mim =
+      MimFromPath{ m_mim_type, m_dir_path, m_dir_name, m_output_prefix };
     const auto map = Map<map_type>{ get_map_buffer() };
     const auto r = Deswizzle(mim, map, m_output_prefix);
     r.save();
-    // const auto r = Deswizzle<map_type>(get_map_buffer(), m_dir_path, m_dir_name, m_output_prefix);
-    // r.process();
+    // const auto r = Deswizzle<map_type>(get_map_buffer(), m_dir_path,
+    // m_dir_name, m_output_prefix); r.process();
   }
 
 public:
-  SwizzleTree(const open_viii::archive::FIFLFS<true> &field, const std::filesystem::path &dir_path)
+  SwizzleTree(const open_viii::archive::FIFLFS<true> &field,
+    const std::filesystem::path &dir_path)
     : m_dir_path(dir_path),
       m_dir_name(dir_path.filename().string()),
       m_fi_filename(get_path_with_ext(archive::FI::EXT)),
       m_fl_filename(get_path_with_ext(open_viii::archive::fl::EXT)),
       m_fs_filename(get_path_with_ext(open_viii::archive::FS::EXT)),
-      m_map_filename(get_path_with_ext(open_viii::graphics::background::Map<>::EXT).substr(1)),
-      m_mim_filename(get_path_with_ext(open_viii::graphics::background::Mim::EXT).substr(1)),
+      m_map_filename(
+        get_path_with_ext(open_viii::graphics::background::Map<>::EXT)
+          .substr(1)),
+      m_mim_filename(
+        get_path_with_ext(open_viii::graphics::background::Mim::EXT).substr(1)),
       m_output_prefix((m_dir_path / m_dir_name).string()),
-      m_archive(field.get_fiflfs({ m_fi_filename, m_fl_filename, m_fs_filename })),
+      m_archive(
+        field.get_fiflfs({ m_fi_filename, m_fl_filename, m_fs_filename })),
       m_mim_type(get_mim_type())
   {}
   /**
@@ -119,7 +131,8 @@ public:
    * Point to members of the archive
    * @return FIFLFS*
    */
-  [[nodiscard]] const open_viii::archive::FIFLFS<false> *operator->() const noexcept
+  [[nodiscard]] const open_viii::archive::FIFLFS<false> *
+    operator->() const noexcept
   {
     return &m_archive;
   }
@@ -127,14 +140,16 @@ public:
    * Get the archive
    * @return FIFLFS
    */
-  [[nodiscard]] const open_viii::archive::FIFLFS<false> &operator*() const noexcept
+  [[nodiscard]] const open_viii::archive::FIFLFS<false> &
+    operator*() const noexcept
   {
     return m_archive;
   }
 
 
   /**
-   * spawn a reswizzle object using the mim_type to decide what template arguments should be.
+   * spawn a reswizzle object using the mim_type to decide what template
+   * arguments should be.
    */
   void reswizzle() const
   {
@@ -147,7 +162,8 @@ public:
     }
   }
   /**
-   * spawn a deswizzle object using the mim_type to decide what template arguments should be.
+   * spawn a deswizzle object using the mim_type to decide what template
+   * arguments should be.
    */
   void deswizzle() const
   {

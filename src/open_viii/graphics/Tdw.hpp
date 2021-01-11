@@ -60,7 +60,9 @@ public:
     }
     if (widths_size() > 0) {
       m_widths.resize(widths_size());
-      std::memcpy(std::ranges::data(m_widths), std::ranges::data(buffer_bak.subspan(m_widths_offset)), widths_size());
+      std::memcpy(std::ranges::data(m_widths),
+        std::ranges::data(buffer_bak.subspan(m_widths_offset)),
+        widths_size());
     }
     m_tim = Tim{ buffer_bak.subspan(m_tim_offset) };
   }
@@ -85,7 +87,8 @@ public:
   {
     os << t.size() << " char widths: ";
     for (const Bit4Values &w : t.m_widths) {
-      os << static_cast<std::uint32_t>(w.first()) << ", " << static_cast<std::uint32_t>(w.second()) << ", ";
+      os << static_cast<std::uint32_t>(w.first()) << ", "
+         << static_cast<std::uint32_t>(w.second()) << ", ";
     }
     return os << '\n' << t.m_tim;
   }

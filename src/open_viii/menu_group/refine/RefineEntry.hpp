@@ -71,13 +71,18 @@ public:
     const intmax_t offset = 0,
     bool skip_first_null = false) const
   {
-    const auto temp = m_offset.decoded_string<langVal>(buffer, offset, skip_first_null);
-    return os << '"' << tools::u8_to_sv(temp) << "\", " << static_cast<std::uint16_t>(m_amount_received) << ", "
-              << static_cast<std::uint16_t>(m_unknown0) << ", " << static_cast<std::uint16_t>(m_unknown1) << ", "
-              << static_cast<std::uint16_t>(m_input) << ", " << static_cast<std::uint16_t>(m_amount_required) << ", "
+    const auto temp =
+      m_offset.decoded_string<langVal>(buffer, offset, skip_first_null);
+    return os << '"' << tools::u8_to_sv(temp) << "\", "
+              << static_cast<std::uint16_t>(m_amount_received) << ", "
+              << static_cast<std::uint16_t>(m_unknown0) << ", "
+              << static_cast<std::uint16_t>(m_unknown1) << ", "
+              << static_cast<std::uint16_t>(m_input) << ", "
+              << static_cast<std::uint16_t>(m_amount_required) << ", "
               << static_cast<std::uint16_t>(m_output);
   }
-  //  friend std::ostream &operator<<(std::ostream &os, const RefineEntry<inputT, outputT> &input)
+  //  friend std::ostream &operator<<(std::ostream &os, const
+  //  RefineEntry<inputT, outputT> &input)
   //  {
   //    return input.out(os);
   //  }

@@ -26,8 +26,10 @@ public:
   {
     using namespace std::literals::string_literals;
     static std::array paths = {
-      // R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII/Data/lang-en)"s,
-      // R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII\Data\lang-en)"s,
+      // R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY
+      // VIII/Data/lang-en)"s,
+      // R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY
+      // VIII\Data\lang-en)"s,
       R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"s,
       R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"s,
       R"(/mnt/k/ff82000)"s,
@@ -41,7 +43,8 @@ public:
     };
     return paths;
   }
-  template<std::invocable<std::filesystem::path> lambdaT> static auto for_each_path(const lambdaT &lambda)
+  template<std::invocable<std::filesystem::path> lambdaT>
+  static auto for_each_path(const lambdaT &lambda)
   {
     std::ranges::for_each(get(), [&lambda](std::string &path) {
       open_viii::tools::replace_slashes(path);

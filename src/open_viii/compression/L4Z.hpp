@@ -72,10 +72,13 @@ static dstT compress(const std::span<const char> &src)
   const auto srcSize = static_cast<int>(std::ranges::size(src));
   const auto dstSize = LZ4_compressBound(srcSize);
   dst.resize(static_cast<std::size_t>(dstSize));
-  const auto size_wrote = LZ4_compress_default(std::ranges::data(src),std::ranges::data(dst), srcSize, dstSize);
-  if(size_wrote <=0) {return {};}
+  const auto size_wrote = LZ4_compress_default(
+    std::ranges::data(src), std::ranges::data(dst), srcSize, dstSize);
+  if (size_wrote <= 0) {
+    return {};
+  }
   dst.resize(static_cast<std::size_t>(size_wrote));
   return dst;
 }
-}// namespace open_viii::compression::L4Z
+}// namespace open_viii::compression::l4z
 #endif// VIIICOMPRESSION_L4Z_H

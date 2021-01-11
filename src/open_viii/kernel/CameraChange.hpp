@@ -33,9 +33,11 @@ public:
     return static_cast<std::uint8_t>(m_camera_change & OTHER_BITS_MASK);
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const CameraChange &camera_change)
+  friend std::ostream &operator<<(
+    std::ostream &os, const CameraChange &camera_change)
   {
-    os << camera_change.checked() << '/' << static_cast<uint16_t>(camera_change.value());
+    os << camera_change.checked() << '/'
+       << static_cast<uint16_t>(camera_change.value());
     return os;
   }
 };

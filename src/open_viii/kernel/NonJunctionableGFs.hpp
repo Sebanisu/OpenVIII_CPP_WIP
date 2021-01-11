@@ -160,7 +160,8 @@ public:
   {
     return m_persistent_statuses;
   }
-  // [[nodiscard]] auto Unknown3() const noexcept { return Unknown3_; } // assuming this is part of persistent statuses.
+  // [[nodiscard]] auto Unknown3() const noexcept { return Unknown3_; } //
+  // assuming this is part of persistent statuses.
   [[nodiscard]] auto power_mod() const noexcept
   {
     return m_power_mod;
@@ -175,15 +176,21 @@ public:
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);
     }
-    return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", " << static_cast<std::uint32_t>(m_attack_type)
-              << ", " << static_cast<std::uint32_t>(m_gf_power)// (used in damage formula)
-              << ", " << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-              << static_cast<std::uint32_t>(m_unknown0) << ", " << static_cast<std::uint32_t>(m_status_flags) << ", "
-              << static_cast<std::uint32_t>(m_unknown1) << ", " << static_cast<std::uint32_t>(m_unknown2) << ", "
-              << static_cast<std::uint32_t>(m_element) << ", " << static_cast<std::uint32_t>(m_battle_only_statuses)
-              << ", " << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
-              << static_cast<std::uint32_t>(m_power_mod)// (used in damage formula)
-              << ", " << static_cast<std::uint32_t>(m_level_mod)// (used in damage formula)
+    return os
+           << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+           << static_cast<std::uint32_t>(m_attack_type) << ", "
+           << static_cast<std::uint32_t>(m_gf_power)// (used in damage formula)
+           << ", " << static_cast<std::uint32_t>(m_status_attack_enabler)
+           << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
+           << static_cast<std::uint32_t>(m_status_flags) << ", "
+           << static_cast<std::uint32_t>(m_unknown1) << ", "
+           << static_cast<std::uint32_t>(m_unknown2) << ", "
+           << static_cast<std::uint32_t>(m_element) << ", "
+           << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
+           << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
+           << static_cast<std::uint32_t>(m_power_mod)// (used in damage formula)
+           << ", "
+           << static_cast<std::uint32_t>(m_level_mod)// (used in damage formula)
       ;
   }
 };

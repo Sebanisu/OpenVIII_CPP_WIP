@@ -62,7 +62,8 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    return os << ", " << static_cast<uint32_t>(m_ap_required) << ", " << static_cast<uint32_t>(junction_flags());
+    return os << ", " << static_cast<uint32_t>(m_ap_required) << ", "
+              << static_cast<uint32_t>(junction_flags());
   }
 };
 }// namespace open_viii::kernel

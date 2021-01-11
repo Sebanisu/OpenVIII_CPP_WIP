@@ -71,7 +71,8 @@ public:
   {
     return m_name_offset;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &renzokuken_finishers() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    renzokuken_finishers() const noexcept
   {
     return m_renzokuken_finishers;
   }
@@ -117,12 +118,16 @@ public:
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);
     }
-    return os << ", " << static_cast<std::uint32_t>(m_renzokuken_finishers) << ", "
-              << static_cast<std::uint32_t>(m_unknown) << ", " << static_cast<std::uint32_t>(m_character_id) << ", "
-              << static_cast<std::uint32_t>(m_attack_type) << ", " << static_cast<std::uint32_t>(m_attack_power) << ", "
-              << static_cast<std::uint32_t>(m_attack_parameter) << ", " << static_cast<std::uint32_t>(m_str_bonus)
-              << ", " << static_cast<std::uint32_t>(m_weapon_tier) << ", "
-              << static_cast<std::uint32_t>(m_critical_bonus) << ", " << static_cast<std::uint32_t>(m_melee_weapon);
+    return os << ", " << static_cast<std::uint32_t>(m_renzokuken_finishers)
+              << ", " << static_cast<std::uint32_t>(m_unknown) << ", "
+              << static_cast<std::uint32_t>(m_character_id) << ", "
+              << static_cast<std::uint32_t>(m_attack_type) << ", "
+              << static_cast<std::uint32_t>(m_attack_power) << ", "
+              << static_cast<std::uint32_t>(m_attack_parameter) << ", "
+              << static_cast<std::uint32_t>(m_str_bonus) << ", "
+              << static_cast<std::uint32_t>(m_weapon_tier) << ", "
+              << static_cast<std::uint32_t>(m_critical_bonus) << ", "
+              << static_cast<std::uint32_t>(m_melee_weapon);
   }
 };
 }// namespace open_viii::kernel

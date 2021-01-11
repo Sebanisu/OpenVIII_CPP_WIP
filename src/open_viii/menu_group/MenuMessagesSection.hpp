@@ -52,7 +52,8 @@ public:
   //  {
   //    return data_.at(index);
   //  }
-  template<typename T = std::vector<char>> void set_data(const T &buffer, const size_t &count)
+  template<typename T = std::vector<char>>
+  void set_data(const T &buffer, const size_t &count)
   {
     //[Count of Subsections] = [Start of file] + [Section value]
     auto totalBytes = count * sizeof(std::uint16_t);
@@ -61,9 +62,11 @@ public:
     }
     resize(count);
     std::memcpy(data(), buffer.data(), totalBytes);
-    //[Start of string location] = [Start of file] + [Section value] + [Subsection value]
+    //[Start of string location] = [Start of file] + [Section value] +
+    //[Subsection value]
   }
-  template<typename T = std::vector<char>> explicit MenuMessagesSection(const T &buffer)
+  template<typename T = std::vector<char>>
+  explicit MenuMessagesSection(const T &buffer)
   {
 
     //[Count of Subsections] = [Start of file] + [Section value]
@@ -78,7 +81,8 @@ public:
     }
     resize(totalBytes);
     std::memcpy(data(), ptr, totalBytes);
-    //[Start of string location] = [Start of file] + [Section value] + [Subsection value]
+    //[Start of string location] = [Start of file] + [Section value] +
+    //[Subsection value]
   }
 };
 }// namespace open_viii::menu_group

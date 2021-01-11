@@ -160,11 +160,16 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", " << static_cast<std::uint32_t>(m_attack_type) << ", "
-       << static_cast<std::uint32_t>(m_attack_power) << ", " << static_cast<std::uint32_t>(m_attack_flags) << ", "
-       << static_cast<std::uint32_t>(m_unknown0) << ", " << static_cast<std::uint32_t>(m_target) << ", "
-       << static_cast<std::uint32_t>(m_unknown1) << ", " << static_cast<std::uint32_t>(m_hit_count) << ", "
-       << static_cast<std::uint32_t>(m_element) << ", " << static_cast<std::uint32_t>(m_element_attack_percent) << ", "
+    os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+       << static_cast<std::uint32_t>(m_attack_type) << ", "
+       << static_cast<std::uint32_t>(m_attack_power) << ", "
+       << static_cast<std::uint32_t>(m_attack_flags) << ", "
+       << static_cast<std::uint32_t>(m_unknown0) << ", "
+       << static_cast<std::uint32_t>(m_target) << ", "
+       << static_cast<std::uint32_t>(m_unknown1) << ", "
+       << static_cast<std::uint32_t>(m_hit_count) << ", "
+       << static_cast<std::uint32_t>(m_element) << ", "
+       << static_cast<std::uint32_t>(m_element_attack_percent) << ", "
        << static_cast<std::uint32_t>(m_status_attack_enabler) << ", {";
     auto first = true;
     for (const auto &button : m_button_sequence) {
@@ -177,8 +182,12 @@ public:
       }
       os << static_cast<std::uint32_t>(button);
     }
-    return os << "}, " << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
-              << ", " << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
+    return os << "}, "
+              << static_cast<std::uint32_t>(
+                   m_persistent_statuses)// statuses 0-7
+              << ", "
+              << static_cast<std::uint32_t>(
+                   m_battle_only_statuses)// statuses 8-39
       ;
   }
 };

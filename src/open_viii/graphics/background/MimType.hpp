@@ -45,7 +45,10 @@ public:
     std::uint8_t texture_pages,
     std::uint8_t skipped_palettes = DEFAULT_SKIPPED_PALETTES,
     std::uint8_t type = DEFAULT_TYPE)
-    : m_palettes(palettes), m_texture_pages(texture_pages), m_skipped_palettes(skipped_palettes), m_type(type)
+    : m_palettes(palettes),
+      m_texture_pages(texture_pages),
+      m_skipped_palettes(skipped_palettes),
+      m_type(type)
   {}
 
   [[nodiscard]] const auto &type() const noexcept
@@ -59,15 +62,18 @@ public:
   }
   [[nodiscard]] std::size_t bytes_skipped_palettes() const noexcept
   {
-    return static_cast<std::size_t>(BYTES_PER_PALETTE) * static_cast<std::size_t>(m_skipped_palettes);
+    return static_cast<std::size_t>(BYTES_PER_PALETTE)
+           * static_cast<std::size_t>(m_skipped_palettes);
   }
   [[nodiscard]] std::size_t palette_section_size() const noexcept
   {
-    return static_cast<std::size_t>(BYTES_PER_PALETTE) * static_cast<std::size_t>(m_palettes);
+    return static_cast<std::size_t>(BYTES_PER_PALETTE)
+           * static_cast<std::size_t>(m_palettes);
   }
   [[nodiscard]] std::size_t width() const noexcept
   {
-    return static_cast<std::size_t>(OUT_WIDTH) * static_cast<std::size_t>(m_texture_pages);
+    return static_cast<std::size_t>(OUT_WIDTH)
+           * static_cast<std::size_t>(m_texture_pages);
   }
   [[nodiscard]] std::size_t width(const int &bbp) const noexcept
   {
@@ -75,7 +81,8 @@ public:
   }
   [[nodiscard]] std::size_t file_size() const noexcept
   {
-    return palette_section_size() + (width() * static_cast<std::size_t>(OUT_HEIGHT));
+    return palette_section_size()
+           + (width() * static_cast<std::size_t>(OUT_HEIGHT));
   }
   [[nodiscard]] consteval static auto &height() noexcept
   {
@@ -89,8 +96,8 @@ public:
   {
     return os << '{' << static_cast<std::uint32_t>(m.m_palettes) << ", "
               << static_cast<std::uint32_t>(m.m_texture_pages) << ", "
-              << static_cast<std::uint32_t>(m.m_skipped_palettes) << ", " << static_cast<std::uint32_t>(m.m_type)
-              << '}';
+              << static_cast<std::uint32_t>(m.m_skipped_palettes) << ", "
+              << static_cast<std::uint32_t>(m.m_type) << '}';
   }
 };
 }// namespace open_viii::graphics::background

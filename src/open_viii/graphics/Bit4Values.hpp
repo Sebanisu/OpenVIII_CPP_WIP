@@ -29,21 +29,26 @@ private:
 
 public:
   constexpr Bit4Values() = default;
-  constexpr Bit4Values(const std::uint8_t &in_first, const std::uint8_t &in_second)
+  constexpr Bit4Values(
+    const std::uint8_t &in_first, const std::uint8_t &in_second)
     : m_first(in_first & MASK_4_BIT), m_second(in_second & MASK_4_BIT)
   {}
   constexpr explicit Bit4Values(const std::uint8_t &in_raw)
-    : m_first(static_cast<std::uint8_t>((in_raw >> SHIFT_8_BITS)) & MASK_4_BIT), m_second(in_raw & MASK_4_BIT)
+    : m_first(static_cast<std::uint8_t>((in_raw >> SHIFT_8_BITS)) & MASK_4_BIT),
+      m_second(in_raw & MASK_4_BIT)
   {}
   constexpr explicit operator std::uint8_t() const noexcept
   {
     return static_cast<std::uint8_t>(
-      static_cast<std::uint8_t>(static_cast<std::uint8_t>(m_first << SHIFT_8_BITS) & OFFSET_MASK_4_BIT) | (m_second));
+      static_cast<std::uint8_t>(
+        static_cast<std::uint8_t>(m_first << SHIFT_8_BITS) & OFFSET_MASK_4_BIT)
+      | (m_second));
   }
   /**
    *required to structured binding support
    */
-  template<std::size_t I> requires(I < 2) [[nodiscard]] constexpr auto get() const noexcept
+  template<std::size_t I>
+  requires(I < 2) [[nodiscard]] constexpr auto get() const noexcept
   {
     if constexpr (I == 0) {
       return m_first;
@@ -87,7 +92,9 @@ namespace std {
 /**
  *required to structured binding support
  */
-template<> struct tuple_size<open_viii::graphics::Bit4Values> : std::integral_constant<size_t, 2>
+template<>
+struct tuple_size<open_viii::graphics::Bit4Values>
+  : std::integral_constant<size_t, 2>
 {
 };
 

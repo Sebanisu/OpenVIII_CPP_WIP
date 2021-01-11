@@ -26,11 +26,13 @@ private:
 
 public:
   constexpr Point() = default;
-  constexpr Point(const dimT &in_x, const dimT &in_y) noexcept : m_x(in_x), m_y(in_y){};
+  constexpr Point(const dimT &in_x, const dimT &in_y) noexcept
+    : m_x(in_x), m_y(in_y){};
 
   constexpr auto operator<=>(const Point<dimT> &right) const noexcept = default;
   template<typename T>
-  requires((std::integral<T> || std::floating_point<T>)&&!std::is_same_v<T, dimT>) explicit Point(const Point<T> &r)
+  requires((std::integral<T> || std::floating_point<T>)&&!std::is_same_v<T,
+    dimT>) explicit Point(const Point<T> &r)
   {
     m_x = static_cast<dimT>(r.x());
     m_y = static_cast<dimT>(r.y());
@@ -39,7 +41,8 @@ public:
   [[nodiscard]] constexpr auto abs() const noexcept
   {
     if constexpr (std::signed_integral<dimT> || std::floating_point<dimT>) {
-      return Point<dimT>(static_cast<dimT>(std::abs(m_x)), static_cast<dimT>(std::abs(m_y)));
+      return Point<dimT>(
+        static_cast<dimT>(std::abs(m_x)), static_cast<dimT>(std::abs(m_y)));
     } else {
       return *this;
     }
@@ -95,23 +98,33 @@ public:
       return m_x * m_y;
     }
   }
-  [[nodiscard]] constexpr Point<dimT> operator/(const Point<dimT> &input) const noexcept
+  [[nodiscard]] constexpr Point<dimT> operator/(
+    const Point<dimT> &input) const noexcept
   {
-    return { (input.m_x != static_cast<dimT>(0) ? static_cast<dimT>(m_x / input.m_x) : static_cast<dimT>(0)),
-      (input.m_y != static_cast<dimT>(0) ? static_cast<dimT>(m_y / input.m_y) : static_cast<dimT>(0)) };
+    return { (input.m_x != static_cast<dimT>(0)
+                 ? static_cast<dimT>(m_x / input.m_x)
+                 : static_cast<dimT>(0)),
+      (input.m_y != static_cast<dimT>(0) ? static_cast<dimT>(m_y / input.m_y)
+                                         : static_cast<dimT>(0)) };
   }
-  [[nodiscard]] constexpr Point<dimT> operator*(const Point<dimT> &input) const noexcept
+  [[nodiscard]] constexpr Point<dimT> operator*(
+    const Point<dimT> &input) const noexcept
   {
-    return { static_cast<dimT>(m_x * input.m_x), static_cast<dimT>(m_y * input.m_y) };
+    return { static_cast<dimT>(m_x * input.m_x),
+      static_cast<dimT>(m_y * input.m_y) };
   }
 
-  [[nodiscard]] constexpr Point<dimT> operator-(const Point<dimT> &input) const noexcept
+  [[nodiscard]] constexpr Point<dimT> operator-(
+    const Point<dimT> &input) const noexcept
   {
-    return { static_cast<dimT>(m_x - input.m_x), static_cast<dimT>(m_y - input.m_y) };
+    return { static_cast<dimT>(m_x - input.m_x),
+      static_cast<dimT>(m_y - input.m_y) };
   }
-  [[nodiscard]] constexpr Point<dimT> operator+(const Point<dimT> &input) const noexcept
+  [[nodiscard]] constexpr Point<dimT> operator+(
+    const Point<dimT> &input) const noexcept
   {
-    return { static_cast<dimT>(m_x + input.m_x), static_cast<dimT>(m_y + input.m_y) };
+    return { static_cast<dimT>(m_x + input.m_x),
+      static_cast<dimT>(m_y + input.m_y) };
   }
   friend std::ostream &operator<<(std::ostream &os, const Point<dimT> &input)
   {
@@ -125,7 +138,8 @@ public:
  * @return the max
  */
 template<Number dimT>
-[[nodiscard]] constexpr static Point<dimT> max(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
+[[nodiscard]] constexpr static Point<dimT> max(
+  const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
 {
   return { std::max(rhs.x(), lhs.x()), std::max(rhs.y(), lhs.y()) };
 }
@@ -136,7 +150,8 @@ template<Number dimT>
  * @return the min
  */
 template<Number dimT>
-[[nodiscard]] constexpr static Point<dimT> min(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
+[[nodiscard]] constexpr static Point<dimT> min(
+  const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
 {
   return { std::min(rhs.x(), lhs.x()), std::min(rhs.y(), lhs.y()) };
 }

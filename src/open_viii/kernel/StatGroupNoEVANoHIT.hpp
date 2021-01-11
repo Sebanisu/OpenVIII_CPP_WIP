@@ -29,7 +29,8 @@ private:
   static constexpr auto SPD{ 5U };
   static constexpr auto LUCK{ 6U };
   std::array<T, MAX_COUNT> m_stats{};
-  template<typename maybeNumberT> static bool is_integral([[maybe_unused]] const maybeNumberT &value)
+  template<typename maybeNumberT>
+  static bool is_integral([[maybe_unused]] const maybeNumberT &value)
   {
     return std::is_integral_v<maybeNumberT>;
   }
@@ -67,7 +68,8 @@ public:
   {
     return m_stats.at(LUCK);
   }
-  friend std::ostream &operator<<(std::ostream &os, const StatGroupNoEVANoHIT<T> &input)
+  friend std::ostream &operator<<(
+    std::ostream &os, const StatGroupNoEVANoHIT<T> &input)
   {
     bool first{ true };
     for (const auto &item : input.m_stats) {

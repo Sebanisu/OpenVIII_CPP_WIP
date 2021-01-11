@@ -72,8 +72,9 @@ public:
       os << ", " << tools::u8_to_sv(description);
     }
     os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
-       << static_cast<std::uint32_t>(m_index_to_battle_command) << ", " << static_cast<std::uint32_t>(m_unknown0)
-       << ", " << static_cast<std::uint32_t>(m_unknown1);
+       << static_cast<std::uint32_t>(m_index_to_battle_command) << ", "
+       << static_cast<std::uint32_t>(m_unknown0) << ", "
+       << static_cast<std::uint32_t>(m_unknown1);
     return os;
   }
 };

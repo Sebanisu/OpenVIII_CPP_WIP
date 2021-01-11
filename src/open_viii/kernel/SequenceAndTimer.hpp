@@ -31,7 +31,8 @@ public:
   {
     return m_timer;
   }
-  friend std::ostream &operator<<(std::ostream &os, const SequenceAndTimer &input)
+  friend std::ostream &operator<<(
+    std::ostream &os, const SequenceAndTimer &input)
   {
     return os << '{' << static_cast<std::uint32_t>(input.sequence()) << ", "
               << static_cast<std::uint32_t>(input.timer()) << '}';

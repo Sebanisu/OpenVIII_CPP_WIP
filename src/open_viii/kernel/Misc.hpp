@@ -230,7 +230,8 @@ public:
   {
     return m_zombie_limit_effect;
   }
-  [[maybe_unused]] [[nodiscard]] auto unknown_status_limit_effect() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto
+    unknown_status_limit_effect() const noexcept
   {
     return m_unknown_status_limit_effect;
   }
@@ -314,11 +315,13 @@ public:
   {
     return m_defend_limit_effect;
   }
-  [[maybe_unused]] [[nodiscard]] auto unknown_status_limit_effect0() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto
+    unknown_status_limit_effect0() const noexcept
   {
     return m_unknown_status_limit_effect0;
   }
-  [[maybe_unused]] [[nodiscard]] auto unknown_status_limit_effect1() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto
+    unknown_status_limit_effect1() const noexcept
   {
     return m_unknown_status_limit_effect1;
   }
@@ -338,28 +341,36 @@ public:
   {
     return m_shot_timers;
   }
-  std::ostream &out(std::ostream &os, [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &os,
+    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    return os << static_cast<std::uint32_t>(m_sleep_timer) << ", " << static_cast<std::uint32_t>(m_haste_timer) << ", "
-              << static_cast<std::uint32_t>(m_slow_timer) << ", " << static_cast<std::uint32_t>(m_stop_timer) << ", "
-              << static_cast<std::uint32_t>(m_regen_timer) << ", " << static_cast<std::uint32_t>(m_protect_timer)
-              << ", " << static_cast<std::uint32_t>(m_shell_timer) << ", "
-              << static_cast<std::uint32_t>(m_reflect_timer) << ", " << static_cast<std::uint32_t>(m_aura_timer) << ", "
-              << static_cast<std::uint32_t>(m_curse_timer) << ", " << static_cast<std::uint32_t>(m_doom_timer) << ", "
+    return os << static_cast<std::uint32_t>(m_sleep_timer) << ", "
+              << static_cast<std::uint32_t>(m_haste_timer) << ", "
+              << static_cast<std::uint32_t>(m_slow_timer) << ", "
+              << static_cast<std::uint32_t>(m_stop_timer) << ", "
+              << static_cast<std::uint32_t>(m_regen_timer) << ", "
+              << static_cast<std::uint32_t>(m_protect_timer) << ", "
+              << static_cast<std::uint32_t>(m_shell_timer) << ", "
+              << static_cast<std::uint32_t>(m_reflect_timer) << ", "
+              << static_cast<std::uint32_t>(m_aura_timer) << ", "
+              << static_cast<std::uint32_t>(m_curse_timer) << ", "
+              << static_cast<std::uint32_t>(m_doom_timer) << ", "
               << static_cast<std::uint32_t>(m_invincible_timer) << ", "
-              << static_cast<std::uint32_t>(m_petrifying_timer) << ", " << static_cast<std::uint32_t>(m_float_timer)
-              << ", " << static_cast<std::uint32_t>(m_atb_speed_multiplier) << ", "
-              << static_cast<std::uint32_t>(m_dead_timer) << ", " << static_cast<std::uint32_t>(m_death_limit_effect)
-              << ", " << static_cast<std::uint32_t>(m_poison_limit_effect) << ", "
+              << static_cast<std::uint32_t>(m_petrifying_timer) << ", "
+              << static_cast<std::uint32_t>(m_float_timer) << ", "
+              << static_cast<std::uint32_t>(m_atb_speed_multiplier) << ", "
+              << static_cast<std::uint32_t>(m_dead_timer) << ", "
+              << static_cast<std::uint32_t>(m_death_limit_effect) << ", "
+              << static_cast<std::uint32_t>(m_poison_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_petrify_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_darkness_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_silence_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_berserk_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_zombie_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_unknown_status_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_sleep_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_haste_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_slow_limit_effect) << ", "
+              << static_cast<std::uint32_t>(m_unknown_status_limit_effect)
+              << ", " << static_cast<std::uint32_t>(m_sleep_limit_effect)
+              << ", " << static_cast<std::uint32_t>(m_haste_limit_effect)
+              << ", " << static_cast<std::uint32_t>(m_slow_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_stop_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_regen_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_protect_limit_effect) << ", "
@@ -377,11 +388,12 @@ public:
               << static_cast<std::uint32_t>(m_double_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_triple_limit_effect) << ", "
               << static_cast<std::uint32_t>(m_defend_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_unknown_status_limit_effect0) << ", "
-              << static_cast<std::uint32_t>(m_unknown_status_limit_effect1) << ", "
-              << static_cast<std::uint32_t>(m_charged_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_back_attack_limit_effect) << ", " << m_duel_timers << ", "
-              << m_shot_timers;
+              << static_cast<std::uint32_t>(m_unknown_status_limit_effect0)
+              << ", "
+              << static_cast<std::uint32_t>(m_unknown_status_limit_effect1)
+              << ", " << static_cast<std::uint32_t>(m_charged_limit_effect)
+              << ", " << static_cast<std::uint32_t>(m_back_attack_limit_effect)
+              << ", " << m_duel_timers << ", " << m_shot_timers;
   }
 };
 }// namespace open_viii::kernel

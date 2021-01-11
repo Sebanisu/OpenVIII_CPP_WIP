@@ -20,17 +20,20 @@ namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection002// refine Magic to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_3
-   * Ability	        # of Entries	mngrp.bin Location	        Offset	Description
-   * Mid-Mag-RF	        4 entries	(mngrp.bin loc: 0x2200000)	0x0	Upgrade Magic from low level to mid
-   * level High-Mag-RF	6 entries	(mngrp.bin loc: 0x2200020)	0x20	Upgrade Magic from mid level to high
-   * level
+   * Ability	        # of Entries	mngrp.bin Location	        Offset
+   * Description Mid-Mag-RF	        4 entries	(mngrp.bin loc:
+   * 0x2200000)	0x0	Upgrade Magic from low level to mid level High-Mag-RF
+   * 6 entries	(mngrp.bin loc: 0x2200020)	0x20	Upgrade Magic from mid
+   * level to high level
    */
 
 private:
   static constexpr auto MID_MAG_RF_COUNT = 4U;
   static constexpr auto HIGH_MAG_RF_COUNT = 6U;
-  std::array<RefineEntry<RefineSpellID, RefineSpellID>, MID_MAG_RF_COUNT> m_mid_mag_rf{};
-  std::array<RefineEntry<RefineSpellID, RefineSpellID>, HIGH_MAG_RF_COUNT> m_high_mag_rf{};
+  std::array<RefineEntry<RefineSpellID, RefineSpellID>, MID_MAG_RF_COUNT>
+    m_mid_mag_rf{};
+  std::array<RefineEntry<RefineSpellID, RefineSpellID>, HIGH_MAG_RF_COUNT>
+    m_high_mag_rf{};
 
 
 public:

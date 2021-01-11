@@ -22,8 +22,9 @@
 #include <cstdint>
 namespace open_viii::graphics::background {
 /*
- * A disambiguation ID based on Pupu an application for descrambling and rescrambling the tiles. The values in here
- * should be enough to keep from having collisions. I'm storing the seperate values for easy access on post
+ * A disambiguation ID based on Pupu an application for descrambling and
+ * rescrambling the tiles. The values in here should be enough to keep from
+ * having collisions. I'm storing the seperate values for easy access on post
  */
 struct Pupu
 {
@@ -77,21 +78,27 @@ public:
   }
 
   template<typename tileT>
-  requires(std::is_convertible_v<tileT,
-             Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) friend auto
+  requires(
+    std::is_convertible_v<tileT,
+      Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) friend auto
     operator==(const Pupu &left, const tileT &right)
   {
-    return left.m_z == right.z() && left.m_depth == right.depth() && left.m_layer_id == right.layer_id()
-           && left.m_blend_mode == right.blend_mode() && left.m_animation_id == right.animation_id()
+    return left.m_z == right.z() && left.m_depth == right.depth()
+           && left.m_layer_id == right.layer_id()
+           && left.m_blend_mode == right.blend_mode()
+           && left.m_animation_id == right.animation_id()
            && left.m_animation_state == right.animation_state();
   }
   template<typename tileT>
-  requires(std::is_convertible_v<tileT,
-             Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) friend auto
+  requires(
+    std::is_convertible_v<tileT,
+      Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) friend auto
     operator==(const tileT &left, const Pupu &right)
   {
-    return right.m_z == left.z() && right.m_depth == left.depth() && right.m_layer_id == left.layer_id()
-           && right.m_blend_mode == left.blend_mode() && right.m_animation_id == left.animation_id()
+    return right.m_z == left.z() && right.m_depth == left.depth()
+           && right.m_layer_id == left.layer_id()
+           && right.m_blend_mode == left.blend_mode()
+           && right.m_animation_id == left.animation_id()
            && right.m_animation_state == left.animation_state();
   }
   template<typename tileT>
@@ -100,8 +107,10 @@ public:
       Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) bool AllButZ(const tileT
       &left) const noexcept
   {
-    return m_depth == left.depth() && m_layer_id == left.layer_id() && m_blend_mode == left.blend_mode()
-           && m_animation_id == left.animation_id() && m_animation_state == left.animation_state();
+    return m_depth == left.depth() && m_layer_id == left.layer_id()
+           && m_blend_mode == left.blend_mode()
+           && m_animation_id == left.animation_id()
+           && m_animation_state == left.animation_state();
   }
   /**
    * Computes the ID from the values.
@@ -124,8 +133,9 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const Pupu &input)
   {
-    return os << std::uppercase << std::hex << std::setfill('0') << std::setw(16U) << input.generate()
-              << std::nouppercase << std::dec << std::setfill(' ') << std::setw(0U);
+    return os << std::uppercase << std::hex << std::setfill('0')
+              << std::setw(16U) << input.generate() << std::nouppercase
+              << std::dec << std::setfill(' ') << std::setw(0U);
   }
   constexpr explicit Pupu(const std::uint64_t &pupu_id) noexcept
   {
@@ -141,7 +151,9 @@ public:
     m_z = pupu_reader.extract_uint<BIT16>();
   }
 
-  explicit Pupu(std::string_view hex) : Pupu(std::strtoull(std::ranges::data(hex), nullptr, HEX_BASE)) {}
+  explicit Pupu(std::string_view hex)
+    : Pupu(std::strtoull(std::ranges::data(hex), nullptr, HEX_BASE))
+  {}
 
   [[nodiscard]] const std::uint16_t &z() const noexcept
   {

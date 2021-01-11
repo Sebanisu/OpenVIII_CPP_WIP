@@ -77,7 +77,8 @@ public:
     return os
 
            << ", " << static_cast<std::uint32_t>(m_ability_data_id) << ", "
-           << static_cast<std::uint32_t>(m_unknown_flags) << ", " << static_cast<std::uint32_t>(m_target) << ", "
+           << static_cast<std::uint32_t>(m_unknown_flags) << ", "
+           << static_cast<std::uint32_t>(m_target) << ", "
            << static_cast<std::uint32_t>(m_unknown)
 
       ;

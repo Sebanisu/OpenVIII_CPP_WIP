@@ -15,7 +15,8 @@
 #include <iostream>
 #include <random>
 #include <thread>
-static void fuzz_loop_check_compress_and_decompress(const std::atomic_bool &stop)
+static void fuzz_loop_check_compress_and_decompress(
+  const std::atomic_bool &stop)
 {
 
   // test LZSS
@@ -24,7 +25,8 @@ static void fuzz_loop_check_compress_and_decompress(const std::atomic_bool &stop
   std::uniform_int_distribution<unsigned char> dis(0U);
 
   size_t i{ 0 };
-  std::cout << "Testing LZSS by passing a random std::vector<char> to Compress() and Decompress()...\n";
+  std::cout << "Testing LZSS by passing a random std::vector<char> to "
+               "Compress() and Decompress()...\n";
   static const auto run_once = [&dis, &gen](const size_t &size) {
     if (size <= 0) {
       return true;
@@ -36,10 +38,14 @@ static void fuzz_loop_check_compress_and_decompress(const std::atomic_bool &stop
     std::generate(random_chars.begin(), random_chars.end(), [&dis, &gen]() {
       return static_cast<char>(dis(gen));
     });
-    // instead of storing compressed variable we just pass it directly into Decompress();
-    auto uncompressed = open_viii::compression::LZSS::decompress(open_viii::compression::LZSS::compress(random_chars));
-    if (std::equal(random_chars.begin(), random_chars.end(), uncompressed.begin())) {
-      std::cout << "\rSuccessfully compressed and uncompressed data: " << size << " bytes" << std::flush;
+    // instead of storing compressed variable we just pass it directly into
+    // Decompress();
+    auto uncompressed = open_viii::compression::LZSS::decompress(
+      open_viii::compression::LZSS::compress(random_chars));
+    if (std::equal(
+          random_chars.begin(), random_chars.end(), uncompressed.begin())) {
+      std::cout << "\rSuccessfully compressed and uncompressed data: " << size
+                << " bytes" << std::flush;
       return true;
     }
     std::cerr << "Failure!\n";
@@ -57,7 +63,8 @@ static void fuzz_loop_decompress_lzss(const std::atomic_bool &stop)
   std::uniform_int_distribution<unsigned char> dis(0U);
 
   size_t i{ 0 };
-  std::cout << "Testing LZSS by passing a random std::vector<char> to Decompress()...\n";
+  std::cout << "Testing LZSS by passing a random std::vector<char> to "
+               "Decompress()...\n";
   static const auto run_once = [&dis, &gen](const size_t &size) {
     if (size <= 0) {
       return true;
@@ -71,13 +78,14 @@ static void fuzz_loop_decompress_lzss(const std::atomic_bool &stop)
     });
     // decompress random input see if a error happens.
     auto uncompressed = open_viii::compression::LZSS::decompress(random_chars);
-    std::cout << "\rSuccessfully uncompressed data w/o crash: " << size << " bytes" << std::flush;
+    std::cout << "\rSuccessfully uncompressed data w/o crash: " << size
+              << " bytes" << std::flush;
     return true;
   };
   while (!stop && run_once(i++)) {}// inplace lambda
 }
 
-//static void fuzz_loop_decompress_lz4(const std::atomic_bool &stop)
+// static void fuzz_loop_decompress_lz4(const std::atomic_bool &stop)
 //{
 //
 //  // test LZSS
@@ -86,8 +94,9 @@ static void fuzz_loop_decompress_lzss(const std::atomic_bool &stop)
 //  std::uniform_int_distribution<unsigned char> dis(0U);
 //
 //  size_t i{ 0 };
-//  std::cout << "Testing LZ4 by passing a random std::vector<char> to Decompress()...\n";
-//  static const auto run_once = [&dis, &gen](const size_t &size) {
+//  std::cout << "Testing LZ4 by passing a random std::vector<char> to
+//  Decompress()...\n"; static const auto run_once = [&dis, &gen](const size_t
+//  &size) {
 //    if (size <= 0) {
 //      return true;
 //    }
@@ -98,10 +107,11 @@ static void fuzz_loop_decompress_lzss(const std::atomic_bool &stop)
 //    std::generate(random_chars.begin(), random_chars.end(), [&dis, &gen]() {
 //      return static_cast<char>(dis(gen));
 //    });
-//    // decompress random input see if a error happens. Unsure if this is doing anything because LZ4 expects things.
-//    auto uncompressed = open_viii::compression::l4z::decompress(random_chars, size);// LZ4 expects to know the size.
-//    std::cout << "\rSuccessfully uncompressed data w/o crash: " << size << " bytes" << std::flush;
-//    return true;
+//    // decompress random input see if a error happens. Unsure if this is doing
+//    anything because LZ4 expects things. auto uncompressed =
+//    open_viii::compression::l4z::decompress(random_chars, size);// LZ4 expects
+//    to know the size. std::cout << "\rSuccessfully uncompressed data w/o
+//    crash: " << size << " bytes" << std::flush; return true;
 //  };
 //  while (!stop && run_once(i++)) {}// inplace lambda
 //}
@@ -125,15 +135,15 @@ int main()
     stop = true;
   }
 
-//  std::cout << '\n';
-//  stop = false;
-//  {
-//    auto thread = std::jthread{ [&stop]() {
-//      fuzz_loop_decompress_lz4(stop);
-//    } };
-//    std::cin.get();
-//    stop = true;
-//  }
+  //  std::cout << '\n';
+  //  stop = false;
+  //  {
+  //    auto thread = std::jthread{ [&stop]() {
+  //      fuzz_loop_decompress_lz4(stop);
+  //    } };
+  //    std::cin.get();
+  //    stop = true;
+  //  }
 
   return 0;
 }

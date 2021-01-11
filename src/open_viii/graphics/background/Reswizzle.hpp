@@ -25,8 +25,10 @@ struct PupuPath
   //  }
 };
 template<typename map_type>
-requires(std::is_same_v<map_type,
-           Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct Reswizzle
+requires(
+  std::is_same_v<map_type,
+    Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct
+  Reswizzle
 {
 private:
   const Map<map_type> m_map{};
@@ -37,7 +39,8 @@ private:
   const std::vector<PupuPath> m_pupu_paths{};
   const std::vector<std::uint16_t> m_valid_texture_ids{};
 
-  mutable std::uint8_t m_scale{};// when I can detect the scale this will probably be mutable or I can detect on init
+  mutable std::uint8_t m_scale{};// when I can detect the scale this will
+                                 // probably be mutable or I can detect on init
 
   const Point<uint16_t> m_map_width_height{};
   mutable std::uint32_t m_width{};
@@ -85,8 +88,10 @@ private:
   auto find_pupu_image_file_paths() const
   {
     std::vector<PupuPath> pupu_paths{};
-    open_viii::tools::execute_on_directory(
-      m_dir_path, { m_dir_name }, { ".ppm" }, [&pupu_paths, this](const std::filesystem::path &file_path) {
+    open_viii::tools::execute_on_directory(m_dir_path,
+      { m_dir_name },
+      { ".ppm" },
+      [&pupu_paths, this](const std::filesystem::path &file_path) {
         // if(!file_path.has_stem()) {return;}
         auto basename = file_path.stem().string();
         static constexpr auto minsize{ 24 };
@@ -94,18 +99,22 @@ private:
           return;
         }
         constexpr static auto suffix_offset = 7;
-        auto suffix = std::string_view(basename).substr(std::ranges::size(basename) - suffix_offset);
+        auto suffix = std::string_view(basename).substr(
+          std::ranges::size(basename) - suffix_offset);
         if (suffix != "_mimmap") {
           return;
         }
         constexpr static auto hex_begin_offset = 23;
         constexpr static auto hex_length = 16;
         constexpr static auto hex_begin_offset_and_dash = hex_begin_offset + 1;
-        auto hex = std::string_view(basename).substr(std::ranges::size(basename) - hex_begin_offset, hex_length);
-        auto prefix = std::string_view(basename).substr(0, std::ranges::size(basename) - hex_begin_offset_and_dash);
+        auto hex = std::string_view(basename).substr(
+          std::ranges::size(basename) - hex_begin_offset, hex_length);
+        auto prefix = std::string_view(basename).substr(
+          0, std::ranges::size(basename) - hex_begin_offset_and_dash);
         if (open_viii::tools::i_equals(prefix, m_dir_name)) {
           // std::cout << prefix << '\n';
-          pupu_paths.emplace_back(PupuPath{ open_viii::graphics::background::Pupu(hex), file_path });
+          pupu_paths.emplace_back(
+            PupuPath{ open_viii::graphics::background::Pupu(hex), file_path });
         }
       });
     return pupu_paths;
@@ -115,21 +124,27 @@ private:
     std::vector<std::uint16_t> valid_texture_ids{};
     const auto tiles = m_map.tiles();
     valid_texture_ids.reserve(std::ranges::size(tiles));
-    std::ranges::transform(tiles, std::back_insert_iterator(valid_texture_ids), [](const map_type &tile) {
-      return tile.texture_id();
-    });
+    std::ranges::transform(tiles,
+      std::back_insert_iterator(valid_texture_ids),
+      [](const map_type &tile) {
+        return tile.texture_id();
+      });
     std::ranges::sort(valid_texture_ids);
-    auto last = std::unique(std::ranges::begin(valid_texture_ids), std::ranges::end(valid_texture_ids));
+    auto last = std::unique(std::ranges::begin(valid_texture_ids),
+      std::ranges::end(valid_texture_ids));
     valid_texture_ids.erase(last, std::ranges::end(valid_texture_ids));
     return valid_texture_ids;
   }
-  template<std::invocable<std::uint16_t> lambdaT> void for_each_texture_id(const lambdaT &lambda) const
+  template<std::invocable<std::uint16_t> lambdaT>
+  void for_each_texture_id(const lambdaT &lambda) const
   {
     std::ranges::for_each(m_valid_texture_ids, lambda);
   }
 
   template<std::invocable<map_type> lambdaT1, std::invocable<map_type> lambdaT2>
-  void for_each_tile(const std::vector<map_type> &vector, const lambdaT1 &exec, const lambdaT2 &filter) const
+  void for_each_tile(const std::vector<map_type> &vector,
+    const lambdaT1 &exec,
+    const lambdaT2 &filter) const
   {
     std::ranges::for_each(vector | std::views::filter(filter), exec);
   }
@@ -142,37 +157,44 @@ private:
   void save_and_clear_out_buffer(const std::uint16_t &texture_id) const
   {
     if (m_drawn) {
-      std::string output_name = m_output_prefix + "(" + std::to_string(texture_id) + ")";
+      std::string output_name =
+        m_output_prefix + "(" + std::to_string(texture_id) + ")";
       Ppm::save(m_out, m_width, m_height, output_name, true);
-      std::fill(std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
+      std::fill(
+        std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
       m_drawn = false;
     }
   }
-  void save_and_clear_out_buffer(const std::uint16_t &texture_id, const std::uint8_t &palette) const
+  void save_and_clear_out_buffer(
+    const std::uint16_t &texture_id, const std::uint8_t &palette) const
   {
     if (m_drawn) {
-      std::string output_name =
-        m_output_prefix + "(" + std::to_string(texture_id) + "_" + std::to_string(palette) + ")";
+      std::string output_name = m_output_prefix + "("
+                                + std::to_string(texture_id) + "_"
+                                + std::to_string(palette) + ")";
       Ppm::save(m_out, m_width, m_height, output_name, true);
-      std::fill(std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
+      std::fill(
+        std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
       m_drawn = false;
     }
   }
   void process_main_tiles(const uint16_t &texture_id) const
   {
-    std::ranges::for_each(m_pupu_paths, [this, &texture_id](const PupuPath &pupu_path) {
-      const auto ppm = get_ppm(pupu_path);
-      update_dims(ppm);
+    std::ranges::for_each(
+      m_pupu_paths, [this, &texture_id](const PupuPath &pupu_path) {
+        const auto ppm = get_ppm(pupu_path);
+        update_dims(ppm);
 
-      for_each_tile(
-        [this, &ppm](const map_type &tile) {
-          static constexpr auto tile_size = 16U;
-          open_viii::tools::for_each_xy(tile_size * m_scale, get_set_color_lambda(ppm, tile));
-        },
-        [&pupu_path, &texture_id](const map_type &tile) {
-          return pupu_path.pupu == tile && tile.texture_id() == texture_id;
-        });
-    });
+        for_each_tile(
+          [this, &ppm](const map_type &tile) {
+            static constexpr auto tile_size = 16U;
+            open_viii::tools::for_each_xy(
+              tile_size * m_scale, get_set_color_lambda(ppm, tile));
+          },
+          [&pupu_path, &texture_id](const map_type &tile) {
+            return pupu_path.pupu == tile && tile.texture_id() == texture_id;
+          });
+      });
 
     save_and_clear_out_buffer(texture_id);
   }
@@ -181,42 +203,53 @@ private:
   void process_skipped_tiles(const uint16_t &texture_id) const
   {
     constexpr static auto indexes = std::ranges::views::iota(0U, PALETTE_COUNT);
-    std::ranges::for_each(indexes, [this, &texture_id](const uint8_t &palette_id) {
-      if (std::ranges::empty(m_skip.at(palette_id))) {
-        return;
-      }
-      std::ranges::for_each(m_pupu_paths, [this, &texture_id, &palette_id](const PupuPath &pupu_path) {
-        const auto ppm = get_ppm(pupu_path);
-        update_dims(ppm);
-        for_each_tile(
-          m_skip.at(palette_id),
-          [this, &ppm](const map_type &tile) {
-            static constexpr auto tile_size = 16U;
-            open_viii::tools::for_each_xy(tile_size * m_scale, get_set_color_lambda(ppm, tile, true));
-          },
-          [&pupu_path, &texture_id, &palette_id](const map_type &tile) {
-            return pupu_path.pupu == tile && tile.texture_id() == texture_id && tile.palette_id() == palette_id;
+    std::ranges::for_each(
+      indexes, [this, &texture_id](const uint8_t &palette_id) {
+        if (std::ranges::empty(m_skip.at(palette_id))) {
+          return;
+        }
+        std::ranges::for_each(m_pupu_paths,
+          [this, &texture_id, &palette_id](const PupuPath &pupu_path) {
+            const auto ppm = get_ppm(pupu_path);
+            update_dims(ppm);
+            for_each_tile(
+              m_skip.at(palette_id),
+              [this, &ppm](const map_type &tile) {
+                static constexpr auto tile_size = 16U;
+                open_viii::tools::for_each_xy(
+                  tile_size * m_scale, get_set_color_lambda(ppm, tile, true));
+              },
+              [&pupu_path, &texture_id, &palette_id](const map_type &tile) {
+                return pupu_path.pupu == tile && tile.texture_id() == texture_id
+                       && tile.palette_id() == palette_id;
+              });
           });
+        save_and_clear_out_buffer(texture_id, palette_id);
       });
-      save_and_clear_out_buffer(texture_id, palette_id);
-    });
   }
   auto get_clear_color_lambda(const Ppm &ppm, const map_type &tile) const
   {
     return [this, &tile, &ppm](const auto &x, const auto &y) -> bool {
-      const auto scaled_tile_y = static_cast<std::size_t>(tile.y()) * this->m_scale;
-      const auto scaled_tile_x = static_cast<std::size_t>(tile.x()) * this->m_scale;
+      const auto scaled_tile_y =
+        static_cast<std::size_t>(tile.y()) * this->m_scale;
+      const auto scaled_tile_x =
+        static_cast<std::size_t>(tile.x()) * this->m_scale;
       auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
       if (!color.is_black()) {
-        const std::size_t scaled_tile_source_x = tile.source_x() * this->m_scale;
-        const std::size_t scaled_tile_source_y = tile.source_y() * this->m_scale;
+        const std::size_t scaled_tile_source_x =
+          tile.source_x() * this->m_scale;
+        const std::size_t scaled_tile_source_y =
+          tile.source_y() * this->m_scale;
         this->m_out.at(
-          x + scaled_tile_source_x + ((y + scaled_tile_source_y) * this->m_width)) = {};// put the values back to black.
+          x + scaled_tile_source_x
+          + ((y + scaled_tile_source_y)
+             * this->m_width)) = {};// put the values back to black.
       }
       return false;
     };
   }
-  auto get_set_color_lambda(const Ppm &ppm, const map_type &tile, const bool skipped = false) const
+  auto get_set_color_lambda(
+    const Ppm &ppm, const map_type &tile, const bool skipped = false) const
   {
     return [this, &tile, &ppm, skipped](const auto &x, const auto &y) -> bool {
       const auto scaled_tile_y = scale_dim(tile.y());
@@ -225,7 +258,8 @@ private:
       if (!color.is_black()) {
         const auto scaled_tile_source_x = scale_dim(tile.source_x());
         const auto scaled_tile_source_y = scale_dim(tile.source_y());
-        const auto dst_index = x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width);
+        const auto dst_index =
+          x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width);
         const auto &current = m_out.at(dst_index);
         if (!skipped && !current.is_black()) {
           tools::for_each_xy(x + 1, y + 1, get_clear_color_lambda(ppm, tile));
@@ -244,9 +278,10 @@ private:
   }
   [[nodiscard]] std::size_t skipped_size() const
   {
-    const auto array = m_skip | std::views::transform([](const std::vector<map_type> &vector) {
-      return std::ranges::size(vector);
-    });
+    const auto array =
+      m_skip | std::views::transform([](const std::vector<map_type> &vector) {
+        return std::ranges::size(vector);
+      });
 
     return std::reduce(std::ranges::begin(array),
       std::ranges::end(array),

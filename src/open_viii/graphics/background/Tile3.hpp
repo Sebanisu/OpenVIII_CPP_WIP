@@ -23,7 +23,8 @@
 #include <string_view>
 namespace open_viii::graphics::background {
 /**
- * @see https://github.com/myst6re/deling/blob/develop/files/BackgroundFile.h#L49
+ * @see
+ * https://github.com/myst6re/deling/blob/develop/files/BackgroundFile.h#L49
  * from pupu Logo.map is 14 bytes per entry.
  */
 struct Tile3
@@ -39,8 +40,10 @@ public:
   Tile3() = default;
   friend auto operator==(const Tile3 &left, const Tile3 &right)
   {
-    return left.m_xy == right.m_xy && left.m_z == right.m_z && left.m_tex_id_buffer == right.m_tex_id_buffer
-           && left.m_palette_id == right.m_palette_id && left.m_source_xy == right.m_source_xy;
+    return left.m_xy == right.m_xy && left.m_z == right.m_z
+           && left.m_tex_id_buffer == right.m_tex_id_buffer
+           && left.m_palette_id == right.m_palette_id
+           && left.m_source_xy == right.m_source_xy;
   }
   static constexpr auto HEIGHT{ 16U };
   static constexpr auto WIDTH{ 16U };
@@ -115,9 +118,13 @@ public:
   {
     return { source_x(), source_y(), WIDTH, HEIGHT };
   }
-  [[maybe_unused]] [[nodiscard]] Rectangle<std::uint16_t> out_rectangle() const noexcept
+  [[maybe_unused]] [[nodiscard]] Rectangle<std::uint16_t>
+    out_rectangle() const noexcept
   {
-    return { static_cast<std::uint16_t>(m_xy.x()), std::uint16_t(m_xy.y()), WIDTH, HEIGHT };
+    return { static_cast<std::uint16_t>(m_xy.x()),
+      std::uint16_t(m_xy.y()),
+      WIDTH,
+      HEIGHT };
   }
   constexpr static auto EXPLICIT_SIZE{ 14U };
   static constexpr std::array FORCE_TYPE_VALUES = { std::string_view("logo") };

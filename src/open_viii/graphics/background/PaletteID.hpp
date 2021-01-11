@@ -18,7 +18,8 @@ namespace open_viii::graphics::background {
 /**
  * 4 bit paletteID nested inside of 16 bits of data.
  * 6 bits = Always 30 | 4 bits = PaletteID | 6 bits = Always 0
- * @see https://github.com/myst6re/deling/blob/develop/files/BackgroundFile.h#L49
+ * @see
+ * https://github.com/myst6re/deling/blob/develop/files/BackgroundFile.h#L49
  */
 struct PaletteID
 {
@@ -42,12 +43,14 @@ public:
   }
   [[nodiscard]] std::uint8_t id() const noexcept
   {
-    return static_cast<std::uint8_t>(static_cast<std::uint16_t>(m_data & ID_MASK) >> ID_SHIFT);
+    return static_cast<std::uint8_t>(
+      static_cast<std::uint16_t>(m_data & ID_MASK) >> ID_SHIFT);
   }
 
   [[nodiscard]] std::uint8_t zero() const noexcept
   {
-    return static_cast<std::uint8_t>(static_cast<std::uint16_t>(m_data & ZERO_MASK) >> ZERO_SHIFT);
+    return static_cast<std::uint8_t>(
+      static_cast<std::uint16_t>(m_data & ZERO_MASK) >> ZERO_SHIFT);
   }
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 2U };
 };

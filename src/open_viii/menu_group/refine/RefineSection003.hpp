@@ -21,9 +21,9 @@ namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection003// refine items to items
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data_3
-   * Ability	        # of Entries	mngrp.bin Location	        Offset	Description
-   * Med LV Up	        12 Entries	(mngrp.bin loc: 0x220800)	0x0	Level up low level recovery items to
-   * higher items level
+   * Ability	        # of Entries	mngrp.bin Location	        Offset
+   * Description Med LV Up	        12 Entries	(mngrp.bin loc:
+   * 0x220800)	0x0	Level up low level recovery items to higher items level
    */
 
 private:

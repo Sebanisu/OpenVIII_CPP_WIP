@@ -18,27 +18,36 @@
 #include "open_viii/graphics/background/SwizzleTree.hpp"
 #include "open_viii/paths/Paths.hpp"
 
-static void save_and_clear(std::vector<open_viii::graphics::Color24<0, 1, 2>> &out,
+static void save_and_clear(
+  std::vector<open_viii::graphics::Color24<0, 1, 2>> &out,
   const std::unsigned_integral auto &width,
   const std::unsigned_integral auto &height,
   const std::unsigned_integral auto &tex_id,
   const std::unsigned_integral auto &bpp,
   const std::string &output_prefix)
 {
-  std::string output_name = output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(tex_id);
+  std::string output_name =
+    output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(tex_id);
   open_viii::graphics::Ppm::save(out, width, height, output_name);
-  std::fill(std::ranges::begin(out), std::ranges::end(out), open_viii::graphics::Color24<0, 1, 2>{});
+  std::fill(std::ranges::begin(out),
+    std::ranges::end(out),
+    open_viii::graphics::Color24<0, 1, 2>{});
 }
 int main()
 {
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
-    const auto archives = open_viii::archive::Archives<open_viii::LangT::en>(path);
-    [[maybe_unused]] const auto &field = archives.get<open_viii::archive::ArchiveTypeT::field>();
+    const auto archives =
+      open_viii::archive::Archives<open_viii::LangT::en>(path);
+    [[maybe_unused]] const auto &field =
+      archives.get<open_viii::archive::ArchiveTypeT::field>();
     {
-      open_viii::tools::execute_on_directories(
-        std::filesystem::current_path(), {}, [&field](const std::filesystem::path &directory_path) {
-          const auto swizzle_tree = open_viii::graphics::background::SwizzleTree{ field, directory_path };
+      open_viii::tools::execute_on_directories(std::filesystem::current_path(),
+        {},
+        [&field](const std::filesystem::path &directory_path) {
+          const auto swizzle_tree =
+            open_viii::graphics::background::SwizzleTree{ field,
+              directory_path };
           if (!static_cast<bool>(swizzle_tree)) {
             return;
           }
@@ -49,5 +58,6 @@ int main()
   });
   const auto end = std::chrono::steady_clock::now();
   const auto diff = end - start;
-  std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms" << '\n';
+  std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"
+            << '\n';
 }

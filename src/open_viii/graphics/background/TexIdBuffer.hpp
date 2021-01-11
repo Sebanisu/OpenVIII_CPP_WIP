@@ -19,7 +19,8 @@ namespace open_viii::graphics::background {
 /**
  * 4 bit paletteID nested inside of 16 bits of data.
  * 2 bits = depth | 2 bits = blend | 1 bit = draw | 4 bits = textID
- * @see https://github.com/myst6re/deling/blob/develop/files/BackgroundFile.h#L49
+ * @see
+ * https://github.com/myst6re/deling/blob/develop/files/BackgroundFile.h#L49
  */
 struct TexIdBuffer
 {
@@ -47,7 +48,8 @@ public:
   }
   [[nodiscard]] std::uint8_t blend() const noexcept
   {
-    return static_cast<std::uint8_t>(static_cast<std::uint16_t>(m_data & BLEND_MASK) >> BLEND_SHIFT);
+    return static_cast<std::uint8_t>(
+      static_cast<std::uint16_t>(m_data & BLEND_MASK) >> BLEND_SHIFT);
   }
   [[nodiscard]] bool draw() const noexcept
   {
@@ -55,7 +57,8 @@ public:
   }
   [[nodiscard]] BPPT depth() const noexcept
   {
-    auto raw = static_cast<std::uint8_t>(static_cast<std::uint16_t>(m_data & DEPTH_MASK) >> DEPTH_SHIFT);
+    auto raw = static_cast<std::uint8_t>(
+      static_cast<std::uint16_t>(m_data & DEPTH_MASK) >> DEPTH_SHIFT);
     BPPT out{};
     if (raw == 0) {
       out.bpp4(true);
@@ -70,7 +73,8 @@ public:
   }
   [[nodiscard]] std::uint8_t unk() const noexcept
   {
-    return static_cast<std::uint8_t>(static_cast<std::uint16_t>(m_data & UNK_MASK) >> UNK_SHIFT);
+    return static_cast<std::uint8_t>(
+      static_cast<std::uint16_t>(m_data & UNK_MASK) >> UNK_SHIFT);
   }
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 2U };
 };

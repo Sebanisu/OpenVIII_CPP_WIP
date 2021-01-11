@@ -114,12 +114,17 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", " << static_cast<std::uint32_t>(m_unknown0)
-              << ", " << static_cast<std::uint32_t>(m_attack_type) << ", " << static_cast<std::uint32_t>(m_unknown1)
-              << ", " << static_cast<std::uint32_t>(m_unknown2) << ", " << static_cast<std::uint32_t>(m_attack_flags)
-              << ", " << static_cast<std::uint32_t>(m_unknown3) << ", " << static_cast<std::uint32_t>(m_element) << ", "
-              << static_cast<std::uint32_t>(m_status_attack) << ", " << static_cast<std::uint32_t>(m_critical_bonus)
-              << ", " << static_cast<std::uint32_t>(m_unknown4);
+    return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+              << static_cast<std::uint32_t>(m_unknown0) << ", "
+              << static_cast<std::uint32_t>(m_attack_type) << ", "
+              << static_cast<std::uint32_t>(m_unknown1) << ", "
+              << static_cast<std::uint32_t>(m_unknown2) << ", "
+              << static_cast<std::uint32_t>(m_attack_flags) << ", "
+              << static_cast<std::uint32_t>(m_unknown3) << ", "
+              << static_cast<std::uint32_t>(m_element) << ", "
+              << static_cast<std::uint32_t>(m_status_attack) << ", "
+              << static_cast<std::uint32_t>(m_critical_bonus) << ", "
+              << static_cast<std::uint32_t>(m_unknown4);
   }
 };
 }// namespace open_viii::kernel

@@ -17,7 +17,9 @@
 #include <iostream>
 
 namespace open_viii::kernel {
-template<typename T> requires(std::unsigned_integral<T> || std::ranges::contiguous_range<T>) struct GFGroup
+template<typename T>
+requires(
+  std::unsigned_integral<T> || std::ranges::contiguous_range<T>) struct GFGroup
 {
 private:
   static constexpr auto MAX_G_FS = 16U;
@@ -54,11 +56,13 @@ private:
   static constexpr auto CACTUAR{ 13U };
   static constexpr auto TONBERRY{ 14U };
   static constexpr auto EDEN{ 15U };
-  //  template<typename maybeNumberT> static bool is_integral([[maybe_unused]] const maybeNumberT &value)
+  //  template<typename maybeNumberT> static bool is_integral([[maybe_unused]]
+  //  const maybeNumberT &value)
   //  {
   //    return std::is_integral_v<maybeNumberT>;
   //  }
-  //  template<typename maybeNumberT> static bool is_integral() { return std::is_integral_v<maybeNumberT>; }
+  //  template<typename maybeNumberT> static bool is_integral() { return
+  //  std::is_integral_v<maybeNumberT>; }
 
 public:
   [[nodiscard]] T &quetzalcoatl() const noexcept

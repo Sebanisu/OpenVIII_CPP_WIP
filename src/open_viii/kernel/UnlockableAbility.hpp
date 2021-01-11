@@ -40,8 +40,9 @@ public:
   }
   friend auto &operator<<(std::ostream &os, const UnlockableAbility &ua)
   {
-    return os << '{' << static_cast<std::uint32_t>(ua.unlocker()) << ", " << static_cast<std::uint32_t>(ua.unknown())
-              << ", " << static_cast<std::uint32_t>(ua.ability()) << '}';
+    return os << '{' << static_cast<std::uint32_t>(ua.unlocker()) << ", "
+              << static_cast<std::uint32_t>(ua.unknown()) << ", "
+              << static_cast<std::uint32_t>(ua.ability()) << '}';
   }
 };
 }// namespace open_viii::kernel

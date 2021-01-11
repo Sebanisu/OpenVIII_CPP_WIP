@@ -72,8 +72,9 @@ public:
       os << ", " << tools::u8_to_sv(description);
     }
     return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
-              << static_cast<std::uint32_t>(m_menu_file_index) << ", " << static_cast<std::uint32_t>(m_start_offset)
-              << ", " << static_cast<std::uint32_t>(m_end_offset);
+              << static_cast<std::uint32_t>(m_menu_file_index) << ", "
+              << static_cast<std::uint32_t>(m_start_offset) << ", "
+              << static_cast<std::uint32_t>(m_end_offset);
   }
 };
 }// namespace open_viii::kernel

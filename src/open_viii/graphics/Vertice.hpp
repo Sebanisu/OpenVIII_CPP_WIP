@@ -88,5 +88,5 @@ public:
     return os << '(' << lhs.x() << ", " << lhs.y() << ", " << lhs.z() << ')';
   }
 };
-}// namespace open_viii::battle::stage
+}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_VERTICE_HPP

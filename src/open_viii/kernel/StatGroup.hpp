@@ -17,7 +17,9 @@
 #include <concepts>
 #include <iostream>
 namespace open_viii::kernel {
-template<typename T> requires(std::unsigned_integral<T> || std::ranges::contiguous_range<T>) struct StatGroup
+template<typename T>
+requires(std::unsigned_integral<
+           T> || std::ranges::contiguous_range<T>) struct StatGroup
 {
 private:
   static constexpr auto STAT_COUNT = 9U;
@@ -31,11 +33,13 @@ private:
   static constexpr auto EVA{ 6U };
   static constexpr auto HIT{ 7U };
   static constexpr auto LUCK{ 8U };
-  //  template<typename maybeNumberT> static bool is_integral([[maybe_unused]] const maybeNumberT &value)
+  //  template<typename maybeNumberT> static bool is_integral([[maybe_unused]]
+  //  const maybeNumberT &value)
   //  {
   //    return std::is_integral_v<maybeNumberT>;
   //  }
-  // template<typename maybeNumberT> static bool is_integral() { return std::is_integral_v<maybeNumberT>; }
+  // template<typename maybeNumberT> static bool is_integral() { return
+  // std::is_integral_v<maybeNumberT>; }
 
 public:
   [[maybe_unused]] [[nodiscard]] T &hp() const noexcept

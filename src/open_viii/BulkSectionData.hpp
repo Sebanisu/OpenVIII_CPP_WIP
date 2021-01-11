@@ -30,8 +30,8 @@ private:
   std::span<const char> m_text_span{};
 
 public:
-  [[maybe_unused]] explicit BulkSectionData(
-    const std::span<const char> &span, const std::span<const char> &text_span = {})
+  [[maybe_unused]] explicit BulkSectionData(const std::span<const char> &span,
+    const std::span<const char> &text_span = {})
     : m_span{ span }, m_text_span{ text_span }
   {}
   [[nodiscard]] size_t size() const
@@ -64,8 +64,9 @@ public:
 
     if (id > size()) {
       using namespace std::string_literals;
-      throw std::out_of_range(
-        "BulkSectionData index out of range: "s + std::to_string(id) + "//"s + std::to_string(size()));
+      throw std::out_of_range("BulkSectionData index out of range: "s
+                              + std::to_string(id) + "//"s
+                              + std::to_string(size()));
       // return spanT{};
     }
     return operator[](id);
