@@ -88,8 +88,8 @@ private:
 
       // for(i=4097 ; i<=4352 ; ++i)	rightSide[i] = NotUsed;
       // for(i=0 ; i<N ; ++i)	parent[i] = NotUsed;
-      std::ranges::fill(parent, NOT_USED);
-      std::ranges::fill(std::span(right_side).subspan(N_PLUS1), NOT_USED);
+      std::ranges::fill(m_parent, NOT_USED);
+      std::ranges::fill(std::span(m_right_side).subspan(N_PLUS1), NOT_USED);
 
       code_buf[0] = 0;// code_buf[1..16] saves eight units of code, and
                       // code_buf[0] works as eight flags, "1" representing
@@ -103,11 +103,11 @@ private:
 
       //	for(i=s ; i<r ; ++i)
       //		text_buf[i] = '\x0';//Clear the buffer with  any
-      //character that will appear often.
+      // character that will appear often.
       // memset(text_buf, 0, r); //std::array should init with 0s.
       unsigned int len = 0;
       for (; len < NODE_SIZE && data < data_end; ++len, data++) {
-        text_buf.at(r + len) = static_cast<unsigned char>(
+        m_text_buf.at(r + len) = static_cast<unsigned char>(
           *data);// Read 18 bytes into the last 18 bytes of the buffer
       }
       if (/* (textsize =  */ len /* ) */ == 0) {
@@ -129,30 +129,32 @@ private:
       unsigned char mask = 1;
 
       do {
-        if (match_length > len) {
-          match_length =
+        if (m_match_length > len) {
+          m_match_length =
             len;// match_length may be spuriously long near the end of text.
         }
 
 
-        if (match_length <= 2) {
-          match_length = 1;// Not long enough match.  Send one byte.
+        if (m_match_length <= 2) {
+          m_match_length = 1;// Not long enough match.  Send one byte.
           code_buf[0] |= mask;//'send one byte' flag
-          code_buf.at(code_buf_ptr++) = text_buf.at(r);// Send unencoded.
+          code_buf.at(code_buf_ptr++) = m_text_buf.at(r);// Send unencoded.
         } else {
           code_buf.at(code_buf_ptr++) =
-            static_cast<unsigned char>(match_position);
+            static_cast<unsigned char>(m_match_position);
           code_buf.at(code_buf_ptr++) = static_cast<unsigned char>(
-            (((match_position >> 4U) & MATCH_MASK))
-            | (match_length - (2 + 1)));// Send position and length pair. Note
-                                        // match_length > 2.
+            (((m_match_position >> 4U) & MATCH_MASK))
+            | (m_match_length - (2 + 1)));// Send position and length pair. Note
+                                          // match_length > 2.
         }
 
         if ((mask = static_cast<unsigned char>((mask << 1U)))
             == 0)// Shift mask left one bit.
         {
-          //			for(i=0 ; i<code_buf_ptr ; ++i)//Send at most 8 units
-          //of 				result.append(code_buf[i]);//code together
+          //			for(i=0 ; i<code_buf_ptr ; ++i)//Send at most 8
+          //units
+          // of 				result.append(code_buf[i]);//code
+          // together
           // result.replace(curResult, code_buf_ptr, (char *)code_buf,
           // code_buf_ptr); pos,len,after,after_len if length the same then
           // would be a memcpy. or .insert()
@@ -164,14 +166,14 @@ private:
           code_buf_ptr = mask = 1;
         }
 
-        unsigned int last_match_length = match_length;
+        unsigned int last_match_length = m_match_length;
         for (i = 0; i < last_match_length && data < data_end; ++i) {
           unsigned int c = static_cast<unsigned char>(*data++);
           delete_node(s);// Delete old strings and
-          text_buf.at(s) = static_cast<unsigned char>(c);// read new bytes
+          m_text_buf.at(s) = static_cast<unsigned char>(c);// read new bytes
 
           if (s < F_MINUS1) {
-            text_buf.at(s + N) = static_cast<unsigned char>(
+            m_text_buf.at(s + N) = static_cast<unsigned char>(
               c);// If the position is near the end of buffer, extend the buffer
                  // to make string comparison easier.
           }
@@ -223,30 +225,30 @@ private:
     void insert_node(const unsigned int &item)
     {
       int cmp = 1U;
-      auto key = std::span<unsigned char>(text_buf);
+      auto key = std::span<unsigned char>(m_text_buf);
       key = key.subspan(item);
 
       // auto key = text_buf.begin() + item;
       unsigned int p = P_OFFSET + key[0];
 
-      right_side.at(item) = left_side.at(item) = NOT_USED;
-      match_length = 0;
+      m_right_side.at(item) = m_left_side.at(item) = NOT_USED;
+      m_match_length = 0;
 
       while (true) {
         if (cmp >= 0) {// if cmp is unsigned this is always true..
-          if (right_side.at(p) != NOT_USED) {
-            p = right_side.at(p);
+          if (m_right_side.at(p) != NOT_USED) {
+            p = m_right_side.at(p);
           } else {
-            right_side.at(p) = item;
-            parent.at(item) = p;
+            m_right_side.at(p) = item;
+            m_parent.at(item) = p;
             return;
           }
         } else {
-          if (left_side.at(p) != NOT_USED) {
-            p = left_side.at(p);
+          if (m_left_side.at(p) != NOT_USED) {
+            p = m_left_side.at(p);
           } else {
-            left_side.at(p) = item;
-            parent.at(item) = p;
+            m_left_side.at(p) = item;
+            m_parent.at(item) = p;
             return;
           }
         }
@@ -255,84 +257,85 @@ private:
           for (; node_index < NODE_SIZE;
                node_index++) {// if ((cmp = key.subspan(node_index)[0] -
                               // (text_buf.at(p + node_index))) != 0) {
-            if ((cmp = key[node_index] - (text_buf.at(p + node_index))) != 0) {
+            if ((cmp = key[node_index] - (m_text_buf.at(p + node_index)))
+                != 0) {
               break;
             }
           }
-          if (node_index > match_length) {
-            match_position = p;
-            if ((match_length = node_index) >= NODE_SIZE) {
+          if (node_index > m_match_length) {
+            m_match_position = p;
+            if ((m_match_length = node_index) >= NODE_SIZE) {
               break;
             }
           }
         }
       }
 
-      parent.at(item) = parent.at(p);
-      left_side.at(item) = left_side.at(p);
-      right_side.at(item) = right_side.at(p);
+      m_parent.at(item) = m_parent.at(p);
+      m_left_side.at(item) = m_left_side.at(p);
+      m_right_side.at(item) = m_right_side.at(p);
 
-      parent.at(left_side.at(p)) = item;
-      parent.at(right_side.at(p)) = item;
+      m_parent.at(m_left_side.at(p)) = item;
+      m_parent.at(m_right_side.at(p)) = item;
 
-      if (right_side.at(parent.at(p)) == p) {
-        right_side.at(parent.at(p)) = item;
+      if (m_right_side.at(m_parent.at(p)) == p) {
+        m_right_side.at(m_parent.at(p)) = item;
       } else {
-        left_side.at(parent.at(p)) = item;
+        m_left_side.at(m_parent.at(p)) = item;
       }
-      parent.at(p) = NOT_USED;// remove p
+      m_parent.at(p) = NOT_USED;// remove p
     };
     // deletes node p from tree
     void delete_node(auto p)
     {
       // unsigned int q = 0;
-      if (parent.at(p) == NOT_USED) {
+      if (m_parent.at(p) == NOT_USED) {
         return;// not in tree
       }
 
       unsigned int q{};
-      if (right_side.at(p) == NOT_USED) {
-        q = left_side.at(p);
-      } else if (left_side.at(p) == NOT_USED) {
-        q = right_side.at(p);
+      if (m_right_side.at(p) == NOT_USED) {
+        q = m_left_side.at(p);
+      } else if (m_left_side.at(p) == NOT_USED) {
+        q = m_right_side.at(p);
       } else {
-        q = left_side.at(p);
-        if (right_side.at(q) != NOT_USED) {
+        q = m_left_side.at(p);
+        if (m_right_side.at(q) != NOT_USED) {
           do {
-            q = right_side.at(q);
-          } while (right_side.at(q) != NOT_USED);
+            q = m_right_side.at(q);
+          } while (m_right_side.at(q) != NOT_USED);
 
-          right_side.at(parent.at(q)) = left_side.at(q);
-          parent.at(left_side.at(q)) = parent.at(q);
-          left_side.at(q) = left_side.at(p);
-          parent.at(left_side.at(p)) = q;
+          m_right_side.at(m_parent.at(q)) = m_left_side.at(q);
+          m_parent.at(m_left_side.at(q)) = m_parent.at(q);
+          m_left_side.at(q) = m_left_side.at(p);
+          m_parent.at(m_left_side.at(p)) = q;
         }
-        right_side.at(q) = right_side.at(p);
-        parent.at(right_side.at(p)) = q;
+        m_right_side.at(q) = m_right_side.at(p);
+        m_parent.at(m_right_side.at(p)) = q;
       }
-      parent.at(q) = parent.at(p);
+      m_parent.at(q) = m_parent.at(p);
 
-      if (right_side.at(parent.at(p)) == p) {
-        right_side.at(parent.at(p)) = q;
+      if (m_right_side.at(m_parent.at(p)) == p) {
+        m_right_side.at(m_parent.at(p)) = q;
       } else {
-        left_side.at(parent.at(p)) = q;
+        m_left_side.at(m_parent.at(p)) = q;
       }
-      parent.at(p) = NOT_USED;
+      m_parent.at(p) = NOT_USED;
     };
 
   private:
     // left & right children & parents -- These constitute binary search trees.
-    std::array<unsigned int, N_PLUS2> left_side{};
-    std::array<unsigned int, RIGHT_SIDE_SIZE> right_side{};
-    std::array<unsigned int, N_PLUS2> parent{};
+    std::array<unsigned int, N_PLUS2> m_left_side{};
+    std::array<unsigned int, RIGHT_SIDE_SIZE> m_right_side{};
+    std::array<unsigned int, N_PLUS2> m_parent{};
 
     std::array<unsigned char, N_PLUS17>
-      text_buf{};// ring buffer of size N, with extra 17 bytes to facilitate
-                 // string comparison
+      m_text_buf{};// ring buffer of size N, with extra 17 bytes to facilitate
+                   // string comparison
 
 
-    unsigned int match_length{};
-    unsigned int match_position{};
+    unsigned int m_match_length{};
+    unsigned int m_match_position{};
   };
 
 public:
