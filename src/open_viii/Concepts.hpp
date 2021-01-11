@@ -129,12 +129,13 @@ concept is_trivially_copyable_and_default_constructible =
 
 template<typename trivialType>
 concept is_default_constructible_has_data_and_size =
-  is_trivially_copyable<trivialType> &&std::is_default_constructible_v<
-    trivialType> &&has_data_and_size<trivialType>;
+  std::is_default_constructible_v<trivialType> &&has_data_and_size<trivialType>;
 template<typename Type> concept has_resize = requires(Type a)
 {
   a.resize(static_cast<std::size_t>(0U));
 };
+template<typename trivialType>
+concept is_default_constructible_has_data_size_resize = is_default_constructible_has_data_and_size<trivialType> && has_resize<trivialType>;
 template<typename lambdaT>
 concept Foreach_Archive_Lambda =
   std::invocable<lambdaT, std::vector<char>, std::string>;

@@ -14,8 +14,8 @@
 #define VIIIARCHIVE_FS_HPP
 
 #include "FI.hpp"
-#include "open_viii/Compression/L4Z.hpp"
-#include "open_viii/Compression/LZSS.hpp"
+#include "open_viii/compression/L4Z.hpp"
+#include "open_viii/compression/LZSS.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include <cstring>
 #include <filesystem>
@@ -26,104 +26,109 @@
 #include <span>
 #include <utility>
 
-namespace open_viii::archive {
-struct FS
+namespace open_viii::archive::FS {
+static constexpr auto EXT = std::string_view(".FS");
+
+template<is_default_constructible_has_data_size_resize dstT = std::vector<char>, FI_Like fiT = FI>
+static dstT get_entry(
+  const std::filesystem::path &path, const fiT &fi, const size_t &offset = 0U)
 {
-public:
-  static constexpr auto EXT = std::string_view(".FS");
-
-  template<typename dstT = std::vector<char>, FI_Like datT = FI>
-  static dstT get_entry(const std::filesystem::path &path, const datT &fi, const size_t &offset = 0U)
-  {
-    if (fi.uncompressed_size() == 0) {
-      return {};
-    }
-    std::ifstream fp = std::ifstream(path, std::ios::in | std::ios::binary);
-    // if compressed will keep decompressing till get size
-    // size compressed isn't quite known with out finding the offset of the next file and finding difference.
-    fp.seekg(static_cast<long>(offset + fi.offset()), std::ios::beg);
-
-    switch (fi.compression_type()) {
-    case CompressionTypeT::none: {
-      return Tools::read_buffer<dstT>(fp, fi.uncompressed_size());
-    }
-    case CompressionTypeT::lzss: {
-      unsigned int compSize{ 0 };
-      Tools::read_val(fp, compSize);
-      dstT buffer = Tools::read_buffer<dstT>(fp, compSize);
-      return compression::LZSS::decompress<dstT>(buffer, fi.uncompressed_size());
-    }
-    case CompressionTypeT::lz4: {
-      unsigned int sectSize{ 0 };
-      // L4Z header contains size of total section as uint32, 4 byte string
-      // the size of the compressed data is the first value minus 8. the second value is something i'm unsure of
-      Tools::read_val(fp, sectSize);
-      constexpr static auto skipSize = 8U;
-      fp.seekg(skipSize, std::ios::cur);
-      const auto compSize = sectSize - skipSize;
-      dstT buffer = Tools::read_buffer<dstT>(fp, compSize);
-
-
-      return compression::l4z::decompress<dstT>(buffer.data(), compSize, fi.uncompressed_size());
-    }
-    }
-    fp.close();
+  if (fi.uncompressed_size() == 0) {
     return {};
   }
-  template<typename dstT = std::vector<char>, FI_Like fiT = FI>
-  static dstT get_entry(std::span<const char> data, const fiT &fi, const size_t &offset)
-  {
-    // it shouldn't be empty
-    if (data.empty()) {
-      return dstT{};
-    }
-    // todo if we get a span stream we maybe can combine the two functions into 1. stringstream only works with strings.
-    // and strstream is depreciated. It should use the other one. Though that is only the case for FIFLFS archives.
-    if (fi.uncompressed_size() == 0) {
-      return dstT{};
-    }
-    data = data.subspan(fi.offset() + offset);
-    // todo usages of memcpy can be replaced with std::bitcast in cpp20
+  std::ifstream fp = std::ifstream(path, std::ios::in | std::ios::binary);
+  // if compressed will keep decompressing till get size
+  // size compressed isn't quite known with out finding the offset of the next
+  // file and finding difference.
+  fp.seekg(static_cast<long>(offset + fi.offset()), std::ios::beg);
 
-    switch (fi.compression_type()) {
-    case CompressionTypeT::none: {
-      if (fi.uncompressed_size() > std::ranges::size(data)) {
-        break;
-      }
-      data = data.subspan(0, fi.uncompressed_size());
-      return { std::ranges::cbegin(data), std::ranges::end(data) };
-    }
-    case CompressionTypeT::lzss: {
-      unsigned int compSize{ 0 };
-      if (sizeof(compSize) > std::ranges::size(data)) {
-        break;
-      }
-      std::memcpy(&compSize, data.data(), sizeof(compSize));
-      if (compSize + sizeof(compSize) > std::ranges::size(data)) {
-        break;
-      }
-      return compression::LZSS::decompress<dstT>(data.subspan(sizeof(compSize), compSize), fi.uncompressed_size());
-    }
-    case CompressionTypeT::lz4: {
-      std::uint32_t sectSize{ 0 };
-      // L4Z header contains size of total section as uint32, 4 byte string and another uint32.
-      // the size of the compressed data is the first value minus 8. the second value is something i'm unsure of
-      if (sizeof(sectSize) > std::ranges::size(data)) {
-        break;
-      }
-      std::memcpy(&sectSize, std::ranges::data(data), sizeof(sectSize));
-      if (sectSize > std::ranges::size(data)) {
-        break;
-      }
-      constexpr static auto skipBytes = 8U;
-      const auto compSize = sectSize - skipBytes;
-      data = data.subspan(sizeof(sectSize) + skipBytes, compSize);
+  switch (fi.compression_type()) {
+  case CompressionTypeT::none: {
+    return Tools::read_buffer<dstT>(fp, fi.uncompressed_size());
+  }
+  case CompressionTypeT::lzss: {
+    unsigned int compSize{ 0 };
+    Tools::read_val(fp, compSize);
+    dstT buffer = Tools::read_buffer<dstT>(fp, compSize);
+    return compression::LZSS::decompress<dstT>(buffer, fi.uncompressed_size());
+  }
+  case CompressionTypeT::lz4: {
+    unsigned int sectSize{ 0 };
+    // L4Z header contains size of total section as uint32, 4 byte string
+    // the size of the compressed data is the first value minus 8. the second
+    // value is something i'm unsure of
+    Tools::read_val(fp, sectSize);
+    constexpr static auto skipSize = 8U;
+    fp.seekg(skipSize, std::ios::cur);
+    const auto compSize = sectSize - skipSize;
+    dstT buffer = Tools::read_buffer<dstT>(fp, compSize);
 
-      return compression::l4z::decompress<dstT>(data, fi.uncompressed_size());
-    }
-    }
+
+    return compression::l4z::decompress<dstT>(
+      buffer.data(), compSize, fi.uncompressed_size());
+  }
+  }
+  fp.close();
+  return {};
+}
+template<is_default_constructible_has_data_size_resize dstT = std::vector<char>, FI_Like fiT = FI>
+static dstT get_entry(
+  std::span<const char> data, const fiT &fi, const size_t &offset)
+{
+  // it shouldn't be empty
+  if (data.empty()) {
     return {};
   }
-};
-}// namespace open_viii::archive
+  // todo if we get a span stream we maybe can combine the two functions into 1.
+  // stringstream only works with strings. and strstream is depreciated. It
+  // should use the other one. Though that is only the case for FIFLFS archives.
+  if (fi.uncompressed_size() == 0) {
+    return {};
+  }
+  data = data.subspan(fi.offset() + offset);
+  // todo usages of memcpy can be replaced with std::bitcast in cpp20
+
+  switch (fi.compression_type()) {
+  case CompressionTypeT::none: {
+    if (fi.uncompressed_size() > std::ranges::size(data)) {
+      break;
+    }
+    data = data.subspan(0, fi.uncompressed_size());
+    return { std::ranges::cbegin(data), std::ranges::end(data) };
+  }
+  case CompressionTypeT::lzss: {
+    if (sizeof(std::uint32_t) > std::ranges::size(data)) {
+      break;
+    }
+
+    const auto compSize = Tools::read_val<std::uint32_t>(data);
+    if (compSize + sizeof(compSize) > std::ranges::size(data)) {
+      break;
+    }
+    return compression::LZSS::decompress<dstT>(
+      data.subspan(sizeof(compSize), compSize), fi.uncompressed_size());
+  }
+  case CompressionTypeT::lz4: {
+    // L4Z header contains size of total section as uint32, 4 byte string and
+    // another uint32. the size of the compressed data is the first value
+    // minus 8. the second value is something i'm unsure of
+    if (sizeof(std::uint32_t) > std::ranges::size(data)) {
+      break;
+    }
+
+    std::uint32_t sectSize = Tools::read_val<std::uint32_t>(data);
+    //std::memcpy(&sectSize, std::ranges::data(data), sizeof(sectSize));
+    if (sectSize > std::ranges::size(data)) {
+      break;
+    }
+    constexpr static auto skipBytes = 8U;
+    const auto compSize = sectSize - skipBytes;
+    data = data.subspan(sizeof(sectSize) + skipBytes, compSize);
+
+    return compression::l4z::decompress<dstT>(data, fi.uncompressed_size());
+  }
+  }
+  return {};
+}
+}// namespace open_viii::archive::FS
 #endif// !VIIIARCHIVE_FS_HPP
