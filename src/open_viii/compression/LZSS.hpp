@@ -114,8 +114,8 @@ private:
         result.clear();
         return result;// text of size zero
       }
-      std::uint32_t i = 1;
-      for (; i <= NODE_SIZE; ++i) {
+      for (auto i : std::ranges::iota_view(std::uint32_t{ 1 }, NODE_SIZE)) {
+        // for (; i <= NODE_SIZE; ++i) {
         insert_node(r - i);// Insert the 18 strings, each of which begins with
                            // one or more 'space' characters.  Note the order in
       }
@@ -152,9 +152,8 @@ private:
             == 0)// Shift mask left one bit.
         {
           //			for(i=0 ; i<code_buf_ptr ; ++i)//Send at most 8
-          //units
-          // of 				result.append(code_buf[i]);//code
-          // together
+          // units
+          // of result.append(code_buf[i]);//code together
           // result.replace(curResult, code_buf_ptr, (char *)code_buf,
           // code_buf_ptr); pos,len,after,after_len if length the same then
           // would be a memcpy. or .insert()
@@ -167,30 +166,32 @@ private:
         }
 
         std::uint32_t last_match_length = m_match_length;
-        for (i = 0; i < last_match_length && data < data_end; ++i) {
-          std::uint32_t c = static_cast<std::uint8_t>(*data++);
-          delete_node(s);// Delete old strings and
-          m_text_buf.at(s) = static_cast<std::uint8_t>(c);// read new bytes
+        {
+          std::uint32_t i{};
+          for (; i < last_match_length && data < data_end; ++i) {
+            std::uint32_t c = static_cast<std::uint8_t>(*data++);
+            delete_node(s);// Delete old strings and
+            m_text_buf.at(s) = static_cast<std::uint8_t>(c);// read new bytes
 
-          if (s < F_MINUS1) {
-            m_text_buf.at(s + N) = static_cast<std::uint8_t>(
-              c);// If the position is near the end of buffer, extend the buffer
-                 // to make string comparison easier.
+            if (s < F_MINUS1) {
+              m_text_buf.at(s + N) = static_cast<std::uint8_t>(
+                c);// If the position is near the end of buffer, extend the buffer to make string comparison easier.
+            }
+
+            s = (s + 1) & (N_MINUS1);
+            r = (r + 1) & (N_MINUS1);
+            // Since this is a ring buffer, increment the position modulo N.
+            insert_node(r);// Register the string in text_buf[r..r+18-1]
           }
 
-          s = (s + 1) & (N_MINUS1);
-          r = (r + 1) & (N_MINUS1);
-          // Since this is a ring buffer, increment the position modulo N.
-          insert_node(r);// Register the string in text_buf[r..r+18-1]
-        }
-
-        while (i++ < last_match_length)// After the end of text,
-        {
-          delete_node(s);// no need to read, but
-          s = (s + 1) & (N_MINUS1);
-          r = (r + 1) & (N_MINUS1);
-          if (--len != 0U) {
-            insert_node(r);// buffer may not be empty.
+          while (i++ < last_match_length)// After the end of text,
+          {
+            delete_node(s);// no need to read, but
+            s = (s + 1) & (N_MINUS1);
+            r = (r + 1) & (N_MINUS1);
+            if (--len != 0U) {
+              insert_node(r);// buffer may not be empty.
+            }
           }
         }
 
@@ -412,7 +413,8 @@ public:
         offset |= ((count & OFFSET_MASK) << 4U);
         count = (count & COUNT_MASK) + THRESHOLD;
         // read from ring buffer
-        for (std::uint32_t k = 0; k <= count; ++k) {
+        // for (std::uint32_t k = 0; k <= count; ++k) {
+        for (auto k : std::ranges::iota_view(std::uint32_t{}, count + 1)) {
           // get value
           current = textBuf.at((offset + k) & N_MINUS1);
           // assign value
