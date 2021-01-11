@@ -106,7 +106,7 @@ private:
       // character that will appear often.
       // memset(text_buf, 0, r); //std::array should init with 0s.
       unsigned int len = 0;
-      for (; len < NODE_SIZE && data < data_end; ++len, data++) {
+      for (; len < NODE_SIZE && data < data_end; ++len, ++data) {
         m_text_buf.at(r + len) = static_cast<unsigned char>(
           *data);// Read 18 bytes into the last 18 bytes of the buffer
       }
@@ -255,7 +255,7 @@ private:
         {
           unsigned int node_index = 1;
           for (; node_index < NODE_SIZE;
-               node_index++) {// if ((cmp = key.subspan(node_index)[0] -
+               ++node_index) {// if ((cmp = key.subspan(node_index)[0] -
                               // (text_buf.at(p + node_index))) != 0) {
             if ((cmp = key[node_index] - (m_text_buf.at(p + node_index)))
                 != 0) {
@@ -412,7 +412,7 @@ public:
         offset |= ((count & OFFSET_MASK) << 4U);
         count = (count & COUNT_MASK) + THRESHOLD;
         // read from ring buffer
-        for (decltype(current) k = 0; k <= count; k++) {
+        for (decltype(current) k = 0; k <= count; ++k) {
           // get value
           current = textBuf.at((offset + k) & N_MINUS1);
           // assign value
