@@ -36,13 +36,14 @@ private:
   std::uint32_t m_offset{};
   CompressionTypeT m_compression_type{};
 
-  [[nodiscard]] constexpr static size_t get_start_offset(const unsigned int &id, const size_t &offset = 0U)
+  [[nodiscard]] constexpr static std::size_t get_start_offset(
+    const unsigned int &id, const std::size_t &offset = 0U)
   {
     return (id * SIZE) + offset;
   }
 
 public:
-  constexpr static const size_t SIZE = 12U;
+  constexpr static const std::size_t SIZE = 12U;
 
   constexpr static const auto EXT = std::string_view(".FI");
 
@@ -65,17 +66,22 @@ public:
 
   template<FI_Like fiT>
   constexpr explicit FI(const fiT &fi)
-    : m_uncompressed_size{ static_cast<decltype(m_uncompressed_size)>(fi.uncompressed_size()) },
+    : m_uncompressed_size{ static_cast<decltype(m_uncompressed_size)>(
+      fi.uncompressed_size()) },
       m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
-      m_compression_type{ static_cast<decltype(m_compression_type)>(fi.compression_type()) }
+      m_compression_type{ static_cast<decltype(m_compression_type)>(
+        fi.compression_type()) }
   {}
   constexpr FI(const unsigned int &uncompressed_size,
     const unsigned int &offset,
     const CompressionTypeT &compression_type = CompressionTypeT::none) noexcept
-    : m_uncompressed_size{ uncompressed_size }, m_offset{ offset }, m_compression_type{ compression_type }
+    : m_uncompressed_size{ uncompressed_size },
+      m_offset{ offset },
+      m_compression_type{ compression_type }
   {}
 
-  explicit FI(std::ifstream &&fp, const long &start_offset = 0, bool close = false)
+  explicit FI(
+    std::ifstream &&fp, const long &start_offset = 0, bool close = false)
   {
     // unsure if this is correct but passing from ifstream is an rvalue
     // so umm it won't let me use a normal reference unless it's const.
@@ -97,36 +103,66 @@ public:
     }
   }
 
-  FI(const std::filesystem::path &path, const unsigned int &id, const size_t &offset)
-    : FI(std::ifstream(path, std::ios::in | std::ios::binary), static_cast<long>(get_start_offset(id, offset)), true)
+  FI(const std::filesystem::path &path,
+    const unsigned int &id,
+    const std::size_t &offset)
+    : FI(std::ifstream(path, std::ios::in | std::ios::binary),
+      static_cast<long>(get_start_offset(id, offset)),
+      true)
   {}
 
-  explicit FI(std::span<const char> buffer, const size_t &start_offset = 0U)
+  /**
+   * Construct a FI entry
+   * @param buffer char range containing all the FI entries.
+   * @param start_offset byte offset to entry.
+   */
+  explicit FI(
+    std::span<const char> buffer, const std::size_t &start_offset = 0U)
+    : m_uncompressed_size(Tools::read_val<decltype(m_uncompressed_size)>(
+      buffer.subspan(start_offset))),
+      m_offset(Tools::read_val<decltype(m_offset)>(
+        buffer.subspan(start_offset + sizeof(m_uncompressed_size)))),
+      m_compression_type(
+        Tools::read_val<decltype(m_compression_type)>(buffer.subspan(
+          start_offset + sizeof(m_uncompressed_size) + sizeof(m_offset))))
   {
-    if (start_offset + SIZE > std::ranges::size(buffer)) {
-      return;
-    }
-    buffer = buffer.subspan(start_offset, SIZE);
-
-    std::memcpy(&m_uncompressed_size, std::ranges::data(buffer), sizeof(m_uncompressed_size));
-    if (m_uncompressed_size > 0) {// if size is 0 than no point in reading more.
-      buffer = buffer.subspan(sizeof(m_uncompressed_size));
-      std::memcpy(&m_offset, std::ranges::data(buffer), sizeof(m_offset));
-      buffer = buffer.subspan(sizeof(m_offset));
-      std::memcpy(&m_compression_type, std::ranges::data(buffer), sizeof(m_compression_type));
-    }
+//    if (start_offset + SIZE > std::ranges::size(buffer)) {
+//      return;
+//    }
+//    buffer = buffer.subspan(start_offset, SIZE);
+//
+//    std::memcpy(&m_uncompressed_size,
+//      std::ranges::data(buffer),
+//      sizeof(m_uncompressed_size));
+//    if (m_uncompressed_size > 0) {// if size is 0 than no point in reading more.
+//      buffer = buffer.subspan(sizeof(m_uncompressed_size));
+//      std::memcpy(&m_offset, std::ranges::data(buffer), sizeof(m_offset));
+//      buffer = buffer.subspan(sizeof(m_offset));
+//      std::memcpy(&m_compression_type,
+//        std::ranges::data(buffer),
+//        sizeof(m_compression_type));
+//    }
   }
-
-  FI(const std::vector<char> &buffer, const unsigned int &id, const size_t &offset)
+  /**
+   * Construct a FI entry
+   * @param buffer char range containing all the FI entries.
+   * @param id which FI entry you want.
+   * @param offset byte offset to the start of FI entries.
+   */
+  FI(std::span<const char> buffer,
+    const unsigned int &id,
+    const std::size_t &offset)
     : FI(buffer, get_start_offset(id, offset))
   {}
 
-  [[nodiscard]] constexpr static size_t get_count(const std::size_t &file_size) noexcept
+  [[nodiscard]] constexpr static std::size_t get_count(
+    const std::size_t &file_size) noexcept
   {
     return file_size / SIZE;
   }
   // GetCount which is fileSize/Size if file doesn't exist return 0;
-  [[maybe_unused]] [[nodiscard]] size_t static get_count(const std::filesystem::path &path)
+  [[maybe_unused]] [[nodiscard]] std::size_t static get_count(
+    const std::filesystem::path &path)
   {
     if (std::filesystem::exists(path)) {
       return get_count(std::filesystem::file_size(path));
@@ -134,7 +170,8 @@ public:
     return {};
   }
 
-  [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const FI &data)
+  [[nodiscard]] friend std::ostream &operator<<(
+    std::ostream &os, const FI &data)
   {
     os << '{' << data.m_uncompressed_size << ", " << data.m_offset << ", "
        << static_cast<unsigned int>(data.m_compression_type) << '}';
