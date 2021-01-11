@@ -175,7 +175,8 @@ private:
 
             if (s < F_MINUS1) {
               m_text_buf.at(s + N) = static_cast<std::uint8_t>(
-                c);// If the position is near the end of buffer, extend the buffer to make string comparison easier.
+                c);// If the position is near the end of buffer, extend the
+                   // buffer to make string comparison easier.
             }
 
             s = (s + 1) & (N_MINUS1);
@@ -293,33 +294,34 @@ private:
       if (m_parent.at(p) == NOT_USED) {
         return;// not in tree
       }
+      {
+        std::uint32_t q{};
+        if (m_right_side.at(p) == NOT_USED) {
+          q = m_left_side.at(p);
+        } else if (m_left_side.at(p) == NOT_USED) {
+          q = m_right_side.at(p);
+        } else {
+          q = m_left_side.at(p);
+          if (m_right_side.at(q) != NOT_USED) {
+            do {
+              q = m_right_side.at(q);
+            } while (m_right_side.at(q) != NOT_USED);
 
-      std::uint32_t q{};
-      if (m_right_side.at(p) == NOT_USED) {
-        q = m_left_side.at(p);
-      } else if (m_left_side.at(p) == NOT_USED) {
-        q = m_right_side.at(p);
-      } else {
-        q = m_left_side.at(p);
-        if (m_right_side.at(q) != NOT_USED) {
-          do {
-            q = m_right_side.at(q);
-          } while (m_right_side.at(q) != NOT_USED);
-
-          m_right_side.at(m_parent.at(q)) = m_left_side.at(q);
-          m_parent.at(m_left_side.at(q)) = m_parent.at(q);
-          m_left_side.at(q) = m_left_side.at(p);
-          m_parent.at(m_left_side.at(p)) = q;
+            m_right_side.at(m_parent.at(q)) = m_left_side.at(q);
+            m_parent.at(m_left_side.at(q)) = m_parent.at(q);
+            m_left_side.at(q) = m_left_side.at(p);
+            m_parent.at(m_left_side.at(p)) = q;
+          }
+          m_right_side.at(q) = m_right_side.at(p);
+          m_parent.at(m_right_side.at(p)) = q;
         }
-        m_right_side.at(q) = m_right_side.at(p);
-        m_parent.at(m_right_side.at(p)) = q;
-      }
-      m_parent.at(q) = m_parent.at(p);
+        m_parent.at(q) = m_parent.at(p);
 
-      if (m_right_side.at(m_parent.at(p)) == p) {
-        m_right_side.at(m_parent.at(p)) = q;
-      } else {
-        m_left_side.at(m_parent.at(p)) = q;
+        if (m_right_side.at(m_parent.at(p)) == p) {
+          m_right_side.at(m_parent.at(p)) = q;
+        } else {
+          m_left_side.at(m_parent.at(p)) = q;
+        }
       }
       m_parent.at(p) = NOT_USED;
     };
