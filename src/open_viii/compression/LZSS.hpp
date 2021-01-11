@@ -404,15 +404,15 @@ public:
         if (testAtEnd()) {
           break;
         }
-        decltype(current) offset = static_cast<unsigned char>(*iterator++);
+        unsigned int offset = static_cast<unsigned char>(*iterator++);
         if (testAtEnd()) {
           break;
         }
-        decltype(current) count = static_cast<unsigned char>(*iterator++);
+        unsigned int count = static_cast<unsigned char>(*iterator++);
         offset |= ((count & OFFSET_MASK) << 4U);
         count = (count & COUNT_MASK) + THRESHOLD;
         // read from ring buffer
-        for (decltype(current) k = 0; k <= count; ++k) {
+        for (unsigned int k = 0; k <= count; ++k) {
           // get value
           current = textBuf.at((offset + k) & N_MINUS1);
           // assign value
