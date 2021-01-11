@@ -170,10 +170,13 @@ public:
   [[nodiscard]] archive::FI get_entry_by_index(const unsigned int &id) const
   {
     if (m_count == 0 || id < m_count) {
+      const auto offset = archive::FI::get_start_offset(id, m_fi.offset());
       if (!std::ranges::empty(m_fi.data())) {
-        return archive::FI(m_fi.data(), id, m_fi.offset());
+        return Tools::read_val<archive::FI>(m_fi.data(), offset);
+        //return archive::FI(m_fi.data(), id, m_fi.offset());
       }
-      return archive::FI(m_fi.path(), id, m_fi.offset());
+      return Tools::read_val<archive::FI>(m_fi.path(), offset);
+      //return archive::FI(m_fi.path(), id, m_fi.offset());
     }
     return {};
   }

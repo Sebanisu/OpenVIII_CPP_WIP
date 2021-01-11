@@ -122,24 +122,20 @@ static void read_val(std::istream &fp, trivialType &item)
 
 }
 
-template<typename trivialType>
-requires(is_trivially_copyable_and_default_constructible<trivialType>)
-  [[nodiscard]] static trivialType read_val(const std::span<const char> &span)
+template<is_trivially_copyable trivialType>
+static void read_val(const std::span<const char> &span, trivialType &item)
+{
+  memcpy(&item, std::ranges::data(span), sizeof(trivialType));
+}
+template<is_trivially_copyable_and_default_constructible trivialType>
+  [[nodiscard]] static trivialType read_val(const std::span<const char> &span, std::size_t offset = 0U)
 {
   trivialType item{};
-  memcpy(&item, std::ranges::data(span), sizeof(item));
+  read_val<trivialType>(span.subspan(offset),item);
   return item;
 }
 
 
-template<is_trivially_copyable trivialType>
-static void read_val(const std::span<const char> &span, trivialType &item)
-{
-  const auto tmp{ span.subspan(0, sizeof(trivialType)) };
-
-
-    memcpy(&item, std::ranges::data(tmp), sizeof(item));
-}
 
 
 template<has_data_and_size trivialType>
@@ -229,6 +225,21 @@ requires(std::invocable<lambdaT, std::istream &>)
   lambda(fp);
   fp.close();
   return true;
+}
+
+
+template<is_trivially_copyable_and_default_constructible trivialType>
+[[nodiscard]] static trivialType read_val(const std::filesystem::path &path, const std::size_t & offset)
+{
+  trivialType item{};
+  if(!read_buffer([&offset,&item](std::istream & is){
+        is.seekg(static_cast<long>(offset));
+        read_val(is,item);
+      },path))
+  {
+    // failed to read;
+  }
+  return item;
 }
 
 template<typename lambdaT>
