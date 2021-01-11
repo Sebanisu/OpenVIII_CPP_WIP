@@ -125,6 +125,8 @@ public:
     return dst;
   }
 
+  struct CompressImpl
+  {
   /****************************************************************************
    ** Deling Final Fantasy VIII Field Editor
    ** Copyright (C) 2009-2012 Arzel Jérôme <myst6re@gmail.com>
@@ -153,7 +155,7 @@ public:
    * Porting to STL - sebanisu.
    * */
 
-  [[nodiscard]] [[maybe_unused]] static auto compress(std::span<const char> src)
+  [[nodiscard]] [[maybe_unused]] auto operator()(std::span<const char> src)
   {
     unsigned int match_length = {};
     unsigned int match_position{};
@@ -401,6 +403,12 @@ public:
     // result.truncate(curResult);
     result.erase(result.begin() + cur_result, result.end());
     return result;
+  }
+  };
+  static auto compress(std::span<const char> span)
+  {
+    CompressImpl compress_obj{};
+    return compress_obj(span);
   }
 };
 }// namespace open_viii::compression
