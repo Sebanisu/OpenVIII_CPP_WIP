@@ -22,17 +22,17 @@ namespace open_viii::compression {
 struct LZSS
 {
 private:
-  constexpr static const unsigned int R_SIZE = 4078U;
-  constexpr static const unsigned int MATCH_MASK = 0xF0U;
-  constexpr static const unsigned int P_OFFSET = 4097U;
-  constexpr static const unsigned int FLAGS_MASK = 0x100U;
-  constexpr static const unsigned int FLAGS_BITS = 0xFF00U;
-  constexpr static const unsigned int OFFSET_MASK = MATCH_MASK;
-  constexpr static const unsigned int COUNT_MASK = 0x0FU;
+  constexpr static const std::uint32_t R_SIZE = 4078U;
+  constexpr static const std::uint32_t MATCH_MASK = 0xF0U;
+  constexpr static const std::uint32_t P_OFFSET = 4097U;
+  constexpr static const std::uint32_t FLAGS_MASK = 0x100U;
+  constexpr static const std::uint32_t FLAGS_BITS = 0xFF00U;
+  constexpr static const std::uint32_t OFFSET_MASK = MATCH_MASK;
+  constexpr static const std::uint32_t COUNT_MASK = 0x0FU;
 
-  constexpr static const unsigned int NOT_USED = 4096U;
+  constexpr static const std::uint32_t NOT_USED = 4096U;
 
-  constexpr static const unsigned int NODE_SIZE = 18U;
+  constexpr static const std::uint32_t NODE_SIZE = 18U;
   constexpr static const auto F = 18U;
   constexpr static const auto F_MINUS1 = F - 1;
   constexpr static const auto N = NOT_USED;
@@ -59,9 +59,9 @@ private:
     {
 
 
-      unsigned int cur_result{};
+      std::uint32_t cur_result{};
       size_t size_alloc = src.size() / 2U;
-      auto code_buf = std::array<unsigned char, F_MINUS1>();
+      auto code_buf = std::array<std::uint8_t, F_MINUS1>();
 
       const auto data_end = std::ranges::cend(src);
       auto data = std::ranges::cbegin(src);
@@ -98,23 +98,23 @@ private:
       // 16 bytes of code.
 
 
-      unsigned int s = 0;
-      unsigned int r = R_SIZE;
+      std::uint32_t s = 0;
+      std::uint32_t r = R_SIZE;
 
       //	for(i=s ; i<r ; ++i)
       //		text_buf[i] = '\x0';//Clear the buffer with  any
       // character that will appear often.
       // memset(text_buf, 0, r); //std::array should init with 0s.
-      unsigned int len = 0;
+      std::uint32_t len = 0;
       for (; len < NODE_SIZE && data < data_end; ++len, ++data) {
-        m_text_buf.at(r + len) = static_cast<unsigned char>(
+        m_text_buf.at(r + len) = static_cast<std::uint8_t>(
           *data);// Read 18 bytes into the last 18 bytes of the buffer
       }
       if (/* (textsize =  */ len /* ) */ == 0) {
         result.clear();
         return result;// text of size zero
       }
-      unsigned int i = 1;
+      std::uint32_t i = 1;
       for (; i <= NODE_SIZE; ++i) {
         insert_node(r - i);// Insert the 18 strings, each of which begins with
                            // one or more 'space' characters.  Note the order in
@@ -125,8 +125,8 @@ private:
       insert_node(r);// Finally, insert the whole string just read.  The global
                      // variables match_length and match_position are set.
 
-      unsigned int code_buf_ptr = 1;
-      unsigned char mask = 1;
+      std::uint32_t code_buf_ptr = 1;
+      std::uint8_t mask = 1;
 
       do {
         if (m_match_length > len) {
@@ -141,14 +141,14 @@ private:
           code_buf.at(code_buf_ptr++) = m_text_buf.at(r);// Send unencoded.
         } else {
           code_buf.at(code_buf_ptr++) =
-            static_cast<unsigned char>(m_match_position);
-          code_buf.at(code_buf_ptr++) = static_cast<unsigned char>(
+            static_cast<std::uint8_t>(m_match_position);
+          code_buf.at(code_buf_ptr++) = static_cast<std::uint8_t>(
             (((m_match_position >> 4U) & MATCH_MASK))
             | (m_match_length - (2 + 1)));// Send position and length pair. Note
                                           // match_length > 2.
         }
 
-        if ((mask = static_cast<unsigned char>((mask << 1U)))
+        if ((mask = static_cast<std::uint8_t>((mask << 1U)))
             == 0)// Shift mask left one bit.
         {
           //			for(i=0 ; i<code_buf_ptr ; ++i)//Send at most 8
@@ -166,14 +166,14 @@ private:
           code_buf_ptr = mask = 1;
         }
 
-        unsigned int last_match_length = m_match_length;
+        std::uint32_t last_match_length = m_match_length;
         for (i = 0; i < last_match_length && data < data_end; ++i) {
-          unsigned int c = static_cast<unsigned char>(*data++);
+          std::uint32_t c = static_cast<std::uint8_t>(*data++);
           delete_node(s);// Delete old strings and
-          m_text_buf.at(s) = static_cast<unsigned char>(c);// read new bytes
+          m_text_buf.at(s) = static_cast<std::uint8_t>(c);// read new bytes
 
           if (s < F_MINUS1) {
-            m_text_buf.at(s + N) = static_cast<unsigned char>(
+            m_text_buf.at(s + N) = static_cast<std::uint8_t>(
               c);// If the position is near the end of buffer, extend the buffer
                  // to make string comparison easier.
           }
@@ -222,14 +222,14 @@ private:
      * as tree node and position in buffer.
      */
     //[&text_buf, &match_length, &match_position]
-    void insert_node(const unsigned int &item)
+    void insert_node(const std::uint32_t &item)
     {
       int cmp = 1U;
-      auto key = std::span<unsigned char>(m_text_buf);
+      auto key = std::span<std::uint8_t>(m_text_buf);
       key = key.subspan(item);
 
       // auto key = text_buf.begin() + item;
-      unsigned int p = P_OFFSET + key[0];
+      std::uint32_t p = P_OFFSET + key[0];
 
       m_right_side.at(item) = m_left_side.at(item) = NOT_USED;
       m_match_length = 0;
@@ -253,7 +253,7 @@ private:
           }
         }
         {
-          unsigned int node_index = 1;
+          std::uint32_t node_index = 1;
           for (; node_index < NODE_SIZE;
                ++node_index) {// if ((cmp = key.subspan(node_index)[0] -
                               // (text_buf.at(p + node_index))) != 0) {
@@ -288,12 +288,12 @@ private:
     // deletes node p from tree
     void delete_node(auto p)
     {
-      // unsigned int q = 0;
+      // std::uint32_t q = 0;
       if (m_parent.at(p) == NOT_USED) {
         return;// not in tree
       }
 
-      unsigned int q{};
+      std::uint32_t q{};
       if (m_right_side.at(p) == NOT_USED) {
         q = m_left_side.at(p);
       } else if (m_left_side.at(p) == NOT_USED) {
@@ -325,17 +325,17 @@ private:
 
   private:
     // left & right children & parents -- These constitute binary search trees.
-    std::array<unsigned int, N_PLUS2> m_left_side{};
-    std::array<unsigned int, RIGHT_SIDE_SIZE> m_right_side{};
-    std::array<unsigned int, N_PLUS2> m_parent{};
+    std::array<std::uint32_t, N_PLUS2> m_left_side{};
+    std::array<std::uint32_t, RIGHT_SIDE_SIZE> m_right_side{};
+    std::array<std::uint32_t, N_PLUS2> m_parent{};
 
-    std::array<unsigned char, N_PLUS17>
+    std::array<std::uint8_t, N_PLUS17>
       m_text_buf{};// ring buffer of size N, with extra 17 bytes to facilitate
                    // string comparison
 
 
-    unsigned int m_match_length{};
-    unsigned int m_match_position{};
+    std::uint32_t m_match_length{};
+    std::uint32_t m_match_position{};
   };
 
 public:
@@ -372,8 +372,8 @@ public:
     }
     auto iterator = src.begin();
     const auto srcEnd = std::ranges::end(src);
-    unsigned int current{ 0 };
-    auto textBuf = std::array<unsigned int, N_MINUS1 + F>();
+    std::uint32_t current{ 0 };
+    auto textBuf = std::array<std::uint32_t, N_MINUS1 + F>();
     // ring buffer of size N, with extra F-1 bytes to facilitate string
     // comparison
 
@@ -387,14 +387,14 @@ public:
         if (testAtEnd()) {
           break;
         }
-        flags = static_cast<unsigned char>(*iterator++)
+        flags = static_cast<std::uint8_t>(*iterator++)
                 | FLAGS_BITS;// uses higher byte cleverly to Count eight
       }
       if ((flags & 1U) == 1) {// raw value
         if (testAtEnd()) {
           break;
         }
-        current = static_cast<unsigned char>(*iterator++);
+        current = static_cast<std::uint8_t>(*iterator++);
         // if (dstSize != 0 && dst.size() + 1 >= dstSize) break;
         dst.push_back(static_cast<char>(current));
         textBuf.at(r++) = current;
@@ -404,15 +404,15 @@ public:
         if (testAtEnd()) {
           break;
         }
-        unsigned int offset = static_cast<unsigned char>(*iterator++);
+        std::uint32_t offset = static_cast<std::uint8_t>(*iterator++);
         if (testAtEnd()) {
           break;
         }
-        unsigned int count = static_cast<unsigned char>(*iterator++);
+        std::uint32_t count = static_cast<std::uint8_t>(*iterator++);
         offset |= ((count & OFFSET_MASK) << 4U);
         count = (count & COUNT_MASK) + THRESHOLD;
         // read from ring buffer
-        for (unsigned int k = 0; k <= count; ++k) {
+        for (std::uint32_t k = 0; k <= count; ++k) {
           // get value
           current = textBuf.at((offset + k) & N_MINUS1);
           // assign value
