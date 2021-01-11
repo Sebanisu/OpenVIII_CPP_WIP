@@ -375,7 +375,7 @@ public:
     }
     auto iterator = src.begin();
     const auto srcEnd = std::ranges::end(src);
-    std::uint32_t current{ 0 };
+    std::uint32_t current{};
     auto textBuf = std::array<std::uint32_t, N_MINUS1 + F>();
     // ring buffer of size N, with extra F-1 bytes to facilitate string
     // comparison
