@@ -134,6 +134,10 @@ template<typename Type> concept has_resize = requires(Type a)
 {
   a.resize(static_cast<std::size_t>(0U));
 };
+template<typename Type> concept has_reserve = requires(Type a)
+{
+  a.reserve(static_cast<std::size_t>(0U));
+};
 template<typename trivialType>
 concept is_default_constructible_has_data_size_resize =
   is_default_constructible_has_data_and_size<trivialType>
