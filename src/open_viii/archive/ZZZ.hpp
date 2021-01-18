@@ -104,6 +104,7 @@ public:
     std::pair<std::string, open_viii::archive::ZZZ>>
     get_files_from_path(const std::filesystem::path &path)
   {
+    // todo tools should have a search path function instead of this rolling it's own.
     const std::filesystem::directory_options options =
       std::filesystem::directory_options::skip_permission_denied;
 
