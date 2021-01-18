@@ -23,6 +23,7 @@
 #include <iterator>
 #include <set>
 #include <string>
+#include <utility>
 namespace open_viii::archive {
 /**
  * @see https://github.com/myst6re/qt-zzz
@@ -32,12 +33,52 @@ struct [[maybe_unused]] ZZZ
 
 
 private:
-  // stored at top of zzz file to tell how many files are stored inside
-  // unsigned int count_{};
-  // file data inside zzz file.
-  std::vector<FileData> m_data{};
   std::filesystem::path m_path{};
+  /**
+   * uint32_t count_{}; fallowed by array of file data
+   */
+  std::vector<FileData> m_data{};
 
+
+
+  [[nodiscard]] auto load_data_from_file() const
+  {
+    std::vector<FileData> data{};
+    if (m_path.has_extension()
+        && tools::i_equals(m_path.extension().string(), EXT)
+        && std::filesystem::exists(m_path)) {
+
+      tools::read_from_file(
+        [&data](std::istream &fp) {
+               auto count{ tools::read_val<uint32_t>(fp) };
+               data.reserve(count);
+               while (!fp.eof() && count-- != 0U) {
+                 if ((data.emplace_back(fp).empty())) {
+                   std::cerr << "empty element detected and removed\n";
+                   data.pop_back();
+                 }
+               }
+        },
+        m_path);
+    }
+    return data;
+  }
+
+  void sort_data()
+  {
+    std::ranges::sort(m_data,
+                      [](const FileData &left, const FileData &right) {
+                             const auto right_string = right.get_path_string();
+                             const auto left_string = left.get_path_string();
+                             const auto right_size = std::ranges::size(right_string);
+                             const auto left_size = std::ranges::size(left_string);
+                             if (left_size == right_size) {
+                               return left_string < right_string;
+                             }
+                             return left_size < right_size;
+                      });
+    m_data.shrink_to_fit();
+  }
 public:
   constexpr static auto EXT = ".zzz";
   [[maybe_unused]] [[nodiscard]] const auto &data() const noexcept
@@ -54,112 +95,12 @@ public:
   ZZZ &operator=(ZZZ &&) = default;
   ~ZZZ() = default;
   constexpr ZZZ() = default;
-  explicit ZZZ(const std::filesystem::path &path)
+  explicit ZZZ(std::filesystem::path path)
+  : m_path(std::move(path)), m_data(load_data_from_file())
   {
-    if (!(path.has_extension()
-          && tools::i_equals(path.extension().string(), EXT))
-        || !std::filesystem::exists(path)) {
-      return;
-    }
+    sort_data();
+  }
 
-    std::uint32_t count{};
-    auto fp = std::ifstream(path, std::ios::binary | std::ios::in);
-    if (!fp.is_open()) {
-      fp.close();
-      return;
-    }
-    m_path = path;
-    tools::read_val(fp, count);
-    m_data.reserve(count);
-    for (auto i = 0U; fp.is_open() && !fp.eof() && i < count; i++) {
-      if ((m_data.emplace_back(fp).empty())) {
-        std::cerr << "empty element detected and removed\n";
-        m_data.pop_back();
-      }
-    }
-    std::sort(m_data.begin(),
-      m_data.end(),
-      [](const FileData &left, const FileData &right) {
-        const auto right_string = right.get_path_string();
-        const auto left_string = left.get_path_string();
-        const auto right_size = std::ranges::size(right_string);
-        const auto left_size = std::ranges::size(left_string);
-        if (left_size == right_size) {
-          return left_string < right_string;
-        }
-        return left_size < right_size;
-      });
-    fp.close();
-    m_data.shrink_to_fit();
-  }
-  void save_entry(const FileData &item, const std::string_view &str_path) const
-  {
-    auto buffer = FS::get_entry(m_path, item, 0U);
-    //    std::cout << '{' << buffer.size() << ", " << str_path << "}\n";
-    tools::write_buffer(buffer, str_path);
-  }
-  //  void test() const
-  //  {
-  //
-  //    FIFLFS archive{};
-  //    {// TODO rewrite with out iterators.
-  //      auto beg = m_data.begin();
-  //      auto end = m_data.end();
-  //      for (auto cur = beg; cur < end; cur++) {
-  //        // const auto &item : data_
-  //        const auto &item = *cur;
-  //        const auto &[strPath, zzzOffset, zzzSize] = item;
-  //        {
-  //          const auto &next = cur + 1 < end
-  //                                 && (FIFLFS<true>::check_extension(
-  //                                       (*(cur + 1)).get_path_string())
-  //                                     != 0)
-  //                               ? *(cur + 1)
-  //                               : FileData();
-  //          const auto &prev = cur - 1 > beg
-  //                                 && (FIFLFS<true>::check_extension(
-  //                                       (*(cur - 1)).get_path_string())
-  //                                     != 0)
-  //                               ? *(cur - 1)
-  //                               : FileData();
-  //          // getting a prev and next element to check vs cur item. To make
-  //          sure
-  //          // at least 2 of them match so we don't add an orphan to the
-  //          FIFLFS
-  //          // archive. std::cout << '{' << zzzOffset << ", " << zzzSize << ",
-  //          "
-  //          // << strPath << "}\n";
-  //          if ((FIFLFS<true>::check_extension(strPath) != 0)
-  //              && ((!next.empty()
-  //                    && tools::get_base_name(strPath)
-  //                         == tools::get_base_name(next.get_path_string()))
-  //                  ||
-  //
-  //                  (!prev.empty()
-  //                    && tools::get_base_name(strPath)
-  //                         == tools::get_base_name(prev.get_path_string()))))
-  //                         {
-  //
-  //            std::filesystem::path fs_path(strPath);
-  //            {
-  //              // char retVal = archive.try_add_nested(path_, 0U, fsPath,
-  //              item); TryAddT ret_val = archive.try_add(
-  //                m_path, fs_path, item.offset(), item.uncompressed_size());
-  //              if (ret_val == TryAddT::added_to_archive) {
-  //                continue;
-  //              }
-  //              if (ret_val == TryAddT::archive_full) {
-  //                archive.test();
-  //                archive = {};
-  //                continue;
-  //              }
-  //            }
-  //          }
-  //        }
-  //        save_entry(item, strPath);
-  //      }
-  //    }
-  //  }
   [[nodiscard]] static std::vector<
     std::pair<std::string, open_viii::archive::ZZZ>>
     get_files_from_path(const std::filesystem::path &path)
@@ -190,14 +131,6 @@ public:
     tmp.shrink_to_fit();
     return tmp;
   }
-  //  static void test_pair(
-  //    const std::pair<std::string_view, open_viii::archive::ZZZ> &pair)
-  //  {
-  //    const auto &[name, zzz] = pair;
-  //    // std::cout << '{' << name << ", " << zzz.m_path << "}\n";
-  //    zzz.test();
-  //    // testFLPath(paths.FL(),paths.FI());
-  //  }
 
   [[nodiscard]] friend std::ostream &operator<<(
     std::ostream &os, const ZZZ &data)
@@ -216,7 +149,7 @@ public:
     return os;
   }
   [[nodiscard]] std::vector<std::pair<unsigned int, std::string>>
-    get_vector_of_indexs_and_files(
+    get_vector_of_indexes_and_files(
       const std::initializer_list<std::string_view> &filename) const
   {
     unsigned int i{};

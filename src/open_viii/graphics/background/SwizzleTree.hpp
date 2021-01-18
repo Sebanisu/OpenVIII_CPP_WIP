@@ -41,7 +41,7 @@ private:
   {
     if (static_cast<bool>(m_archive)) {
       std::vector<std::pair<unsigned int, std::string>> mims =
-        m_archive.get_vector_of_indexs_and_files({ m_mim_filename });
+        m_archive.get_vector_of_indexes_and_files({ m_mim_filename });
       for (const std::pair<unsigned int, std::string> &pair : mims) {
         std::cout << '\t' << pair.first << '\t' << pair.second << std::endl;
       }

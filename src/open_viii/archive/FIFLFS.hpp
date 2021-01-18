@@ -431,7 +431,7 @@ public:
     return get_entry_data<outT>(get_entry_by_index(id));
   }
   [[nodiscard]] std::vector<std::pair<unsigned int, std::string>>
-    get_vector_of_indexs_and_files(
+    get_vector_of_indexes_and_files(
       const std::initializer_list<std::string_view> &filename) const
   {
     return archive::fl::get_all_entries_data(
@@ -446,7 +446,7 @@ public:
     const lambdaT &lambda) const
   {
 
-    const auto results = get_vector_of_indexs_and_files(filename);
+    const auto results = get_vector_of_indexes_and_files(filename);
     std::ranges::for_each(
       results
         | std::views::filter(
@@ -474,7 +474,7 @@ public:
       std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
       vector{};
     const std::vector<std::pair<unsigned int, std::string>> fls =
-      get_vector_of_indexs_and_files({ archive::fl::EXT });
+      get_vector_of_indexes_and_files({ archive::fl::EXT });
     const std::string &basename = get_base_name();
     for (const auto &fl : fls) {
       const auto fi = get_entry_by_index(fl.first);

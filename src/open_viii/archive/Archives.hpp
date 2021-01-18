@@ -493,7 +493,7 @@ public:
         if constexpr (std::is_same_v<decltype(archive), std::optional<ZZZ>>) {
           if (archive.has_value()) {
             [[maybe_unused]] const auto result =
-              archive->get_vector_of_indexs_and_files(filename);
+              archive->get_vector_of_indexes_and_files(filename);
             if (!std::ranges::empty(result)) {
               vector.emplace_back(
                 std::make_pair(get_string<archiveType_>(), std::move(result)));
@@ -503,7 +503,7 @@ public:
           std::is_same_v<decltype(archive),
             FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
           [[maybe_unused]] auto result =
-            archive.get_vector_of_indexs_and_files(filename);
+            archive.get_vector_of_indexes_and_files(filename);
           if (!std::ranges::empty(result)) {
             vector.emplace_back(
               std::make_pair(get_string<archiveType_>(), std::move(result)));
