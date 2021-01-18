@@ -130,34 +130,49 @@ template<typename dstT = std::vector<char>>
   return read_val<dstT>(fp, static_cast<long>(size_of_file));// read entire file
 }
 
+static std::optional<std::ifstream> open_file(const std::filesystem::path &path)
+{
+  std::optional<std::ifstream> ofp{};
+  std::error_code ec{};
+  if (!std::filesystem::exists(path, ec)) {
+    return ofp;
+  }
+  if (ec) {
+    std::cerr << ec.message() << std::endl;
+    ec.clear();
+    return ofp;
+  }
 
+  ofp.emplace(std::ifstream{});
+  for (;;) {
+    ofp->open(path, std::ios::in | std::ios::binary);
+    if (ofp->is_open()) {
+      break;
+    }
+    //TODO might need a better way to open a file than an infinite loop
+    // I had issue where it'd fail to open a file sometimes but the
+    // next time it'd work fine (╯°□°)╯︵ ┻━┻
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+
+
+  std::cout << (std::string("Loading: \t\"") + path.string()
+                + std::string("\"\n"));
+
+  return ofp;
+}
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::istream &>)
   [[maybe_unused]] static bool read_from_file(
     const lambdaT &lambda, const std::filesystem::path &path)
 {
-  std::error_code ec{};
-  if (!std::filesystem::exists(path, ec)) {
-    return false;
+  auto ofp = open_file(path);
+  if (ofp.has_value() && ofp->is_open()) { //check might be redundant.
+    lambda(*ofp);
+    ofp->close();
+    return true;
   }
-  if (ec) {
-    std::cerr << ec.message() << std::endl;
-    ec.clear();
-    return false;
-  }
-  auto fp = std::ifstream{};
-  for (;;) {
-    fp.open(path, std::ios::in | std::ios::binary);
-    if (fp.is_open()) {
-      break;
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-  }
-  std::cout << (std::string("Loading: \t\"") + path.string()
-                + std::string("\"\n"));
-  lambda(fp);
-  fp.close();
-  return true;
+  return false;
 }
 
 template<std::ranges::contiguous_range dstT = std::vector<char>>

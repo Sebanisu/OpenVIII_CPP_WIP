@@ -83,6 +83,7 @@ constexpr const static auto EXT = std::string_view(".FL");
     const std::initializer_list<std::string_view> &needle = {},
     const size_t &limit = 0U)
 {
+  //TODO break this code up
   std::vector<std::pair<unsigned int, std::string>> vector{};
   const auto process =
     [&limit, &count, &size, &vector, &offset, &needle, &data](auto &cont) {
@@ -140,13 +141,12 @@ constexpr const static auto EXT = std::string_view(".FL");
   // shorter length and then what ever str < str2 does.
 
 
-  if (std::empty(data) || (std::ranges::size(data) == 1U && data.front() == '\0')) {
-    tools::read_from_file(process,path);
-  } else if (data.front() != '\0') {
+  if (!std::empty(data) && data.front() != '\0') {
     auto ss = std::stringstream(data);
     process(ss);
-  } else {
-    std::cout << "\033[1;31mFL Data is null!\033[0m\n";
+  }
+  else {
+    tools::read_from_file(process,path);
   }
 
   std::ranges::sort(vector, [](const auto &left, const auto &right) {
@@ -155,18 +155,6 @@ constexpr const static auto EXT = std::string_view(".FL");
     }
     return left.second.length() < right.second.length();
   });
-  //    if (!std::is_sorted(vector.begin(), vector.end(), [](const auto &left,
-  //    const auto &right) {
-  //          if (left.second.length() == right.second.length()) {
-  //            return left.second < right.second;
-  //          }
-  //          return left.second.length() < right.second.length();
-  //        })) {
-  //
-  //      for (const auto &item : vector) { std::cout << item.second << '\n'; }
-  //      std::cerr << "not sorted!!!";
-  //      exit(1);
-  //    }
   return vector;
 }
 // Get all entries from the FL file sorted and cleaned.

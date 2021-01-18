@@ -45,39 +45,41 @@ static dstT get_entry(
   if (fi.uncompressed_size() == 0) {
     return {};
   }
-  std::ifstream fp = std::ifstream(path, std::ios::in | std::ios::binary);
-  // if compressed will keep decompressing till get size
-  // size compressed isn't quite known with out finding the offset of the next
-  // file and finding difference.
-  fp.seekg(static_cast<long>(offset + fi.offset()), std::ios::beg);
+  auto ofp =tools::open_file(path);
+  if(ofp.has_value() && ofp->is_open()) {
+    // if compressed will keep decompressing till get size
+    // size compressed isn't quite known with out finding the offset of the next
+    // file and finding difference.
+    ofp->seekg(static_cast<long>(offset + fi.offset()), std::ios::beg);
 
-  switch (fi.compression_type()) {
-  case CompressionTypeT::none: {
-    return tools::read_val<dstT>(fp, fi.uncompressed_size());
-  }
-  case CompressionTypeT::lzss: {
-    unsigned int compSize{ 0 };
-    tools::read_val(fp, compSize);
-    dstT buffer = tools::read_val<dstT>(fp, compSize);
-    return compression::LZSS::decompress<dstT>(buffer, fi.uncompressed_size());
-  }
-  case CompressionTypeT::lz4: {
-    unsigned int sectSize{ 0 };
-    // L4Z header contains size of total section as uint32, 4 byte string
-    // the size of the compressed data is the first value minus 8. the second
-    // value is something i'm unsure of
-    tools::read_val(fp, sectSize);
-    constexpr static auto skipSize = 8U;
-    fp.seekg(skipSize, std::ios::cur);
-    const auto compSize = sectSize - skipSize;
-    dstT buffer = tools::read_val<dstT>(fp, compSize);
+    switch (fi.compression_type()) {
+    case CompressionTypeT::none: {
+      return tools::read_val<dstT>(*ofp, fi.uncompressed_size());
+    }
+    case CompressionTypeT::lzss: {
+      unsigned int compSize{ 0 };
+      tools::read_val(*ofp, compSize);
+      dstT buffer = tools::read_val<dstT>(*ofp, compSize);
+      return compression::LZSS::decompress<dstT>(
+        buffer, fi.uncompressed_size());
+    }
+    case CompressionTypeT::lz4: {
+      // L4Z header contains size of total section as uint32, 4 byte string
+      // the size of the compressed data is the first value minus 8. the second
+      // value is something i'm unsure of
+      const auto sectSize = tools::read_val<std::uint32_t>(*ofp);
+      constexpr static auto skipSize = 8U;
+      ofp->seekg(skipSize, std::ios::cur);
+      const auto compSize = sectSize - skipSize;
+      dstT buffer = tools::read_val<dstT>(*ofp, compSize);
 
 
-    return compression::l4z::decompress<dstT>(
-      buffer.data(), compSize, fi.uncompressed_size());
+      return compression::l4z::decompress<dstT>(
+        buffer.data(), compSize, fi.uncompressed_size());
+    }
+    }
+    ofp->close();
   }
-  }
-  fp.close();
   return {};
 }
 
