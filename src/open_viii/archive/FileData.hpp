@@ -47,7 +47,7 @@ public:
     return m_size == 0 || m_filename.empty();
   }
   explicit FileData(std::ifstream &fp, const std::uint32_t &string_length)
-    : m_filename(tools::read_buffer<decltype(m_filename)>(fp, string_length)),
+    : m_filename(tools::read_val<decltype(m_filename)>(fp, string_length)),
       m_offset(tools::read_val<decltype(m_offset)>(fp)),
       m_size(tools::read_val<decltype(m_size)>(fp))
   {}

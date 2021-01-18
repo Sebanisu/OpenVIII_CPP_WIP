@@ -19,9 +19,9 @@ struct PupuPath
 {
   open_viii::graphics::background::Pupu pupu{};
   std::filesystem::path path{};
-  //  auto read_file() const
+  //  auto read_entire_file() const
   //  {
-  //    return open_viii::tools::read_file<std::string>(path);
+  //    return open_viii::tools::read_entire_file<std::string>(path);
   //  }
 };
 template<typename map_type>

@@ -139,7 +139,7 @@ public:
   void extract(std::filesystem::path dest_path)
   {
     std::cout << "Extracting \"" << m_file_path.string() << "\"\n";
-    tools::read_buffer(
+    tools::read_from_file(
       [this, &dest_path](std::istream &is) {
         std::ranges::for_each(
           m_movies, [&is, &dest_path](const MovieClip &item) {
@@ -311,7 +311,7 @@ public:
    */
   void read()
   {
-    tools::read_buffer(
+    tools::read_from_file(
       [this](std::istream &is) {
         /**
          * Current working tmp movie clip

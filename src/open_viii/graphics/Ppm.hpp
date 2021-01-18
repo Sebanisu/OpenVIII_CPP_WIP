@@ -118,7 +118,7 @@ private:
 public:
   Ppm() = default;
   explicit Ppm(const std::filesystem::path &path)
-    : Ppm(tools::read_file<std::string>(path), path)
+    : Ppm(tools::read_entire_file<std::string>(path), path)
   {}
   explicit Ppm(const std::string &buffer, std::filesystem::path path = {})
     : m_path(std::move(path)),

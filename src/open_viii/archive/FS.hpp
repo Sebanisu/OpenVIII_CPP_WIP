@@ -45,12 +45,12 @@ static dstT get_entry(
 
   switch (fi.compression_type()) {
   case CompressionTypeT::none: {
-    return tools::read_buffer<dstT>(fp, fi.uncompressed_size());
+    return tools::read_val<dstT>(fp, fi.uncompressed_size());
   }
   case CompressionTypeT::lzss: {
     unsigned int compSize{ 0 };
     tools::read_val(fp, compSize);
-    dstT buffer = tools::read_buffer<dstT>(fp, compSize);
+    dstT buffer = tools::read_val<dstT>(fp, compSize);
     return compression::LZSS::decompress<dstT>(buffer, fi.uncompressed_size());
   }
   case CompressionTypeT::lz4: {
@@ -62,7 +62,7 @@ static dstT get_entry(
     constexpr static auto skipSize = 8U;
     fp.seekg(skipSize, std::ios::cur);
     const auto compSize = sectSize - skipSize;
-    dstT buffer = tools::read_buffer<dstT>(fp, compSize);
+    dstT buffer = tools::read_val<dstT>(fp, compSize);
 
 
     return compression::l4z::decompress<dstT>(

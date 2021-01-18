@@ -88,7 +88,7 @@ public:
         return tools::read_val<archive::FI>(m_fi.data(), offset);
         // return archive::FI(m_fi.data(), id, m_fi.offset());
       }
-      return tools::read_val<archive::FI>(m_fi.path(), offset);
+      return tools::read_value_from_file<archive::FI>(m_fi.path(), offset);
       // return archive::FI(m_fi.path(), id, m_fi.offset());
     }
     return {};

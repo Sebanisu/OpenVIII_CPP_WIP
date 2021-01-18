@@ -108,7 +108,7 @@ template<is_default_constructible_has_data_and_size trivialType>
 }
 template<std::ranges::contiguous_range dstT = std::vector<char>,
   std::integral sizeT>
-requires has_resize<dstT> [[maybe_unused]] static auto read_buffer(
+requires has_resize<dstT> [[maybe_unused]] static auto read_val(
   std::istream &fp, const sizeT &s)
 {
   dstT buf{};
@@ -122,31 +122,18 @@ requires has_resize<dstT> [[maybe_unused]] static auto read_buffer(
 
 
 template<typename dstT = std::vector<char>>
-[[maybe_unused]] static auto read_buffer(std::istream &fp)
+[[maybe_unused]] static auto read_entire_stream(std::istream &fp)
 {
   fp.seekg(0, std::ios::end);// seek to end;
   const auto size_of_file = fp.tellg();// read filesize
   fp.seekg(0, std::ios::beg);// seek to beginning
-  return read_buffer<dstT>(
-    fp, static_cast<long>(size_of_file));// read entire file
+  return read_val<dstT>(fp, static_cast<long>(size_of_file));// read entire file
 }
-template<std::ranges::contiguous_range dstT = std::vector<char>>
-[[maybe_unused]] static dstT read_file(const std::filesystem::path &path)
-{
-  dstT buffer{};
-  read_buffer(
-    [&buffer](std::istream &fp) {
-      buffer = read_buffer<dstT>(fp);
-    },
-    path);
 
-
-  return buffer;
-}
 
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::istream &>)
-  [[maybe_unused]] static bool read_buffer(
+  [[maybe_unused]] static bool read_from_file(
     const lambdaT &lambda, const std::filesystem::path &path)
 {
   std::error_code ec{};
@@ -173,13 +160,33 @@ requires(std::invocable<lambdaT, std::istream &>)
   return true;
 }
 
+template<std::ranges::contiguous_range dstT = std::vector<char>>
+[[maybe_unused]] static dstT read_entire_file(const std::filesystem::path &path)
+{
+  dstT buffer{};
+  read_from_file(
+    [&buffer](std::istream &fp) {
+      buffer = read_entire_stream<dstT>(fp);
+    },
+    path);
 
-template<is_trivially_copyable_and_default_constructible trivialType>
-[[nodiscard]] static trivialType read_val(
+
+  return buffer;
+}
+
+/**
+ * Read value from file
+ * @tparam valueT type of return value
+ * @param path path to file.
+ * @param offset byte offset from beginning
+ * @return
+ */
+template<is_trivially_copyable_and_default_constructible valueT>
+[[nodiscard]] static valueT read_value_from_file(
   const std::filesystem::path &path, const std::size_t &offset)
 {
-  trivialType item{};
-  if (!read_buffer(
+  valueT item{};
+  if (!read_from_file(
         [&offset, &item](std::istream &is) {
           is.seekg(static_cast<long>(offset));
           read_val(is, item);
