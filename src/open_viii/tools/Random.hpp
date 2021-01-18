@@ -14,8 +14,7 @@
 namespace open_viii::tools {
 
 template<typename lambdaT>
-static void random_iota(
-  const lambdaT &callback, const std::atomic_bool &stop)
+static void random_iota(const lambdaT &callback, const std::atomic_bool &stop)
 {
 
   // test LZSS
@@ -25,9 +24,11 @@ static void random_iota(
 
   size_t i{ 0 };
   static const auto run_once = [&callback, &dis, &gen](const size_t &size) {
-    return callback(make_container<std::vector<char>>([&dis, &gen]() {
-           return dis(gen);
-    },size));
+    return callback(make_container<std::vector<char>>(
+      [&dis, &gen]() {
+        return dis(gen);
+      },
+      size));
   };
   while (!stop && run_once(++i)) {}// inplace lambda
 }

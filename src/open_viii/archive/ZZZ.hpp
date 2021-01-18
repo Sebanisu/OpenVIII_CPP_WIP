@@ -98,64 +98,68 @@ public:
     //    std::cout << '{' << buffer.size() << ", " << str_path << "}\n";
     tools::write_buffer(buffer, str_path);
   }
-  void test() const
-  {
-
-    FIFLFS archive{};
-    {// TODO rewrite with out iterators.
-      auto beg = m_data.begin();
-      auto end = m_data.end();
-      for (auto cur = beg; cur < end; cur++) {
-        // const auto &item : data_
-        const auto &item = *cur;
-        const auto &[strPath, zzzOffset, zzzSize] = item;
-        {
-          const auto &next = cur + 1 < end
-                                 && (FIFLFS<true>::check_extension(
-                                       (*(cur + 1)).get_path_string())
-                                     != 0)
-                               ? *(cur + 1)
-                               : FileData();
-          const auto &prev = cur - 1 > beg
-                                 && (FIFLFS<true>::check_extension(
-                                       (*(cur - 1)).get_path_string())
-                                     != 0)
-                               ? *(cur - 1)
-                               : FileData();
-          // getting a prev and next element to check vs cur item. To make sure
-          // at least 2 of them match so we don't add an orphan to the FIFLFS
-          // archive. std::cout << '{' << zzzOffset << ", " << zzzSize << ", "
-          // << strPath << "}\n";
-          if ((FIFLFS<true>::check_extension(strPath) != 0)
-              && ((!next.empty()
-                    && tools::get_base_name(strPath)
-                         == tools::get_base_name(next.get_path_string()))
-                  ||
-
-                  (!prev.empty()
-                    && tools::get_base_name(strPath)
-                         == tools::get_base_name(prev.get_path_string())))) {
-
-            std::filesystem::path fs_path(strPath);
-            {
-              // char retVal = archive.try_add_nested(path_, 0U, fsPath, item);
-              TryAddT ret_val = archive.try_add(
-                m_path, fs_path, item.offset(), item.uncompressed_size());
-              if (ret_val == TryAddT::added_to_archive) {
-                continue;
-              }
-              if (ret_val == TryAddT::archive_full) {
-                archive.test();
-                archive = {};
-                continue;
-              }
-            }
-          }
-        }
-        save_entry(item, strPath);
-      }
-    }
-  }
+  //  void test() const
+  //  {
+  //
+  //    FIFLFS archive{};
+  //    {// TODO rewrite with out iterators.
+  //      auto beg = m_data.begin();
+  //      auto end = m_data.end();
+  //      for (auto cur = beg; cur < end; cur++) {
+  //        // const auto &item : data_
+  //        const auto &item = *cur;
+  //        const auto &[strPath, zzzOffset, zzzSize] = item;
+  //        {
+  //          const auto &next = cur + 1 < end
+  //                                 && (FIFLFS<true>::check_extension(
+  //                                       (*(cur + 1)).get_path_string())
+  //                                     != 0)
+  //                               ? *(cur + 1)
+  //                               : FileData();
+  //          const auto &prev = cur - 1 > beg
+  //                                 && (FIFLFS<true>::check_extension(
+  //                                       (*(cur - 1)).get_path_string())
+  //                                     != 0)
+  //                               ? *(cur - 1)
+  //                               : FileData();
+  //          // getting a prev and next element to check vs cur item. To make
+  //          sure
+  //          // at least 2 of them match so we don't add an orphan to the
+  //          FIFLFS
+  //          // archive. std::cout << '{' << zzzOffset << ", " << zzzSize << ",
+  //          "
+  //          // << strPath << "}\n";
+  //          if ((FIFLFS<true>::check_extension(strPath) != 0)
+  //              && ((!next.empty()
+  //                    && tools::get_base_name(strPath)
+  //                         == tools::get_base_name(next.get_path_string()))
+  //                  ||
+  //
+  //                  (!prev.empty()
+  //                    && tools::get_base_name(strPath)
+  //                         == tools::get_base_name(prev.get_path_string()))))
+  //                         {
+  //
+  //            std::filesystem::path fs_path(strPath);
+  //            {
+  //              // char retVal = archive.try_add_nested(path_, 0U, fsPath,
+  //              item); TryAddT ret_val = archive.try_add(
+  //                m_path, fs_path, item.offset(), item.uncompressed_size());
+  //              if (ret_val == TryAddT::added_to_archive) {
+  //                continue;
+  //              }
+  //              if (ret_val == TryAddT::archive_full) {
+  //                archive.test();
+  //                archive = {};
+  //                continue;
+  //              }
+  //            }
+  //          }
+  //        }
+  //        save_entry(item, strPath);
+  //      }
+  //    }
+  //  }
   [[nodiscard]] static std::vector<
     std::pair<std::string, open_viii::archive::ZZZ>>
     get_files_from_path(const std::filesystem::path &path)
@@ -186,14 +190,14 @@ public:
     tmp.shrink_to_fit();
     return tmp;
   }
-  static void test_pair(
-    const std::pair<std::string_view, open_viii::archive::ZZZ> &pair)
-  {
-    const auto &[name, zzz] = pair;
-    // std::cout << '{' << name << ", " << zzz.m_path << "}\n";
-    zzz.test();
-    // testFLPath(paths.FL(),paths.FI());
-  }
+  //  static void test_pair(
+  //    const std::pair<std::string_view, open_viii::archive::ZZZ> &pair)
+  //  {
+  //    const auto &[name, zzz] = pair;
+  //    // std::cout << '{' << name << ", " << zzz.m_path << "}\n";
+  //    zzz.test();
+  //    // testFLPath(paths.FL(),paths.FI());
+  //  }
 
   [[nodiscard]] friend std::ostream &operator<<(
     std::ostream &os, const ZZZ &data)

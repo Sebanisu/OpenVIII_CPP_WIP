@@ -8,7 +8,7 @@
 #include "open_viii/Concepts.hpp"
 namespace open_viii::tools {
 template<has_reserve containerT, typename fillT>
-requires requires (containerT c, fillT t)
+requires requires(containerT c, fillT t)
 {
   c.emplace_back(t());
 }

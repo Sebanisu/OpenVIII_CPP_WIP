@@ -37,8 +37,8 @@ private:
   Grouping<std::vector<char>> m_fs{};
   Grouping<std::basic_string<char>>
     m_fl{};// this is char because the file contains strings.
-  mutable size_t m_count{};
-  void get_count() const noexcept
+  size_t m_count{};
+  void get_count() noexcept
   {
     m_count = FI::get_count(m_fi.size());
   }
@@ -108,7 +108,7 @@ public:
   TryAddT try_add(const std::filesystem::path &existing_file_path,
     const std::filesystem::path &nested_path = "",
     size_t offset = 0U,
-    size_t size = 0U) const
+    size_t size = 0U)
   {
     const auto set = [&existing_file_path, &offset, &nested_path, &size, this](
                        auto &ds) {
@@ -167,7 +167,7 @@ public:
     try_add_nested(const srcT &src,
       const size_t src_offset,
       const std::filesystem::path &file_entry,
-      const datT &fi) const
+      const datT &fi)
   {
 
     const auto set = [&file_entry](auto &ds) {
@@ -242,79 +242,79 @@ public:
       return FS::get_entry<dstT>(m_fs.path(), fi, m_fs.offset());
     }
   }
-  void test() const
-  {
-    //    if (!std::filesystem::exists(m_fl.path())) {
-    //      std::cout << "nested file!\n";
-    //    }
-    //    std::cout << *this << '\n';
-    //    std::cout << "Getting Filenames from : " << m_fl.path() << '\n';
-    FIFLFS archive{};
-    using namespace std::string_view_literals;
-    auto items = archive::fl::get_all_entries_data(
-      m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, {});
-    for (const auto &item : items) {
-      const auto &[id, strVirtualPath] = item;
-      // std::cout << "try_add_nested: {" << id << ", " << strVirtualPath <<
-      // "}\n";
-
-      FI_Like auto fi = get_entry_by_index(id);
-      {
-        TryAddT retVal = [this, &archive, &fi, &strVirtualPath]() {
-          std::filesystem::path virtualPath(strVirtualPath);
-          if (!std::ranges::empty(m_fs.data())) {
-            return archive.try_add_nested(
-              m_fs.data(), m_fs.offset(), virtualPath, fi);
-          }
-
-          if (fi.compression_type() == CompressionTypeT::none) {
-            auto localRetVal = archive.try_add(m_fs.path(),
-              virtualPath,
-              m_fs.offset() + fi.offset(),
-              fi.uncompressed_size());
-            //            if (localRetVal != TryAddT::not_part_of_archive) {
-            //              std::cout << virtualPath.filename() << " is
-            //              uncompressed pointing at location in actual
-            //              file!\n";
-            //            }
-            return localRetVal;
-          }
-          return archive.try_add_nested(m_fs.path(),
-            m_fs.offset(),
-            virtualPath,
-            fi);// when path is sent a different function is used later.
-        }();
-        if (retVal == TryAddT::added_to_archive) {
-          continue;
-        }
-        if (retVal == TryAddT::archive_full) {
-          archive.test();
-          archive = {};
-          continue;
-        }
-      }
-      {
-        const auto buffer = get_entry_buffer(fi);
-        if (buffer.empty()) {
-          //          std::cout << '{' << id << ", "
-          //                    << "Empty!"
-          //                    << ", " << strVirtualPath << "}" << fi <<
-          //                    std::endl;
-          if (!(fi.uncompressed_size() == 0
-                && fi.compression_type() == CompressionTypeT::none)) {
-            exit(EXIT_FAILURE);
-          }
-        }
-        if (fi.uncompressed_size() != buffer.size()) {
-          exit(EXIT_FAILURE);
-        }
-        //        std::cout << '{' << id << ", " << buffer.size() << ", " <<
-        //        strVirtualPath << "}" << std::endl;
-        tools::write_buffer(buffer, strVirtualPath);
-        // saveIMG(buffer, strVirtualPath);
-      }
-    }
-  }
+  //  void test() const
+  //  {
+  //    //    if (!std::filesystem::exists(m_fl.path())) {
+  //    //      std::cout << "nested file!\n";
+  //    //    }
+  //    //    std::cout << *this << '\n';
+  //    //    std::cout << "Getting Filenames from : " << m_fl.path() << '\n';
+  //    FIFLFS archive{};
+  //    using namespace std::string_view_literals;
+  //    auto items = archive::fl::get_all_entries_data(
+  //      m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, {});
+  //    for (const auto &item : items) {
+  //      const auto &[id, strVirtualPath] = item;
+  //      // std::cout << "try_add_nested: {" << id << ", " << strVirtualPath <<
+  //      // "}\n";
+  //
+  //      FI_Like auto fi = get_entry_by_index(id);
+  //      {
+  //        TryAddT retVal = [this, &archive, &fi, &strVirtualPath]() {
+  //          std::filesystem::path virtualPath(strVirtualPath);
+  //          if (!std::ranges::empty(m_fs.data())) {
+  //            return archive.try_add_nested(
+  //              m_fs.data(), m_fs.offset(), virtualPath, fi);
+  //          }
+  //
+  //          if (fi.compression_type() == CompressionTypeT::none) {
+  //            auto localRetVal = archive.try_add(m_fs.path(),
+  //              virtualPath,
+  //              m_fs.offset() + fi.offset(),
+  //              fi.uncompressed_size());
+  //            //            if (localRetVal != TryAddT::not_part_of_archive) {
+  //            //              std::cout << virtualPath.filename() << " is
+  //            //              uncompressed pointing at location in actual
+  //            //              file!\n";
+  //            //            }
+  //            return localRetVal;
+  //          }
+  //          return archive.try_add_nested(m_fs.path(),
+  //            m_fs.offset(),
+  //            virtualPath,
+  //            fi);// when path is sent a different function is used later.
+  //        }();
+  //        if (retVal == TryAddT::added_to_archive) {
+  //          continue;
+  //        }
+  //        if (retVal == TryAddT::archive_full) {
+  //          archive.test();
+  //          archive = {};
+  //          continue;
+  //        }
+  //      }
+  //      {
+  //        const auto buffer = get_entry_buffer(fi);
+  //        if (buffer.empty()) {
+  //          //          std::cout << '{' << id << ", "
+  //          //                    << "Empty!"
+  //          //                    << ", " << strVirtualPath << "}" << fi <<
+  //          //                    std::endl;
+  //          if (!(fi.uncompressed_size() == 0
+  //                && fi.compression_type() == CompressionTypeT::none)) {
+  //            exit(EXIT_FAILURE);
+  //          }
+  //        }
+  //        if (fi.uncompressed_size() != buffer.size()) {
+  //          exit(EXIT_FAILURE);
+  //        }
+  //        //        std::cout << '{' << id << ", " << buffer.size() << ", " <<
+  //        //        strVirtualPath << "}" << std::endl;
+  //        tools::write_buffer(buffer, strVirtualPath);
+  //        // saveIMG(buffer, strVirtualPath);
+  //      }
+  //    }
+  //  }
   static auto get_files_from_path(const std::filesystem::path &path)
   {
     const std::filesystem::directory_options options =

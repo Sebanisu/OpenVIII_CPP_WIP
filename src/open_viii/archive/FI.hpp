@@ -124,7 +124,7 @@ public:
     }
   }
 };
-static_assert(sizeof(FI)==FI::SIZE);
+static_assert(sizeof(FI) == FI::SIZE);
 /**
  * find the offset in file where FI entry is located
  * @param id, count from 0 to N of FI entries to skip.
@@ -173,7 +173,6 @@ template<> struct tuple_element<1, open_viii::archive::FI>
 template<> struct tuple_element<2, open_viii::archive::FI>
 {
   using type = open_viii::CompressionTypeT;
-
 };
-}
+}// namespace std
 #endif// !VIIIARCHIVE_FI_HPP

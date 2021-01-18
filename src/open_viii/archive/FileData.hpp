@@ -134,7 +134,7 @@ public:
    * @note required to structured binding support
    */
   template<std::size_t I>
-  requires(I < 3) [[nodiscard]] const auto & get() const noexcept
+  requires(I < 3) [[nodiscard]] const auto &get() const noexcept
   {
     if constexpr (I == 0) {
       return m_filename;
