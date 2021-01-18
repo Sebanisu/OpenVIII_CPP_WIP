@@ -1,25 +1,11 @@
 find_package(Threads REQUIRED)
 #
-##test app for trying to extract a all files from the FIFLFS archives.
-add_executable(TestExtractFIFLFS
-        TestExtractFIFLFS.hpp TestExtractFIFLFS.cpp)
-set_target_properties(TestExtractFIFLFS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractFIFLFS VIIIArchive VIIIPaths project_warnings)
-#
 ##test app for trying to extract a single file from the FIFLFS archives.
 add_executable(TestExtractALLSearch
         TestExtractALLSearch.hpp
         TestExtractALLSearch.cpp)
 set_target_properties(TestExtractALLSearch PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestExtractALLSearch VIIIArchive VIIIPaths Threads::Threads project_warnings)
-
-#
-##test app for trying to extract a all files from the ZZZ and FIFLFS archives.
-add_executable(TestExtractZZZ
-        TestExtractZZZ.hpp
-        TestExtractZZZ.cpp)
-set_target_properties(TestExtractZZZ PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(TestExtractZZZ VIIIArchive VIIIPaths project_warnings)
 
 #
 ##Test Archives loading struct
