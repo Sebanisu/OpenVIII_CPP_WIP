@@ -24,6 +24,16 @@ int main()
         std::cout << pak << std::endl;
         pak.extract("movies");
       });
+    open_viii::tools::execute_on_directory(
+      path, {}, { ".cam" }, [](const std::filesystem::path &p) {
+        std::cout << p << std::endl;
+        open_viii::tools::read_from_file(
+          [](std::istream &fp) {
+            open_viii::Cam cam{ fp };
+            std::cout << cam << std::endl;
+          },
+          p);
+      });
   });
   return 0;
 }
