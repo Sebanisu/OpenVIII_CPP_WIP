@@ -83,7 +83,7 @@ public:
   [[nodiscard]] archive::FI get_entry_by_index(const unsigned int &id) const
   {
     if (m_count == 0 || id < m_count) {
-      const auto offset = archive::FI::get_start_offset(id, m_fi.offset());
+      const auto offset = archive::get_fi_entry_offset(id, m_fi.offset());
       if (!std::ranges::empty(m_fi.data())) {
         return tools::read_val<archive::FI>(m_fi.data(), offset);
         // return archive::FI(m_fi.data(), id, m_fi.offset());

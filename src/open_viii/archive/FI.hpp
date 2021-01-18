@@ -32,17 +32,21 @@ struct FI
 {
   // changed to int because libraries require casting to int anyway.
 private:
+  /**
+   * Uncompressed Size of entry
+   */
   std::uint32_t m_uncompressed_size{};
+  /**
+   * Offset to entry
+   */
   std::uint32_t m_offset{};
+  /**
+   * Compression Type
+   */
   CompressionTypeT m_compression_type{};
 
 
 public:
-  [[nodiscard]] constexpr static std::size_t get_start_offset(
-    const unsigned int &id, const std::size_t &offset = 0U)
-  {
-    return (id * SIZE) + offset;
-  }
   constexpr static const std::size_t SIZE = 12U;
 
   constexpr static const auto EXT = std::string_view(".FI");
@@ -80,80 +84,6 @@ public:
       m_offset{ offset },
       m_compression_type{ compression_type }
   {}
-  //
-  //  explicit FI(
-  //    std::ifstream &&fp, const long &start_offset = 0, bool close = false)
-  //  {
-  //    // unsure if this is correct but passing from ifstream is an rvalue
-  //    // so umm it won't let me use a normal reference unless it's const.
-  //    if (!fp.is_open()) {
-  //      return;
-  //    }
-  //    if (start_offset < 0) {
-  //      return;// shouldn't be less than 0;
-  //    }
-  //    fp.seekg(start_offset);
-  //
-  //    tools::read_val(fp, m_uncompressed_size);
-  //    if (m_uncompressed_size > 0) {// if size is 0 than no point in reading
-  //    more.
-  //      tools::read_val(fp, m_offset);
-  //      tools::read_val(fp, m_compression_type);
-  //    }
-  //    if (close) {
-  //      fp.close();
-  //    }
-  //  }
-  //
-  //  FI(const std::filesystem::path &path,
-  //    const unsigned int &id,
-  //    const std::size_t &offset)
-  //    : FI(std::ifstream(path, std::ios::in | std::ios::binary),
-  //      static_cast<long>(get_start_offset(id, offset)),
-  //      true)
-  //  {}
-  //
-  //  /**
-  //   * Construct a FI entry
-  //   * @param buffer char range containing all the FI entries.
-  //   * @param start_offset byte offset to entry.
-  //   */
-  //  explicit FI(
-  //    std::span<const char> buffer, const std::size_t &start_offset = 0U)
-  //    : m_uncompressed_size(tools::read_val<decltype(m_uncompressed_size)>(
-  //      buffer.subspan(start_offset))),
-  //      m_offset(tools::read_val<decltype(m_offset)>(
-  //        buffer.subspan(start_offset + sizeof(m_uncompressed_size)))),
-  //      m_compression_type(
-  //        tools::read_val<decltype(m_compression_type)>(buffer.subspan(
-  //          start_offset + sizeof(m_uncompressed_size) + sizeof(m_offset))))
-  //  {
-  ////    if (start_offset + SIZE > std::ranges::size(buffer)) {
-  ////      return;
-  ////    }
-  ////    buffer = buffer.subspan(start_offset, SIZE);
-  ////
-  ////    std::memcpy(&m_uncompressed_size,
-  ////      std::ranges::data(buffer),
-  ////      sizeof(m_uncompressed_size));
-  ////    if (m_uncompressed_size > 0) {// if size is 0 than no point in reading
-  /// more. /      buffer = buffer.subspan(sizeof(m_uncompressed_size)); /
-  /// std::memcpy(&m_offset, std::ranges::data(buffer), sizeof(m_offset)); /
-  /// buffer = buffer.subspan(sizeof(m_offset)); /
-  /// std::memcpy(&m_compression_type, /        std::ranges::data(buffer), /
-  /// sizeof(m_compression_type)); /    }
-  //  }
-  //  /**
-  //   * Construct a FI entry
-  //   * @param buffer char range containing all the FI entries.
-  //   * @param id which FI entry you want.
-  //   * @param offset byte offset to the start of FI entries.
-  //   */
-  //  FI(std::span<const char> buffer,
-  //    const unsigned int &id,
-  //    const std::size_t &offset)
-  //    : FI(buffer, get_start_offset(id, offset))
-  //  {}
 
   [[nodiscard]] constexpr static std::size_t get_count(
     const std::size_t &file_size) noexcept
@@ -178,6 +108,13 @@ public:
     return os;
   }
 };
+static_assert(sizeof(FI)==FI::SIZE);
+
+[[nodiscard]] constexpr static std::size_t get_fi_entry_offset(
+  const std::size_t &id, const std::size_t &offset = 0U)
+{
+  return (id * sizeof(FI)) + offset;
+}
 }// namespace open_viii::archive
 
 #endif// !VIIIARCHIVE_FI_HPP
