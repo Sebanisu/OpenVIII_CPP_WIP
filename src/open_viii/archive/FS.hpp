@@ -28,7 +28,15 @@
 
 namespace open_viii::archive::FS {
 static constexpr auto EXT = std::string_view(".FS");
-
+/**
+ * get file entry and decompress it
+ * @tparam dstT type being returned
+ * @tparam fiT type of FI or FileData that contains offset, size, compression.
+ * @param path to file
+ * @param fi FI or FileData
+ * @param offset to file data in bytes
+ * @return uncompressed file
+ */
 template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
   FI_Like fiT = FI>
 static dstT get_entry(
@@ -72,6 +80,16 @@ static dstT get_entry(
   fp.close();
   return {};
 }
+
+/**
+ * get file entry and decompress it
+ * @tparam dstT type being returned
+ * @tparam fiT type of FI or FileData that contains offset, size, compression.
+ * @param data buffer with embedded file
+ * @param fi FI or FileData
+ * @param offset to file data in bytes
+ * @return uncompressed file
+ */
 template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
   FI_Like fiT = FI>
 static dstT get_entry(
