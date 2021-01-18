@@ -51,7 +51,7 @@ constexpr static void clean_string(
       input.erase(0, 3);// remove c:\ from the start of the strings.
     }
     if (skip_fixed) {
-      while (input.back() == '\r' || input.back() == '\n') {
+      while (input.back() == '\r') {
         input.pop_back();
       }// remove the carriage return character
       tools::replace_slashes(input);
@@ -140,13 +140,9 @@ constexpr const static auto EXT = std::string_view(".FL");
   // shorter length and then what ever str < str2 does.
 
 
-  if (std::empty(data) || (std::ranges::size(data) == 1U && data[0] == '\0')) {
-    auto fp = std::ifstream(path, std::ios::in);
-    if (fp.is_open()) {
-      process(fp);
-      fp.close();
-    }
-  } else if (data[0] != '\0') {
+  if (std::empty(data) || (std::ranges::size(data) == 1U && data.front() == '\0')) {
+    tools::read_from_file(process,path);
+  } else if (data.front() != '\0') {
     auto ss = std::stringstream(data);
     process(ss);
   } else {
