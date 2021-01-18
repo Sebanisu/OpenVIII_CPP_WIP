@@ -13,6 +13,7 @@
 
 #ifndef VIITOOLS_H
 #define VIITOOLS_H
+#include "Random.hpp"
 #include "Read.hpp"
 #include "Write.hpp"
 #include <algorithm>
