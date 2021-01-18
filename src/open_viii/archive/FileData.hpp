@@ -169,7 +169,7 @@ template<> struct tuple_element<0, open_viii::archive::FileData>
 
 /**
  * type of 2nd argument
- *@note required to structured binding support
+ * @note required to structured binding support
  */
 template<> struct tuple_element<1, open_viii::archive::FileData>
 {
@@ -178,7 +178,7 @@ template<> struct tuple_element<1, open_viii::archive::FileData>
 
 /**
  * type of 3rd argument
- *@note required to structured binding support
+ * @note required to structured binding support
  */
 template<> struct tuple_element<2, open_viii::archive::FileData>
 {

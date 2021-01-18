@@ -23,16 +23,17 @@ static void lzss_check_compress_and_decompress(const std::atomic_bool &stop)
                "Compress() and Decompress()...\n";
   open_viii::tools::random_iota(
     [](const std::vector<char> &random_chars) -> bool {
-           auto uncompressed = open_viii::compression::l4z::decompress(
-             open_viii::compression::l4z::compress(random_chars),std::ranges::size(random_chars));
-           if (std::ranges::equal(random_chars, uncompressed)) {
-             std::cout << "\rSuccessfully compressed and uncompressed data: "
-                       << std::ranges::size(random_chars) << " bytes" << std::flush;
-             return true;
-           }
+      auto uncompressed = open_viii::compression::l4z::decompress(
+        open_viii::compression::l4z::compress(random_chars),
+        std::ranges::size(random_chars));
+      if (std::ranges::equal(random_chars, uncompressed)) {
+        std::cout << "\rSuccessfully compressed and uncompressed data: "
+                  << std::ranges::size(random_chars) << " bytes" << std::flush;
+        return true;
+      }
 
-           std::cerr << "Failure!\n";
-           return false;
+      std::cerr << "Failure!\n";
+      return false;
     },
     stop);
 }
@@ -43,11 +44,11 @@ static void lzss_check_decompress(const std::atomic_bool &stop)
                "Decompress()...\n";
   open_viii::tools::random_iota(
     [](const std::vector<char> &random_chars) -> bool {
-           auto uncompressed =
-             open_viii::compression::l4z::decompress(random_chars,std::ranges::size(random_chars));
-           std::cout << "\rSuccessfully uncompressed data w/o crash: "
-                     << std::ranges::size(random_chars) << " bytes" << std::flush;
-           return true;
+      auto uncompressed = open_viii::compression::l4z::decompress(
+        random_chars, std::ranges::size(random_chars));
+      std::cout << "\rSuccessfully uncompressed data w/o crash: "
+                << std::ranges::size(random_chars) << " bytes" << std::flush;
+      return true;
     },
     stop);
 }
@@ -56,7 +57,7 @@ int main()
   std::atomic_bool stop{ false };
   {
     auto thread = std::jthread{ [&stop]() {
-           lzss_check_compress_and_decompress(stop);
+      lzss_check_compress_and_decompress(stop);
     } };
     std::cin.get();
     stop = true;
@@ -65,7 +66,7 @@ int main()
   stop = false;
   {
     auto thread = std::jthread{ [&stop]() {
-           lzss_check_decompress(stop);
+      lzss_check_decompress(stop);
     } };
     std::cin.get();
     stop = true;

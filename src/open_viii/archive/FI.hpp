@@ -107,9 +107,30 @@ public:
        << static_cast<unsigned int>(data.m_compression_type) << '}';
     return os;
   }
+
+  /**
+   * gets member variables
+   * @note required to structured binding support
+   */
+  template<std::size_t I>
+  requires(I < 3) [[nodiscard]] constexpr auto get() const noexcept
+  {
+    if constexpr (I == 0) {
+      return m_uncompressed_size;
+    } else if constexpr (I == 1) {
+      return m_offset;
+    } else if constexpr (I == 2) {
+      return m_compression_type;
+    }
+  }
 };
 static_assert(sizeof(FI)==FI::SIZE);
-
+/**
+ * find the offset in file where FI entry is located
+ * @param id, count from 0 to N of FI entries to skip.
+ * @param offset, the number of bytes to start of first FI entry
+ * @return id * 12 + offset
+ */
 [[nodiscard]] constexpr static std::size_t get_fi_entry_offset(
   const std::size_t &id, const std::size_t &offset = 0U)
 {
@@ -117,4 +138,42 @@ static_assert(sizeof(FI)==FI::SIZE);
 }
 }// namespace open_viii::archive
 
+namespace std {
+/**
+ * define number of arguments
+ * @note required to structured binding support
+ */
+template<>
+struct tuple_size<open_viii::archive::FI> : std::integral_constant<size_t, 3>
+{
+};
+
+/**
+ * type of 1st argument
+ * @note required to structured binding support
+ */
+template<> struct tuple_element<0, open_viii::archive::FI>
+{
+  using type = std::uint32_t;
+};
+
+/**
+ * type of 2nd argument
+ * @note required to structured binding support
+ */
+template<> struct tuple_element<1, open_viii::archive::FI>
+{
+  using type = std::uint32_t;
+};
+
+/**
+ * type of 3rd argument
+ * @note required to structured binding support
+ */
+template<> struct tuple_element<2, open_viii::archive::FI>
+{
+  using type = open_viii::CompressionTypeT;
+
+};
+}
 #endif// !VIIIARCHIVE_FI_HPP
