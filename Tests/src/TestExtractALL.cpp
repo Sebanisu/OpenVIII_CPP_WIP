@@ -27,7 +27,7 @@ int main()
         std::string in_path{ std::move(rvalue_path) };
         open_viii::tools::write_buffer(in_buffer, in_path);
       };
-    archives.execute_on({}, dump);
+    archives.execute_on({"field"}, dump);
   });
   const auto end = std::chrono::steady_clock::now();
   const auto diff = end - start;
