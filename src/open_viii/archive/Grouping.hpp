@@ -14,7 +14,7 @@ template<std::ranges::contiguous_range T> struct [[maybe_unused]] Grouping
 private:
   std::filesystem::path m_path{};
   std::size_t m_offset{};
-  mutable std::size_t m_size{};// if forced otherwise 0;
+  std::size_t m_size{};// if forced otherwise 0;
   T m_data{};
   std::string m_base{};
   std::filesystem::path m_nested_path{};
@@ -56,13 +56,13 @@ public:
    * get Size of file / also defaults size if value is 0.
    * @return size_t
    */
-  [[nodiscard]] const std::size_t &size() const noexcept
+  [[nodiscard]] std::size_t size() const noexcept
   {
     if (m_size == 0U) {
       if (!std::ranges::empty(data())) {
-        m_size = std::ranges::size(data());
+        return std::ranges::size(data());
       } else if (std::filesystem::exists(path())) {
-        m_size = std::filesystem::file_size(path());
+        return std::filesystem::file_size(path());
       }
     }
     return m_size;
