@@ -23,9 +23,17 @@ namespace open_viii::archive {
 struct [[maybe_unused]] FileData
 {
 private:
-  std::basic_string<char>
-    m_filename{};// defined as char because some compilers default to wide char.
+  /**
+   * The size of the string is defined before the raw char array.
+   */
+  std::basic_string<char> m_filename{};
+  /**
+   * offset to file
+   */
   std::uint64_t m_offset{};
+  /**
+   * size of the file
+   */
   std::uint32_t m_size{};
 
 public:
@@ -70,47 +78,107 @@ public:
     return sizeof(unsigned int) + std::ranges::size(m_filename)
            + sizeof(m_offset) + sizeof(m_size);
   }
-  // gets path as a std::filesystem::path
+  /**
+   * gets path as a std::filesystem::path
+   */
+
   [[maybe_unused]] [[nodiscard]] auto get_path() const
   {
     return std::filesystem::path(m_filename);
   }
-  // convert to FI. (loss of precision size_t to unsigned int)
-  //[[maybe_unused]] [[nodiscard]] constexpr auto GetFI() const
-  //{
-  //  return FI(static_cast<unsigned int>(size_), static_cast<unsigned
-  //  int>(offset_));
-  //}
-  // get size of file
-  [[maybe_unused]] [[nodiscard]] constexpr auto size() const noexcept
-  {
-    return m_size;
-  }
+  //  // get size of file
+  //  [[maybe_unused]] [[nodiscard]] constexpr auto size() const noexcept
+  //  {
+  //    return m_size;
+  //  }
+  /**
+   * Compression type required to match FI like concept.
+   * @return no compression
+   */
   [[maybe_unused]] [[nodiscard]] static constexpr auto
     compression_type() noexcept
   {
     return CompressionTypeT::none;
   }
-  // alias for Size that should mirror FI
+  /**
+   * alias for Size that should mirror FI
+   */
+
   [[maybe_unused]] [[nodiscard]] constexpr auto
     uncompressed_size() const noexcept
   {
     return m_size;
   }
-  // get offset of file
+  /**
+   * get offset of file
+   */
   [[maybe_unused]] [[nodiscard]] constexpr auto offset() const noexcept
   {
     return m_offset;
   }
-  // gets path as a std::string_view
+  /**
+   * gets path as a std::string_view
+   */
+
   [[maybe_unused]] [[nodiscard]] auto get_path_string() const
   {
     return std::string_view(m_filename);
   }
-  [[maybe_unused]] [[nodiscard]] auto get_tuple() const
+  //  [[maybe_unused]] [[nodiscard]] auto get_tuple() const
+  //  {
+  //    return std::make_tuple(get_path_string(), offset(), size());
+  //  }
+
+  /**
+   * gets member variables
+   * @note required to structured binding support
+   */
+  template<std::size_t I>
+  requires(I < 3) [[nodiscard]] constexpr const auto & get() const noexcept
   {
-    return std::make_tuple(get_path_string(), offset(), size());
+    if constexpr (I == 0) {
+      return m_filename;
+    } else if constexpr (I == 1) {
+      return m_offset;
+    } else if constexpr (I == 2) {
+      return m_size;
+    }
   }
 };
+
 }// namespace open_viii::archive
+namespace std {
+/**
+ *required to structured binding support
+ */
+template<>
+struct tuple_size<open_viii::archive::FileData>
+  : std::integral_constant<size_t, 3>
+{
+};
+
+/**
+ *required to structured binding support
+ */
+template<> struct tuple_element<0, open_viii::archive::FileData>
+{
+  using type = std::basic_string<char>;
+};
+
+/**
+ *required to structured binding support
+ */
+template<> struct tuple_element<1, open_viii::archive::FileData>
+{
+  using type = std::uint64_t;
+};
+
+/**
+ *required to structured binding support
+ */
+template<> struct tuple_element<2, open_viii::archive::FileData>
+{
+  using type = std::uint32_t;
+};
+}// namespace std
 #endif// VIIIARCHIVE_FILEDATA_HPP

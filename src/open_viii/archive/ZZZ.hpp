@@ -108,7 +108,7 @@ public:
       for (auto cur = beg; cur < end; cur++) {
         // const auto &item : data_
         const auto &item = *cur;
-        const auto &[strPath, zzzOffset, zzzSize] = item.get_tuple();
+        const auto &[strPath, zzzOffset, zzzSize] = item;
         {
           const auto &next = cur + 1 < end
                                  && (FIFLFS<true>::check_extension(
