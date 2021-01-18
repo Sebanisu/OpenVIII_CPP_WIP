@@ -447,7 +447,6 @@ public:
     const lambdaT &lambda) const
   {
 
-    std::vector<std::jthread> threads{};
     const auto results = get_vector_of_indexs_and_files(filename);
     std::ranges::for_each(
       results
@@ -457,20 +456,10 @@ public:
                    == 0;// prevent from running on nested archives. We have
                         // another function for those.
           }),
-      [this, &lambda, &threads](
+      [this, &lambda](
         const std::pair<unsigned int, std::string> &pair) {
         auto fi = get_entry_by_index(pair.first);
-        threads.emplace_back(
-          [&lambda](std::vector<char> &&buffer, std::string &&path) {
-            lambda(std::move(buffer), std::move(path));
-          },
-          get_entry_buffer(fi),
-          std::string(pair.second));
-        //        while (threads.size() > 64) {
-        //          threads.front().join();
-        //          threads.erase(threads.begin());
-        //        }
-        // lambda(get_entry_buffer(fi), pair.second);
+        lambda(get_entry_buffer(fi),std::string(pair.second));
       });
   }
 
@@ -512,12 +501,10 @@ public:
     const auto items = archive::fl::get_all_entries_data(
       m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
 
-    std::vector<std::jthread> threads{};
-    threads.reserve(std::ranges::size(items) / 3);
     std::for_each(std::execution::seq,
       items.cbegin(),
       items.cend(),
-      [this, &threads, &archive, &lambda, &nested_filename](const auto &item) {
+      [this, &archive, &lambda, &nested_filename](const auto &item) {
         const auto &[id, strVirtualPath] = item;
         const FI_Like auto fi = get_entry_by_index(id);
 
@@ -533,11 +520,6 @@ public:
               virtualPath,
               m_fs.offset() + fi.offset(),
               fi.uncompressed_size());
-            //            if (localRetVal != TryAddT::not_part_of_archive) {
-            //              std::cout << virtualPath.filename() << " is
-            //              uncompressed pointing at location in actual
-            //              file!\n";
-            //            }
             return localRetVal;
           }
           return archive.try_add_nested(m_fs.path(),
@@ -548,24 +530,10 @@ public:
         if (retVal == TryAddT::archive_full) {
           if constexpr (std::
                           invocable<lambdaT, std::vector<char>, std::string>) {
-            threads.emplace_back(
-              [&lambda](const FIFLFS<false> archive_copy,
-                const std::initializer_list<std::string_view> filename_copy) {
-                archive_copy.execute_on(filename_copy, lambda);
-              },
-              archive,
-              nested_filename);
+            archive.template execute_on(nested_filename, lambda);
           } else if constexpr (std::invocable<lambdaT, FIFLFS<false>>) {
-            threads.emplace_back(
-              [&lambda](const FIFLFS<false> archive_copy) {
-                lambda(archive_copy);
-              },
-              archive);
+            lambda(archive);
           }
-          //          while (threads.size() > 64) {
-          //            threads.front().join();
-          //            threads.erase(threads.begin());
-          //          }
           archive = {};
         }
       });
