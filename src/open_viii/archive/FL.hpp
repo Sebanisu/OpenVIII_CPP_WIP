@@ -47,11 +47,11 @@ constexpr static void clean_string(
 {
   if (std::ranges::size(input) > 4) {
 
-    if (tools::i_starts_with(std::string_view(input).substr(0, 2), "c:")) {
+    if (tools::i_starts_with(input, "c:")) {
       input.erase(0, 3);// remove c:\ from the start of the strings.
     }
     if (skip_fixed) {
-      if (input.at(input.size() - 1) == '\r') {
+      while (input.back() == '\r' || input.back() == '\n') {
         input.pop_back();
       }// remove the carriage return character
       tools::replace_slashes(input);
@@ -209,11 +209,11 @@ constexpr const static auto EXT = std::string_view(".FL");
   // strings are similar. Though this might be faster if only getting a few
   // files from an archive.
   auto buffer =
-    get_all_entries_data(path, data, offset, size, count, needle, 1);
+    get_all_entries_data(path, data, offset, size, count, needle, 1U);
   if (std::empty(buffer)) {
-    return std::make_pair(0U, std::string(""));
+    return std::make_pair(0U, std::string());
   }
-  return buffer.at(0);
+  return buffer.front();
 }
 // Get a single entry that is the first match for needle.
 [[nodiscard]] static auto get_entry(const std::filesystem::path &path,
@@ -224,16 +224,18 @@ constexpr const static auto EXT = std::string_view(".FL");
 {// Maybe should search all entries instead of using this because this is not
  // sorted. Sorting matters when the strings are similar. Though this might be
  // faster if only getting a few files from an archive.
-  auto data = get_all_entries_data(path, "", offset, size, count, needle, 1);
+  auto data = get_all_entries_data(path, "", offset, size, count, needle, 1U);
   if (std::empty(data)) {
-    return std::make_pair(0U, std::string(""));
+    return std::make_pair(0U, std::string());
   }
-  return data.at(0);
+  return data.front();
 }
 static void clean_buffer(std::string &buffer)
 {
+
   // remove carriage returns
-  buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
+  std::erase(buffer,'\r');
+  //buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
   // change slashes to preferred
   tools::replace_slashes(buffer);
 }

@@ -28,8 +28,8 @@ requires(std::invocable<lambdaT, std::ostream &>)
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   //    if (fp.is_open()) {
-  std::cout << (std::string("Saving: \t\"") + filename.string()
-                + std::string("\"\n"));
+  const auto &string = filename.string();
+  std::cout << "Saving: \t\"" << string << "\"\n";// << std::flush;
   lambda(fp);
   fp.close();
   //    } else {

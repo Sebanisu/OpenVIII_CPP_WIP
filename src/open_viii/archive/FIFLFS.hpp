@@ -181,8 +181,7 @@ public:
       switch (i) {
       case 1: {
         set(m_fl);
-        m_fl.data(FS::get_entry<std::string>(src, fi, src_offset));
-        fl::clean_buffer(m_fl.data());
+        fl::clean_buffer(m_fl.data(FS::get_entry<std::string>(src, fi, src_offset)));
         break;
       }
       case 2: {
@@ -459,7 +458,7 @@ public:
       [this, &lambda](
         const std::pair<unsigned int, std::string> &pair) {
         auto fi = get_entry_by_index(pair.first);
-        lambda(get_entry_buffer(fi),std::string(pair.second));
+        lambda(get_entry_buffer(fi),pair.second);
       });
   }
 

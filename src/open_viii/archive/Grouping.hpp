@@ -87,9 +87,9 @@ public:
    * set data buffer
    * @param value
    */
-  void data(T &&value) noexcept
+  T & data(T &&value) noexcept
   {
-    m_data = std::move(value);
+    return m_data = std::move(value);
   }
   /**
    * stem of filename upper cased
