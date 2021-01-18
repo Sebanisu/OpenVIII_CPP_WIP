@@ -31,9 +31,7 @@ int main()
     const auto archives =
       open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] static constexpr auto dump =
-      [](std::vector<char> &&rvalue_buffer, std::string &&rvalue_path) {
-        std::vector<char> in_buffer{ std::move(rvalue_buffer) };
-        std::string in_path{ std::move(rvalue_path) };
+      [](const std::vector<char> &in_buffer, const std::string &in_path) {
         open_viii::tools::write_buffer(in_buffer, in_path);
       };
     archives.execute_on({ needle }, dump);

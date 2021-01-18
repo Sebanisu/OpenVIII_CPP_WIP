@@ -40,7 +40,6 @@ private:
   std::vector<FileData> m_data{};
 
 
-
   [[nodiscard]] auto load_data_from_file() const
   {
     std::vector<FileData> data{};
@@ -50,14 +49,14 @@ private:
 
       tools::read_from_file(
         [&data](std::istream &fp) {
-               auto count{ tools::read_val<uint32_t>(fp) };
-               data.reserve(count);
-               while (!fp.eof() && count-- != 0U) {
-                 if ((data.emplace_back(fp).empty())) {
-                   std::cerr << "empty element detected and removed\n";
-                   data.pop_back();
-                 }
-               }
+          auto count{ tools::read_val<uint32_t>(fp) };
+          data.reserve(count);
+          while (!fp.eof() && count-- != 0U) {
+            if ((data.emplace_back(fp).empty())) {
+              std::cerr << "empty element detected and removed\n";
+              data.pop_back();
+            }
+          }
         },
         m_path);
     }
@@ -66,19 +65,19 @@ private:
 
   void sort_data()
   {
-    std::ranges::sort(m_data,
-                      [](const FileData &left, const FileData &right) {
-                             const auto right_string = right.get_path_string();
-                             const auto left_string = left.get_path_string();
-                             const auto right_size = std::ranges::size(right_string);
-                             const auto left_size = std::ranges::size(left_string);
-                             if (left_size == right_size) {
-                               return left_string < right_string;
-                             }
-                             return left_size < right_size;
-                      });
+    std::ranges::sort(m_data, [](const FileData &left, const FileData &right) {
+      const auto right_string = right.get_path_string();
+      const auto left_string = left.get_path_string();
+      const auto right_size = std::ranges::size(right_string);
+      const auto left_size = std::ranges::size(left_string);
+      if (left_size == right_size) {
+        return left_string < right_string;
+      }
+      return left_size < right_size;
+    });
     m_data.shrink_to_fit();
   }
+
 public:
   constexpr static auto EXT = ".zzz";
   [[maybe_unused]] [[nodiscard]] const auto &data() const noexcept
@@ -96,7 +95,7 @@ public:
   ~ZZZ() = default;
   constexpr ZZZ() = default;
   explicit ZZZ(std::filesystem::path path)
-  : m_path(std::move(path)), m_data(load_data_from_file())
+    : m_path(std::move(path)), m_data(load_data_from_file())
   {
     sort_data();
   }
@@ -148,38 +147,35 @@ public:
     }
     return os;
   }
-  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>>
-    get_vector_of_indexes_and_files(
-      const std::initializer_list<std::string_view> &filename) const
+  //  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>>
+  //    get_vector_of_indexes_and_files(
+  //      const std::initializer_list<std::string_view> &filename) const
+  //  {
+  //    unsigned int i{};
+  //    std::vector<std::pair<unsigned int, std::string>> vector{};
+  //    for (const open_viii::archive::FileData &data_item : data()) {
+  //      {
+  //        auto path_string = data_item.get_path_string();
+  //        if (open_viii::tools::i_find_any(path_string, filename)) {
+  //          vector.emplace_back(std::make_pair(i, path_string));
+  //        }
+  //      }
+  //      i++;
+  //    }
+  //    return vector;
+  //  }
+  template<std::invocable<std::vector<char>, std::string> UnaryFunctionT>
+  void execute_on(const std::initializer_list<std::string_view> &filename,
+    const UnaryFunctionT &unary_function)
   {
-    unsigned int i{};
-    std::vector<std::pair<unsigned int, std::string>> vector{};
-    for (const open_viii::archive::FileData &data_item : data()) {
-      {
-        auto path_string = data_item.get_path_string();
-        if (open_viii::tools::i_find_any(path_string, filename)) {
-          vector.emplace_back(std::make_pair(i, path_string));
-        }
-      }
-      i++;
-    }
-    return vector;
-  }
-  template<typename lambdaT>
-  requires(std::invocable<lambdaT,
-    std::vector<char>,
-    std::string>) void execute_on(const std::initializer_list<std::string_view>
-                                    &filename,
-    const lambdaT &lambda)
-  {
-    for (const open_viii::archive::FileData &dataItem : data()) {
-      {
+    std::ranges::for_each(
+      data(), [&unary_function, &filename, this](const open_viii::archive::FileData &dataItem) {
         auto pathString = dataItem.get_path_string();
         if (open_viii::tools::i_find_any(pathString, filename)) {
-          lambda(FS::get_entry(m_path, dataItem), std::string(pathString));
+          unary_function(
+            FS::get_entry(m_path, dataItem), std::string(pathString));
         }
-      }
-    }
+      });
   }
 };
 

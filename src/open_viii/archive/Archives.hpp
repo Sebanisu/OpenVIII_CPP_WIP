@@ -460,71 +460,71 @@ public:
     }
   }
 
-  /**
-   * Search all the archives. For any of the listed strings.
-   * @tparam nested enable or disable searching nested archives from field,
-   * default: true.
-   * @tparam maxT Max ArchiveTypeT value to search in. Converted to
-   * std::intmax_t. default: ArchiveTypeT::last.
-   * @tparam minT Min ArchiveTypeT value to search in. Converted to
-   * std::intmax_t. default: ArchiveTypeT::first.
-   * @param filename is an initializer-list of strings to search the archives
-   * for. use {} to get all files.
-   * @return Returns a vector of pairs of archiveName and results with pairs of
-   * index number and embedded filepath.
-   */
-  template<bool nested = true,
-    std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::last),
-    std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::first)>
-  requires((test_valid_archive_type_t(maxT) || maxT >= minT - 1)
-           && test_valid_archive_type_t(minT))
-    [[nodiscard]] std::vector<std::pair<std::string,
-      std::vector<std::pair<unsigned int, std::string>>>> search(const std::
-        initializer_list<std::string_view> &filename) const
-  {
-    if constexpr (maxT >= minT) {
-      std::vector<std::pair<std::string,
-        std::vector<std::pair<unsigned int, std::string>>>>
-        vector = search<nested, maxT - 1, minT>(filename);
-      constexpr auto archiveType_ =
-        std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(maxT)>{};
-      auto archive = get<archiveType_>();
-      if constexpr (!std::is_null_pointer_v<decltype(archive)>) {
-        if constexpr (std::is_same_v<decltype(archive), std::optional<ZZZ>>) {
-          if (archive.has_value()) {
-            [[maybe_unused]] const auto result =
-              archive->get_vector_of_indexes_and_files(filename);
-            if (!std::ranges::empty(result)) {
-              vector.emplace_back(
-                std::make_pair(get_string<archiveType_>(), std::move(result)));
-            }
-          }
-        } else if constexpr (
-          std::is_same_v<decltype(archive),
-            FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
-          [[maybe_unused]] auto result =
-            archive.get_vector_of_indexes_and_files(filename);
-          if (!std::ranges::empty(result)) {
-            vector.emplace_back(
-              std::make_pair(get_string<archiveType_>(), std::move(result)));
-          }
-          if constexpr (nested) {
-            auto nestedResult = archive.get_all_nested_entries_data(filename);
-            if (!std::ranges::empty(nestedResult)) {
-              vector.reserve(
-                std::ranges::size(nestedResult) + std::ranges::size(vector));
-              for (auto &item : nestedResult) {
-                vector.emplace_back(std::move(item));
-              }
-            }
-          }
-        }
-      }
-      return vector;
-    } else {
-      return {};
-    }
-  }
+//  /**
+//   * Search all the archives. For any of the listed strings.
+//   * @tparam nested enable or disable searching nested archives from field,
+//   * default: true.
+//   * @tparam maxT Max ArchiveTypeT value to search in. Converted to
+//   * std::intmax_t. default: ArchiveTypeT::last.
+//   * @tparam minT Min ArchiveTypeT value to search in. Converted to
+//   * std::intmax_t. default: ArchiveTypeT::first.
+//   * @param filename is an initializer-list of strings to search the archives
+//   * for. use {} to get all files.
+//   * @return Returns a vector of pairs of archiveName and results with pairs of
+//   * index number and embedded filepath.
+//   */
+//  template<bool nested = true,
+//    std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::last),
+//    std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::first)>
+//  requires((test_valid_archive_type_t(maxT) || maxT >= minT - 1)
+//           && test_valid_archive_type_t(minT))
+//    [[nodiscard]] std::vector<std::pair<std::string,
+//      std::vector<std::pair<unsigned int, std::string>>>> search(const std::
+//        initializer_list<std::string_view> &filename) const
+//  {
+//    if constexpr (maxT >= minT) {
+//      std::vector<std::pair<std::string,
+//        std::vector<std::pair<unsigned int, std::string>>>>
+//        vector = search<nested, maxT - 1, minT>(filename);
+//      constexpr auto archiveType_ =
+//        std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(maxT)>{};
+//      auto archive = get<archiveType_>();
+//      if constexpr (!std::is_null_pointer_v<decltype(archive)>) {
+//        if constexpr (std::is_same_v<decltype(archive), std::optional<ZZZ>>) {
+//          if (archive.has_value()) {
+//            [[maybe_unused]] const auto result =
+//              archive->get_vector_of_indexes_and_files(filename);
+//            if (!std::ranges::empty(result)) {
+//              vector.emplace_back(
+//                std::make_pair(get_string<archiveType_>(), std::move(result)));
+//            }
+//          }
+//        } else if constexpr (
+//          std::is_same_v<decltype(archive),
+//            FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
+//          [[maybe_unused]] auto result =
+//            archive.get_vector_of_indexes_and_files(filename);
+//          if (!std::ranges::empty(result)) {
+//            vector.emplace_back(
+//              std::make_pair(get_string<archiveType_>(), std::move(result)));
+//          }
+//          if constexpr (nested) {
+//            auto nestedResult = archive.get_all_nested_entries_data(filename);
+//            if (!std::ranges::empty(nestedResult)) {
+//              vector.reserve(
+//                std::ranges::size(nestedResult) + std::ranges::size(vector));
+//              for (auto &item : nestedResult) {
+//                vector.emplace_back(std::move(item));
+//              }
+//            }
+//          }
+//        }
+//      }
+//      return vector;
+//    } else {
+//      return {};
+//    }
+//  }
 
 
   /**

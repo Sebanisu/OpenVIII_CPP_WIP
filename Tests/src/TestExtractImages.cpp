@@ -17,9 +17,7 @@
 #include "open_viii/graphics/Sp2.hpp"
 #include "open_viii/graphics/Tdw.hpp"
 #include "open_viii/graphics/Tex.hpp"
-#include "open_viii/graphics/Tim.hpp"
 #include "open_viii/graphics/background/Map.hpp"
-#include "open_viii/graphics/background/Mim.hpp"
 #include "open_viii/menu_group/MenuGroupFile.hpp"
 #include "open_viii/paths/Paths.hpp"
 
@@ -30,9 +28,7 @@ int main()
     const auto archives =
       open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] static constexpr auto dump_image =
-      [](std::vector<char> &&in_buffer, std::string &&in_path) {
-        std::vector<char> buffer{ std::move(in_buffer) };
-        std::string p{ std::move(in_path) };
+      [](std::vector<char> &&buffer, const std::string &p) {
         if (open_viii::tools::i_ends_with(p, ".lzs")) {
           auto t = open_viii::graphics::Lzs(buffer);
           std::cout << p << '\n' << t << '\n';

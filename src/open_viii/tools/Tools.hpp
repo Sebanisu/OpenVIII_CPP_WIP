@@ -235,7 +235,7 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
     });
   return out;
 }
-[[maybe_unused]] [[nodiscard]] static constexpr auto i_ends_with(
+[[maybe_unused]] [[nodiscard]] static constexpr bool i_ends_with(
   const std::string_view &haystack, const std::string_view &ending)
 {
   [[maybe_unused]] const auto ending_view = ending | std::views::reverse;

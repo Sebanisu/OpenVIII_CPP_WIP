@@ -14,7 +14,7 @@ template<std::ranges::contiguous_range T> struct [[maybe_unused]] Grouping
 private:
   std::filesystem::path m_path{};
   std::size_t m_offset{};
-  std::size_t m_size{};// if forced otherwise 0;
+  std::size_t m_size{};
   T m_data{};
   std::string m_base{};
   std::filesystem::path m_nested_path{};
@@ -40,7 +40,7 @@ public:
    * get offset in bytes to start
    * @return
    */
-  [[nodiscard]] const std::size_t &offset() const noexcept
+  [[nodiscard]] std::size_t offset() const noexcept
   {
     return m_offset;
   }
@@ -86,6 +86,7 @@ public:
   /**
    * set data buffer
    * @param value
+   * @return reference to allow modification after setting.
    */
   T & data(T &&value) noexcept
   {

@@ -462,33 +462,33 @@ public:
       });
   }
 
-  [[nodiscard]] std::vector<
-    std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
-    get_all_nested_entries_data(
-      [[maybe_unused]] const std::initializer_list<std::string_view> &filename)
-  {
-    if constexpr (!HasNested) {
-      return {};
-    }
-    std::vector<
-      std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
-      vector{};
-    const std::vector<std::pair<unsigned int, std::string>> fls =
-      get_vector_of_indexes_and_files({ archive::fl::EXT });
-    const std::string &basename = get_base_name();
-    for (const auto &fl : fls) {
-      const auto fi = get_entry_by_index(fl.first);
-      const auto buffer = get_entry_buffer<std::string>(fi);
-      auto results =
-        archive::fl::get_all_entries_data({}, buffer, 0, 0, 0, filename);
-      if (!std::ranges::empty(results)) {
-        vector.emplace_back(
-          std::make_pair(basename + "::" + tools::get_base_name(fl.second),
-            std::move(results)));
-      }
-    }
-    return vector;
-  }
+//  [[nodiscard]] std::vector<
+//    std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
+//    get_all_nested_entries_data(
+//      [[maybe_unused]] const std::initializer_list<std::string_view> &filename)
+//  {
+//    if constexpr (!HasNested) {
+//      return {};
+//    }
+//    std::vector<
+//      std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
+//      vector{};
+//    const std::vector<std::pair<unsigned int, std::string>> fls =
+//      get_vector_of_indexes_and_files({ archive::fl::EXT });
+//    const std::string &basename = get_base_name();
+//    for (const auto &fl : fls) {
+//      const auto fi = get_entry_by_index(fl.first);
+//      const auto buffer = get_entry_buffer<std::string>(fi);
+//      auto results =
+//        archive::fl::get_all_entries_data({}, buffer, 0, 0, 0, filename);
+//      if (!std::ranges::empty(results)) {
+//        vector.emplace_back(
+//          std::make_pair(basename + "::" + tools::get_base_name(fl.second),
+//            std::move(results)));
+//      }
+//    }
+//    return vector;
+//  }
   template<typename lambdaT>
   requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)&&HasNested) void execute_with_nested(
     const std::initializer_list<std::string_view> &filename,
