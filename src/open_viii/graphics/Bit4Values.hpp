@@ -45,7 +45,9 @@ public:
       | (m_second));
   }
   /**
-   *required to structured binding support
+   * Get Value
+   *@note required to structured binding support
+   * @note can't be reference because it's a copy of 4 bits to 8 bits.
    */
   template<std::size_t I>
   requires(I < 2) [[nodiscard]] constexpr auto get() const noexcept
@@ -90,7 +92,8 @@ static_assert(sizeof(Bit4Values) == Bit4Values::EXPECTED_SIZE);
 
 namespace std {
 /**
- *required to structured binding support
+ * number of arguments
+ * @note required to structured binding support
  */
 template<>
 struct tuple_size<open_viii::graphics::Bit4Values>
@@ -99,7 +102,8 @@ struct tuple_size<open_viii::graphics::Bit4Values>
 };
 
 /**
- *required to structured binding support
+ * type of arguments
+ * @note required to structured binding support
  */
 template<size_t I> struct tuple_element<I, open_viii::graphics::Bit4Values>
 {

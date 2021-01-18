@@ -134,7 +134,7 @@ public:
    * @note required to structured binding support
    */
   template<std::size_t I>
-  requires(I < 3) [[nodiscard]] constexpr const auto & get() const noexcept
+  requires(I < 3) [[nodiscard]] const auto & get() const noexcept
   {
     if constexpr (I == 0) {
       return m_filename;
@@ -149,7 +149,8 @@ public:
 }// namespace open_viii::archive
 namespace std {
 /**
- *required to structured binding support
+ * define number of arguments
+ * @note required to structured binding support
  */
 template<>
 struct tuple_size<open_viii::archive::FileData>
@@ -158,7 +159,8 @@ struct tuple_size<open_viii::archive::FileData>
 };
 
 /**
- *required to structured binding support
+ * type of 1st argument
+ * @note required to structured binding support
  */
 template<> struct tuple_element<0, open_viii::archive::FileData>
 {
@@ -166,7 +168,8 @@ template<> struct tuple_element<0, open_viii::archive::FileData>
 };
 
 /**
- *required to structured binding support
+ * type of 2nd argument
+ *@note required to structured binding support
  */
 template<> struct tuple_element<1, open_viii::archive::FileData>
 {
@@ -174,7 +177,8 @@ template<> struct tuple_element<1, open_viii::archive::FileData>
 };
 
 /**
- *required to structured binding support
+ * type of 3rd argument
+ *@note required to structured binding support
  */
 template<> struct tuple_element<2, open_viii::archive::FileData>
 {
