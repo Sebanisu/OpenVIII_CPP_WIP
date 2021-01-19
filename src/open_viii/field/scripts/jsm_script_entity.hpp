@@ -25,11 +25,11 @@ public:
     //(entryPointScript & 0x7FFF)*4; this is doing a shift and mask.
     return static_cast<std::uint16_t>(m_raw <<shift) & mask;
   }
-  [[nodiscard]] constexpr std::uint16_t entry_point_entity () const noexcept
+  [[nodiscard]] constexpr bool flag () const noexcept
   {
     constexpr std::uint16_t mask = 0x1U;
     constexpr std::uint16_t shift = 15U;
-    return static_cast<std::uint16_t>(m_raw >> shift) & mask;
+    return (static_cast<std::uint16_t>(m_raw >> shift) & mask) !=0;
   }
 };
 }
