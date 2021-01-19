@@ -156,28 +156,6 @@ template<std::ranges::contiguous_range rangeT>
            });
 }
 
-/**
- * Will find and execute lambda on the dir if path_contains a valid value.
- * @tparam lambdaT
- * @param dir
- * @param path_contains list of valid values {} = all.
- * @param lambda f(std::filesystem:: path)
- */
-template<typename lambdaT>
-requires(std::invocable<lambdaT, std::filesystem::path>)
-  [[maybe_unused]] static void execute_on_directories(
-    const std::filesystem::path &dir,
-    std::initializer_list<std::string_view> path_contains,
-    const lambdaT &lambda)
-{
-  std::ranges::for_each(std::filesystem::recursive_directory_iterator(dir),
-    [&path_contains, &lambda](const auto &item) {
-      if (std::filesystem::is_directory(item)
-          && tools::i_find_any(item.path().string(), path_contains)) {
-        lambda(item.path());
-      }
-    });
-}
 
 /**
  *
@@ -395,6 +373,32 @@ template<int bit_count> static consteval auto get_mask()
     return largest_bit_value<std::uint64_t>(bit_count);
   }
 }
+template<std::invocable<std::filesystem::path> UnaryOperationT,
+  typename BinaryOperationT>
+static void execute_on_directory(const std::filesystem::path &directory,
+  UnaryOperationT unary_function,
+  BinaryOperationT binary_function =
+    true) requires(std::is_same_v<BinaryOperationT,
+                     bool> || std::is_same_v<std::invoke_result_t<BinaryOperationT, std::filesystem::path>, bool>)
+{
+  std::ranges::for_each(std::filesystem::directory_iterator(directory),
+    [&unary_function, &binary_function](const auto &item) {
+      const auto path = item.path();
+      if constexpr (std::is_same_v<BinaryOperationT, bool>) {
+        if (!binary_function) {
+          return;
+        }
+      } else if constexpr (std::is_same_v<std::invoke_result_t<BinaryOperationT,
+                                            std::filesystem::path>,
+                             bool>) {
+        if (!binary_function(path)) {
+          return;
+        }
+      }
+      unary_function(path);
+    });
+}
+
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::filesystem::path>)
   [[maybe_unused]] static void execute_on_directory(
@@ -404,20 +408,36 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
     const lambdaT &lambda)
 {
 
-  std::ranges::for_each(std::filesystem::directory_iterator(dir),
-    [&filenames, &extensions, &lambda](const auto &item) {
-      const auto path = item.path();
-      //        std::cout<<"here \"" << path.string() <<"\""<<std::endl;
-      //           std::cout << std::filesystem::is_regular_file(item) <<' '<<
-      //           path.has_extension() << ' '<<
-      //           i_ends_with_any(path.extension().string(), extensions)  << '
-      //           '<< i_find_any(path.stem().string(), filenames)<<std::endl;
-      if (!std::filesystem::is_regular_file(item) || !path.has_extension()
-          || !i_ends_with_any(path.extension().string(), extensions)
-          || !i_find_any(path.stem().string(), filenames)) {
-        return;
-      }
-      lambda(item);
+  execute_on_directory(
+    dir, lambda, [&filenames, &extensions](const std::filesystem::path &path) {
+      return std::filesystem::is_regular_file(path)
+             && (std::ranges::empty(extensions)
+                 || (path.has_extension()
+                     && i_ends_with_any(path.extension().string(), extensions)))
+             && (std::ranges::empty(filenames)
+                 || (path.has_stem()
+                     && i_find_any(path.stem().string(), filenames)));
+    });
+}
+
+/**
+ * Will find and execute lambda on the dir if path_contains a valid value.
+ * @tparam lambdaT
+ * @param dir
+ * @param path_contains list of valid values {} = all.
+ * @param lambda f(std::filesystem:: path)
+ */
+template<typename lambdaT>
+requires(std::invocable<lambdaT, std::filesystem::path>)
+  [[maybe_unused]] static void execute_on_directories(
+    const std::filesystem::path &dir,
+    std::initializer_list<std::string_view> path_contains,
+    const lambdaT &lambda)
+{
+  execute_on_directory(
+    dir, lambda, [&path_contains](const std::filesystem::path &path) {
+      return std::filesystem::is_directory(path)
+             && tools::i_find_any(path.string(), path_contains);
     });
 }
 /**
