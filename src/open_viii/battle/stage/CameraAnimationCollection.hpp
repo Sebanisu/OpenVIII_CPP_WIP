@@ -34,8 +34,7 @@ public:
     // std::ranges::data
     tools::read_val(span, m_set_count);
     span = span.subspan(sizeof(std::uint16_t));
-    m_set_offsets.resize(m_set_count);
-    tools::read_val(span, m_set_offsets);
+    tools::read_val(span, m_set_offsets, m_set_count);
     span = span.subspan(sizeof(std::uint16_t) * m_set_count);
     tools::read_val(span, m_camera_end);
     // const auto size{sizeof(CameraAnimationSet) * m_set_count};
