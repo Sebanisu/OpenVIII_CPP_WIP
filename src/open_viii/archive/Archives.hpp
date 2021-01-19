@@ -73,8 +73,8 @@ requires(
 template<LangT langVal> struct Archives
 {
 private:
-  std::filesystem::path m_path{};
   std::string m_lang{ LangCommon::to_string<langVal>() };
+  std::filesystem::path m_path{};
   FIFLFS<false> m_battle{};
   FIFLFS<true> m_field{};
   FIFLFS<false> m_magic{};
@@ -112,63 +112,58 @@ private:
   /**
    * Set default language.
    */
-  void set_lang()
+  [[nodiscard]] auto set_lang() const
   {
-    m_lang = LangCommon::to_string<langVal>();
+    return std::string {LangCommon::to_string<langVal>()};
   }
   /**
-   * Search for lang.dat from steam 2013 release. TODO find cross platform way
-   * to get to remaster config.txt
+   * Search for lang.dat from steam 2013 release.
+   * @todo find cross platform way to get to remaster config.txt
    * @param path location of ff8
    */
-  void set_lang(const std::filesystem::path &path)
+  [[nodiscard]] std::string set_lang(const std::filesystem::path &path) const
   {
     using namespace std::string_literals;
-    if (std::empty(m_lang)) {
-      m_lang = [this, &path]() {
-        {
-          // try to read lang.dat from ff8 steam folder
-          // lang.dat overrides the explicitly set one.
-          const std::filesystem::path &langDatPath = path / "lang.dat";
-          if (std::filesystem::exists(langDatPath)) {
-            return tools::read_entire_file<std::basic_string<char>>(langDatPath);
-          }
+    return [this, &path]() {
+      {
+        // try to read lang.dat from ff8 steam folder
+        // lang.dat overrides the explicitly set one.
+        const std::filesystem::path &langDatPath = path / "lang.dat";
+        if (std::filesystem::exists(langDatPath)) {
+          return tools::read_entire_file<std::basic_string<char>>(langDatPath);
         }
-        // remaster stores the language value in my documents. I don't see a
-        // cross platform way to find this in cpp. will probably need a c#
-        // launcher to pass the lang code to this. As .Net has a standard cross
-        // platform way to get the documents folder. Documents\My Games\FINAL
-        // FANTASY VIII Remastered\Steam\(\d+)\config.txt
-        return ""s;// defaulting to english
-      }();
-    }
-    if (std::empty(m_lang)) {
-      set_lang();
-    }
-    std::cout << "lang = " << m_lang << '\n';
+      }
+      // remaster stores the language value in my documents. I don't see a
+      // cross platform way to find this in cpp. will probably need a c#
+      // launcher to pass the lang code to this. As .Net has a standard cross
+      // platform way to get the documents folder. Documents\My Games\FINAL
+      // FANTASY VIII Remastered\Steam\(\d+)\config.txt
+      return set_lang();// defaulting to english
+    }();
   }
   /**
    * Set Path to FF8. Will look for Data and lang- folders.
    * @param path location of FF8.
    */
-  void set_path(const std::filesystem::path &path)
+  static std::filesystem::path set_path(std::filesystem::path path, const std::string& lang)
   {
     using namespace std::string_literals;
     using namespace std::string_view_literals;
     // assert(!std::empty(m_lang));
-    m_path = path;
-    const std::filesystem::path &dataPath = m_path / "Data"sv;
+    //auto path = in_path;
+    const std::filesystem::path &dataPath = path / "Data"sv;
     if (std::filesystem::exists(dataPath)) {
-      m_path = dataPath;
+      path = dataPath;
       {
         static constexpr auto langStart = "lang-"sv;
-        std::filesystem::path langFolderPath = m_path / langStart;
-        langFolderPath = langFolderPath.string() + m_lang;
-        if (!std::empty(m_lang) && std::filesystem::exists(langFolderPath)) {
-          m_path = langFolderPath;
+        std::filesystem::path langFolderPath = path / langStart;
+        langFolderPath = langFolderPath.string() + lang;
+        if (std::filesystem::exists(langFolderPath)) {
+          path = langFolderPath;
         }
       }
     }
+    return path;
   }
 
   /**
@@ -415,32 +410,28 @@ public:
   {
     return m_field.get_fiflfs_entries(nested_archive);
   }
-  Archives() = default;
+  Archives() = delete;
   /**
    * Preloads all archives in the path.
    * @param path that contains FIFLFS files or ZZZ files.
    */
   explicit Archives(const std::filesystem::path &path)
+    : m_lang(set_lang(path)), m_path(set_path(path,m_lang))
   {
-    set_lang(path);
-    set_path(path);
-
-    const std::filesystem::directory_options options =
-      std::filesystem::directory_options::skip_permission_denied;
-    for (const auto &fileEntry : std::filesystem::directory_iterator(
-           m_path, options))// todo may need sorted.
-    {
-      const auto &localPath = fileEntry.path();
-      if (localPath.has_stem()) {
-        static_for([&localPath, this](
-                     const ArchiveTypeT &test, const auto &stem) {
-          if (!(open_viii::tools::i_equals(stem, localPath.stem().string()))) {
-            return;
-          }
-          try_add(test, localPath);
-        });
-      }
-    }
+    tools::execute_on_directory(m_path,{},
+      { FI::EXT, FS::EXT, fl::EXT, ZZZ::EXT },
+      [this](const std::filesystem::path &localPath) {
+        if (localPath.has_stem()) {
+          static_for([&localPath, this](
+                       const ArchiveTypeT &archiveTypeT, const auto &stem) {
+            if (!(open_viii::tools::i_equals(
+                  stem, localPath.stem().string()))) {
+              return;
+            }
+            try_add(archiveTypeT, localPath);
+          });
+        }
+      });
   }
 
   //  /**
