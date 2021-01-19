@@ -19,13 +19,14 @@ int main()
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
+
     const auto archives =
       open_viii::archive::Archives<open_viii::LangT::en>(path);
-    [[maybe_unused]] static constexpr auto dump =
+         [[maybe_unused]] static constexpr auto dump =
       [](const std::vector<char> &in_buffer, const std::string &in_path) {
         open_viii::tools::write_buffer(in_buffer, in_path);
       };
-    archives.execute_on({"field"}, dump);
+    archives.execute_on({}, dump);
   });
   const auto end = std::chrono::steady_clock::now();
   const auto diff = end - start;
