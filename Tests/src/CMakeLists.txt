@@ -98,3 +98,10 @@ add_executable(TestBattle
         TestBattle.cpp TestBattle.hpp)
 set_target_properties(TestBattle PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(TestBattle VIIIPaths VIIIBattle VIIIArchive Threads::Threads project_warnings)
+
+
+##test battle, uses new code to extract files instead of old versions.
+add_executable(TestJSM
+        TestJSM.cpp TestJSM.hpp)
+set_target_properties(TestJSM PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(TestJSM VIIIPaths VIIIField VIIIArchive Threads::Threads project_warnings)
