@@ -54,7 +54,7 @@ constexpr static auto TOUPPER_EQUALS_PREDICATE = [](const auto &ch1,
  * @param s8 utf8 string_view
  * @return char string_view.
  */
-static std::string_view u8_to_sv(const std::u8string_view &s8)
+[[maybe_unused]] static std::string_view u8_to_sv(const std::u8string_view &s8)
 {
   return { reinterpret_cast<const char *>(s8.data()), s8.size() };
 }
