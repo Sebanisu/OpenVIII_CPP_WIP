@@ -27,48 +27,36 @@ private:
     const std::span<const char> &buffer) const
   {
     return tools::read_val<std::vector<jsm_entity>>(
-      buffer.subspan(sizeof(m_header)), m_header.count_door_entities());
+      buffer.subspan(m_header.offset_door_entities()),
+      m_header.count_door_entities());
   }
 
   [[nodiscard]] auto get_walk_mesh_entities(
     const std::span<const char> &buffer) const
   {
     return tools::read_val<std::vector<jsm_entity>>(
-      buffer.subspan(
-        sizeof(m_header) + sizeof(jsm_entity) * m_header.count_door_entities()),
+      buffer.subspan(m_header.offset_walk_mesh_line_entities()),
       m_header.count_walk_mesh_line_entities());
   }
   [[nodiscard]] auto get_background_entities(
     const std::span<const char> &buffer) const
   {
     return tools::read_val<std::vector<jsm_entity>>(
-      buffer.subspan(sizeof(m_header)
-                     + sizeof(jsm_entity)
-                         * (m_header.count_door_entities()
-                            + m_header.count_walk_mesh_line_entities())),
+      buffer.subspan(m_header.offset_background_entities()),
       m_header.count_background_entities());
   }
   [[nodiscard]] auto get_other_entities(
     const std::span<const char> &buffer) const
   {
     return tools::read_val<std::vector<jsm_entity>>(
-      buffer.subspan(sizeof(m_header)
-                     + sizeof(jsm_entity)
-                         * (m_header.count_door_entities()
-                            + m_header.count_walk_mesh_line_entities())
-                     + m_header.count_background_entities()),
+      buffer.subspan(m_header.offset_other_entities()),
       m_header.count_other_entities());
-  }
-  constexpr static auto script_count(const jsm_header &header)
-  {
-    return (header.offset_script_data() - header.offset_section_1())
-           / sizeof(jsm_script_entity);
   }
   [[nodiscard]] auto get_script_entities(
     const std::span<const char> &buffer) const
   {
     return tools::read_val<std::vector<jsm_script_entity>>(
-      buffer.subspan(m_header.offset_section_1()), script_count(m_header));
+      buffer.subspan(m_header.offset_section_1()), m_header.count_section_1());
   }
 
 public:
@@ -89,7 +77,7 @@ public:
            == m_header.count_background_entities());
     assert(
       std::ranges::size(m_other_entities) == m_header.count_other_entities());
-    assert(std::ranges::size(m_script_entities) == script_count(m_header));
+    assert(std::ranges::size(m_script_entities) == m_header.count_section_1());
   }
 };
 }// namespace open_viii::field::scripts
