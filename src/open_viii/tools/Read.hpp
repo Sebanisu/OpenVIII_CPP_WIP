@@ -83,28 +83,34 @@ template<is_trivially_copyable_and_default_constructible trivialType>
 
 
 template<has_data_and_size trivialType>
-requires std::ranges::contiguous_range<trivialType> static void read_val(
-  const std::span<const char> &span, trivialType &item, std::size_t size = 0U)
+requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType> static void read_val(
+  const std::span<const char> &span, trivialType &item, std::size_t size)
 {
   const auto element_size = sizeof(*std::ranges::data(item));
-  if constexpr (has_resize<trivialType>) {
-    if (size != 0U) {
+  //std::ranges::size(span) / element_size
       item.resize(size);
-    } else {
-      item.resize(std::ranges::size(span) / element_size);
-    }
-  }
-  memcpy(std::ranges::data(item),
-    std::ranges::data(span),
-    element_size * std::ranges::size(item));
+  if(size != 0) {
+        memcpy(std::ranges::data(item),
+          std::ranges::data(span),
+          element_size * std::ranges::size(item));
+      }
 }
 
 template<is_default_constructible_has_data_and_size trivialType>
 [[nodiscard]] static trivialType read_val(
-  const std::span<const char> &span, std::size_t size = 0U)
+  const std::span<const char> &span, std::size_t size)
 {
   trivialType item{};
   read_val(span, item, size);
+  return item;
+}
+template<is_default_constructible_has_data_and_size trivialType>
+[[nodiscard]] static trivialType read_val(
+  const std::span<const char> &span)
+{
+  trivialType item();
+  const auto element_size = sizeof(*std::ranges::data(item));
+  read_val(span, item, std::ranges::size(span) / element_size);
   return item;
 }
 template<std::ranges::contiguous_range dstT = std::vector<char>,
