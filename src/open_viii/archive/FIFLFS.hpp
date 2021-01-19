@@ -314,32 +314,32 @@ public:
   //      }
   //    }
   //  }
-  static auto get_files_from_path(const std::filesystem::path &path)
-  {
-    const std::filesystem::directory_options options =
-      std::filesystem::directory_options::skip_permission_denied;
-    std::vector<std::pair<std::string, open_viii::archive::FIFLFS<true>>> tmp{};
-    constexpr auto default_size = 6U;// battle, field, magic, main, menu, world
-    tmp.reserve(default_size);
-    auto archive = open_viii::archive::FIFLFS<true>();
-    for (const auto &file_entry :
-      std::filesystem::directory_iterator(path, options)) {
-      if (archive.try_add(file_entry) != TryAddT::not_part_of_archive) {
-        if (archive.all_set()) {// todo confirm basename matches right now i'm
-                                // assuming the 3 files are together.
-          // todo check for language codes to choose correct files
-          // auto key = archive.get_base_name();
-          auto bn = archive.get_base_name();
-          tmp.emplace_back(std::piecewise_construct,
-            std::forward_as_tuple(std::move(bn)),
-            std::forward_as_tuple(std::move(archive)));
-          archive = {};
-        }
-      }
-    }
-    tmp.shrink_to_fit();// if there is more than 6 it'll collapse the vector
-    return tmp;
-  }
+//  static auto get_files_from_path(const std::filesystem::path &path)
+//  {
+//    const std::filesystem::directory_options options =
+//      std::filesystem::directory_options::skip_permission_denied;
+//    std::vector<std::pair<std::string, open_viii::archive::FIFLFS<true>>> tmp{};
+//    constexpr auto default_size = 6U;// battle, field, magic, main, menu, world
+//    tmp.reserve(default_size);
+//    auto archive = open_viii::archive::FIFLFS<true>();
+//    for (const auto &file_entry :
+//      std::filesystem::directory_iterator(path, options)) {
+//      if (archive.try_add(file_entry) != TryAddT::not_part_of_archive) {
+//        if (archive.all_set()) {// todo confirm basename matches right now i'm
+//                                // assuming the 3 files are together.
+//          // todo check for language codes to choose correct files
+//          // auto key = archive.get_base_name();
+//          auto bn = archive.get_base_name();
+//          tmp.emplace_back(std::piecewise_construct,
+//            std::forward_as_tuple(std::move(bn)),
+//            std::forward_as_tuple(std::move(archive)));
+//          archive = {};
+//        }
+//      }
+//    }
+//    tmp.shrink_to_fit();// if there is more than 6 it'll collapse the vector
+//    return tmp;
+//  }
   auto static check_extension(const std::filesystem::path &path)
   {
     return tools::i_ends_with_any(path.string(),
