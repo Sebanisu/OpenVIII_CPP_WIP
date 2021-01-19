@@ -104,30 +104,23 @@ public:
     std::pair<std::string, open_viii::archive::ZZZ>>
     get_files_from_path(const std::filesystem::path &path)
   {
-    // todo tools should have a search path function instead of this rolling it's own.
-    const std::filesystem::directory_options options =
-      std::filesystem::directory_options::skip_permission_denied;
+    // todo tools should have a search path function instead of this rolling
+    // it's own.
 
     std::vector<std::pair<std::string, open_viii::archive::ZZZ>> tmp{};
     tmp.reserve(2);// main and other
-    int i{};
-    for (const auto &file_entry :
-      std::filesystem::directory_iterator(path, options)) {
-      if (!(file_entry.path().has_extension()
-            && tools::i_equals(file_entry.path().extension().string(), EXT))) {
-        continue;
-      }
-      // todo check for language codes to choose correct files
-
-      auto &pair = tmp.emplace_back(std::piecewise_construct,
-        std::forward_as_tuple(file_entry.path().filename().stem().string()),
-        std::forward_as_tuple(file_entry));
-      if (std::empty(pair.first)) {
-        pair.first = "__" + std::to_string(i++);
-      }
-      std::transform(
-        pair.first.begin(), pair.first.end(), pair.first.begin(), ::toupper);
-    }
+    tools::execute_on_directory(path,
+      {},
+      { EXT },
+      [&tmp, i = 0](const std::filesystem::path &file_entry) mutable {
+        // todo check for language codes to choose correct files
+        auto &pair = tmp.emplace_back(std::piecewise_construct,
+          std::forward_as_tuple(tools::get_base_name(file_entry)),
+          std::forward_as_tuple(file_entry));
+        if (std::empty(pair.first)) {
+          pair.first = "__" + std::to_string(i++);
+        }
+      });
     tmp.shrink_to_fit();
     return tmp;
   }
@@ -169,8 +162,9 @@ public:
   void execute_on(const std::initializer_list<std::string_view> &filename,
     const UnaryFunctionT &unary_function)
   {
-    std::ranges::for_each(
-      data(), [&unary_function, &filename, this](const open_viii::archive::FileData &dataItem) {
+    std::ranges::for_each(data(),
+      [&unary_function, &filename, this](
+        const open_viii::archive::FileData &dataItem) {
         auto pathString = dataItem.get_path_string();
         if (open_viii::tools::i_find_any(pathString, filename)) {
           unary_function(
