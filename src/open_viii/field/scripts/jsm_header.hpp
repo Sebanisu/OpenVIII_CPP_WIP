@@ -6,6 +6,7 @@
 #define VIIIARCHIVE_JSM_HEADER_HPP
 #include "jsm_entity.hpp"
 #include "jsm_script_entity.hpp"
+#include <iostream>
 #include <cstdint>
 namespace open_viii::field::scripts {
 /**
@@ -41,6 +42,34 @@ private:
 
 public:
   constexpr jsm_header() = default;
+  constexpr jsm_header(std::uint8_t in_count_door_entities,
+    std::uint8_t in_count_walk_mesh_line_entities,
+    std::uint8_t in_count_background_entities,
+    std::uint8_t in_count_other_entities,
+    std::uint16_t in_offset_section_1,
+    std::uint16_t in_offset_script_data)
+    : m_count_door_entities(in_count_door_entities),
+      m_count_walk_mesh_line_entities(in_count_walk_mesh_line_entities),
+      m_count_background_entities(in_count_background_entities),
+      m_count_other_entities(in_count_other_entities),
+      m_offset_section_1(in_offset_section_1),
+      m_offset_script_data(in_offset_script_data)
+
+  {}
+  [[nodiscard]] std::size_t constexpr total_count() const noexcept
+  {
+    return static_cast<std::size_t>(
+      count_door_entities() + count_walk_mesh_line_entities()
+      + count_background_entities() + count_other_entities());
+  }
+  [[nodiscard]] std::size_t constexpr expected_count() const noexcept
+  {
+    return (offset_section_1() - EXPECTED_SIZE) / sizeof(jsm_entity);
+  };
+  [[nodiscard]] bool constexpr valid_count() const noexcept
+  {
+    return expected_count() == total_count();
+  };
   /**
    * Count of door entity
    */
@@ -129,15 +158,28 @@ public:
   static constexpr std::size_t EXPECTED_SIZE = 8U;
 };
 static_assert(sizeof(jsm_header) == jsm_header::EXPECTED_SIZE);
-// static constexpr std::size_t size_of_entities(const jsm_header & header)
-//{
-//  return header.offset_script_data()-header.offset_section_1();
-//}
-// static constexpr std::size_t size_of_script_entities(const jsm_header &
-// header)
-//{
-//  return header.offset_section_1()-sizeof(jsm_header);
-//}
+/**
+ * if count is > expected_count it can't be valid so any count greater is set to 0.
+ * @param in read in header data.
+ * @return possible valid header.
+ */
+static constexpr jsm_header fix_jsm_header_counts(jsm_header in) noexcept
+{
+  const auto expected_count = in.expected_count();
+  const auto fix = [&expected_count]<std::unsigned_integral T>(T count) -> T {
+    //std::cout << expected_count << "\t<\t" << static_cast<std::size_t>(count)<<std::endl; // if we remove this line it can be constexpr
+    if (expected_count < count) {
+      return static_cast<T>(0U);
+    }
+    return count;
+  };
+  return jsm_header(fix(in.count_door_entities()),
+    fix(in.count_walk_mesh_line_entities()),
+    fix(in.count_background_entities()),
+    fix(in.count_other_entities()),
+    in.offset_section_1(),
+    in.offset_script_data());
+}
 
 }// namespace open_viii::field::scripts
 #endif// VIIIARCHIVE_JSM_HEADER_HPP

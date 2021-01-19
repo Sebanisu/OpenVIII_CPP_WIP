@@ -49,7 +49,7 @@ public:
     }
   }
 };
-}
+}// namespace open_viii::field::scripts
 
 namespace std {
 /**
@@ -57,7 +57,7 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::field::scripts::jsm_script_data_item>
+struct tuple_size<open_viii::field::scripts::jsm_script_entity>
   : std::integral_constant<size_t, 2U>
 {
 };
@@ -67,7 +67,7 @@ struct tuple_size<open_viii::field::scripts::jsm_script_data_item>
  * @note required to structured binding support
  */
 template<>
-struct tuple_element<0U, open_viii::field::scripts::jsm_script_data_item>
+struct tuple_element<0U, open_viii::field::scripts::jsm_script_entity>
 {
   using type = std::uint16_t;
 };
@@ -76,8 +76,9 @@ struct tuple_element<0U, open_viii::field::scripts::jsm_script_data_item>
  * @note required to structured binding support
  */
 template<>
-struct tuple_element<1U, open_viii::field::scripts::jsm_script_data_item>
+struct tuple_element<1U, open_viii::field::scripts::jsm_script_entity>
 {
   using type = std::uint16_t;
 };
+}// namespace std
 #endif// VIIIARCHIVE_JSM_SCRIPT_ENTITY_HPP

@@ -7,7 +7,12 @@
 #include <cstdint>
 #include <type_traits>
 #include <utility>
+
 namespace open_viii::field::scripts {
+/**
+ * @see
+ * https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L105
+ */
 struct jsm_entity
 {
 private:
@@ -19,12 +24,12 @@ public:
   {
     return m_raw;
   }
-  [[nodiscard]] constexpr std::uint8_t script_count() const noexcept
+  [[nodiscard]] constexpr std::uint8_t count() const noexcept
   {
     constexpr std::uint16_t mask = 0x7FU;
     return m_raw & mask;
   }
-  [[nodiscard]] constexpr std::uint16_t entry_point_entity() const noexcept
+  [[nodiscard]] constexpr std::uint16_t label() const noexcept
   {
     constexpr std::uint16_t mask = 0x1FF;
     constexpr std::uint16_t shift = 0x7U;
@@ -41,13 +46,13 @@ public:
   requires(I < 2U) [[nodiscard]] constexpr auto get() const noexcept
   {
     if constexpr (I == 0U) {
-      return script_count();
+      return count();
     } else if constexpr (I == 1U) {
-      return entry_point_entity();
+      return label();
     }
   }
 };
-}
+}// namespace open_viii::field::scripts
 
 namespace std {
 /**
@@ -55,7 +60,7 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::field::scripts::jsm_script_data_item>
+struct tuple_size<open_viii::field::scripts::jsm_entity>
   : std::integral_constant<size_t, 2U>
 {
 };
@@ -64,8 +69,7 @@ struct tuple_size<open_viii::field::scripts::jsm_script_data_item>
  * type of argument 0
  * @note required to structured binding support
  */
-template<>
-struct tuple_element<0U, open_viii::field::scripts::jsm_script_data_item>
+template<> struct tuple_element<0U, open_viii::field::scripts::jsm_entity>
 {
   using type = std::uint16_t;
 };
@@ -73,9 +77,9 @@ struct tuple_element<0U, open_viii::field::scripts::jsm_script_data_item>
  * type of argument 1
  * @note required to structured binding support
  */
-template<>
-struct tuple_element<1U, open_viii::field::scripts::jsm_script_data_item>
+template<> struct tuple_element<1U, open_viii::field::scripts::jsm_entity>
 {
   using type = std::uint16_t;
 };
+}// namespace std
 #endif// VIIIARCHIVE_JSM_ENTITY_HPP
