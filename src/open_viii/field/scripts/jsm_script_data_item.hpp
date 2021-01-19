@@ -1,36 +1,33 @@
 //
-// Created by pcvii on 1/18/2021.
+// Created by pcvii on 1/19/2021.
 //
 
-#ifndef VIIIARCHIVE_JSM_ENTITY_HPP
-#define VIIIARCHIVE_JSM_ENTITY_HPP
+#ifndef VIIIARCHIVE_JSM_SCRIPT_DATA_ITEM_HPP
+#define VIIIARCHIVE_JSM_SCRIPT_DATA_ITEM_HPP
+#include "opcodeT.hpp"
 #include <cstdint>
 #include <type_traits>
 #include <utility>
 namespace open_viii::field::scripts {
-struct jsm_entity
+struct jsm_script_data_item
 {
 private:
-  std::uint16_t m_raw{};
+  std::uint32_t m_data{};
 
 public:
-  constexpr jsm_entity() = default;
-  [[nodiscard]] constexpr std::uint16_t raw() const noexcept
+  [[nodiscard]] constexpr opcodeT opcode() const noexcept
   {
-    return m_raw;
+    constexpr std::uint16_t mask = 0x1FFU;// 9 bits mask
+    constexpr std::uint16_t shift = 23;
+    return static_cast<opcodeT>(
+      static_cast<std::uint16_t>(m_data >> shift) & mask)
   }
-  [[nodiscard]] constexpr std::uint8_t script_count() const noexcept
+  [[nodiscard]] constexpr std::uint32_t parameter() const noexcept
   {
-    constexpr std::uint16_t mask = 0x7FU;
-    return m_raw & mask;
+    constexpr std::uint16_t mask = 0x7FFFFFU;// 23 bits mask
+    return static_cast<opcodeT>(
+      static_cast<std::uint16_t>(m_data >> shift) & mask)
   }
-  [[nodiscard]] constexpr std::uint16_t entry_point_entity() const noexcept
-  {
-    constexpr std::uint16_t mask = 0x1FF;
-    constexpr std::uint16_t shift = 0x7U;
-    return static_cast<std::uint16_t>(m_raw >> shift) & mask;
-  }
-
 
   /**
    * Get Value
@@ -41,14 +38,13 @@ public:
   requires(I < 2U) [[nodiscard]] constexpr auto get() const noexcept
   {
     if constexpr (I == 0U) {
-      return script_count();
+      return opcode();
     } else if constexpr (I == 1U) {
-      return entry_point_entity();
+      return parameter();
     }
   }
 };
-}
-
+}// namespace open_viii::field::scripts
 namespace std {
 /**
  * number of arguments
@@ -67,7 +63,7 @@ struct tuple_size<open_viii::field::scripts::jsm_script_data_item>
 template<>
 struct tuple_element<0U, open_viii::field::scripts::jsm_script_data_item>
 {
-  using type = std::uint16_t;
+  using type = open_viii::field::scripts::opcodeT;
 };
 /**
  * type of argument 1
@@ -76,6 +72,7 @@ struct tuple_element<0U, open_viii::field::scripts::jsm_script_data_item>
 template<>
 struct tuple_element<1U, open_viii::field::scripts::jsm_script_data_item>
 {
-  using type = std::uint16_t;
+  using type = std::uint32_t;
 };
-#endif// VIIIARCHIVE_JSM_ENTITY_HPP
+}// namespace std
+#endif// VIIIARCHIVE_JSM_SCRIPT_DATA_ITEM_HPP
