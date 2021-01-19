@@ -14,6 +14,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <cstdint>
 namespace open_viii::tools {
 
 template<is_trivially_copyable_and_default_constructible trivialType,

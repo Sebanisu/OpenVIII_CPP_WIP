@@ -15,6 +15,7 @@
 #define VIIIARCHIVE_CONCEPTS_HPP
 #include "CompressionTypeT.hpp"
 #include <concepts>
+#include <cstdint>
 #include <string_view>
 #include <type_traits>
 #include <vector>
