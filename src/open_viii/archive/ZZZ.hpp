@@ -104,9 +104,6 @@ public:
     std::pair<std::string, open_viii::archive::ZZZ>>
     get_files_from_path(const std::filesystem::path &path)
   {
-    // todo tools should have a search path function instead of this rolling
-    // it's own.
-
     std::vector<std::pair<std::string, open_viii::archive::ZZZ>> tmp{};
     tmp.reserve(2);// main and other
     tools::execute_on_directory(path,
