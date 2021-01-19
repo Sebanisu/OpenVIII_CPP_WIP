@@ -402,8 +402,6 @@ public:
       return m_zzz_main;
     } else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
       return m_zzz_other;
-    } else {
-      return nullptr;
     }
   }
   /**
