@@ -50,11 +50,11 @@ public:
    * @note can't be reference because it's a copy of 4 bits to 8 bits.
    */
   template<std::size_t I>
-  requires(I < 2) [[nodiscard]] constexpr auto get() const noexcept
+  requires(I < 2U) [[nodiscard]] constexpr auto get() const noexcept
   {
-    if constexpr (I == 0) {
+    if constexpr (I == 0U) {
       return m_first;
-    } else if constexpr (I == 1) {
+    } else if constexpr (I == 1U) {
       return m_second;
     }
   }
