@@ -45,7 +45,7 @@ public:
   /**
    * Get Value
    *@note required to structured binding support
-   * @note can't be reference because it's a copy of 4 bits to 8 bits.
+
    */
   template<std::size_t I>
   requires(I < 2U) [[nodiscard]] constexpr auto get() const noexcept

@@ -19,10 +19,20 @@ public:
   {
     return m_raw;
   }
+  /
   [[nodiscard]] constexpr std::uint16_t position() const noexcept
   {
+    /**
+     * they use 0x7FFF but once you shift over 2 or multiply by 4 the left 2 bits fall off.
+     * my mask is applied after shifting looks like 0b1111'1111'1111'1100
+     * @see https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L154
+     */
     constexpr std::uint16_t mask = 0xFFFCU;
-    constexpr std::uint16_t shift = 2U;// multiply by 4 == shift by 2.
+    /**
+     * multiply by 4 == left shift by 2.
+     * @see https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L155
+     */
+    constexpr std::uint16_t shift = 2U;// m
     // this is dropping the 15th bit. i guess this is okay.
     //(entryPointScript & 0x7FFF)*4; this is doing a shift and mask.
     return static_cast<std::uint16_t>(m_raw << shift) & mask;
@@ -35,9 +45,20 @@ public:
   }
 
   /**
+   * This bit is lost in the transfer. Unsure if it's just unimportant.
+   * @return
+   */
+  [[nodiscard]] constexpr bool unk() const noexcept
+  {
+    constexpr std::uint16_t mask = 0x1U;
+    constexpr std::uint16_t shift = 14U;
+    return (static_cast<std::uint16_t>(m_raw >> shift) & mask) != 0;
+  }
+
+  /**
    * Get Value
    *@note required to structured binding support
-   * @note can't be reference because it's a copy of 4 bits to 8 bits.
+
    */
   template<std::size_t I>
   requires(I < 2U) [[nodiscard]] constexpr auto get() const noexcept
