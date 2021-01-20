@@ -2,8 +2,8 @@
 // Created by pcvii on 1/18/2021.
 //
 
-#ifndef VIIIARCHIVE_JSM_ENTITY_HPP
-#define VIIIARCHIVE_JSM_ENTITY_HPP
+#ifndef VIIIARCHIVE_JSM_OLD_ENTITY_HPP
+#define VIIIARCHIVE_JSM_OLD_ENTITY_HPP
 #include <cstdint>
 #include <type_traits>
 #include <utility>
@@ -11,9 +11,9 @@
 namespace open_viii::field::scripts {
 /**
  * @see
- * https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L105
+ * https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L117
  */
-struct jsm_entity
+struct jsm_old_entity
 {
 private:
   std::uint16_t m_raw{};
@@ -24,15 +24,16 @@ public:
   {
     return m_raw;
   }
+
   [[nodiscard]] constexpr std::uint8_t count() const noexcept
   {
-    constexpr std::uint16_t mask = 0x7FU;
+    constexpr std::uint16_t mask = 0xFFU;
     return m_raw & mask;
   }
   [[nodiscard]] constexpr std::uint16_t label() const noexcept
   {
-    constexpr std::uint16_t mask = 0x1FF;
-    constexpr std::uint16_t shift = 7U;
+    constexpr std::uint16_t mask = 0xFF;
+    constexpr std::uint16_t shift = 8U;
     return static_cast<std::uint16_t>(m_raw >> shift) & mask;
   }
 
@@ -86,4 +87,4 @@ template<> struct tuple_element<1U, open_viii::field::scripts::jsm_entity>
   using type = std::uint16_t;
 };
 }// namespace std
-#endif// VIIIARCHIVE_JSM_ENTITY_HPP
+#endif// VIIIARCHIVE_JSM_OLD_ENTITY_HPP

@@ -5,6 +5,7 @@
 #ifndef VIIIARCHIVE_JSM_HEADER_HPP
 #define VIIIARCHIVE_JSM_HEADER_HPP
 #include "jsm_entity.hpp"
+#include "jsm_old_entity.hpp"
 #include "jsm_script_entity.hpp"
 #include <iostream>
 #include <cstdint>
