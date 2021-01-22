@@ -4,11 +4,11 @@
 
 #ifndef VIIIARCHIVE_JSM_HEADER_HPP
 #define VIIIARCHIVE_JSM_HEADER_HPP
+#include "JsmOldEntity.hpp"
 #include "jsm_entity.hpp"
-#include "jsm_old_entity.hpp"
 #include "jsm_script_entity.hpp"
-#include <iostream>
 #include <cstdint>
+#include <iostream>
 namespace open_viii::field::scripts {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_JSM

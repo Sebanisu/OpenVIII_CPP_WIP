@@ -2,8 +2,8 @@
 // Created by pcvii on 1/18/2021.
 //
 
-#ifndef VIIIARCHIVE_JSM_OLD_ENTITY_HPP
-#define VIIIARCHIVE_JSM_OLD_ENTITY_HPP
+#ifndef VIIIARCHIVE_JSMOLDENTITY_HPP
+#define VIIIARCHIVE_JSMOLDENTITY_HPP
 #include <cstdint>
 #include <type_traits>
 #include <utility>
@@ -87,4 +87,4 @@ template<> struct tuple_element<1U, open_viii::field::scripts::JsmOldEntity>
   using type = std::uint16_t;
 };
 }// namespace std
-#endif// VIIIARCHIVE_JSM_OLD_ENTITY_HPP
+#endif// VIIIARCHIVE_JSMOLDENTITY_HPP
