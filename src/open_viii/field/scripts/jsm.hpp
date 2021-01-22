@@ -5,8 +5,8 @@
 #ifndef VIIIARCHIVE_JSM_HPP
 #define VIIIARCHIVE_JSM_HPP
 #include "JsmEntity.hpp"
+#include "JsmHeader.hpp"
 #include "JsmScriptEntity.hpp"
-#include "jsm_header.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include <span>
 #include <vector>

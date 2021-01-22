@@ -2,8 +2,8 @@
 // Created by pcvii on 1/18/2021.
 //
 
-#ifndef VIIIARCHIVE_JSM_HEADER_HPP
-#define VIIIARCHIVE_JSM_HEADER_HPP
+#ifndef VIIIARCHIVE_JSMHEADER_HPP
+#define VIIIARCHIVE_JSMHEADER_HPP
 #include "JsmEntity.hpp"
 #include "JsmOldEntity.hpp"
 #include "JsmScriptEntity.hpp"
@@ -183,4 +183,4 @@ static constexpr JsmHeader fix_jsm_header_counts(JsmHeader in) noexcept
 }
 
 }// namespace open_viii::field::scripts
-#endif// VIIIARCHIVE_JSM_HEADER_HPP
+#endif// VIIIARCHIVE_JSMHEADER_HPP
