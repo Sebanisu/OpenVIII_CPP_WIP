@@ -9,7 +9,7 @@
 #include <type_traits>
 #include <utility>
 namespace open_viii::field::scripts {
-struct jsm_script_data_item
+struct JsmScriptData
 {
 private:
   std::uint32_t m_data{};
@@ -50,7 +50,7 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::field::scripts::jsm_script_data_item>
+struct tuple_size<open_viii::field::scripts::JsmScriptData>
   : std::integral_constant<size_t, 2U>
 {
 };
@@ -60,7 +60,7 @@ struct tuple_size<open_viii::field::scripts::jsm_script_data_item>
  * @note required to structured binding support
  */
 template<>
-struct tuple_element<0U, open_viii::field::scripts::jsm_script_data_item>
+struct tuple_element<0U, open_viii::field::scripts::JsmScriptData>
 {
   using type = open_viii::field::scripts::opcodeT;
 };
@@ -69,7 +69,7 @@ struct tuple_element<0U, open_viii::field::scripts::jsm_script_data_item>
  * @note required to structured binding support
  */
 template<>
-struct tuple_element<1U, open_viii::field::scripts::jsm_script_data_item>
+struct tuple_element<1U, open_viii::field::scripts::JsmScriptData>
 {
   using type = std::uint32_t;
 };
