@@ -140,7 +140,7 @@ public:
   [[nodiscard]] constexpr auto count_section_1() const noexcept
   {
     return (offset_script_data() - offset_section_1())
-           / sizeof(jsm_script_entity);
+           / sizeof(JsmScriptEntity);
   }
   /**
    * Offset section 1

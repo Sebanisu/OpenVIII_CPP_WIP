@@ -22,7 +22,7 @@ private:
   std::vector<JsmEntity> m_walk_mesh_entities{};
   std::vector<JsmEntity> m_background_entities{};
   std::vector<JsmEntity> m_other_entities{};
-  std::vector<jsm_script_entity> m_script_entities{};
+  std::vector<JsmScriptEntity> m_script_entities{};
   [[nodiscard]] auto get_door_entities(
     const std::span<const char> &buffer) const
   {
@@ -55,7 +55,7 @@ private:
   [[nodiscard]] auto get_script_entities(
     const std::span<const char> &buffer) const
   {
-    return tools::read_val<std::vector<jsm_script_entity>>(
+    return tools::read_val<std::vector<JsmScriptEntity>>(
       buffer.subspan(m_header.offset_section_1()), m_header.count_section_1());
   }
 

@@ -8,13 +8,13 @@
 #include <type_traits>
 #include <utility>
 namespace open_viii::field::scripts {
-struct jsm_script_entity
+struct JsmScriptEntity
 {
 private:
   std::uint16_t m_raw{};
 
 public:
-  constexpr jsm_script_entity() = default;
+  constexpr JsmScriptEntity() = default;
   [[nodiscard]] constexpr std::uint16_t raw() const noexcept
   {
     return m_raw;
@@ -77,7 +77,7 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::field::scripts::jsm_script_entity>
+struct tuple_size<open_viii::field::scripts::JsmScriptEntity>
   : std::integral_constant<size_t, 2U>
 {
 };
@@ -87,7 +87,7 @@ struct tuple_size<open_viii::field::scripts::jsm_script_entity>
  * @note required to structured binding support
  */
 template<>
-struct tuple_element<0U, open_viii::field::scripts::jsm_script_entity>
+struct tuple_element<0U, open_viii::field::scripts::JsmScriptEntity>
 {
   using type = std::uint16_t;
 };
@@ -96,7 +96,7 @@ struct tuple_element<0U, open_viii::field::scripts::jsm_script_entity>
  * @note required to structured binding support
  */
 template<>
-struct tuple_element<1U, open_viii::field::scripts::jsm_script_entity>
+struct tuple_element<1U, open_viii::field::scripts::JsmScriptEntity>
 {
   using type = std::uint16_t;
 };
