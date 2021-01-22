@@ -3,7 +3,7 @@
 //
 #include "TestJSM.hpp"
 #include "open_viii/archive/Archives.hpp"
-#include "open_viii/field/scripts/jsm_.hpp"
+#include "open_viii/field/scripts/Jsm.hpp"
 #include "open_viii/paths/Paths.hpp"
 int main()
 {
