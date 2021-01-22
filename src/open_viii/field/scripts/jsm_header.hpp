@@ -65,7 +65,7 @@ public:
   }
   [[nodiscard]] std::size_t constexpr expected_count() const noexcept
   {
-    return (offset_section_1() - EXPECTED_SIZE) / sizeof(jsm_entity);
+    return (offset_section_1() - EXPECTED_SIZE) / sizeof(JsmEntity);
   };
   [[nodiscard]] bool constexpr valid_count() const noexcept
   {
@@ -98,7 +98,7 @@ public:
    */
   [[nodiscard]] auto constexpr offset_walk_mesh_line_entities() const noexcept
   {
-    return offset_door_entities() + sizeof(jsm_entity) * count_door_entities();
+    return offset_door_entities() + sizeof(JsmEntity) * count_door_entities();
   }
 
   /**
@@ -115,7 +115,7 @@ public:
   [[nodiscard]] auto constexpr offset_background_entities() const noexcept
   {
     return offset_walk_mesh_line_entities()
-           + sizeof(jsm_entity) * count_walk_mesh_line_entities();
+           + sizeof(JsmEntity) * count_walk_mesh_line_entities();
   }
 
   /**
@@ -131,7 +131,7 @@ public:
   [[nodiscard]] auto constexpr offset_other_entities() const noexcept
   {
     return offset_background_entities()
-           + sizeof(jsm_entity) * count_background_entities();
+           + sizeof(JsmEntity) * count_background_entities();
   }
 
   /**

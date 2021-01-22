@@ -18,15 +18,15 @@ struct Jsm
 {
 private:
   jsm_header m_header{};
-  std::vector<jsm_entity> m_door_entities{};
-  std::vector<jsm_entity> m_walk_mesh_entities{};
-  std::vector<jsm_entity> m_background_entities{};
-  std::vector<jsm_entity> m_other_entities{};
+  std::vector<JsmEntity> m_door_entities{};
+  std::vector<JsmEntity> m_walk_mesh_entities{};
+  std::vector<JsmEntity> m_background_entities{};
+  std::vector<JsmEntity> m_other_entities{};
   std::vector<jsm_script_entity> m_script_entities{};
   [[nodiscard]] auto get_door_entities(
     const std::span<const char> &buffer) const
   {
-    return tools::read_val<std::vector<jsm_entity>>(
+    return tools::read_val<std::vector<JsmEntity>>(
       buffer.subspan(m_header.offset_door_entities()),
       m_header.count_door_entities());
   }
@@ -34,21 +34,21 @@ private:
   [[nodiscard]] auto get_walk_mesh_entities(
     const std::span<const char> &buffer) const
   {
-    return tools::read_val<std::vector<jsm_entity>>(
+    return tools::read_val<std::vector<JsmEntity>>(
       buffer.subspan(m_header.offset_walk_mesh_line_entities()),
       m_header.count_walk_mesh_line_entities());
   }
   [[nodiscard]] auto get_background_entities(
     const std::span<const char> &buffer) const
   {
-    return tools::read_val<std::vector<jsm_entity>>(
+    return tools::read_val<std::vector<JsmEntity>>(
       buffer.subspan(m_header.offset_background_entities()),
       m_header.count_background_entities());
   }
   [[nodiscard]] auto get_other_entities(
     const std::span<const char> &buffer) const
   {
-    return tools::read_val<std::vector<jsm_entity>>(
+    return tools::read_val<std::vector<JsmEntity>>(
       buffer.subspan(m_header.offset_other_entities()),
       m_header.count_other_entities());
   }
