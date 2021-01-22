@@ -2,8 +2,8 @@
 // Created by pcvii on 1/19/2021.
 //
 
-#ifndef VIIIARCHIVE_JSM_SCRIPT_DATA_ITEM_HPP
-#define VIIIARCHIVE_JSM_SCRIPT_DATA_ITEM_HPP
+#ifndef VIIIARCHIVE_JSMSCRIPTDATA_HPP
+#define VIIIARCHIVE_JSMSCRIPTDATA_HPP
 #include "opcodeT.hpp"
 #include <cstdint>
 #include <type_traits>
@@ -74,4 +74,4 @@ struct tuple_element<1U, open_viii::field::scripts::JsmScriptData>
   using type = std::uint32_t;
 };
 }// namespace std
-#endif// VIIIARCHIVE_JSM_SCRIPT_DATA_ITEM_HPP
+#endif// VIIIARCHIVE_JSMSCRIPTDATA_HPP
