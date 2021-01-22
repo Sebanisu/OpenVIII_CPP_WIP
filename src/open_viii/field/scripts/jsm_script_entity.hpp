@@ -19,7 +19,6 @@ public:
   {
     return m_raw;
   }
-  /
   [[nodiscard]] constexpr std::uint16_t position() const noexcept
   {
     /**

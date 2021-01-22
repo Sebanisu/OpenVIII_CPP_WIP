@@ -19,16 +19,16 @@ private:
   std::uint16_t m_raw{};
 
 public:
-  constexpr jsm_entity() = default;
+  constexpr jsm_old_entity() = default;
   [[nodiscard]] constexpr std::uint16_t raw() const noexcept
   {
     return m_raw;
   }
 
-  [[nodiscard]] constexpr std::uint8_t count() const noexcept
+  [[nodiscard]] constexpr auto count() const noexcept
   {
-    constexpr std::uint16_t mask = 0xFFU;
-    return m_raw & mask;
+    constexpr std::uint8_t mask = 0xFFU;
+    return static_cast<std::uint8_t>(m_raw & mask);
   }
   [[nodiscard]] constexpr std::uint16_t label() const noexcept
   {
@@ -39,7 +39,7 @@ public:
 
   [[nodiscard]] constexpr std::size_t calc_total() const
   {
-    return lable()+count()+1U;
+    return label()+count()+1U;
   }
 
   /**
@@ -65,7 +65,7 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::field::scripts::jsm_entity>
+struct tuple_size<open_viii::field::scripts::jsm_old_entity>
   : std::integral_constant<size_t, 2U>
 {
 };
@@ -74,7 +74,7 @@ struct tuple_size<open_viii::field::scripts::jsm_entity>
  * type of argument 0
  * @note required to structured binding support
  */
-template<> struct tuple_element<0U, open_viii::field::scripts::jsm_entity>
+template<> struct tuple_element<0U, open_viii::field::scripts::jsm_old_entity>
 {
   using type = std::uint16_t;
 };
@@ -82,7 +82,7 @@ template<> struct tuple_element<0U, open_viii::field::scripts::jsm_entity>
  * type of argument 1
  * @note required to structured binding support
  */
-template<> struct tuple_element<1U, open_viii::field::scripts::jsm_entity>
+template<> struct tuple_element<1U, open_viii::field::scripts::jsm_old_entity>
 {
   using type = std::uint16_t;
 };

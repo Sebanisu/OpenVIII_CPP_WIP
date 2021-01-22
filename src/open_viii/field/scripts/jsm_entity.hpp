@@ -38,7 +38,7 @@ public:
 
   [[nodiscard]] constexpr std::size_t calc_total() const
   {
-    return lable()+count()+1U;
+    return label()+count()+1U;
   }
 
   /**

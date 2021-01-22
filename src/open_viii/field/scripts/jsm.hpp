@@ -14,7 +14,7 @@ namespace open_viii::field::scripts {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_JSM
  */
-struct jsm
+struct Jsm
 {
 private:
   jsm_header m_header{};
@@ -60,7 +60,7 @@ private:
   }
 
 public:
-  explicit jsm(std::span<const char> buffer)
+  explicit Jsm(std::span<const char> buffer)
     : m_header(fix_jsm_header_counts(tools::read_val<jsm_header>(buffer))),
       m_door_entities(get_door_entities(buffer)),
       m_walk_mesh_entities(get_walk_mesh_entities(buffer)),
