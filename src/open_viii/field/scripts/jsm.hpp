@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_JSM_HPP
 #define VIIIARCHIVE_JSM_HPP
-#include "jsm_entity.hpp"
+#include "JsmEntity.hpp"
 #include "jsm_header.hpp"
 #include "jsm_script_entity.hpp"
 #include "open_viii/tools/Tools.hpp"
