@@ -2,8 +2,8 @@
 // Created by pcvii on 1/18/2021.
 //
 
-#ifndef VIIIARCHIVE_JSM_SCRIPT_ENTITY_HPP
-#define VIIIARCHIVE_JSM_SCRIPT_ENTITY_HPP
+#ifndef VIIIARCHIVE_JSMSCRIPTENTITY_HPP
+#define VIIIARCHIVE_JSMSCRIPTENTITY_HPP
 #include <cstdint>
 #include <type_traits>
 #include <utility>
@@ -101,4 +101,4 @@ struct tuple_element<1U, open_viii::field::scripts::JsmScriptEntity>
   using type = std::uint16_t;
 };
 }// namespace std
-#endif// VIIIARCHIVE_JSM_SCRIPT_ENTITY_HPP
+#endif// VIIIARCHIVE_JSMSCRIPTENTITY_HPP
