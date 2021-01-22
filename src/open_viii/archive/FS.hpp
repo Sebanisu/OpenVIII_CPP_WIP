@@ -45,8 +45,8 @@ static dstT get_entry(
   if (fi.uncompressed_size() == 0) {
     return {};
   }
-  auto ofp =tools::open_file(path);
-  if(ofp.has_value() && ofp->is_open()) {
+  auto ofp = tools::open_file(path);
+  if (ofp.has_value() && ofp->is_open()) {
     // if compressed will keep decompressing till get size
     // size compressed isn't quite known with out finding the offset of the next
     // file and finding difference.

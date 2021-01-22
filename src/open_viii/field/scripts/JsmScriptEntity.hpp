@@ -22,14 +22,17 @@ public:
   [[nodiscard]] constexpr std::uint16_t position() const noexcept
   {
     /**
-     * they use 0x7FFF but once you shift over 2 or multiply by 4 the left 2 bits fall off.
-     * my mask is applied after shifting looks like 0b1111'1111'1111'1100
-     * @see https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L154
+     * they use 0x7FFF but once you shift over 2 or multiply by 4 the left 2
+     * bits fall off. my mask is applied after shifting looks like
+     * 0b1111'1111'1111'1100
+     * @see
+     * https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L154
      */
     constexpr std::uint16_t mask = 0xFFFCU;
     /**
      * multiply by 4 == left shift by 2.
-     * @see https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L155
+     * @see
+     * https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L155
      */
     constexpr std::uint16_t shift = 2U;// m
     // this is dropping the 15th bit. i guess this is okay.
@@ -86,8 +89,7 @@ struct tuple_size<open_viii::field::scripts::JsmScriptEntity>
  * type of argument 0
  * @note required to structured binding support
  */
-template<>
-struct tuple_element<0U, open_viii::field::scripts::JsmScriptEntity>
+template<> struct tuple_element<0U, open_viii::field::scripts::JsmScriptEntity>
 {
   using type = std::uint16_t;
 };
@@ -95,8 +97,7 @@ struct tuple_element<0U, open_viii::field::scripts::JsmScriptEntity>
  * type of argument 1
  * @note required to structured binding support
  */
-template<>
-struct tuple_element<1U, open_viii::field::scripts::JsmScriptEntity>
+template<> struct tuple_element<1U, open_viii::field::scripts::JsmScriptEntity>
 {
   using type = std::uint16_t;
 };

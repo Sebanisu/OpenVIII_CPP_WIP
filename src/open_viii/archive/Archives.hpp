@@ -114,7 +114,7 @@ private:
    */
   [[nodiscard]] auto set_lang() const
   {
-    return std::string {LangCommon::to_string<langVal>()};
+    return std::string{ LangCommon::to_string<langVal>() };
   }
   /**
    * Search for lang.dat from steam 2013 release.
@@ -145,12 +145,13 @@ private:
    * Set Path to FF8. Will look for Data and lang- folders.
    * @param path location of FF8.
    */
-  static std::filesystem::path set_path(std::filesystem::path path, const std::string& lang)
+  static std::filesystem::path set_path(
+    std::filesystem::path path, const std::string &lang)
   {
     using namespace std::string_literals;
     using namespace std::string_view_literals;
     // assert(!std::empty(m_lang));
-    //auto path = in_path;
+    // auto path = in_path;
     const std::filesystem::path &dataPath = path / "Data"sv;
     if (std::filesystem::exists(dataPath)) {
       path = dataPath;
@@ -416,9 +417,10 @@ public:
    * @param path that contains FIFLFS files or ZZZ files.
    */
   explicit Archives(const std::filesystem::path &path)
-    : m_lang(set_lang(path)), m_path(set_path(path,m_lang))
+    : m_lang(set_lang(path)), m_path(set_path(path, m_lang))
   {
-    tools::execute_on_directory(m_path,{},
+    tools::execute_on_directory(m_path,
+      {},
       { FI::EXT, FS::EXT, fl::EXT, ZZZ::EXT },
       [this](const std::filesystem::path &localPath) {
         if (localPath.has_stem()) {

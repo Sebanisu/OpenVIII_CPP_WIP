@@ -22,7 +22,7 @@ int main()
 
     const auto archives =
       open_viii::archive::Archives<open_viii::LangT::en>(path);
-         [[maybe_unused]] static constexpr auto dump =
+    [[maybe_unused]] static constexpr auto dump =
       [](const std::vector<char> &in_buffer, const std::string &in_path) {
         open_viii::tools::write_buffer(in_buffer, in_path);
       };

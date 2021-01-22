@@ -39,7 +39,7 @@ public:
 
   [[nodiscard]] constexpr std::size_t calc_total() const
   {
-    return label()+count()+1U;
+    return label() + count() + 1U;
   }
 
   /**

@@ -88,7 +88,7 @@ public:
    * @param value
    * @return reference to allow modification after setting.
    */
-  T & data(T &&value) noexcept
+  T &data(T &&value) noexcept
   {
     return m_data = std::move(value);
   }

@@ -78,7 +78,8 @@ public:
     assert(
       std::ranges::size(m_other_entities) == m_header.count_other_entities());
     assert(std::ranges::size(m_script_entities) == m_header.count_section_1());
-    //std::cout << m_header.total_count() << '\t' << m_header.expected_count() << std::endl; //counts must match
+    // std::cout << m_header.total_count() << '\t' << m_header.expected_count()
+    // << std::endl; //counts must match
     assert(m_header.valid_count());
   }
 };

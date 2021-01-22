@@ -20,14 +20,14 @@ int main()
     const auto archives =
       open_viii::archive::Archives<open_viii::LangT::en>(path);
 
-    //auto results = archives.search({});
-//    for (const auto &result : results) {
-//      std::cout << result.first << ":\n";
-//      [[maybe_unused]] const auto archive = archives.get(result.first);
-//      for (const auto &item : result.second) {
-//        std::cout << "  " << item.first << ", " << item.second << '\n';
-//      }
-//    }
+    // auto results = archives.search({});
+    //    for (const auto &result : results) {
+    //      std::cout << result.first << ":\n";
+    //      [[maybe_unused]] const auto archive = archives.get(result.first);
+    //      for (const auto &item : result.second) {
+    //        std::cout << "  " << item.first << ", " << item.second << '\n';
+    //      }
+    //    }
     [[maybe_unused]] const auto &battle =
       archives.get<open_viii::archive::ArchiveTypeT::battle>();
     std::cout << battle << std::endl;

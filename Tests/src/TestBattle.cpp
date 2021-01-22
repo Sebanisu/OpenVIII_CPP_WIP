@@ -76,7 +76,7 @@ int main()
     std::cout << path << std::endl;
     const auto archives =
       open_viii::archive::Archives<open_viii::LangT::en>(path);
-    const auto& battle =
+    const auto &battle =
       archives.get<open_viii::archive::ArchiveTypeT::battle>();
     battle.execute_on({ open_viii::battle::stage::X::EXT },
       []([[maybe_unused]] std::vector<char> &&rvalue_buffer,

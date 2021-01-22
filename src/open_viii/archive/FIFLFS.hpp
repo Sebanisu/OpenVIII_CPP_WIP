@@ -181,7 +181,8 @@ public:
       switch (i) {
       case 1: {
         set(m_fl);
-        fl::clean_buffer(m_fl.data(FS::get_entry<std::string>(src, fi, src_offset)));
+        fl::clean_buffer(
+          m_fl.data(FS::get_entry<std::string>(src, fi, src_offset)));
         break;
       }
       case 2: {
@@ -314,32 +315,32 @@ public:
   //      }
   //    }
   //  }
-//  static auto get_files_from_path(const std::filesystem::path &path)
-//  {
-//    const std::filesystem::directory_options options =
-//      std::filesystem::directory_options::skip_permission_denied;
-//    std::vector<std::pair<std::string, open_viii::archive::FIFLFS<true>>> tmp{};
-//    constexpr auto default_size = 6U;// battle, field, magic, main, menu, world
-//    tmp.reserve(default_size);
-//    auto archive = open_viii::archive::FIFLFS<true>();
-//    for (const auto &file_entry :
-//      std::filesystem::directory_iterator(path, options)) {
-//      if (archive.try_add(file_entry) != TryAddT::not_part_of_archive) {
-//        if (archive.all_set()) {// todo confirm basename matches right now i'm
-//                                // assuming the 3 files are together.
-//          // todo check for language codes to choose correct files
-//          // auto key = archive.get_base_name();
-//          auto bn = archive.get_base_name();
-//          tmp.emplace_back(std::piecewise_construct,
-//            std::forward_as_tuple(std::move(bn)),
-//            std::forward_as_tuple(std::move(archive)));
-//          archive = {};
-//        }
-//      }
-//    }
-//    tmp.shrink_to_fit();// if there is more than 6 it'll collapse the vector
-//    return tmp;
-//  }
+  //  static auto get_files_from_path(const std::filesystem::path &path)
+  //  {
+  //    const std::filesystem::directory_options options =
+  //      std::filesystem::directory_options::skip_permission_denied;
+  //    std::vector<std::pair<std::string, open_viii::archive::FIFLFS<true>>>
+  //    tmp{}; constexpr auto default_size = 6U;// battle, field, magic, main,
+  //    menu, world tmp.reserve(default_size); auto archive =
+  //    open_viii::archive::FIFLFS<true>(); for (const auto &file_entry :
+  //      std::filesystem::directory_iterator(path, options)) {
+  //      if (archive.try_add(file_entry) != TryAddT::not_part_of_archive) {
+  //        if (archive.all_set()) {// todo confirm basename matches right now
+  //        i'm
+  //                                // assuming the 3 files are together.
+  //          // todo check for language codes to choose correct files
+  //          // auto key = archive.get_base_name();
+  //          auto bn = archive.get_base_name();
+  //          tmp.emplace_back(std::piecewise_construct,
+  //            std::forward_as_tuple(std::move(bn)),
+  //            std::forward_as_tuple(std::move(archive)));
+  //          archive = {};
+  //        }
+  //      }
+  //    }
+  //    tmp.shrink_to_fit();// if there is more than 6 it'll collapse the vector
+  //    return tmp;
+  //  }
   auto static check_extension(const std::filesystem::path &path)
   {
     return tools::i_ends_with_any(path.string(),
@@ -455,40 +456,40 @@ public:
                    == 0;// prevent from running on nested archives. We have
                         // another function for those.
           }),
-      [this, &lambda](
-        const std::pair<unsigned int, std::string> &pair) {
+      [this, &lambda](const std::pair<unsigned int, std::string> &pair) {
         auto fi = get_entry_by_index(pair.first);
-        lambda(get_entry_buffer(fi),pair.second);
+        lambda(get_entry_buffer(fi), pair.second);
       });
   }
 
-//  [[nodiscard]] std::vector<
-//    std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
-//    get_all_nested_entries_data(
-//      [[maybe_unused]] const std::initializer_list<std::string_view> &filename)
-//  {
-//    if constexpr (!HasNested) {
-//      return {};
-//    }
-//    std::vector<
-//      std::pair<std::string, std::vector<std::pair<unsigned int, std::string>>>>
-//      vector{};
-//    const std::vector<std::pair<unsigned int, std::string>> fls =
-//      get_vector_of_indexes_and_files({ archive::fl::EXT });
-//    const std::string &basename = get_base_name();
-//    for (const auto &fl : fls) {
-//      const auto fi = get_entry_by_index(fl.first);
-//      const auto buffer = get_entry_buffer<std::string>(fi);
-//      auto results =
-//        archive::fl::get_all_entries_data({}, buffer, 0, 0, 0, filename);
-//      if (!std::ranges::empty(results)) {
-//        vector.emplace_back(
-//          std::make_pair(basename + "::" + tools::get_base_name(fl.second),
-//            std::move(results)));
-//      }
-//    }
-//    return vector;
-//  }
+  //  [[nodiscard]] std::vector<
+  //    std::pair<std::string, std::vector<std::pair<unsigned int,
+  //    std::string>>>> get_all_nested_entries_data(
+  //      [[maybe_unused]] const std::initializer_list<std::string_view>
+  //      &filename)
+  //  {
+  //    if constexpr (!HasNested) {
+  //      return {};
+  //    }
+  //    std::vector<
+  //      std::pair<std::string, std::vector<std::pair<unsigned int,
+  //      std::string>>>> vector{};
+  //    const std::vector<std::pair<unsigned int, std::string>> fls =
+  //      get_vector_of_indexes_and_files({ archive::fl::EXT });
+  //    const std::string &basename = get_base_name();
+  //    for (const auto &fl : fls) {
+  //      const auto fi = get_entry_by_index(fl.first);
+  //      const auto buffer = get_entry_buffer<std::string>(fi);
+  //      auto results =
+  //        archive::fl::get_all_entries_data({}, buffer, 0, 0, 0, filename);
+  //      if (!std::ranges::empty(results)) {
+  //        vector.emplace_back(
+  //          std::make_pair(basename + "::" + tools::get_base_name(fl.second),
+  //            std::move(results)));
+  //      }
+  //    }
+  //    return vector;
+  //  }
   template<typename lambdaT>
   requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)&&HasNested) void execute_with_nested(
     const std::initializer_list<std::string_view> &filename,

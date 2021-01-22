@@ -160,7 +160,8 @@ public:
 };
 static_assert(sizeof(JsmHeader) == JsmHeader::EXPECTED_SIZE);
 /**
- * if count is > expected_count it can't be valid so any count greater is set to 0.
+ * if count is > expected_count it can't be valid so any count greater is set to
+ * 0.
  * @param in read in header data.
  * @return possible valid header.
  */
@@ -168,7 +169,9 @@ static constexpr JsmHeader fix_jsm_header_counts(JsmHeader in) noexcept
 {
   const auto expected_count = in.expected_count();
   const auto fix = [&expected_count]<std::unsigned_integral T>(T count) -> T {
-    //std::cout << expected_count << "\t<\t" << static_cast<std::size_t>(count)<<std::endl; // if we remove this line it can be constexpr
+    // std::cout << expected_count << "\t<\t" <<
+    // static_cast<std::size_t>(count)<<std::endl; // if we remove this line it
+    // can be constexpr
     if (expected_count < count) {
       return static_cast<T>(0U);
     }

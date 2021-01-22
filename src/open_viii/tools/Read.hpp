@@ -6,6 +6,7 @@
 #define VIIIARCHIVE_READ_HPP
 
 #include "open_viii/Concepts.hpp"
+#include <cstdint>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -14,7 +15,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <cstdint>
 namespace open_viii::tools {
 
 template<is_trivially_copyable_and_default_constructible trivialType,
@@ -83,17 +83,19 @@ template<is_trivially_copyable_and_default_constructible trivialType>
 
 
 template<has_data_and_size trivialType>
-requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType> static void read_val(
-  const std::span<const char> &span, trivialType &item, std::size_t size)
+requires std::ranges::contiguous_range<trivialType> &&
+  has_resize<trivialType> static void
+  read_val(
+    const std::span<const char> &span, trivialType &item, std::size_t size)
 {
   const auto element_size = sizeof(*std::ranges::data(item));
-  //std::ranges::size(span) / element_size
-      item.resize(size);
-  if(size != 0) {
-        memcpy(std::ranges::data(item),
-          std::ranges::data(span),
-          element_size * std::ranges::size(item));
-      }
+  // std::ranges::size(span) / element_size
+  item.resize(size);
+  if (size != 0) {
+    memcpy(std::ranges::data(item),
+      std::ranges::data(span),
+      element_size * std::ranges::size(item));
+  }
 }
 
 template<is_default_constructible_has_data_and_size trivialType>
@@ -105,8 +107,7 @@ template<is_default_constructible_has_data_and_size trivialType>
   return item;
 }
 template<is_default_constructible_has_data_and_size trivialType>
-[[nodiscard]] static trivialType read_val(
-  const std::span<const char> &span)
+[[nodiscard]] static trivialType read_val(const std::span<const char> &span)
 {
   trivialType item();
   const auto element_size = sizeof(*std::ranges::data(item));
@@ -156,7 +157,7 @@ static std::optional<std::ifstream> open_file(const std::filesystem::path &path)
     if (ofp->is_open()) {
       break;
     }
-    //TODO might need a better way to open a file than an infinite loop
+    // TODO might need a better way to open a file than an infinite loop
     // I had issue where it'd fail to open a file sometimes but the
     // next time it'd work fine (╯°□°)╯︵ ┻━┻
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -174,7 +175,7 @@ requires(std::invocable<lambdaT, std::istream &>)
     const lambdaT &lambda, const std::filesystem::path &path)
 {
   auto ofp = open_file(path);
-  if (ofp.has_value() && ofp->is_open()) { //check might be redundant.
+  if (ofp.has_value() && ofp->is_open()) {// check might be redundant.
     lambda(*ofp);
     ofp->close();
     return true;

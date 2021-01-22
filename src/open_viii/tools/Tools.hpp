@@ -325,7 +325,7 @@ static void execute_on_directory(const std::filesystem::path &directory,
 {
   const std::filesystem::directory_options options =
     std::filesystem::directory_options::skip_permission_denied;
-  std::ranges::for_each(std::filesystem::directory_iterator(directory,options),
+  std::ranges::for_each(std::filesystem::directory_iterator(directory, options),
     [&unary_function, &binary_function](const auto &item) {
       const auto path = item.path();
       if constexpr (std::is_same_v<BinaryOperationT, bool>) {

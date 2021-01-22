@@ -83,7 +83,7 @@ constexpr const static auto EXT = std::string_view(".FL");
     const std::initializer_list<std::string_view> &needle = {},
     const size_t &limit = 0U)
 {
-  //TODO break this code up
+  // TODO break this code up
   std::vector<std::pair<unsigned int, std::string>> vector{};
   const auto process =
     [&limit, &count, &size, &vector, &offset, &needle, &data](auto &cont) {
@@ -144,9 +144,8 @@ constexpr const static auto EXT = std::string_view(".FL");
   if (!std::empty(data) && data.front() != '\0') {
     auto ss = std::stringstream(data);
     process(ss);
-  }
-  else {
-    tools::read_from_file(process,path);
+  } else {
+    tools::read_from_file(process, path);
   }
 
   std::ranges::sort(vector, [](const auto &left, const auto &right) {
@@ -218,8 +217,9 @@ static void clean_buffer(std::string &buffer)
 {
 
   // remove carriage returns
-  std::erase(buffer,'\r');
-  //buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'), buffer.end());
+  std::erase(buffer, '\r');
+  // buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'),
+  // buffer.end());
   // change slashes to preferred
   tools::replace_slashes(buffer);
 }

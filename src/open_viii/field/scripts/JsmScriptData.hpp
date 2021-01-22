@@ -59,8 +59,7 @@ struct tuple_size<open_viii::field::scripts::JsmScriptData>
  * type of argument 0
  * @note required to structured binding support
  */
-template<>
-struct tuple_element<0U, open_viii::field::scripts::JsmScriptData>
+template<> struct tuple_element<0U, open_viii::field::scripts::JsmScriptData>
 {
   using type = open_viii::field::scripts::opcodeT;
 };
@@ -68,8 +67,7 @@ struct tuple_element<0U, open_viii::field::scripts::JsmScriptData>
  * type of argument 1
  * @note required to structured binding support
  */
-template<>
-struct tuple_element<1U, open_viii::field::scripts::JsmScriptData>
+template<> struct tuple_element<1U, open_viii::field::scripts::JsmScriptData>
 {
   using type = std::uint32_t;
 };
