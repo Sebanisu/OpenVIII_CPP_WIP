@@ -2,8 +2,8 @@
 // Created by pcvii on 1/18/2021.
 //
 
-#ifndef VIIIARCHIVE_JSM_HPP
-#define VIIIARCHIVE_JSM_HPP
+#ifndef VIIIARCHIVE_JSM__HPP
+#define VIIIARCHIVE_JSM__HPP
 #include "JsmEntity.hpp"
 #include "JsmHeader.hpp"
 #include "JsmScriptEntity.hpp"
@@ -83,4 +83,4 @@ public:
   }
 };
 }// namespace open_viii::field::scripts
-#endif// VIIIARCHIVE_JSM_HPP
+#endif// VIIIARCHIVE_JSM__HPP
