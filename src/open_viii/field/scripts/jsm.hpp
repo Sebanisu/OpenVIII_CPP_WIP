@@ -17,7 +17,7 @@ namespace open_viii::field::scripts {
 struct Jsm
 {
 private:
-  jsm_header m_header{};
+  JsmHeader m_header{};
   std::vector<JsmEntity> m_door_entities{};
   std::vector<JsmEntity> m_walk_mesh_entities{};
   std::vector<JsmEntity> m_background_entities{};
@@ -61,7 +61,7 @@ private:
 
 public:
   explicit Jsm(std::span<const char> buffer)
-    : m_header(fix_jsm_header_counts(tools::read_val<jsm_header>(buffer))),
+    : m_header(fix_jsm_header_counts(tools::read_val<JsmHeader>(buffer))),
       m_door_entities(get_door_entities(buffer)),
       m_walk_mesh_entities(get_walk_mesh_entities(buffer)),
       m_background_entities(get_background_entities(buffer)),

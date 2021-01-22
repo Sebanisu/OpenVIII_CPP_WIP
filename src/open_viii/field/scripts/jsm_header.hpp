@@ -13,7 +13,7 @@ namespace open_viii::field::scripts {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_JSM
  */
-struct jsm_header
+struct JsmHeader
 {
 private:
   /**
@@ -42,8 +42,8 @@ private:
   std::uint16_t m_offset_script_data{};
 
 public:
-  constexpr jsm_header() = default;
-  constexpr jsm_header(std::uint8_t in_count_door_entities,
+  constexpr JsmHeader() = default;
+  constexpr JsmHeader(std::uint8_t in_count_door_entities,
     std::uint8_t in_count_walk_mesh_line_entities,
     std::uint8_t in_count_background_entities,
     std::uint8_t in_count_other_entities,
@@ -158,13 +158,13 @@ public:
   }
   static constexpr std::size_t EXPECTED_SIZE = 8U;
 };
-static_assert(sizeof(jsm_header) == jsm_header::EXPECTED_SIZE);
+static_assert(sizeof(JsmHeader) == JsmHeader::EXPECTED_SIZE);
 /**
  * if count is > expected_count it can't be valid so any count greater is set to 0.
  * @param in read in header data.
  * @return possible valid header.
  */
-static constexpr jsm_header fix_jsm_header_counts(jsm_header in) noexcept
+static constexpr JsmHeader fix_jsm_header_counts(JsmHeader in) noexcept
 {
   const auto expected_count = in.expected_count();
   const auto fix = [&expected_count]<std::unsigned_integral T>(T count) -> T {
@@ -174,7 +174,7 @@ static constexpr jsm_header fix_jsm_header_counts(jsm_header in) noexcept
     }
     return count;
   };
-  return jsm_header(fix(in.count_door_entities()),
+  return JsmHeader(fix(in.count_door_entities()),
     fix(in.count_walk_mesh_line_entities()),
     fix(in.count_background_entities()),
     fix(in.count_other_entities()),
