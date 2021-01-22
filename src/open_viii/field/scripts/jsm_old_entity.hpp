@@ -13,13 +13,13 @@ namespace open_viii::field::scripts {
  * @see
  * https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L117
  */
-struct jsm_old_entity
+struct JsmOldEntity
 {
 private:
   std::uint16_t m_raw{};
 
 public:
-  constexpr jsm_old_entity() = default;
+  constexpr JsmOldEntity() = default;
   [[nodiscard]] constexpr std::uint16_t raw() const noexcept
   {
     return m_raw;
@@ -65,7 +65,7 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::field::scripts::jsm_old_entity>
+struct tuple_size<open_viii::field::scripts::JsmOldEntity>
   : std::integral_constant<size_t, 2U>
 {
 };
@@ -74,7 +74,7 @@ struct tuple_size<open_viii::field::scripts::jsm_old_entity>
  * type of argument 0
  * @note required to structured binding support
  */
-template<> struct tuple_element<0U, open_viii::field::scripts::jsm_old_entity>
+template<> struct tuple_element<0U, open_viii::field::scripts::JsmOldEntity>
 {
   using type = std::uint16_t;
 };
@@ -82,7 +82,7 @@ template<> struct tuple_element<0U, open_viii::field::scripts::jsm_old_entity>
  * type of argument 1
  * @note required to structured binding support
  */
-template<> struct tuple_element<1U, open_viii::field::scripts::jsm_old_entity>
+template<> struct tuple_element<1U, open_viii::field::scripts::JsmOldEntity>
 {
   using type = std::uint16_t;
 };
