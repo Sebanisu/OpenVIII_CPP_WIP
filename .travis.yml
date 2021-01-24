@@ -12,6 +12,13 @@ jobs:
         - gcc
       os:
         - linux
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-10.2.1
+            env:
+         - MATRIX_EVAL="CC=gcc-10.2.1 && CXX=g++-10.2.1"
       before_install:
         - sudo apt-get -y install ninja-build libomp-dev
         - pip install cmake
