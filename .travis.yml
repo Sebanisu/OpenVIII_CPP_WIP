@@ -3,7 +3,7 @@ stages:
 
 jobs:
   include:
-  
+
     # Linux
     - stage: build
       language: cpp
@@ -17,8 +17,8 @@ jobs:
             - ubuntu-toolchain-r-test
           packages:
             - g++-10
-            env:
-         - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+        env:
+          - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
       before_install:
         - sudo apt-get -y install ninja-build libomp-dev
         - pip install cmake
