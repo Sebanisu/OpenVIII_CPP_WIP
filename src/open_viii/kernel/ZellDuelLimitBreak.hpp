@@ -20,7 +20,7 @@
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
 #include "ZellDuelButtonT.hpp"
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include <array>
 
 namespace open_viii::kernel {

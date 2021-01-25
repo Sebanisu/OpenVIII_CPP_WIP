@@ -17,7 +17,7 @@
 #include "BattleOnlyStatusesT.hpp"
 #include "ElementT.hpp"
 #include "PersistentStatusesT.hpp"
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct NonJunctionableGFs
 {

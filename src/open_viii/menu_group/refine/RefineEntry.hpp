@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #ifndef VIIIARCHIVE_RefineEntry_H
 #define VIIIARCHIVE_RefineEntry_H
 namespace open_viii::menu_group {

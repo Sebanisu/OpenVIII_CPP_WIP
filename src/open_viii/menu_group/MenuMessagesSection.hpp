@@ -14,7 +14,7 @@
 #ifndef VIIIARCHIVE_MENUMESSAGESSECTION_HPP
 #define VIIIARCHIVE_MENUMESSAGESSECTION_HPP
 
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::menu_group {
 struct MenuMessagesSection
 {

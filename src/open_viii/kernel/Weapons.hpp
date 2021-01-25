@@ -17,7 +17,7 @@
 #include "AttackTypeT.hpp"
 #include "CharactersT.hpp"
 #include "RenzokukenFinishersT.hpp"
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include <cstdint>
 
 namespace open_viii::kernel {

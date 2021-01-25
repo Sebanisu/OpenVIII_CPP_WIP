@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_SLOTSARRAY_HPP
 #define VIIIARCHIVE_SLOTSARRAY_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include <cstdint>
 namespace open_viii::kernel {
 struct SlotsArray

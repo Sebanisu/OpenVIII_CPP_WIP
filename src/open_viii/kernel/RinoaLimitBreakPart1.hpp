@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_RINOALIMITBREAKPART1_HPP
 
 #include "TargetT.hpp"
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct RinoaLimitBreakPart1
 {

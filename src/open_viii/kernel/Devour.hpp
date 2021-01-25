@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_DEVOUR_HPP
 #include "BattleOnlyStatusesT.hpp"
 #include "PersistentStatusesT.hpp"
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 enum class PercentQuantityT : std::uint8_t {
   // 0% = 0x00

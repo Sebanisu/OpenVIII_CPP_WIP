@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_NONBATTLEITEMS_HPP
 #define VIIIARCHIVE_NONBATTLEITEMS_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 
 namespace open_viii::kernel {
 template<LangT langVal> struct NonBattleItems

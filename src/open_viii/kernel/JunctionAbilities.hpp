@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_JUNCTIONABILITIES_HPP
 
 #include "JunctionFlagsT.hpp"
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include <cstring>
 namespace open_viii::kernel {
 template<LangT langVal> struct JunctionAbilities

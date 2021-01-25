@@ -22,7 +22,7 @@
 #include "PersistentStatusesT.hpp"
 #include "StatGroup.hpp"
 #include "TargetT.hpp"
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 template<LangT langVal> struct Magic
 {

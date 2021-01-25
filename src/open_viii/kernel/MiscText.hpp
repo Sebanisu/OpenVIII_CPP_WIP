@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_MISCTEXT_HPP
 #define VIIIARCHIVE_MISCTEXT_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include <iostream>
 
 namespace open_viii::kernel {

@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_SLOTSSETS_HPP
 #define VIIIARCHIVE_SLOTSSETS_HPP
-#include "open_viii/Strings/EncodedStringOffset.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include <array>
 #include <cstdint>
 namespace open_viii::kernel {
