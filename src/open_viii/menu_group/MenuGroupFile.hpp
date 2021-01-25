@@ -316,10 +316,13 @@ public:
           if (subSection.offset() == 0) {
             continue;
           }
-          const auto temp = subSection.template decoded_string<langVal>(
-            mes.text_span(), 0, true);
-          std::cout << "    " << id - 1 << ": {" << subSection.offset() << "} "
-                    << tools::u8_to_sv(temp) << '\n';
+          const auto &textSpan = mes.text_span();
+          if(!std::ranges::empty(textSpan)) {
+            const auto temp =
+              subSection.template decoded_string<langVal>(textSpan, 0, true);
+            std::cout << "    " << id - 1 << ": {" << subSection.offset()
+                      << "} " << tools::u8_to_sv(temp) << '\n';
+          }
         }
       });
   }

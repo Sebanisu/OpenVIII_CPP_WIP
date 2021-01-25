@@ -74,11 +74,17 @@ static void read_val(const std::span<const char> &span, trivialType &item)
 }
 template<is_trivially_copyable_and_default_constructible trivialType>
 [[nodiscard]] static trivialType read_val(
-  const std::span<const char> &span, std::size_t offset = 0U)
+  const std::span<const char> &span)
 {
   trivialType item{};
-  read_val<trivialType>(span.subspan(offset), item);
+  read_val<trivialType>(span, item);
   return item;
+}
+template<is_trivially_copyable_and_default_constructible trivialType>
+[[nodiscard]] static trivialType read_val(
+  const std::span<const char> &span, std::size_t offset)
+{
+  return read_val<trivialType>(span.subspan(offset));
 }
 
 
@@ -109,7 +115,7 @@ template<is_default_constructible_has_data_and_size trivialType>
 template<is_default_constructible_has_data_and_size trivialType>
 [[nodiscard]] static trivialType read_val(const std::span<const char> &span)
 {
-  trivialType item();
+  trivialType item{};
   const auto element_size = sizeof(*std::ranges::data(item));
   read_val(span, item, std::ranges::size(span) / element_size);
   return item;

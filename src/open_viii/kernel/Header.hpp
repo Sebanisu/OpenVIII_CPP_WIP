@@ -75,8 +75,11 @@ public:
 
   template<SectionTypesT sectionType>
   requires(section_type_test<sectionType>())
-    [[nodiscard]] constexpr auto get_span() const
+    [[nodiscard]] constexpr std::span<const char> get_span() const
   {
+    if(std::ranges::empty(m_buffer)) {
+      return std::span<const char>{};
+    }
     auto length = [this]() {
       if constexpr (static_cast<int>(sectionType)
                     >= (static_cast<int>(SectionTypesT::count) - 1)) {

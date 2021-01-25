@@ -18,6 +18,7 @@
 #include "open_viii/kernel/NonBattleItems.hpp"
 #include <iterator>
 #include <string_view>
+#include "open_viii/tools/Tools.hpp"
 
 namespace open_viii {
 
@@ -73,9 +74,11 @@ public:
   }
   auto operator[](size_t id) const noexcept
   {
-    auto r = spanT{};
-    memcpy(&r, m_span.data() + (id * sizeof(spanT)), sizeof(spanT));
-    return r;
+    if(std::ranges::empty(m_span))
+    {
+      return spanT{};
+    }
+    return tools::read_val<spanT>(m_span.subspan(id * sizeof(spanT)));
   }
   [[maybe_unused]] auto &span() const noexcept
   {
