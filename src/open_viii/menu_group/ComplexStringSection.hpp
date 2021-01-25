@@ -13,7 +13,7 @@
 
 #ifndef VIIIARCHIVE_COMPLEXSTRINGSECTION_HPP
 #define VIIIARCHIVE_COMPLEXSTRINGSECTION_HPP
-#include "open_viii/Strings/FF8String.hpp"
+#include "open_viii/strings/FF8String.hpp"
 #include <array>
 #include <cstdint>
 #include <cstring>
