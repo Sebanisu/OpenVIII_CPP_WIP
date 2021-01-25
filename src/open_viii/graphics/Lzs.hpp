@@ -15,7 +15,7 @@
 #define VIIIARCHIVE_LZS_HPP
 #include "Ppm.hpp"
 #include "Rectangle.hpp"
-#include "open_viii/Compression/LZSS.hpp"
+#include "open_viii/compression/LZSS.hpp"
 #include "open_viii/graphics/color/Color16.hpp"
 #include <cstring>
 #include <span>
