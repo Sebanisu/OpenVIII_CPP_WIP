@@ -30,7 +30,7 @@ template<LangT langVal> struct JunctionAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_ap_required{};
+  std::uint8_t m_ability_points_required_to_unlock{};
   std::array<std::uint8_t, 3> m_junction_flags{};
 
 public:
@@ -42,9 +42,15 @@ public:
   {
     return m_description_offset;
   }
-  [[nodiscard]] auto ap_required() const noexcept
+  /**
+   * Ability points required to unlock
+   * @see
+   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
+   */
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    ability_points_required_to_unlock() const noexcept
   {
-    return m_ap_required;
+    return m_ability_points_required_to_unlock;
   }
   [[nodiscard]] auto junction_flags() const
   {
@@ -62,8 +68,9 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    return os << ", " << static_cast<uint32_t>(m_ap_required) << ", "
-              << static_cast<uint32_t>(junction_flags());
+    return os << ", "
+              << static_cast<uint32_t>(m_ability_points_required_to_unlock)
+              << ", " << static_cast<uint32_t>(junction_flags());
   }
 };
 }// namespace open_viii::kernel

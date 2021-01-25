@@ -17,50 +17,72 @@
 #include "open_viii/strings/EncodedStringOffset.hpp"
 
 namespace open_viii::kernel {
+/**
+ * https://github.com/DarkShinryu/doomtrain/wiki/Command-abilities
+ * 0x0000	2 bytes	Offset to ability name
+ * 0x0002	2 bytes	Offset to ability description
+ * 0x0004	1 byte	AP Required to learn ability
+ * 0x0005	1 byte	Index to Battle commands
+ * 0x0006	2 bytes	Unknown/Unused
+ */
 template<LangT langVal> struct CommandAbilities
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Command-abilities
-   * 0x0000	2 bytes	Offset to ability name
-   * 0x0002	2 bytes	Offset to ability description
-   * 0x0004	1 byte	AP Required to learn ability
-   * 0x0005	1 byte	Index to Battle commands
-   * 0x0006	2 bytes	Unknown/Unused
-   */
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_ap_required{};
+  std::uint8_t m_ability_points_required_to_unlock{};
   std::uint8_t m_index_to_battle_command{};
   std::uint8_t m_unknown0{};
   std::uint8_t m_unknown1{};
 
 public:
+  /**
+   * Offset to encoded name
+   * @return EncodedStringOffset
+   */
   [[nodiscard]] auto &name_offset() const noexcept
   {
     return m_name_offset;
   }
+  /**
+   * Offset to encoded description
+   */
   [[nodiscard]] auto &description_offset() const noexcept
   {
     return m_description_offset;
   }
-
-  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept
+  /**
+   * Ability points required to unlock
+   * @see
+   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
+   */
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    ability_points_required_to_unlock() const noexcept
   {
-    return m_ap_required;
+    return m_ability_points_required_to_unlock;
   }
-  [[maybe_unused]] [[nodiscard]] auto index_to_battle_command() const noexcept
+  /**
+   * Index to battle command. The related commands have different offsets as the
+   * have a different quantity.
+   */
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    index_to_battle_command() const noexcept
   {
     return m_index_to_battle_command;
   }
-  [[nodiscard]] auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto unknown1() const noexcept
   {
     return m_unknown1;
   }
+  /**
+   * Dumps values to stream
+   * @param os output stream
+   * @param buffer contains encoded names and descriptions
+   */
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
     auto name = m_name_offset.decoded_string<langVal>(buffer);
@@ -71,8 +93,9 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
-       << static_cast<std::uint32_t>(m_index_to_battle_command) << ", "
+    os << ", "
+       << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
+       << ", " << static_cast<std::uint32_t>(m_index_to_battle_command) << ", "
        << static_cast<std::uint32_t>(m_unknown0) << ", "
        << static_cast<std::uint32_t>(m_unknown1);
     return os;

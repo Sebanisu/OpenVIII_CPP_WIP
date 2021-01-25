@@ -29,7 +29,7 @@ private:
    */
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_ap_required{};
+  std::uint8_t m_ability_points_required_to_unlock{};
   std::uint8_t m_stat_to_increase{};
   std::uint8_t m_increased_value{};
   std::uint8_t m_unknown0{};
@@ -44,9 +44,15 @@ public:
     return m_description_offset;
   }
 
-  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept
+  /**
+   * Ability points required to unlock
+   * @see
+   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
+   */
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    ability_points_required_to_unlock() const noexcept
   {
-    return m_ap_required;
+    return m_ability_points_required_to_unlock;
   }
   [[maybe_unused]] [[nodiscard]] auto stat_to_increase() const noexcept
   {
@@ -70,8 +76,9 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
-              << static_cast<std::uint32_t>(m_stat_to_increase) << ", "
+    return os << ", "
+              << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
+              << ", " << static_cast<std::uint32_t>(m_stat_to_increase) << ", "
               << static_cast<std::uint32_t>(m_increased_value) << ", "
               << static_cast<std::uint32_t>(m_unknown0);
   }

@@ -32,7 +32,7 @@ template<LangT langVal> struct GFAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  uint8_t m_ap_required{};
+  uint8_t m_ability_points_required_to_unlock{};
   uint8_t m_enable_boost{};
   StatT m_stat_to_increase{};
   uint8_t m_increase_value{};
@@ -46,9 +46,15 @@ public:
   {
     return m_description_offset;
   }
-  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept
+  /**
+   * Ability points required to unlock
+   * @see
+   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
+   */
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    ability_points_required_to_unlock() const noexcept
   {
-    return m_ap_required;
+    return m_ability_points_required_to_unlock;
   }
   [[maybe_unused]] [[nodiscard]] auto enable_boost() const noexcept
   {
@@ -72,7 +78,7 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    os << ", " << static_cast<int>(m_ap_required);
+    os << ", " << static_cast<int>(m_ability_points_required_to_unlock);
     os << ", " << static_cast<int>(m_enable_boost);
     os << ", " << static_cast<int>(m_stat_to_increase);
     os << ", " << static_cast<int>(m_increase_value);

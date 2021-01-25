@@ -30,7 +30,7 @@ template<LangT langVal> struct CharacterAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_ap_required{};
+  std::uint8_t m_ability_points_required_to_unlock{};
   // uint32_t characterAbilityFlags_ : 3;// cpp20 allows default member
   // initializers for bitfields add {} in cpp20.
   std::array<std::uint8_t, 3> m_character_ability_flags{};
@@ -45,9 +45,15 @@ public:
     return m_description_offset;
   }
 
-  [[maybe_unused]] [[nodiscard]] auto ap_required() const noexcept
+  /**
+   * Ability points required to unlock
+   * @see
+   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
+   */
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    ability_points_required_to_unlock() const noexcept
   {
-    return m_ap_required;
+    return m_ability_points_required_to_unlock;
   }
   [[nodiscard]] auto character_ability_flags() const
   {
@@ -73,8 +79,9 @@ public:
     }
 
     auto test = character_ability_flags();
-    return os << ", " << static_cast<std::uint32_t>(m_ap_required) << ", "
-              << static_cast<uint32_t>(test);
+    return os << ", "
+              << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
+              << ", " << static_cast<uint32_t>(test);
   }
 };
 }// namespace open_viii::kernel
