@@ -1,3 +1,5 @@
+![Image of CI passing or not.](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)
+
 Credits:
  - https://github.com/MaKiPL
  - https://github.com/myst6re
