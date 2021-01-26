@@ -10,10 +10,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_CRISISLEVELT_HPP
 #define VIIIARCHIVE_CRISISLEVELT_HPP
 #include <array>
+#include <compare>
 #include <iostream>
 namespace open_viii::kernel {
 template<typename T> struct CrisisLevelT
@@ -22,6 +22,8 @@ private:
   std::array<T, 4> m_levels{};
 
 public:
+  constexpr auto
+    operator<=>(const CrisisLevelT<T> &right) const noexcept = default;
   [[nodiscard]] auto &begin()
   {
     return m_levels.begin();
@@ -30,26 +32,25 @@ public:
   {
     return m_levels.end();
   }
-  [[nodiscard]] auto level1() const noexcept
+  [[nodiscard]] constexpr auto level1() const noexcept
   {
     return m_levels.at(0);
   }
-  [[nodiscard]] auto level2() const noexcept
+  [[nodiscard]] constexpr auto level2() const noexcept
   {
     return m_levels.at(1);
   }
-  [[nodiscard]] auto level3() const noexcept
+  [[nodiscard]] constexpr auto level3() const noexcept
   {
     return m_levels.at(2);
   }
-  [[nodiscard]] auto level4() const noexcept
+  [[nodiscard]] constexpr auto level4() const noexcept
   {
     return m_levels.at(3);
   }
-  friend std::ostream &operator<<(
-    std::ostream &os, const CrisisLevelT<T> &input)
+  friend std::ostream &operator<<(std::ostream &         os,
+                                  const CrisisLevelT<T> &input)
   {
-
     os << '{';
     bool start{ true };
     for (const auto &level : input.m_levels) {

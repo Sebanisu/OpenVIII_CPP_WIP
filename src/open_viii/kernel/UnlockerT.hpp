@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_UNLOCKERT_HPP
 #define VIIIARCHIVE_UNLOCKERT_HPP
 #include <cstdint>
@@ -139,7 +138,6 @@ enum class UnlockerT : std::uint8_t {
   ability19,
   ability20,
   ability21,
-
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_UNLOCKERT_HPP

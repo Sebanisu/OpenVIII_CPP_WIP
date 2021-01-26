@@ -10,10 +10,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_RINOALIMITBREAKPART1_HPP
 #define VIIIARCHIVE_RINOALIMITBREAKPART1_HPP
-
 #include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
@@ -31,40 +29,40 @@ template<LangT langVal> struct RinoaLimitBreakPart1
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_unknown_flags0{};
-  TargetT m_target{};
-  std::uint8_t m_ability_data_id{};
-  std::uint8_t m_unknown0{};
-
-
+  std::uint8_t        m_unknown_flags0{};
+  TargetT             m_target{};
+  std::uint8_t        m_ability_data_id{};
+  std::uint8_t        m_unknown0{};
 public:
-  [[nodiscard]] auto &name_offset() const noexcept
+  constexpr auto operator<=>(
+    const RinoaLimitBreakPart1<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] auto &description_offset() const noexcept
+  [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
   }
-  [[maybe_unused]] [[nodiscard]] auto unknown_flags0() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown_flags0() const noexcept
   {
     return m_unknown_flags0;
   }
-  [[nodiscard]] auto target() const noexcept
+  [[nodiscard]] constexpr auto target() const noexcept
   {
     return m_target;
   }
-  [[maybe_unused]] [[nodiscard]] auto ability_data_id() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto ability_data_id() const noexcept
   {
     return m_ability_data_id;
   }
-  [[nodiscard]] auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto unknown0() const noexcept
   {
     return m_unknown0;
   }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto name        = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);

@@ -10,31 +10,32 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_UNLOCKABLEABILITY_HPP
 #define VIIIARCHIVE_UNLOCKABLEABILITY_HPP
 #include "AbilitiesT.hpp"
 #include "UnlockerT.hpp"
+#include <compare>
 #include <cstdint>
 #include <iostream>
 namespace open_viii::kernel {
 struct UnlockableAbility
 {
 private:
-  UnlockerT m_unlocker{};
+  UnlockerT    m_unlocker{};
   std::uint8_t m_unknown{};
-  AbilitiesT m_ability{};
-
+  AbilitiesT   m_ability{};
 public:
-  [[nodiscard]] auto unlocker() const noexcept
+  constexpr auto
+    operator<=>(const UnlockableAbility &right) const noexcept = default;
+  [[nodiscard]] constexpr auto unlocker() const noexcept
   {
     return m_unlocker;
   }
-  [[nodiscard]] auto unknown() const noexcept
+  [[nodiscard]] constexpr auto unknown() const noexcept
   {
     return m_unknown;
   }
-  [[nodiscard]] auto ability() const noexcept
+  [[nodiscard]] constexpr auto ability() const noexcept
   {
     return m_ability;
   }

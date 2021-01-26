@@ -10,10 +10,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SLOTSARRAY_HPP
 #define VIIIARCHIVE_SLOTSARRAY_HPP
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 #include <cstdint>
 namespace open_viii::kernel {
 struct SlotsArray
@@ -25,14 +25,14 @@ struct SlotsArray
    */
 private:
   std::uint8_t m_slot_set_id{};
-
 public:
-  [[nodiscard]] auto slot_set_id() const noexcept
+  constexpr auto operator<=>(const SlotsArray &right) const noexcept = default;
+  [[nodiscard]] constexpr auto slot_set_id() const noexcept
   {
     return m_slot_set_id;
   }
-  std::ostream &out(std::ostream &os,
-    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << static_cast<uint16_t>(slot_set_id());
   }

@@ -10,21 +10,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_ELEMENTT_HPP
 #define VIIIARCHIVE_ELEMENTT_HPP
 #include <cstdint>
 namespace open_viii::kernel {
 enum class ElementT : std::uint8_t {
   non_elemental = 0x00,
-  fire = 0x01,
-  ice = 0x02,
-  thunder = 0x04,
-  earth = 0x08,
-  poison = 0x10,
-  wind = 0x20,
-  water = 0x40,
-  holy = 0x80,
+  fire          = 0x01,
+  ice           = 0x02,
+  thunder       = 0x04,
+  earth         = 0x08,
+  poison        = 0x10,
+  wind          = 0x20,
+  water         = 0x40,
+  holy          = 0x80,
 };
 }
 #endif// VIIIARCHIVE_ELEMENTT_HPP

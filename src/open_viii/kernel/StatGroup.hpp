@@ -10,10 +10,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_STATGROUP_HPP
 #define VIIIARCHIVE_STATGROUP_HPP
 #include <array>
+#include <compare>
 #include <concepts>
 #include <iostream>
 namespace open_viii::kernel {
@@ -21,9 +21,8 @@ template<typename T>
 requires(std::unsigned_integral<
            T> || std::ranges::contiguous_range<T>) struct StatGroup
 {
-private:
+public:
   static constexpr auto STAT_COUNT = 9U;
-  std::array<T, STAT_COUNT> m_stats{};
   static constexpr auto HP{ 0U };
   static constexpr auto STR{ 1U };
   static constexpr auto VIT{ 2U };
@@ -33,48 +32,41 @@ private:
   static constexpr auto EVA{ 6U };
   static constexpr auto HIT{ 7U };
   static constexpr auto LUCK{ 8U };
-  //  template<typename maybeNumberT> static bool is_integral([[maybe_unused]]
-  //  const maybeNumberT &value)
-  //  {
-  //    return std::is_integral_v<maybeNumberT>;
-  //  }
-  // template<typename maybeNumberT> static bool is_integral() { return
-  // std::is_integral_v<maybeNumberT>; }
-
-public:
-  [[maybe_unused]] [[nodiscard]] T &hp() const noexcept
+  constexpr auto
+    operator<=>(const StatGroup<T> &right) const noexcept = default;
+  [[maybe_unused]] [[nodiscard]] constexpr T hp() const noexcept
   {
     return m_stats.at(HP);
   }
-  [[nodiscard]] T &str() const noexcept
+  [[nodiscard]] constexpr T str() const noexcept
   {
     return m_stats.at(STR);
   }
-  [[maybe_unused]] [[nodiscard]] T &vit() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr T vit() const noexcept
   {
     return m_stats.at(VIT);
   }
-  [[nodiscard]] T &mag() const noexcept
+  [[nodiscard]] constexpr T mag() const noexcept
   {
     return m_stats.at(MAG);
   }
-  [[nodiscard]] T &spr() const noexcept
+  [[nodiscard]] constexpr T spr() const noexcept
   {
     return m_stats.at(SPR);
   }
-  [[nodiscard]] T &spd() const noexcept
+  [[nodiscard]] constexpr T spd() const noexcept
   {
     return m_stats.at(SPD);
   }
-  [[maybe_unused]] [[nodiscard]] T &eva() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr T eva() const noexcept
   {
     return m_stats.at(EVA);
   }
-  [[nodiscard]] T &hit() const noexcept
+  [[nodiscard]] constexpr T hit() const noexcept
   {
     return m_stats.at(HIT);
   }
-  [[maybe_unused]] [[nodiscard]] T &luck() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr T luck() const noexcept
   {
     return m_stats.at(LUCK);
   }
@@ -109,6 +101,8 @@ public:
     }
     return os;
   }
+private:
+  std::array<T, STAT_COUNT> m_stats{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_STATGROUP_HPP

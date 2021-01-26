@@ -10,16 +10,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_WEAPONS_HPP
 #define VIIIARCHIVE_WEAPONS_HPP
-
 #include "AttackTypeT.hpp"
 #include "CharactersT.hpp"
 #include "RenzokukenFinishersT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 #include <cstdint>
-
 namespace open_viii::kernel {
 template<LangT langVal> struct Weapons
 {
@@ -54,61 +52,63 @@ template<LangT langVal> struct Weapons
    * 0x000B	1 byte	Melee Weapon?
    */
 private:
-  EncodedStringOffset m_name_offset{};
+  EncodedStringOffset  m_name_offset{};
   RenzokukenFinishersT m_renzokuken_finishers{};
-  std::uint8_t m_unknown{};
-  CharactersT m_character_id{};
-  AttackTypeT m_attack_type{};
-  std::uint8_t m_attack_power{};
-  std::uint8_t m_attack_parameter{};
-  std::uint8_t m_str_bonus{};
-  std::uint8_t m_weapon_tier{};
-  std::uint8_t m_critical_bonus{};
-  std::uint8_t m_melee_weapon{};
-
+  std::uint8_t         m_unknown{};
+  CharactersT          m_character_id{};
+  AttackTypeT          m_attack_type{};
+  std::uint8_t         m_attack_power{};
+  std::uint8_t         m_attack_parameter{};
+  std::uint8_t         m_str_bonus{};
+  std::uint8_t         m_weapon_tier{};
+  std::uint8_t         m_critical_bonus{};
+  std::uint8_t         m_melee_weapon{};
 public:
-  [[nodiscard]] const auto &name_offset() const noexcept
+  constexpr auto
+    operator<=>(const Weapons<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &
+  [[maybe_unused]] [[nodiscard]] constexpr auto
     renzokuken_finishers() const noexcept
   {
     return m_renzokuken_finishers;
   }
-  [[nodiscard]] const auto &unknown() const noexcept
+  [[nodiscard]] constexpr auto unknown() const noexcept
   {
     return m_unknown;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &character_id() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto character_id() const noexcept
   {
     return m_character_id;
   }
-  [[nodiscard]] const auto &attack_type() const noexcept
+  [[nodiscard]] constexpr auto attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &attack_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto attack_power() const noexcept
   {
     return m_attack_power;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &attack_parameter() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    attack_parameter() const noexcept
   {
     return m_attack_parameter;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &str_bonus() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto str_bonus() const noexcept
   {
     return m_str_bonus;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &weapon_tier() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto weapon_tier() const noexcept
   {
     return m_weapon_tier;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &critical_bonus() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto critical_bonus() const noexcept
   {
     return m_critical_bonus;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &melee_weapon() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto melee_weapon() const noexcept
   {
     return m_melee_weapon != 0;
   }

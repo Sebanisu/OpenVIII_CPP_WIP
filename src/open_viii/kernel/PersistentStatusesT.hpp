@@ -10,21 +10,22 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_PERSISTENTSTATUSEST_HPP
 #define VIIIARCHIVE_PERSISTENTSTATUSEST_HPP
 #include <cstdint>
 namespace open_viii::kernel {
+/**
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Statuses-0
+ */
 enum class PersistentStatusesT : std::uint16_t {
-  // https://github.com/DarkShinryu/doomtrain/wiki/Statuses-0
-  none = 0x00,
-  death = 0x01,
-  poison = 0x02,
-  petrify = 0x04,
-  darkness = 0x08,
-  silence = 0x10,
-  berserk = 0x20,
-  zombie = 0x40,
+  none       = 0x00,
+  death      = 0x01,
+  poison     = 0x02,
+  petrify    = 0x04,
+  darkness   = 0x08,
+  silence    = 0x10,
+  berserk    = 0x20,
+  zombie     = 0x40,
   unk0_x0080 = 0x80,
   unk0_x0100 = 0x0100,
   unk0_x0200 = 0x0200,
@@ -35,5 +36,5 @@ enum class PersistentStatusesT : std::uint16_t {
   unk0_x4000 = 0x4000,
   unk0_x8000 = 0x8000,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_PERSISTENTSTATUSEST_HPP

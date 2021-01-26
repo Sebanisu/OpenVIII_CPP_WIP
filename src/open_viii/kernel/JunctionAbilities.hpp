@@ -10,12 +10,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_JUNCTIONABILITIES_HPP
 #define VIIIARCHIVE_JUNCTIONABILITIES_HPP
-
 #include "JunctionFlagsT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 #include <cstring>
 namespace open_viii::kernel {
 template<LangT langVal> struct JunctionAbilities
@@ -30,15 +29,16 @@ template<LangT langVal> struct JunctionAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_ability_points_required_to_unlock{};
-  std::array<std::uint8_t, 3> m_junction_flags{};
-
+  std::uint8_t        m_ability_points_required_to_unlock{};
+  std::uint32_t       m_junction_flags : 3U {};
 public:
-  [[nodiscard]] auto &name_offset() const noexcept
+  constexpr auto operator<=>(
+    const JunctionAbilities<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] auto &description_offset() const noexcept
+  [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -52,15 +52,13 @@ public:
   {
     return m_ability_points_required_to_unlock;
   }
-  [[nodiscard]] auto junction_flags() const
+  [[nodiscard]] constexpr JunctionFlagsT junction_flags() const
   {
-    JunctionFlagsT out{};
-    std::memcpy(&out, m_junction_flags.data(), m_junction_flags.size());
-    return out;
+    return static_cast<JunctionFlagsT>(m_junction_flags);
   }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto name        = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);

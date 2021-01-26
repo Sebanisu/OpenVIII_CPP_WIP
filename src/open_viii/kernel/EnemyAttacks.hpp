@@ -10,10 +10,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_ENEMYATTACKS_HPP
 #define VIIIARCHIVE_ENEMYATTACKS_HPP
-
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
@@ -21,6 +19,7 @@
 #include "ElementT.hpp"
 #include "PersistentStatusesT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 namespace open_viii::kernel {
 template<LangT langVal> struct EnemyAttacks
 {
@@ -43,74 +42,76 @@ template<LangT langVal> struct EnemyAttacks
    */
 private:
   EncodedStringOffset m_name_offset{};
-  uint16_t m_magic_id{};
-  CameraChange m_camera_change{};
-  uint8_t m_unknown0{};
-  AttackTypeT m_attack_type{};
-  uint8_t m_attack_power{};
-  AttackFlagsT m_attack_flags{};
-  uint8_t m_unknown1{};
-  ElementT m_element{};
-  uint8_t m_unknown2{};
-  uint8_t m_status_attack_enabler{};
-  uint8_t m_attack_parameter{};
-  PersistentStatusesT m_persistent_statuses{};// statuses 0-7
+  uint16_t            m_magic_id{};
+  CameraChange        m_camera_change{};
+  uint8_t             m_unknown0{};
+  AttackTypeT         m_attack_type{};
+  uint8_t             m_attack_power{};
+  AttackFlagsT        m_attack_flags{};
+  uint8_t             m_unknown1{};
+  ElementT            m_element{};
+  uint8_t             m_unknown2{};
+  uint8_t             m_status_attack_enabler{};
+  uint8_t             m_attack_parameter{};
+  PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-31
-
 public:
-  [[nodiscard]] const auto &name_offset() const noexcept
+  constexpr auto
+    operator<=>(const EnemyAttacks<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] const auto &magic_id() const noexcept
+  [[nodiscard]] constexpr auto magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &camera_change() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto camera_change() const noexcept
   {
     return m_camera_change;
   }
-  [[nodiscard]] const auto &unknown0() const noexcept
+  [[nodiscard]] constexpr auto unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] const auto &attack_type() const noexcept
+  [[nodiscard]] constexpr auto attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &attack_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto attack_power() const noexcept
   {
     return m_attack_power;
   }
-  [[nodiscard]] const auto &attack_flags() const noexcept
+  [[nodiscard]] constexpr auto attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[nodiscard]] const auto &unknown1() const noexcept
+  [[nodiscard]] constexpr auto unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] const auto &element() const noexcept
+  [[nodiscard]] constexpr auto element() const noexcept
   {
     return m_element;
   }
-  [[nodiscard]] const auto &unknown2() const noexcept
+  [[nodiscard]] constexpr auto unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[nodiscard]] const auto &status_attack_enabler() const noexcept
+  [[nodiscard]] constexpr auto status_attack_enabler() const noexcept
   {
     return m_status_attack_enabler;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &attack_parameter() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    attack_parameter() const noexcept
   {
     return m_attack_parameter;
   }
-  [[nodiscard]] const auto &persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }// statuses 0-7
-  [[nodiscard]] const auto &battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }// statuses 8-31
@@ -120,22 +121,20 @@ public:
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name) << ", ";
     }
-    return os << static_cast<std::uint32_t>(m_magic_id) << ", "
-              << m_camera_change << ", "
-              << static_cast<std::uint32_t>(m_unknown0) << ", "
-              << static_cast<std::uint32_t>(m_attack_type) << ", "
-              << static_cast<std::uint32_t>(m_attack_power) << ", "
-              << static_cast<std::uint32_t>(m_attack_flags) << ", "
-              << static_cast<std::uint32_t>(m_unknown1) << ", "
-              << static_cast<std::uint32_t>(m_element) << ", "
-              << static_cast<std::uint32_t>(m_unknown2) << ", "
-              << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-              << static_cast<std::uint32_t>(m_attack_parameter) << ", "
-              << static_cast<std::uint32_t>(
-                   m_persistent_statuses)// statuses 0-7
-              << ", "
-              << static_cast<std::uint32_t>(
-                   m_battle_only_statuses)// statuses 8-31
+    return os
+           << static_cast<std::uint32_t>(m_magic_id) << ", " << m_camera_change
+           << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
+           << static_cast<std::uint32_t>(m_attack_type) << ", "
+           << static_cast<std::uint32_t>(m_attack_power) << ", "
+           << static_cast<std::uint32_t>(m_attack_flags) << ", "
+           << static_cast<std::uint32_t>(m_unknown1) << ", "
+           << static_cast<std::uint32_t>(m_element) << ", "
+           << static_cast<std::uint32_t>(m_unknown2) << ", "
+           << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+           << static_cast<std::uint32_t>(m_attack_parameter) << ", "
+           << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
+           << ", "
+           << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-31
       ;
   }
 };

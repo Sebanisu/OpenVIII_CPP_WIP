@@ -10,31 +10,31 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_MISCTEXT_HPP
 #define VIIIARCHIVE_MISCTEXT_HPP
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 #include <iostream>
-
 namespace open_viii::kernel {
+/**
+ * Section Structure
+ * Offset	Length	Description
+ * 0x0000	2 bytes	Offset to text
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Misc-text-pointers
+ */
 template<LangT langVal> struct MiscText
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Misc-text-pointers
-   * Section Structure
-   * Offset	Length	Description
-   * 0x0000	2 bytes	Offset to text
-   */
 private:
   EncodedStringOffset m_name_offset{};
   // EncodedStringOffset m_description_offset{};
-
 public:
-  [[nodiscard]] auto &name_offset() const noexcept
+  constexpr auto
+    operator<=>(const MiscText<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  //[[nodiscard]] auto &DescriptionOffset() const noexcept { return
+  //[[nodiscard]] constexpr auto DescriptionOffset() const noexcept { return
   // m_description_offset; }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {

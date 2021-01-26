@@ -10,11 +10,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_NONBATTLEITEMS_HPP
 #define VIIIARCHIVE_NONBATTLEITEMS_HPP
 #include "open_viii/strings/EncodedStringOffset.hpp"
-
+#include <compare>
 namespace open_viii::kernel {
 template<LangT langVal> struct NonBattleItems
 {
@@ -26,19 +25,20 @@ template<LangT langVal> struct NonBattleItems
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-
 public:
-  [[nodiscard]] auto &name_offset() const noexcept
+  constexpr auto
+    operator<=>(const NonBattleItems<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] auto &description_offset() const noexcept
+  [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
   }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto name        = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);

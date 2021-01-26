@@ -10,17 +10,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_STATGROUPNOEVANOHIT_HPP
 #define VIIIARCHIVE_STATGROUPNOEVANOHIT_HPP
 #include <array>
+#include <compare>
 #include <iostream>
 namespace open_viii::kernel {
 template<typename T> struct StatGroupNoEVANoHIT
 {
-private:
+public:
   static constexpr auto MAX_COUNT{ 7U };
-
   static constexpr auto HP{ 0U };
   static constexpr auto STR{ 1U };
   static constexpr auto VIT{ 2U };
@@ -28,48 +27,38 @@ private:
   static constexpr auto SPR{ 4U };
   static constexpr auto SPD{ 5U };
   static constexpr auto LUCK{ 6U };
-  std::array<T, MAX_COUNT> m_stats{};
-  template<typename maybeNumberT>
-  static bool is_integral([[maybe_unused]] const maybeNumberT &value)
-  {
-    return std::is_integral_v<maybeNumberT>;
-  }
-  template<typename maybeNumberT> static bool is_integral()
-  {
-    return std::is_integral_v<maybeNumberT>;
-  }
-
-public:
-  [[nodiscard]] T &hp() const noexcept
+  constexpr auto
+    operator<=>(const StatGroupNoEVANoHIT<T> &right) const noexcept = default;
+  [[nodiscard]] constexpr T hp() const noexcept
   {
     return m_stats.at(HP);
   }
-  [[nodiscard]] T &str() const noexcept
+  [[nodiscard]] constexpr T str() const noexcept
   {
     return m_stats.at(STR);
   }
-  [[nodiscard]] T &vit() const noexcept
+  [[nodiscard]] constexpr T vit() const noexcept
   {
     return m_stats.at(VIT);
   }
-  [[nodiscard]] T &mag() const noexcept
+  [[nodiscard]] constexpr T mag() const noexcept
   {
     return m_stats.at(MAG);
   }
-  [[nodiscard]] T &spr() const noexcept
+  [[nodiscard]] constexpr T spr() const noexcept
   {
     return m_stats.at(SPR);
   }
-  [[nodiscard]] T &spd() const noexcept
+  [[nodiscard]] constexpr T spd() const noexcept
   {
     return m_stats.at(SPD);
   }
-  [[nodiscard]] T &luck() const noexcept
+  [[nodiscard]] constexpr T luck() const noexcept
   {
     return m_stats.at(LUCK);
   }
-  friend std::ostream &operator<<(
-    std::ostream &os, const StatGroupNoEVANoHIT<T> &input)
+  friend std::ostream &operator<<(std::ostream &                os,
+                                  const StatGroupNoEVANoHIT<T> &input)
   {
     bool first{ true };
     for (const auto &item : input.m_stats) {
@@ -100,6 +89,8 @@ public:
     }
     return os;
   }
+private:
+  std::array<T, MAX_COUNT> m_stats{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_STATGROUPNOEVANOHIT_HPP

@@ -10,14 +10,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_BATTLECOMMANDS_HPP
 #define VIIIARCHIVE_BATTLECOMMANDS_HPP
 #include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-
+#include <compare>
 namespace open_viii::kernel {
-template<LangT langVal> struct BattleCommands
+struct BattleCommands
 {
   /*
    * https://github.com/alexfilth/doomtrain/wiki/Battle-commands
@@ -32,30 +31,31 @@ template<LangT langVal> struct BattleCommands
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_ability_data_id{};
-  std::uint8_t m_unknown_flags{};
-  TargetT m_target{};
-  std::uint8_t m_unknown{};
-
-
+  std::uint8_t        m_ability_data_id{};
+  std::uint8_t        m_unknown_flags{};
+  TargetT             m_target{};
+  std::uint8_t        m_unknown{};
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &name_offset() const noexcept
+  constexpr auto
+    operator<=>(const BattleCommands &right) const noexcept = default;
+  [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &description_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &ability_data_id() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto ability_data_id() const noexcept
   {
     return m_ability_data_id;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_flags() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown_flags() const noexcept
   {
     return m_unknown_flags;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &get_target() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto get_target() const noexcept
   {
     return m_target;
   }
@@ -63,26 +63,26 @@ public:
   {
     return m_unknown;
   }
-
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
-  {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
-    return os
-
-           << ", " << static_cast<std::uint32_t>(m_ability_data_id) << ", "
-           << static_cast<std::uint32_t>(m_unknown_flags) << ", "
-           << static_cast<std::uint32_t>(m_target) << ", "
-           << static_cast<std::uint32_t>(m_unknown)
-
-      ;
-  }
+  //  std::ostream &out(std::ostream &os, const std::span<const char> &buffer)
+  //  const
+  //  {
+  //    auto name = m_name_offset.decoded_string<langVal>(buffer);
+  //    auto description = m_description_offset.decoded_string<langVal>(buffer);
+  //    if (!std::empty(name)) {
+  //      os << tools::u8_to_sv(name);
+  //    }
+  //    if (!std::empty(description)) {
+  //      os << ", " << tools::u8_to_sv(description);
+  //    }
+  //    return os
+  //
+  //           << ", " << static_cast<std::uint32_t>(m_ability_data_id) << ", "
+  //           << static_cast<std::uint32_t>(m_unknown_flags) << ", "
+  //           << static_cast<std::uint32_t>(m_target) << ", "
+  //           << static_cast<std::uint32_t>(m_unknown)
+  //
+  //      ;
+  //  }
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_BATTLECOMMANDS_HPP

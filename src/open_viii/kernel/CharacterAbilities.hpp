@@ -10,12 +10,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_CHARACTERABILITIES_HPP
 #define VIIIARCHIVE_CHARACTERABILITIES_HPP
-
 #include "CharacterAbilityFlagsT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 #include <cstring>
 namespace open_viii::kernel {
 template<LangT langVal> struct CharacterAbilities
@@ -30,21 +29,25 @@ template<LangT langVal> struct CharacterAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_ability_points_required_to_unlock{};
+  std::uint8_t        m_ability_points_required_to_unlock{};
   // uint32_t characterAbilityFlags_ : 3;// cpp20 allows default member
   // initializers for bitfields add {} in cpp20.
-  std::array<std::uint8_t, 3> m_character_ability_flags{};
+  // std::array<std::uint8_t, 3> m_character_ability_flags{};
+  std::uint32_t m_character_ability_flags : 3U {};
 
 public:
-  [[maybe_unused]] [[nodiscard]] auto &name_offset() const noexcept
+  constexpr static auto EXPECTED_SIZE = 8U;
+  constexpr auto        operator<=>(
+    const CharacterAbilities<langVal> &right) const noexcept = default;
+  [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[maybe_unused]] [[nodiscard]] auto &description_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
-
   /**
    * Ability points required to unlock
    * @see
@@ -55,21 +58,24 @@ public:
   {
     return m_ability_points_required_to_unlock;
   }
-  [[nodiscard]] auto character_ability_flags() const
+  [[nodiscard]] constexpr CharacterAbilityFlagsT character_ability_flags() const
   {
-    // I think this is okay.
-    // The size of the enum is 4 bytes but the field is 3 bytes.
-    // return static_cast<CharacterAbilityFlagsT>(characterAbilityFlags_);
-    CharacterAbilityFlagsT out{};
-    std::memcpy(
-      &out, m_character_ability_flags.data(), m_character_ability_flags.size());
-    // out = static_cast<CharacterAbilityFlagsT>(static_cast<uint32_t>(out) <<
-    // 1U);
-    return out;
+    //    // I think this is okay.
+    //    // The size of the enum is 4 bytes but the field is 3 bytes.
+    //    // return static_cast<CharacterAbilityFlagsT>(characterAbilityFlags_);
+    //    CharacterAbilityFlagsT out{};
+    //    std::memcpy(
+    //      &out, m_character_ability_flags.data(),
+    //      m_character_ability_flags.size());
+    //    // out =
+    //    static_cast<CharacterAbilityFlagsT>(static_cast<uint32_t>(out) <<
+    //    // 1U);
+    //    return out;
+    return static_cast<CharacterAbilityFlagsT>(m_character_ability_flags);
   }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto name        = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);
@@ -77,12 +83,13 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-
     auto test = character_ability_flags();
     return os << ", "
               << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
               << ", " << static_cast<uint32_t>(test);
   }
 };
+static_assert(sizeof(CharacterAbilities<LangT::en>)
+              == CharacterAbilities<LangT::en>::EXPECTED_SIZE);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_CHARACTERABILITIES_HPP

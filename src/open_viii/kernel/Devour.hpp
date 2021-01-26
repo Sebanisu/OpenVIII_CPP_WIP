@@ -10,131 +10,121 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_DEVOUR_HPP
 #define VIIIARCHIVE_DEVOUR_HPP
 #include "BattleOnlyStatusesT.hpp"
+#include "DevourStatFlagT.hpp"
+#include "PercentQuantityT.hpp"
 #include "PersistentStatusesT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 namespace open_viii::kernel {
-enum class PercentQuantityT : std::uint8_t {
-  // 0% = 0x00
-  none [[maybe_unused]] = 0x00,
-
-  // 6.25% = 0x01,
-  sixteenth = 0x01,
-
-  // 12.50% = 0x02
-  eighth = 0x02,
-
-  // 25% = 0x04
-  quarter = 0x04,
-
-  // 50% = 0x08
-  half = 0x08,
-
-  // 100% = 0x10
-  full = 0x10,
-};
-enum class DevourStatFlagT : std::uint8_t {
-  none = 0x00,
-  str = 0x01,
-  vit [[maybe_unused]] = 0x02,
-  mag = 0x04,
-  spr = 0x08,
-  spd = 0x10,
-};
+/**
+ * Offset	Length	Description
+ * 0x0000	2 bytes	Offset to devour description
+ * 0x0002	1 byte	Damage or heal HP and Status
+ *   0x1E - Cure
+ *   0x1F - Damage
+ * 0x0003	1 byte	HP Heal/DMG Quantity Flag
+ *   0x00 - 0%
+ *   0x01 - 6.25%
+ *   0x02 - 12.50%
+ *   0x04 - 25%
+ *   0x08 - 50%
+ *   0x10 - 100%
+ * 0x0004	4 bytes	status_1; //statuses 8-39
+ * 0x0008	2 bytes	status_0; //statuses 0-7
+ * 0x000A	1 byte	Raised Stat Flag
+ *   0x00 - None
+ *   0x01 - STR
+ *   0x02 - VIT
+ *   0x04 - MAG
+ *   0x08 - SPR
+ *   0x10 - SPD
+ * 0x000B	1 byte	Raised Stat HP Quantity
+ * @see
+ * https://github.com/DarkShinryu/doomtrain/wiki/Devour
+ * */
 template<LangT langVal> struct Devour
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Devour
-   * Offset	Length	Description
-   * 0x0000	2 bytes	Offset to devour description
-   * 0x0002	1 byte	Damage or heal HP and Status
-   *   0x1E - Cure
-   *   0x1F - Damage
-   * 0x0003	1 byte	HP Heal/DMG Quantity Flag
-   *   0x00 - 0%
-   *   0x01 - 6.25%
-   *   0x02 - 12.50%
-   *   0x04 - 25%
-   *   0x08 - 50%
-   *   0x10 - 100%
-   * 0x0004	4 bytes	status_1; //statuses 8-39
-   * 0x0008	2 bytes	status_0; //statuses 0-7
-   * 0x000A	1 byte	Raised Stat Flag
-   *   0x00 - None
-   *   0x01 - STR
-   *   0x02 - VIT
-   *   0x04 - MAG
-   *   0x08 - SPR
-   *   0x10 - SPD
-   * 0x000B	1 byte	Raised Stat HP Quantity
-   * */
 private:
   EncodedStringOffset m_description_offset{};
-  std::uint8_t
-    m_damage_or_heal{};// HP and Status; If last on right bit is set heal, and
-                       // if not dmg. Rest looks like 0b‭00011110‬.
-  PercentQuantityT m_percent_quantity{};
+  /**
+   * HP and Status; If last on right bit is set heal, and if not dmg. Rest looks
+   * like 0b‭00011110‬.
+   */
+  std::uint8_t        m_damage_or_heal{};
+  PercentQuantityT    m_percent_quantity{};
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
-  PersistentStatusesT m_persistent_statuses{};// statuses 0-7
-  DevourStatFlagT m_devour_stat_flag{};
-  std::uint8_t m_raised_stat_hp_quantity{};
+  PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
+  DevourStatFlagT     m_devour_stat_flag{};
+  std::uint8_t        m_raised_stat_hp_quantity{};
 
 public:
-  [[nodiscard]] auto &description_offset() const noexcept
+  static constexpr auto full      = 1.0F;
+  static constexpr auto half      = 1.0F / 2.0F;
+  static constexpr auto quarter   = 1.0F / 4.0F;
+  static constexpr auto eighth    = 1.0F / 8.0F;
+  static constexpr auto sixteenth = 1.0F / 16.0F;
+  constexpr auto
+    operator<=>(const Devour<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
   }
-  [[nodiscard]] auto damage_or_heal() const noexcept
+  /**
+   * HP and Status //false is damage, true is heal.
+   */
+  [[nodiscard]] constexpr auto damage_or_heal() const noexcept
   {
     return (m_damage_or_heal & 0x1U) == 0;
-  }// HP and Status //false is damage, true is heal.
-  [[nodiscard]] auto percent_quantity()
-    const noexcept// clang tidy thinks this can be made static...
+  }
+  [[nodiscard]] constexpr auto percent_quantity() const noexcept
   {
     const auto flag_set = [this](const PercentQuantityT &flag) {
       return (static_cast<uint8_t>(m_percent_quantity)
-               & static_cast<uint8_t>(flag))
+              & static_cast<uint8_t>(flag))
              != 0;
     };
     float out{};
     if (flag_set(PercentQuantityT::full)) {
-      static constexpr auto full = 1.0F;
       out += full;
     }
     if (flag_set(PercentQuantityT::half)) {
-      static constexpr auto half = 1.0F / 2.0F;
       out += half;
     }
     if (flag_set(PercentQuantityT::quarter)) {
-      static constexpr auto quarter = 1.0F / 4.0F;
       out += quarter;
     }
     if (flag_set(PercentQuantityT::eighth)) {
-      static constexpr auto eighth = 1.0F / 8.0F;
       out += eighth;
     }
     if (flag_set(PercentQuantityT::sixteenth)) {
-      static constexpr auto sixteenth = 1.0F / 16.0F;
       out += sixteenth;
     }
     return out;
   }
-  [[nodiscard]] auto battle_only_statuses() const noexcept
+  /**
+   * statuses 8-39
+   */
+  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
-  }// statuses 8-39
-  [[nodiscard]] auto persistent_statuses() const noexcept
+  }
+  /**
+   * statuses 0-7
+   */
+  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
-  }// statuses 0-7
-  [[maybe_unused]] [[nodiscard]] auto devour_stat_flag() const noexcept
+  }
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    devour_stat_flag() const noexcept
   {
     return m_devour_stat_flag;
   }
-  [[maybe_unused]] [[nodiscard]] auto raised_stat_hp_quantity() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    raised_stat_hp_quantity() const noexcept
   {
     return m_raised_stat_hp_quantity;
   }

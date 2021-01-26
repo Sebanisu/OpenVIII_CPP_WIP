@@ -16,6 +16,7 @@
 #include "FF8String.hpp"
 #include <cstdint>
 #include <string_view>
+#include <compare>
 
 namespace open_viii {
 struct EncodedStringOffset
@@ -75,6 +76,7 @@ private:
   }
 
 public:
+  constexpr auto operator<=>(const EncodedStringOffset &right) const noexcept = default;
   [[nodiscard]] auto raw_bytes(const std::span<const char> &buffer,
     const intmax_t offset = 0,
     bool skip_first_null = false) const
@@ -94,7 +96,7 @@ public:
       raw_bytes(buffer, offset, skip_first_null));
   }
 
-  [[nodiscard]] auto offset() const noexcept
+  [[nodiscard]] constexpr auto offset() const noexcept
   {
     return m_offset;
   }

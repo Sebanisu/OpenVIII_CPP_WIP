@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_ABILITIEST_HPP
 #define VIIIARCHIVE_ABILITIEST_HPP
 #include <cstdint>
@@ -18,81 +17,25 @@ namespace open_viii::kernel {
 enum class AbilitiesT : std::uint16_t {
   // https://github.com/alexfilth/doomtrain/wiki/Junction-abilities
   none,
-  // Enables HP junction
-  hpj [[maybe_unused]],
-
-  // Enables Strength junction
-
-  str_j [[maybe_unused]],
-
-  // Enables Vitality junction
-
-  vit_j [[maybe_unused]],
-
-  // Enables Magic junction
-
-  mag_j [[maybe_unused]],
-
-  // Enables Spirit junction
-
-  spr_j [[maybe_unused]],
-
-  // Enables Speed junction
-
-  spd_j [[maybe_unused]],
-
-  // Enables Evasion junction
-
-  eva_j [[maybe_unused]],
-
-  // Enables Hit junction
-
-  hit_j [[maybe_unused]],
-
-  // Enables Luck junction
-
-  luck_j [[maybe_unused]],
-
-  // Increased elemental attack slot Count to 1
-
-  el_atk_j [[maybe_unused]],
-
-  // Increased status attack slot Count to 1
-
-  st_atk_j [[maybe_unused]],
-
-  // Increased elemental defense slot Count to 1
-
-  el_def_j [[maybe_unused]],
-
-  // Increased status defense slot Count to 1
-
-  st_def_j [[maybe_unused]],
-
-  // Increased elemental defense slot Count to 2
-
-  el_def_j2 [[maybe_unused]],
-
-  // Increased elemental defense slot Count to 4
-
-  el_def_j4 [[maybe_unused]],
-
-  // Increased status defense slot Count to 2
-
-  st_def_j2 [[maybe_unused]],
-
-  // Increased status defense slot Count to 4
-
-  st_def_j4,
-
-  // Increases ability slot Count to 3
-
-  ability3 [[maybe_unused]],
-
-  // Increases ability slot Count to 4
-
-  ability4 [[maybe_unused]],
-
+  hpj [[maybe_unused]],      // Enables HP junction
+  str_j [[maybe_unused]],    // Enables Strength junction
+  vit_j [[maybe_unused]],    // Enables Vitality junction
+  mag_j [[maybe_unused]],    // Enables Magic junction
+  spr_j [[maybe_unused]],    // Enables Spirit junction
+  spd_j [[maybe_unused]],    // Enables Speed junction
+  eva_j [[maybe_unused]],    // Enables Evasion junction
+  hit_j [[maybe_unused]],    // Enables Hit junction
+  luck_j [[maybe_unused]],   // Enables Luck junction
+  el_atk_j [[maybe_unused]], // Increased elemental attack slot Count to 1
+  st_atk_j [[maybe_unused]], // Increased status attack slot Count to 1
+  el_def_j [[maybe_unused]], // Increased elemental defense slot Count to 1
+  st_def_j [[maybe_unused]], // Increased status defense slot Count to 1
+  el_def_j2 [[maybe_unused]],// Increased elemental defense slot Count to 2
+  el_def_j4 [[maybe_unused]],// Increased elemental defense slot Count to 4
+  st_def_j2 [[maybe_unused]],// Increased status defense slot Count to 2
+  st_def_j4,                 // Increased status defense slot Count to 4
+  ability3 [[maybe_unused]], // Increases ability slot Count to 3
+  ability4 [[maybe_unused]], // Increases ability slot Count to 4
   // Equippable commands start here
   // https://github.com/alexfilth/doomtrain/wiki/Command-abilities
   magic,
@@ -115,7 +58,6 @@ enum class AbilitiesT : std::uint16_t {
   devour [[maybe_unused]],
   mini_mog [[maybe_unused]],
   // Equippable commands end here
-
   // Equippable abilities start here
   // https://github.com/alexfilth/doomtrain/wiki/Stat-percentage-increasing-abilities
   hp20 [[maybe_unused]],
@@ -137,7 +79,6 @@ enum class AbilitiesT : std::uint16_t {
   spd40 [[maybe_unused]],
   eva30 [[maybe_unused]],
   luck50 [[maybe_unused]],
-
   // https://github.com/alexfilth/doomtrain/wiki/Character-abilities
   mug,
   med_data [[maybe_unused]],
@@ -159,14 +100,12 @@ enum class AbilitiesT : std::uint16_t {
   expend2 [[maybe_unused]],
   expend3 [[maybe_unused]],
   ribbon,
-
   // https://github.com/alexfilth/doomtrain/wiki/Party-abilities
   alert [[maybe_unused]],
   move_find [[maybe_unused]],
   enc_half [[maybe_unused]],
   enc_none [[maybe_unused]],
   rare_item [[maybe_unused]],
-
   // https://github.com/alexfilth/doomtrain/wiki/GF-abilities
   sum_mag10 [[maybe_unused]],
   sum_mag20 [[maybe_unused]],
@@ -178,7 +117,6 @@ enum class AbilitiesT : std::uint16_t {
   gf_hp40 [[maybe_unused]],
   boost [[maybe_unused]],
   // Equipable abilities end here
-
   // https://github.com/alexfilth/doomtrain/wiki/Menu-abilities
   haggle [[maybe_unused]],
   sell_high [[maybe_unused]],

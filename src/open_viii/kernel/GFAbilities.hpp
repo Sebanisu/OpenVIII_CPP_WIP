@@ -10,39 +10,39 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_GFABILITIES_HPP
 #define VIIIARCHIVE_GFABILITIES_HPP
-
 #include "StatT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 namespace open_viii::kernel {
+/**
+ * Offset	Length	Description
+ * 0x0000	2 bytes	Offset to ability name
+ * 0x0002	2 bytes	Offset to ability description
+ * 0x0004	1 byte	AP Required to learn ability
+ * 0x0005	1 byte	Enable Boost
+ * 0x0006	1 byte	Stat to increase
+ * 0x0007	1 byte	Increase value
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/GF-abilities
+ */
 template<LangT langVal> struct GFAbilities
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/GF-abilities
-   * Offset	Length	Description
-   * 0x0000	2 bytes	Offset to ability name
-   * 0x0002	2 bytes	Offset to ability description
-   * 0x0004	1 byte	AP Required to learn ability
-   * 0x0005	1 byte	Enable Boost
-   * 0x0006	1 byte	Stat to increase
-   * 0x0007	1 byte	Increase value
-   */
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  uint8_t m_ability_points_required_to_unlock{};
-  uint8_t m_enable_boost{};
-  StatT m_stat_to_increase{};
-  uint8_t m_increase_value{};
-
+  uint8_t             m_ability_points_required_to_unlock{};
+  uint8_t             m_enable_boost{};
+  StatT               m_stat_to_increase{};
+  uint8_t             m_increase_value{};
 public:
-  [[nodiscard]] const auto &name_offset() const noexcept
+  constexpr auto
+    operator<=>(const GFAbilities<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] const auto &description_offset() const noexcept
+  [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -56,21 +56,22 @@ public:
   {
     return m_ability_points_required_to_unlock;
   }
-  [[maybe_unused]] [[nodiscard]] auto enable_boost() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto enable_boost() const noexcept
   {
     return m_enable_boost != 0;
   }
-  [[maybe_unused]] [[nodiscard]] auto stat_to_increase() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    stat_to_increase() const noexcept
   {
     return m_stat_to_increase;
   }
-  [[maybe_unused]] [[nodiscard]] auto increase_value() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto increase_value() const noexcept
   {
     return m_increase_value;
   }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto name        = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);

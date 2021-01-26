@@ -10,38 +10,38 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_MENUABILITIES_HPP
 #define VIIIARCHIVE_MENUABILITIES_HPP
-
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 namespace open_viii::kernel {
+/**
+ * 0x0000	2 bytes	Offset to ability name
+ * 0x0002	2 bytes	Offset to ability description
+ * 0x0004	1 byte	AP Required to learn ability
+ * 0x0005	1 byte	Index to m00X files in menu.fs
+ * (first 3 sections are treated as special cases)
+ * 0x0006	1 byte	Start offset
+ * 0x0007	1 byte	End offset
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Menu-abilities
+ */
 template<LangT langVal> struct MenuAbilities
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Menu-abilities
-   * 0x0000	2 bytes	Offset to ability name
-   * 0x0002	2 bytes	Offset to ability description
-   * 0x0004	1 byte	AP Required to learn ability
-   * 0x0005	1 byte	Index to m00X files in menu.fs
-   * (first 3 sections are treated as special cases)
-   * 0x0006	1 byte	Start offset
-   * 0x0007	1 byte	End offset
-   */
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_ability_points_required_to_unlock{};
-  std::uint8_t m_menu_file_index{};
-  std::uint8_t m_start_offset{};
-  std::uint8_t m_end_offset{};
-
+  std::uint8_t        m_ability_points_required_to_unlock{};
+  std::uint8_t        m_menu_file_index{};
+  std::uint8_t        m_start_offset{};
+  std::uint8_t        m_end_offset{};
 public:
-  [[nodiscard]] auto &name_offset() const noexcept
+  constexpr auto
+    operator<=>(const MenuAbilities<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] auto &description_offset() const noexcept
+  [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -55,21 +55,21 @@ public:
   {
     return m_ability_points_required_to_unlock;
   }
-  [[maybe_unused]] [[nodiscard]] auto menu_file_index() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto menu_file_index() const noexcept
   {
     return m_menu_file_index;
   }
-  [[maybe_unused]] [[nodiscard]] auto start_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto start_offset() const noexcept
   {
     return m_start_offset;
   }
-  [[maybe_unused]] [[nodiscard]] auto end_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto end_offset() const noexcept
   {
     return m_end_offset;
   }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto name        = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);

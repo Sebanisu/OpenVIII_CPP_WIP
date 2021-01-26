@@ -10,13 +10,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SECTIONTYPEST_HPP
 #define VIIIARCHIVE_SECTIONTYPEST_HPP
 #include <cstdint>
 namespace open_viii::kernel {
+/**
+ * Type ID for each Section in Kernel.bin
+ * @see https://github.com/alexfilth/doomtrain/wiki/Header
+ */
 enum class SectionTypesT : std::int8_t {
-  // https://github.com/alexfilth/doomtrain/wiki/Header
   battle_commands,
   magic,
   junctionable_g_fs,
@@ -76,5 +78,5 @@ enum class SectionTypesT : std::int8_t {
   count,
   first = battle_commands,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SECTIONTYPEST_HPP

@@ -10,10 +10,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_BATTLEITEMS_HPP
 #define VIIIARCHIVE_BATTLEITEMS_HPP
-
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
@@ -21,6 +19,7 @@
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 namespace open_viii::kernel {
 template<LangT langVal> struct BattleItems
 {
@@ -48,94 +47,98 @@ template<LangT langVal> struct BattleItems
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint16_t m_magic_id{};
-  AttackTypeT m_attack_type{};
-  std::uint8_t m_attack_power{};
-  std::uint8_t m_unknown0{};
-  TargetT m_target{};
-  std::uint8_t m_unknown1{};
-  AttackFlagsT m_attack_flags{};
-  std::uint8_t m_unknown2{};
-  std::uint8_t m_status_attack_enabler{};
-  PersistentStatusesT m_persistent_statuses{};// statuses 0-7
+  std::uint16_t       m_magic_id{};
+  AttackTypeT         m_attack_type{};
+  std::uint8_t        m_attack_power{};
+  std::uint8_t        m_unknown0{};
+  TargetT             m_target{};
+  std::uint8_t        m_unknown1{};
+  AttackFlagsT        m_attack_flags{};
+  std::uint8_t        m_unknown2{};
+  std::uint8_t        m_status_attack_enabler{};
+  PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
-  std::uint8_t m_attack_param{};
-  std::uint8_t m_unknown3{};
-  std::uint8_t m_hit_count{};
-  ElementT m_element{};
-
+  std::uint8_t        m_attack_param{};
+  std::uint8_t        m_unknown3{};
+  std::uint8_t        m_hit_count{};
+  ElementT            m_element{};
 public:
-  [[maybe_unused]] [[nodiscard]] auto &name_offset() const noexcept
+  constexpr auto
+    operator<=>(const BattleItems<langVal> &right) const noexcept = default;
+  [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[maybe_unused]] [[nodiscard]] auto &description_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
-  [[maybe_unused]] [[nodiscard]] auto magic_id() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[maybe_unused]] [[nodiscard]] auto attack_type() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] auto attack_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto attack_power() const noexcept
   {
     return m_attack_power;
   }
-  [[nodiscard]] auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] auto target() const noexcept
+  [[nodiscard]] constexpr auto target() const noexcept
   {
     return m_target;
   }
-  [[nodiscard]] auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[maybe_unused]] [[nodiscard]] auto attack_flags() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[nodiscard]] auto unknown2() const noexcept
+  [[nodiscard]] constexpr auto unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[maybe_unused]] [[nodiscard]] auto status_attack_enabler() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    status_attack_enabler() const noexcept
   {
     return m_status_attack_enabler;
   }
-  [[maybe_unused]] [[nodiscard]] auto persistent_statuses() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }// statuses 0-7
-  [[nodiscard]] auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }// statuses 8-39
-  [[maybe_unused]] [[nodiscard]] auto attack_param() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto attack_param() const noexcept
   {
     return m_attack_param;
   }
-  [[maybe_unused]] [[nodiscard]] auto unknown3() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown3() const noexcept
   {
     return m_unknown3;
   }
-  [[maybe_unused]] [[nodiscard]] auto hit_count() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto hit_count() const noexcept
   {
     return m_hit_count;
   }
-  [[nodiscard]] auto element() const noexcept
+  [[nodiscard]] constexpr auto element() const noexcept
   {
     return m_element;
   }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto name        = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);
@@ -143,24 +146,23 @@ public:
     if (!std::empty(description)) {
       os << ", " << tools::u8_to_sv(description);
     }
-    return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-              << static_cast<std::uint32_t>(m_attack_type) << ", "
-              << static_cast<std::uint32_t>(m_attack_power) << ", "
-              << static_cast<std::uint32_t>(m_unknown0) << ", "
-              << static_cast<std::uint32_t>(m_target) << ", "
-              << static_cast<std::uint32_t>(m_unknown1) << ", "
-              << static_cast<std::uint32_t>(m_attack_flags) << ", "
-              << static_cast<std::uint32_t>(m_unknown2) << ", "
-              << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-              << static_cast<std::uint32_t>(
-                   m_persistent_statuses)// statuses 0-7
-              << ", "
-              << static_cast<std::uint32_t>(
-                   m_battle_only_statuses)// statuses 8-39
-              << ", " << static_cast<std::uint32_t>(m_attack_param) << ", "
-              << static_cast<std::uint32_t>(m_unknown3) << ", "
-              << static_cast<std::uint32_t>(m_hit_count) << ", "
-              << static_cast<std::uint32_t>(m_element);
+    return os
+           << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+           << static_cast<std::uint32_t>(m_attack_type) << ", "
+           << static_cast<std::uint32_t>(m_attack_power) << ", "
+           << static_cast<std::uint32_t>(m_unknown0) << ", "
+           << static_cast<std::uint32_t>(m_target) << ", "
+           << static_cast<std::uint32_t>(m_unknown1) << ", "
+           << static_cast<std::uint32_t>(m_attack_flags) << ", "
+           << static_cast<std::uint32_t>(m_unknown2) << ", "
+           << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+           << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
+           << ", "
+           << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
+           << ", " << static_cast<std::uint32_t>(m_attack_param) << ", "
+           << static_cast<std::uint32_t>(m_unknown3) << ", "
+           << static_cast<std::uint32_t>(m_hit_count) << ", "
+           << static_cast<std::uint32_t>(m_element);
   }
 };
 }// namespace open_viii::kernel

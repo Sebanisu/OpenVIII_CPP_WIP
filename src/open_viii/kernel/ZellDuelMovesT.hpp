@@ -10,25 +10,26 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_ZELLDUELMOVEST_HPP
 #define VIIIARCHIVE_ZELLDUELMOVEST_HPP
-
 namespace open_viii::kernel {
+/**
+ *
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Zell%27s-Duel-Moves
+ * @notes
+ * Offset   Description
+ * 0x00	    Punch Rush
+ * 0x01	    Booya
+ * 0x02	    Heel Drop
+ * 0x03	    Mach Kick
+ * 0x04	    Dolphin Blow
+ * 0x05	    Meteor Strike
+ * 0x06	    Burning Rave
+ * 0x07	    Meteor Barret
+ * 0x08	    Different Beat
+ * 0x09     My Final Heaven
+ */
 enum struct ZellDuelMoveT : std::uint8_t {
-  // https://github.com/DarkShinryu/doomtrain/wiki/Zell's-Duel-Moves
-  // Offset	Description
-  //  0x00	Punch Rush
-  //  0x01	Booya
-  //  0x02	Heel Drop
-  //  0x03	Mach Kick
-  //  0x04	Dolphin Blow
-  //  0x05	Meteor Strike
-  //  0x06	Burning Rave
-  //  0x07	Meteor Barret
-  //  0x08	Different Beat
-  //  0x09	My Final Heaven
-
   punch_rush,
   booya,
   heel_drop,
@@ -40,5 +41,5 @@ enum struct ZellDuelMoveT : std::uint8_t {
   different_beat,
   my_final_heaven
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ZELLDUELMOVEST_HPP

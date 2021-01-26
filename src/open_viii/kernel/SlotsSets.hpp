@@ -10,58 +10,33 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SLOTSSETS_HPP
 #define VIIIARCHIVE_SLOTSSETS_HPP
+#include "Slot.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <array>
 #include <cstdint>
 namespace open_viii::kernel {
-struct Slot
-{
-private:
-  std::uint8_t m_magic_id{};
-  std::uint8_t m_count{};
-
-public:
-  [[nodiscard]] auto magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[nodiscard]] auto count() const noexcept
-  {
-    return m_count;
-  }
-  friend std::ostream &operator<<(std::ostream &os, const Slot &slot)
-  {
-    return os << '{' << static_cast<uint16_t>(slot.magic_id()) << ", "
-              << static_cast<uint16_t>(slot.count()) << '}';
-  }
-};
+/**
+ * array of 16 bytes 8 total 2 bytes per Magic Slot { Magic ID and Count }
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Selphie-limit-break-sets
+ */
 struct SlotsSets
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Selphie-limit-break-sets
-   * array of 16 bytes 8 total 2 bytes per Magic Slot { Magic ID and Count }
-   */
-private:
-  static constexpr auto TOTAL = 8U;
-  std::array<Slot, TOTAL> m_slots{};
-
 public:
+  static constexpr auto TOTAL                                       = 8U;
+  constexpr auto operator<=>(const SlotsSets &right) const noexcept = default;
   [[nodiscard]] const auto &slots() const noexcept
   {
     return m_slots;
   }
-
   friend std::ostream &operator<<(std::ostream &os, const SlotsSets &set)
   {
     return set.out(os, {});
   }
-  std::ostream &out(std::ostream &os,
-    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-
     os << '{';
     bool first = true;
     for (const auto &item : slots()) {
@@ -74,6 +49,9 @@ public:
     }
     return os << '}';
   }
+
+private:
+  std::array<Slot, TOTAL> m_slots{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SLOTSSETS_HPP

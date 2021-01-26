@@ -10,9 +10,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SEQUENCEANDTIMER_HPP
 #define VIIIARCHIVE_SEQUENCEANDTIMER_HPP
+#include <compare>
 #include <cstdint>
 #include <iostream>
 namespace open_viii::kernel {
@@ -23,16 +23,18 @@ private:
   std::uint8_t m_timer{};
 
 public:
-  [[nodiscard]] auto sequence() const noexcept
+  constexpr auto
+    operator<=>(const SequenceAndTimer &right) const noexcept = default;
+  [[nodiscard]] constexpr auto sequence() const noexcept
   {
     return m_sequence;
   }
-  [[nodiscard]] auto timer() const noexcept
+  [[nodiscard]] constexpr auto timer() const noexcept
   {
     return m_timer;
   }
-  friend std::ostream &operator<<(
-    std::ostream &os, const SequenceAndTimer &input)
+  friend std::ostream &operator<<(std::ostream &          os,
+                                  const SequenceAndTimer &input)
   {
     return os << '{' << static_cast<std::uint32_t>(input.sequence()) << ", "
               << static_cast<std::uint32_t>(input.timer()) << '}';

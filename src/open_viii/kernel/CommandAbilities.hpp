@@ -10,12 +10,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_COMMANDABILITIES_HPP
 #define VIIIARCHIVE_COMMANDABILITIES_HPP
-
+#include "open_viii/Concepts.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-
+#include <compare>
 namespace open_viii::kernel {
 /**
  * https://github.com/DarkShinryu/doomtrain/wiki/Command-abilities
@@ -30,24 +29,25 @@ template<LangT langVal> struct CommandAbilities
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint8_t m_ability_points_required_to_unlock{};
-  std::uint8_t m_index_to_battle_command{};
-  std::uint8_t m_unknown0{};
-  std::uint8_t m_unknown1{};
-
+  std::uint8_t        m_ability_points_required_to_unlock{};
+  std::uint8_t        m_index_to_battle_command{};
+  std::uint8_t        m_unknown0{};
+  std::uint8_t        m_unknown1{};
 public:
+  constexpr auto operator<=>(
+    const CommandAbilities<langVal> &right) const noexcept = default;
   /**
    * Offset to encoded name
    * @return EncodedStringOffset
    */
-  [[nodiscard]] auto &name_offset() const noexcept
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
   /**
    * Offset to encoded description
    */
-  [[nodiscard]] auto &description_offset() const noexcept
+  [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -77,28 +77,6 @@ public:
   [[nodiscard]] constexpr auto unknown1() const noexcept
   {
     return m_unknown1;
-  }
-  /**
-   * Dumps values to stream
-   * @param os output stream
-   * @param buffer contains encoded names and descriptions
-   */
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
-  {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
-    os << ", "
-       << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
-       << ", " << static_cast<std::uint32_t>(m_index_to_battle_command) << ", "
-       << static_cast<std::uint32_t>(m_unknown0) << ", "
-       << static_cast<std::uint32_t>(m_unknown1);
-    return os;
   }
 };
 }// namespace open_viii::kernel

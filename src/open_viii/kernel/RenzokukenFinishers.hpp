@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_RENZOKUKENFINISHERS_HPP
 #define VIIIARCHIVE_RENZOKUKENFINISHERS_HPP
 #include "AttackFlagsT.hpp"
@@ -20,7 +19,6 @@
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-
 namespace open_viii::kernel {
 template<LangT langVal> struct RenzokukenFinishers
 {
@@ -45,90 +43,90 @@ template<LangT langVal> struct RenzokukenFinishers
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-  std::uint16_t m_magic_id{};
-  AttackTypeT m_attack_type{};
-  std::uint8_t m_unknown0{};
-  std::uint8_t m_attack_power{};
-  std::uint8_t m_unknown1{};
-  std::uint8_t m_target{};
-  AttackFlagsT m_attack_flags{};
-  std::uint8_t m_hit_count{};
-  ElementT m_element{};
-  std::uint8_t m_element_attack_percent{};
-  std::uint8_t m_status_attack_enabler{};
-  std::uint16_t m_unknown2{};
-  PersistentStatusesT m_persistent_statuses{};// statuses 0-7
+  std::uint16_t       m_magic_id{};
+  AttackTypeT         m_attack_type{};
+  std::uint8_t        m_unknown0{};
+  std::uint8_t        m_attack_power{};
+  std::uint8_t        m_unknown1{};
+  std::uint8_t        m_target{};
+  AttackFlagsT        m_attack_flags{};
+  std::uint8_t        m_hit_count{};
+  ElementT            m_element{};
+  std::uint8_t        m_element_attack_percent{};
+  std::uint8_t        m_status_attack_enabler{};
+  std::uint16_t       m_unknown2{};
+  PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
-
 public:
-  [[nodiscard]] auto &name_offset() const noexcept
+  constexpr auto operator<=>(
+    const RenzokukenFinishers<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] auto &description_offset() const noexcept
+  [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
   }
-  [[nodiscard]] auto magic_id() const noexcept
+  [[nodiscard]] constexpr auto magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[nodiscard]] auto attack_type() const noexcept
+  [[nodiscard]] constexpr auto attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[nodiscard]] auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] auto attack_power() const noexcept
+  [[nodiscard]] constexpr auto attack_power() const noexcept
   {
     return m_attack_power;
   }
-  [[nodiscard]] auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] auto target() const noexcept
+  [[nodiscard]] constexpr auto target() const noexcept
   {
     return m_target;
   }
-  [[nodiscard]] auto attack_flags() const noexcept
+  [[nodiscard]] constexpr auto attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[nodiscard]] auto hit_count() const noexcept
+  [[nodiscard]] constexpr auto hit_count() const noexcept
   {
     return m_hit_count;
   }
-  [[nodiscard]] auto element() const noexcept
+  [[nodiscard]] constexpr auto element() const noexcept
   {
     return m_element;
   }
-  [[nodiscard]] auto element_attack_percent() const noexcept
+  [[nodiscard]] constexpr auto element_attack_percent() const noexcept
   {
     return m_element_attack_percent;
   }
-  [[nodiscard]] auto atatus_attack_enabler() const noexcept
+  [[nodiscard]] constexpr auto atatus_attack_enabler() const noexcept
   {
     return m_status_attack_enabler;
   }
-  [[nodiscard]] auto unknown2() const noexcept
+  [[nodiscard]] constexpr auto unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[nodiscard]] auto persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }// statuses 0-7
-  [[nodiscard]] auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }// statuses 8-39
-
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto name        = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);

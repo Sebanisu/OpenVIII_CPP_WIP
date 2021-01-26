@@ -8,10 +8,11 @@
 #include "PersistentStatusesT.hpp"
 #include "UnlockableAbility.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 namespace open_viii::kernel {
 template<LangT langVal> struct JunctionableGFs
 {
-  /*
+  /**
    * https://github.com/DarkShinryu/doomtrain/wiki/Junctionable-GFs
    * Offset	Length	Description
    * 0x0000	2 bytes	Offset to GF attack name
@@ -132,149 +133,123 @@ template<LangT langVal> struct JunctionableGFs
    * 0x0082	1 byte	Power Mod (used in damage formula)
    * 0x0083	1 byte	Level Mod (used in damage formula)
    */
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  std::uint16_t m_magic_id{};
-  AttackTypeT m_attack_type{};
-  std::uint8_t m_gf_power{};
-  std::uint16_t m_unknown0{};
-  AttackFlagsT m_attack_flags{};
-  std::uint8_t m_unknown1{};
-  std::uint8_t m_unknown2{};
-  ElementT m_element{};
-  PersistentStatusesT m_persistent_statuses{};
-  BattleOnlyStatusesT m_battle_only_statuses{};
-  std::uint8_t m_gf_hp_modifier{};
-  std::uint8_t m_unknown3{};
-  std::uint8_t m_unknown4{};
-  std::uint8_t m_unknown5{};
-  std::uint8_t m_unknown6{};
-  std::uint8_t m_unknown7{};
-  std::uint8_t m_unknown8{};
-  std::uint8_t m_status_attack_enabler{};
-  static constexpr auto MAX_ABILITIES = 21U;
-  std::array<UnlockableAbility, MAX_ABILITIES> m_unlockable_abilities{};
-  GFGroup<std::uint8_t> m_compatibility{};
-  std::uint8_t m_unknown9{};
-  std::uint8_t m_unknown10{};
-  std::uint8_t m_power_mod{};
-  std::uint8_t m_level_mod{};
-
 public:
-  [[nodiscard]] const auto &name_offset() const noexcept
+  static constexpr auto MAX_ABILITIES = 21U;
+  constexpr auto
+    operator<=>(const JunctionableGFs<langVal> &right) const noexcept = default;
+  [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] const auto &description_offset() const noexcept
+  [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
   }
-  [[nodiscard]] const auto &magic_id() const noexcept
+  [[nodiscard]] constexpr auto magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[nodiscard]] const auto &attack_type() const noexcept
+  [[nodiscard]] constexpr auto attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &gf_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto gf_power() const noexcept
   {
     return m_gf_power;
   }
-  [[nodiscard]] const auto &unknown0() const noexcept
+  [[nodiscard]] constexpr auto unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] const auto &attack_flags() const noexcept
+  [[nodiscard]] constexpr auto attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[nodiscard]] const auto &unknown1() const noexcept
+  [[nodiscard]] constexpr auto unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] const auto &unknown2() const noexcept
+  [[nodiscard]] constexpr auto unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[nodiscard]] const auto &element() const noexcept
+  [[nodiscard]] constexpr auto element() const noexcept
   {
     return m_element;
   }
-  [[nodiscard]] const auto &persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }
-  [[nodiscard]] const auto &battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &gfhp_modifier() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto gfhp_modifier() const noexcept
   {
     return m_gf_hp_modifier;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown3() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown3() const noexcept
   {
     return m_unknown3;
   }
-  [[nodiscard]] const auto &unknown4() const noexcept
+  [[nodiscard]] constexpr auto unknown4() const noexcept
   {
     return m_unknown4;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown5() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown5() const noexcept
   {
     return m_unknown5;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown6() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown6() const noexcept
   {
     return m_unknown6;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown7() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown7() const noexcept
   {
     return m_unknown7;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown8() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown8() const noexcept
   {
     return m_unknown8;
   }
-  [[nodiscard]] const auto &status_attack_enabler() const noexcept
+  [[nodiscard]] constexpr auto status_attack_enabler() const noexcept
   {
     return m_status_attack_enabler;
   }
   template<size_t i>
-  [[nodiscard]] const auto &unlockable_abilities() const noexcept
+  [[nodiscard]] constexpr auto unlockable_abilities() const noexcept
   {
     static_assert(i < MAX_ABILITIES);
     return m_unlockable_abilities.at(i);
   }
-  [[nodiscard]] const auto &unlockable_abilities() const noexcept
+  [[nodiscard]] constexpr auto unlockable_abilities() const noexcept
   {
     return m_unlockable_abilities;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &compatibility() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto compatibility() const noexcept
   {
     return m_compatibility;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown9() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown9() const noexcept
   {
     return m_unknown9;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &unknown10() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto unknown10() const noexcept
   {
     return m_unknown10;
   }
-  [[nodiscard]] const auto &power_mod() const noexcept
+  [[nodiscard]] constexpr auto power_mod() const noexcept
   {
     return m_power_mod;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &level_mod() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto level_mod() const noexcept
   {
     return m_level_mod;
   }
   std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
+    auto name        = m_name_offset.decoded_string<langVal>(buffer);
     auto description = m_description_offset.decoded_string<langVal>(buffer);
     if (!std::empty(name)) {
       os << tools::u8_to_sv(name);
@@ -315,6 +290,33 @@ public:
               << static_cast<std::uint32_t>(m_power_mod) << ", "
               << static_cast<std::uint32_t>(m_level_mod);
   }
+private:
+  EncodedStringOffset                          m_name_offset{};
+  EncodedStringOffset                          m_description_offset{};
+  std::uint16_t                                m_magic_id{};
+  AttackTypeT                                  m_attack_type{};
+  std::uint8_t                                 m_gf_power{};
+  std::uint16_t                                m_unknown0{};
+  AttackFlagsT                                 m_attack_flags{};
+  std::uint8_t                                 m_unknown1{};
+  std::uint8_t                                 m_unknown2{};
+  ElementT                                     m_element{};
+  PersistentStatusesT                          m_persistent_statuses{};
+  BattleOnlyStatusesT                          m_battle_only_statuses{};
+  std::uint8_t                                 m_gf_hp_modifier{};
+  std::uint8_t                                 m_unknown3{};
+  std::uint8_t                                 m_unknown4{};
+  std::uint8_t                                 m_unknown5{};
+  std::uint8_t                                 m_unknown6{};
+  std::uint8_t                                 m_unknown7{};
+  std::uint8_t                                 m_unknown8{};
+  std::uint8_t                                 m_status_attack_enabler{};
+  std::array<UnlockableAbility, MAX_ABILITIES> m_unlockable_abilities{};
+  GFGroup<std::uint8_t>                        m_compatibility{};
+  std::uint8_t                                 m_unknown9{};
+  std::uint8_t                                 m_unknown10{};
+  std::uint8_t                                 m_power_mod{};
+  std::uint8_t                                 m_level_mod{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_JUNCTIONABLEGFS_HPP

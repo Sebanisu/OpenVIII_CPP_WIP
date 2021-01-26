@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_KERNEL_HEADER_H
 #define VIIIARCHIVE_KERNEL_HEADER_H
 #include "BattleCommands.hpp"
@@ -56,15 +55,13 @@
 #include <vector>
 // will be moving kernel into it"s own project once it"svs more fully baked.
 namespace open_viii::kernel {
-
 template<LangT langVal> struct Header
 {
   // https://github.com/alexfilth/doomtrain/wiki/Header
 private:
-  std::vector<char> m_buffer{};
+  std::vector<char>          m_buffer{};
   std::vector<std::uint32_t> m_section_offsets{};
-  static constexpr auto FILE_NAME = std::string_view{ "kernel.bin" };
-
+  static constexpr auto      FILE_NAME = std::string_view{ "kernel.bin" };
 public:
   template<SectionTypesT sectionType> static consteval bool section_type_test()
   {
@@ -72,12 +69,11 @@ public:
              < static_cast<int>(SectionTypesT::count)
            && static_cast<int>(sectionType) >= 0;
   }
-
   template<SectionTypesT sectionType>
   requires(section_type_test<sectionType>())
     [[nodiscard]] constexpr std::span<const char> get_span() const
   {
-    if(std::ranges::empty(m_buffer)) {
+    if (std::ranges::empty(m_buffer)) {
       return std::span<const char>{};
     }
     auto length = [this]() {
@@ -100,43 +96,51 @@ public:
   {
     using namespace std::string_literals;
     if constexpr (sectionType == SectionTypesT::battle_commands) {
-      return BulkSectionData<BattleCommands<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::battle_commands_text>() };
+      return BulkSectionData<BattleCommands>{
+        get_span<sectionType>(), get_span<SectionTypesT::battle_commands_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::magic) {
-      return BulkSectionData<Magic<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::magic_text>() };
+      return BulkSectionData<Magic<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::magic_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::junctionable_g_fs) {
-      return BulkSectionData<JunctionableGFs<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::junctionable_g_fs_text>() };
+      return BulkSectionData<JunctionableGFs<langVal>>{
+        get_span<sectionType>(),
+        get_span<SectionTypesT::junctionable_g_fs_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::enemy_attacks) {
-      return BulkSectionData<EnemyAttacks<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::enemy_attacks_text>() };
+      return BulkSectionData<EnemyAttacks<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::enemy_attacks_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::weapons) {
-      return BulkSectionData<Weapons<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::weapons_text>() };
+      return BulkSectionData<Weapons<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::weapons_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::renzokuken_finishers) {
       return BulkSectionData<RenzokukenFinishers<langVal>>{
         get_span<sectionType>(),
         get_span<SectionTypesT::renzokuken_finishers_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::characters) {
-      return BulkSectionData<Characters<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::characters_text>() };
+      return BulkSectionData<Characters<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::characters_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::battle_items) {
-      return BulkSectionData<BattleItems<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::battle_items_text>() };
+      return BulkSectionData<BattleItems<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::battle_items_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::non_battle_items) {
-      return BulkSectionData<NonBattleItems<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::non_battle_items_text>() };
+      return BulkSectionData<NonBattleItems<langVal>>{
+        get_span<sectionType>(),
+        get_span<SectionTypesT::non_battle_items_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::non_junctionable_g_fs) {
       return BulkSectionData<NonJunctionableGFs<langVal>>{
         get_span<sectionType>(),
         get_span<SectionTypesT::non_junctionable_g_fs_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::command_abilities_data) {
-      return BulkSectionData<CommandAbilitiesData<langVal>>{
-        get_span<sectionType>()
-      };
+      return BulkSectionData<CommandAbilitiesData>{ get_span<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::junction_abilities) {
       return BulkSectionData<JunctionAbilities<langVal>>{
         get_span<sectionType>(),
@@ -159,14 +163,17 @@ public:
         get_span<SectionTypesT::character_abilities_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::party_abilities) {
-      return BulkSectionData<PartyAbilities<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::party_abilities_text>() };
+      return BulkSectionData<PartyAbilities<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::party_abilities_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::gf_abilities) {
-      return BulkSectionData<GFAbilities<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::gf_abilities_text>() };
+      return BulkSectionData<GFAbilities<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::gf_abilities_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::menu_abilities) {
-      return BulkSectionData<MenuAbilities<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::menu_abilities_text>() };
+      return BulkSectionData<MenuAbilities<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::menu_abilities_text>()
+      };
     } else if constexpr (sectionType
                          == SectionTypesT::team_laguna_limit_breaks) {
       return BulkSectionData<TeamLagunaLimitBreaks<langVal>>{
@@ -218,19 +225,20 @@ public:
     } else if constexpr (sectionType == SectionTypesT::slots_sets) {
       return BulkSectionData<SlotsSets>{ get_span<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::devour) {
-      return BulkSectionData<Devour<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::devour_text>() };
+      return BulkSectionData<Devour<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::devour_text>()
+      };
     } else if constexpr (sectionType == SectionTypesT::misc) {
-      return BulkSectionData<Misc<langVal>>{ get_span<sectionType>() };
+      return BulkSectionData<Misc>{ get_span<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::misc_text_pointers) {
-      return BulkSectionData<MiscText<langVal>>{ get_span<sectionType>(),
-        get_span<SectionTypesT::misc_text>() };
+      return BulkSectionData<MiscText<langVal>>{
+        get_span<sectionType>(), get_span<SectionTypesT::misc_text>()
+      };
     } else {
       // anything that isn't a main section like Text is returning null here.
       return nullptr;
     }
   }
-
   template<SectionTypesT sectionType>
   requires(section_type_test<sectionType>())
     [[nodiscard]] constexpr std::string_view get_section_name() const
@@ -372,10 +380,9 @@ public:
       return "Misc Text"sv;
     }
   }
-
   template<FIFLFS_Has_get_entry_data mainT> explicit Header(const mainT &main)
   {
-    m_buffer = main.get_entry_data(FILE_NAME);
+    m_buffer         = main.get_entry_data(FILE_NAME);
     auto buffer_span = std::span<const char>(m_buffer);
     if (std::ranges::size(buffer_span) < sizeof(std::uint32_t)) {
       return;
@@ -391,8 +398,8 @@ public:
     while (section_count-- > 0) {
       buffer_span = buffer_span.subspan(sizeof(section_count));
       std::memcpy(&m_section_offsets.emplace_back(),
-        std::ranges::data(buffer_span),
-        sizeof(section_count));
+                  std::ranges::data(buffer_span),
+                  sizeof(section_count));
     }
   }
   [[nodiscard]] const auto &buffer() const noexcept
@@ -407,21 +414,24 @@ public:
   {
     return m_section_offsets;
   }
-
-
   template<int First = static_cast<int>(SectionTypesT::first),
-    int Count = static_cast<int>(SectionTypesT::count),
-    typename Lambda>
+           int Count = static_cast<int>(SectionTypesT::count),
+           typename Lambda>
   requires(
     section_type_test<static_cast<SectionTypesT>(First)>()
     && (section_type_test<static_cast<SectionTypesT>(Count)>()
         || Count
-             == static_cast<int>(SectionTypesT::
+             == static_cast<int>(
+               SectionTypesT::
                  count))) void static_for([[maybe_unused]] const Lambda &f)
   {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
+    if (std::ranges::empty(m_buffer)) {
+      return;
+    }
     if constexpr (First < Count) {
-      constexpr auto sectionType = std::integral_constant<SectionTypesT,
-        static_cast<SectionTypesT>(First)>{};
+      constexpr auto sectionType =
+        std::integral_constant<SectionTypesT,
+                               static_cast<SectionTypesT>(First)>{};
       const auto data = get_section_data<sectionType>();
       if constexpr (!std::is_null_pointer_v<decltype(data)>) {
         f(get_section_name<sectionType>(), get_span<sectionType>(), data);

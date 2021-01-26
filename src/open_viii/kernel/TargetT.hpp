@@ -10,22 +10,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TARGETT_HPP
 #define VIIIARCHIVE_TARGETT_HPP
 #include <cstdint>
-
 namespace open_viii::kernel {
 enum class TargetT : std::uint8_t {
-  none = 0x00,
-  dead = 0x01,
-  unk02 = 0x02,
-  ally = 0x04,
-  single_side = 0x08,
+  none          = 0x00,
+  dead          = 0x01,
+  unk02         = 0x02,
+  ally          = 0x04,
+  single_side   = 0x08,
   single_target = 0x10,
-  unk20 = 0x20,
-  enemy = 0x40,
-  unk80 = 0x80,
+  unk20         = 0x20,
+  enemy         = 0x40,
+  unk80         = 0x80,
 };
 }
 #endif// VIIIARCHIVE_TARGETT_HPP

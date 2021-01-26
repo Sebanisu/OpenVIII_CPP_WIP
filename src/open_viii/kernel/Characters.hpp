@@ -10,39 +10,41 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_CHARACTERS_HPP
 #define VIIIARCHIVE_CHARACTERS_HPP
-
 #include "GenderT.hpp"
 #include "StatGroupNoEVANoHIT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include <compare>
 namespace open_viii::kernel {
+/**
+ * Offset	Length	Description
+ * 0x0000	2 bytes	Offset to character name
+ * Squall and Rinoa have name offsets of 0xFFFF because their name is in the
+ * save game data rather than kernel.bin.
+ * 0x0002       1 byte	Crisis level hp multiplier
+ * 0x0003	1 byte	Gender 0x00 - Male 0x01 - Female
+ * 0x0004       1 byte  Limit Break ID
+ * 0x0005	1 byte	Limit Break Param used for the power of
+ * each renzokuken hit before finisher
+ * 0x0006	2 bytes	EXP modifier
+ * 0x0008	4 bytes	HP
+ * 0x000C	4 bytes	STR
+ * 0x0010	4 bytes	VIT
+ * 0x0014	4 bytes	MAG
+ * 0x0018	4 bytes	SPR
+ * 0x001C	4 bytes	SPD
+ * 0x0020	4 bytes	LUCK
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Characters
+ * */
 template<LangT langVal> struct Characters
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Characters
-   * Offset	Length	Description
-   * 0x0000	2 bytes	Offset to character name
-   * Squall and Rinoa have name offsets of 0xFFFF because their name is in the
-   * save game data rather than kernel.bin. 0x0002	1 byte	Crisis level hp
-   * multiplier 0x0003	1 byte	Gender 0x00 - Male 0x01 - Female 0x0004	1 byte
-   * Limit Break ID 0x0005	1 byte	Limit Break Param used for the power of
-   * each renzokuken hit before finisher 0x0006	2 bytes	EXP modifier
-   * 0x0008	4 bytes	HP
-   * 0x000C	4 bytes	STR
-   * 0x0010	4 bytes	VIT
-   * 0x0014	4 bytes	MAG
-   * 0x0018	4 bytes	SPR
-   * 0x001C	4 bytes	SPD
-   * 0x0020	4 bytes	LUCK
-   * */
 private:
   EncodedStringOffset m_name_offset{};
-  std::uint8_t m_crisis_level_hp_multiplier{};
-  GenderT m_gender{};
-  std::uint8_t m_limit_break_id{};
-  std::uint8_t m_limit_break_param{};
+  std::uint8_t        m_crisis_level_hp_multiplier{};
+  GenderT             m_gender{};
+  std::uint8_t        m_limit_break_id{};
+  std::uint8_t        m_limit_break_param{};
   //  std::uint8_t EXP0;
   //  std::uint8_t EXP1;
   //  std::uint8_t EXP[2];
@@ -76,34 +78,36 @@ private:
   //  std::uint8_t LUCK2;
   //  std::uint8_t LUCK3;
   StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> m_stats{};
-
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &name_offset() const noexcept
+  constexpr auto
+    operator<=>(const Characters<langVal> &right) const noexcept = default;
+  [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &
+  [[maybe_unused]] [[nodiscard]] constexpr auto
     crisis_level_hp_multiplier() const noexcept
   {
     return m_crisis_level_hp_multiplier;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &gender() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto gender() const noexcept
   {
     return m_gender;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &limit_break_id() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto limit_break_id() const noexcept
   {
     return m_limit_break_id;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &limit_break_param() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    limit_break_param() const noexcept
   {
     return m_limit_break_param;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &exp() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto exp() const noexcept
   {
     return m_exp;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &stats() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto stats() const noexcept
   {
     return m_stats;
   }
