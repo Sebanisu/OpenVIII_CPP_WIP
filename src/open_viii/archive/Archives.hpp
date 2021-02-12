@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_ARCHIVES_HPP
 #define VIIIARCHIVE_ARCHIVES_HPP
+#include "ArchivesTypesT.hpp"
 #include "FIFLFS.hpp"
 #include "ZZZ.hpp"
 #include "open_viii/strings/LangCommon.hpp"
@@ -19,70 +20,19 @@
 #include <type_traits>
 #include <variant>
 namespace open_viii::archive {
-
-// There are 6 main FIFLFS archives and 2 main zzz archives for ff8 and ff8
-// remaster.
-enum class ArchiveTypeT : std::uint8_t {
-  battle,
-  field,
-  magic,
-  main,
-  menu,
-  world,
-  zzz_main,
-  zzz_other,
-  count,
-  first = static_cast<std::int8_t>(battle),
-  last = static_cast<std::int8_t>(count) - 1,
-  end = count,
-  begin = battle
-};
-// static constexpr bool ValidArchiveTypeT(ArchiveTypeT archiveType)
-//  {
-//    return archiveType < ArchiveTypeT::end && archiveType >=
-//    ArchiveTypeT::begin;
-//  }
-
-
-template<std::signed_integral T>
-static constexpr bool test_valid_archive_type_t(T archive_type_t)
-{
-  return (static_cast<std::intmax_t>(archive_type_t)
-            >= static_cast<std::intmax_t>(ArchiveTypeT::first)
-          || static_cast<std::intmax_t>(archive_type_t)
-               <= static_cast<std::intmax_t>(ArchiveTypeT::last));
-}
-template<typename T>
-requires(
-  std::unsigned_integral<
-    T> || std::is_same_v<T, ArchiveTypeT>) static constexpr bool test_valid_archive_type_t(T
-    archive_type_t)
-{
-  return (static_cast<std::size_t>(archive_type_t)
-            >= static_cast<std::size_t>(ArchiveTypeT::first)
-          || static_cast<std::size_t>(archive_type_t)
-               <= static_cast<std::size_t>(ArchiveTypeT::last));
-}
-//
-// template<ArchiveTypeT archiveTypeT>
-// concept ValidArchiveTypeT = (static_cast<std::intmax_t>(archiveTypeT) >=
-// static_cast<std::intmax_t>(ArchiveTypeT::first)
-//                             || static_cast<std::intmax_t>(archiveTypeT)
-//                                  <=
-//                                  static_cast<std::intmax_t>(ArchiveTypeT::last));
 template<LangT langVal> struct Archives
 {
 private:
-  std::string m_lang{ LangCommon::to_string<langVal>() };
+  std::string           m_lang{ LangCommon::to_string<langVal>() };
   std::filesystem::path m_path{};
-  FIFLFS<false> m_battle{};
-  FIFLFS<true> m_field{};
-  FIFLFS<false> m_magic{};
-  FIFLFS<false> m_main{};
-  FIFLFS<false> m_menu{};
-  FIFLFS<false> m_world{};
-  std::optional<ZZZ> m_zzz_main{};
-  std::optional<ZZZ> m_zzz_other{};
+  FIFLFS<false>         m_battle{};
+  FIFLFS<true>          m_field{};
+  FIFLFS<false>         m_magic{};
+  FIFLFS<false>         m_main{};
+  FIFLFS<false>         m_menu{};
+  FIFLFS<false>         m_world{};
+  std::optional<ZZZ>    m_zzz_main{};
+  std::optional<ZZZ>    m_zzz_other{};
   /**
    * Runs lambda on archive First to Last
    * @tparam First default: ArchiveTypeT::first
@@ -90,21 +40,23 @@ private:
    * @tparam Lambda void (*)(ArchiveTypeT, std::string_view)
    * @param f of type Lambda.
    */
-  template<std::intmax_t First = static_cast<std::intmax_t>(
-             ArchiveTypeT::first),
-    std::intmax_t Last = static_cast<std::intmax_t>(ArchiveTypeT::last),
+  template<
+    std::intmax_t First = static_cast<std::intmax_t>(ArchiveTypeT::first),
+    std::intmax_t Last  = static_cast<std::intmax_t>(ArchiveTypeT::last),
     typename lambdaT>
   requires(
     ((test_valid_archive_type_t(First) && test_valid_archive_type_t(Last))
-      || First == Last + 1)
-    && std::invocable<lambdaT,
+     || First == Last + 1)
+    && std::invocable<
+      lambdaT,
       const ArchiveTypeT &,
       const std::string &>) void static_for([[maybe_unused]] lambdaT const
-      &lambda)
+                                              &lambda)
   {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
     if constexpr (First <= Last) {
-      constexpr auto archiveType_ = std::integral_constant<ArchiveTypeT,
-        static_cast<ArchiveTypeT>(First)>{};
+      constexpr auto archiveType_ =
+        std::integral_constant<ArchiveTypeT,
+                               static_cast<ArchiveTypeT>(First)>{};
       lambda(archiveType_, get_string<archiveType_>());
       static_for<First + 1, Last>(lambda);
     }
@@ -145,8 +97,8 @@ private:
    * Set Path to FF8. Will look for Data and lang- folders.
    * @param path location of FF8.
    */
-  static std::filesystem::path set_path(
-    std::filesystem::path path, const std::string &lang)
+  static std::filesystem::path set_path(std::filesystem::path path,
+                                        const std::string &   lang)
   {
     using namespace std::string_literals;
     using namespace std::string_view_literals;
@@ -156,9 +108,9 @@ private:
     if (std::filesystem::exists(dataPath)) {
       path = dataPath;
       {
-        static constexpr auto langStart = "lang-"sv;
+        static constexpr auto langStart      = "lang-"sv;
         std::filesystem::path langFolderPath = path / langStart;
-        langFolderPath = langFolderPath.string() + lang;
+        langFolderPath                       = langFolderPath.string() + lang;
         if (std::filesystem::exists(langFolderPath)) {
           path = langFolderPath;
         }
@@ -166,7 +118,6 @@ private:
     }
     return path;
   }
-
   /**
    * TryToAdd archive of type to archive member variable.
    * @param archiveType_ Type of valid archive.
@@ -177,18 +128,19 @@ private:
    * @param size max size of archive? 0U = unlimited
    * @return
    */
-  bool try_add(const ArchiveTypeT &archive_type,
-    const std::filesystem::path &path,
-    const std::filesystem::path &nested_path = {},
-    const size_t &offset = {},
-    const size_t &size = {})
+  template<FI_Like fiT>
+  bool try_add(const ArchiveTypeT &         archive_type,
+               fiT                          fi,
+               const std::filesystem::path &path,
+               const std::filesystem::path &nested_path)
+  // const size_t &offset = {},
+  // const size_t &size = {})
   {// this string can be compared to the stem of the filename to determine which
    // archive is try added to.
     // returns nullptr on failure.
     assert(test_valid_archive_type_t(archive_type));
-    const auto tryAddToFIFLFS = [&path, &nested_path, &offset, &size](
-                                  auto &archive) {
-      return archive.try_add(path, nested_path, offset, size)
+    const auto tryAddToFIFLFS = [&path, &nested_path, &fi](auto &archive) {
+      return archive.try_add(fi, path, nested_path)
              != TryAddT::not_part_of_archive;
     };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
@@ -217,42 +169,35 @@ private:
         using namespace std::string_literals;
         using namespace std::string_view_literals;
         for (const auto &dataItem : m_zzz_main->data()) {
-          {
-            const auto pathString = dataItem.get_path_string();
-            if (FIFLFS<true>::check_extension(pathString) == 0U) {
-              continue;
-            }
-            static constexpr auto data = "data"sv;
-            static constexpr auto langStart = "lang-"sv;
-            auto langStartingFilter = std::filesystem::path(data) / langStart;
-            auto langStarting =
-              std::filesystem::path(langStartingFilter.string() + m_lang);
-
-            if (tools::i_starts_with(pathString, langStartingFilter.string())
-                && !tools::i_starts_with(pathString, langStarting.string())) {
-              continue;
-            }
-            auto localPath = std::filesystem::path(pathString);
-            static_for<static_cast<intmax_t>(ArchiveTypeT::first),
-              static_cast<intmax_t>(ArchiveTypeT::zzz_main) - 1>(
-              [&localPath, &dataItem, &path, this](
-                const ArchiveTypeT &test, const auto &stem) {
-                if (!(open_viii::tools::i_equals(
-                      stem, localPath.stem().string()))) {
-                  return;
-                }
-                try_add(test,
-                  path,
-                  localPath,
-                  dataItem.offset(),
-                  dataItem.uncompressed_size());
-              });
+          const auto pathString = dataItem.get_path_string();
+          if (FIFLFS<true>::check_extension(pathString) == fiflfsT::none) {
+            continue;
           }
+          static constexpr auto data      = "data"sv;
+          static constexpr auto langStart = "lang-"sv;
+          auto langStartingFilter = std::filesystem::path(data) / langStart;
+          auto langStarting =
+            std::filesystem::path(langStartingFilter.string() + m_lang);
+          if (tools::i_starts_with(pathString, langStartingFilter.string())
+              && !tools::i_starts_with(pathString, langStarting.string())) {
+            continue;
+          }
+          auto localPath = std::filesystem::path(pathString);
+          static_for<static_cast<intmax_t>(ArchiveTypeT::first),
+                     static_cast<intmax_t>(ArchiveTypeT::zzz_main) - 1>(
+            [&localPath, &dataItem, &path, this](const ArchiveTypeT &test,
+                                                 const auto &        stem) {
+              if (!(open_viii::tools::i_equals(stem,
+                                               localPath.stem().string()))) {
+                return;
+              }
+              try_add(test, dataItem, path, localPath);
+            });
         }
-        return true;
       }
-      return false;
+      return true;
     }
+      return false;
     case ArchiveTypeT::zzz_other:
       return tryAddToZZZ(m_zzz_other);
     case ArchiveTypeT::count:
@@ -270,15 +215,12 @@ public:
       if (get_string<ArchiveTypeT::battle>() == name) {
         return get<ArchiveTypeT::battle>();
       }
-
       if (get_string<ArchiveTypeT::field>() == name) {
         return get<ArchiveTypeT::field>();
       }
-
       if (get_string<ArchiveTypeT::magic>() == name) {
         return get<ArchiveTypeT::magic>();
       }
-
       if (get_string<ArchiveTypeT::main>() == name) {
         return get<ArchiveTypeT::main>();
       }
@@ -309,15 +251,12 @@ public:
     if (ArchiveTypeT::battle == type) {
       return get<ArchiveTypeT::battle>();
     }
-
     if (ArchiveTypeT::field == type) {
       return get<ArchiveTypeT::field>();
     }
-
     if (ArchiveTypeT::magic == type) {
       return get<ArchiveTypeT::magic>();
     }
-
     if (ArchiveTypeT::main == type) {
       return get<ArchiveTypeT::main>();
     }
@@ -333,13 +272,11 @@ public:
     if (ArchiveTypeT::zzz_other == type) {
       return get<ArchiveTypeT::zzz_other>();
     }
-
     return std::monostate{};
   }
-
   template<ArchiveTypeT archiveType_>
-  requires(test_valid_archive_type_t(
-    archiveType_)) constexpr auto get_string() const noexcept
+  requires(test_valid_archive_type_t(archiveType_)) constexpr auto get_string()
+    const noexcept
   {// this string can be compared to the stem of the filename to determine which
    // archive is try added to.
     // returns nullptr on failure.
@@ -419,23 +356,28 @@ public:
   explicit Archives(const std::filesystem::path &path)
     : m_lang(set_lang(path)), m_path(set_path(path, m_lang))
   {
-    tools::execute_on_directory(m_path,
+    tools::execute_on_directory(
+      m_path,
       {},
       { FI::EXT, FS::EXT, fl::EXT, ZZZ::EXT },
       [this](const std::filesystem::path &localPath) {
         if (localPath.has_stem()) {
-          static_for([&localPath, this](
-                       const ArchiveTypeT &archiveTypeT, const auto &stem) {
-            if (!(open_viii::tools::i_equals(
-                  stem, localPath.stem().string()))) {
+          static_for([&localPath, this](const ArchiveTypeT &archiveTypeT,
+                                        const auto &        stem) {
+            if (!(open_viii::tools::i_equals(stem,
+                                             localPath.stem().string()))) {
               return;
             }
-            try_add(archiveTypeT, localPath);
+            try_add(archiveTypeT,
+                    FI(static_cast<std::uint32_t>(
+                         std::filesystem::file_size(localPath)),
+                       0U),
+                    localPath,
+                    localPath);
           });
         }
       });
   }
-
   //  /**
   //   * Search all the archives. For any of the listed strings.
   //   * @tparam nested enable or disable searching nested archives from field,
@@ -510,8 +452,6 @@ public:
   //      return {};
   //    }
   //  }
-
-
   /**
    * Execute Lambda on all the archives. For any of the listed strings.
    * @tparam nested enable or disable searching nested archives from field,
@@ -523,18 +463,19 @@ public:
    * @param filename is an initializer-list of strings to search the archives
    * for. use {} to get all files.
    */
-  template<bool nested = true,
-    std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::last),
-    std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::first),
-    typename lambdaT>
+  template<bool          nested = true,
+           std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::last),
+           std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::first),
+           typename lambdaT>
   requires((test_valid_archive_type_t(maxT) || maxT >= minT - 1)
            && test_valid_archive_type_t(minT)
-           && std::invocable<lambdaT,
+           && std::invocable<
+             lambdaT,
              std::vector<char>,
              std::string>) void execute_on(const std::
                                              initializer_list<std::string_view>
-                                               &filename,
-    const lambdaT &lambda) const
+                                               &          filename,
+                                           const lambdaT &lambda) const
   {
     if constexpr (maxT >= minT) {
       execute_on<nested, maxT - 1, minT>(filename, lambda);
@@ -548,7 +489,8 @@ public:
             archive->execute_on(filename, lambda);
           }
         } else if constexpr (
-          std::is_same_v<decltype(archive),
+          std::is_same_v<
+            decltype(archive),
             FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
           archive.execute_on(filename, lambda);
           if constexpr (nested
@@ -559,7 +501,6 @@ public:
       }
     }
   }
-
   //  template<bool nested = true,
   //    ArchiveTypeT Current,
   //    ArchiveTypeT... Remainder,

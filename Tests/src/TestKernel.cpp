@@ -104,19 +104,6 @@ int main()
               << kernel.section_count() << " section count\n";
     std::cout << static_cast<int>(open_viii::kernel::SectionTypesT::count)
               << std::endl;
-    // const auto &sectionOffsets = kernel.SectionOffsets();
-    //    std::for_each(
-    //      sectionOffsets.begin(), sectionOffsets.end(),[](const auto &value) {
-    //      std::cout << value << std::endl; });
-    //    kernel.static_for<static_cast<int>(open_viii::kernel::SectionTypesT::first),
-    //      static_cast<int>(open_viii::kernel::SectionTypesT::count)>([](const
-    //      std::string_view &string,const std::span<const char> & span, const
-    //      auto & data) { std::cout << "  " << string << " - " <<
-    //      std::ranges::size(span)
-    //      << " bytes\n";
-    //
-    //      return data;
-    //    });
     kernel.static_for([]<typename kernel_section_t>(
       const std::string_view &     string,
       const std::span<const char> &span,
