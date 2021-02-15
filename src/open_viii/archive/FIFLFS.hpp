@@ -342,8 +342,8 @@ public:
   auto static check_extension(const std::filesystem::path &path)
   {
     return static_cast<fiflfsT>(
-      tools::i_ends_with_any(path.string(),
-                             { open_viii::archive::fl::EXT,
+      tools::i_ends_with_any_get_offset(path.string(),
+                             std::array{ open_viii::archive::fl::EXT,
                                open_viii::archive::FS::EXT,
                                open_viii::archive::FI::EXT }));
   }
