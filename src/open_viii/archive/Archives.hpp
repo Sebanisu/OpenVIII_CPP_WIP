@@ -118,6 +118,21 @@ private:
     }
     return path;
   }
+  [[nodiscard]] bool check_lang_path(const auto &pathString) const
+  {
+    // no languages in zzz for:
+    // field, magic, world
+    // languages in zzz for only:
+    // main menu battle
+    static constexpr auto data      = "data";
+    static constexpr auto langStart = "lang-";
+    const auto            langStartingFilter =
+      std::filesystem::__cxx11::path(data) / langStart;
+    const auto langStarting =
+      std::filesystem::path(langStartingFilter.string() + m_lang);
+    return tools::i_starts_with(pathString, langStartingFilter.string())
+           && !tools::i_starts_with(pathString, langStarting.string());
+  }
   /**
    * TryToAdd archive of type to archive member variable.
    * @param archiveType_ Type of valid archive.
@@ -173,13 +188,7 @@ private:
           if (FIFLFS<true>::check_extension(pathString) == fiflfsT::none) {
             continue;
           }
-          static constexpr auto data      = "data"sv;
-          static constexpr auto langStart = "lang-"sv;
-          auto langStartingFilter = std::filesystem::path(data) / langStart;
-          auto langStarting =
-            std::filesystem::path(langStartingFilter.string() + m_lang);
-          if (tools::i_starts_with(pathString, langStartingFilter.string())
-              && !tools::i_starts_with(pathString, langStarting.string())) {
+          if (check_lang_path(pathString)) {
             continue;
           }
           auto localPath = std::filesystem::path(pathString);
