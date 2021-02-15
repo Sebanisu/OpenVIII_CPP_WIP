@@ -32,47 +32,6 @@
 #include <thread>
 #include <type_traits>
 namespace open_viii::tools {
-
-
-
-// Replace all of one char to another char. Arguments will be static_cast to the
-// type of string char used in haystack. I use this to make the separator on
-// windows or linux matches the strings.
-template<typename needleType, typename replacementType, std::ranges::range T>
-requires(std::is_convertible_v<replacementType, needleType>
-           &&std::is_convertible_v<needleType, replacementType>)
-  [[maybe_unused]] constexpr static void replace_all(
-    T &                    haystack,
-    const needleType &     needle,
-    const replacementType &replacement) noexcept
-{
-  static_assert(
-    std::is_integral<needleType>::value
-      && std::is_integral<replacementType>::value,
-    "Should be dealing with chars so is integral should cover that.");
-  if (haystack.empty()) {
-    return;
-  }
-  //
-  //    if (static_cast<std::intmax_t>(needle)
-  //        == static_cast<std::intmax_t>(replacement)) {// casting because
-  //        worried if the types don't match.
-  //      return;
-  //    }
-  std::ranges::transform(haystack,
-                         std::ranges::begin(haystack),
-                         [needle, replacement](const auto &input) {
-                           // handle when T2 doesn't match T by casting to match
-                           // input;
-                           return input == static_cast<decltype(input)>(needle)
-                                    ? static_cast<decltype(input)>(replacement)
-                                    : input;
-                           // windows uses a wchar_t instead of char. So I need
-                           // to static cast to make them match though might
-                           // need at least one value to be char. I'm unsure
-                           // what would happen if we were in a unicode mode.
-                         });
-}
 template<typename T, std::ranges::contiguous_range T2>
 [[maybe_unused]] constexpr static bool any_of(const T & needle,
                                               const T2 &haystack)

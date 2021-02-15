@@ -30,10 +30,6 @@ requires(std::invocable<lambdaT, std::ostream &>)
   std::cout << "Saving: \t\"" << string << "\"\n";// << std::flush;
   lambda(fp);
   fp.close();
-  //    } else {
-  //      std::cout << (std::string("Failed to Open for saving: \"") +
-  //      filename.string() + std::string("\"\n")); return false;
-  //    }
   return true;
 }
 [[maybe_unused]] static bool
