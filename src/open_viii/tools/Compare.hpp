@@ -190,19 +190,21 @@ static_assert(!i_ends_with_any(std::string_view("haystack.a"),
                       const auto &                  lambda)
 {
   std::size_t i = 0U;
-  return with_any(
-           haystack,
-           needles,
-           [&lambda, &i](const std::span<const char> inside_haystack, const std::span<const char> needle) {
-             ++i;
-             return lambda(inside_haystack, needle);
-           })
+  return with_any(haystack,
+                  needles,
+                  [&lambda, &i](const std::span<const char> inside_haystack,
+                                const std::span<const char> needle) {
+                    ++i;
+                    return lambda(inside_haystack, needle);
+                  })
            ? i
            : 0U;
 }
 static_assert(with_any_get_offset(std::string_view("haystack.a"),
-                                    std::array{ std::string_view(".a"),
-                                                std::string_view(".b") },i_find) == 1U);
+                                  std::array{ std::string_view(".a"),
+                                              std::string_view(".b") },
+                                  i_find)
+              == 1U);
 /**
  * run i_find till with multiple needles till it finds a match
  * @param haystack
@@ -217,15 +219,19 @@ static_assert(with_any_get_offset(std::string_view("haystack.a"),
 }
 static_assert(i_find_any_get_offset(std::string_view("haystack.a"),
                                     std::array{ std::string_view(".a"),
-                                                std::string_view(".b") }) == 1U);
+                                                std::string_view(".b") })
+              == 1U);
 static_assert(i_find_any_get_offset(std::string_view("haystack.a"),
-                                     std::array{ std::string_view(".b"),
-                                                 std::string_view(".a") }) == 2U);
+                                    std::array{ std::string_view(".b"),
+                                                std::string_view(".a") })
+              == 2U);
 static_assert(i_find_any_get_offset(std::string_view("haystack.a"),
                                     std::array{ std::string_view("0"),
-                                                std::string_view("1") }) == 0U);
+                                                std::string_view("1") })
+              == 0U);
 static_assert(i_find_any_get_offset(std::string_view("haystack.a"),
-                                    std::initializer_list<std::string_view>{}) == 0U);
+                                    std::initializer_list<std::string_view>{})
+              == 0U);
 /**
  * run i_starts till with multiple needles till it finds a match
  * @param haystack
@@ -238,12 +244,14 @@ static_assert(i_find_any_get_offset(std::string_view("haystack.a"),
 {
   return with_any_get_offset(haystack, needles, i_starts_with);
 }
-static_assert(i_starts_with_any_get_offset(
-  std::string_view("haystack.a"),
-  std::array{ std::string_view(".a"), std::string_view("h") }) == 2U);
-static_assert(i_starts_with_any_get_offset(
-  std::string_view("haystack.d"),
-  std::array{ std::string_view(".d"), std::string_view(".b") }) == 0U);
+static_assert(i_starts_with_any_get_offset(std::string_view("haystack.a"),
+                                           std::array{ std::string_view(".a"),
+                                                       std::string_view("h") })
+              == 2U);
+static_assert(i_starts_with_any_get_offset(std::string_view("haystack.d"),
+                                           std::array{ std::string_view(".d"),
+                                                       std::string_view(".b") })
+              == 0U);
 /**
  * run i_starts till with multiple needles till it finds a match
  * @param haystack
@@ -260,12 +268,10 @@ static_assert(i_ends_with_any_get_offset(std::string_view("haystack.d"),
                                          std::array{ std::string_view(".d"),
                                                      std::string_view(".b") })
               == 1U);
-
 static_assert(i_ends_with_any_get_offset(std::string_view("haystack.b"),
                                          std::array{ std::string_view(".d"),
                                                      std::string_view(".b") })
               == 2U);
-
 /**
  * Generic with ALL, returns true if the lambda always returns true.
  * @param haystack
@@ -274,16 +280,16 @@ static_assert(i_ends_with_any_get_offset(std::string_view("haystack.b"),
  * @return
  */
 [[maybe_unused]] [[nodiscard]] static constexpr bool
-with_all(const std::span<const char>   haystack,
-         const std::ranges::range auto needles,
-         const auto &                  lambda)
+  with_all(const std::span<const char>   haystack,
+           const std::ranges::range auto needles,
+           const auto &                  lambda)
 {
   return std::ranges::empty(needles)
          || std::ranges::all_of(
-    needles,
-    [&lambda, &haystack](const std::span<const char> needle) -> bool {
-      return lambda(haystack, needle);
-    });
+           needles,
+           [&lambda, &haystack](const std::span<const char> needle) -> bool {
+             return lambda(haystack, needle);
+           });
 }
 /**
  * run i_find till with multiple needles till it finds a match
@@ -292,8 +298,8 @@ with_all(const std::span<const char>   haystack,
  * @return true if it finds a match
  */
 [[maybe_unused]] [[nodiscard]] static constexpr bool
-i_find_all(const std::span<const char>   haystack,
-           const std::ranges::range auto needles)
+  i_find_all(const std::span<const char>   haystack,
+             const std::ranges::range auto needles)
 {
   return with_all(haystack, needles, i_find);
 }
@@ -310,8 +316,8 @@ static_assert(!i_find_all(std::string_view("haystack.d"),
  * @return true if it finds a match
  */
 [[maybe_unused]] [[nodiscard]] static constexpr bool
-i_starts_with_all(const std::span<const char>   haystack,
-                  const std::ranges::range auto needles)
+  i_starts_with_all(const std::span<const char>   haystack,
+                    const std::ranges::range auto needles)
 {
   return with_all(haystack, needles, i_starts_with);
 }
@@ -328,8 +334,8 @@ static_assert(!i_starts_with_all(std::string_view("haystack.d"),
  * @return true if it finds a match
  */
 [[maybe_unused]] [[nodiscard]] static constexpr bool
-i_ends_with_all(const std::span<const char>   haystack,
-                const std::ranges::range auto needles)
+  i_ends_with_all(const std::span<const char>   haystack,
+                  const std::ranges::range auto needles)
 {
   return with_all(haystack, needles, i_ends_with);
 }

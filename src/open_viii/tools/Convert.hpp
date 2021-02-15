@@ -5,11 +5,11 @@
 #define VIIIARCHIVE_CONVERT_HPP
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
 #include <ranges>
 #include <span>
 #include <string>
 #include <string_view>
-#include <filesystem>
 namespace open_viii::tools {
 /**
  * Workaround there is no way to currently to print a utf8 string... streams are
@@ -52,12 +52,46 @@ static constexpr auto upper(int ch)
 }
 static_assert(upper('a') == 'A');
 static_assert(upper('a') != 'Z');
-
-
+/**
+ * replace all slashes with the os's slashes.
+ * @param haystack string with slashes
+ * @todo add tests
+ */
 [[maybe_unused]] static void replace_slashes(std::string &haystack)
 {
   std::ranges::replace(
     haystack, '\\', std::filesystem::path::preferred_separator);
+}
+/**
+ * use std::to_string and pad the value.
+ * @param value initial integer value.
+ * @param total_length default {}, sets the desired length
+ * @param pad_character default 0
+ * @return string value of number padded.
+ * @see
+ * https://stackoverflow.com/questions/53475501/how-to-zero-pre-fill-for-stdto-string-function
+ * @todo add tests
+ */
+template<std::integral intT>
+std::string to_string_with_padding(const intT &      value,
+                                   const std::size_t total_length  = {},
+                                   const char        pad_character = '0')
+{
+  auto str = std::to_string(value);
+  if (str.length() < total_length)
+    str.insert(
+      str.front() == '-' ? 1 : 0, total_length - str.length(), pad_character);
+  return str;
+}
+[[maybe_unused]] [[nodiscard]] std::string static get_base_name(
+  const std::filesystem::path &path)
+{
+  if (path.string().empty()) {
+    return {};
+  }
+  auto name = path.filename().stem().string();
+  std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+  return name;
 }
 }// namespace open_viii::tools
 #endif// VIIIARCHIVE_CONVERT_HPP

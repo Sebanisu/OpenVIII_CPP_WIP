@@ -41,7 +41,6 @@ template<> struct RandomIOTAInterator
   {
     return a.m_current != b.m_current;
   };
-
 private:
   auto get_random()
   {
