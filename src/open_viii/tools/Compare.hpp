@@ -4,12 +4,10 @@
 #ifndef VIIIARCHIVE_COMPARE_HPP
 #define VIIIARCHIVE_COMPARE_HPP
 #include "Convert.hpp"
-#include <span>
-#include <ranges>
 #include <algorithm>
-
+#include <ranges>
+#include <span>
 namespace open_viii::tools {
-
 /**
  * Check if two characters are equal case insensitive
  * @param ch1 character 1
@@ -37,16 +35,44 @@ static_assert(!TOUPPER_EQUALS_PREDICATE('a', 'Z'));
  * @return returns true if both strings are equal regardless of case
  */
 [[maybe_unused]] [[nodiscard]] constexpr static bool
-i_equals(const std::span<const char> str1, const std::span<const char> str2)
+  i_equals(const std::span<const char> str1, const std::span<const char> str2)
 {
   return std::ranges::equal(str1, str2, TOUPPER_EQUALS_PREDICATE);
 }
-static_assert(i_equals( std::string_view (""), std::string_view ("")));
-static_assert(i_equals( std::string_view ("ab"), std::string_view ("AB")));
-static_assert(i_equals( std::string_view ("abC"), std::string_view ("ABC")));
-static_assert(i_equals( std::string_view ("123"), std::string_view ("123")));
-static_assert(!i_equals( std::string_view (""), std::string_view ("a")));
-static_assert(!i_equals( std::string_view ("abd"), std::string_view ("ABC")));
-static_assert(!i_equals( std::string_view ("123"), std::string_view ("124")));
+static_assert(i_equals(std::string_view(""), std::string_view("")));
+static_assert(i_equals(std::string_view("ab"), std::string_view("AB")));
+static_assert(i_equals(std::string_view("abC"), std::string_view("ABC")));
+static_assert(i_equals(std::string_view("123"), std::string_view("123")));
+static_assert(!i_equals(std::string_view(""), std::string_view("a")));
+static_assert(!i_equals(std::string_view("abd"), std::string_view("ABC")));
+static_assert(!i_equals(std::string_view("123"), std::string_view("124")));
+/**
+ * Find needle in span of chars haystack
+ * @param haystack
+ * @param needle
+ * @return true if both values
+ */
+[[maybe_unused]] [[nodiscard]] static constexpr auto
+  i_find(const std::span<const char> haystack,
+         const std::span<const char> needle)
+{
+  if (std::ranges::empty(haystack) || std::ranges::empty(needle)
+      || std::ranges::size(haystack) < std::ranges::size(needle)) {
+    return false;
+  }
+  // clang tidy wants to make this a pointer. Bad idea.
+  // it's not a pointer in msvc.
+  const auto last = std::search(haystack.begin(),
+                                haystack.end(),
+                                needle.begin(),
+                                needle.end(),
+                                TOUPPER_EQUALS_PREDICATE);
+  return last != haystack.end();
 }
+static_assert(i_find(std::string_view("abc"), std::string_view("b")));
+static_assert(!i_find(std::string_view("abc"), std::string_view("")));
+static_assert(!i_find(std::string_view(""), std::string_view("")));
+static_assert(!i_find(std::string_view(""), std::string_view("b")));
+static_assert(!i_find(std::string_view("abc"), std::string_view("0")));
+}// namespace open_viii::tools
 #endif// VIIIARCHIVE_COMPARE_HPP

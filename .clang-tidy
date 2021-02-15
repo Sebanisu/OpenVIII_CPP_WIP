@@ -1,5 +1,5 @@
 ---
-Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm-*,-llvmlibc*,readability-identifier-naming,-hicpp-multiway-paths-covered,-readability-convert-member-functions-to-static,-altera-struct-pack-align'
+Checks:'*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-readability-qualified-auto,-llvm-*,-cppcoreguidelines-pro-type-reinterpret-cast,-llvmlibc*,readability-identifier-naming,-hicpp-multiway-paths-covered,-readability-convert-member-functions-to-static,-altera-struct-pack-align'
 CheckOptions:
   - { key: readability-identifier-naming.NamespaceCase,            value: lower_case }
   - { key: readability-identifier-naming.ClassCase,                value: CamelCase }
@@ -18,6 +18,8 @@ CheckOptions:
   - { key: readability-identifier-naming.LocalConstantCase,        value: lower_case }
   - { key: readability-identifier-naming.LocalConstantPointerCase, value: lower_case }
   - { key: readability-identifier-naming.LocalPointerCase,         value: lower_case }
+  - { key: modernize-use-auto.RemoveStars,                         value: 1 }
+  - { key: modernize-use-auto.MinTypeNameLength,                   value: 0 }
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
 FormatStyle: none

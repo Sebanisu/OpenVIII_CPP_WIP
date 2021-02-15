@@ -32,34 +32,8 @@
 #include <thread>
 #include <type_traits>
 namespace open_viii::tools {
-template<typename T, std::ranges::contiguous_range T2>
-[[maybe_unused]] constexpr static bool any_of(const T & needle,
-                                              const T2 &haystack)
-{
-  return std::ranges::any_of(haystack, [&needle](const auto &value) -> bool {
-    return value == needle;
-  });
-}
-[[maybe_unused]] constexpr static void replace_slashes(std::string &haystack)
-{
-  std::ranges::replace(
-    haystack, '\\', std::filesystem::path::preferred_separator);
-}
-[[maybe_unused]] [[nodiscard]] static constexpr auto
-  i_find(const std::string_view &haystack, const std::string_view &needle)
-{
-  if (std::ranges::size(haystack) >= std::ranges::size(needle)) {
-    // clang tidy wants to make this a pointer. Bad idea.
-    // it's not a pointer in msvc.
-    const auto last = std::search(haystack.begin(),
-                                  haystack.end(),
-                                  needle.begin(),
-                                  needle.end(),
-                                  TOUPPER_EQUALS_PREDICATE);
-    return last != haystack.end();
-  }
-  return false;
-}
+
+
 template<std::ranges::contiguous_range rangeT>
 [[maybe_unused]] [[nodiscard]] static auto
   i_find_any(const std::string_view &haystack, const rangeT &needles)
