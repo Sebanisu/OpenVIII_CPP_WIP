@@ -12,6 +12,7 @@ namespace open_viii::tools {
  * char only pretty much.
  * @param s8 utf8 string_view
  * @return char string_view.
+ * @todo needs tests?
  */
 [[maybe_unused]] static std::string_view u8_to_sv(const std::u8string_view &s8)
 {
@@ -22,6 +23,7 @@ namespace open_viii::tools {
  * char only pretty much.
  * @param s8 utf8 string_view
  * @return char string
+ * @todo needs tests?
  */
 [[maybe_unused]] static std::string u8_to_s(const std::u8string_view &s8)
 {
@@ -37,5 +39,7 @@ static constexpr auto upper (int ch) {
   // toupper in standard library isn't constexpr
   return ::toupper(ch);
 }
+static_assert(upper('a') == 'A');
+static_assert(!(upper('a') == 'Z'));
 }
 #endif// VIIIARCHIVE_CONVERT_HPP
