@@ -34,16 +34,7 @@
 namespace open_viii::tools {
 
 
-template<std::ranges::contiguous_range rangeT>
-[[maybe_unused]] [[nodiscard]] static auto
-  i_find_any(const std::string_view &haystack, const rangeT &needles)
-{
-  return std::ranges::empty(needles)
-         || std::ranges::any_of(needles,
-                                [&haystack](const auto &needle) -> bool {
-                                  return i_find(haystack, needle);
-                                });
-}
+
 [[maybe_unused]] [[nodiscard]] static constexpr bool
   i_starts_with(const std::span<const char> haystack,
                 const std::span<const char> starting)

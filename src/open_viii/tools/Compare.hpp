@@ -5,6 +5,7 @@
 #define VIIIARCHIVE_COMPARE_HPP
 #include "Convert.hpp"
 #include <algorithm>
+#include <array>
 #include <ranges>
 #include <span>
 namespace open_viii::tools {
@@ -74,5 +75,27 @@ static_assert(!i_find(std::string_view("abc"), std::string_view("")));
 static_assert(!i_find(std::string_view(""), std::string_view("")));
 static_assert(!i_find(std::string_view(""), std::string_view("b")));
 static_assert(!i_find(std::string_view("abc"), std::string_view("0")));
+/**
+ * run i_find till with multiple needles till it finds a match
+ * @param haystack
+ * @param needles range of needles
+ * @return true if it finds a match
+ */
+[[maybe_unused]] [[nodiscard]] static constexpr bool
+  i_find_any(const std::span<const char>   haystack,
+             const std::ranges::range auto needles)
+{
+  return std::ranges::empty(needles)
+         || std::ranges::any_of(
+           needles, [haystack](const std::span<const char> needle) -> bool {
+             return i_find(haystack, needle);
+           });
+}
+static_assert(i_find_any(std::string_view("haystack.a"),
+                         std::array{ std::string_view(".a"),
+                                     std::string_view(".b") }));
+static_assert(!i_find_any(std::string_view("haystack.d"),
+                          std::array{ std::string_view(".a"),
+                                      std::string_view(".b") }));
 }// namespace open_viii::tools
 #endif// VIIIARCHIVE_COMPARE_HPP
