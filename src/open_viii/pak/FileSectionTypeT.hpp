@@ -1,14 +1,12 @@
 //
 // Created by pcvii on 10/30/2020.
 //
-
 #ifndef VIIIARCHIVE_FILESECTIONTYPET_HPP
 #define VIIIARCHIVE_FILESECTIONTYPET_HPP
 #include "open_viii/tools/Tools.hpp"
 #include <algorithm>
 #include <ranges>
 #include <string_view>
-
 namespace open_viii::FileSectionTypeT {
 /**
  * None; no type defined.
@@ -34,8 +32,8 @@ constexpr static auto KB2 = std::string_view("KB2");
  */
 template<bool rewind = false> static auto get_type(std::istream &is)
 {
-  static constexpr auto sz = 3U;
-  const auto get_type_int = [&is]() {
+  static constexpr auto sz           = 3U;
+  const auto            get_type_int = [&is]() {
     return tools::read_val<std::array<char, sz>>(is);
   };
   if constexpr (rewind) {
@@ -55,8 +53,8 @@ template<bool rewind = false> static auto get_type(std::istream &is)
  * @return true or false
  */
 template<typename needleT, typename... haystackT>
-constexpr static bool valid_type(
-  const needleT &needle, const haystackT &...haystack)
+constexpr static bool valid_type(const needleT &needle,
+                                 const haystackT &...haystack)
 {
   if constexpr (sizeof...(haystack) == 0) {
     return valid_type(needle, CAM, BIK, KB2);
@@ -78,9 +76,9 @@ constexpr static bool valid_type(
  * @return returns the found value.
  */
 template<typename needleT, typename first_haystackT, typename... haystackT>
-constexpr static auto find_type(const needleT &needle,
-  const first_haystackT &first_haystack,
-  const haystackT &...haystack) noexcept
+constexpr static auto find_type(const needleT &        needle,
+                                const first_haystackT &first_haystack,
+                                const haystackT &...haystack) noexcept
 {
   if (std::ranges::equal(needle, first_haystack)) {
     return first_haystack;
@@ -105,7 +103,6 @@ constexpr static auto find_type(const needleT &needle) noexcept
 static_assert(valid_type(CAM));
 static_assert(valid_type(BIK));
 static_assert(valid_type(KB2));
-
 static_assert(valid_type(find_type(CAM)));
 static_assert(valid_type(find_type(BIK)));
 static_assert(valid_type(find_type(KB2)));

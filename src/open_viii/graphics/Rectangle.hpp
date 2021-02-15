@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_RECTANGLE_HPP
 #define VIIIARCHIVE_RECTANGLE_HPP
 #include "open_viii/Concepts.hpp"
@@ -28,13 +27,10 @@ template<Number dimT> struct Rectangle
 private:
   Point<dimT> m_top_left{};
   Point<dimT> m_width_height{};
-
 public:
   constexpr Rectangle() = default;
-  constexpr auto operator<=>(
-    const Rectangle<dimT> &right) const noexcept = default;
-
-
+  constexpr auto
+    operator<=>(const Rectangle<dimT> &right) const noexcept = default;
   constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw)
     : m_top_left(xy), m_width_height(hw)
   {}
@@ -42,15 +38,14 @@ public:
   requires(!std::is_same_v<T, dimT>) constexpr explicit Rectangle(
     const Rectangle<T> &r)
     : Rectangle(static_cast<Point<dimT>>(r.m_top_left),
-      static_cast<Point<dimT>>(r.m_width_height))
+                static_cast<Point<dimT>>(r.m_width_height))
   {}
   constexpr Rectangle(const dimT &in_x,
-    const dimT &in_y,
-    const dimT &in_width,
-    const dimT &in_height) noexcept
+                      const dimT &in_y,
+                      const dimT &in_width,
+                      const dimT &in_height) noexcept
     : Rectangle(Point<dimT>(in_x, in_y), Point<dimT>(in_width, in_height))
   {}
-
   /**
    * @return Left coordinate.
    */
@@ -65,7 +60,6 @@ public:
   {
     return m_top_left.x();
   }
-
   /**
    *
    * @param x is new Left coordinate.
@@ -108,7 +102,6 @@ public:
   {
     m_top_left.y(in_y);
   }
-
   /**
    *
    * @param y is new Top coordinate.
@@ -118,8 +111,6 @@ public:
   {
     y(in_y);
   }
-
-
   /**
    * @return Right coordinate.
    */
@@ -127,7 +118,6 @@ public:
   {
     return m_top_left.x() + m_width_height.y();
   }
-
   /**
    * @return Set Right coordinate.
    */
@@ -138,7 +128,6 @@ public:
     }
     m_width_height.X(right - m_top_left.x());
   }
-
   /**
    * @return Set Bottom coordinate.
    */
@@ -163,7 +152,6 @@ public:
   {
     return m_width_height.x();
   }
-
   /**
    *
    * @param width is new Width value.
@@ -189,29 +177,27 @@ public:
   {
     m_width_height.y(in_height);
   }
-
   [[nodiscard]] constexpr auto area() const noexcept
   {
     return m_width_height.area();
   }
-  friend std::ostream &operator<<(
-    std::ostream &os, const Rectangle<dimT> &input)
+  friend std::ostream &operator<<(std::ostream &         os,
+                                  const Rectangle<dimT> &input)
   {
     return os << "{(X, Y) = " << input.m_top_left
               << ", (Width, Height) = " << input.m_width_height << '}';
   }
-
-  Rectangle<dimT> constexpr operator/(
-    const Rectangle<dimT> &input) const noexcept
+  Rectangle<dimT> constexpr
+    operator/(const Rectangle<dimT> &input) const noexcept
   {
     return { m_top_left / input.m_top_left,
-      m_width_height / input.m_width_height };
+             m_width_height / input.m_width_height };
   }
-  Rectangle<dimT> constexpr operator*(
-    const Rectangle<dimT> &input) const noexcept
+  Rectangle<dimT> constexpr
+    operator*(const Rectangle<dimT> &input) const noexcept
   {
     return { m_top_left * input.m_top_left,
-      m_width_height * input.m_width_height };
+             m_width_height * input.m_width_height };
   }
   constexpr Point<dimT> top_left() const noexcept
   {

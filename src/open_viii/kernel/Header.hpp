@@ -52,16 +52,18 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 // will be moving kernel into it"s own project once it"svs more fully baked.
 namespace open_viii::kernel {
-template<LangT langVal> struct Header
+struct Header
 {
   // https://github.com/alexfilth/doomtrain/wiki/Header
 private:
   std::vector<char>          m_buffer{};
   std::vector<std::uint32_t> m_section_offsets{};
   static constexpr auto      FILE_NAME = std::string_view{ "kernel.bin" };
+
 public:
   template<SectionTypesT sectionType> static consteval bool section_type_test()
   {
@@ -100,89 +102,88 @@ public:
         get_span<sectionType>(), get_span<SectionTypesT::battle_commands_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::magic) {
-      return BulkSectionData<Magic<langVal>>{
-        get_span<sectionType>(), get_span<SectionTypesT::magic_text>()
-      };
+      return BulkSectionData<Magic>{ get_span<sectionType>(),
+                                     get_span<SectionTypesT::magic_text>() };
     } else if constexpr (sectionType == SectionTypesT::junctionable_g_fs) {
-      return BulkSectionData<JunctionableGFs<langVal>>{
+      return BulkSectionData<JunctionableGFs>{
         get_span<sectionType>(),
         get_span<SectionTypesT::junctionable_g_fs_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::enemy_attacks) {
-      return BulkSectionData<EnemyAttacks<langVal>>{
+      return BulkSectionData<EnemyAttacks>{
         get_span<sectionType>(), get_span<SectionTypesT::enemy_attacks_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::weapons) {
-      return BulkSectionData<Weapons<langVal>>{
+      return BulkSectionData<Weapons>{
         get_span<sectionType>(), get_span<SectionTypesT::weapons_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::renzokuken_finishers) {
-      return BulkSectionData<RenzokukenFinishers<langVal>>{
+      return BulkSectionData<RenzokukenFinishers>{
         get_span<sectionType>(),
         get_span<SectionTypesT::renzokuken_finishers_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::characters) {
-      return BulkSectionData<Characters<langVal>>{
+      return BulkSectionData<Characters>{
         get_span<sectionType>(), get_span<SectionTypesT::characters_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::battle_items) {
-      return BulkSectionData<BattleItems<langVal>>{
+      return BulkSectionData<BattleItems>{
         get_span<sectionType>(), get_span<SectionTypesT::battle_items_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::non_battle_items) {
-      return BulkSectionData<NonBattleItems<langVal>>{
+      return BulkSectionData<NonBattleItems>{
         get_span<sectionType>(),
         get_span<SectionTypesT::non_battle_items_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::non_junctionable_g_fs) {
-      return BulkSectionData<NonJunctionableGFs<langVal>>{
+      return BulkSectionData<NonJunctionableGFs>{
         get_span<sectionType>(),
         get_span<SectionTypesT::non_junctionable_g_fs_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::command_abilities_data) {
       return BulkSectionData<CommandAbilitiesData>{ get_span<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::junction_abilities) {
-      return BulkSectionData<JunctionAbilities<langVal>>{
+      return BulkSectionData<JunctionAbilities>{
         get_span<sectionType>(),
         get_span<SectionTypesT::junction_abilities_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::command_abilities) {
-      return BulkSectionData<CommandAbilities<langVal>>{
+      return BulkSectionData<CommandAbilities>{
         get_span<sectionType>(),
         get_span<SectionTypesT::character_abilities_text>()
       };
     } else if constexpr (sectionType
                          == SectionTypesT::stat_percent_increase_abilities) {
-      return BulkSectionData<StatPercentIncreaseAbilities<langVal>>{
+      return BulkSectionData<StatPercentIncreaseAbilities>{
         get_span<sectionType>(),
         get_span<SectionTypesT::stat_percent_increase_abilities_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::character_abilities) {
-      return BulkSectionData<CharacterAbilities<langVal>>{
+      return BulkSectionData<CharacterAbilities>{
         get_span<sectionType>(),
         get_span<SectionTypesT::character_abilities_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::party_abilities) {
-      return BulkSectionData<PartyAbilities<langVal>>{
+      return BulkSectionData<PartyAbilities>{
         get_span<sectionType>(), get_span<SectionTypesT::party_abilities_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::gf_abilities) {
-      return BulkSectionData<GFAbilities<langVal>>{
+      return BulkSectionData<GFAbilities>{
         get_span<sectionType>(), get_span<SectionTypesT::gf_abilities_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::menu_abilities) {
-      return BulkSectionData<MenuAbilities<langVal>>{
+      return BulkSectionData<MenuAbilities>{
         get_span<sectionType>(), get_span<SectionTypesT::menu_abilities_text>()
       };
     } else if constexpr (sectionType
                          == SectionTypesT::team_laguna_limit_breaks) {
-      return BulkSectionData<TeamLagunaLimitBreaks<langVal>>{
+      return BulkSectionData<TeamLagunaLimitBreaks>{
         get_span<sectionType>(),
         get_span<SectionTypesT::team_laguna_limit_breaks_text>()
       };
     } else if constexpr (sectionType
                          == SectionTypesT::quistis_blue_magic_limit_break) {
-      return BulkSectionData<QuistisBlueMagicLimitBreak<langVal>>{
+      return BulkSectionData<QuistisBlueMagicLimitBreak>{
         get_span<sectionType>(),
         get_span<SectionTypesT::quistis_blue_magic_limit_break_text>()
       };
@@ -194,12 +195,12 @@ public:
       };
     } else if constexpr (sectionType
                          == SectionTypesT::irvine_shot_limit_break) {
-      return BulkSectionData<IrvineShotLimitBreak<langVal>>{
+      return BulkSectionData<IrvineShotLimitBreak>{
         get_span<sectionType>(),
         get_span<SectionTypesT::irvine_shot_limit_break_text>()
       };
     } else if constexpr (sectionType == SectionTypesT::zell_duel_limit_break) {
-      return BulkSectionData<ZellDuelLimitBreak<langVal>>{
+      return BulkSectionData<ZellDuelLimitBreak>{
         get_span<sectionType>(),
         get_span<SectionTypesT::zell_duel_limit_break_text>()
       };
@@ -210,13 +211,13 @@ public:
       };
     } else if constexpr (sectionType
                          == SectionTypesT::rinoa_limit_break_part1) {
-      return BulkSectionData<RinoaLimitBreakPart1<langVal>>{
+      return BulkSectionData<RinoaLimitBreakPart1>{
         get_span<sectionType>(),
         get_span<SectionTypesT::rinoa_limit_break_part1_text>()
       };
     } else if constexpr (sectionType
                          == SectionTypesT::rinoa_limit_break_part2) {
-      return BulkSectionData<RinoaLimitBreakPart2<langVal>>{
+      return BulkSectionData<RinoaLimitBreakPart2>{
         get_span<sectionType>(),
         get_span<SectionTypesT::rinoa_limit_break_part2_text>()
       };
@@ -225,15 +226,13 @@ public:
     } else if constexpr (sectionType == SectionTypesT::slots_sets) {
       return BulkSectionData<SlotsSets>{ get_span<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::devour) {
-      return BulkSectionData<Devour<langVal>>{
-        get_span<sectionType>(), get_span<SectionTypesT::devour_text>()
-      };
+      return BulkSectionData<Devour>{ get_span<sectionType>(),
+                                      get_span<SectionTypesT::devour_text>() };
     } else if constexpr (sectionType == SectionTypesT::misc) {
       return BulkSectionData<Misc>{ get_span<sectionType>() };
     } else if constexpr (sectionType == SectionTypesT::misc_text_pointers) {
-      return BulkSectionData<MiscText<langVal>>{
-        get_span<sectionType>(), get_span<SectionTypesT::misc_text>()
-      };
+      return BulkSectionData<MiscText>{ get_span<sectionType>(),
+                                        get_span<SectionTypesT::misc_text>() };
     } else {
       // anything that isn't a main section like Text is returning null here.
       return nullptr;
@@ -243,142 +242,7 @@ public:
   requires(section_type_test<sectionType>())
     [[nodiscard]] constexpr std::string_view get_section_name() const
   {
-    using namespace std::string_view_literals;
-    if constexpr (sectionType == SectionTypesT::battle_commands) {
-      return "Battle Commands"sv;
-    } else if constexpr (sectionType == SectionTypesT::magic) {
-      return "Magic"sv;
-    } else if constexpr (sectionType == SectionTypesT::junctionable_g_fs) {
-      return "Junctionable GFs"sv;
-    } else if constexpr (sectionType == SectionTypesT::enemy_attacks) {
-      return "Enemy Attacks"sv;
-    } else if constexpr (sectionType == SectionTypesT::weapons) {
-      return "Weapons"sv;
-    } else if constexpr (sectionType == SectionTypesT::renzokuken_finishers) {
-      return "Renzokuken Finishers"sv;
-    } else if constexpr (sectionType == SectionTypesT::characters) {
-      return "Characters"sv;
-    } else if constexpr (sectionType == SectionTypesT::battle_items) {
-      return "Battle Items"sv;
-    } else if constexpr (sectionType == SectionTypesT::non_battle_items) {
-      return "Non Battle Items"sv;
-    } else if constexpr (sectionType == SectionTypesT::non_junctionable_g_fs) {
-      return "Non Junctionable GFs"sv;
-    } else if constexpr (sectionType == SectionTypesT::command_abilities_data) {
-      return "Command AbilitiesData"sv;
-    } else if constexpr (sectionType == SectionTypesT::junction_abilities) {
-      return "Junction Abilities"sv;
-    } else if constexpr (sectionType == SectionTypesT::command_abilities) {
-      return "Command Abilities"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::stat_percent_increase_abilities) {
-      return "Stat Percent Increase Abilities"sv;
-    } else if constexpr (sectionType == SectionTypesT::character_abilities) {
-      return "Character Abilities"sv;
-    } else if constexpr (sectionType == SectionTypesT::party_abilities) {
-      return "Party Abilities"sv;
-    } else if constexpr (sectionType == SectionTypesT::gf_abilities) {
-      return "GF Abilities"sv;
-    } else if constexpr (sectionType == SectionTypesT::menu_abilities) {
-      return "Menu Abilities"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::team_laguna_limit_breaks) {
-      return "Team Laguna Limit Breaks"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::quistis_blue_magic_limit_break) {
-      return "Quistis Blue Magic Limit Break"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::
-                           quistis_blue_magic_limit_break_params) {
-      return "Quistis Blue Magic Limit Break Params"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::irvine_shot_limit_break) {
-      return "Irvine Shot Limit Break"sv;
-    } else if constexpr (sectionType == SectionTypesT::zell_duel_limit_break) {
-      return "Zell Duel Limit Break"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::zell_duel_limit_break_params) {
-      return "Zell Duel Limit Break Params"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::rinoa_limit_break_part1) {
-      return "Rinoa Limit Break Part 1"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::rinoa_limit_break_part2) {
-      return "Rinoa Limit Break Part 2"sv;
-    } else if constexpr (sectionType == SectionTypesT::slots_array) {
-      return "Slots Array"sv;
-    } else if constexpr (sectionType == SectionTypesT::slots_sets) {
-      return "Slots Sets"sv;
-    } else if constexpr (sectionType == SectionTypesT::devour) {
-      return "Devour"sv;
-    } else if constexpr (sectionType == SectionTypesT::misc) {
-      return "Misc"sv;
-    } else if constexpr (sectionType == SectionTypesT::misc_text_pointers) {
-      return "Misc Text Pointers"sv;
-    } else if constexpr (sectionType == SectionTypesT::battle_commands_text) {
-      return "Battle Commands Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::magic_text) {
-      return "Magic Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::junctionable_g_fs_text) {
-      return "Junctionable GFs Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::enemy_attacks_text) {
-      return "Enemy Attacks Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::weapons_text) {
-      return "Weapons Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::renzokuken_finishers_text) {
-      return "Renzokuken Finishers Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::characters_text) {
-      return "Characters Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::battle_items_text) {
-      return "Battle Items Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::non_battle_items_text) {
-      return "Non Battle Items Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::non_junctionable_g_fs_text) {
-      return "Non Junctionable GFs Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::junction_abilities_text) {
-      return "Junction Abilities Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::command_abilities_text) {
-      return "Command Abilities Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::
-                           stat_percent_increase_abilities_text) {
-      return "Stat Percent Increase Abilities Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::character_abilities_text) {
-      return "Character Abilities Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::party_abilities_text) {
-      return "Party Abilities Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::gf_abilities_text) {
-      return "GF Abilities Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::menu_abilities_text) {
-      return "Menu Abilities Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::team_laguna_limit_breaks_text) {
-      return "Team Laguna Limit Breaks Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::
-                           quistis_blue_magic_limit_break_text) {
-      return "Quistis Blue Magic Limit Break Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::irvine_shot_limit_break_text) {
-      return "Irvine Shot Limit Break Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::zell_duel_limit_break_text) {
-      return "Zell Duel Limit Break Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::rinoa_limit_break_part1_text) {
-      return "Rinoa Limit Break Part 1 Text"sv;
-    } else if constexpr (sectionType
-                         == SectionTypesT::rinoa_limit_break_part2_text) {
-      return "Rinoa Limit Break Part 2 Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::devour_text) {
-      return "Devour Text"sv;
-    } else if constexpr (sectionType == SectionTypesT::misc_text) {
-      return "Misc Text"sv;
-    }
+    return {};
   }
   template<FIFLFS_Has_get_entry_data mainT> explicit Header(const mainT &main)
   {
@@ -414,33 +278,381 @@ public:
   {
     return m_section_offsets;
   }
-  template<int First = static_cast<int>(SectionTypesT::first),
-           int Count = static_cast<int>(SectionTypesT::count),
+  /**
+   * static_for loop through each valid SectionTypesT
+   * @tparam Begin
+   * @tparam End
+   * @tparam Lambda type of f
+   * @param f
+   * @see
+   * https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
+   */
+  template<int Begin = static_cast<int>(SectionTypesT::begin),
+           int End   = static_cast<int>(SectionTypesT::end),
            typename Lambda>
-  requires(
-    section_type_test<static_cast<SectionTypesT>(First)>()
-    && (section_type_test<static_cast<SectionTypesT>(Count)>()
-        || Count
-             == static_cast<int>(
-               SectionTypesT::
-                 count))) void static_for([[maybe_unused]] const Lambda &f)
-  {// https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
+  requires(section_type_test<static_cast<SectionTypesT>(Begin)>() && Begin < End
+           && (section_type_test<static_cast<SectionTypesT>(End)>()
+               || End
+                    == static_cast<int>(
+                      SectionTypesT::
+                        end))) void static_for([[maybe_unused]] const Lambda &f)
+  {
     if (std::ranges::empty(m_buffer)) {
       return;
     }
-    if constexpr (First < Count) {
-      constexpr auto sectionType =
-        std::integral_constant<SectionTypesT,
-                               static_cast<SectionTypesT>(First)>{};
-      const auto data = get_section_data<sectionType>();
-      if constexpr (!std::is_null_pointer_v<decltype(data)>) {
-        f(get_section_name<sectionType>(), get_span<sectionType>(), data);
-      }
-      if constexpr (First + 1 < Count) {
-        static_for<First + 1, Count>(f);
-      }
+    constexpr auto sectionType =
+      std::integral_constant<SectionTypesT,
+                             static_cast<SectionTypesT>(Begin)>{};
+    const auto data = get_section_data<sectionType>();
+    if constexpr (!std::is_null_pointer_v<decltype(data)>) {
+      f(get_section_name<sectionType>(), get_span<sectionType>(), data);
     }
+    if constexpr (Begin + 1 < End) {
+      static_for<Begin + 1, End>(f);
+    }
+    // TODO see if i can pass the integral constant instead of passing values to
+    // the lambda. As template arguments.
   }
-};// namespace open_viii::kernel
+};
+using namespace std::string_view_literals;
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::battle_commands>() const
+{
+  return "Battle Commands"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::magic>() const
+{
+  return "Magic"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::junctionable_g_fs>() const
+{
+  return "Junctionable GFs"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::enemy_attacks>() const
+{
+  return "Enemy Attacks"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::weapons>() const
+{
+  return "Weapons"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::renzokuken_finishers>() const
+{
+  return "Renzokuken Finishers"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::characters>() const
+{
+  return "Characters"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::battle_items>() const
+{
+  return "Battle Items"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::non_battle_items>() const
+{
+  return "Non Battle Items"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::non_junctionable_g_fs>() const
+{
+  return "Non Junctionable GFs"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::command_abilities_data>() const
+{
+  return "Command AbilitiesData"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::junction_abilities>() const
+{
+  return "Junction Abilities"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::command_abilities>() const
+{
+  return "Command Abilities"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::stat_percent_increase_abilities>()
+    const
+{
+  return "Stat Percent Increase Abilities"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::character_abilities>() const
+{
+  return "Character Abilities"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::party_abilities>() const
+{
+  return "Party Abilities"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::gf_abilities>() const
+{
+  return "GF Abilities"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::menu_abilities>() const
+{
+  return "Menu Abilities"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::team_laguna_limit_breaks>() const
+{
+  return "Team Laguna Limit Breaks"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::quistis_blue_magic_limit_break>()
+    const
+{
+  return "Quistis Blue Magic Limit Break"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view Header::get_section_name<
+  SectionTypesT::quistis_blue_magic_limit_break_params>() const
+{
+  return "Quistis Blue Magic Limit Break Params"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::irvine_shot_limit_break>() const
+{
+  return "Irvine Shot Limit Break"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::zell_duel_limit_break>() const
+{
+  return "Zell Duel Limit Break"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::zell_duel_limit_break_params>() const
+{
+  return "Zell Duel Limit Break Params"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::rinoa_limit_break_part1>() const
+{
+  return "Rinoa Limit Break Part 1"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::rinoa_limit_break_part2>() const
+{
+  return "Rinoa Limit Break Part 2"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::slots_array>() const
+{
+  return "Slots Array"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::slots_sets>() const
+{
+  return "Slots Sets"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::devour>() const
+{
+  return "Devour"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::misc>() const
+{
+  return "Misc"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::misc_text_pointers>() const
+{
+  return "Misc Text Pointers"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::battle_commands_text>() const
+{
+  return "Battle Commands Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::magic_text>() const
+{
+  return "Magic Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::junctionable_g_fs_text>() const
+{
+  return "Junctionable GFs Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::enemy_attacks_text>() const
+{
+  return "Enemy Attacks Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::weapons_text>() const
+{
+  return "Weapons Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::renzokuken_finishers_text>() const
+{
+  return "Renzokuken Finishers Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::characters_text>() const
+{
+  return "Characters Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::battle_items_text>() const
+{
+  return "Battle Items Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::non_battle_items_text>() const
+{
+  return "Non Battle Items Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::non_junctionable_g_fs_text>() const
+{
+  return "Non Junctionable GFs Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::junction_abilities_text>() const
+{
+  return "Junction Abilities Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::command_abilities_text>() const
+{
+  return "Command Abilities Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view Header::get_section_name<
+  SectionTypesT::stat_percent_increase_abilities_text>() const
+{
+  return "Stat Percent Increase Abilities Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::character_abilities_text>() const
+{
+  return "Character Abilities Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::party_abilities_text>() const
+{
+  return "Party Abilities Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::gf_abilities_text>() const
+{
+  return "GF Abilities Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::menu_abilities_text>() const
+{
+  return "Menu Abilities Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::team_laguna_limit_breaks_text>() const
+{
+  return "Team Laguna Limit Breaks Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::quistis_blue_magic_limit_break_text>()
+    const
+{
+  return "Quistis Blue Magic Limit Break Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::irvine_shot_limit_break_text>() const
+{
+  return "Irvine Shot Limit Break Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::zell_duel_limit_break_text>() const
+{
+  return "Zell Duel Limit Break Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::rinoa_limit_break_part1_text>() const
+{
+  return "Rinoa Limit Break Part 1 Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::rinoa_limit_break_part2_text>() const
+{
+  return "Rinoa Limit Break Part 2 Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::devour_text>() const
+{
+  return "Devour Text"sv;
+}
+template<>
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<SectionTypesT::misc_text>() const
+{
+  return "Misc Text"sv;
+}
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_KERNEL_HEADER_H

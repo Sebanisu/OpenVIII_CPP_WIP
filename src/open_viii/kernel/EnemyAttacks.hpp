@@ -21,9 +21,9 @@
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-template<LangT langVal> struct EnemyAttacks
+struct EnemyAttacks
 {
-  /* https://github.com/DarkShinryu/doomtrain/wiki/Enemy-attacks
+  /**
    * Offset	Length	Description
    * 0x00	2 bytes	Offset to attack name
    * 0x02	2 bytes	Magic ID
@@ -39,6 +39,7 @@ template<LangT langVal> struct EnemyAttacks
    * 0x0D	1 byte	Attack Parameter
    * 0x0E	2 bytes	status_0; //statuses 0-7
    * 0x10	4 bytes	status_1; //statuses 8-31
+   * @see https://github.com/DarkShinryu/doomtrain/wiki/Enemy-attacks
    */
 private:
   EncodedStringOffset m_name_offset{};
@@ -57,7 +58,7 @@ private:
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-31
 public:
   constexpr auto
-    operator<=>(const EnemyAttacks<langVal> &right) const noexcept = default;
+    operator<=>(const EnemyAttacks &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -115,12 +116,9 @@ public:
   {
     return m_battle_only_statuses;
   }// statuses 8-31
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name) << ", ";
-    }
     return os
            << static_cast<std::uint32_t>(m_magic_id) << ", " << m_camera_change
            << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "

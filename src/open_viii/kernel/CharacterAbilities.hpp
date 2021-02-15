@@ -17,14 +17,14 @@
 #include <compare>
 #include <cstring>
 namespace open_viii::kernel {
-template<LangT langVal> struct CharacterAbilities
+struct CharacterAbilities
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Character-abilities
+  /**
    * 0x0000	2 bytes	Offset to ability name
    * 0x0002	2 bytes	Offset to ability description
    * 0x0004	1 byte	AP Required to learn ability
    * 0x0005	3 byte	Flags
+   * @see https://github.com/DarkShinryu/doomtrain/wiki/Character-abilities
    */
 private:
   EncodedStringOffset m_name_offset{};
@@ -37,8 +37,8 @@ private:
 
 public:
   constexpr static auto EXPECTED_SIZE = 8U;
-  constexpr auto        operator<=>(
-    const CharacterAbilities<langVal> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const CharacterAbilities &right) const noexcept = default;
   [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -73,23 +73,15 @@ public:
     //    return out;
     return static_cast<CharacterAbilityFlagsT>(m_character_ability_flags);
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     auto test = character_ability_flags();
     return os << ", "
               << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
               << ", " << static_cast<uint32_t>(test);
   }
 };
-static_assert(sizeof(CharacterAbilities<LangT::en>)
-              == CharacterAbilities<LangT::en>::EXPECTED_SIZE);
+static_assert(sizeof(CharacterAbilities) == CharacterAbilities::EXPECTED_SIZE);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_CHARACTERABILITIES_HPP

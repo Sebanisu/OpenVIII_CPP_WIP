@@ -10,11 +10,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TEXHEADER2_HPP
 #define VIIIARCHIVE_TEXHEADER2_HPP
 #include <cstdint>
-
 namespace open_viii::graphics {
 /**
  * texHeader2 contains extra values
@@ -70,7 +68,6 @@ private:
    * Unknown 10
    */
   std::uint32_t m_unknown_10{};
-
 public:
   // Header 2
   /**
@@ -159,5 +156,4 @@ public:
   }
 };
 }// namespace open_viii::graphics
-
 #endif// VIIIARCHIVE_TEXHEADER2_HPP

@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TDW_HPP
 #define VIIIARCHIVE_TDW_HPP
 #include "Bit4Values.hpp"
@@ -24,22 +23,21 @@ namespace open_viii::graphics {
 struct Tdw
 {
 private:
-  static constexpr auto WIDTHS_OFFSET_VALUE = 8U;
-  std::uint32_t m_widths_offset{};
-  std::uint32_t m_tim_offset{};
+  static constexpr auto   WIDTHS_OFFSET_VALUE = 8U;
+  std::uint32_t           m_widths_offset{};
+  std::uint32_t           m_tim_offset{};
   std::vector<Bit4Values> m_widths{};
-  Tim m_tim{};
-  [[nodiscard]] auto widths_size() const noexcept
+  Tim                     m_tim{};
+  [[nodiscard]] auto      widths_size() const noexcept
   {
     return m_tim_offset - m_widths_offset;
   }
-
 public:
   Tdw() = default;
   explicit Tdw([[maybe_unused]] std::span<const char> buffer)
   {
-    const auto buffer_bak = buffer;
-    constexpr static std::size_t sz32 = sizeof(std::uint32_t);
+    const auto                   buffer_bak = buffer;
+    constexpr static std::size_t sz32       = sizeof(std::uint32_t);
     if (std::ranges::size(buffer) < sz32) {
       return;
     }
@@ -54,15 +52,14 @@ public:
     }
     std::memcpy(&m_tim_offset, std::ranges::data(buffer), sz32);
     buffer = buffer.subspan(sz32);
-
     if (std::ranges::size(buffer) < widths_size()) {
       return;
     }
     if (widths_size() > 0) {
       m_widths.resize(widths_size());
       std::memcpy(std::ranges::data(m_widths),
-        std::ranges::data(buffer_bak.subspan(m_widths_offset)),
-        widths_size());
+                  std::ranges::data(buffer_bak.subspan(m_widths_offset)),
+                  widths_size());
     }
     m_tim = Tim{ buffer_bak.subspan(m_tim_offset) };
   }

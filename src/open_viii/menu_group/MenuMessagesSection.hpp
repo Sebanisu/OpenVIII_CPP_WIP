@@ -10,22 +10,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_MENUMESSAGESSECTION_HPP
 #define VIIIARCHIVE_MENUMESSAGESSECTION_HPP
-
 #include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::menu_group {
 struct MenuMessagesSection
 {
 private:
   std::vector<EncodedStringOffset> m_data{};
-
-  [[nodiscard]] auto *data()
+  [[nodiscard]] auto *             data()
   {
     return m_data.data();
   }
-
 public:
   MenuMessagesSection() = default;
   //  explicit MenuMessagesSection(const size_t & count)
@@ -68,10 +64,9 @@ public:
   template<typename T = std::vector<char>>
   explicit MenuMessagesSection(const T &buffer)
   {
-
     //[Count of Subsections] = [Start of file] + [Section value]
     std::uint16_t subSectionCount{};
-    auto *ptr = buffer.data();
+    auto *        ptr = buffer.data();
     std::memcpy(&subSectionCount, ptr, sizeof(std::uint16_t));
     ptr += sizeof(std::uint16_t);
     auto totalBytes = subSectionCount * sizeof(std::uint16_t);

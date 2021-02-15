@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 11/17/2020.
 //
-
 #ifndef VIIIARCHIVE_GEOMETRY_HPP
 #define VIIIARCHIVE_GEOMETRY_HPP
 #include "GeometryHeader1.hpp"
@@ -10,8 +9,6 @@
 #include "open_viii/graphics/Vertice.hpp"
 #include <vector>
 namespace open_viii::battle::stage {
-
-
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Geometry
  * Offset	Length	Description
@@ -35,10 +32,10 @@ private:
   std::vector<graphics::Vertice<std::int16_t>>
     m_vertices{};// use calc pad after reading this to see how many bytes to
                  // skip
-  GeometryHeader2 m_geometry_header2{};
+  GeometryHeader2       m_geometry_header2{};
   std::vector<Triangle> m_triangles{};
   std::vector<Triangle> m_quads{};
-  static long calc_pad(long position)
+  static long           calc_pad(long position)
   {
     return (position % 4) + 4;
   }

@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TEXIDBUFFER_HPP
 #define VIIIARCHIVE_TEXIDBUFFER_HPP
 #include "open_viii/graphics/BPPT.hpp"
@@ -33,15 +32,13 @@ private:
   static constexpr std::uint16_t DEPTH_SHIFT{ 7U };
   static constexpr std::uint16_t UNK_MASK{ 0b1111'1110'0000'0000U };
   static constexpr std::uint16_t UNK_SHIFT{ 9U };
-  std::uint16_t m_data{};
-
+  std::uint16_t                  m_data{};
 public:
   TexIdBuffer() = default;
   friend auto operator==(const TexIdBuffer &left, const TexIdBuffer &right)
   {
     return left.m_data == right.m_data;
   }
-
   [[nodiscard]] std::uint8_t id() const noexcept
   {
     return static_cast<std::uint8_t>(m_data & ID_MASK);

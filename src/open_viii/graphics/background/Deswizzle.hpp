@@ -10,11 +10,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_DESWIZZLE_HPP
 #define VIIIARCHIVE_DESWIZZLE_HPP
 #include <utility>
-
 #include "Map.hpp"
 #include "MimFromPath.hpp"
 namespace open_viii::graphics::background {
@@ -25,26 +23,27 @@ namespace open_viii::graphics::background {
  */
 template<typename map_type, typename mim_type = Mim>
 requires(
-  std::is_same_v<map_type,
+  std::is_same_v<
+    map_type,
     Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct
   Deswizzle
 {
 private:
   using outColorT = Color24<0, 1, 2>;
-  const mim_type &m_mim{};
-  const Map<map_type> &m_map{};
-  const std::string m_path{};
+  const mim_type &                m_mim{};
+  const Map<map_type> &           m_map{};
+  const std::string               m_path{};
   const std::vector<std::uint8_t> m_unique_palettes{};
-  const Rectangle<std::int32_t> m_canvas{};
-  const std::vector<Pupu> m_unique_pupus{};
-  auto find_unique_palettes() const
+  const Rectangle<std::int32_t>   m_canvas{};
+  const std::vector<Pupu>         m_unique_pupus{};
+  auto                            find_unique_palettes() const
   {
-    const auto &tiles = m_map.tiles();
-    auto pupu_view = tiles | std::views::transform([](const auto &tile) {
-      return tile.palette_id();
-    });
-    auto out = std::vector<uint8_t>(
-      std::ranges::begin(pupu_view), std::ranges::end(pupu_view));
+    const auto &tiles     = m_map.tiles();
+    auto        pupu_view = tiles | std::views::transform([](const auto &tile) {
+                       return tile.palette_id();
+                     });
+    auto        out       = std::vector<uint8_t>(std::ranges::begin(pupu_view),
+                                    std::ranges::end(pupu_view));
     std::sort(out.begin(), out.end());
     auto last = std::unique(std::ranges::begin(out), std::ranges::end(out));
     out.erase(last, std::ranges::end(out));
@@ -52,12 +51,12 @@ private:
   }
   auto find_unique_pupu() const
   {
-    const auto &tiles = m_map.tiles();
-    auto pupu_view = tiles | std::views::transform([](const auto &tile) {
-      return Pupu(tile);
-    });
-    auto out = std::vector<Pupu>(
-      std::ranges::begin(pupu_view), std::ranges::end(pupu_view));
+    const auto &tiles     = m_map.tiles();
+    auto        pupu_view = tiles | std::views::transform([](const auto &tile) {
+                       return Pupu(tile);
+                     });
+    auto        out       = std::vector<Pupu>(std::ranges::begin(pupu_view),
+                                 std::ranges::end(pupu_view));
     std::sort(out.begin(), out.end());
     auto last = std::unique(std::ranges::begin(out), std::ranges::end(out));
     out.erase(last, std::ranges::end(out));
@@ -71,27 +70,27 @@ private:
   {
     std::ranges::for_each(m_unique_palettes, lambda);
   }
-  void save_out_buffer_and_clear(
-    std::vector<outColorT> &out, const Pupu &pupu) const
+  void save_out_buffer_and_clear(std::vector<outColorT> &out,
+                                 const Pupu &            pupu) const
   {
-    auto path_v = std::filesystem::path(m_path);
-    std::stringstream ss{};
+    auto                  path_v = std::filesystem::path(m_path);
+    std::stringstream     ss{};
     constexpr static auto hex_width = 16U;
     ss << (path_v.parent_path() / path_v.stem()).string() << '_'
        << std::uppercase << std::hex << std::setfill('0')
        << std::setw(hex_width) << pupu << ".mimmap";
     Ppm::save(out,
-      static_cast<uint32_t>(m_canvas.width()),
-      static_cast<uint32_t>(m_canvas.height()),
-      ss.str(),
-      true);
+              static_cast<uint32_t>(m_canvas.width()),
+              static_cast<uint32_t>(m_canvas.height()),
+              ss.str(),
+              true);
     static constexpr auto blank = outColorT{};
     std::ranges::fill(out, blank);
   }
   template<Color cT>
-  bool set_color(std::vector<outColorT> &out,
-    const std::integral auto &index_out,
-    const cT &color) const
+  bool set_color(std::vector<outColorT> &  out,
+                 const std::integral auto &index_out,
+                 const cT &                color) const
   {
     if (!color.is_black()) {
       // assert(out.at(index_out).is_black() || color==out.at(index_out));
@@ -112,11 +111,10 @@ private:
            + ((static_cast<uint32_t>(tile.y()) + y)
               * static_cast<uint32_t>(m_canvas.width()));
   }
-
-
 public:
-  Deswizzle(
-    const mim_type &in_mim, const Map<map_type> &in_map, std::string in_path)
+  Deswizzle(const mim_type &     in_mim,
+            const Map<map_type> &in_map,
+            std::string          in_path)
     : m_mim(in_mim),
       m_map(in_map),
       m_path(std::move(in_path)),
@@ -124,12 +122,11 @@ public:
       m_canvas(in_map.canvas()),
       m_unique_pupus(find_unique_pupu())
   {}
-
   void save() const
   {
     std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
     for_each_pupu([this, &out](const Pupu &pupu) {
-      bool drawn = false;
+      bool drawn     = false;
       auto raw_width = m_mim.get_raw_width(pupu.depth());
       for_each_palette(
         [&pupu, &drawn, &raw_width, &out, this](const std::uint8_t &palette) {
@@ -141,10 +138,12 @@ public:
                          && pupu == local_t;
                 }),
             [&pupu, &raw_width, this, &out, &drawn, &palette](const auto &t) {
-              open_viii::tools::for_each_xy(t.HEIGHT,
+              open_viii::tools::for_each_xy(
+                t.HEIGHT,
                 [&pupu, &raw_width, this, &out, &drawn, &t, &palette](
                   const auto &x, const auto &y) {
-                  auto pixel_in = m_mim.get_color(x + t.source_x(),
+                  auto pixel_in = m_mim.get_color(
+                    x + t.source_x(),
                     y + t.source_y(),
                     pupu.depth(),
                     palette,

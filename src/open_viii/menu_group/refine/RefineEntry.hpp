@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #ifndef VIIIARCHIVE_RefineEntry_H
 #define VIIIARCHIVE_RefineEntry_H
@@ -28,13 +27,12 @@ template<typename inputT, typename outputT> struct RefineEntry
    */
 private:
   EncodedStringOffset m_offset{};
-  std::uint8_t m_amount_received{};
-  std::uint8_t m_unknown0{};
-  std::uint8_t m_unknown1{};
-  inputT m_input{};
-  std::uint8_t m_amount_required{};
-  outputT m_output{};
-
+  std::uint8_t        m_amount_received{};
+  std::uint8_t        m_unknown0{};
+  std::uint8_t        m_unknown1{};
+  inputT              m_input{};
+  std::uint8_t        m_amount_required{};
+  outputT             m_output{};
 public:
   [[nodiscard]] const auto &offset() const noexcept
   {
@@ -64,12 +62,11 @@ public:
   {
     return m_output;
   }
-
   template<LangT langVal>
-  std::ostream &out(std::ostream &os,
-    const std::span<const char> &buffer = ""sv,
-    const intmax_t offset = 0,
-    bool skip_first_null = false) const
+  std::ostream &out(std::ostream &               os,
+                    const std::span<const char> &buffer          = ""sv,
+                    const intmax_t               offset          = 0,
+                    bool                         skip_first_null = false) const
   {
     const auto temp =
       m_offset.decoded_string<langVal>(buffer, offset, skip_first_null);

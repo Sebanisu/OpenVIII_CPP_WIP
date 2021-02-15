@@ -18,7 +18,6 @@
 #include <thread>
 static void lzss_check_compress_and_decompress(const std::atomic_bool &stop)
 {
-
   std::cout << "Testing LZSS by passing a random std::vector<char> to "
                "Compress() and Decompress()...\n";
   open_viii::tools::random_iota(
@@ -30,7 +29,6 @@ static void lzss_check_compress_and_decompress(const std::atomic_bool &stop)
                   << std::ranges::size(random_chars) << " bytes" << std::flush;
         return true;
       }
-
       std::cerr << "Failure!\n";
       return false;
     },
@@ -38,7 +36,6 @@ static void lzss_check_compress_and_decompress(const std::atomic_bool &stop)
 }
 static void lzss_check_decompress(const std::atomic_bool &stop)
 {
-
   std::cout << "Testing LZSS by passing a random std::vector<char> to "
                "Decompress()...\n";
   open_viii::tools::random_iota(

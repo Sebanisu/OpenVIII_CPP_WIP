@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_PALETTEID_HPP
 #define VIIIARCHIVE_PALETTEID_HPP
 #include <cstdint>
@@ -29,8 +28,7 @@ private:
   static constexpr std::uint16_t ID_SHIFT{ 6U };
   static constexpr std::uint16_t ZERO_MASK{ 0b1111'1100'0000'0000U };
   static constexpr std::uint16_t ZERO_SHIFT{ 12U };
-  std::uint16_t m_data{};
-
+  std::uint16_t                  m_data{};
 public:
   PaletteID() = default;
   friend auto operator==(const PaletteID &left, const PaletteID &right)
@@ -46,7 +44,6 @@ public:
     return static_cast<std::uint8_t>(
       static_cast<std::uint16_t>(m_data & ID_MASK) >> ID_SHIFT);
   }
-
   [[nodiscard]] std::uint8_t zero() const noexcept
   {
     return static_cast<std::uint8_t>(

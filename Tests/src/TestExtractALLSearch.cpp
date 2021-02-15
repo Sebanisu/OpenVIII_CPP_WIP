@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #include "TestExtractALLSearch.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/paths/Paths.hpp"
@@ -36,7 +35,7 @@ int main()
       };
     archives.execute_on({ needle }, dump);
   });
-  const auto end = std::chrono::steady_clock::now();
+  const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;
   std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"
             << '\n';

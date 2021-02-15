@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 10/30/2020.
 //
-
 #ifndef VIIIARCHIVE_FILESECTION_HPP
 #define VIIIARCHIVE_FILESECTION_HPP
 #include "FileSectionTypeT.hpp"
@@ -18,34 +17,29 @@ private:
    * Output FileName
    */
   std::string m_file_name{};
-
   /**
    * Frame Count
    */
   std::uint32_t m_frames{};
-
   /**
    * Location of Data
    */
   std::int64_t m_offset{};
-
   /**
    * Size of Data
    */
   std::uint32_t m_size{};
-
   /**
    * Type of file in Section
    */
   std::string_view m_type{};
-
 public:
   constexpr FileSection() = default;
-  FileSection(std::string in_file_name,
-    const std::uint32_t &in_frames,
-    const std::int64_t &in_offset,
-    const std::uint32_t &in_size,
-    const std::string_view &in_type)
+  FileSection(std::string             in_file_name,
+              const std::uint32_t &   in_frames,
+              const std::int64_t &    in_offset,
+              const std::uint32_t &   in_size,
+              const std::string_view &in_type)
     : m_file_name(std::move(in_file_name)),
       m_frames(in_frames),
       m_offset(in_offset),
@@ -59,7 +53,6 @@ public:
   {
     return m_file_name;
   }
-
   /**
    * Set Output FileName
    */
@@ -67,7 +60,6 @@ public:
   {
     m_file_name = std::move(in_file_name);
   }
-
   /**
    * Get Frame Count
    */
@@ -75,7 +67,6 @@ public:
   {
     return m_frames;
   }
-
   /**
    * Get Mutable Frame Count
    */
@@ -90,7 +81,6 @@ public:
   {
     m_frames = in_frames;
   }
-
   /**
    * Get Location of Data
    */
@@ -98,7 +88,6 @@ public:
   {
     return m_offset;
   }
-
   /**
    * Get Location of Data
    */
@@ -106,7 +95,6 @@ public:
   {
     m_offset = in_offset;
   }
-
   /**
    * Get Size of Data
    */
@@ -121,7 +109,6 @@ public:
   {
     m_size = in_size;
   }
-
   /**
    * Get Type of file in Section
    */
@@ -129,7 +116,6 @@ public:
   {
     return m_type;
   }
-
   /**
    * Set Type of file in Section
    */
@@ -137,9 +123,8 @@ public:
   {
     m_type = in_type;
   }
-
-  friend std::ostream &operator<<(
-    std::ostream &os, const FileSection &file_section)
+  friend std::ostream &operator<<(std::ostream &     os,
+                                  const FileSection &file_section)
   {
     if (!std::ranges::empty(file_section.file_name())
         && file_section.size() > 0) {
@@ -151,6 +136,5 @@ public:
     return os;
   }
 };
-
 }// namespace open_viii
 #endif// VIIIARCHIVE_FILESECTION_HPP

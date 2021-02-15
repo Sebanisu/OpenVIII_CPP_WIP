@@ -24,10 +24,9 @@
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-template<LangT langVal> struct Magic
+struct Magic
 {
   /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Magic-data
    * Offset	Length	Description
    * 	2 bytes	Offset to spell name
    * 	2 bytes	Offset to spell description
@@ -79,6 +78,7 @@ template<LangT langVal> struct Magic
    * 	1 byte	Tonberry compatibility
    * 	1 byte	Eden compatibility
    * 	2 bytes	Unknown
+   * 	@see https://github.com/DarkShinryu/doomtrain/wiki/Magic-data
    */
 private:
   EncodedStringOffset m_name_offset{};
@@ -108,10 +108,10 @@ private:
   JunctionStatusesT   m_j_statuses_defend_flag{};
   GFGroup<uint8_t>    m_compatibility{};
   uint16_t            m_unknown3{};
+
 public:
-  constexpr Magic() = default;
-  constexpr auto
-    operator<=>(const Magic<langVal> &right) const noexcept = default;
+  constexpr Magic()                                             = default;
+  constexpr auto operator<=>(const Magic &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -228,16 +228,9 @@ public:
   {
     return m_unknown3;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
               << static_cast<std::uint32_t>(m_unknown0) << ", "
               << static_cast<std::uint32_t>(m_attack_type) << ", "

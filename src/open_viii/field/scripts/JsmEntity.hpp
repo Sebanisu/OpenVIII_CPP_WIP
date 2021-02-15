@@ -1,13 +1,11 @@
 //
 // Created by pcvii on 1/18/2021.
 //
-
 #ifndef VIIIARCHIVE_JSMENTITY_HPP
 #define VIIIARCHIVE_JSMENTITY_HPP
 #include <cstdint>
 #include <type_traits>
 #include <utility>
-
 namespace open_viii::field::scripts {
 /**
  * @see
@@ -17,7 +15,6 @@ struct JsmEntity
 {
 private:
   std::uint16_t m_raw{};
-
 public:
   constexpr JsmEntity() = default;
   [[nodiscard]] constexpr std::uint16_t raw() const noexcept
@@ -31,16 +28,14 @@ public:
   }
   [[nodiscard]] constexpr std::uint16_t label() const noexcept
   {
-    constexpr std::uint16_t mask = 0x1FF;
+    constexpr std::uint16_t mask  = 0x1FF;
     constexpr std::uint16_t shift = 7U;
     return static_cast<std::uint16_t>(m_raw >> shift) & mask;
   }
-
   [[nodiscard]] constexpr std::size_t calc_total() const
   {
     return label() + count() + 1U;
   }
-
   /**
    * Get Value
    *@note required to structured binding support
@@ -57,7 +52,6 @@ public:
   }
 };
 }// namespace open_viii::field::scripts
-
 namespace std {
 /**
  * number of arguments
@@ -68,7 +62,6 @@ struct tuple_size<open_viii::field::scripts::JsmEntity>
   : std::integral_constant<size_t, 2U>
 {
 };
-
 /**
  * type of argument 0
  * @note required to structured binding support

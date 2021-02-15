@@ -1,10 +1,8 @@
 //
 // Created by pcvii on 12/31/2020.
 //
-
 #ifndef VIIIARCHIVE_CAMHEADER_HPP
 #define VIIIARCHIVE_CAMHEADER_HPP
-
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -20,11 +18,9 @@ struct CamHeader
 private:
   std::array<char, 3U> m_start{ 'F', '8', 'P' };
   std::array<char, 3U> m_unk{};
-  std::uint16_t m_count{};
-
+  std::uint16_t        m_count{};
 public:
   constexpr CamHeader() = default;
-
   /**
    * Get Start "F8P" 3 bytes
    */
@@ -67,12 +63,10 @@ public:
   {
     m_count = in_count;
   }
-
   /**
    * Expected "F8P" start marker
    */
   constexpr static std::string_view EXPECTED_START{ "F8P" };
-
   /**
    * verify start() == "F8P"
    */
@@ -84,11 +78,8 @@ public:
    * Expected Size of struct in bytes
    */
   constexpr static auto EXPECTED_SIZE{ 8U };
-
-
   friend std::ostream &operator<<(std::ostream &os, const CamHeader &cam_header)
   {
-
     return os << '{' << cam_header.m_start[0] << cam_header.m_start[1]
               << cam_header.m_start[2] << ',' << cam_header.m_unk[0]
               << cam_header.m_unk[1] << cam_header.m_unk[2] << ','
@@ -96,7 +87,6 @@ public:
   }
 };
 static_assert(CamHeader().valid_start());
-
 static_assert(std::is_trivially_copyable_v<CamHeader>);
 static_assert(std::is_default_constructible_v<CamHeader>);
 static_assert(sizeof(CamHeader) == CamHeader::EXPECTED_SIZE);

@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 12/27/2020.
 //
-
 #ifndef VIIIARCHIVE_CAM_HPP
 #define VIIIARCHIVE_CAM_HPP
 #include "CamFrame.hpp"
@@ -19,9 +18,8 @@ namespace open_viii {
 struct Cam
 {
 private:
-  CamHeader m_header{};
+  CamHeader             m_header{};
   std::vector<CamFrame> m_frames{};
-
 public:
   Cam() = default;
   Cam(std::istream &is, const std::size_t &m_frame_count)
@@ -51,14 +49,14 @@ public:
   {
     os << cam.m_header << '\n';
     os << '{';
-    std::ranges::for_each(
-      cam.m_frames, [&os, not_first = false](const auto &frame) mutable {
-        if (!not_first) {
-          not_first = true;
-          os << ',';
-        }
-        os << frame << '\n';
-      });
+    std::ranges::for_each(cam.m_frames,
+                          [&os, not_first = false](const auto &frame) mutable {
+                            if (!not_first) {
+                              not_first = true;
+                              os << ',';
+                            }
+                            os << frame << '\n';
+                          });
     os << '}';
     return os;
   }

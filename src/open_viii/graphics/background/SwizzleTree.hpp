@@ -1,11 +1,9 @@
 //
 // Created by pcvii on 9/21/2020.
 //
-
 #ifndef VIIIARCHIVE_SWIZZLETREE_HPP
 #define VIIIARCHIVE_SWIZZLETREE_HPP
 #include <utility>
-
 #include "Deswizzle.hpp"
 #include "Map.hpp"
 #include "Mim.hpp"
@@ -19,19 +17,18 @@ namespace open_viii::graphics::background {
 struct SwizzleTree
 {
 private:
-  const std::filesystem::path m_dir_path{};
-  const std::string m_dir_name{};
-  const std::string m_fi_filename{};
-  const std::string m_fl_filename{};
-  const std::string m_fs_filename{};
-  const std::string m_map_filename{};
-  const std::string m_mim_filename{};
-  const std::string m_output_prefix{};
+  const std::filesystem::path             m_dir_path{};
+  const std::string                       m_dir_name{};
+  const std::string                       m_fi_filename{};
+  const std::string                       m_fl_filename{};
+  const std::string                       m_fs_filename{};
+  const std::string                       m_map_filename{};
+  const std::string                       m_mim_filename{};
+  const std::string                       m_output_prefix{};
   const open_viii::archive::FIFLFS<false> m_archive{};
-  const MimType m_mim_type{};
-
-  [[nodiscard]] std::string get_path_with_ext(
-    const std::string_view &extension) const
+  const MimType                           m_mim_type{};
+  [[nodiscard]] std::string
+    get_path_with_ext(const std::string_view &extension) const
   {
     return "\\" + m_dir_name + std::string(extension);
     // the FL files contain \\ I change to / in post for easy dumping to linux
@@ -54,7 +51,6 @@ private:
     }
     return {};
   }
-
   const MimType &mim_type() const noexcept
   {
     return m_mim_type;
@@ -75,7 +71,8 @@ private:
   }
   template<typename map_type>
   requires(
-    std::is_same_v<map_type,
+    std::is_same_v<
+      map_type,
       Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void reswizzle_with_type()
     const
   {
@@ -85,24 +82,23 @@ private:
   }
   template<typename map_type>
   requires(
-    std::is_same_v<map_type,
+    std::is_same_v<
+      map_type,
       Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void deswizzle_with_type()
     const
   {
-
     // const auto mim = Mim(get_mim_buffer(),m_mim_filename);
     const auto mim =
       MimFromPath{ m_mim_type, m_dir_path, m_dir_name, m_output_prefix };
     const auto map = Map<map_type>{ get_map_buffer() };
-    const auto r = Deswizzle(mim, map, m_output_prefix);
+    const auto r   = Deswizzle(mim, map, m_output_prefix);
     r.save();
     // const auto r = Deswizzle<map_type>(get_map_buffer(), m_dir_path,
     // m_dir_name, m_output_prefix); r.process();
   }
-
 public:
   SwizzleTree(const open_viii::archive::FIFLFS<true> &field,
-    const std::filesystem::path &dir_path)
+              const std::filesystem::path &           dir_path)
     : m_dir_path(dir_path),
       m_dir_name(dir_path.filename().string()),
       m_fi_filename(get_path_with_ext(archive::FI::EXT)),
@@ -126,7 +122,6 @@ public:
   {
     return static_cast<bool>(m_archive);
   }
-
   /**
    * Point to members of the archive
    * @return FIFLFS*
@@ -145,8 +140,6 @@ public:
   {
     return m_archive;
   }
-
-
   /**
    * spawn a reswizzle object using the mim_type to decide what template
    * arguments should be.

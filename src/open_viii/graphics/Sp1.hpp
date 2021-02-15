@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SP1_HPP
 #define VIIIARCHIVE_SP1_HPP
 #include "open_viii/graphics/sp1/Sp1Entry.hpp"
@@ -26,7 +25,6 @@ struct Sp1
 {
 private:
   std::vector<std::vector<Sp1Entry>> m_entries{};
-
 public:
   Sp1() = default;
   explicit Sp1(std::span<const char> buffer)
@@ -43,8 +41,8 @@ public:
         return;
       }
       std::memcpy(std::ranges::data(current),
-        std::ranges::data(buffer.subspan(offset.offset())),
-        sz);
+                  std::ranges::data(buffer.subspan(offset.offset())),
+                  sz);
       s = s.subspan(1);
     }
   }
@@ -70,6 +68,5 @@ public:
     return os << "}\n";
   }
 };
-
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP1_HPP

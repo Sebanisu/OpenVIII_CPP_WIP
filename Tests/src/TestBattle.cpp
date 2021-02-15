@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 11/17/2020.
 //
-
 #include "TestBattle.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/battle/stage/Geometries.hpp"
@@ -11,7 +10,7 @@
 #include <iostream>
 [[maybe_unused]] static void test_vertice()
 {
-  auto v = open_viii::graphics::Vertice<std::int16_t>{ -1, 2, -3 };
+  auto v  = open_viii::graphics::Vertice<std::int16_t>{ -1, 2, -3 };
   auto v2 = v / 2.1F;
   auto v3 = v / 3.1;
   auto v4 = v * 2.1F;
@@ -27,22 +26,8 @@
 [[maybe_unused]] static void test_clut_ids()
 {
   static constexpr std::array<std::uint16_t, 16U> clutids = {
-    0x003CU,
-    0x403CU,
-    0x803CU,
-    0xC03CU,
-    0x003DU,
-    0x403DU,
-    0x803DU,
-    0xC03DU,
-    0x003EU,
-    0x403EU,
-    0x803EU,
-    0xC03EU,
-    0x003FU,
-    0x403FU,
-    0x803FU,
-    0xC03FU,
+    0x003CU, 0x403CU, 0x803CU, 0xC03CU, 0x003DU, 0x403DU, 0x803DU, 0xC03DU,
+    0x003EU, 0x403EU, 0x803EU, 0xC03EU, 0x003FU, 0x403FU, 0x803FU, 0xC03FU,
   };
   for (const auto &clutid : clutids) {
     std::cout << static_cast<uint16_t>(open_viii::battle::stage::Triangle::clut(
@@ -52,20 +37,17 @@
 [[maybe_unused]] static void test_bit4values()
 {
   open_viii::graphics::Bit4Values b4v = { 1, 5 };
-  auto [a, b] = b4v;
+  auto [a, b]                         = b4v;
   std::cout << '(' << static_cast<std::uint16_t>(a) << ','
             << static_cast<std::uint16_t>(b) << ")\n";
 }
 [[maybe_unused]] static void test_shapes()
 {
   constexpr open_viii::battle::stage::Triangle triangle{};
-  constexpr open_viii::battle::stage::Quad quad{};
-
-  [[maybe_unused]] constexpr auto testmin =
+  constexpr open_viii::battle::stage::Quad     quad{};
+  [[maybe_unused]] constexpr auto              testmin =
     open_viii::graphics::min_uv(triangle);
-
   [[maybe_unused]] constexpr auto testmax = open_viii::graphics::max_uv(quad);
-
   [[maybe_unused]] constexpr auto rect =
     open_viii::graphics::rectangle(triangle);
 }
@@ -79,15 +61,13 @@ int main()
     const auto &battle =
       archives.get<open_viii::archive::ArchiveTypeT::battle>();
     battle.execute_on({ open_viii::battle::stage::X::EXT },
-      []([[maybe_unused]] std::vector<char> &&rvalue_buffer,
-        std::string rvalue_path) {
-        open_viii::battle::stage::X(
-          std::move(rvalue_buffer), std::move(rvalue_path));
-      });
+                      []([[maybe_unused]] std::vector<char> &&rvalue_buffer,
+                         std::string                          rvalue_path) {
+                        open_viii::battle::stage::X(std::move(rvalue_buffer),
+                                                    std::move(rvalue_path));
+                      });
   });
-
-
-  const auto end = std::chrono::steady_clock::now();
+  const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;
   std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"
             << '\n';

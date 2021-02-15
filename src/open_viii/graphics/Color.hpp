@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_COLOR_HPP
 #define VIIIARCHIVE_COLOR_HPP
 #include "color/Color16.hpp"
@@ -28,8 +27,8 @@ namespace open_viii::graphics {
  * @return true if both the same.
  */
 template<Color cT1, Color cT2>
-requires(!std::is_same_v<cT1, cT2>) auto operator==(
-  const cT1 &left, const cT2 &right)
+requires(!std::is_same_v<cT1, cT2>) auto operator==(const cT1 &left,
+                                                    const cT2 &right)
 {
   return left.r() == right.r() && left.g() == right.g() && left.b() == right.b()
          && left.a() == right.a();

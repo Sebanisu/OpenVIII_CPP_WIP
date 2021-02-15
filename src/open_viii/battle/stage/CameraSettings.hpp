@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 11/18/2020.
 //
-
 #ifndef VIIIARCHIVE_CAMERASETTINGS_HPP
 #define VIIIARCHIVE_CAMERASETTINGS_HPP
 #include <array>
@@ -13,7 +12,7 @@ namespace open_viii::battle::stage {
  */
 struct CameraSettings
 {
-  static constexpr auto UNK_SIZE = 24U;
+  static constexpr auto      UNK_SIZE = 24U;
   std::array<char, UNK_SIZE> m_unk{};
   friend std::ostream &operator<<(std::ostream &os, const CameraSettings &in)
   {

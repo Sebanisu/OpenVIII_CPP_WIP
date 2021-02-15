@@ -40,7 +40,7 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Rinoa-limit-breaks-(part-2)
  */
-template<LangT langVal> struct RinoaLimitBreakPart2
+struct RinoaLimitBreakPart2
 {
 private:
   EncodedStringOffset m_name_offset{};
@@ -58,8 +58,8 @@ private:
   PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
 public:
-  constexpr auto operator<=>(
-    const RinoaLimitBreakPart2<langVal> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const RinoaLimitBreakPart2 &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -117,12 +117,9 @@ public:
   {
     return m_battle_only_statuses;
   }// statuses 8-39
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
     return os
            << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
            << static_cast<std::uint32_t>(m_attack_type) << ", "

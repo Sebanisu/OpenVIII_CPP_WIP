@@ -10,24 +10,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_ENCODEDSTRINGOFFSET_HPP
 #define VIIIARCHIVE_ENCODEDSTRINGOFFSET_HPP
 #include "FF8String.hpp"
+#include <compare>
 #include <cstdint>
 #include <string_view>
-#include <compare>
-
 namespace open_viii {
 struct EncodedStringOffset
 {
 private:
   std::uint16_t m_offset{};
-
-  [[nodiscard]] static intmax_t find_string_size(
-    const std::span<const char> &buffer,
-    const intmax_t offset,
-    bool skip_first_null)
+  [[nodiscard]] static intmax_t
+    find_string_size(const std::span<const char> &buffer,
+                     const intmax_t               offset,
+                     bool                         skip_first_null)
   {
     if (offset < 0
         || static_cast<std::size_t>(offset) > std::ranges::size(buffer)) {
@@ -59,7 +56,6 @@ private:
     const std::span<const char> &buffer, intmax_t offset, bool skip_first_null)
   {
     using namespace std::literals::string_view_literals;
-
     if (offset >= 0 && !std::empty(buffer)
         && std::ranges::size(buffer) > static_cast<size_t>(offset)) {
       auto size = find_string_size(buffer, offset, skip_first_null);
@@ -68,18 +64,18 @@ private:
                > (static_cast<size_t>(offset) + static_cast<size_t>(size))) {
         // return std::span<const char>(buffer.data() +
         // static_cast<size_t>(offset), static_cast<size_t>(size));
-        return buffer.subspan(
-          static_cast<size_t>(offset), static_cast<size_t>(size));
+        return buffer.subspan(static_cast<size_t>(offset),
+                              static_cast<size_t>(size));
       }
     }
     return std::span<const char>{};
   }
-
 public:
-  constexpr auto operator<=>(const EncodedStringOffset &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const EncodedStringOffset &right) const noexcept = default;
   [[nodiscard]] auto raw_bytes(const std::span<const char> &buffer,
-    const intmax_t offset = 0,
-    bool skip_first_null = false) const
+                               const intmax_t               offset = 0,
+                               bool skip_first_null = false) const
   {
     if (m_offset == INT16_MAX) {
       return std::span<const char>{};
@@ -89,13 +85,12 @@ public:
   }
   template<LangT langVal>
   [[nodiscard]] auto decoded_string(const std::span<const char> &buffer,
-    const intmax_t offset = 0,
-    bool skip_first_null = false) const
+                                    const intmax_t               offset = 0,
+                                    bool skip_first_null = false) const
   {
     return FF8String<langVal>::decode(
       raw_bytes(buffer, offset, skip_first_null));
   }
-
   [[nodiscard]] constexpr auto offset() const noexcept
   {
     return m_offset;

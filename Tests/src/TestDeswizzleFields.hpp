@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TESTDESWIZZLEFIELDS_HPP
 #define VIIIARCHIVE_TESTDESWIZZLEFIELDS_HPP
 int main();

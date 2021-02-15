@@ -28,6 +28,7 @@ struct QuistisBlueMagicLimitBreakParams
 {
 private:
   CrisisLevelT<QuistisBlueMagicLimitBreakParam> m_blue_magic_data{};
+
 public:
   constexpr auto operator<=>(
     const QuistisBlueMagicLimitBreakParams &right) const noexcept = default;

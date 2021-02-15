@@ -19,9 +19,9 @@
 #include <compare>
 #include <cstdint>
 namespace open_viii::kernel {
-template<LangT langVal> struct Weapons
+struct Weapons
 {
-  /* https://github.com/DarkShinryu/doomtrain/wiki/Weapons
+  /**
    * Section Structure
    * Offset	Length	Description
    * 0x0000	2 bytes	Offset to weapon name
@@ -50,6 +50,7 @@ template<LangT langVal> struct Weapons
    * 0x0009	1 byte	Weapon Tier
    * 0x000A	1 byte	Crit Bonus
    * 0x000B	1 byte	Melee Weapon?
+   * @see https://github.com/DarkShinryu/doomtrain/wiki/Weapons
    */
 private:
   EncodedStringOffset  m_name_offset{};
@@ -63,9 +64,9 @@ private:
   std::uint8_t         m_weapon_tier{};
   std::uint8_t         m_critical_bonus{};
   std::uint8_t         m_melee_weapon{};
+
 public:
-  constexpr auto
-    operator<=>(const Weapons<langVal> &right) const noexcept = default;
+  constexpr auto operator<=>(const Weapons &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -112,12 +113,9 @@ public:
   {
     return m_melee_weapon != 0;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
     return os << ", " << static_cast<std::uint32_t>(m_renzokuken_finishers)
               << ", " << static_cast<std::uint32_t>(m_unknown) << ", "
               << static_cast<std::uint32_t>(m_character_id) << ", "

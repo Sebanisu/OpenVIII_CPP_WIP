@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TILE3_HPP
 #define VIIIARCHIVE_TILE3_HPP
 #include "BlendModeT.hpp"
@@ -30,12 +29,11 @@ namespace open_viii::graphics::background {
 struct Tile3
 {
 private:
-  mutable Point<std::int16_t> m_xy{};// 4
-  Point<std::uint16_t> m_source_xy{};// 8
-  std::uint16_t m_z{};// 10
-  TexIdBuffer m_tex_id_buffer{};// 12
-  PaletteID m_palette_id{};// 14
-
+  mutable Point<std::int16_t> m_xy{};           // 4
+  Point<std::uint16_t>        m_source_xy{};    // 8
+  std::uint16_t               m_z{};            // 10
+  TexIdBuffer                 m_tex_id_buffer{};// 12
+  PaletteID                   m_palette_id{};   // 14
 public:
   Tile3() = default;
   friend auto operator==(const Tile3 &left, const Tile3 &right)
@@ -45,10 +43,10 @@ public:
            && left.m_palette_id == right.m_palette_id
            && left.m_source_xy == right.m_source_xy;
   }
-  static constexpr auto HEIGHT = 16U;
-  static constexpr auto WIDTH = 16U;
-  static constexpr auto TEXTURE_PAGE_WIDTH = 128U;
-  static constexpr auto AREA = HEIGHT * WIDTH;
+  static constexpr auto                HEIGHT             = 16U;
+  static constexpr auto                WIDTH              = 16U;
+  static constexpr auto                TEXTURE_PAGE_WIDTH = 128U;
+  static constexpr auto                AREA               = HEIGHT * WIDTH;
   [[nodiscard]] constexpr std::int16_t x() const noexcept
   {
     return m_xy.x();
@@ -123,11 +121,11 @@ public:
   [[maybe_unused]] [[nodiscard]] auto out_rectangle() const noexcept
   {
     return Rectangle<std::uint16_t>{ static_cast<std::uint16_t>(m_xy.x()),
-      std::uint16_t(m_xy.y()),
-      WIDTH,
-      HEIGHT };
+                                     std::uint16_t(m_xy.y()),
+                                     WIDTH,
+                                     HEIGHT };
   }
-  constexpr static auto EXPLICIT_SIZE{ 14U };
+  constexpr static auto       EXPLICIT_SIZE{ 14U };
   static constexpr std::array FORCE_TYPE_VALUES = { std::string_view("logo") };
 };
 static_assert(sizeof(Tile3) == Tile3::EXPLICIT_SIZE);

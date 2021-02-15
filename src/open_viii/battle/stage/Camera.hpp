@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 11/30/2020.
 //
-
 #ifndef VIIIARCHIVE_CAMERA_HPP
 #define VIIIARCHIVE_CAMERA_HPP
 #include "CameraAnimationCollection.hpp"
@@ -15,10 +14,9 @@ namespace open_viii::battle::stage {
 struct Camera
 {
 private:
-  CameraHeader m_camera_header{};
-  CameraSettings m_camera_settings{};
+  CameraHeader              m_camera_header{};
+  CameraSettings            m_camera_settings{};
   CameraAnimationCollection m_camera_animation_collection{};
-
 public:
   Camera() = default;
   explicit Camera(const std::span<const char> &data)
@@ -30,7 +28,6 @@ public:
   {
     // can be constexpr with bitcast. memcpy is not constexpr.
   }
-
   [[nodiscard]] const CameraHeader &camera_header() const noexcept
   {
     return m_camera_header;

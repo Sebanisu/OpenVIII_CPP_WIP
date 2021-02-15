@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_REFINESECTION002_HPP
 #define VIIIARCHIVE_REFINESECTION002_HPP
 #include "RefineEntry.hpp"
@@ -26,16 +25,13 @@ struct [[maybe_unused]] RefineSection002// refine Magic to Magic
    * 6 entries	(mngrp.bin loc: 0x2200020)	0x20	Upgrade Magic from mid
    * level to high level
    */
-
 private:
-  static constexpr auto MID_MAG_RF_COUNT = 4U;
+  static constexpr auto MID_MAG_RF_COUNT  = 4U;
   static constexpr auto HIGH_MAG_RF_COUNT = 6U;
   std::array<RefineEntry<RefineSpellID, RefineSpellID>, MID_MAG_RF_COUNT>
     m_mid_mag_rf{};
   std::array<RefineEntry<RefineSpellID, RefineSpellID>, HIGH_MAG_RF_COUNT>
     m_high_mag_rf{};
-
-
 public:
   [[maybe_unused]] [[nodiscard]] const auto &mid_mag_rf() const noexcept
   {
@@ -50,12 +46,11 @@ public:
     return MID_MAG_RF_COUNT + HIGH_MAG_RF_COUNT;
   }
   template<LangT langVal, typename T>
-  std::ostream &out_array(const T &arr,
-    std::ostream &os,
-    const std::span<const char> &buffer = ""sv,
-    const intmax_t offset = 0,
-    bool skip_first_null = false) const
-
+  std::ostream &out_array(const T &                    arr,
+                          std::ostream &               os,
+                          const std::span<const char> &buffer = ""sv,
+                          const intmax_t               offset = 0,
+                          bool skip_first_null                = false) const
   {
     for (const auto item : arr) {
       (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
@@ -63,11 +58,10 @@ public:
     return os;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &os,
-    const std::span<const char> &buffer = ""sv,
-    const intmax_t offset = 0,
-    bool skip_first_null = false) const
-
+  std::ostream &out(std::ostream &               os,
+                    const std::span<const char> &buffer          = ""sv,
+                    const intmax_t               offset          = 0,
+                    bool                         skip_first_null = false) const
   {
     os << "midMagRF_:\n";
     out_array<langVal>(m_mid_mag_rf, os, buffer, offset, skip_first_null);

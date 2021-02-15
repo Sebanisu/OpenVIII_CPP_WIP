@@ -25,7 +25,7 @@ namespace open_viii::kernel {
  * 0x0007	1 byte	End offset
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Menu-abilities
  */
-template<LangT langVal> struct MenuAbilities
+struct MenuAbilities
 {
 private:
   EncodedStringOffset m_name_offset{};
@@ -34,9 +34,10 @@ private:
   std::uint8_t        m_menu_file_index{};
   std::uint8_t        m_start_offset{};
   std::uint8_t        m_end_offset{};
+
 public:
   constexpr auto
-    operator<=>(const MenuAbilities<langVal> &right) const noexcept = default;
+    operator<=>(const MenuAbilities &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -67,16 +68,9 @@ public:
   {
     return m_end_offset;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     return os << ", "
               << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
               << ", " << static_cast<std::uint32_t>(m_menu_file_index) << ", "

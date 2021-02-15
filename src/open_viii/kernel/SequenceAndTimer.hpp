@@ -21,7 +21,6 @@ struct SequenceAndTimer
 private:
   std::uint8_t m_sequence{};
   std::uint8_t m_timer{};
-
 public:
   constexpr auto
     operator<=>(const SequenceAndTimer &right) const noexcept = default;

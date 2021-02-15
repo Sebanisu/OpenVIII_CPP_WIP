@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_REFINESECTION001_HPP
 #define VIIIARCHIVE_REFINESECTION001_HPP
 #include "RefineEntry.hpp"
@@ -34,24 +33,23 @@ struct [[maybe_unused]] RefineSection001// Item to Item
    * (mngrp.bin loc: 0x21FB78)	0x378	Item to Tool Items
    * */
 private:
-  static constexpr auto RECOV_MED_RF_COUNT = 9U;
-  static constexpr auto ST_MED_RF_COUNT = 12U;
-  static constexpr auto AMMO_RF_COUNT = 16U;
+  static constexpr auto RECOV_MED_RF_COUNT  = 9U;
+  static constexpr auto ST_MED_RF_COUNT     = 12U;
+  static constexpr auto AMMO_RF_COUNT       = 16U;
   static constexpr auto FORBID_MED_RF_COUNT = 20U;
-  static constexpr auto GF_RECOV_RF_COUNT = 12U;
+  static constexpr auto GF_RECOV_RF_COUNT   = 12U;
   static constexpr auto GF_ABL_MED_RF_COUNT = 42U;
-  static constexpr auto TOOL_RF_COUNT = 32U;
+  static constexpr auto TOOL_RF_COUNT       = 32U;
   std::array<RefineEntry<ItemIdT, ItemIdT>, RECOV_MED_RF_COUNT>
-    m_recov_med_rf{};
+                                                             m_recov_med_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, ST_MED_RF_COUNT> m_st_med_rf{};
-  std::array<RefineEntry<ItemIdT, ItemIdT>, AMMO_RF_COUNT> m_ammo_rf{};
+  std::array<RefineEntry<ItemIdT, ItemIdT>, AMMO_RF_COUNT>   m_ammo_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, FORBID_MED_RF_COUNT>
     m_forbid_med_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, GF_RECOV_RF_COUNT> m_gf_recov_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, GF_ABL_MED_RF_COUNT>
-    m_gf_abl_med_rf{};
+                                                           m_gf_abl_med_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, TOOL_RF_COUNT> m_tool_rf{};
-
 public:
   [[maybe_unused]] [[nodiscard]] const auto &recov_med_rf() const noexcept
   {
@@ -87,14 +85,13 @@ public:
            + FORBID_MED_RF_COUNT + GF_RECOV_RF_COUNT + GF_ABL_MED_RF_COUNT
            + TOOL_RF_COUNT;
   }
-
   template<LangT langVal, typename T>
-  [[maybe_unused]] std::ostream &out_array(const T &arr,
-    std::ostream &os,
-    const std::span<const char> &buffer = ""sv,
-    const intmax_t offset = 0,
-    bool skip_first_null = false) const
-
+  [[maybe_unused]] std::ostream &
+    out_array(const T &                    arr,
+              std::ostream &               os,
+              const std::span<const char> &buffer          = ""sv,
+              const intmax_t               offset          = 0,
+              bool                         skip_first_null = false) const
   {
     for (const auto item : arr) {
       (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
@@ -102,11 +99,10 @@ public:
     return os;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &os,
-    const std::span<const char> &buffer = ""sv,
-    const intmax_t offset = 0,
-    bool skip_first_null = false) const
-
+  std::ostream &out(std::ostream &               os,
+                    const std::span<const char> &buffer          = ""sv,
+                    const intmax_t               offset          = 0,
+                    bool                         skip_first_null = false) const
   {
     os << "recovMedRF:\n";
     out_array<langVal>(m_recov_med_rf, os, buffer, offset, skip_first_null);

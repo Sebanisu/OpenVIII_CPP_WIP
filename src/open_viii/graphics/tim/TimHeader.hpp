@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TIMHEADER_HPP
 #define VIIIARCHIVE_TIMHEADER_HPP
 #include "open_viii/graphics/BPPT.hpp"
@@ -41,7 +40,6 @@ private:
    * @brief version_ is second byte of a TIM file.
    */
   std::uint8_t m_version{};
-
   /**
    * @brief value should be 0.
    */
@@ -50,7 +48,6 @@ private:
    * @brief value should be 0.
    */
   std::uint8_t m_none1{};
-
   /**
    * @brief bits per pixel flags and CLP flag
    */
@@ -67,7 +64,6 @@ private:
    * @brief value should be 0 or 22
    */
   std::uint8_t m_none4{};
-
 public:
   /**
    * @return bits per pixel flags and CLP flag
@@ -89,7 +85,6 @@ public:
            && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL
            && m_version == VERSION_VAL && m_bpp.check();
   }
-
   friend std::ostream &operator<<(std::ostream &os, const TimHeader &input)
   {
     //[[maybe_unused]]static constexpr auto size_ = sizeof(input);

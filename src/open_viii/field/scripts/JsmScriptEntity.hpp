@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 1/18/2021.
 //
-
 #ifndef VIIIARCHIVE_JSMSCRIPTENTITY_HPP
 #define VIIIARCHIVE_JSMSCRIPTENTITY_HPP
 #include <cstdint>
@@ -12,7 +11,6 @@ struct JsmScriptEntity
 {
 private:
   std::uint16_t m_raw{};
-
 public:
   constexpr JsmScriptEntity() = default;
   [[nodiscard]] constexpr std::uint16_t raw() const noexcept
@@ -41,22 +39,20 @@ public:
   }
   [[nodiscard]] constexpr bool flag() const noexcept
   {
-    constexpr std::uint16_t mask = 0x1U;
+    constexpr std::uint16_t mask  = 0x1U;
     constexpr std::uint16_t shift = 15U;
     return (static_cast<std::uint16_t>(m_raw >> shift) & mask) != 0;
   }
-
   /**
    * This bit is lost in the transfer. Unsure if it's just unimportant.
    * @return
    */
   [[nodiscard]] constexpr bool unk() const noexcept
   {
-    constexpr std::uint16_t mask = 0x1U;
+    constexpr std::uint16_t mask  = 0x1U;
     constexpr std::uint16_t shift = 14U;
     return (static_cast<std::uint16_t>(m_raw >> shift) & mask) != 0;
   }
-
   /**
    * Get Value
    *@note required to structured binding support
@@ -73,7 +69,6 @@ public:
   }
 };
 }// namespace open_viii::field::scripts
-
 namespace std {
 /**
  * number of arguments
@@ -84,7 +79,6 @@ struct tuple_size<open_viii::field::scripts::JsmScriptEntity>
   : std::integral_constant<size_t, 2U>
 {
 };
-
 /**
  * type of argument 0
  * @note required to structured binding support

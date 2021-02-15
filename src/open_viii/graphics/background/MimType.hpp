@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_MIMTYPE_HPP
 #define VIIIARCHIVE_MIMTYPE_HPP
 #include "open_viii/graphics/Rectangle.hpp"
@@ -21,36 +20,31 @@ namespace open_viii::graphics::background {
 struct MimType
 {
 private:
-  std::uint8_t m_palettes{};
-  std::uint8_t m_texture_pages{};
-  std::uint8_t m_skipped_palettes{};
+  std::uint8_t         m_palettes{};
+  std::uint8_t         m_texture_pages{};
+  std::uint8_t         m_skipped_palettes{};
   mutable std::uint8_t m_type{};
-
-
 public:
   /**
    * first 8 are junk and are not used.
    */
-  static constexpr uint8_t DEFAULT_SKIPPED_PALETTES{ 8U };
-  static constexpr uint8_t DEFAULT_TYPE{ 1U };
-  static constexpr uint8_t DEFAULT_BPP{ 8U };
+  static constexpr uint8_t       DEFAULT_SKIPPED_PALETTES{ 8U };
+  static constexpr uint8_t       DEFAULT_TYPE{ 1U };
+  static constexpr uint8_t       DEFAULT_BPP{ 8U };
   static constexpr std::uint16_t OUT_HEIGHT{ 256U };
-
   static constexpr std::uint16_t OUT_WIDTH{ 128U };
-
   static constexpr std::uint16_t COLORS_PER_PALETTE{ 256U };
   static constexpr std::uint16_t BYTES_PER_PALETTE{ 2U * COLORS_PER_PALETTE };
   constexpr MimType() = default;
   constexpr MimType(std::uint8_t palettes,
-    std::uint8_t texture_pages,
-    std::uint8_t skipped_palettes = DEFAULT_SKIPPED_PALETTES,
-    std::uint8_t type = DEFAULT_TYPE)
+                    std::uint8_t texture_pages,
+                    std::uint8_t skipped_palettes = DEFAULT_SKIPPED_PALETTES,
+                    std::uint8_t type             = DEFAULT_TYPE)
     : m_palettes(palettes),
       m_texture_pages(texture_pages),
       m_skipped_palettes(skipped_palettes),
       m_type(type)
   {}
-
   [[nodiscard]] const auto &type() const noexcept
   {
     assert(m_type >= 0 && m_type <= 3);

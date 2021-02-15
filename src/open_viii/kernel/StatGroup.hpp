@@ -101,6 +101,7 @@ public:
     }
     return os;
   }
+
 private:
   std::array<T, STAT_COUNT> m_stats{};
 };

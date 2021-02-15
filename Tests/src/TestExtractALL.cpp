@@ -13,13 +13,11 @@
 #include "TestExtractALL.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/paths/Paths.hpp"
-
 int main()
 {
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-
     const auto archives =
       open_viii::archive::Archives<open_viii::LangT::en>(path);
     [[maybe_unused]] static constexpr auto dump =
@@ -28,7 +26,7 @@ int main()
       };
     archives.execute_on({}, dump);
   });
-  const auto end = std::chrono::steady_clock::now();
+  const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;
   std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"
             << '\n';

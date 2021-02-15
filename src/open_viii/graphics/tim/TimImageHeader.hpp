@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #define VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #include "open_viii/graphics/Rectangle.hpp"
@@ -22,9 +21,8 @@ namespace open_viii::graphics {
 struct TimImageHeader
 {
 private:
-  std::uint32_t m_size{};
+  std::uint32_t            m_size{};
   Rectangle<std::uint16_t> m_rectangle{};
-
 public:
   /**
    * Total Header and Data size
@@ -41,8 +39,6 @@ public:
   {
     return m_rectangle;
   }
-
-
   /**
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
@@ -51,7 +47,6 @@ public:
   {
     return m_size - sizeof(TimImageHeader);
   };
-
   friend std::ostream &operator<<(std::ostream &os, const TimImageHeader &input)
   {
     return os << '{' << input.size() << " bytes, " << input.m_rectangle << '}';

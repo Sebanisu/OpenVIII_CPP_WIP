@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 10/30/2020.
 //
-
 #ifndef VIIIARCHIVE_MOVIECLIP_HPP
 #define VIIIARCHIVE_MOVIECLIP_HPP
 #include "Cam.hpp"
@@ -23,12 +22,10 @@ private:
    * Cam file
    */
   Cam m_cam;
-
   /**
    * Cam file file section data
    */
   FileSection m_cam_fs;
-
 public:
   /**
    * Get High res bink video
@@ -37,7 +34,6 @@ public:
   {
     return m_bink_high;
   }
-
   /**
    * Get Mutable High res bink video
    */
@@ -45,7 +41,6 @@ public:
   {
     return m_bink_high;
   }
-
   /**
    * Set High res bink video
    */
@@ -60,7 +55,6 @@ public:
   {
     return m_bink_low;
   }
-
   /**
    * Get Mutable Low res bink video
    */
@@ -100,8 +94,6 @@ public:
   {
     m_cam = std::move(in_cam);
   }
-
-
   /**
    * Get Cam file
    */

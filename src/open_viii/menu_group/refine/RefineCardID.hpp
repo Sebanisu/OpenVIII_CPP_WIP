@@ -10,10 +10,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_REFINECARDID_HPP
 #define VIIIARCHIVE_REFINECARDID_HPP
-
 #include "cstdint"
 namespace open_viii::menu_group {
 using RefineCardID = std::uint8_t;

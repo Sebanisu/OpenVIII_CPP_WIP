@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FS_HPP
 #define VIIIARCHIVE_FS_HPP
-
 #include "FI.hpp"
 #include "open_viii/compression/L4Z.hpp"
 #include "open_viii/compression/LZSS.hpp"
@@ -25,7 +24,6 @@
 #include <memory>
 #include <span>
 #include <utility>
-
 namespace open_viii::archive::FS {
 static constexpr auto EXT = std::string_view(".FS");
 /**
@@ -38,9 +36,10 @@ static constexpr auto EXT = std::string_view(".FS");
  * @return uncompressed file
  */
 template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
-  FI_Like fiT = FI>
-static dstT get_entry(
-  const std::filesystem::path &path, const fiT &fi, const size_t &offset = 0U)
+         FI_Like                                       fiT  = FI>
+static dstT get_entry(const std::filesystem::path &path,
+                      const fiT &                  fi,
+                      const size_t &               offset = 0U)
 {
   if (fi.uncompressed_size() == 0) {
     return {};
@@ -51,7 +50,6 @@ static dstT get_entry(
     // size compressed isn't quite known with out finding the offset of the next
     // file and finding difference.
     ofp->seekg(static_cast<long>(offset + fi.offset()), std::ios::beg);
-
     switch (fi.compression_type()) {
     case CompressionTypeT::none: {
       return tools::read_val<dstT>(*ofp, fi.uncompressed_size());
@@ -60,20 +58,18 @@ static dstT get_entry(
       unsigned int compSize{ 0 };
       tools::read_val(*ofp, compSize);
       dstT buffer = tools::read_val<dstT>(*ofp, compSize);
-      return compression::LZSS::decompress<dstT>(
-        buffer, fi.uncompressed_size());
+      return compression::LZSS::decompress<dstT>(buffer,
+                                                 fi.uncompressed_size());
     }
     case CompressionTypeT::lz4: {
       // L4Z header contains size of total section as uint32, 4 byte string
       // the size of the compressed data is the first value minus 8. the second
       // value is something i'm unsure of
-      const auto sectSize = tools::read_val<std::uint32_t>(*ofp);
+      const auto            sectSize = tools::read_val<std::uint32_t>(*ofp);
       constexpr static auto skipSize = 8U;
       ofp->seekg(skipSize, std::ios::cur);
       const auto compSize = sectSize - skipSize;
-      dstT buffer = tools::read_val<dstT>(*ofp, compSize);
-
-
+      dstT       buffer   = tools::read_val<dstT>(*ofp, compSize);
       return compression::l4z::decompress<dstT>(
         buffer.data(), compSize, fi.uncompressed_size());
     }
@@ -82,7 +78,6 @@ static dstT get_entry(
   }
   return {};
 }
-
 /**
  * get file entry and decompress it
  * @tparam dstT type being returned
@@ -93,9 +88,9 @@ static dstT get_entry(
  * @return uncompressed file
  */
 template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
-  FI_Like fiT = FI>
-static dstT get_entry(
-  std::span<const char> data, const fiT &fi, const size_t &offset)
+         FI_Like                                       fiT  = FI>
+static dstT
+  get_entry(std::span<const char> data, const fiT &fi, const size_t &offset)
 {
   // it shouldn't be empty
   if (data.empty()) {
@@ -109,7 +104,6 @@ static dstT get_entry(
   }
   data = data.subspan(fi.offset() + offset);
   // todo usages of memcpy can be replaced with std::bitcast in cpp20
-
   switch (fi.compression_type()) {
   case CompressionTypeT::none: {
     if (fi.uncompressed_size() > std::ranges::size(data)) {
@@ -122,7 +116,6 @@ static dstT get_entry(
     if (sizeof(std::uint32_t) > std::ranges::size(data)) {
       break;
     }
-
     const auto compSize = tools::read_val<std::uint32_t>(data);
     if (compSize + sizeof(compSize) > std::ranges::size(data)) {
       break;
@@ -137,16 +130,14 @@ static dstT get_entry(
     if (sizeof(std::uint32_t) > std::ranges::size(data)) {
       break;
     }
-
     std::uint32_t sectSize = tools::read_val<std::uint32_t>(data);
     // std::memcpy(&sectSize, std::ranges::data(data), sizeof(sectSize));
     if (sectSize > std::ranges::size(data)) {
       break;
     }
     constexpr static auto skipBytes = 8U;
-    const auto compSize = sectSize - skipBytes;
+    const auto            compSize  = sectSize - skipBytes;
     data = data.subspan(sizeof(sectSize) + skipBytes, compSize);
-
     return compression::l4z::decompress<dstT>(data, fi.uncompressed_size());
   }
   }

@@ -15,16 +15,17 @@
 #include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
-template<LangT langVal> struct RinoaLimitBreakPart1
+struct RinoaLimitBreakPart1
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Rinoa-limit-breaks-(part-1)
+  /**
    * 0x0000	2 bytes	Offset to ability name
    * 0x0002	2 bytes	Offset to ability description
    * 0x0004	1 byte	Unknown Flags
    * 0x0005	1 byte	Target
    * 0x0006	1 byte	Ability data ID
    * 0x0007	1 byte	Unknown / Unused
+   * @see
+   * https://github.com/DarkShinryu/doomtrain/wiki/Rinoa-limit-breaks-(part-1)
    */
 private:
   EncodedStringOffset m_name_offset{};
@@ -33,9 +34,10 @@ private:
   TargetT             m_target{};
   std::uint8_t        m_ability_data_id{};
   std::uint8_t        m_unknown0{};
+
 public:
-  constexpr auto operator<=>(
-    const RinoaLimitBreakPart1<langVal> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const RinoaLimitBreakPart1 &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -60,16 +62,9 @@ public:
   {
     return m_unknown0;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     return os << ", " << static_cast<std::uint32_t>(m_unknown_flags0) << ", "
               << static_cast<std::uint32_t>(m_target) << ", "
               << static_cast<std::uint32_t>(m_ability_data_id) << ", "

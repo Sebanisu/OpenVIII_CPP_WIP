@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_COMPRESSIONTYPET_HPP
 #define VIIIARCHIVE_COMPRESSIONTYPET_HPP
 #include <cstdint>
@@ -18,7 +17,7 @@ namespace open_viii {
 enum class CompressionTypeT : std::uint32_t {
   none = 0,
   lzss = 1,
-  lz4 = 2,
+  lz4  = 2,
   // below are custom values i was setting for files that are
   // lzss compressed but aren't auto decompressed by the library.
   // LZSS_UnknownSize = 3, //some entries are compressed with lzss but it is

@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 11/17/2020.
 //
-
 #ifndef VIIIARCHIVE_GEOMETRYHEADER2_HPP
 #define VIIIARCHIVE_GEOMETRYHEADER2_HPP
 #include <cstdint>
@@ -28,7 +27,6 @@ private:
   std::uint16_t m_triangle_count{};
   std::uint16_t m_quad_count{};
   std::uint32_t m_padding{};
-
 public:
   [[nodiscard]] const auto &triangle_count() const noexcept
   {

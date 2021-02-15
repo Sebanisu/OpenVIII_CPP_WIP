@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_MENUGROUPHEADERSECTION_HPP
 #define VIIIARCHIVE_MENUGROUPHEADERSECTION_HPP
 #include <cstdint>
@@ -22,12 +21,11 @@ struct MenuGroupHeaderSection
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrphd_bin
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrp_bin
 private:
-  static constexpr std::uint32_t INVALID_SIZE = 0U;
+  static constexpr std::uint32_t INVALID_SIZE        = 0U;
   static constexpr std::uint32_t INVALID_FILE_OFFSET = 0xFFFFFFFFU;
-  static constexpr std::uint8_t PERM_OFFSET{ 1U };
-  std::uint32_t m_file_offset{};
-  std::uint32_t m_size{};
-
+  static constexpr std::uint8_t  PERM_OFFSET{ 1U };
+  std::uint32_t                  m_file_offset{};
+  std::uint32_t                  m_size{};
 public:
   [[nodiscard]] auto file_offset() const noexcept
   {
@@ -38,8 +36,8 @@ public:
     return m_size;
   }
   template<typename charContainer = std::string_view>
-  [[nodiscard]] std::string_view get_section_buffer(
-    const charContainer &file_buffer) const
+  [[nodiscard]] std::string_view
+    get_section_buffer(const charContainer &file_buffer) const
   {
     const uint32_t adj_offset = file_offset();
     if (m_size == INVALID_SIZE || m_file_offset == INVALID_FILE_OFFSET

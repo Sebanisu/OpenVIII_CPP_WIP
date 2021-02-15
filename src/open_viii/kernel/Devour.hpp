@@ -45,7 +45,7 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Devour
  * */
-template<LangT langVal> struct Devour
+struct Devour
 {
 private:
   EncodedStringOffset m_description_offset{};
@@ -59,15 +59,13 @@ private:
   PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
   DevourStatFlagT     m_devour_stat_flag{};
   std::uint8_t        m_raised_stat_hp_quantity{};
-
 public:
-  static constexpr auto full      = 1.0F;
-  static constexpr auto half      = 1.0F / 2.0F;
-  static constexpr auto quarter   = 1.0F / 4.0F;
-  static constexpr auto eighth    = 1.0F / 8.0F;
-  static constexpr auto sixteenth = 1.0F / 16.0F;
-  constexpr auto
-    operator<=>(const Devour<langVal> &right) const noexcept = default;
+  static constexpr auto full                                     = 1.0F;
+  static constexpr auto half                                     = 1.0F / 2.0F;
+  static constexpr auto quarter                                  = 1.0F / 4.0F;
+  static constexpr auto eighth                                   = 1.0F / 8.0F;
+  static constexpr auto sixteenth                                = 1.0F / 16.0F;
+  constexpr auto operator<=>(const Devour &right) const noexcept = default;
   [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
@@ -128,12 +126,9 @@ public:
   {
     return m_raised_stat_hp_quantity;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(description)) {
-      os << tools::u8_to_sv(description);
-    }
     return os << ", " << static_cast<std::uint32_t>(damage_or_heal()) << ", "
               << percent_quantity() << ", "
               << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "

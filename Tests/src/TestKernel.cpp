@@ -94,21 +94,21 @@ int main()
   const auto execution_lambda = [](const std::filesystem::path &path) {
     std::cout << path << std::endl;
     const auto coo      = open_viii::LangT::en;
-    const auto archives = open_viii::archive::Archives<coo>(path);
+    const auto archives = open_viii::archive::Archives<coo>(
+      path);// TODO remove coo template from archives.
     [[maybe_unused]] const auto &main =
       archives.get<open_viii::archive::ArchiveTypeT::main>();
     std::cout << main << std::endl;
-    auto kernel = open_viii::kernel::Header<coo>{ main };
+    auto kernel =
+      open_viii::kernel::Header{ main };// TODO remove coo template from header.
     [[maybe_unused]] const auto &buffer = kernel.buffer();
     std::cout << "kernel.bin " << buffer.size() << " bytes; "
               << kernel.section_count() << " section count\n";
     std::cout << static_cast<int>(open_viii::kernel::SectionTypesT::count)
               << std::endl;
-    kernel.static_for([]<typename kernel_section_t>(
-      const std::string_view &     string,
-      const std::span<const char> &span,
-      const kernel_section_t
-        &data) requires(!std::is_null_pointer_v<kernel_section_t>) {
+    kernel.static_for([](const std::string_view &     string,
+                         const std::span<const char> &span,
+                         const auto &                 data) {
       std::cout << string << " ( " << std::ranges::size(span) << "bytes) has "
                 << std::ranges::size(data) << " entries\n";
       for (size_t i = 0; i < data.size(); i++) {

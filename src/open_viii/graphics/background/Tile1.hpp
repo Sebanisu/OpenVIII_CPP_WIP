@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TILE1_HPP
 #define VIIIARCHIVE_TILE1_HPP
 #include "BlendModeT.hpp"
@@ -28,16 +27,15 @@ namespace open_viii::graphics::background {
 struct Tile1
 {
 private:
-  mutable Point<std::int16_t> m_xy{};// 4
-  std::uint16_t m_z{};// 6
-  TexIdBuffer m_tex_id_buffer{};// 8
-  PaletteID m_palette_id{};// 10
-  Point<std::uint8_t> m_source_xy{};// 12
-  LayerID m_layer_id{};// 13
-  BlendModeT m_blend_mode{};// 14
-  std::uint8_t m_animation_id{};// 15
-  std::uint8_t m_animation_state{};// 16
-
+  mutable Point<std::int16_t> m_xy{};             // 4
+  std::uint16_t               m_z{};              // 6
+  TexIdBuffer                 m_tex_id_buffer{};  // 8
+  PaletteID                   m_palette_id{};     // 10
+  Point<std::uint8_t>         m_source_xy{};      // 12
+  LayerID                     m_layer_id{};       // 13
+  BlendModeT                  m_blend_mode{};     // 14
+  std::uint8_t                m_animation_id{};   // 15
+  std::uint8_t                m_animation_state{};// 16
 public:
   Tile1() = default;
   friend auto operator==(const Tile1 &left, const Tile1 &right)
@@ -51,10 +49,10 @@ public:
            && left.m_animation_id == right.m_animation_id
            && left.m_animation_state == right.m_animation_state;
   }
-  static constexpr auto HEIGHT{ 16U };
-  static constexpr auto WIDTH{ 16U };
-  static constexpr auto TEXTURE_PAGE_WIDTH{ 128U };
-  static constexpr auto AREA = HEIGHT * WIDTH;
+  static constexpr auto                HEIGHT{ 16U };
+  static constexpr auto                WIDTH{ 16U };
+  static constexpr auto                TEXTURE_PAGE_WIDTH{ 128U };
+  static constexpr auto                AREA = HEIGHT * WIDTH;
   [[nodiscard]] constexpr std::int16_t x() const noexcept
   {
     return m_xy.x();
@@ -122,17 +120,17 @@ public:
   [[nodiscard]] Rectangle<std::uint16_t> rectangle() const noexcept
   {
     return { static_cast<std::uint16_t>(m_source_xy.x()),
-      std::uint16_t(m_source_xy.y()),
-      WIDTH,
-      HEIGHT };
+             std::uint16_t(m_source_xy.y()),
+             WIDTH,
+             HEIGHT };
   }
   [[maybe_unused]] [[nodiscard]] Rectangle<std::uint16_t>
     out_rectangle() const noexcept
   {
     return { static_cast<std::uint16_t>(m_xy.x()),
-      std::uint16_t(m_xy.y()),
-      WIDTH,
-      HEIGHT };
+             std::uint16_t(m_xy.y()),
+             WIDTH,
+             HEIGHT };
   }
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 16U };
 };

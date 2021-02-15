@@ -26,6 +26,7 @@ private:
   PersistentStatusesT m_persistent_statuses{};
   std::uint8_t        m_attack_power{};
   std::uint8_t        m_attack_param{};
+
 public:
   constexpr auto operator<=>(
     const QuistisBlueMagicLimitBreakParam &right) const noexcept = default;

@@ -10,18 +10,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_BULKSECTIONDATA_HPP
 #define VIIIARCHIVE_BULKSECTIONDATA_HPP
 #include "open_viii/ItemIdT.hpp"
 #include "open_viii/kernel/BattleItems.hpp"
 #include "open_viii/kernel/NonBattleItems.hpp"
+#include "open_viii/tools/Tools.hpp"
 #include <iterator>
 #include <string_view>
-#include "open_viii/tools/Tools.hpp"
-
 namespace open_viii {
-
 template<typename spanT, size_t max = 0U> struct BulkSectionData
 {
 private:
@@ -29,9 +26,9 @@ private:
   std::span<const char> m_span{};
   // strings
   std::span<const char> m_text_span{};
-
 public:
-  [[maybe_unused]] explicit BulkSectionData(const std::span<const char> &span,
+  [[maybe_unused]] explicit BulkSectionData(
+    const std::span<const char> &span,
     const std::span<const char> &text_span = {})
     : m_span{ span }, m_text_span{ text_span }
   {}
@@ -62,7 +59,6 @@ public:
         throw(std::invalid_argument{ "ItemID used in wrong place!" });
       }
     }
-
     if (id > size()) {
       using namespace std::string_literals;
       throw std::out_of_range("BulkSectionData index out of range: "s
@@ -74,8 +70,7 @@ public:
   }
   auto operator[](size_t id) const noexcept
   {
-    if(std::ranges::empty(m_span))
-    {
+    if (std::ranges::empty(m_span)) {
       return spanT{};
     }
     return tools::read_val<spanT>(m_span.subspan(id * sizeof(spanT)));

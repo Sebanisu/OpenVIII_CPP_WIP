@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 1/19/2021.
 //
-
 #ifndef VIIIARCHIVE_OPCODET_HPP
 #define VIIIARCHIVE_OPCODET_HPP
 #include <cstdint>

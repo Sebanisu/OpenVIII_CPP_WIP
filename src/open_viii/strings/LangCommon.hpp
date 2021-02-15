@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_LANGCOMMON_HPP
 #define VIIIARCHIVE_LANGCOMMON_HPP
 #include "LangT.hpp"
@@ -42,8 +41,8 @@ public:
       return EMPTY;
     }
   }
-  [[maybe_unused]] [[nodiscard]] static constexpr LangT from_string(
-    std::string_view str_val) noexcept
+  [[maybe_unused]] [[nodiscard]] static constexpr LangT
+    from_string(std::string_view str_val) noexcept
   {
     if (str_val.size() == 2) {
       if (open_viii::tools::i_equals(str_val, EN)) {

@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 11/17/2020.
 //
-
 #ifndef VIIIARCHIVE_GEOMETRYHEADER1_HPP
 #define VIIIARCHIVE_GEOMETRYHEADER1_HPP
 #include <cstdint>
@@ -25,12 +24,11 @@ namespace open_viii::battle::stage {
 struct GeometryHeader1
 {
 private:
-  std::uint8_t m_always_1_1{};
-  std::uint8_t m_always_0_1{};
-  std::uint8_t m_always_1_2{};
-  std::uint8_t m_always_0_2{};
+  std::uint8_t  m_always_1_1{};
+  std::uint8_t  m_always_0_1{};
+  std::uint8_t  m_always_1_2{};
+  std::uint8_t  m_always_0_2{};
   std::uint16_t m_number_vertices{};
-
 public:
   [[nodiscard]] const auto &number_vertices() const noexcept
   {

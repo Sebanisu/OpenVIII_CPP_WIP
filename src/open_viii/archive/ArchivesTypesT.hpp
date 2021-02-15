@@ -3,8 +3,8 @@
 //
 #ifndef VIIIARCHIVE_ARCHIVESTYPEST_HPP
 #define VIIIARCHIVE_ARCHIVESTYPEST_HPP
-#include <cstdint>
 #include <concepts>
+#include <cstdint>
 namespace open_viii::archive {
 // There are 6 main FIFLFS archives and 2 main zzz archives for ff8 and ff8
 // remaster.
@@ -53,5 +53,5 @@ requires(
 //                             || static_cast<std::intmax_t>(archiveTypeT)
 //                                  <=
 //                                  static_cast<std::intmax_t>(ArchiveTypeT::last));
-}
+}// namespace open_viii::archive
 #endif// VIIIARCHIVE_ARCHIVESTYPEST_HPP

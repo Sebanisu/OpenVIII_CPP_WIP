@@ -1,13 +1,11 @@
 //
 // Created by pcvii on 1/18/2021.
 //
-
 #ifndef VIIIARCHIVE_JSMOLDENTITY_HPP
 #define VIIIARCHIVE_JSMOLDENTITY_HPP
 #include <cstdint>
 #include <type_traits>
 #include <utility>
-
 namespace open_viii::field::scripts {
 /**
  * @see
@@ -17,14 +15,12 @@ struct JsmOldEntity
 {
 private:
   std::uint16_t m_raw{};
-
 public:
   constexpr JsmOldEntity() = default;
   [[nodiscard]] constexpr std::uint16_t raw() const noexcept
   {
     return m_raw;
   }
-
   [[nodiscard]] constexpr auto count() const noexcept
   {
     constexpr std::uint8_t mask = 0xFFU;
@@ -32,16 +28,14 @@ public:
   }
   [[nodiscard]] constexpr std::uint16_t label() const noexcept
   {
-    constexpr std::uint16_t mask = 0xFF;
+    constexpr std::uint16_t mask  = 0xFF;
     constexpr std::uint16_t shift = 8U;
     return static_cast<std::uint16_t>(m_raw >> shift) & mask;
   }
-
   [[nodiscard]] constexpr std::size_t calc_total() const
   {
     return label() + count() + 1U;
   }
-
   /**
    * Get Value
    *@note required to structured binding support
@@ -58,7 +52,6 @@ public:
   }
 };
 }// namespace open_viii::field::scripts
-
 namespace std {
 /**
  * number of arguments
@@ -69,7 +62,6 @@ struct tuple_size<open_viii::field::scripts::JsmOldEntity>
   : std::integral_constant<size_t, 2U>
 {
 };
-
 /**
  * type of argument 0
  * @note required to structured binding support

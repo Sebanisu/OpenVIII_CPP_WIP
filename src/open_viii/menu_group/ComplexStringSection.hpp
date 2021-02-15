@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_COMPLEXSTRINGSECTION_HPP
 #define VIIIARCHIVE_COMPLEXSTRINGSECTION_HPP
 #include "open_viii/strings/FF8String.hpp"
@@ -23,10 +22,9 @@ namespace open_viii::menu_group {
 struct ComplexStringSectionEntry
 {
 private:
-  static constexpr auto UNK_COUNT = 6U;
+  static constexpr auto          UNK_COUNT = 6U;
   std::array<uint8_t, UNK_COUNT> m_unknown{};
-  std::string_view m_buffer{};
-
+  std::string_view               m_buffer{};
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrp_complex_strings#String_Entry
 public:
   explicit ComplexStringSectionEntry(const std::string_view &buffer)
@@ -36,7 +34,7 @@ public:
     std::memcpy(&length, buffer.data() + sizeof(m_unknown), sizeof(length));
     m_buffer =
       std::string_view{ buffer.data() + sizeof(m_unknown) + sizeof(length),
-        length };
+                        length };
   }
   template<LangT langVal> std::ostream &out(std::ostream &os) const
   {
@@ -50,7 +48,6 @@ struct ComplexStringSectionOffsets
 private:
   std::uint16_t m_offset{};
   std::uint16_t m_index{};
-
 public:
   [[nodiscard]] auto offset() const noexcept
   {
@@ -60,8 +57,8 @@ public:
   {
     return m_index;
   }
-  friend std::ostream &operator<<(
-    std::ostream &os, const ComplexStringSectionOffsets &item)
+  friend std::ostream &operator<<(std::ostream &                     os,
+                                  const ComplexStringSectionOffsets &item)
   {
     return os << '{' << item.index() << ", " << item.offset() << '}';
   }
@@ -70,14 +67,13 @@ struct ComplexStringSection
 {
   // http://wiki.ffrtt.ru/index.php?title=FF8/Menu_mngrp_complex_strings
 private:
-  std::uint32_t m_count{};
-  std::span<const char> m_buffer{};
-  static constexpr auto SECTION_COUNT = 6U;
+  std::uint32_t                               m_count{};
+  std::span<const char>                       m_buffer{};
+  static constexpr auto                       SECTION_COUNT = 6U;
   std::array<std::string_view, SECTION_COUNT> m_data{};
-
 public:
   ComplexStringSection([[maybe_unused]] const std::span<const char> &buffer,
-    const std::array<std::string_view, SECTION_COUNT> &data)
+                       const std::array<std::string_view, SECTION_COUNT> &data)
     : m_data{ data }
   {
     if (std::ranges::size(buffer) > sizeof(m_count)) {
@@ -98,7 +94,6 @@ public:
     memcpy(&d, m_buffer.data() + (sizeof(d) * id), sizeof(d));
     return d;
   }
-
   [[nodiscard]] auto at(const ComplexStringSectionOffsets &offsets) const
   {
     const auto temp = m_data.at(offsets.index());

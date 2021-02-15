@@ -47,6 +47,7 @@ private:
   std::uint8_t        m_status_attack_enabler{};
   PersistentStatusesT m_persistent_statuses{};
   BattleOnlyStatusesT m_battle_only_statuses{};
+
 public:
   constexpr auto
     operator<=>(const CommandAbilitiesData &right) const noexcept = default;

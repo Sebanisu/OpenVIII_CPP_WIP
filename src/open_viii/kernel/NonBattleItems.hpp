@@ -15,7 +15,7 @@
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-template<LangT langVal> struct NonBattleItems
+struct NonBattleItems
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Non-battle-item-name-and-description-offsets
@@ -25,9 +25,10 @@ template<LangT langVal> struct NonBattleItems
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
+
 public:
   constexpr auto
-    operator<=>(const NonBattleItems<langVal> &right) const noexcept = default;
+    operator<=>(const NonBattleItems &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -35,18 +36,6 @@ public:
   [[nodiscard]] constexpr auto description_offset() const noexcept
   {
     return m_description_offset;
-  }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
-  {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
-    return os;
   }
 };
 }// namespace open_viii::kernel

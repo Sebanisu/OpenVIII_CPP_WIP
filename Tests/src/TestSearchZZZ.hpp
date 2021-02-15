@@ -18,5 +18,4 @@
 #include <map>
 #include <string>
 int main();
-
 #endif// VIIIARCHIVE_TESTSEARCHZZZ_HPP

@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 1/18/2021.
 //
-
 #ifndef VIIIARCHIVE_JSMHEADER_HPP
 #define VIIIARCHIVE_JSMHEADER_HPP
 #include "JsmEntity.hpp"
@@ -40,22 +39,20 @@ private:
    * Offset script data
    */
   std::uint16_t m_offset_script_data{};
-
 public:
   constexpr JsmHeader() = default;
-  constexpr JsmHeader(std::uint8_t in_count_door_entities,
-    std::uint8_t in_count_walk_mesh_line_entities,
-    std::uint8_t in_count_background_entities,
-    std::uint8_t in_count_other_entities,
-    std::uint16_t in_offset_section_1,
-    std::uint16_t in_offset_script_data)
+  constexpr JsmHeader(std::uint8_t  in_count_door_entities,
+                      std::uint8_t  in_count_walk_mesh_line_entities,
+                      std::uint8_t  in_count_background_entities,
+                      std::uint8_t  in_count_other_entities,
+                      std::uint16_t in_offset_section_1,
+                      std::uint16_t in_offset_script_data)
     : m_count_door_entities(in_count_door_entities),
       m_count_walk_mesh_line_entities(in_count_walk_mesh_line_entities),
       m_count_background_entities(in_count_background_entities),
       m_count_other_entities(in_count_other_entities),
       m_offset_section_1(in_offset_section_1),
       m_offset_script_data(in_offset_script_data)
-
   {}
   [[nodiscard]] std::size_t constexpr total_count() const noexcept
   {
@@ -100,7 +97,6 @@ public:
   {
     return offset_door_entities() + sizeof(JsmEntity) * count_door_entities();
   }
-
   /**
    * Count of background entity
    */
@@ -117,7 +113,6 @@ public:
     return offset_walk_mesh_line_entities()
            + sizeof(JsmEntity) * count_walk_mesh_line_entities();
   }
-
   /**
    * Count of other entity
    */
@@ -133,7 +128,6 @@ public:
     return offset_background_entities()
            + sizeof(JsmEntity) * count_background_entities();
   }
-
   /**
    * count section 1
    */
@@ -178,12 +172,11 @@ static constexpr JsmHeader fix_jsm_header_counts(JsmHeader in) noexcept
     return count;
   };
   return JsmHeader(fix(in.count_door_entities()),
-    fix(in.count_walk_mesh_line_entities()),
-    fix(in.count_background_entities()),
-    fix(in.count_other_entities()),
-    in.offset_section_1(),
-    in.offset_script_data());
+                   fix(in.count_walk_mesh_line_entities()),
+                   fix(in.count_background_entities()),
+                   fix(in.count_other_entities()),
+                   in.offset_section_1(),
+                   in.offset_script_data());
 }
-
 }// namespace open_viii::field::scripts
 #endif// VIIIARCHIVE_JSMHEADER_HPP

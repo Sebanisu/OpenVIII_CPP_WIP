@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SP1OFFSET_HPP
 #define VIIIARCHIVE_SP1OFFSET_HPP
 #include <cstdint>
@@ -20,7 +19,6 @@ struct Sp1Offset
 private:
   std::uint16_t m_offset{};
   std::uint16_t m_count{};
-
 public:
   Sp1Offset() = default;
   [[nodiscard]] auto offset() const noexcept
@@ -32,6 +30,5 @@ public:
     return m_count;
   }
 };
-
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP1OFFSET_HPP

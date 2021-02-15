@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_MENUGROUPHEADER_HPP
 #define VIIIARCHIVE_MENUGROUPHEADER_HPP
 #include "MenuGroupHeaderSection.hpp"
@@ -25,10 +24,9 @@ private:
   static constexpr auto SIZE{ 2048U };
   static constexpr auto COUNT{ (SIZE / sizeof(MenuGroupHeaderSection)) };
   std::array<MenuGroupHeaderSection, COUNT> m_sections{};
-
 public:
   constexpr static std::string_view FILENAME = "mngrphd.bin";
-  static constexpr auto size()
+  static constexpr auto             size()
   {
     return COUNT;
   }
@@ -36,7 +34,6 @@ public:
   {
     return m_sections;
   }
-
   MenuGroupHeader() = default;
   template<typename mainT> explicit MenuGroupHeader(const mainT &main)
   {

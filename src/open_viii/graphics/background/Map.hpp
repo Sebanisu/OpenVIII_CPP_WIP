@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_MAP_HPP
 #define VIIIARCHIVE_MAP_HPP
 #include "Mim.hpp"
@@ -26,7 +25,8 @@
 namespace open_viii::graphics::background {
 template<typename map_type = Tile1>
 requires(
-  std::is_same_v<map_type,
+  std::is_same_v<
+    map_type,
     Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct
   Map
 {
@@ -36,7 +36,6 @@ private:
    * offset holds the original position of canvas.
    */
   mutable Point<std::int16_t> m_offset{};
-
   /**
    * remove invalid tiles from buffer.
    */
@@ -45,7 +44,6 @@ private:
     static constexpr auto cmp = [](const auto &x) {
       static constexpr auto end_x{ 0x7FFFU };
       // static constexpr auto limit = 1000U;
-
       return x.x() == end_x;// || std::abs(x.y()) > limit || std::abs(x.x()) >
                             // limit; //|| x.source_x() >limit || x.source_y()
                             // >limit; //|| !x.draw();
@@ -119,68 +117,65 @@ private:
   [[nodiscard]] constexpr auto min_x() const noexcept
   {
     return (std::min_element(m_tiles.cbegin(),
-              m_tiles.cend(),
-              [](const auto &a, const auto &b) -> bool {
-                return a.x() < b.x();
-              }))
+                             m_tiles.cend(),
+                             [](const auto &a, const auto &b) -> bool {
+                               return a.x() < b.x();
+                             }))
       ->x();
   }
   [[nodiscard]] auto minmax_x() const noexcept
   {
     return std::minmax_element(m_tiles.cbegin(),
-      m_tiles.cend(),
-      [](const auto &a, const auto &b) -> bool {
-        return a.x() < b.x();
-      });
+                               m_tiles.cend(),
+                               [](const auto &a, const auto &b) -> bool {
+                                 return a.x() < b.x();
+                               });
   }
-
   [[maybe_unused]] [[nodiscard]] constexpr auto max_x() const noexcept
   {
     return (std::max_element(m_tiles.cbegin(),
-              m_tiles.cend(),
-              [](const auto &a, const auto &b) -> bool {
-                return a.x() < b.x();
-              }))
+                             m_tiles.cend(),
+                             [](const auto &a, const auto &b) -> bool {
+                               return a.x() < b.x();
+                             }))
       ->x();
   }
   [[nodiscard]] auto minmax_y() const noexcept
   {
     return std::minmax_element(m_tiles.cbegin(),
-      m_tiles.cend(),
-      [](const auto &a, const auto &b) -> bool {
-        return a.y() < b.y();
-      });
+                               m_tiles.cend(),
+                               [](const auto &a, const auto &b) -> bool {
+                                 return a.y() < b.y();
+                               });
   }
   [[nodiscard]] constexpr auto min_y() const noexcept
   {
     return (std::min_element(m_tiles.cbegin(),
-              m_tiles.cend(),
-              [](const auto &a, const auto &b) -> bool {
-                return a.y() < b.y();
-              }))
+                             m_tiles.cend(),
+                             [](const auto &a, const auto &b) -> bool {
+                               return a.y() < b.y();
+                             }))
       ->y();
   }
-
   [[maybe_unused]] [[nodiscard]] constexpr auto max_y() const noexcept
   {
     return (std::max_element(m_tiles.cbegin(),
-              m_tiles.cend(),
-              [](const auto &a, const auto &b) -> bool {
-                return a.y() < b.y();
-              }))
+                             m_tiles.cend(),
+                             [](const auto &a, const auto &b) -> bool {
+                               return a.y() < b.y();
+                             }))
       ->y();
   }
-
 public:
   constexpr static auto EXT = std::string_view(".map");
-  Map() = default;
+  Map()                     = default;
   /**
    * Import tiles from a raw buffer.
    * @param buffer is a raw char buffer.
    */
   explicit Map(const std::vector<char> &buffer)
   {
-    const auto count = std::ranges::size(buffer) / sizeof(map_type);
+    const auto count         = std::ranges::size(buffer) / sizeof(map_type);
     const auto size_in_bytes = count * sizeof(map_type);
     m_tiles.resize(count);
     std::memcpy(
@@ -193,32 +188,29 @@ public:
   {
     return m_tiles;
   }
-
   [[nodiscard]] const auto *operator->() const noexcept
   {
     return &m_tiles;
   }
-
   /**
    * Get a rectangle large enough to hold all the tiles.
    * @return rectangle
    */
   [[nodiscard]] Rectangle<std::int32_t> canvas() const noexcept
   {
-    const auto l_minmax_x = minmax_x();
-    const auto l_minmax_y = minmax_y();
-
-    const auto &[l_min_x, l_max_x] = l_minmax_x;
-    const auto &[l_min_y, l_max_y] = l_minmax_y;
-    constexpr static auto tile_size = 16;
-
-    open_viii::graphics::Rectangle<std::int32_t> l_canvas{ l_min_x->x(),
+    const auto l_minmax_x                                  = minmax_x();
+    const auto l_minmax_y                                  = minmax_y();
+    const auto &[l_min_x, l_max_x]                         = l_minmax_x;
+    const auto &[l_min_y, l_max_y]                         = l_minmax_y;
+    constexpr static auto                        tile_size = 16;
+    open_viii::graphics::Rectangle<std::int32_t> l_canvas{
+      l_min_x->x(),
       l_min_y->y(),
-
-      static_cast<std::int32_t>(
-        std::abs(l_max_x->x()) + std::abs(l_min_x->x()) + tile_size),
-      static_cast<std::int32_t>(
-        std::abs(l_max_y->y()) + std::abs(l_min_y->y()) + tile_size) };
+      static_cast<std::int32_t>(std::abs(l_max_x->x()) + std::abs(l_min_x->x())
+                                + tile_size),
+      static_cast<std::int32_t>(std::abs(l_max_y->y()) + std::abs(l_min_y->y())
+                                + tile_size)
+    };
     return l_canvas;
   }
   /**
@@ -239,14 +231,12 @@ public:
   {
     shift(point.x(), point.y());
   }
-
   [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const Map &m)
   {
     return os << std::ranges::size(m.m_tiles) << ", "
               << std::ranges::size(m.m_t2) << ", " << std::ranges::size(m.m_t3)
               << '\n';
   }
-
   void save_csv(const std::string_view &in_path) const
   {
     auto path = std::filesystem::path(in_path);
@@ -255,7 +245,8 @@ public:
         os
           << R"("Depth","Blend Mode","Blend Other","Layer ID","Texture ID","Palette ID","Animation ID","Animation State","Source X","Source Y","X","Y","Z","PUPU ID")"
           << '\n';
-        std::for_each(std::ranges::cbegin(m_tiles),
+        std::for_each(
+          std::ranges::cbegin(m_tiles),
           std::ranges::cend(m_tiles),
           [this, &os](const auto &t) {
             os << '"' << t.depth() << "\","
@@ -276,7 +267,6 @@ public:
       },
       (path.parent_path() / path.stem()).string() + "_map.csv");
   }
-
   //  [[nodiscard]] auto used_depth_and_palette() const
   //  {
   //    using T = typename std::decay<decltype(*m_tiles.begin())>::type;
@@ -377,5 +367,4 @@ public:
   //  }
 };
 }// namespace open_viii::graphics::background
-
 #endif// VIIIARCHIVE_MAP_HPP

@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 1/19/2021.
 //
-
 #ifndef VIIIARCHIVE_JSMSCRIPTDATA_HPP
 #define VIIIARCHIVE_JSMSCRIPTDATA_HPP
 #include "opcodeT.hpp"
@@ -13,22 +12,20 @@ struct JsmScriptData
 {
 private:
   std::uint32_t m_data{};
-
 public:
   [[nodiscard]] constexpr opcodeT opcode() const noexcept
   {
-    constexpr std::uint16_t mask = 0x1FFU;// 9 bits mask
+    constexpr std::uint16_t mask  = 0x1FFU;// 9 bits mask
     constexpr std::uint16_t shift = 23;
-    return static_cast<opcodeT>(
-      static_cast<std::uint16_t>(m_data >> shift) & mask)
+    return static_cast<opcodeT>(static_cast<std::uint16_t>(m_data >> shift)
+                                & mask)
   }
   [[nodiscard]] constexpr std::uint32_t parameter() const noexcept
   {
     constexpr std::uint16_t mask = 0x7FFFFFU;// 23 bits mask
-    return static_cast<opcodeT>(
-      static_cast<std::uint16_t>(m_data >> shift) & mask)
+    return static_cast<opcodeT>(static_cast<std::uint16_t>(m_data >> shift)
+                                & mask)
   }
-
   /**
    * Get Value
    *@note required to structured binding support
@@ -54,7 +51,6 @@ struct tuple_size<open_viii::field::scripts::JsmScriptData>
   : std::integral_constant<size_t, 2U>
 {
 };
-
 /**
  * type of argument 0
  * @note required to structured binding support

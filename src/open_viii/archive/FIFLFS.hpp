@@ -46,6 +46,7 @@ private:
   {
     m_count = FI::get_count(m_fi.size());
   }
+
 public:
   [[maybe_unused]] [[nodiscard]] const auto &fi() const noexcept
   {
@@ -501,7 +502,7 @@ public:
       [this, &archive, &lambda, &nested_filename](const auto &item) {
         const auto &[id, strVirtualPath] = item;
         const FI_Like auto fi            = get_entry_by_index(id);
-        TryAddT retVal = try_add(fi,m_fs.path(),strVirtualPath);
+        TryAddT            retVal = try_add(fi, m_fs.path(), strVirtualPath);
         //
         //        TryAddT retVal = [this, &archive, &fi, &strVirtualPath,
         //        &lambda]() {
@@ -602,26 +603,25 @@ public:
   //    }
   //    return archive;
   //  }
-    [[nodiscard]] std::vector<FIFLFS<false>> get_fiflfs_entries(
-      const std::initializer_list<std::string_view> &filename) const
-    {
-      std::vector<FIFLFS<false>> out{};
-      FIFLFS<false>              archive{};
-      const auto                 items = archive::fl::get_all_entries_data(
-        m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count,
-        filename);
-      for (const auto &[id, strVirtualPath] : items) {
-        switch (get_fiflfs(archive, id, strVirtualPath)) {
-        default:
-          break;
-        case TryAddT::archive_full:
-          out.emplace_back(std::move(archive));
-          archive = {};
-          break;
-        }
+  [[nodiscard]] std::vector<FIFLFS<false>> get_fiflfs_entries(
+    const std::initializer_list<std::string_view> &filename) const
+  {
+    std::vector<FIFLFS<false>> out{};
+    FIFLFS<false>              archive{};
+    const auto                 items = archive::fl::get_all_entries_data(
+      m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
+    for (const auto &[id, strVirtualPath] : items) {
+      switch (get_fiflfs(archive, id, strVirtualPath)) {
+      default:
+        break;
+      case TryAddT::archive_full:
+        out.emplace_back(std::move(archive));
+        archive = {};
+        break;
       }
-      return out;
     }
+    return out;
+  }
 };
 }// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FIFLm_fsH

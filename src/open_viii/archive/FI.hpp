@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FI_HPP
 #define VIIIARCHIVE_FI_HPP
-
 #include "open_viii/CompressionTypeT.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include <algorithm>
@@ -44,30 +43,22 @@ private:
    * Compression Type
    */
   CompressionTypeT m_compression_type{};
-
-
 public:
   constexpr static const std::size_t SIZE = 12U;
-
-  constexpr static const auto EXT = std::string_view(".FI");
-
-  [[nodiscard]] constexpr auto uncompressed_size() const noexcept
+  constexpr static const auto        EXT  = std::string_view(".FI");
+  [[nodiscard]] constexpr auto       uncompressed_size() const noexcept
   {
     return m_uncompressed_size;
   }
-
   [[nodiscard]] constexpr auto offset() const noexcept
   {
     return m_offset;
   }
-
   [[nodiscard]] constexpr auto compression_type() const noexcept
   {
     return m_compression_type;
   }
-
   constexpr FI() noexcept = default;
-
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FI>) constexpr explicit FI(
     const fiT &fi) noexcept
@@ -77,16 +68,16 @@ public:
       m_compression_type{ static_cast<decltype(m_compression_type)>(
         fi.compression_type()) }
   {}
-  constexpr FI(const unsigned int &uncompressed_size,
-    const unsigned int &offset,
+  constexpr FI(
+    const unsigned int &    uncompressed_size,
+    const unsigned int &    offset,
     const CompressionTypeT &compression_type = CompressionTypeT::none) noexcept
     : m_uncompressed_size{ uncompressed_size },
       m_offset{ offset },
       m_compression_type{ compression_type }
   {}
-
-  [[nodiscard]] constexpr static std::size_t get_count(
-    const std::size_t &file_size) noexcept
+  [[nodiscard]] constexpr static std::size_t
+    get_count(const std::size_t &file_size) noexcept
   {
     return file_size / SIZE;
   }
@@ -99,15 +90,13 @@ public:
     }
     return {};
   }
-
-  [[nodiscard]] friend std::ostream &operator<<(
-    std::ostream &os, const FI &data)
+  [[nodiscard]] friend std::ostream &operator<<(std::ostream &os,
+                                                const FI &    data)
   {
     os << '{' << data.m_uncompressed_size << ", " << data.m_offset << ", "
        << static_cast<unsigned int>(data.m_compression_type) << '}';
     return os;
   }
-
   /**
    * gets member variables
    * @note required to structured binding support
@@ -131,13 +120,12 @@ static_assert(sizeof(FI) == FI::SIZE);
  * @param offset, the number of bytes to start of first FI entry
  * @return id * 12 + offset
  */
-[[nodiscard]] constexpr static std::size_t get_fi_entry_offset(
-  const std::size_t &id, const std::size_t &offset = 0U)
+[[nodiscard]] constexpr static std::size_t
+  get_fi_entry_offset(const std::size_t &id, const std::size_t &offset = 0U)
 {
   return (id * sizeof(FI)) + offset;
 }
 }// namespace open_viii::archive
-
 namespace std {
 /**
  * define number of arguments
@@ -147,7 +135,6 @@ template<>
 struct tuple_size<open_viii::archive::FI> : std::integral_constant<size_t, 3>
 {
 };
-
 /**
  * type of 1st argument
  * @note required to structured binding support
@@ -156,7 +143,6 @@ template<> struct tuple_element<0, open_viii::archive::FI>
 {
   using type = std::uint32_t;
 };
-
 /**
  * type of 2nd argument
  * @note required to structured binding support
@@ -165,7 +151,6 @@ template<> struct tuple_element<1, open_viii::archive::FI>
 {
   using type = std::uint32_t;
 };
-
 /**
  * type of 3rd argument
  * @note required to structured binding support

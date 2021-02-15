@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_CONCEPTS_HPP
 #define VIIIARCHIVE_CONCEPTS_HPP
 #include "CompressionTypeT.hpp"
@@ -20,10 +19,8 @@
 #include <type_traits>
 #include <vector>
 namespace open_viii {
-
 template<typename T>
 concept Number = std::floating_point<T> || std::integral<T>;
-
 template<typename T> concept Color_R = requires(T a)
 {
   {
@@ -31,7 +28,6 @@ template<typename T> concept Color_R = requires(T a)
   }
   ->std::convertible_to<std::uint8_t>;
 };
-
 template<typename T> concept Color_G = requires(T a)
 {
   {
@@ -53,15 +49,12 @@ template<typename T> concept Color_A = requires(T a)
   }
   ->std::convertible_to<std::uint8_t>;
 };
-
 template<typename T>
 concept Color = Color_A<T> &&Color_B<T> &&Color_G<T> &&Color_R<T>;
-
 template<typename T> concept FIFLFS_Has_get_entry_data = requires(T a)
 {
   a.get_entry_data(std::string_view(""));
 };
-
 template<typename T> concept FI_Like_UncompressedSize = requires(T a)
 {
   {
@@ -76,7 +69,6 @@ template<typename T> concept FI_Like_Offset = requires(T a)
   }
   ->std::integral;
 };
-
 template<typename T> concept FI_Like_CompressionType = requires(T a)
 {
   {
@@ -84,11 +76,9 @@ template<typename T> concept FI_Like_CompressionType = requires(T a)
   }
   ->std::convertible_to<CompressionTypeT>;
 };
-
 template<typename T>
 concept FI_Like =
   FI_Like_CompressionType<T> &&FI_Like_Offset<T> &&FI_Like_UncompressedSize<T>;
-
 template<typename T> concept Point_Like = (requires (T a)
 {{a.x()}->Number;} &&
   requires (T a)
@@ -102,12 +92,10 @@ template<typename T, std::size_t current = 0U> concept Shape_Like = (
   && requires(T a) {{a.COUNT>0U};}
 
   );
-
 template<typename lambdaT, typename pointT>
 concept TakesTwoPointsReturnsPoint =
   Point_Like<pointT> &&std::regular_invocable<lambdaT, pointT, pointT>
     &&Point_Like<std::invoke_result_t<lambdaT, pointT, pointT>>;
-
 template<typename trivialType>
 concept is_trivially_copyable = std::is_trivially_copyable_v<trivialType>;
 template<typename trivialType>
@@ -122,15 +110,14 @@ template<typename trivialType> concept has_size = requires(trivialType item)
 };
 template<typename trivialType>
 concept has_data_and_size = has_data<trivialType> &&has_size<trivialType>;
-
 template<typename trivialType>
 concept is_trivially_copyable_and_default_constructible =
   is_trivially_copyable<trivialType>
     &&std::is_default_constructible_v<trivialType>;
-
 template<typename trivialType>
 concept is_default_constructible_has_data_and_size =
-  std::is_default_constructible_v<trivialType> &&has_data_and_size<trivialType> && !is_trivially_copyable<trivialType>;
+  std::is_default_constructible_v<trivialType>
+    &&has_data_and_size<trivialType> && !is_trivially_copyable<trivialType>;
 template<typename Type> concept has_resize = requires(Type a)
 {
   a.resize(static_cast<std::size_t>(0U));
@@ -146,7 +133,6 @@ concept is_default_constructible_has_data_size_resize =
 template<typename lambdaT>
 concept Foreach_Archive_Lambda =
   std::invocable<lambdaT, std::vector<char>, std::string>;
-
 // template<typename a_type, typename lambdaT>
 // concept Optional_Archive_Execute_On = (
 //  Foreach_Archive_Lambda<lambdaT> && requires(a_type a) { a.has_value(); }

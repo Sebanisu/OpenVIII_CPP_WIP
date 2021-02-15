@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TIMCLUTHEADER_HPP
 #define VIIIARCHIVE_TIMCLUTHEADER_HPP
 #include "TimImageHeader.hpp"
@@ -33,7 +32,6 @@ private:
    * @brief Y max value is 511
    */
   static constexpr auto MAX_Y{ 511U };
-
   /**
    * 4 bit can only read up to 16 values and 8 bit can only read up to 256
    * values. But There are larger other sizes. The game uses
@@ -41,9 +39,7 @@ private:
    * isn't used.
    */
   [[maybe_unused]] static constexpr std::array VALID_WIDTH = { 16U, 256U };
-
-  TimImageHeader m_image_header{};
-
+  TimImageHeader                               m_image_header{};
 public:
   /**
    * Typically the width = number of colors, and height = number of color lookup
@@ -63,7 +59,6 @@ public:
   {
     return m_image_header.size();
   };
-
   /**
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
@@ -84,7 +79,6 @@ public:
     //&& tools::any_of(imageHeader_.rectangle().width(), ValidWidth_); // some
     // non standard sizes.
   }
-
   friend std::ostream &operator<<(std::ostream &os, const TimClutHeader &input)
   {
     return os << input.m_image_header

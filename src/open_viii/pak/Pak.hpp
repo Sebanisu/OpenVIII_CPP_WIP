@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 10/30/2020.
 //
-
 #ifndef VIIIARCHIVE_PAK_HPP
 #define VIIIARCHIVE_PAK_HPP
 #include "MovieClip.hpp"
@@ -28,33 +27,24 @@ private:
    * Each frame section of cam file is this many bytes
    */
   static constexpr auto CAM_SECTION_SIZE = static_cast<char>(0x2C);
-
-
   /**
    * If false don't extract low res videos!
    */
-
   static constexpr auto ENABLE_EXTRACT_LOW_RES = false;
-
-
   /**
    *  Known valid Bink video formats "a,d,f,g,h,i"
    */
-  static constexpr std::array<char, 6> BIK1 = {
-    0x61, 0x64, 0x66, 0x67, 0x68, 0x69
-  };
+  static constexpr std::array<char, 6> BIK1 = { 0x61, 0x64, 0x66,
+                                                0x67, 0x68, 0x69 };
   /**
    * Known valid Bink 2 video formats "b,d,f,g,h,i"
    */
-  static constexpr std::array<char, 6> BIK2 = {
-    0x62, 0x64, 0x66, 0x67, 0x68, 0x69
-  };
-
+  static constexpr std::array<char, 6> BIK2 = { 0x62, 0x64, 0x66,
+                                                0x67, 0x68, 0x69 };
   /**
    * Each Movie has 1 cam and 2 versions of the video.
    */
   std::vector<MovieClip> m_movies;
-
   ///// <summary>
   ///// Depending on type you read it differently.
   ///// </summary>
@@ -64,14 +54,11 @@ private:
   //  {
   //  }
   //}
-
   /**
    * Remembers detected disc number.
    */
-  int m_disc_cache{ -1 };
-
+  int                   m_disc_cache{ -1 };
   std::filesystem::path m_file_path{};
-
 public:
   explicit Pak(std::filesystem::path path) : m_file_path(std::move(path))
   {
@@ -86,8 +73,6 @@ public:
     //  };
     read();
   }
-
-
   /**
    * Total number of movies detected
    * @return count of movies
@@ -96,7 +81,6 @@ public:
   {
     return std::ranges::size(m_movies);
   }
-
   /**
    * Current path
    * @return ref to path of pak file.
@@ -105,7 +89,6 @@ public:
   {
     return m_file_path;
   }
-
   /**
    * Each Movie has 1 cam and 2 versions of the video.
    * @return vector of movies.
@@ -114,8 +97,6 @@ public:
   {
     return m_movies;
   }
-
-
   /**
    * Gets Movie Clip at index
    * @param i = index
@@ -134,8 +115,6 @@ public:
   {
     return m_movies.at(i);
   }
-
-
   void extract(std::filesystem::path dest_path)
   {
     std::cout << "Extracting \"" << m_file_path.string() << "\"\n";
@@ -151,7 +130,6 @@ public:
                     }
                     return true;
                   }()) {
-
                 if (!std::ranges::empty(fs.file_name()) && fs.size() > 0U) {
                   tools::write_buffer(
                     [&is, &fs](std::ostream &os) {
@@ -160,15 +138,14 @@ public:
                       std::vector<char> tmp{};
                       tmp.resize(fs.size());
                       is.read(std::ranges::data(tmp),
-                        static_cast<std::intmax_t>(fs.size()));
+                              static_cast<std::intmax_t>(fs.size()));
                       os.write(std::ranges::data(tmp),
-                        static_cast<std::intmax_t>(fs.size()));
+                               static_cast<std::intmax_t>(fs.size()));
                     },
                     out_path.string());
                 }
               }
             };
-
             e(item.cam_fs());
             e(item.bink_high());
             if constexpr (ENABLE_EXTRACT_LOW_RES) {
@@ -184,8 +161,8 @@ public:
    * @param suffix suffix that gets appended to end of names
    * @return std::string
    */
-  std::string generate_file_name(
-    const std::string &extension, const std::string &suffix = {})
+  std::string generate_file_name(const std::string &extension,
+                                 const std::string &suffix = {})
   {
     using namespace std::string_literals;
     static constexpr auto length = 2U;
@@ -201,7 +178,6 @@ public:
   int get_disc_number()
   {
     auto stem = m_file_path.stem().string();
-
     if (m_disc_cache == -1) {
       auto b = std::ranges::find_if(stem, [](const char &c) {
         return std::isdigit(c);
@@ -222,21 +198,17 @@ public:
     FileSection fs{};
     fs.type(FileSectionTypeT::CAM);
     fs.offset(static_cast<int64_t>(is.tellg()) - 3);
-
     is.seekg(3, std::ios::cur);
     auto frames = tools::read_val<uint16_t>(is);
-
     is.seekg(frames * CAM_SECTION_SIZE, std::ios::cur);
-
     // there seems to be 1 or more extra frames. Check for those.
     while (!FileSectionTypeT::valid_type(FileSectionTypeT::get_type(is),
-      FileSectionTypeT::BIK,
-      FileSectionTypeT::KB2)) {
+                                         FileSectionTypeT::BIK,
+                                         FileSectionTypeT::KB2)) {
       is.seekg(CAM_SECTION_SIZE - 3, std::ios::cur);
       frames++;
     }
     // Found the end go back to it.
-
     is.seekg(-3, std::ios::cur);
     using namespace std::string_literals;
     fs.size(static_cast<uint32_t>(is.tellg() - fs.offset()));
@@ -245,15 +217,14 @@ public:
     movie.cam(Cam(is, fs));
     movie.cam_fs(std::move(fs));
   }
-  void get_bik(
-    std::istream &is, MovieClip &movie, const std::span<const char> &type)
+  void get_bik(std::istream &               is,
+               MovieClip &                  movie,
+               const std::span<const char> &type)
   { /**
      * Read Bink video offset and size
      */
-    char version = tools::read_val<char>(is);
-
+    char        version = tools::read_val<char>(is);
     FileSection fs{};
-
     if (std::ranges::equal(type, FileSectionTypeT::BIK)
         && tools::any_of(version, BIK1)) {
       fs.type(FileSectionTypeT::BIK);
@@ -267,17 +238,11 @@ public:
       return;
     }
     fs.offset(static_cast<int64_t>(is.tellg()) - 4);
-
-
     fs.size(tools::read_val<uint32_t>(is));
-
     static constexpr auto header_size = 8U;
     fs.size(fs.size() + header_size);
-
     fs.frames(tools::read_val<uint32_t>(is));
-
     is.seekg(fs.offset() + fs.size(), std::ios::beg);
-
     using namespace std::string_literals;
     static constexpr auto get_ext = [](const std::string_view &t) {
       if (t == FileSectionTypeT::BIK) {
@@ -296,7 +261,6 @@ public:
       } else {
         movie.bink_low(std::move(fs));
       }
-
       movie.mutable_bink_high().file_name(
         generate_file_name(get_ext(movie.bink_high().type()), "h"s));
       movie.mutable_bink_low().file_name(
@@ -322,14 +286,12 @@ public:
           if (FileSectionTypeT::valid_type(
                 type, FileSectionTypeT::BIK, FileSectionTypeT::KB2)) {
             get_bik(is, movie, type);
-
           } else if (std::ranges::equal(type, FileSectionTypeT::CAM)) {
             get_cam(is, movie);
           } else if (!is.eof()) {
             std::cerr << "location: " << std::hex << is.tellg() << std::endl;
             std::cerr << "unknown\t\"" << type[0] << type[1] << type[2]
                       << std::dec << "\"" << std::endl;
-
             return;
           }
         }

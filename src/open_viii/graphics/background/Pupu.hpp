@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_PUPU_HPP
 #define VIIIARCHIVE_PUPU_HPP
 #include "IntegralStorage.hpp"
@@ -29,24 +28,24 @@ namespace open_viii::graphics::background {
 struct Pupu
 {
 private:
-  std::uint16_t m_z{};
-  BPPT m_depth{};
-  std::uint8_t m_layer_id{};
-  BlendModeT m_blend_mode{};
-  std::uint8_t m_animation_id{};
-  std::uint8_t m_animation_state{};
+  std::uint16_t        m_z{};
+  BPPT                 m_depth{};
+  std::uint8_t         m_layer_id{};
+  BlendModeT           m_blend_mode{};
+  std::uint8_t         m_animation_id{};
+  std::uint8_t         m_animation_state{};
   constexpr static int HEX_BASE = 16;
-  static constexpr int BIT4 = 4;
-  static constexpr int BIT8 = 8;
-  static constexpr int BIT16 = 16;
-
+  static constexpr int BIT4     = 4;
+  static constexpr int BIT8     = 8;
+  static constexpr int BIT16    = 16;
 public:
   Pupu() = default;
   template<typename tileT>
   requires(
-    std::is_convertible_v<tileT,
+    std::is_convertible_v<
+      tileT,
       Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) constexpr explicit Pupu(tileT
-      tile)
+                                                                                                                      tile)
     : m_z(tile.z()),
       m_depth(tile.depth()),
       m_layer_id(tile.layer_id()),
@@ -54,7 +53,6 @@ public:
       m_animation_id(tile.animation_id()),
       m_animation_state(tile.animation_state())
   {}
-
   auto operator<=>(const Pupu &) const = default;
   auto operator==(const Pupu &right) const
   {
@@ -76,10 +74,10 @@ public:
   {
     return nullptr == (left.m_depth <=> right);
   }
-
   template<typename tileT>
   requires(
-    std::is_convertible_v<tileT,
+    std::is_convertible_v<
+      tileT,
       Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) friend auto
     operator==(const Pupu &left, const tileT &right)
   {
@@ -91,7 +89,8 @@ public:
   }
   template<typename tileT>
   requires(
-    std::is_convertible_v<tileT,
+    std::is_convertible_v<
+      tileT,
       Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) friend auto
     operator==(const tileT &left, const Pupu &right)
   {
@@ -103,9 +102,11 @@ public:
   }
   template<typename tileT>
   requires(
-    std::is_convertible_v<tileT,
+    std::is_convertible_v<
+      tileT,
       Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) bool AllButZ(const tileT
-      &left) const noexcept
+                                                                                                           &left)
+    const noexcept
   {
     return m_depth == left.depth() && m_layer_id == left.layer_id()
            && m_blend_mode == left.blend_mode()
@@ -143,18 +144,16 @@ public:
       return;
     }
     integral_storage::Reader<std::uint64_t> pupu_reader{ pupu_id };
-    m_depth = pupu_reader.extract_depth();
-    m_layer_id = pupu_reader.extract_uint<BIT4>();
-    m_blend_mode = static_cast<BlendModeT>(pupu_reader.extract_uint<BIT4>());
+    m_depth        = pupu_reader.extract_depth();
+    m_layer_id     = pupu_reader.extract_uint<BIT4>();
+    m_blend_mode   = static_cast<BlendModeT>(pupu_reader.extract_uint<BIT4>());
     m_animation_id = pupu_reader.extract_uint<BIT8>();
     m_animation_state = pupu_reader.extract_uint<BIT8>();
-    m_z = pupu_reader.extract_uint<BIT16>();
+    m_z               = pupu_reader.extract_uint<BIT16>();
   }
-
   explicit Pupu(std::string_view hex)
     : Pupu(std::strtoull(std::ranges::data(hex), nullptr, HEX_BASE))
   {}
-
   [[nodiscard]] const std::uint16_t &z() const noexcept
   {
     return m_z;

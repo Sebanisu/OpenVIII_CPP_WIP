@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SP2ENTRY_HPP
 #define VIIIARCHIVE_SP2ENTRY_HPP
 #include <cstdint>
@@ -19,17 +18,16 @@ struct Sp2Entry
 {
 private:
   std::uint32_t m_count{};
-  std::uint8_t m_x{};
-  std::uint8_t m_y{};
-  std::uint8_t m_unknown1{};
-  std::uint8_t m_unknown2{};
+  std::uint8_t  m_x{};
+  std::uint8_t  m_y{};
+  std::uint8_t  m_unknown1{};
+  std::uint8_t  m_unknown2{};
   std::uint16_t m_width{};
   std::uint16_t m_height{};
-  std::uint8_t m_unknown3{};
-  std::uint8_t m_unknown4{};
-  std::uint8_t m_unknown5{};
-  std::uint8_t m_unknown6{};
-
+  std::uint8_t  m_unknown3{};
+  std::uint8_t  m_unknown4{};
+  std::uint8_t  m_unknown5{};
+  std::uint8_t  m_unknown6{};
 public:
   [[nodiscard]] auto count() const noexcept
   {

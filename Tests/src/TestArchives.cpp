@@ -19,7 +19,6 @@ int main()
     std::cout << path << std::endl;
     const auto archives =
       open_viii::archive::Archives<open_viii::LangT::en>(path);
-
     // auto results = archives.search({});
     //    for (const auto &result : results) {
     //      std::cout << result.first << ":\n";
@@ -50,7 +49,6 @@ int main()
     [[maybe_unused]] const auto &world =
       archives.get<open_viii::archive::ArchiveTypeT::world>();
     std::cout << world << std::endl;
-
     [[maybe_unused]] const auto &zzz_main =
       archives.get<open_viii::archive::ArchiveTypeT::zzz_main>();
     std::cout << zzz_main << std::endl;

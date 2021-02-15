@@ -10,10 +10,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIICOMPRESSION_LZSS_H
 #define VIIICOMPRESSION_LZSS_H
-
 #include <algorithm>
 #include <array>
 #include <span>
@@ -22,30 +20,24 @@ namespace open_viii::compression {
 struct LZSS
 {
 private:
-  constexpr static const std::uint32_t R_SIZE = 4078U;
-  constexpr static const std::uint32_t MATCH_MASK = 0xF0U;
-  constexpr static const std::uint32_t P_OFFSET = 4097U;
-  constexpr static const std::uint32_t FLAGS_MASK = 0x100U;
-  constexpr static const std::uint32_t FLAGS_BITS = 0xFF00U;
-  constexpr static const std::uint32_t OFFSET_MASK = MATCH_MASK;
-  constexpr static const std::uint32_t COUNT_MASK = 0x0FU;
-
-  constexpr static const std::uint32_t NOT_USED = 4096U;
-
-  constexpr static const std::uint32_t NODE_SIZE = 18U;
-  constexpr static const auto F = 18U;
-  constexpr static const auto F_MINUS1 = F - 1;
-  constexpr static const auto N = NOT_USED;
-  constexpr static const auto N_MINUS1 = N - 1U;
-  constexpr static const auto THRESHOLD = 2U;
-
-  constexpr static const auto RIGHT_SIDE_SIZE = 4353;
-
-
-  constexpr static const int N_PLUS1 = N + 1U;
-  constexpr static const int N_PLUS2 = N + 1U;
-  constexpr static const int N_PLUS17 = N + F_MINUS1;
-
+  constexpr static const std::uint32_t R_SIZE          = 4078U;
+  constexpr static const std::uint32_t MATCH_MASK      = 0xF0U;
+  constexpr static const std::uint32_t P_OFFSET        = 4097U;
+  constexpr static const std::uint32_t FLAGS_MASK      = 0x100U;
+  constexpr static const std::uint32_t FLAGS_BITS      = 0xFF00U;
+  constexpr static const std::uint32_t OFFSET_MASK     = MATCH_MASK;
+  constexpr static const std::uint32_t COUNT_MASK      = 0x0FU;
+  constexpr static const std::uint32_t NOT_USED        = 4096U;
+  constexpr static const std::uint32_t NODE_SIZE       = 18U;
+  constexpr static const auto          F               = 18U;
+  constexpr static const auto          F_MINUS1        = F - 1;
+  constexpr static const auto          N               = NOT_USED;
+  constexpr static const auto          N_MINUS1        = N - 1U;
+  constexpr static const auto          THRESHOLD       = 2U;
+  constexpr static const auto          RIGHT_SIDE_SIZE = 4353;
+  constexpr static const int           N_PLUS1         = N + 1U;
+  constexpr static const int           N_PLUS2         = N + 1U;
+  constexpr static const int           N_PLUS17        = N + F_MINUS1;
   /**
    * @note I was getting a complexity warning as all the code was in one
    * function. So I moved the code into a struct. So I could change the lambda's
@@ -53,31 +45,21 @@ private:
    */
   struct CompressImpl
   {
-
-
     [[nodiscard]] [[maybe_unused]] auto operator()(std::span<const char> src)
     {
-
-
       std::uint32_t cur_result{};
-      size_t size_alloc = src.size() / 2U;
-      auto code_buf = std::array<std::uint8_t, F_MINUS1>();
-
-      const auto data_end = std::ranges::cend(src);
-      auto data = std::ranges::cbegin(src);
-
-      auto result = std::vector<char>();
+      size_t        size_alloc = src.size() / 2U;
+      auto          code_buf   = std::array<std::uint8_t, F_MINUS1>();
+      const auto    data_end   = std::ranges::cend(src);
+      auto          data       = std::ranges::cbegin(src);
+      auto          result     = std::vector<char>();
       result.reserve(size_alloc);
-
-
       //    if(result.size() < sizeAlloc) {
       //      result.resize(sizeAlloc);
       //    }
-
       /* quint32
               textsize = 0,//text size counter
               codesize = 0;//code size counter */
-
       // initialize trees
       /* For i = 0 to NMinus1, rightSide[i] and leftSide[i] will be the right
       and left children of node i. These nodes need not be initialized. Also,
@@ -85,22 +67,17 @@ private:
       stands for 'not used.' For i = 0 to 255, rightSide[4097 + i] is the root
       of the tree for strings that begin with character i.
       These are initialized to NotUsed. Note there are 256 trees. */
-
       // for(i=4097 ; i<=4352 ; ++i)	rightSide[i] = NotUsed;
       // for(i=0 ; i<N ; ++i)	parent[i] = NotUsed;
       std::ranges::fill(m_parent, NOT_USED);
       std::ranges::fill(std::span(m_right_side).subspan(N_PLUS1), NOT_USED);
-
       code_buf[0] = 0;// code_buf[1..16] saves eight units of code, and
                       // code_buf[0] works as eight flags, "1" representing
       // that the unit is an unencoded letter (1 byte), "0" a
       // position-and-length pair (2 bytes). Thus, eight units require at most
       // 16 bytes of code.
-
-
       std::uint32_t s = 0;
       std::uint32_t r = R_SIZE;
-
       //	for(i=s ; i<r ; ++i)
       //		text_buf[i] = '\x0';//Clear the buffer with  any
       // character that will appear often.
@@ -121,22 +98,17 @@ private:
       }
       // which these strings are inserted.  This way, degenerate trees will be
       // less likely to occur.
-
       insert_node(r);// Finally, insert the whole string just read.  The global
                      // variables match_length and match_position are set.
-
       std::uint32_t code_buf_ptr = 1;
-      std::uint8_t mask = 1;
-
+      std::uint8_t  mask         = 1;
       do {
         if (m_match_length > len) {
           m_match_length =
             len;// match_length may be spuriously long near the end of text.
         }
-
-
         if (m_match_length <= 2) {
-          m_match_length = 1;// Not long enough match.  Send one byte.
+          m_match_length = 1; // Not long enough match.  Send one byte.
           code_buf[0] |= mask;//'send one byte' flag
           code_buf.at(code_buf_ptr++) = m_text_buf.at(r);// Send unencoded.
         } else {
@@ -147,7 +119,6 @@ private:
             | (m_match_length - (2 + 1)));// Send position and length pair. Note
                                           // match_length > 2.
         }
-
         if ((mask = static_cast<std::uint8_t>((mask << 1U)))
             == 0)// Shift mask left one bit.
         {
@@ -158,13 +129,12 @@ private:
           // code_buf_ptr); pos,len,after,after_len if length the same then
           // would be a memcpy. or .insert()
           result.insert(result.begin() + cur_result,
-            code_buf.begin(),
-            code_buf.begin() + code_buf_ptr);
+                        code_buf.begin(),
+                        code_buf.begin() + code_buf_ptr);
           cur_result += code_buf_ptr;
-          code_buf[0] = 0;
+          code_buf[0]  = 0;
           code_buf_ptr = mask = 1;
         }
-
         std::uint32_t last_match_length = m_match_length;
         {
           std::uint32_t i{};
@@ -172,19 +142,16 @@ private:
             std::uint32_t c = static_cast<std::uint8_t>(*data++);
             delete_node(s);// Delete old strings and
             m_text_buf.at(s) = static_cast<std::uint8_t>(c);// read new bytes
-
             if (s < F_MINUS1) {
               m_text_buf.at(s + N) = static_cast<std::uint8_t>(
                 c);// If the position is near the end of buffer, extend the
                    // buffer to make string comparison easier.
             }
-
             s = (s + 1) & (N_MINUS1);
             r = (r + 1) & (N_MINUS1);
             // Since this is a ring buffer, increment the position modulo N.
             insert_node(r);// Register the string in text_buf[r..r+18-1]
           }
-
           while (i++ < last_match_length)// After the end of text,
           {
             delete_node(s);// no need to read, but
@@ -195,9 +162,7 @@ private:
             }
           }
         }
-
-      } while (len > 0);// until length of string to be processed is zero
-
+      } while (len > 0);   // until length of string to be processed is zero
       if (code_buf_ptr > 1)// Send remaining code.
       {
         //		for(i = 0; i < code_buf_ptr ; ++i)
@@ -206,15 +171,14 @@ private:
         // code_buf_ptr); pos,len,after,after_len if length the same then would
         // be a memcpy. or .insert()
         result.insert(result.begin() + cur_result,
-          code_buf.begin(),
-          code_buf.begin() + code_buf_ptr);
+                      code_buf.begin(),
+                      code_buf.begin() + code_buf_ptr);
         cur_result += code_buf_ptr;
       }
       // result.truncate(curResult);
       result.erase(result.begin() + cur_result, result.end());
       return result;
     }
-
     /**
      * Inserts string of length 18, text_buf[item..item+18-1], into one of the
      * trees (text_buf.at(item)'th tree) and returns the longest-match position
@@ -226,23 +190,20 @@ private:
     //[&text_buf, &match_length, &match_position]
     void insert_node(const std::uint32_t &item)
     {
-      int cmp = 1U;
+      int  cmp = 1U;
       auto key = std::span<std::uint8_t>(m_text_buf);
-      key = key.subspan(item);
-
+      key      = key.subspan(item);
       // auto key = text_buf.begin() + item;
-      std::uint32_t p = P_OFFSET + key[0];
-
+      std::uint32_t p       = P_OFFSET + key[0];
       m_right_side.at(item) = m_left_side.at(item) = NOT_USED;
-      m_match_length = 0;
-
+      m_match_length                               = 0;
       while (true) {
         if (cmp >= 0) {// if cmp is unsigned this is always true..
           if (m_right_side.at(p) != NOT_USED) {
             p = m_right_side.at(p);
           } else {
             m_right_side.at(p) = item;
-            m_parent.at(item) = p;
+            m_parent.at(item)  = p;
             return;
           }
         } else {
@@ -272,14 +233,11 @@ private:
           }
         }
       }
-
-      m_parent.at(item) = m_parent.at(p);
-      m_left_side.at(item) = m_left_side.at(p);
-      m_right_side.at(item) = m_right_side.at(p);
-
-      m_parent.at(m_left_side.at(p)) = item;
+      m_parent.at(item)               = m_parent.at(p);
+      m_left_side.at(item)            = m_left_side.at(p);
+      m_right_side.at(item)           = m_right_side.at(p);
+      m_parent.at(m_left_side.at(p))  = item;
       m_parent.at(m_right_side.at(p)) = item;
-
       if (m_right_side.at(m_parent.at(p)) == p) {
         m_right_side.at(m_parent.at(p)) = item;
       } else {
@@ -306,17 +264,15 @@ private:
             do {
               q = m_right_side.at(q);
             } while (m_right_side.at(q) != NOT_USED);
-
             m_right_side.at(m_parent.at(q)) = m_left_side.at(q);
-            m_parent.at(m_left_side.at(q)) = m_parent.at(q);
-            m_left_side.at(q) = m_left_side.at(p);
-            m_parent.at(m_left_side.at(p)) = q;
+            m_parent.at(m_left_side.at(q))  = m_parent.at(q);
+            m_left_side.at(q)               = m_left_side.at(p);
+            m_parent.at(m_left_side.at(p))  = q;
           }
-          m_right_side.at(q) = m_right_side.at(p);
+          m_right_side.at(q)              = m_right_side.at(p);
           m_parent.at(m_right_side.at(p)) = q;
         }
         m_parent.at(q) = m_parent.at(p);
-
         if (m_right_side.at(m_parent.at(p)) == p) {
           m_right_side.at(m_parent.at(p)) = q;
         } else {
@@ -325,22 +281,17 @@ private:
       }
       m_parent.at(p) = NOT_USED;
     };
-
   private:
     // left & right children & parents -- These constitute binary search trees.
-    std::array<std::uint32_t, N_PLUS2> m_left_side{};
+    std::array<std::uint32_t, N_PLUS2>         m_left_side{};
     std::array<std::uint32_t, RIGHT_SIDE_SIZE> m_right_side{};
-    std::array<std::uint32_t, N_PLUS2> m_parent{};
-
+    std::array<std::uint32_t, N_PLUS2>         m_parent{};
     std::array<std::uint8_t, N_PLUS17>
       m_text_buf{};// ring buffer of size N, with extra 17 bytes to facilitate
                    // string comparison
-
-
     std::uint32_t m_match_length{};
     std::uint32_t m_match_position{};
   };
-
 public:
   /**
    NEW LZSS
@@ -364,24 +315,22 @@ public:
    @see https://github.com/niemasd/PyFF7/blob/master/PyFF7/lzss.py
    @see http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
    */
-
   template<typename dstT = std::vector<char>>
-  [[nodiscard]] static dstT decompress(
-    std::span<const char> src, size_t dst_size = 0)
+  [[nodiscard]] static dstT decompress(std::span<const char> src,
+                                       size_t                dst_size = 0)
   {
     dstT dst{};
     if (dst_size > 0) {
       dst.reserve(dst_size);
     }
-    auto iterator = src.begin();
-    const auto srcEnd = std::ranges::end(src);
+    auto          iterator = src.begin();
+    const auto    srcEnd   = std::ranges::end(src);
     std::uint32_t current{};
-    auto textBuf = std::array<std::uint32_t, N_MINUS1 + F>();
+    auto          textBuf = std::array<std::uint32_t, N_MINUS1 + F>();
     // ring buffer of size N, with extra F-1 bytes to facilitate string
     // comparison
-
-    auto r = N - F;
-    auto flags = 0U;
+    auto       r         = N - F;
+    auto       flags     = 0U;
     const auto testAtEnd = [&iterator, &srcEnd]() {
       return iterator + 1 > srcEnd;
     };

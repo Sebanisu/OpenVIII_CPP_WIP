@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_LANGT_HPP
 #define VIIIARCHIVE_LANGT_HPP
 #include "open_viii/tools/Tools.hpp"
@@ -24,6 +23,5 @@ enum class LangT : std::uint8_t {
   it,
   jp,
 };
-
 }// namespace open_viii
 #endif// VIIIARCHIVE_LANGT_HPP

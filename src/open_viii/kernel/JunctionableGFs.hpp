@@ -10,10 +10,9 @@
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-template<LangT langVal> struct JunctionableGFs
+struct JunctionableGFs
 {
   /**
-   * https://github.com/DarkShinryu/doomtrain/wiki/Junctionable-GFs
    * Offset	Length	Description
    * 0x0000	2 bytes	Offset to GF attack name
    * 0x0002	2 bytes	Offset to GF attack description
@@ -132,11 +131,12 @@ template<LangT langVal> struct JunctionableGFs
    * 0x0080	2 bytes	Unknown
    * 0x0082	1 byte	Power Mod (used in damage formula)
    * 0x0083	1 byte	Level Mod (used in damage formula)
+   * @see https://github.com/DarkShinryu/doomtrain/wiki/Junctionable-GFs
    */
 public:
   static constexpr auto MAX_ABILITIES = 21U;
   constexpr auto
-    operator<=>(const JunctionableGFs<langVal> &right) const noexcept = default;
+    operator<=>(const JunctionableGFs &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -247,16 +247,9 @@ public:
   {
     return m_level_mod;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
        << static_cast<std::uint32_t>(m_attack_type) << ", "
        << static_cast<std::uint32_t>(m_gf_power) << ", "
@@ -290,6 +283,7 @@ public:
               << static_cast<std::uint32_t>(m_power_mod) << ", "
               << static_cast<std::uint32_t>(m_level_mod);
   }
+
 private:
   EncodedStringOffset                          m_name_offset{};
   EncodedStringOffset                          m_description_offset{};

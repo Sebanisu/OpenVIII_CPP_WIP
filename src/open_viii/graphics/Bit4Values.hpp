@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_4BITVALUES_H
 #define VIIIARCHIVE_4BITVALUES_H
 #include <cstdint>
@@ -20,17 +19,15 @@ namespace open_viii::graphics {
 struct Bit4Values
 {
 private:
-  static constexpr std::uint8_t MASK_4_BIT = 0xFU;
+  static constexpr std::uint8_t MASK_4_BIT        = 0xFU;
   static constexpr std::uint8_t OFFSET_MASK_4_BIT = 0xF0U;
-  static constexpr std::uint8_t SHIFT_8_BITS = 8U;
-
-  std::uint8_t m_first : 4U {};
-  std::uint8_t m_second : 4U {};
-
+  static constexpr std::uint8_t SHIFT_8_BITS      = 8U;
+  std::uint8_t                  m_first  : 4U {};
+  std::uint8_t                  m_second : 4U {};
 public:
   constexpr Bit4Values() = default;
-  constexpr Bit4Values(
-    const std::uint8_t &in_first, const std::uint8_t &in_second)
+  constexpr Bit4Values(const std::uint8_t &in_first,
+                       const std::uint8_t &in_second)
     : m_first(in_first & MASK_4_BIT), m_second(in_second & MASK_4_BIT)
   {}
   constexpr explicit Bit4Values(const std::uint8_t &in_raw)
@@ -58,29 +55,24 @@ public:
       return m_second;
     }
   }
-
   //  template<int I>
   //  [[nodiscard]] std::tuple_element_t<I, std::uint8_t> get(){
   //    static_assert(I < 2,"only 2 items");
   //    if      constexpr(I == 0) return first;
   //    else if constexpr(I == 1) return second;
   //  }
-
   [[nodiscard]] constexpr std::uint8_t first() const noexcept
   {
     return m_first;
   }
-
   [[nodiscard]] constexpr std::uint8_t second() const noexcept
   {
     return m_second;
   }
-
   std::uint8_t first(const std::uint8_t &value) noexcept
   {
     return m_first = value & MASK_4_BIT;
   }
-
   std::uint8_t second(const std::uint8_t &value) noexcept
   {
     return m_second = value & MASK_4_BIT;
@@ -89,7 +81,6 @@ public:
 };
 static_assert(sizeof(Bit4Values) == Bit4Values::EXPECTED_SIZE);
 }// namespace open_viii::graphics
-
 namespace std {
 /**
  * number of arguments
@@ -100,7 +91,6 @@ struct tuple_size<open_viii::graphics::Bit4Values>
   : std::integral_constant<size_t, 2>
 {
 };
-
 /**
  * type of arguments
  * @note required to structured binding support

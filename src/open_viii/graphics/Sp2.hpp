@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SP2_HPP
 #define VIIIARCHIVE_SP2_HPP
 #include "sp2/Sp2Entry.hpp"
@@ -25,7 +24,6 @@ struct Sp2
 {
 private:
   std::vector<Sp2Entry> m_entries{};
-
 public:
   Sp2() = default;
   explicit Sp2(std::span<const char> buffer)
@@ -35,8 +33,8 @@ public:
     std::span<Sp2Entry> s{ m_entries };
     for (const std::uint32_t offset : header.offsets()) {
       std::memcpy(std::ranges::data(s),
-        std::ranges::data(buffer.subspan(offset)),
-        sizeof(Sp2Entry));
+                  std::ranges::data(buffer.subspan(offset)),
+                  sizeof(Sp2Entry));
       s = s.subspan(1);
     }
   }

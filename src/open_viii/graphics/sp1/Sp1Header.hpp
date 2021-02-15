@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SP1HEADER_HPP
 #define VIIIARCHIVE_SP1HEADER_HPP
 #include "Sp1Offset.hpp"
@@ -22,9 +21,8 @@ namespace open_viii::graphics {
 struct Sp1Header
 {
 private:
-  std::uint32_t m_offset_count{};
+  std::uint32_t          m_offset_count{};
   std::vector<Sp1Offset> m_offsets{};
-
 public:
   Sp1Header() = default;
   explicit Sp1Header(std::span<const char> buffer)
@@ -42,7 +40,7 @@ public:
       size_t sz = static_cast<std::size_t>(m_offset_count) * sizeof(Sp1Offset);
       if (sz > std::ranges::size(buffer)) {
         m_offset_count = {};
-        m_offsets = {};
+        m_offsets      = {};
         return;
       }
       std::memcpy(std::ranges::data(m_offsets), std::ranges::data(buffer), sz);
@@ -57,6 +55,5 @@ public:
     return m_offsets;
   }
 };
-
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP1HEADER_HPP

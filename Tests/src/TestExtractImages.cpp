@@ -20,7 +20,6 @@
 #include "open_viii/graphics/background/Map.hpp"
 #include "open_viii/menu_group/MenuGroupFile.hpp"
 #include "open_viii/paths/Paths.hpp"
-
 int main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
@@ -69,7 +68,7 @@ int main()
                           ".sp1",
                           ".sp2",
                           open_viii::graphics::background::Mim::EXT },
-      dump_image);
+                        dump_image);
     // dump images from menu group.
     [[maybe_unused]] const auto &menu =
       archives.get<open_viii::archive::ArchiveTypeT::menu>();

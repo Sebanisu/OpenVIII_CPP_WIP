@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 12/31/2020.
 //
-
 #ifndef VIIIARCHIVE_CAMFRAME_HPP
 #define VIIIARCHIVE_CAMFRAME_HPP
 #include "open_viii/graphics/Point.hpp"
@@ -53,7 +52,6 @@ private:
    * "END" marker 3 bytes
    */
   std::array<char, 3U> m_end{ 'E', 'N', 'D' };
-
 public:
   /**
    * Expected "END"
@@ -213,22 +211,19 @@ public:
   }
   friend std::ostream &operator<<(std::ostream &os, const CamFrame &cam_frame)
   {
-
     return os << '{' << cam_frame.m_x << ',' << cam_frame.m_y << ','
               << cam_frame.m_z << ',' << cam_frame.m_z_z << ','
               << cam_frame.m_space << ',' << cam_frame.m_pan << ','
-
               << cam_frame.m_zoom << ',' << cam_frame.m_zoom2 << ',' << std::hex
               << std::uppercase << "0x"
               << (static_cast<uint16_t>(cam_frame.m_render_mode) & 0xFFU)
               << std::dec << std::nouppercase << ','
-              << std::string_view(
-                   cam_frame.m_end.begin(), cam_frame.m_end.end())
+              << std::string_view(cam_frame.m_end.begin(),
+                                  cam_frame.m_end.end())
               << '}';
   }
 };
 static_assert(sizeof(CamFrame) == CamFrame::EXPECTED_SIZE);
 static_assert(CamFrame().valid_end());
 }// namespace open_viii
-
 #endif// VIIIARCHIVE_CAMFRAME_HPP

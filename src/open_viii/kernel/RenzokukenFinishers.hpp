@@ -20,7 +20,7 @@
 #include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
-template<LangT langVal> struct RenzokukenFinishers
+struct RenzokukenFinishers
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Renzokuken-finishers
    * 0x0000	2 bytes	Offset to limit name
@@ -58,8 +58,8 @@ private:
   PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
 public:
-  constexpr auto operator<=>(
-    const RenzokukenFinishers<langVal> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const RenzokukenFinishers &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -124,18 +124,6 @@ public:
   {
     return m_battle_only_statuses;
   }// statuses 8-39
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
-  {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
-    return os;
-  }
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_RENZOKUKENFINISHERS_HPP

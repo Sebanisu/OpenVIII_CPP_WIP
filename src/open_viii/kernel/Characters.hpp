@@ -37,7 +37,7 @@ namespace open_viii::kernel {
  * 0x0020	4 bytes	LUCK
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Characters
  * */
-template<LangT langVal> struct Characters
+struct Characters
 {
 private:
   EncodedStringOffset m_name_offset{};
@@ -78,9 +78,9 @@ private:
   //  std::uint8_t LUCK2;
   //  std::uint8_t LUCK3;
   StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> m_stats{};
+
 public:
-  constexpr auto
-    operator<=>(const Characters<langVal> &right) const noexcept = default;
+  constexpr auto operator<=>(const Characters &right) const noexcept = default;
   [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -115,12 +115,9 @@ public:
   {
     return &m_stats;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
     return os << ", "
               << static_cast<std::uint32_t>(m_crisis_level_hp_multiplier)
               << ", " << static_cast<std::uint32_t>(m_gender) << ", "
@@ -129,6 +126,8 @@ public:
               << static_cast<std::uint32_t>(m_exp[0]) << ", "
               << static_cast<std::uint32_t>(m_exp[1]) << "}, " << m_stats;
   }
+  static constexpr std::size_t EXPECTED_SIZE = 36U;
 };
+static_assert(sizeof(Characters) == Characters::EXPECTED_SIZE);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_CHARACTERS_HPP

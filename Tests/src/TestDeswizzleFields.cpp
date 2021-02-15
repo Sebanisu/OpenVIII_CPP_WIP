@@ -15,7 +15,6 @@
 #include "open_viii/graphics/background/Deswizzle.hpp"
 #include "open_viii/paths/Paths.hpp"
 #include <chrono>
-
 int main()
 {
   const auto start = std::chrono::steady_clock::now();
@@ -29,39 +28,38 @@ int main()
       field.execute_with_nested(
         {}, [](const open_viii::archive::FIFLFS<false> &e) {
           const std::string &basename = e.get_base_name();
-          const std::string mim_name =
+          const std::string  mim_name =
             basename + open_viii::graphics::background::Mim::EXT.data();
           const std::string map_name =
             basename + open_viii::graphics::background::Map<>::EXT.data();
           auto mim =
             open_viii::graphics::background::Mim{ e.get_entry_data(mim_name),
-              basename };
-          const auto process = [&mim, &e, &mim_name, &map_name, &basename](
-                                 const auto &map) {
-            std::cout << "  " << basename << '\n';
-            map.save_csv(e.get_full_path(map_name));
-            open_viii::graphics::background::Deswizzle(
-              mim, map, e.get_full_path(mim_name))
-              .save();
-          };
+                                                  basename };
+          const auto process =
+            [&mim, &e, &mim_name, &map_name, &basename](const auto &map) {
+              std::cout << "  " << basename << '\n';
+              map.save_csv(e.get_full_path(map_name));
+              open_viii::graphics::background::Deswizzle(
+                mim, map, e.get_full_path(mim_name))
+                .save();
+            };
           if (mim.mim_type().type() == 1) {
             process(open_viii::graphics::background::Map<
-              open_viii::graphics::background::Tile1>{
+                    open_viii::graphics::background::Tile1>{
               e.get_entry_data(map_name) });
           } else if (mim.mim_type().type() == 2) {
             process(open_viii::graphics::background::Map<
-              open_viii::graphics::background::Tile2>{
+                    open_viii::graphics::background::Tile2>{
               e.get_entry_data(map_name) });
           } else if (mim.mim_type().type() == 3) {
             process(open_viii::graphics::background::Map<
-              open_viii::graphics::background::Tile3>{
+                    open_viii::graphics::background::Tile3>{
               e.get_entry_data(map_name) });
           }
         });
     }
   });
-
-  const auto end = std::chrono::steady_clock::now();
+  const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;
   std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"
             << '\n';

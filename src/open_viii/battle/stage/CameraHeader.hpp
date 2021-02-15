@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 11/18/2020.
 //
-
 #ifndef VIIIARCHIVE_CAMERAHEADER_HPP
 #define VIIIARCHIVE_CAMERAHEADER_HPP
 #include <cstdint>
@@ -14,16 +13,15 @@ namespace open_viii::battle::stage {
 struct CameraHeader
 {
 private:
-  std::uint16_t m_offset_count{};
-  std::uint16_t m_offset_camera_settings{};
-  std::uint16_t m_offset_camera_animation_collection{};
-  std::uint16_t m_camera_data_size{};
+  std::uint16_t                  m_offset_count{};
+  std::uint16_t                  m_offset_camera_settings{};
+  std::uint16_t                  m_offset_camera_animation_collection{};
+  std::uint16_t                  m_camera_data_size{};
   static constexpr std::uint16_t EXPECTED_OFFSET_COUNT{ 0x2U };
   static constexpr std::uint16_t EXPECTED_OFFSET_CAMERA_SETTINGS{ 0x8U };
   static constexpr std::uint16_t EXPECTED_OFFSET_CAMERA_ANIMATION_COLLECTION{
     0x8U
   };
-
 public:
   [[nodiscard]] bool constexpr check() const noexcept
   {

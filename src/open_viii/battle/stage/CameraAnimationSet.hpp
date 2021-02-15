@@ -1,24 +1,20 @@
 //
 // Created by pcvii on 11/18/2020.
 //
-
 #ifndef VIIIARCHIVE_CAMERAANIMATIONSET_HPP
 #define VIIIARCHIVE_CAMERAANIMATIONSET_HPP
 #include "CameraAnimation.hpp"
 #include <array>
 #include <cstdint>
-
 namespace open_viii::battle::stage {
-
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#CameraAnimationSet
  */
 struct CameraAnimationSet
 {
 private:
-  static constexpr auto COUNT = 8U;
+  static constexpr auto            COUNT = 8U;
   std::array<std::uint16_t, COUNT> m_animation_offsets{};
-
 public:
   //  std::uint16_t operator[](const size_t &i)
   //  {
@@ -36,8 +32,8 @@ public:
   {
     return &m_animation_offsets;
   }
-  friend std::ostream &operator<<(
-    std::ostream &os, const CameraAnimationSet &in)
+  friend std::ostream &operator<<(std::ostream &            os,
+                                  const CameraAnimationSet &in)
   {
     os << '[';
     {
@@ -47,7 +43,6 @@ public:
           if (!first) {
             os << ',';
           }
-
           first = false;
           os << "0x" << std::hex << std::uppercase
              << static_cast<std::uint16_t>(c) << std::nouppercase << std::dec;

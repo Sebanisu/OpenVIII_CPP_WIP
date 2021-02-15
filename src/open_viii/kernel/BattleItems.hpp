@@ -21,10 +21,9 @@
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-template<LangT langVal> struct BattleItems
+struct BattleItems
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Battle-items
+  /**
    * Offset	Length	Description
    * 0x0000	2 bytes	Offset to item name
    * 0x0002	2 bytes	Offset to item description
@@ -43,6 +42,7 @@ template<LangT langVal> struct BattleItems
    * 0x0015	1 byte	Unknown
    * 0x0016	1 bytes	Hit Count
    * 0x0017	1 bytes	Element
+   * @see https://github.com/DarkShinryu/doomtrain/wiki/Battle-items
    */
 private:
   EncodedStringOffset m_name_offset{};
@@ -63,8 +63,8 @@ private:
   std::uint8_t        m_hit_count{};
   ElementT            m_element{};
 public:
-  constexpr auto
-    operator<=>(const BattleItems<langVal> &right) const noexcept = default;
+  static constexpr std::size_t EXPECTED_SIZE                          = 24U;
+  constexpr auto operator<=>(const BattleItems &right) const noexcept = default;
   [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -136,16 +136,9 @@ public:
   {
     return m_element;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     return os
            << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
            << static_cast<std::uint32_t>(m_attack_type) << ", "
@@ -165,5 +158,6 @@ public:
            << static_cast<std::uint32_t>(m_element);
   }
 };
+static_assert(sizeof(BattleItems) == BattleItems::EXPECTED_SIZE);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_BATTLEITEMS_HPP

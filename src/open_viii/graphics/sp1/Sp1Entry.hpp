@@ -10,10 +10,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_SP1ENTRY_HPP
 #define VIIIARCHIVE_SP1ENTRY_HPP
-
 #include <cstdint>
 namespace open_viii::graphics {
 struct Sp1Entry
@@ -24,10 +22,9 @@ private:
   uint8_t m_unknown1{};
   uint8_t m_unknown2{};
   uint8_t m_width{};
-  int8_t m_offset_x{};
+  int8_t  m_offset_x{};
   uint8_t m_height{};
-  int8_t m_offset_y{};
-
+  int8_t  m_offset_y{};
 public:
   [[nodiscard]] const auto &x() const noexcept
   {
@@ -75,6 +72,5 @@ public:
               << static_cast<std::size_t>(e.m_unknown2) << ") }";
   }
 };
-
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP1ENTRY_HPP

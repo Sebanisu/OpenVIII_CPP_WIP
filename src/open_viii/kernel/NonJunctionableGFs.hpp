@@ -95,7 +95,7 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Non-junctionable-GF-attacks
  */
-template<LangT langVal> struct NonJunctionableGFs
+struct NonJunctionableGFs
 {
 private:
   EncodedStringOffset m_name_offset{};
@@ -114,8 +114,8 @@ private:
   std::uint8_t m_power_mod{};// (used in damage formula)
   std::uint8_t m_level_mod{};// (used in damage formula)
 public:
-  constexpr auto operator<=>(
-    const NonJunctionableGFs<langVal> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const NonJunctionableGFs &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -174,12 +174,9 @@ public:
   {
     return m_level_mod;
   }// (used in damage formula)
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name = m_name_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
     return os
            << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
            << static_cast<std::uint32_t>(m_attack_type) << ", "

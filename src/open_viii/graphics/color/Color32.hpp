@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_COLOR32_HPP
 #define VIIIARCHIVE_COLOR32_HPP
 #include "open_viii/Concepts.hpp"
@@ -40,9 +39,8 @@ requires(r_ < 4U && g_ < 4U && b_ < 4U && r_ != g_ && r_ != b_ && g_ != b_
 {
 public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 4U };
-
 private:
-  mutable std::array<std::uint8_t, EXPLICIT_SIZE> m_parts{};
+  mutable std::array<std::uint8_t, EXPLICIT_SIZE>            m_parts{};
   template<size_t index, std::floating_point T> std::uint8_t set(T value) const
   {
     return m_parts[index] = static_cast<std::uint8_t>(
@@ -53,11 +51,11 @@ private:
   requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) std::uint8_t
     set(T value) const
   {
-    return m_parts[index] = static_cast<std::uint8_t>(std::clamp(value,
+    return m_parts[index] = static_cast<std::uint8_t>(std::clamp(
+             value,
              static_cast<T>(0U),
              static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
   }
-
 public:
   Color32() = default;
   template<Color c_t> explicit Color32(c_t input_color)
@@ -83,7 +81,6 @@ public:
   {
     return m_parts.at(a_);
   }
-
   template<Number T> std::uint8_t r(const T &value) const
   {
     return set<r_, T>(value);
@@ -100,10 +97,8 @@ public:
   {
     return set<a_, T>(value);
   }
-
-
-  friend std::ostream &operator<<(
-    std::ostream &os, const Color32<r_, g_, b_, a_> &color)
+  friend std::ostream &operator<<(std::ostream &                 os,
+                                  const Color32<r_, g_, b_, a_> &color)
   {
     return os << std::uppercase << std::hex << '{'
               << static_cast<std::size_t>(color.R()) << ", "
@@ -112,10 +107,11 @@ public:
               << static_cast<std::size_t>(color.A()) << '}' << std::dec
               << std::nouppercase;
   }
-  friend auto operator<=>(const Color32<r_, g_, b_, a_> &left,
-    const Color32<r_, g_, b_, a_> &right) noexcept = default;
-  auto operator<=>(
-    const Color32<r_, g_, b_, a_> &right) const noexcept = default;
+  friend auto
+    operator<=>(const Color32<r_, g_, b_, a_> &left,
+                const Color32<r_, g_, b_, a_> &right) noexcept = default;
+  auto
+    operator<=>(const Color32<r_, g_, b_, a_> &right) const noexcept = default;
 };
 static_assert(sizeof(Color32<>) == Color32<>::EXPLICIT_SIZE);
 }// namespace open_viii::graphics

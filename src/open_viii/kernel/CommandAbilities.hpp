@@ -17,14 +17,14 @@
 #include <compare>
 namespace open_viii::kernel {
 /**
- * https://github.com/DarkShinryu/doomtrain/wiki/Command-abilities
  * 0x0000	2 bytes	Offset to ability name
  * 0x0002	2 bytes	Offset to ability description
  * 0x0004	1 byte	AP Required to learn ability
  * 0x0005	1 byte	Index to Battle commands
  * 0x0006	2 bytes	Unknown/Unused
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Command-abilities
  */
-template<LangT langVal> struct CommandAbilities
+struct CommandAbilities
 {
 private:
   EncodedStringOffset m_name_offset{};
@@ -33,9 +33,10 @@ private:
   std::uint8_t        m_index_to_battle_command{};
   std::uint8_t        m_unknown0{};
   std::uint8_t        m_unknown1{};
+
 public:
-  constexpr auto operator<=>(
-    const CommandAbilities<langVal> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const CommandAbilities &right) const noexcept = default;
   /**
    * Offset to encoded name
    * @return EncodedStringOffset
@@ -78,6 +79,8 @@ public:
   {
     return m_unknown1;
   }
+  static constexpr std::size_t EXPECTED_SIZE = 8U;
 };
+static_assert(sizeof(CommandAbilities) == CommandAbilities::EXPECTED_SIZE);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_COMMANDABILITIES_HPP

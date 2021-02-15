@@ -22,14 +22,12 @@
 #include "open_viii/menu_group/refine/RefineSection003.hpp"
 #include "open_viii/menu_group/refine/RefineSection004.hpp"
 #include "open_viii/paths/Paths.hpp"
-
-
 int main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    constexpr auto coo = open_viii::LangT::en;
-    const auto archives = open_viii::archive::Archives<coo>(path);
+    constexpr auto coo      = open_viii::LangT::en;
+    const auto     archives = open_viii::archive::Archives<coo>(path);
     [[maybe_unused]] const auto &menu =
       archives.get<open_viii::archive::ArchiveTypeT::menu>();
     std::cout << menu << std::endl;
@@ -43,13 +41,11 @@ int main()
     //      ofs.close();
     //      std::cout << std::filesystem::current_path().c_str() << "4.bin";
     //    }
-
     mngrpfile.test_complex<coo>();
     mngrpfile.test_tk_mn_mes<coo>();
     mngrpfile.test_mes<coo>();
     mngrpfile.test_refine<coo>();
     // mngrpfile.test_tim(menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
-
     // auto mngrphd = open_viii::menu_group::menu_groupHeader{ menu };
     // auto mngrpBuffer = menu.get_entry_data("mngrp.bin");
     // std::cout << "mngrphd.bin " << mngrphd.Sections().size() << "
@@ -166,7 +162,6 @@ int main()
     //    //        {
     //    //          //exit(0);
     //    //        }
-
     //    if(sectionBuffer.at(0) == 0x10 && sectionBuffer.at(1) == 0)
     //    {
     //      std::cout<< "TIM?" << "\n";

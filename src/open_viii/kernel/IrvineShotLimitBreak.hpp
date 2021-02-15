@@ -40,7 +40,7 @@ namespace open_viii::kernel {
  4 bytes	status_1; //statuses 8-39
  @see https://github.com/DarkShinryu/doomtrain/wiki/Shot-(Irvine-limit-break)
  */
-template<LangT langVal> struct IrvineShotLimitBreak
+struct IrvineShotLimitBreak
 {
 private:
   EncodedStringOffset m_name_offset{};
@@ -61,8 +61,8 @@ private:
   std::uint8_t        m_critical_increase{};
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
 public:
-  constexpr auto operator<=>(
-    const IrvineShotLimitBreak<langVal> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const IrvineShotLimitBreak &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -131,16 +131,9 @@ public:
   {
     return m_battle_only_statuses;
   }// statuses 8-39
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
               << static_cast<std::uint32_t>(m_attack_type) << ", "
               << static_cast<std::uint32_t>(m_attack_power) << ", "

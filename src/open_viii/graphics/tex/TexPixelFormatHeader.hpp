@@ -10,11 +10,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TEXPIXELFORMATHEADER_HPP
 #define VIIIARCHIVE_TEXPIXELFORMATHEADER_HPP
 #include <cstdint>
-
 namespace open_viii::graphics {
 /**
  * Pixel format header. This tells how the colors are laid out. These are
@@ -103,7 +101,6 @@ private:
    * Alpha Max
    */
   std::uint32_t m_alpha_max{};
-
 public:
   // Pixel Format
   /**

@@ -24,8 +24,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
-
 namespace open_viii::archive::fl {
 /**
  * FL files contain internal file structure paths. As a flat text file. This
@@ -42,11 +40,10 @@ namespace open_viii::archive::fl {
  * slashes.
  * @return void
  */
-constexpr static void clean_string(
-  std::string &input, const bool &skip_fixed = true) noexcept
+constexpr static void clean_string(std::string &input,
+                                   const bool & skip_fixed = true) noexcept
 {
   if (std::ranges::size(input) > 4) {
-
     if (tools::i_starts_with(input, "c:")) {
       input.erase(0, 3);// remove c:\ from the start of the strings.
     }
@@ -58,10 +55,7 @@ constexpr static void clean_string(
     }
   }
 }
-
-
 constexpr const static auto EXT = std::string_view(".FL");
-
 /**
  * Get All entries sorted from file or data buffer.
  * @param path filename path.
@@ -75,17 +69,18 @@ constexpr const static auto EXT = std::string_view(".FL");
  * @return matches
  */
 [[nodiscard]] static std::vector<std::pair<unsigned int, std::string>>
-  get_all_entries_data(const std::filesystem::path &path,
-    const std::string &data,
-    const size_t &offset,
-    const size_t &size = 0U,
-    const size_t &count = 0U,
+  get_all_entries_data(
+    const std::filesystem::path &                  path,
+    const std::string &                            data,
+    const size_t &                                 offset,
+    const size_t &                                 size   = 0U,
+    const size_t &                                 count  = 0U,
     const std::initializer_list<std::string_view> &needle = {},
-    const size_t &limit = 0U)
+    const size_t &                                 limit  = 0U)
 {
   // TODO break this code up
   std::vector<std::pair<unsigned int, std::string>> vector{};
-  const auto process =
+  const auto                                        process =
     [&limit, &count, &size, &vector, &offset, &needle, &data](auto &cont) {
       {// Get length
         cont.seekg(0, std::ios::end);
@@ -105,7 +100,6 @@ constexpr const static auto EXT = std::string_view(".FL");
           vector.reserve(count);
         }
       }
-
       // id numerical order is same order as fi data. So need to keep the id so
       // we can reference the fi correctly.
       {
@@ -125,13 +119,13 @@ constexpr const static auto EXT = std::string_view(".FL");
           if (!tools::i_find_any(inner_path, needle)) {
             continue;
           }
-
           // https://youtu.be/oTMSgI1XjF8?t=1727
-          clean_string(vector
-                         .emplace_back(std::piecewise_construct,
-                           std::forward_as_tuple(id),
-                           std::forward_as_tuple(std::move(inner_path)))
-                         .second,
+          clean_string(
+            vector
+              .emplace_back(std::piecewise_construct,
+                            std::forward_as_tuple(id),
+                            std::forward_as_tuple(std::move(inner_path)))
+              .second,
             std::empty(data));
           inner_path = {};
         }
@@ -139,15 +133,12 @@ constexpr const static auto EXT = std::string_view(".FL");
     };
   // sort the strings. to make it easier to choose the correct string first.
   // shorter length and then what ever str < str2 does.
-
-
   if (!std::empty(data) && data.front() != '\0') {
     auto ss = std::stringstream(data);
     process(ss);
   } else {
     tools::read_from_file(process, path);
   }
-
   std::ranges::sort(vector, [](const auto &left, const auto &right) {
     if (left.second.length() == right.second.length()) {
       return left.second < right.second;
@@ -157,17 +148,16 @@ constexpr const static auto EXT = std::string_view(".FL");
   return vector;
 }
 // Get all entries from the FL file sorted and cleaned.
-[[maybe_unused]] [[nodiscard]] static auto get_all_entries(
-  const std::filesystem::path &path,
-  const size_t &offset,
-  const size_t &size = 0,
-  const size_t &count = 0,
-  const std::initializer_list<std::string_view> &needle = {})
+[[maybe_unused]] [[nodiscard]] static auto
+  get_all_entries(const std::filesystem::path &                  path,
+                  const size_t &                                 offset,
+                  const size_t &                                 size   = 0,
+                  const size_t &                                 count  = 0,
+                  const std::initializer_list<std::string_view> &needle = {})
 {
   auto tmp = std::string();
   return get_all_entries_data(path, tmp, offset, size, count, needle);
 }
-
 /**
  * Get a single entry that is the first match for needle.
  * @param path contains path to file
@@ -179,14 +169,13 @@ constexpr const static auto EXT = std::string_view(".FL");
  * @param count is max results returned. 0 is unlimited.
  * @return
  */
-
-
-[[nodiscard]] static auto get_entry_data(const std::filesystem::path &path,
-  const std::string &data,
-  const std::initializer_list<std::string_view> &needle,
-  const size_t &offset = 0U,
-  const size_t &size = 0U,
-  const size_t &count = 0U)
+[[nodiscard]] static auto
+  get_entry_data(const std::filesystem::path &                  path,
+                 const std::string &                            data,
+                 const std::initializer_list<std::string_view> &needle,
+                 const size_t &                                 offset = 0U,
+                 const size_t &                                 size   = 0U,
+                 const size_t &                                 count  = 0U)
 {// Maybe should search all entries instead of using this because this is not
  // sorted. Sorting matters when the
   // strings are similar. Though this might be faster if only getting a few
@@ -199,11 +188,12 @@ constexpr const static auto EXT = std::string_view(".FL");
   return buffer.front();
 }
 // Get a single entry that is the first match for needle.
-[[nodiscard]] static auto get_entry(const std::filesystem::path &path,
-  const std::initializer_list<std::string_view> &needle,
-  const size_t &offset = 0U,
-  const size_t &size = 0U,
-  const size_t &count = 0U)
+[[nodiscard]] static auto
+  get_entry(const std::filesystem::path &                  path,
+            const std::initializer_list<std::string_view> &needle,
+            const size_t &                                 offset = 0U,
+            const size_t &                                 size   = 0U,
+            const size_t &                                 count  = 0U)
 {// Maybe should search all entries instead of using this because this is not
  // sorted. Sorting matters when the strings are similar. Though this might be
  // faster if only getting a few files from an archive.
@@ -213,7 +203,7 @@ constexpr const static auto EXT = std::string_view(".FL");
   }
   return data.front();
 }
-//static void clean_buffer(std::string &buffer)
+// static void clean_buffer(std::string &buffer)
 //{
 //
 //  // remove carriage returns

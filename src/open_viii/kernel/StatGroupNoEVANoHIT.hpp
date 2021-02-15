@@ -89,6 +89,7 @@ public:
     }
     return os;
   }
+
 private:
   std::array<T, MAX_COUNT> m_stats{};
 };

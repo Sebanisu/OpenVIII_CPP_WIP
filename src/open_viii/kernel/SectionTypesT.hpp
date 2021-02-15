@@ -77,6 +77,8 @@ enum class SectionTypesT : std::int8_t {
   misc_text,
   count,
   first = battle_commands,
+  begin = first,
+  end   = count,
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SECTIONTYPEST_HPP

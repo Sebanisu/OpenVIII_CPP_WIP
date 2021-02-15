@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_PPM_HPP
 #define VIIIARCHIVE_PPM_HPP
 #include "Color.hpp"
@@ -27,11 +26,10 @@ namespace open_viii::graphics {
 struct Ppm
 {
 private:
-  std::filesystem::path m_path{};
-  Point<std::uint16_t> m_width_height{};
+  std::filesystem::path         m_path{};
+  Point<std::uint16_t>          m_width_height{};
   std::vector<Color24<0, 1, 2>> m_colors{};
-
-  Point<std::uint16_t> get_width_height(const std::string &buffer)
+  Point<std::uint16_t>          get_width_height(const std::string &buffer)
   {
     Point<std::uint16_t> point{};
     // the support is mostly limited to the same type that is made by the save
@@ -39,11 +37,10 @@ private:
     // missed cpp20... so this will need to be a string stream? I know not to
     // use std::regex but i'm feeling like that's better than what I'm doing
     // here. heh.
-
     // sample header ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height
     // << "\n255\n"; sample header ss << "P6\n# THIS IS A COMMENT\n" << width <<
     // " " << height << " 255\n";
-    auto ss = std::stringstream(buffer);
+    auto        ss = std::stringstream(buffer);
     std::string line{};
     std::string type{};
     std::string comment{};
@@ -64,7 +61,7 @@ private:
         continue;
       }
       if ([&line, &point, &w_h, &bytesize]() -> bool {
-            const auto count = std::ranges::count(line, ' ');
+            const auto    count = std::ranges::count(line, ' ');
             std::uint16_t width{};
             std::uint16_t height{};
             if (count == 1) {// 000 000\n000
@@ -101,20 +98,19 @@ private:
   auto get_colors(std::span<const char> buffer_span)
   {
     std::vector<Color24<0, 1, 2>> colors{};
-    const auto area = m_width_height.area();
-    static constexpr auto color_size = sizeof(Color24<0, 1, 2>);
-    const auto size_of_bytes = area * color_size;
+    const auto                    area          = m_width_height.area();
+    static constexpr auto         color_size    = sizeof(Color24<0, 1, 2>);
+    const auto                    size_of_bytes = area * color_size;
     if (area > 0 && std::ranges::size(buffer_span) > size_of_bytes) {
       buffer_span = buffer_span.subspan(
         std::ranges::size(buffer_span) - size_of_bytes, size_of_bytes);
       colors.resize(area);
       std::memcpy(std::ranges::data(colors),
-        std::ranges::data(buffer_span),
-        size_of_bytes);
+                  std::ranges::data(buffer_span),
+                  size_of_bytes);
     }
     return colors;
   }
-
 public:
   Ppm() = default;
   explicit Ppm(const std::filesystem::path &path)
@@ -131,28 +127,27 @@ public:
            || m_width_height.y() <= 0;
   }
   template<std::ranges::contiguous_range cT>
-  static void save(const cT &data,
-    std::size_t width,
-    std::size_t height,
-    const std::string_view &input,
-    bool skip_check = false)
+  static void save(const cT &              data,
+                   std::size_t             width,
+                   std::size_t             height,
+                   const std::string_view &input,
+                   bool                    skip_check = false)
   {// how do i make the concept reject ranges that aren't of Colors? I'm at
    // least checking for Color down below.
     if (!skip_check) {
       if (width == 0 || height == 0 || std::ranges::empty(data)
           || std::all_of(std::execution::par_unseq,
-            data.begin(),
-            data.end(),
-            [](const Color auto &color) -> bool {
-              return color.a() == 0U
-                     || (color.b() == 0U && color.g() == 0U && color.r() == 0U);
-            })) {
+                         data.begin(),
+                         data.end(),
+                         [](const Color auto &color) -> bool {
+                           return color.a() == 0U
+                                  || (color.b() == 0U && color.g() == 0U
+                                      && color.r() == 0U);
+                         })) {
         return;
       }
     }
-
-    auto tmp = std::filesystem::path(input);
-
+    auto        tmp = std::filesystem::path(input);
     std::string filename{ (tmp.parent_path() / tmp.stem()).string() };
     if (tmp.has_extension()) {
       filename += "_" + tmp.extension().string().substr(1);
@@ -163,14 +158,12 @@ public:
                 << '=' << width * height << '\n';
       return;
     }
-
-
     tools::write_buffer(
       [&data, &width, &height](std::ostream &ss) {
         ss << "P6\n# THIS IS A COMMENT\n"
            << width << " " << height << "\n255\n";
         for (const Color auto &color :
-          data) {// organize the data in ram first then write all at once.
+             data) {// organize the data in ram first then write all at once.
           ss << color.r();
           ss << color.g();
           ss << color.b();
@@ -194,8 +187,8 @@ public:
   {
     return m_width_height;
   }
-  [[nodiscard]] const Color24<0, 1, 2> &color(
-    const std::size_t &x, const std::size_t &y) const noexcept
+  [[nodiscard]] const Color24<0, 1, 2> &
+    color(const std::size_t &x, const std::size_t &y) const noexcept
   {
     return at(x + (y * static_cast<std::size_t>(m_width_height.x())));
   }

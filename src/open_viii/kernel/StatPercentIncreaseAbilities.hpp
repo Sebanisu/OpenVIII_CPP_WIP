@@ -24,7 +24,7 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Stat-percentage-increasing-abilities
  */
-template<LangT langVal> struct StatPercentIncreaseAbilities
+struct StatPercentIncreaseAbilities
 {
 private:
   EncodedStringOffset m_name_offset{};
@@ -33,9 +33,10 @@ private:
   std::uint8_t        m_stat_to_increase{};
   std::uint8_t        m_increased_value{};
   std::uint8_t        m_unknown0{};
+
 public:
-  constexpr auto operator<=>(const StatPercentIncreaseAbilities<langVal> &right)
-    const noexcept = default;
+  constexpr auto operator<=>(
+    const StatPercentIncreaseAbilities &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -67,16 +68,9 @@ public:
   {
     return m_unknown0;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     return os << ", "
               << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
               << ", " << static_cast<std::uint32_t>(m_stat_to_increase) << ", "

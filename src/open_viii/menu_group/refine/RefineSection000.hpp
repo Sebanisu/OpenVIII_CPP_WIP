@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_REFINESECTION000_HPP
 #define VIIIARCHIVE_REFINESECTION000_HPP
 #include "RefineEntry.hpp"
@@ -30,7 +29,6 @@ namespace open_viii::menu_group {
 //  forbidMagRF,
 //  count,
 //};
-
 struct [[maybe_unused]] RefineSection000// refine Item to Magic
 {
   /* http://wiki.ffrtt.ru/index.php?title=FF8/Menu_m000_m004#Data
@@ -47,13 +45,13 @@ struct [[maybe_unused]] RefineSection000// refine Item to Magic
    * entries	  (mngrp.bin loc: 0x21F300)	0x300	Items to Forbidden Magic
    */
 private:
-  static constexpr auto T_MAG_RF_COUNT = 7U;
-  static constexpr auto I_MAG_RF_COUNT = 7U;
-  static constexpr auto F_MAG_RF_COUNT = 10U;
-  static constexpr auto L_MAG_RF_COUNT = 21U;
-  static constexpr auto TIME_MAG_RF_COUNT = 14U;
-  static constexpr auto ST_MAG_RF_COUNT = 17U;
-  static constexpr auto SUPT_RF_COUNT = 20U;
+  static constexpr auto T_MAG_RF_COUNT      = 7U;
+  static constexpr auto I_MAG_RF_COUNT      = 7U;
+  static constexpr auto F_MAG_RF_COUNT      = 10U;
+  static constexpr auto L_MAG_RF_COUNT      = 21U;
+  static constexpr auto TIME_MAG_RF_COUNT   = 14U;
+  static constexpr auto ST_MAG_RF_COUNT     = 17U;
+  static constexpr auto SUPT_RF_COUNT       = 20U;
   static constexpr auto FORBID_MAG_RF_COUNT = 6U;
   std::array<RefineEntry<ItemIdT, RefineSpellID>, T_MAG_RF_COUNT> m_t_mag_rf{};
   std::array<RefineEntry<ItemIdT, RefineSpellID>, I_MAG_RF_COUNT> m_i_mag_rf{};
@@ -62,11 +60,10 @@ private:
   std::array<RefineEntry<ItemIdT, RefineSpellID>, TIME_MAG_RF_COUNT>
     m_time_mag_rf{};
   std::array<RefineEntry<ItemIdT, RefineSpellID>, ST_MAG_RF_COUNT>
-    m_st_mag_rf{};
+                                                                 m_st_mag_rf{};
   std::array<RefineEntry<ItemIdT, RefineSpellID>, SUPT_RF_COUNT> m_supt_rf{};
   std::array<RefineEntry<ItemIdT, RefineSpellID>, FORBID_MAG_RF_COUNT>
     m_forbid_mag_rf{};
-
 public:
   [[maybe_unused]] [[nodiscard]] const auto &t_mag_rf() const noexcept
   {
@@ -107,12 +104,11 @@ public:
            + FORBID_MAG_RF_COUNT;
   }
   template<LangT langVal, typename T>
-  std::ostream &out_array(const T &arr,
-    std::ostream &os,
-    const std::span<const char> &buffer = ""sv,
-    const intmax_t offset = 0,
-    bool skip_first_null = false) const
-
+  std::ostream &out_array(const T &                    arr,
+                          std::ostream &               os,
+                          const std::span<const char> &buffer = ""sv,
+                          const intmax_t               offset = 0,
+                          bool skip_first_null                = false) const
   {
     for (const auto item : arr) {
       item.template out<langVal>(os, buffer, offset, skip_first_null);
@@ -121,11 +117,10 @@ public:
     return os;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &os,
-    const std::span<const char> &buffer = ""sv,
-    const intmax_t offset = 0,
-    bool skip_first_null = false) const
-
+  std::ostream &out(std::ostream &               os,
+                    const std::span<const char> &buffer          = ""sv,
+                    const intmax_t               offset          = 0,
+                    bool                         skip_first_null = false) const
   {
     os << "tMagRF:\n";
     out_array<langVal>(m_t_mag_rf, os, buffer, offset, skip_first_null);

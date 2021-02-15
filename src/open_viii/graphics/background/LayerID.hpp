@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_LAYERID_HPP
 #define VIIIARCHIVE_LAYERID_HPP
 #include <cstdint>
@@ -20,8 +19,7 @@ struct LayerID
 private:
   static constexpr std::uint8_t ID_MASK{ 0b1111'1110 };
   static constexpr std::uint8_t ID_SHIFT{ 1U };
-  std::uint8_t m_data{};
-
+  std::uint8_t                  m_data{};
 public:
   LayerID() = default;
   friend auto operator==(const LayerID &left, const LayerID &right)
@@ -30,8 +28,8 @@ public:
   }
   [[nodiscard]] std::uint8_t id() const noexcept
   {
-    return static_cast<std::uint8_t>(
-      static_cast<std::uint8_t>(m_data & ID_MASK) >> ID_SHIFT);
+    return static_cast<std::uint8_t>(static_cast<std::uint8_t>(m_data & ID_MASK)
+                                     >> ID_SHIFT);
   }
 };
 }// namespace open_viii::graphics::background

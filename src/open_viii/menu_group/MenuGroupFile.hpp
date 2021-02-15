@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_MENUGROUPFILE_HPP
 #define VIIIARCHIVE_MENUGROUPFILE_HPP
 #include "ComplexStringSection.hpp"
@@ -35,7 +34,7 @@ namespace open_viii::menu_group {
 struct MenuGroupFile
 {
 private:
-  MenuGroupHeader m_menu_group_header{};
+  MenuGroupHeader   m_menu_group_header{};
   std::vector<char> m_data_buffer{};// maybe should be a view unless we plan to
                                     // keep this in memory 100%
   template<MenuGroupSectionT sectionT>
@@ -53,22 +52,15 @@ private:
     MenuGroupSectionT::tkmnmes3,
   };
   static constexpr std::array REFINE_VALUE_ARRAY = {
-    MenuGroupSectionT::refine0,
-    MenuGroupSectionT::refine1,
-    MenuGroupSectionT::refine2,
-    MenuGroupSectionT::refine3,
+    MenuGroupSectionT::refine0, MenuGroupSectionT::refine1,
+    MenuGroupSectionT::refine2, MenuGroupSectionT::refine3,
     MenuGroupSectionT::refine4,
   };
-
   static constexpr std::array COMPLEX_VALUE_ARRAY = {
-    MenuGroupSectionT::complex01,
-    MenuGroupSectionT::complex02,
-    MenuGroupSectionT::complex03,
-    MenuGroupSectionT::complex04,
-    MenuGroupSectionT::complex05,
-    MenuGroupSectionT::complex06,
+    MenuGroupSectionT::complex01, MenuGroupSectionT::complex02,
+    MenuGroupSectionT::complex03, MenuGroupSectionT::complex04,
+    MenuGroupSectionT::complex05, MenuGroupSectionT::complex06,
   };
-
   static constexpr std::array TIM_VALUE_ARRAY = {
     MenuGroupSectionT::tim00_face1,
     MenuGroupSectionT::tim01_face2,
@@ -110,61 +102,39 @@ private:
     MenuGroupSectionT::tim37_mag19_chocobo,
   };
   static constexpr std::array MES_VALUE_ARRAY = {
-    MenuGroupSectionT::mes01,
-    MenuGroupSectionT::mes02,
-    MenuGroupSectionT::mes03,
-    MenuGroupSectionT::mes04,
-    MenuGroupSectionT::mes05,
-    MenuGroupSectionT::mes06,
-    MenuGroupSectionT::mes07,
-    MenuGroupSectionT::mes08,
-    MenuGroupSectionT::mes09,
-    MenuGroupSectionT::mes10,
-    MenuGroupSectionT::mes11,
-    MenuGroupSectionT::mes12,
-    MenuGroupSectionT::mes13,
-    MenuGroupSectionT::mes14,
-    MenuGroupSectionT::mes15,
-    MenuGroupSectionT::mes16,
-    MenuGroupSectionT::mes17,
-    MenuGroupSectionT::mes18,
-    MenuGroupSectionT::mes19,
-    MenuGroupSectionT::mes20,
-    MenuGroupSectionT::mes21,
-    MenuGroupSectionT::mes22,
-    MenuGroupSectionT::mes23,
-    MenuGroupSectionT::mes24,
-    MenuGroupSectionT::mes25,
-    MenuGroupSectionT::mes26,
-    MenuGroupSectionT::mes27,
-    MenuGroupSectionT::mes28,
-    MenuGroupSectionT::mes29,
-    MenuGroupSectionT::mes30,
-    MenuGroupSectionT::mes31,
-    MenuGroupSectionT::mes32,
-    MenuGroupSectionT::mes33,
-    MenuGroupSectionT::mes34,
-    MenuGroupSectionT::mes35,
-    MenuGroupSectionT::mes36,
-    MenuGroupSectionT::mes37,
-    MenuGroupSectionT::mes38,
-    MenuGroupSectionT::mes39,
-    MenuGroupSectionT::mes40,
-    MenuGroupSectionT::mes41,
-    MenuGroupSectionT::mes42,
-    MenuGroupSectionT::mes43,
-    MenuGroupSectionT::mes44,
+    MenuGroupSectionT::mes01, MenuGroupSectionT::mes02,
+    MenuGroupSectionT::mes03, MenuGroupSectionT::mes04,
+    MenuGroupSectionT::mes05, MenuGroupSectionT::mes06,
+    MenuGroupSectionT::mes07, MenuGroupSectionT::mes08,
+    MenuGroupSectionT::mes09, MenuGroupSectionT::mes10,
+    MenuGroupSectionT::mes11, MenuGroupSectionT::mes12,
+    MenuGroupSectionT::mes13, MenuGroupSectionT::mes14,
+    MenuGroupSectionT::mes15, MenuGroupSectionT::mes16,
+    MenuGroupSectionT::mes17, MenuGroupSectionT::mes18,
+    MenuGroupSectionT::mes19, MenuGroupSectionT::mes20,
+    MenuGroupSectionT::mes21, MenuGroupSectionT::mes22,
+    MenuGroupSectionT::mes23, MenuGroupSectionT::mes24,
+    MenuGroupSectionT::mes25, MenuGroupSectionT::mes26,
+    MenuGroupSectionT::mes27, MenuGroupSectionT::mes28,
+    MenuGroupSectionT::mes29, MenuGroupSectionT::mes30,
+    MenuGroupSectionT::mes31, MenuGroupSectionT::mes32,
+    MenuGroupSectionT::mes33, MenuGroupSectionT::mes34,
+    MenuGroupSectionT::mes35, MenuGroupSectionT::mes36,
+    MenuGroupSectionT::mes37, MenuGroupSectionT::mes38,
+    MenuGroupSectionT::mes39, MenuGroupSectionT::mes40,
+    MenuGroupSectionT::mes41, MenuGroupSectionT::mes42,
+    MenuGroupSectionT::mes43, MenuGroupSectionT::mes44,
     MenuGroupSectionT::mes45,
   };
   template<typename refineT,
-    MenuGroupSectionT textSectionT,
-    typename sectionBufferT>
+           MenuGroupSectionT textSectionT,
+           typename sectionBufferT>
   auto get_refine(const sectionBufferT &section_buffer) const
   {
-    return open_viii::BulkSectionData<refineT, 1U>(section_buffer,
+    return open_viii::BulkSectionData<refineT, 1U>(
+      section_buffer,
       get_section_internal<textSectionT>().get_section_buffer(m_data_buffer));
   }
-
   template<size_t i, size_t count, typename T>
   constexpr void static_for_tim(const T t) const
   {
@@ -183,8 +153,6 @@ private:
       static_for_mes<i + 1U, count>(t);
     }
   }
-
-
   template<size_t i, size_t count, typename T>
   constexpr void static_for_refine(const T t) const
   {
@@ -194,7 +162,6 @@ private:
       static_for_refine<i + 1U, count>(t);
     }
   }
-
   template<size_t i, size_t count, typename T>
   constexpr void static_for_tkmnmes(const T t) const
   {
@@ -204,19 +171,16 @@ private:
       static_for_tkmnmes<i + 1U, count>(t);
     }
   }
-
 public:
   constexpr static std::string_view FILENAME = "mngrp.bin";
   explicit MenuGroupFile(const open_viii::archive::FIFLFS<false> &menu_archive)
     : m_menu_group_header(menu_archive),
       m_data_buffer(menu_archive.get_entry_data(FILENAME))
   {}
-
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto get_section() const
   {
     if constexpr (tools::any_of(sectionT, COMPLEX_VALUE_ARRAY)
                   || sectionT == MenuGroupSectionT::complex_map) {
-
       const auto map{ get_section_internal<MenuGroupSectionT::complex_map>()
                         .get_section_buffer(m_data_buffer) };
       const std::array data = {
@@ -245,8 +209,8 @@ public:
         if constexpr (sectionT == MenuGroupSectionT::tkmnmes1
                       || sectionT == MenuGroupSectionT::tkmnmes2
                       || sectionT == MenuGroupSectionT::tkmnmes3) {
-          return SectionData<MenuMessages>(
-            MenuMessages{ section_buffer }, section_buffer);
+          return SectionData<MenuMessages>(MenuMessages{ section_buffer },
+                                           section_buffer);
         } else if constexpr (tools::any_of(sectionT, TIM_VALUE_ARRAY)) {
           return graphics::Tim(section_buffer);
         } else if constexpr (tools::any_of(sectionT, MES_VALUE_ARRAY)) {
@@ -254,19 +218,19 @@ public:
             MenuMessagesSection{ section_buffer }, section_buffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
           return get_refine<open_viii::menu_group::RefineSection000,
-            MenuGroupSectionT::refine_text0>(section_buffer);
+                            MenuGroupSectionT::refine_text0>(section_buffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine1) {
           return get_refine<open_viii::menu_group::RefineSection001,
-            MenuGroupSectionT::refine_text1>(section_buffer);
+                            MenuGroupSectionT::refine_text1>(section_buffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine2) {
           return get_refine<open_viii::menu_group::RefineSection002,
-            MenuGroupSectionT::refine_text2>(section_buffer);
+                            MenuGroupSectionT::refine_text2>(section_buffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine3) {
           return get_refine<open_viii::menu_group::RefineSection003,
-            MenuGroupSectionT::refine_text3>(section_buffer);
+                            MenuGroupSectionT::refine_text3>(section_buffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine4) {
           return get_refine<open_viii::menu_group::RefineSection004,
-            MenuGroupSectionT::refine_text4>(section_buffer);
+                            MenuGroupSectionT::refine_text4>(section_buffer);
         }
       }
     }
@@ -276,8 +240,8 @@ public:
     const auto temp_path = std::filesystem::path(path_input);
     auto path = temp_path.parent_path() / (temp_path.stem().string() + "_tim");
     static_for_tim<0U, TIM_VALUE_ARRAY.size()>(
-      [&, this](
-        const auto &section_id, [[maybe_unused]] const graphics::Tim &tim) {
+      [&, this](const auto &                          section_id,
+                [[maybe_unused]] const graphics::Tim &tim) {
         std::stringstream
           so{};// TODO have these save in the folder with the mngrp files.
         std::cout << ':' << static_cast<std::size_t>(section_id) << ":  {"
@@ -287,11 +251,10 @@ public:
         so << path.string() << static_cast<std::size_t>(section_id);
         const auto colors_dump =
           [&tim, &so](const std::vector<graphics::Color32<0, 1, 2, 3>> &colors,
-            std::uint16_t num = 0) {
+                      std::uint16_t num = 0) {
             std::cout << '\n';
             std::stringstream fn{};
             fn << so.str() << "_" << static_cast<std::size_t>(num) << ".tmp";
-
             // std::cout << "Saved: " << fn.str() << "\n";
             graphics::Ppm::save(colors, tim.width(), tim.height(), fn.str());
           };
@@ -317,7 +280,7 @@ public:
             continue;
           }
           const auto &textSpan = mes.text_span();
-          if(!std::ranges::empty(textSpan)) {
+          if (!std::ranges::empty(textSpan)) {
             const auto temp =
               subSection.template decoded_string<langVal>(textSpan, 0, true);
             std::cout << "    " << id - 1 << ": {" << subSection.offset()
@@ -330,8 +293,8 @@ public:
   {
     constexpr auto start = 0U;
     static_for_tkmnmes<start, MES_VALUE_ARRAY.size() - start>(
-      [&, this](
-        const auto &sectionID, [[maybe_unused]] const auto &tkmnmesPair) {
+      [&, this](const auto &                 sectionID,
+                [[maybe_unused]] const auto &tkmnmesPair) {
         std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {"
                   << tkmnmesPair->sections().size() << ", "
                   << tkmnmesPair->sub_sections().size() << "},\n";
@@ -354,13 +317,11 @@ public:
         }
       });
   }
-
   template<LangT langVal> void test_complex() const
   {
     const auto complex = get_section<MenuGroupSectionT::complex_map>();
     for (size_t i{}; i < complex.size(); i++) {
       [[maybe_unused]] const auto data = complex.at(i);
-
       [[maybe_unused]] const auto entry{ complex.at(data) };
       std::cout << data << ' ';
       entry.out<langVal>(std::cout);
@@ -371,11 +332,10 @@ public:
   {
     constexpr auto start = 0U;
     static_for_refine<start, REFINE_VALUE_ARRAY.size() - start>(
-      [&, this](const auto &sectionID,
-        [[maybe_unused]] const auto &refineBulkSectionData) {
+      [&, this](const auto &                 sectionID,
+                [[maybe_unused]] const auto &refineBulkSectionData) {
         std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {"
                   << refineBulkSectionData.size() << "},\n";
-
         for (size_t id = 0U; id < 1U; id++) {
           refineBulkSectionData[id].template out<langVal>(
             std::cout, refineBulkSectionData.text_span());

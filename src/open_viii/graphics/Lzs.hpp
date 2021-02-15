@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_LZS_HPP
 #define VIIIARCHIVE_LZS_HPP
 #include "Ppm.hpp"
@@ -29,14 +28,13 @@ struct [[maybe_unused]] Lzs
 {
 private:
   Rectangle<std::uint16_t> m_rectangle{};
-  std::vector<Color16> m_colors{};
-
+  std::vector<Color16>     m_colors{};
 public:
   [[maybe_unused]] explicit Lzs(std::span<const char> buffer)
   {
     {
       std::uint32_t comp_size{};
-      size_t sz32 = sizeof(std::uint32_t);
+      size_t        sz32 = sizeof(std::uint32_t);
       if (sz32 > std::ranges::size(buffer)) {
         return;
       }
@@ -49,9 +47,9 @@ public:
       buffer = buffer.subspan(sz32, comp_size);// skip the size value.
     }
     {
-      auto uncompressed = compression::LZSS::decompress(buffer);
-      std::span<const char> adj = uncompressed;
-      size_t szrec = sizeof(m_rectangle);
+      auto uncompressed           = compression::LZSS::decompress(buffer);
+      std::span<const char> adj   = uncompressed;
+      size_t                szrec = sizeof(m_rectangle);
       if (szrec > std::ranges::size(adj)) {
         return;
       }
@@ -64,8 +62,8 @@ public:
       static constexpr size_t sz16 = sizeof(Color16);
       std::cout << sz16 << '\n';
       const size_t max_bytes = std::ranges::size(adj) / sz16;
-      const size_t area = m_rectangle.area();
-      size_t min_size = std::min(max_bytes, area) * sz16;
+      const size_t area      = m_rectangle.area();
+      size_t       min_size  = std::min(max_bytes, area) * sz16;
       if (min_size == 0) {
         m_rectangle = {};
         return;

@@ -20,7 +20,6 @@ template<typename T> struct CrisisLevelT
 {
 private:
   std::array<T, 4> m_levels{};
-
 public:
   constexpr auto
     operator<=>(const CrisisLevelT<T> &right) const noexcept = default;

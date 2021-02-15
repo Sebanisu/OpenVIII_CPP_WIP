@@ -26,7 +26,7 @@ namespace open_viii::kernel {
  * 0x0007	1 byte	Increase value
  * @see https://github.com/DarkShinryu/doomtrain/wiki/GF-abilities
  */
-template<LangT langVal> struct GFAbilities
+struct GFAbilities
 {
 private:
   EncodedStringOffset m_name_offset{};
@@ -35,9 +35,9 @@ private:
   uint8_t             m_enable_boost{};
   StatT               m_stat_to_increase{};
   uint8_t             m_increase_value{};
+
 public:
-  constexpr auto
-    operator<=>(const GFAbilities<langVal> &right) const noexcept = default;
+  constexpr auto operator<=>(const GFAbilities &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -69,16 +69,9 @@ public:
   {
     return m_increase_value;
   }
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     os << ", " << static_cast<int>(m_ability_points_required_to_unlock);
     os << ", " << static_cast<int>(m_enable_boost);
     os << ", " << static_cast<int>(m_stat_to_increase);

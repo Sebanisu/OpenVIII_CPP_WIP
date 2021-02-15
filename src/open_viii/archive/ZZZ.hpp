@@ -30,23 +30,18 @@ namespace open_viii::archive {
  */
 struct [[maybe_unused]] ZZZ
 {
-
-
 private:
   std::filesystem::path m_path{};
   /**
    * uint32_t count_{}; fallowed by array of file data
    */
   std::vector<FileData> m_data{};
-
-
-  [[nodiscard]] auto load_data_from_file() const
+  [[nodiscard]] auto    load_data_from_file() const
   {
     std::vector<FileData> data{};
     if (m_path.has_extension()
         && tools::i_equals(m_path.extension().string(), EXT)
         && std::filesystem::exists(m_path)) {
-
       tools::read_from_file(
         [&data](std::istream &fp) {
           auto count{ tools::read_val<uint32_t>(fp) };
@@ -62,14 +57,13 @@ private:
     }
     return data;
   }
-
   void sort_data()
   {
     std::ranges::sort(m_data, [](const FileData &left, const FileData &right) {
       const auto right_string = right.get_path_string();
-      const auto left_string = left.get_path_string();
-      const auto right_size = std::ranges::size(right_string);
-      const auto left_size = std::ranges::size(left_string);
+      const auto left_string  = left.get_path_string();
+      const auto right_size   = std::ranges::size(right_string);
+      const auto left_size    = std::ranges::size(left_string);
       if (left_size == right_size) {
         return left_string < right_string;
       }
@@ -77,9 +71,8 @@ private:
     });
     m_data.shrink_to_fit();
   }
-
 public:
-  constexpr static auto EXT = ".zzz";
+  constexpr static auto                      EXT = ".zzz";
   [[maybe_unused]] [[nodiscard]] const auto &data() const noexcept
   {
     return m_data;
@@ -90,28 +83,29 @@ public:
   }
   ZZZ(const ZZZ &) = default;
   ZZZ &operator=(const ZZZ &) = default;
-  ZZZ(ZZZ &&) = default;
+  ZZZ(ZZZ &&)                 = default;
   ZZZ &operator=(ZZZ &&) = default;
-  ~ZZZ() = default;
-  constexpr ZZZ() = default;
+  ~ZZZ()                 = default;
+  constexpr ZZZ()        = default;
   explicit ZZZ(std::filesystem::path path)
     : m_path(std::move(path)), m_data(load_data_from_file())
   {
     sort_data();
   }
-
   [[nodiscard]] static std::vector<
     std::pair<std::string, open_viii::archive::ZZZ>>
     get_files_from_path(const std::filesystem::path &path)
   {
     std::vector<std::pair<std::string, open_viii::archive::ZZZ>> tmp{};
     tmp.reserve(2);// main and other
-    tools::execute_on_directory(path,
+    tools::execute_on_directory(
+      path,
       {},
       { EXT },
       [&tmp, i = 0](const std::filesystem::path &file_entry) mutable {
         // todo check for language codes to choose correct files
-        auto &pair = tmp.emplace_back(std::piecewise_construct,
+        auto &pair = tmp.emplace_back(
+          std::piecewise_construct,
           std::forward_as_tuple(tools::get_base_name(file_entry)),
           std::forward_as_tuple(file_entry));
         if (std::empty(pair.first)) {
@@ -121,18 +115,16 @@ public:
     tmp.shrink_to_fit();
     return tmp;
   }
-
-  [[nodiscard]] friend std::ostream &operator<<(
-    std::ostream &os, const ZZZ &data)
+  [[nodiscard]] friend std::ostream &operator<<(std::ostream &os,
+                                                const ZZZ &   data)
   {
     return os << '{' << data.path().stem().string() << " zzz {"
               << std::ranges::size(data.data())
               << " File Entries from : " << data.path() << "}}";
   }
-  [[nodiscard]] friend std::ostream &operator<<(
-    std::ostream &os, const std::optional<ZZZ> &data)
+  [[nodiscard]] friend std::ostream &operator<<(std::ostream &            os,
+                                                const std::optional<ZZZ> &data)
   {
-
     if (data.has_value()) {
       return os << data.value();
     }
@@ -157,19 +149,19 @@ public:
   //  }
   template<std::invocable<std::vector<char>, std::string> UnaryFunctionT>
   void execute_on(const std::initializer_list<std::string_view> &filename,
-    const UnaryFunctionT &unary_function)
+                  const UnaryFunctionT &                         unary_function)
   {
-    std::ranges::for_each(data(),
+    std::ranges::for_each(
+      data(),
       [&unary_function, &filename, this](
         const open_viii::archive::FileData &dataItem) {
         auto pathString = dataItem.get_path_string();
         if (open_viii::tools::i_find_any(pathString, filename)) {
-          unary_function(
-            FS::get_entry(m_path, dataItem), std::string(pathString));
+          unary_function(FS::get_entry(m_path, dataItem),
+                         std::string(pathString));
         }
       });
   }
 };
-
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ZZZ_HPP

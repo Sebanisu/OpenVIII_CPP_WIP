@@ -205,7 +205,6 @@ private:
     }
     return false;
   }
-
 public:
   [[nodiscard]] std::
     variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>

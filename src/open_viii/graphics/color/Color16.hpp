@@ -10,10 +10,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_COLOR16_HPP
 #define VIIIARCHIVE_COLOR16_HPP
-
 #include "open_viii/Concepts.hpp"
 #include <compare>
 #include <cstdint>
@@ -27,29 +25,28 @@ namespace open_viii::graphics {
 struct Color16
 {
 private:
-  [[maybe_unused]] static constexpr auto BITS = 16U;
-  mutable std::uint16_t m_value{};
-  static constexpr std::uint16_t BLUE_MASK{ 0x7C00 };
-  static constexpr std::uint16_t GREEN_MASK{ 0x3E0 };
-  static constexpr std::uint16_t RED_MASK{ 0x1F };
-  [[maybe_unused]] static constexpr std::uint16_t STP_MASK{ 0x8000U };
-  static constexpr std::uint16_t ALL_COLOR_MASK{ 0x7FFF };
-  static constexpr std::uint_fast8_t BLUE_SHIFT{ 10U };
-  static constexpr std::uint_fast8_t GREEN_SHIFT{ 5U };
-  static constexpr std::uint_fast8_t RED_SHIFT = { 0U };
-  [[maybe_unused]] static constexpr std::uint_fast8_t STP_SHIFT = { 15U };
-  static constexpr std::uint_fast8_t CONVERT_SHIFT = { 3U };
-  static constexpr std::uint_fast8_t GET_HIGH_BIT_SHIFT = { 2U };
+  [[maybe_unused]] static constexpr auto              BITS = 16U;
+  mutable std::uint16_t                               m_value{};
+  static constexpr std::uint16_t                      BLUE_MASK{ 0x7C00 };
+  static constexpr std::uint16_t                      GREEN_MASK{ 0x3E0 };
+  static constexpr std::uint16_t                      RED_MASK{ 0x1F };
+  [[maybe_unused]] static constexpr std::uint16_t     STP_MASK{ 0x8000U };
+  static constexpr std::uint16_t                      ALL_COLOR_MASK{ 0x7FFF };
+  static constexpr std::uint_fast8_t                  BLUE_SHIFT{ 10U };
+  static constexpr std::uint_fast8_t                  GREEN_SHIFT{ 5U };
+  static constexpr std::uint_fast8_t                  RED_SHIFT     = { 0U };
+  [[maybe_unused]] static constexpr std::uint_fast8_t STP_SHIFT     = { 15U };
+  static constexpr std::uint_fast8_t                  CONVERT_SHIFT = { 3U };
+  static constexpr std::uint_fast8_t GET_HIGH_BIT_SHIFT             = { 2U };
   static constexpr std::uint_fast8_t LARGEST_5_BIT_VALUE{ 0b0001'1111 };
-
-  [[nodiscard]] std::uint8_t convert(
-    const std::uint16_t &mask, const std::uint_fast8_t &shift) const
+  [[nodiscard]] std::uint8_t         convert(const std::uint16_t &    mask,
+                                             const std::uint_fast8_t &shift) const
   {
     auto temp = static_cast<std::uint16_t>(
       static_cast<std::uint16_t>(m_value & mask) >> shift);
     return static_cast<std::uint8_t>(
       (static_cast<std::uint16_t>(temp << CONVERT_SHIFT)
-        | static_cast<std::uint16_t>(temp >> GET_HIGH_BIT_SHIFT)));
+       | static_cast<std::uint16_t>(temp >> GET_HIGH_BIT_SHIFT)));
   }
   template<std::unsigned_integral T> static constexpr T flip(const T input)
   {
@@ -68,20 +65,20 @@ private:
   requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) void set(
     T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
   {
-    std::uint16_t val{ static_cast<std::uint_fast8_t>(std::clamp(input,
-      static_cast<T>(0),
-      static_cast<T>(std::numeric_limits<std::uint8_t>::max()))) };
+    std::uint16_t val{ static_cast<std::uint_fast8_t>(
+      std::clamp(input,
+                 static_cast<T>(0),
+                 static_cast<T>(std::numeric_limits<std::uint8_t>::max()))) };
     val >>= CONVERT_SHIFT;
-    val = static_cast<decltype(val)>(val << shift);
+    val     = static_cast<decltype(val)>(val << shift);
     m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
   }
-
 public:
   Color16() = default;
   explicit Color16(std::uint16_t raw_color) : m_value(raw_color) {}
-  friend auto operator<=>(
-    const Color16 &left, const Color16 &right) noexcept = default;
-  auto operator<=>(const Color16 &right) const noexcept = default;
+  friend auto operator<=>(const Color16 &left,
+                          const Color16 &right) noexcept       = default;
+  auto        operator<=>(const Color16 &right) const noexcept = default;
   template<Color cT>
   requires(!std::is_same_v<Color16, cT>) explicit Color16(cT color)
   {
@@ -160,7 +157,6 @@ public:
   {
     return (m_value & STP_MASK) != 0;
   }
-
   /**
    * Special transparency bit
    * @return true or false
@@ -177,12 +173,10 @@ public:
   /**
    * @return true if color is black. at least all the color bits are 0.
    */
-
   [[nodiscard]] bool is_black() const
   {
     return (m_value & ALL_COLOR_MASK) == 0;
   }
-
   /**
    * @return true if color is transparent Black. all bits are 0.
    */

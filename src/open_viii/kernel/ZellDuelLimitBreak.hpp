@@ -61,7 +61,7 @@ namespace open_viii::kernel {
  * None = 0xFFFF
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Duel-(Zell-limit-break)
  */
-template<LangT langVal> struct ZellDuelLimitBreak
+struct ZellDuelLimitBreak
 {
 private:
   static constexpr uint8_t MAX_NUMBER_OF_BUTTONS{ 5U };
@@ -82,8 +82,8 @@ private:
   PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
   BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
 public:
-  constexpr auto operator<=>(
-    const ZellDuelLimitBreak<langVal> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const ZellDuelLimitBreak &right) const noexcept = default;
   [[nodiscard]] constexpr auto name_offset() const noexcept
   {
     return m_name_offset;
@@ -149,16 +149,9 @@ public:
   {
     return m_battle_only_statuses;
   }// statuses 8-39
-  std::ostream &out(std::ostream &os, const std::span<const char> &buffer) const
+  std::ostream &out(std::ostream &                                os,
+                    [[maybe_unused]] const std::span<const char> &buffer) const
   {
-    auto name        = m_name_offset.decoded_string<langVal>(buffer);
-    auto description = m_description_offset.decoded_string<langVal>(buffer);
-    if (!std::empty(name)) {
-      os << tools::u8_to_sv(name);
-    }
-    if (!std::empty(description)) {
-      os << ", " << tools::u8_to_sv(description);
-    }
     os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
        << static_cast<std::uint32_t>(m_attack_type) << ", "
        << static_cast<std::uint32_t>(m_attack_power) << ", "

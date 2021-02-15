@@ -10,7 +10,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 #ifndef VIIIARCHIVE_TIM_HPP
 #define VIIIARCHIVE_TIM_HPP
 #include "BPPT.hpp"
@@ -39,14 +38,13 @@ namespace open_viii::graphics {
 struct Tim
 {
 private:
-  TimHeader m_tim_header{};
-  TimClutHeader m_tim_clut_header{};
+  TimHeader             m_tim_header{};
+  TimClutHeader         m_tim_clut_header{};
   std::span<const char> m_tim_clut_data{};
-  TimImageHeader m_tim_image_header{};
+  TimImageHeader        m_tim_image_header{};
   std::span<const char> m_tim_image_data{};
-
   [[nodiscard]] Color16 get_color([[maybe_unused]] std::uint16_t row,
-    [[maybe_unused]] std::uint8_t color_key) const
+                                  [[maybe_unused]] std::uint8_t color_key) const
   {
     if (m_tim_clut_header.rectangle().width() == 0
         || m_tim_clut_header.rectangle().height() == 0) {
@@ -72,7 +70,6 @@ private:
     memcpy(&rv, std::ranges::data(m_tim_image_data.subspan(index)), sizeof(rv));
     return rv;
   }
-
 public:
   Tim() = default;
   explicit Tim([[maybe_unused]] std::span<const char> buffer)
@@ -80,15 +77,15 @@ public:
     if (std::ranges::size(buffer) == 0) {
       return;
     }
-    bool fail = false;
-    const auto set_data = [&buffer, &fail](
-                            [[maybe_unused]] std::span<const char> &item,
-                            const std::size_t &bytes) {
+    bool       fail     = false;
+    const auto set_data = [&buffer,
+                           &fail]([[maybe_unused]] std::span<const char> &item,
+                                  const std::size_t &bytes) {
       if (bytes > std::ranges::size(buffer)) {
         fail = true;
         return;
       }
-      item = buffer.subspan(0U, bytes);
+      item   = buffer.subspan(0U, bytes);
       buffer = buffer.subspan(bytes);
     };
     const auto get_value = [&buffer, &fail](auto &item) {
@@ -100,7 +97,6 @@ public:
       memcpy(&item, std::ranges::data(buffer), sz);
       buffer = buffer.subspan(sz);
     };
-
     get_value(m_tim_header);
     if (!m_tim_header.check() || fail) {
       m_tim_header = {};
@@ -110,7 +106,7 @@ public:
       get_value(m_tim_clut_header);
       if (!m_tim_clut_header.check() || fail) {
         m_tim_clut_header = {};
-        m_tim_header = {};
+        m_tim_header      = {};
         return;
       }
       set_data(m_tim_clut_data, m_tim_clut_header.data_size());
@@ -135,20 +131,20 @@ public:
     static constexpr auto bpp8_step{ 2 };
     static constexpr auto bpp24_step{ 1.5 };
     if (m_tim_header.bpp().bpp4()) {
-      return static_cast<std::size_t>(
-        m_tim_image_header.rectangle().width() * bpp4_step);// 4pp
+      return static_cast<std::size_t>(m_tim_image_header.rectangle().width()
+                                      * bpp4_step);// 4pp
     }
     if (m_tim_header.bpp().bpp8()) {
-      return static_cast<std::size_t>(
-        m_tim_image_header.rectangle().width() * bpp8_step);// 8pp
+      return static_cast<std::size_t>(m_tim_image_header.rectangle().width()
+                                      * bpp8_step);// 8pp
     }
     if (m_tim_header.bpp().bpp16()) {
       return static_cast<std::size_t>(
         m_tim_image_header.rectangle().width());// 16bpp
     }
     if (m_tim_header.bpp().bpp24()) {
-      return static_cast<std::size_t>(
-        m_tim_image_header.rectangle().width() / bpp24_step);// 24 bpp
+      return static_cast<std::size_t>(m_tim_image_header.rectangle().width()
+                                      / bpp24_step);// 24 bpp
     }
     return {};// invalid value
   }
@@ -169,7 +165,6 @@ public:
   {
     return m_tim_image_header.rectangle().y();
   }
-
   [[maybe_unused]] [[nodiscard]] auto clut_x() const
   {
     return m_tim_clut_header.rectangle().x();
@@ -191,7 +186,6 @@ public:
   {
     return m_tim_clut_header.rectangle().width();
   }
-
   friend std::ostream &operator<<(std::ostream &os, const Tim &input)
   {
     return os << '{' << input.m_tim_header << ", " << input.m_tim_clut_header
@@ -199,25 +193,24 @@ public:
               << ", Corrected Width: " << input.width() << '}';
   }
   template<Color dstT = Tim>
-  [[nodiscard]] std::vector<dstT> get_colors(
-    [[maybe_unused]] std::uint16_t row = 0U) const
+  [[nodiscard]] std::vector<dstT>
+    get_colors([[maybe_unused]] std::uint16_t row = 0U) const
   {
     if (width() == 0 || height() == 0) {
       return {};
     }
-    static constexpr auto bpp4 = 4U;
-    static constexpr auto bpp8 = 8U;
+    static constexpr auto bpp4  = 4U;
+    static constexpr auto bpp8  = 8U;
     static constexpr auto bpp16 = 16U;
     static constexpr auto bpp24 = 24U;
-    std::vector<dstT> output{};
-    const auto out_size = area();
+    std::vector<dstT>     output{};
+    const auto            out_size = area();
     output.reserve(out_size);
     switch (static_cast<int>(m_tim_header.bpp())) {
-
     case bpp4: {
       const auto s = std::span(reinterpret_cast<const Bit4Values *>(
                                  std::ranges::data(m_tim_image_data)),
-        std::ranges::size(m_tim_image_data));
+                               std::ranges::size(m_tim_image_data));
       // break;
       for (size_t i{}; i < out_size / 2; i++) {
         // std::bitset<8> bs{ static_cast<std::uint8_t>(timImageData_.at(i /
@@ -246,10 +239,9 @@ public:
     }
     case bpp16: {
       const auto sz = std::ranges::size(m_tim_image_data) / sizeof(Color16);
-      const auto s = std::span(
+      const auto s  = std::span(
         reinterpret_cast<const Color16 *>(std::ranges::data(m_tim_image_data)),
         sz);
-
       for (const Color auto i : s) {
         output.emplace_back(i);
       }
@@ -268,7 +260,6 @@ public:
     }
     return output;
   }
-
   [[maybe_unused]] void save(std::string_view filename) const
   {
     if (clut_rows() == 0) {
@@ -284,6 +275,5 @@ public:
     }
   }
 };
-
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TIM_HPP

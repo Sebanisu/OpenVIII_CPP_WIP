@@ -1,7 +1,6 @@
 //
 // Created by pcvii on 11/18/2020.
 //
-
 #ifndef VIIIARCHIVE_CAMERAANIMATION_HPP
 #define VIIIARCHIVE_CAMERAANIMATION_HPP
 #include "CameraAnimationFrame.hpp"
@@ -21,14 +20,12 @@ private:
   static constexpr auto UNK_SIZE_0 = 20U;
   static constexpr auto UNK_SIZE_2 = 128U;
   static constexpr auto UNK_SIZE_3 = 34U;
-  ControlWord m_main_controller{};//, if 0xFFFF then return
-  std::uint16_t m_starting_fov{};//~usually 280
-  std::uint16_t m_ending_fov{};// ~006
-  std::uint16_t m_starting_roll{};// usually 0
-  std::uint16_t m_ending_roll{};// usually 0
+  ControlWord           m_main_controller{};//, if 0xFFFF then return
+  std::uint16_t         m_starting_fov{};   //~usually 280
+  std::uint16_t         m_ending_fov{};     // ~006
+  std::uint16_t         m_starting_roll{};  // usually 0
+  std::uint16_t         m_ending_roll{};    // usually 0
   std::vector<CameraAnimationFrame> m_frames{};
-
-
 public:
   CameraAnimation() = default;
   explicit CameraAnimation(std::span<char const> span)
@@ -41,7 +38,7 @@ public:
     };
     const auto r_read = [&span]<typename T>() -> T {
       const auto res = tools::read_val<T>(span);
-      span = span.subspan(sizeof(T));
+      span           = span.subspan(sizeof(T));
       return res;
     };
     // start reading
@@ -57,7 +54,7 @@ public:
     }
     case FovTypeT::same_fov: {
       read(m_starting_fov);
-      span = span.subspan(sizeof(m_starting_fov));
+      span         = span.subspan(sizeof(m_starting_fov));
       m_ending_fov = m_starting_fov;
       break;
     }
@@ -68,8 +65,6 @@ public:
       break;
     }
     }
-
-
     switch (m_main_controller.roll()) {
     case RollTypeT::default_roll: {
       m_ending_fov = m_starting_roll = 0x0U;
@@ -93,7 +88,6 @@ public:
       // This probably needs more reversing
       break;
     }
-
     switch (m_main_controller.layout()) {
     case LayoutTypeT::default_layout:
     case LayoutTypeT::unknown_layout:
@@ -127,7 +121,6 @@ public:
         //        _cameraLookAtZ[keyFrameCount] = br.ReadInt16();
         //        keyFrameCount++;
       }
-
       //      if (m_frames.size() > 2U)
       //      {
       //        //ff8Functions.Sub50D010(cam->unkWord024, cam->unkWord064,
@@ -137,9 +130,7 @@ public:
       //        cam->unkWord184, cam->unkWord1C4, keyFrameCount,
       //        cam->unkByte3A4, cam->unkByte424, cam->unkByte4A4);
       //      }
-
       break;
-
       //    case 1:
       //    {
       //      goto case 0;
@@ -206,6 +197,5 @@ public:
     return m_ending_fov;// ~006
   }
 };
-
 }// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERAANIMATION_HPP

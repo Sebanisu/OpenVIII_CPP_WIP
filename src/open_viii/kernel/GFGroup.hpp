@@ -121,6 +121,7 @@ public:
     }
     return os << '}';
   }
+
 private:
   std::array<T, MAX_G_FS> m_gfs{};
 };
