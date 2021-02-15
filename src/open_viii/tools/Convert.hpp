@@ -30,6 +30,11 @@ namespace open_viii::tools {
   auto sv = u8_to_sv(s8);
   return { sv.begin(), sv.end() };
 }
+/**
+ * Convert character to uppercase version
+ * @param ch lowercase character and such.
+ * @return uppercase character
+ */
 static constexpr auto upper (int ch) {
   if (std::is_constant_evaluated()) {
     constexpr char upper_offset = 'a' - 'A';
