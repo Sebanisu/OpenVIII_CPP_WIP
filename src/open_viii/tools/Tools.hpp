@@ -12,6 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIITOOLS_H
 #define VIITOOLS_H
+#include "Convert.hpp"
+#include "Compare.hpp"
 #include "Random.hpp"
 #include "Read.hpp"
 #include "Write.hpp"
@@ -30,68 +32,9 @@
 #include <thread>
 #include <type_traits>
 namespace open_viii::tools {
-static constexpr char upper_offset = 'a' - 'A';
-static constexpr auto upper        = [](int ch) {
-  if (std::is_constant_evaluated()) {
-    // this is really basic but should cover everything we do.
-    return (ch >= 'a' && ch <= 'z') ? ch - upper_offset : ch;
-  }
-  // toupper in standard library isn't constexpr
-  return ::toupper(ch);
-};
-constexpr static auto TOUPPER_EQUALS_PREDICATE = [](const auto &ch1,
-                                                    const auto &ch2) -> bool {
-  if constexpr (requires(decltype(ch1) c1, decltype(ch2) c2) {
-                  upper(c1) == upper(c2);
-                }) {
-    return upper(ch1) == upper(ch2);
-  } else {
-    return ch1 == ch2;
-  }
-};
-static_assert(TOUPPER_EQUALS_PREDICATE('a', 'A'));
-static_assert(!TOUPPER_EQUALS_PREDICATE('a', 'Z'));
-// static void for_each_two(std::ranges::forward_range auto one,
-//  std::ranges::forward_range auto two,
-//  auto lambda)
-//{
-//  auto itt_one = one.begin();
-//  auto itt_two = two.begin();
-//  while (itt_one < one.end() && itt_two < two.end()) {
-//    lambda(*itt_one, *itt_two);
-//    ++itt_one;
-//    ++itt_two;
-//  }
-//}
-/**
- * Workaround there is no way to currently to print a utf8 string... streams are
- * char only pretty much.
- * @param s8 utf8 string_view
- * @return char string_view.
- */
-[[maybe_unused]] static std::string_view u8_to_sv(const std::u8string_view &s8)
-{
-  return { reinterpret_cast<const char *>(s8.data()), s8.size() };
-}
-/**
- * Workaround there is no way to currently to print a utf8 string... streams are
- * char only pretty much.
- * @param s8 utf8 string_view
- * @return char string
- */
-[[maybe_unused]] static std::string u8_to_s(const std::u8string_view &s8)
-{
-  auto sv = u8_to_sv(s8);
-  return { sv.begin(), sv.end() };
-}
-/*
-Case Insensitive strings equal
-*/
-[[maybe_unused]] [[nodiscard]] constexpr static bool
-  i_equals(const std::span<const char> str1, const std::span<const char> str2)
-{
-  return std::ranges::equal(str1, str2, TOUPPER_EQUALS_PREDICATE);
-}
+
+
+
 // Replace all of one char to another char. Arguments will be static_cast to the
 // type of string char used in haystack. I use this to make the separator on
 // windows or linux matches the strings.
