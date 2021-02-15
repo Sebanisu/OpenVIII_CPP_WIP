@@ -24,20 +24,6 @@ static void out(KernelElementT               kernel_element,
                 std::ostream &               os,
                 const std::span<const char> &buffer)
 {
-  auto write = [&os, first = true](const auto &value) mutable {
-    if (!first) {
-      os << ", ";
-    }
-    first = false;
-    os << value;
-  };
-  if constexpr (requires(KernelElementT        ke,
-                         std::ostream          tstream,
-                         std::span<const char> tspan) {
-                  ke.out(tstream, tspan);
-                }) {
-    kernel_element.out(os, buffer);
-  } else {
 #define IF_EXIST_WRITE_DECODE_STRING(function_name)                            \
   {                                                                            \
     if constexpr (requires(KernelElementT ke) { ke.function_name(); }) {       \
@@ -63,8 +49,23 @@ static void out(KernelElementT               kernel_element,
       write(static_cast<std::uint32_t>(kernel_element.function_name()));       \
     }                                                                          \
   }
-    IF_EXIST_WRITE_DECODE_STRING(name_offset)
-    IF_EXIST_WRITE_DECODE_STRING(description_offset)
+  auto write = [&os, first = true](const auto &value) mutable {
+    if (!first) {
+      os << ", ";
+    }
+    first = false;
+    os << value;
+  };
+  IF_EXIST_WRITE_DECODE_STRING(name_offset)
+  IF_EXIST_WRITE_DECODE_STRING(description_offset)
+  if constexpr (requires(KernelElementT        ke,
+                         std::ostream          tstream,
+                         std::span<const char> tspan) {
+                  ke.out(tstream, tspan);
+                }) {
+    kernel_element.out(os, buffer);
+  } else {
+
     IF_EXIST_WRITE_CASTINT(ability_points_required_to_unlock)
     IF_EXIST_WRITE_CASTINT(ability_data_id)
     IF_EXIST_WRITE_CASTINT(unknown_flags)
