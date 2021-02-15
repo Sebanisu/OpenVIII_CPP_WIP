@@ -148,10 +148,9 @@ private:
                fiT                          fi,
                const std::filesystem::path &path,
                const std::filesystem::path &nested_path)
-  // const size_t &offset = {},
-  // const size_t &size = {})
-  {// this string can be compared to the stem of the filename to determine which
-   // archive is try added to.
+  {
+    // this string can be compared to the stem of the filename to determine
+    // which archive is try added to.
     // returns nullptr on failure.
     assert(test_valid_archive_type_t(archive_type));
     const auto tryAddToFIFLFS = [&path, &nested_path, &fi](auto &archive) {
@@ -203,10 +202,10 @@ private:
               try_add(test, dataItem, path, localPath);
             });
         }
+        return true;
       }
-      return true;
-    }
       return false;
+    }
     case ArchiveTypeT::zzz_other:
       return tryAddToZZZ(m_zzz_other);
     case ArchiveTypeT::count:
@@ -214,6 +213,7 @@ private:
     }
     return false;
   }
+
 public:
   [[nodiscard]] std::
     variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
