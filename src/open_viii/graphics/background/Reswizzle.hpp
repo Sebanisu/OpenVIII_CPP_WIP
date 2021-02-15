@@ -289,6 +289,7 @@ private:
       return std::ranges::empty(vector);
     });
   }
+
 public:
   Reswizzle(const std::vector<char> &    buffer,
             const std::filesystem::path &dir_path,

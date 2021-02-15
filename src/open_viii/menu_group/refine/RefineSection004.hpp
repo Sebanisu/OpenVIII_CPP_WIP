@@ -28,6 +28,7 @@ struct [[maybe_unused]] RefineSection004// refine cards to items
 private:
   static constexpr auto CARD_MOD_COUNT = 110U;
   std::array<RefineEntry<RefineCardID, ItemIdT>, CARD_MOD_COUNT> m_card_mod{};
+
 public:
   [[nodiscard]] const auto &card_mod() const noexcept
   {

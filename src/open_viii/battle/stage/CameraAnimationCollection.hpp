@@ -23,6 +23,7 @@ private:
   std::uint16_t                             m_camera_end{};
   std::vector<CameraAnimationSet>           m_camera_animation_set{};
   std::vector<std::vector<CameraAnimation>> m_camera_animation{};
+
 public:
   constexpr CameraAnimationCollection() = default;
   explicit CameraAnimationCollection(std::span<const char> span)

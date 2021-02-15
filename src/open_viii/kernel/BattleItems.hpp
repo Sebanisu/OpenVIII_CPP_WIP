@@ -62,6 +62,7 @@ private:
   std::uint8_t        m_unknown3{};
   std::uint8_t        m_hit_count{};
   ElementT            m_element{};
+
 public:
   static constexpr std::size_t EXPECTED_SIZE                          = 24U;
   constexpr auto operator<=>(const BattleItems &right) const noexcept = default;

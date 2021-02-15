@@ -14,6 +14,7 @@ private:
     static_cast<std::int8_t>(sizeof(intT) * 8);
   mutable intT        m_pupu_id{};
   mutable std::int8_t m_bits{ BITS_PER_LONG };
+
 public:
   IntegralStorageCommon() = default;
   constexpr explicit IntegralStorageCommon(intT input_pupu_id)
@@ -61,6 +62,7 @@ private:
       m_data.write(value & mask);
     }
   }
+
 public:
   Writer() = default;
   constexpr explicit Writer(intT input_pupu_id)
@@ -109,6 +111,7 @@ private:
     }
     return 0U;
   }
+
 public:
   Reader() = default;
   constexpr explicit Reader(intT input_pupu_id)

@@ -33,6 +33,7 @@ private:
    * Type of file in Section
    */
   std::string_view m_type{};
+
 public:
   constexpr FileSection() = default;
   FileSection(std::string             in_file_name,

@@ -31,7 +31,6 @@ private:
   EncodedStringOffset m_description_offset{};
   std::uint8_t        m_ability_points_required_to_unlock{};
   std::uint32_t       m_junction_flags : 3U {};
-
 public:
   constexpr auto
     operator<=>(const JunctionAbilities &right) const noexcept = default;

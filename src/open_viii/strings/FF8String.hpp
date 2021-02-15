@@ -120,6 +120,7 @@ private:
     u8"収"sv,   u8"容"sv,   u8"所"sv,   u8"駅"sv,   u8"・"sv,   u8"．"sv,
     u8"，"sv,   u8"："sv,   u8"～"sv,   u8"ー"sv
   };
+
 public:
   // static constexpr std::array LangCodes = { "en"sv, "fr"sv, "es"sv, "it"sv,
   // "de"sv, "jp" };

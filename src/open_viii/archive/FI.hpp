@@ -43,6 +43,7 @@ private:
    * Compression Type
    */
   CompressionTypeT m_compression_type{};
+
 public:
   constexpr static const std::size_t SIZE = 12U;
   constexpr static const auto        EXT  = std::string_view(".FI");

@@ -21,6 +21,7 @@ private:
   spanT m_span{};
   // strings
   std::string_view m_text_span{};
+
 public:
   [[maybe_unused]] explicit SectionData(const spanT &           span,
                                         const std::string_view &text_span = {})

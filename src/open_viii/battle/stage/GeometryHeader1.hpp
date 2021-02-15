@@ -29,6 +29,7 @@ private:
   std::uint8_t  m_always_1_2{};
   std::uint8_t  m_always_0_2{};
   std::uint16_t m_number_vertices{};
+
 public:
   [[nodiscard]] const auto &number_vertices() const noexcept
   {

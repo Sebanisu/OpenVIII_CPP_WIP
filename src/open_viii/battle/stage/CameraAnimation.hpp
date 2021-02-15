@@ -26,6 +26,7 @@ private:
   std::uint16_t         m_starting_roll{};  // usually 0
   std::uint16_t         m_ending_roll{};    // usually 0
   std::vector<CameraAnimationFrame> m_frames{};
+
 public:
   CameraAnimation() = default;
   explicit CameraAnimation(std::span<char const> span)

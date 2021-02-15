@@ -23,6 +23,7 @@ template<Number dimT> struct Point
 private:
   dimT m_x{};
   dimT m_y{};
+
 public:
   constexpr Point() = default;
   constexpr Point(const dimT &in_x, const dimT &in_y) noexcept

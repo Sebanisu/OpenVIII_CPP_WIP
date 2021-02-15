@@ -50,6 +50,7 @@ private:
   std::array<RefineEntry<ItemIdT, ItemIdT>, GF_ABL_MED_RF_COUNT>
                                                            m_gf_abl_med_rf{};
   std::array<RefineEntry<ItemIdT, ItemIdT>, TOOL_RF_COUNT> m_tool_rf{};
+
 public:
   [[maybe_unused]] [[nodiscard]] const auto &recov_med_rf() const noexcept
   {

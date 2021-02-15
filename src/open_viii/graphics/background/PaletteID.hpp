@@ -29,6 +29,7 @@ private:
   static constexpr std::uint16_t ZERO_MASK{ 0b1111'1100'0000'0000U };
   static constexpr std::uint16_t ZERO_SHIFT{ 12U };
   std::uint16_t                  m_data{};
+
 public:
   PaletteID() = default;
   friend auto operator==(const PaletteID &left, const PaletteID &right)

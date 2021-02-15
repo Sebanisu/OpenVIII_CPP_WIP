@@ -22,7 +22,6 @@ private:
   static constexpr std::uint8_t HIGH_BIT_MASK   = 0x80U;
   static constexpr std::uint8_t OTHER_BITS_MASK = 0x7FU;
   std::uint8_t                  m_camera_change{};
-
 public:
   constexpr auto
     operator<=>(const CameraChange &right) const noexcept = default;

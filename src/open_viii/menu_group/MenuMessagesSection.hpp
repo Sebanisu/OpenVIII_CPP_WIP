@@ -22,6 +22,7 @@ private:
   {
     return m_data.data();
   }
+
 public:
   MenuMessagesSection() = default;
   //  explicit MenuMessagesSection(const size_t & count)

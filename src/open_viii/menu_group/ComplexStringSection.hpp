@@ -48,6 +48,7 @@ struct ComplexStringSectionOffsets
 private:
   std::uint16_t m_offset{};
   std::uint16_t m_index{};
+
 public:
   [[nodiscard]] auto offset() const noexcept
   {
@@ -71,6 +72,7 @@ private:
   std::span<const char>                       m_buffer{};
   static constexpr auto                       SECTION_COUNT = 6U;
   std::array<std::string_view, SECTION_COUNT> m_data{};
+
 public:
   ComplexStringSection([[maybe_unused]] const std::span<const char> &buffer,
                        const std::array<std::string_view, SECTION_COUNT> &data)

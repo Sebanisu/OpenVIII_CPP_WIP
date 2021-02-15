@@ -19,6 +19,7 @@ struct Sp1Offset
 private:
   std::uint16_t m_offset{};
   std::uint16_t m_count{};
+
 public:
   Sp1Offset() = default;
   [[nodiscard]] auto offset() const noexcept

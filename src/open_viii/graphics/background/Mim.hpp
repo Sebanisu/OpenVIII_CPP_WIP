@@ -115,6 +115,7 @@ private:
   static constexpr std::array<MimType, 2> TEXTURE_TYPES{
     MimType(24, 13), MimType(16, 12, 0, 2)
   };
+
 public:
   constexpr static auto EXT = std::string_view{ ".mim" };
   Mim()                     = default;

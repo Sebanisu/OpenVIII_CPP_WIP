@@ -19,6 +19,7 @@ private:
   std::array<char, 3U> m_start{ 'F', '8', 'P' };
   std::array<char, 3U> m_unk{};
   std::uint16_t        m_count{};
+
 public:
   constexpr CamHeader() = default;
   /**

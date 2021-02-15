@@ -26,6 +26,7 @@ private:
    * Cam file file section data
    */
   FileSection m_cam_fs;
+
 public:
   /**
    * Get High res bink video

@@ -39,6 +39,7 @@ requires(r_ < 4U && g_ < 4U && b_ < 4U && r_ != g_ && r_ != b_ && g_ != b_
 {
 public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 4U };
+
 private:
   mutable std::array<std::uint8_t, EXPLICIT_SIZE>            m_parts{};
   template<size_t index, std::floating_point T> std::uint8_t set(T value) const
@@ -56,6 +57,7 @@ private:
              static_cast<T>(0U),
              static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
   }
+
 public:
   Color32() = default;
   template<Color c_t> explicit Color32(c_t input_color)

@@ -108,7 +108,6 @@ private:
   JunctionStatusesT   m_j_statuses_defend_flag{};
   GFGroup<uint8_t>    m_compatibility{};
   uint16_t            m_unknown3{};
-
 public:
   constexpr Magic()                                             = default;
   constexpr auto operator<=>(const Magic &right) const noexcept = default;

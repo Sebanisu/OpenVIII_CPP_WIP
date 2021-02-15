@@ -16,6 +16,7 @@ private:
   std::vector<Geometry>
     m_geometries{};// there is usually one. But can be more than 1.
   static constexpr std::array<char, 4> START_OF_HEADER = { 1, 0, 1, 0 };
+
 public:
 };
 }// namespace open_viii::battle::stage

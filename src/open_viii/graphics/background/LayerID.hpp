@@ -20,6 +20,7 @@ private:
   static constexpr std::uint8_t ID_MASK{ 0b1111'1110 };
   static constexpr std::uint8_t ID_SHIFT{ 1U };
   std::uint8_t                  m_data{};
+
 public:
   LayerID() = default;
   friend auto operator==(const LayerID &left, const LayerID &right)

@@ -78,7 +78,6 @@ private:
   //  std::uint8_t LUCK2;
   //  std::uint8_t LUCK3;
   StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> m_stats{};
-
 public:
   constexpr auto operator<=>(const Characters &right) const noexcept = default;
   [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept

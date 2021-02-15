@@ -22,6 +22,7 @@ private:
   static constexpr std::uint16_t EXPECTED_OFFSET_CAMERA_ANIMATION_COLLECTION{
     0x8U
   };
+
 public:
   [[nodiscard]] bool constexpr check() const noexcept
   {

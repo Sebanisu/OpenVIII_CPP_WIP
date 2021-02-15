@@ -64,6 +64,7 @@ private:
   std::array<RefineEntry<ItemIdT, RefineSpellID>, SUPT_RF_COUNT> m_supt_rf{};
   std::array<RefineEntry<ItemIdT, RefineSpellID>, FORBID_MAG_RF_COUNT>
     m_forbid_mag_rf{};
+
 public:
   [[maybe_unused]] [[nodiscard]] const auto &t_mag_rf() const noexcept
   {

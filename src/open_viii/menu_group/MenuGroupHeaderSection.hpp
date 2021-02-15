@@ -26,6 +26,7 @@ private:
   static constexpr std::uint8_t  PERM_OFFSET{ 1U };
   std::uint32_t                  m_file_offset{};
   std::uint32_t                  m_size{};
+
 public:
   [[nodiscard]] auto file_offset() const noexcept
   {

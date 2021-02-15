@@ -25,6 +25,7 @@ private:
   int8_t  m_offset_x{};
   uint8_t m_height{};
   int8_t  m_offset_y{};
+
 public:
   [[nodiscard]] const auto &x() const noexcept
   {

@@ -34,6 +34,7 @@ private:
    * size of the file
    */
   std::uint32_t m_size{};
+
 public:
   constexpr FileData()       = default;
   FileData(const FileData &) = default;

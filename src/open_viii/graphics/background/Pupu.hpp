@@ -38,6 +38,7 @@ private:
   static constexpr int BIT4     = 4;
   static constexpr int BIT8     = 8;
   static constexpr int BIT16    = 16;
+
 public:
   Pupu() = default;
   template<typename tileT>

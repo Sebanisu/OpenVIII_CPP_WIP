@@ -37,7 +37,6 @@ private:
    * Char based container. Example Vector<char> or String.
    */
   T m_data{};
-
 public:
   Grouping() = default;
   template<FI_Like fiT>

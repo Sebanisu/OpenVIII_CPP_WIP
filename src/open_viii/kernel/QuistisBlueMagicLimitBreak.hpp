@@ -49,7 +49,6 @@ private:
   std::uint8_t        m_status_attack{};
   std::uint8_t        m_critical_bonus{};
   std::uint8_t        m_unknown4{};
-
 public:
   constexpr auto operator<=>(
     const QuistisBlueMagicLimitBreak &right) const noexcept = default;

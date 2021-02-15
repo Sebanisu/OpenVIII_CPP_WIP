@@ -15,6 +15,7 @@ struct JsmOldEntity
 {
 private:
   std::uint16_t m_raw{};
+
 public:
   constexpr JsmOldEntity() = default;
   [[nodiscard]] constexpr std::uint16_t raw() const noexcept

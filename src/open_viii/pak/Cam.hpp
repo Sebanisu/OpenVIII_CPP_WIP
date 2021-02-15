@@ -20,6 +20,7 @@ struct Cam
 private:
   CamHeader             m_header{};
   std::vector<CamFrame> m_frames{};
+
 public:
   Cam() = default;
   Cam(std::istream &is, const std::size_t &m_frame_count)

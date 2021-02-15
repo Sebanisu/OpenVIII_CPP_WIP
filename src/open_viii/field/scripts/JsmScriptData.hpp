@@ -12,6 +12,7 @@ struct JsmScriptData
 {
 private:
   std::uint32_t m_data{};
+
 public:
   [[nodiscard]] constexpr opcodeT opcode() const noexcept
   {

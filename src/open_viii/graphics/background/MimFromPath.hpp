@@ -18,8 +18,10 @@ public:
   {
   public:
     static constexpr auto MAX_PALETTES_PLUS_1 = 18U;
+
   private:
     mutable std::array<Ppm, MAX_PALETTES_PLUS_1> m_palettes{};
+
   public:
     [[nodiscard]] auto &at(const size_t &palette) const
     {
@@ -48,8 +50,10 @@ public:
   {
   public:
     static constexpr auto MAX_TEXTURE_PAGES = 14U;
+
   private:
     mutable std::array<TexturesByPalettes, MAX_TEXTURE_PAGES> m_texture_pages{};
+
   public:
     [[nodiscard]] auto &at(const size_t &texture_page) const
     {
@@ -79,6 +83,7 @@ public:
       return os;
     }
   };
+
 private:
   static constexpr auto DEFAULT_PALETTE =
     TexturesByPalettes::MAX_PALETTES_PLUS_1 - 1;
@@ -140,6 +145,7 @@ private:
     std::cout << textures << '\n';
     return textures;
   }
+
 public:
   MimFromPath() = default;
   explicit MimFromPath(MimType                      mim_type,

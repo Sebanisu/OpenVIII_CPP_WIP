@@ -13,6 +13,7 @@ struct ControlWord
 private:
   std::uint16_t                  m_word{};
   constexpr static std::uint16_t END_VAL = 0xFFFF;
+
 public:
   constexpr ControlWord() = default;
   constexpr explicit ControlWord(uint16_t word) : m_word(word) {}

@@ -283,7 +283,6 @@ public:
               << static_cast<std::uint32_t>(m_power_mod) << ", "
               << static_cast<std::uint32_t>(m_level_mod);
   }
-
 private:
   EncodedStringOffset                          m_name_offset{};
   EncodedStringOffset                          m_description_offset{};

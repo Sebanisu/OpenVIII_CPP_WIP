@@ -32,6 +32,7 @@ private:
   GpuFlags                      m_raw_gpu{};
   static constexpr std::uint8_t MASK_4_BIT  = 0xFU;
   static constexpr int          SHIFT_2_BIT = 2;
+
 public:
   static constexpr std::size_t COUNT = 3U;
   [[nodiscard]] static constexpr std::uint8_t

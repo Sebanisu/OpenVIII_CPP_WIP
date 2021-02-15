@@ -13,6 +13,7 @@ private:
   graphics::Vertice<std::uint16_t> m_world{};
   std::uint16_t                    m_is_frame_ending_shot{};
   graphics::Vertice<std::uint16_t> m_look_at{};
+
 public:
   constexpr CameraAnimationFrame() = default;
   constexpr CameraAnimationFrame(std::uint16_t is_frame_durations_shot,

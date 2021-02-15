@@ -34,7 +34,6 @@ private:
   // initializers for bitfields add {} in cpp20.
   // std::array<std::uint8_t, 3> m_character_ability_flags{};
   std::uint32_t m_character_ability_flags : 3U {};
-
 public:
   constexpr static auto EXPECTED_SIZE = 8U;
   constexpr auto

@@ -23,6 +23,7 @@ struct Sp1Header
 private:
   std::uint32_t          m_offset_count{};
   std::vector<Sp1Offset> m_offsets{};
+
 public:
   Sp1Header() = default;
   explicit Sp1Header(std::span<const char> buffer)

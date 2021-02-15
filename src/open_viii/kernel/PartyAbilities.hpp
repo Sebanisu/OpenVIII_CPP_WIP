@@ -33,7 +33,6 @@ private:
   std::uint8_t        m_flag{};
   std::uint8_t        m_unknown0{};
   std::uint8_t        m_unknown1{};
-
 public:
   constexpr auto
     operator<=>(const PartyAbilities &right) const noexcept = default;

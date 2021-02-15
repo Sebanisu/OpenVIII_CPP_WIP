@@ -33,7 +33,6 @@ private:
   std::uint8_t        m_index_to_battle_command{};
   std::uint8_t        m_unknown0{};
   std::uint8_t        m_unknown1{};
-
 public:
   constexpr auto
     operator<=>(const CommandAbilities &right) const noexcept = default;

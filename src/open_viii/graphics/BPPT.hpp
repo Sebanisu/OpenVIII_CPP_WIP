@@ -38,6 +38,7 @@ private:
   constexpr static auto RAW8_VALUE  = 0b1U;
   constexpr static auto RAW16_VALUE = 0b10U;
   constexpr static auto CLP_VALUE   = 0b1000U;
+
 public:
   constexpr static auto BPP4{ 4U };
   constexpr static auto BPP8{ 8U };

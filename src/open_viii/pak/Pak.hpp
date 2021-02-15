@@ -59,6 +59,7 @@ private:
    */
   int                   m_disc_cache{ -1 };
   std::filesystem::path m_file_path{};
+
 public:
   explicit Pak(std::filesystem::path path) : m_file_path(std::move(path))
   {

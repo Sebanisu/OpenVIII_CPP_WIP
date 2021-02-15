@@ -32,6 +32,7 @@ private:
   {
     return m_tim_offset - m_widths_offset;
   }
+
 public:
   Tdw() = default;
   explicit Tdw([[maybe_unused]] std::span<const char> buffer)

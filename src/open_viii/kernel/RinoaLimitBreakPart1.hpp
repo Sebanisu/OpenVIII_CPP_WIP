@@ -34,7 +34,6 @@ private:
   TargetT             m_target{};
   std::uint8_t        m_ability_data_id{};
   std::uint8_t        m_unknown0{};
-
 public:
   constexpr auto
     operator<=>(const RinoaLimitBreakPart1 &right) const noexcept = default;

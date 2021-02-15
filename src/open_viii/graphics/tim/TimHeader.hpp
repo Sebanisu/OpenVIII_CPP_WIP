@@ -64,6 +64,7 @@ private:
    * @brief value should be 0 or 22
    */
   std::uint8_t m_none4{};
+
 public:
   /**
    * @return bits per pixel flags and CLP flag

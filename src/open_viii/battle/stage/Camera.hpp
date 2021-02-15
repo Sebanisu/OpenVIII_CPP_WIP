@@ -17,6 +17,7 @@ private:
   CameraHeader              m_camera_header{};
   CameraSettings            m_camera_settings{};
   CameraAnimationCollection m_camera_animation_collection{};
+
 public:
   Camera() = default;
   explicit Camera(const std::span<const char> &data)

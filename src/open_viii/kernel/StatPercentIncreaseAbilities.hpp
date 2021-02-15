@@ -33,7 +33,6 @@ private:
   std::uint8_t        m_stat_to_increase{};
   std::uint8_t        m_increased_value{};
   std::uint8_t        m_unknown0{};
-
 public:
   constexpr auto operator<=>(
     const StatPercentIncreaseAbilities &right) const noexcept = default;

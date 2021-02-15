@@ -70,6 +70,7 @@ private:
     memcpy(&rv, std::ranges::data(m_tim_image_data.subspan(index)), sizeof(rv));
     return rv;
   }
+
 public:
   Tim() = default;
   explicit Tim([[maybe_unused]] std::span<const char> buffer)

@@ -63,7 +63,6 @@ private:
   std::vector<char>          m_buffer{};
   std::vector<std::uint32_t> m_section_offsets{};
   static constexpr auto      FILE_NAME = std::string_view{ "kernel.bin" };
-
 public:
   template<SectionTypesT sectionType> static consteval bool section_type_test()
   {

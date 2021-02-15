@@ -68,6 +68,7 @@ private:
    * Unknown 10
    */
   std::uint32_t m_unknown_10{};
+
 public:
   // Header 2
   /**

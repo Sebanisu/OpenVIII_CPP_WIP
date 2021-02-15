@@ -34,7 +34,6 @@ private:
   std::uint8_t        m_menu_file_index{};
   std::uint8_t        m_start_offset{};
   std::uint8_t        m_end_offset{};
-
 public:
   constexpr auto
     operator<=>(const MenuAbilities &right) const noexcept = default;

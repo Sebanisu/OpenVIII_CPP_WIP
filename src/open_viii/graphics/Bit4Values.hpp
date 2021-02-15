@@ -24,6 +24,7 @@ private:
   static constexpr std::uint8_t SHIFT_8_BITS      = 8U;
   std::uint8_t                  m_first  : 4U {};
   std::uint8_t                  m_second : 4U {};
+
 public:
   constexpr Bit4Values() = default;
   constexpr Bit4Values(const std::uint8_t &in_first,

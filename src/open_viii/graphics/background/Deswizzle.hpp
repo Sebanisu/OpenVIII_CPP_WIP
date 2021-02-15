@@ -12,9 +12,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_DESWIZZLE_HPP
 #define VIIIARCHIVE_DESWIZZLE_HPP
-#include <utility>
 #include "Map.hpp"
 #include "MimFromPath.hpp"
+#include <utility>
 namespace open_viii::graphics::background {
 /**
  * Deswizzle is a temporary struct that is used to take a map and mim and
@@ -111,6 +111,7 @@ private:
            + ((static_cast<uint32_t>(tile.y()) + y)
               * static_cast<uint32_t>(m_canvas.width()));
   }
+
 public:
   Deswizzle(const mim_type &     in_mim,
             const Map<map_type> &in_map,

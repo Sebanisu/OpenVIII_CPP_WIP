@@ -11,7 +11,6 @@ struct Slot
 private:
   std::uint8_t m_magic_id{};
   std::uint8_t m_count{};
-
 public:
   constexpr auto operator<=>(const Slot &right) const noexcept = default;
   [[nodiscard]] constexpr auto magic_id() const noexcept

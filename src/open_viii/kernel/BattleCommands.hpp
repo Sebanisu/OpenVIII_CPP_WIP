@@ -35,7 +35,6 @@ private:
   std::uint8_t        m_unknown_flags{};
   TargetT             m_target{};
   std::uint8_t        m_unknown{};
-
 public:
   constexpr auto
     operator<=>(const BattleCommands &right) const noexcept = default;

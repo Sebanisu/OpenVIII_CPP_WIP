@@ -26,6 +26,7 @@ private:
   std::uint16_t                                 m_size{ DEFAULT_SIZE };
   std::array<std::uint16_t, DEFAULT_SIZE>       m_sections{};
   std::array<MenuMessagesSection, DEFAULT_SIZE> m_sub_sections{};
+
 public:
   [[nodiscard]] auto size() const noexcept
   {

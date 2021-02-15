@@ -32,6 +32,7 @@ private:
     m_mid_mag_rf{};
   std::array<RefineEntry<RefineSpellID, RefineSpellID>, HIGH_MAG_RF_COUNT>
     m_high_mag_rf{};
+
 public:
   [[maybe_unused]] [[nodiscard]] const auto &mid_mag_rf() const noexcept
   {

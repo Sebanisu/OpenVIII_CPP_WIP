@@ -46,7 +46,6 @@ private:
   {
     m_count = FI::get_count(m_fi.size());
   }
-
 public:
   [[maybe_unused]] [[nodiscard]] const auto &fi() const noexcept
   {

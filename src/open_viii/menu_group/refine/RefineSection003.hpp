@@ -27,6 +27,7 @@ struct [[maybe_unused]] RefineSection003// refine items to items
 private:
   static constexpr auto MED_LVUP_COUNT = 12U;
   std::array<RefineEntry<ItemIdT, ItemIdT>, MED_LVUP_COUNT> m_med_lv_up{};
+
 public:
   [[maybe_unused]] [[nodiscard]] const auto &med_lv_up() const noexcept
   {

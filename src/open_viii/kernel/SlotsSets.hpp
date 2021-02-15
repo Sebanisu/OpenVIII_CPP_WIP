@@ -49,6 +49,7 @@ public:
     }
     return os << '}';
   }
+
 private:
   std::array<Slot, TOTAL> m_slots{};
 };

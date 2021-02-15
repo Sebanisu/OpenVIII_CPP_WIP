@@ -24,7 +24,6 @@ private:
   UnlockerT    m_unlocker{};
   std::uint8_t m_unknown{};
   AbilitiesT   m_ability{};
-
 public:
   constexpr auto
     operator<=>(const UnlockableAbility &right) const noexcept = default;

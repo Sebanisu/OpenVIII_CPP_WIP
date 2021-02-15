@@ -126,7 +126,6 @@ struct ZellDuelLimitBreakParams
 {
 private:
   std::array<std::uint8_t, 4> m_data{};
-
 public:
   constexpr auto
     operator<=>(const ZellDuelLimitBreakParams &right) const noexcept = default;

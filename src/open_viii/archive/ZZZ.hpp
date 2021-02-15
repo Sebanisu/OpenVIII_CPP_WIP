@@ -65,14 +65,14 @@ private:
       const auto right_size   = std::ranges::size(right_string);
       const auto left_size    = std::ranges::size(left_string);
       if (left_size == right_size) {
-        return left_string < right_string;
+        return left_string < right_string; //clangtidy wants < to be nullptr
       }
       return left_size < right_size;
     });
     m_data.shrink_to_fit();
   }
 public:
-  constexpr static auto                      EXT = ".zzz";
+  constexpr static auto                      EXT = std::string_view(".zzz");
   [[maybe_unused]] [[nodiscard]] const auto &data() const noexcept
   {
     return m_data;
@@ -81,12 +81,7 @@ public:
   {
     return m_path;
   }
-  ZZZ(const ZZZ &) = default;
-  ZZZ &operator=(const ZZZ &) = default;
-  ZZZ(ZZZ &&)                 = default;
-  ZZZ &operator=(ZZZ &&) = default;
-  ~ZZZ()                 = default;
-  constexpr ZZZ()        = default;
+  constexpr ZZZ() = default;
   explicit ZZZ(std::filesystem::path path)
     : m_path(std::move(path)), m_data(load_data_from_file())
   {
@@ -104,6 +99,7 @@ public:
       { EXT },
       [&tmp, i = 0](const std::filesystem::path &file_entry) mutable {
         // todo check for language codes to choose correct files
+        // this is done for the archives.
         auto &pair = tmp.emplace_back(
           std::piecewise_construct,
           std::forward_as_tuple(tools::get_base_name(file_entry)),

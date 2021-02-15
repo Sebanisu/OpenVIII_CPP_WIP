@@ -15,6 +15,7 @@ struct CameraAnimationSet
 private:
   static constexpr auto            COUNT = 8U;
   std::array<std::uint16_t, COUNT> m_animation_offsets{};
+
 public:
   //  std::uint16_t operator[](const size_t &i)
   //  {

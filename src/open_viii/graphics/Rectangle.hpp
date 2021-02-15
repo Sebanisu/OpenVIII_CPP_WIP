@@ -27,6 +27,7 @@ template<Number dimT> struct Rectangle
 private:
   Point<dimT> m_top_left{};
   Point<dimT> m_width_height{};
+
 public:
   constexpr Rectangle() = default;
   constexpr auto

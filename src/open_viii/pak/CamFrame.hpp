@@ -52,6 +52,7 @@ private:
    * "END" marker 3 bytes
    */
   std::array<char, 3U> m_end{ 'E', 'N', 'D' };
+
 public:
   /**
    * Expected "END"

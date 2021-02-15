@@ -40,6 +40,7 @@ private:
    */
   [[maybe_unused]] static constexpr std::array VALID_WIDTH = { 16U, 256U };
   TimImageHeader                               m_image_header{};
+
 public:
   /**
    * Typically the width = number of colors, and height = number of color lookup

@@ -70,6 +70,7 @@ private:
     }
     return std::span<const char>{};
   }
+
 public:
   constexpr auto
     operator<=>(const EncodedStringOffset &right) const noexcept = default;

@@ -281,6 +281,7 @@ private:
       }
       m_parent.at(p) = NOT_USED;
     };
+
   private:
     // left & right children & parents -- These constitute binary search trees.
     std::array<std::uint32_t, N_PLUS2>         m_left_side{};
@@ -292,6 +293,7 @@ private:
     std::uint32_t m_match_length{};
     std::uint32_t m_match_position{};
   };
+
 public:
   /**
    NEW LZSS

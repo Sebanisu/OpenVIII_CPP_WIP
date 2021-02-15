@@ -28,6 +28,7 @@ private:
   static constexpr std::array<char, 4U> MODEL_START{ 0x06, 0x0, 0x0, 0x0 };
   static constexpr std::array<char, 6U> CAMERA_START{ 0x02, 0x0,  0x08,
                                                       0x0,  0x20, 0x0 };
+
 public:
   static constexpr auto EXT = std::string_view(".x");
   X()                       = default;

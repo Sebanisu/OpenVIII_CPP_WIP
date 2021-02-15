@@ -171,6 +171,7 @@ private:
       static_for_tkmnmes<i + 1U, count>(t);
     }
   }
+
 public:
   constexpr static std::string_view FILENAME = "mngrp.bin";
   explicit MenuGroupFile(const open_viii::archive::FIFLFS<false> &menu_archive)

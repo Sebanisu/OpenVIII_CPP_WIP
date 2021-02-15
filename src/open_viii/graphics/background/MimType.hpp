@@ -24,6 +24,7 @@ private:
   std::uint8_t         m_texture_pages{};
   std::uint8_t         m_skipped_palettes{};
   mutable std::uint8_t m_type{};
+
 public:
   /**
    * first 8 are junk and are not used.

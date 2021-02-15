@@ -29,6 +29,7 @@ struct [[maybe_unused]] Lzs
 private:
   Rectangle<std::uint16_t> m_rectangle{};
   std::vector<Color16>     m_colors{};
+
 public:
   [[maybe_unused]] explicit Lzs(std::span<const char> buffer)
   {

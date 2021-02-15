@@ -25,7 +25,6 @@ struct NonBattleItems
 private:
   EncodedStringOffset m_name_offset{};
   EncodedStringOffset m_description_offset{};
-
 public:
   constexpr auto
     operator<=>(const NonBattleItems &right) const noexcept = default;

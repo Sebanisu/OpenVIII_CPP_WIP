@@ -24,6 +24,7 @@ private:
   static constexpr auto SIZE{ 2048U };
   static constexpr auto COUNT{ (SIZE / sizeof(MenuGroupHeaderSection)) };
   std::array<MenuGroupHeaderSection, COUNT> m_sections{};
+
 public:
   constexpr static std::string_view FILENAME = "mngrphd.bin";
   static constexpr auto             size()

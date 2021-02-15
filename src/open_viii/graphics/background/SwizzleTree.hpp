@@ -3,12 +3,12 @@
 //
 #ifndef VIIIARCHIVE_SWIZZLETREE_HPP
 #define VIIIARCHIVE_SWIZZLETREE_HPP
-#include <utility>
 #include "Deswizzle.hpp"
 #include "Map.hpp"
 #include "Mim.hpp"
 #include "Reswizzle.hpp"
 #include "open_viii/archive/FIFLFS.hpp"
+#include <utility>
 namespace open_viii::graphics::background {
 /**
  * Load all subfolders and find the matching path inside the field archive. Then
@@ -96,6 +96,7 @@ private:
     // const auto r = Deswizzle<map_type>(get_map_buffer(), m_dir_path,
     // m_dir_name, m_output_prefix); r.process();
   }
+
 public:
   SwizzleTree(const open_viii::archive::FIFLFS<true> &field,
               const std::filesystem::path &           dir_path)

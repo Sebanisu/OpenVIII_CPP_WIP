@@ -23,6 +23,7 @@ struct TimImageHeader
 private:
   std::uint32_t            m_size{};
   Rectangle<std::uint16_t> m_rectangle{};
+
 public:
   /**
    * Total Header and Data size

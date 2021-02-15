@@ -26,6 +26,7 @@ private:
   std::span<const char> m_span{};
   // strings
   std::span<const char> m_text_span{};
+
 public:
   [[maybe_unused]] explicit BulkSectionData(
     const std::span<const char> &span,

@@ -56,6 +56,7 @@ private:
     return tools::read_val<std::vector<JsmScriptEntity>>(
       buffer.subspan(m_header.offset_section_1()), m_header.count_section_1());
   }
+
 public:
   explicit Jsm(std::span<const char> buffer)
     : m_header(fix_jsm_header_counts(tools::read_val<JsmHeader>(buffer))),

@@ -33,6 +33,7 @@ private:
   inputT              m_input{};
   std::uint8_t        m_amount_required{};
   outputT             m_output{};
+
 public:
   [[nodiscard]] const auto &offset() const noexcept
   {

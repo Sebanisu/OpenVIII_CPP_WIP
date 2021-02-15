@@ -59,6 +59,7 @@ private:
   PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
   DevourStatFlagT     m_devour_stat_flag{};
   std::uint8_t        m_raised_stat_hp_quantity{};
+
 public:
   static constexpr auto full                                     = 1.0F;
   static constexpr auto half                                     = 1.0F / 2.0F;

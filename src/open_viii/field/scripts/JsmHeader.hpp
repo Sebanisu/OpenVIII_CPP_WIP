@@ -39,6 +39,7 @@ private:
    * Offset script data
    */
   std::uint16_t m_offset_script_data{};
+
 public:
   constexpr JsmHeader() = default;
   constexpr JsmHeader(std::uint8_t  in_count_door_entities,
