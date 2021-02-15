@@ -30,10 +30,27 @@
 #include <thread>
 #include <type_traits>
 namespace open_viii::tools {
+static constexpr char upper_offset = 'a' - 'A';
+static constexpr auto upper        = [](int ch) {
+  if (std::is_constant_evaluated()) {
+    // this is really basic but should cover everything we do.
+    return (ch >= 'a' && ch <= 'z') ? ch - upper_offset : ch;
+  }
+  // toupper in standard library isn't constexpr
+  return ::toupper(ch);
+};
 constexpr static auto TOUPPER_EQUALS_PREDICATE = [](const auto &ch1,
                                                     const auto &ch2) -> bool {
-  return ::toupper(ch1) == ::toupper(ch2);
+  if constexpr (requires(decltype(ch1) c1, decltype(ch2) c2) {
+                  upper(c1) == upper(c2);
+                }) {
+    return upper(ch1) == upper(ch2);
+  } else {
+    return ch1 == ch2;
+  }
 };
+static_assert(TOUPPER_EQUALS_PREDICATE('a', 'A'));
+static_assert(!TOUPPER_EQUALS_PREDICATE('a', 'Z'));
 // static void for_each_two(std::ranges::forward_range auto one,
 //  std::ranges::forward_range auto two,
 //  auto lambda)
@@ -71,7 +88,7 @@ constexpr static auto TOUPPER_EQUALS_PREDICATE = [](const auto &ch1,
 Case Insensitive strings equal
 */
 [[maybe_unused]] [[nodiscard]] constexpr static bool
-  i_equals(const std::string_view &str1, const std::string_view &str2)
+  i_equals(const std::span<const char> str1, const std::span<const char> str2)
 {
   return std::ranges::equal(str1, str2, TOUPPER_EQUALS_PREDICATE);
 }
@@ -131,6 +148,7 @@ template<typename T, std::ranges::contiguous_range T2>
 {
   if (std::ranges::size(haystack) >= std::ranges::size(needle)) {
     // clang tidy wants to make this a pointer. Bad idea.
+    // it's not a pointer in msvc.
     const auto last = std::search(haystack.begin(),
                                   haystack.end(),
                                   needle.begin(),
@@ -151,25 +169,26 @@ template<std::ranges::contiguous_range rangeT>
                                 });
 }
 [[maybe_unused]] [[nodiscard]] static constexpr bool
-  i_ends_with(const std::string_view &haystack, const std::string_view &ending)
-{
-  [[maybe_unused]] const auto ending_view = ending | std::views::reverse;
-  [[maybe_unused]] const auto haystack_view =
-    haystack | std::views::reverse
-    | std::views::take(std::ranges::size(ending));
-  return std::ranges::size(haystack) >= std::ranges::size(ending)
-         && std::ranges::equal(
-           ending_view, haystack_view, TOUPPER_EQUALS_PREDICATE);
-}
-[[maybe_unused]] [[nodiscard]] static bool
-  i_starts_with(const std::span<const char> &haystack,
-                const std::string_view &     starting)
+  i_starts_with(const std::span<const char> haystack,
+                const std::span<const char> starting)
 {
   return std::ranges::size(haystack) >= std::ranges::size(starting)
-         && std::ranges::equal(starting,
-                               haystack.subspan(std::ranges::size(starting)),
-                               TOUPPER_EQUALS_PREDICATE);
+         && i_equals(starting,
+                     haystack.subspan(0, std::ranges::size(starting)));
 }
+static_assert(i_starts_with(std::string_view("12345"), std::string_view("1")));
+static_assert(!i_starts_with(std::string_view("12345"), std::string_view("5")));
+[[maybe_unused]] [[nodiscard]] static constexpr bool
+  i_ends_with(const std::span<const char> haystack,
+              const std::span<const char> ending)
+{
+  return i_starts_with(haystack.subspan(std::ranges::size(haystack)
+                                        - std::min(std::ranges::size(haystack),
+                                                   std::ranges::size(ending))),
+                       ending);
+}
+static_assert(i_ends_with(std::string_view("12345"), std::string_view("5")));
+static_assert(!i_ends_with(std::string_view("12345"), std::string_view("1")));
 template<std::ranges::contiguous_range needleT>
 [[maybe_unused]] [[nodiscard]] static size_t
   i_ends_with_any(const std::string_view &haystack, const needleT &needles)
