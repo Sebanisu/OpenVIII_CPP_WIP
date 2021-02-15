@@ -43,8 +43,10 @@ i_equals(const std::span<const char> str1, const std::span<const char> str2)
 }
 static_assert(i_equals( std::string_view (""), std::string_view ("")));
 static_assert(i_equals( std::string_view ("ab"), std::string_view ("AB")));
-static_assert(!i_equals( std::string_view (""), std::string_view ("a")));
 static_assert(i_equals( std::string_view ("abC"), std::string_view ("ABC")));
 static_assert(i_equals( std::string_view ("123"), std::string_view ("123")));
+static_assert(!i_equals( std::string_view (""), std::string_view ("a")));
+static_assert(!i_equals( std::string_view ("abd"), std::string_view ("ABC")));
+static_assert(!i_equals( std::string_view ("123"), std::string_view ("124")));
 }
 #endif// VIIIARCHIVE_COMPARE_HPP
