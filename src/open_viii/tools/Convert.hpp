@@ -34,6 +34,8 @@ namespace open_viii::tools {
  * Convert character to uppercase version
  * @param ch lowercase character and such.
  * @return uppercase character
+ * @note ::toupper is not constexpr
+ * @see https://en.cppreference.com/w/cpp/string/byte/toupper
  */
 static constexpr auto upper (int ch) {
   if (std::is_constant_evaluated()) {
@@ -41,7 +43,6 @@ static constexpr auto upper (int ch) {
     // this is really basic but should cover everything we do.
     return (ch >= 'a' && ch <= 'z') ? ch - upper_offset : ch;
   }
-  // toupper in standard library isn't constexpr
   return ::toupper(ch);
 }
 static_assert(upper('a') == 'A');
