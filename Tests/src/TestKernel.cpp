@@ -97,7 +97,6 @@ int main()
     std::cout << path << std::endl;
     static constexpr auto coo      = open_viii::LangT::en;
     const auto archives = open_viii::archive::Archives(path, open_viii::LangCommon::to_string<coo>());
-    // TODO remove coo template from archives.
     if(!static_cast<bool>(archives))
     {
       std::cerr << "Failed to load path: " << path.string();
