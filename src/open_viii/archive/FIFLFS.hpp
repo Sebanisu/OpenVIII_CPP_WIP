@@ -46,6 +46,7 @@ private:
   {
     m_count = FI::get_count(m_fi.size());
   }
+
 public:
   [[maybe_unused]] [[nodiscard]] const auto &fi() const noexcept
   {
@@ -440,8 +441,8 @@ public:
         | std::views::filter(
           [this](const std::pair<unsigned int, std::string> &pair) -> bool {
             return check_extension(pair.second)
-                   == 0;// prevent from running on nested archives. We have
-                        // another function for those.
+                   == fiflfsT::none;// prevent from running on nested archives.
+                                    // We have another function for those.
           }),
       [this, &lambda](const std::pair<unsigned int, std::string> &pair) {
         auto fi = get_entry_by_index(pair.first);
@@ -492,31 +493,26 @@ public:
       [this, &archive, &lambda, &nested_filename](const auto &item) {
         const auto &[id, strVirtualPath] = item;
         const FI_Like auto fi            = get_entry_by_index(id);
-        TryAddT            retVal = try_add(fi, m_fs.path(), strVirtualPath);
-        //
-        //        TryAddT retVal = [this, &archive, &fi, &strVirtualPath,
-        //        &lambda]() {
-        //          std::filesystem::path virtualPath(strVirtualPath);
-        //
-        //          if (!std::ranges::empty(m_fs.data())) {
-        //            return archive.try_add_nested(
-        //              m_fs.data(), m_fs.offset(), virtualPath, fi);
-        //          }
-        //
-        //          if (fi.compression_type() == CompressionTypeT::none) {
-        //            auto localRetVal = archive.try_add(m_fs.path(),
-        //              virtualPath,
-        //              m_fs.offset() + fi.offset(),
-        //              fi.uncompressed_size());
-        //            return localRetVal;
-        //          }
-        //          return archive.try_add_nested(m_fs.path(),
-        //            m_fs.offset(),
-        //            virtualPath,
-        //            fi);// when path is sent a different function is used
-        //            later.
-        //        }();
+        std::filesystem::path virtualPath(strVirtualPath);
+        const TryAddT      retVal        = [&]() {
+          if (fi.compression_type() == CompressionTypeT::none) {
+            return archive.try_add(
+              FileData(m_fs.offset() + fi.offset(), fi.uncompressed_size()),
+              m_fs.path(),
+              virtualPath);
+          }
+          return archive.try_add_nested(
+            m_fs.path(), m_fs.offset(), virtualPath, fi);
+        }();
+        if(retVal == TryAddT::added_to_archive)
+        {
+          std::cout<<"Added:\t" << virtualPath << '\n';
+//          if(static_cast<bool>(archive)) {
+//            retVal = TryAddT::archive_full;
+//          }
+        }
         if (retVal == TryAddT::archive_full) {
+          std::cout<<"Full:\t" << archive.get_base_name() << '\n';
           if constexpr (std::
                           invocable<lambdaT, std::vector<char>, std::string>) {
             archive.template execute_on(nested_filename, lambda);
