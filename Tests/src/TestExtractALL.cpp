@@ -19,9 +19,9 @@ int main()
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
     static constexpr auto coo      = open_viii::LangT::en;
-    const auto archives = open_viii::archive::Archives(path, open_viii::LangCommon::to_string<coo>());
-    if(!static_cast<bool>(archives))
-    {
+    const auto            archives = open_viii::archive::Archives(
+      path, open_viii::LangCommon::to_string<coo>());
+    if (!static_cast<bool>(archives)) {
       std::cerr << "Failed to load path: " << path.string();
       return;
     }
@@ -29,8 +29,8 @@ int main()
       [](const std::vector<char> &in_buffer, const std::string &in_path) {
         open_viii::tools::write_buffer(in_buffer, in_path);
       };
-    archives.execute_on({}, dump);
-    //archives.get<open_viii::archive::ArchiveTypeT::field>().execute_with_nested({},dump,{});
+    archives.execute_on({ "field" }, dump);
+    // archives.get<open_viii::archive::ArchiveTypeT::field>().execute_with_nested({},dump,{});
   });
   const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;

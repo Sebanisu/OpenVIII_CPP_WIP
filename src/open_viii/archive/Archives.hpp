@@ -229,7 +229,9 @@ private:
   {
     return [&filename, &lambda](const auto &archive) -> bool {
       archive.execute_on(filename, lambda);
-      if constexpr (nested && std::is_same_v<decltype(archive), FIFLFS<true>>) {
+      if constexpr (nested && requires(decltype(archive) a, lambdaT l) {
+                      a.execute_with_nested({}, l, {});
+                    }) {
         archive.execute_with_nested({}, lambda, filename);
       }
       return true;
@@ -419,14 +421,13 @@ public:
         ret = lambda(archiveType_, get_string<archiveType_>());
         return ret;
       } else if (takes_valid_archive_type<lambdaT>) {
-        auto archive = get<archiveType_>();
-        if constexpr (std::is_same_v<decltype(archive), std::optional<ZZZ>>) {
+        const auto &archive = get<archiveType_>();
+        std::cout << get_string<archiveType_>();
+        if constexpr (requires(decltype(archive) a) { a.has_value(); }) {
           if (archive.has_value()) {
             ret = lambda(*archive);
           }
-        } else if constexpr ((std::is_same_v<decltype(archive), FIFLFS<false>>)
-                             || (std::is_same_v<decltype(archive),
-                                                FIFLFS<true>>)) {
+        } else {
           ret = lambda(archive);
         }
       }
