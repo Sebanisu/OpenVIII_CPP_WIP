@@ -145,7 +145,7 @@ public:
   //  }
   template<std::invocable<std::vector<char>, std::string> UnaryFunctionT>
   void execute_on(const std::initializer_list<std::string_view> &filename,
-                  const UnaryFunctionT &                         unary_function)
+                  const UnaryFunctionT &                         unary_function) const
   {
     std::ranges::for_each(
       data(),
