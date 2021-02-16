@@ -90,7 +90,7 @@ std::string to_string_with_padding(const intT &      value,
     return {};
   }
   auto name = path.filename().stem().string();
-  std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+  std::ranges::transform(name, std::ranges::begin(name), upper);
   return name;
 }
 }// namespace open_viii::tools
