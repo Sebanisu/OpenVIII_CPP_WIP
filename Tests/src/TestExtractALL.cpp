@@ -29,7 +29,7 @@ int main()
       [](const std::vector<char> &in_buffer, const std::string &in_path) {
         open_viii::tools::write_buffer(in_buffer, in_path);
       };
-    archives.execute_on({ "field" }, dump);
+    archives.execute_on({ }, dump);
     // archives.get<open_viii::archive::ArchiveTypeT::field>().execute_with_nested({},dump,{});
   });
   const auto end  = std::chrono::steady_clock::now();
