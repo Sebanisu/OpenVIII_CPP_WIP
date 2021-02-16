@@ -538,13 +538,13 @@ public:
       if constexpr (!std::is_null_pointer_v<decltype(archive)>) {
         if constexpr (std::is_same_v<decltype(archive), std::optional<ZZZ>>) {
           if (archive.has_value()) {
-            ret = ret && static_cast<bool>(*archive);
+            ret = static_cast<bool>(*archive);
           }
         } else if constexpr (
           std::is_same_v<
             decltype(archive),
             FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
-          ret = ret && static_cast<bool>(archive);
+          ret = static_cast<bool>(archive);
         }
       }
     }
