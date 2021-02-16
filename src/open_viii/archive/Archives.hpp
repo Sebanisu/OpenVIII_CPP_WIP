@@ -422,7 +422,7 @@ public:
         return ret;
       } else if (takes_valid_archive_type<lambdaT>) {
         const auto &archive = get<archiveType_>();
-        std::cout << get_string<archiveType_>();
+        std::cout <<"Loop On: " << get_string<archiveType_>() << '\n';
         if constexpr (requires(decltype(archive) a) { a.has_value(); }) {
           if (archive.has_value()) {
             ret = lambda(*archive);
