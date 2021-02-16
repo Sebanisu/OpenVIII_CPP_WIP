@@ -38,7 +38,8 @@ private:
    * @todo find cross platform way to get to remaster config.txt
    * @param path location of ff8
    */
-  [[nodiscard]] std::string set_lang(const std::filesystem::path &path, std::string_view lang) const
+  [[nodiscard]] std::string set_lang(const std::filesystem::path &path,
+                                     std::string_view             lang) const
   {
     using namespace std::string_literals;
     return [&path, &lang]() -> std::string {
@@ -215,9 +216,12 @@ private:
   [[maybe_unused]] static constexpr bool valid_execute_on_lambda =
     (std::invocable<lambdaT, std::vector<char>, std::string>)
     || (std::invocable<lambdaT, std::string, std::string>);
-  auto test_valid_lambda () const{ return [](const auto &archive) -> bool {
-    return static_cast<bool>(archive);
-  };}
+  auto test_valid_lambda() const
+  {
+    return [](const auto &archive) -> bool {
+      return static_cast<bool>(archive);
+    };
+  }
   template<bool nested = true, typename lambdaT>
   requires(valid_execute_on_lambda<lambdaT>) auto get_execute_on_lambda(
     const std::initializer_list<std::string_view> &filename,
@@ -232,7 +236,6 @@ private:
     };
   }
 public:
-
   /**
    *
    * @tparam archiveType_
@@ -240,7 +243,7 @@ public:
    */
   template<ArchiveTypeT archiveType_>
   requires(test_valid_archive_type_t(archiveType_)) const
-  auto &get() const noexcept
+    auto &get() const noexcept
   {
     if constexpr (archiveType_ == ArchiveTypeT::battle) {
       return m_battle;
@@ -332,8 +335,8 @@ public:
     return std::monostate{};
   }
   template<ArchiveTypeT archiveType_>
-  requires(test_valid_archive_type_t(archiveType_)) constexpr std::string_view get_string()
-    const noexcept
+  requires(test_valid_archive_type_t(archiveType_)) constexpr std::string_view
+    get_string() const noexcept
   {// this string can be compared to the stem of the filename to determine which
    // archive is try added to.
     // returns nullptr on failure.
@@ -380,7 +383,6 @@ public:
    * Preloads all archives in the path.
    * @param path that contains FIFLFS files or ZZZ files.
    */
-
   explicit Archives(const std::filesystem::path &path, std::string_view lang)
     : m_lang(set_lang(path, lang)), m_path(set_path(path, m_lang))
   {
@@ -441,7 +443,7 @@ public:
   {
     return loop(test_valid_lambda());
   }
-  template<ArchiveTypeT... aT> bool test_set()
+  template<ArchiveTypeT... aT> requires(sizeof...(aT) > 0) bool test_set()
   {
     return specify<aT...>(test_valid_lambda());
   }
@@ -453,32 +455,13 @@ public:
     return loop(get_execute_on_lambda<true>(filename, lambda));
   }
   template<bool nested = true, ArchiveTypeT... aT, typename lambdaT>
-  requires(valid_execute_on_lambda<lambdaT>) bool execute_on(
-    const std::initializer_list<std::string_view> &filename,
-    const lambdaT &                                lambda) const
+  requires((valid_execute_on_lambda<lambdaT>)&&sizeof...(aT)
+           > 0) bool execute_on(const std::initializer_list<std::string_view>
+                                  &            filename,
+                                const lambdaT &lambda) const
   {
-    return specify(get_execute_on_lambda<true>(filename, lambda));
+    return specify<aT...>(get_execute_on_lambda<true>(filename, lambda));
   }
 };
-//auto &Archives::get<ArchiveTypeT::battle>() const noexcept
-//{
-//  if constexpr (archiveType_ == ArchiveTypeT::battle) {
-//    return m_battle;
-//  } else if constexpr (archiveType_ == ArchiveTypeT::field) {
-//    return m_field;
-//  } else if constexpr (archiveType_ == ArchiveTypeT::magic) {
-//    return m_magic;
-//  } else if constexpr (archiveType_ == ArchiveTypeT::main) {
-//    return m_main;
-//  } else if constexpr (archiveType_ == ArchiveTypeT::menu) {
-//    return m_menu;
-//  } else if constexpr (archiveType_ == ArchiveTypeT::world) {
-//    return m_world;
-//  } else if constexpr (archiveType_ == ArchiveTypeT::zzz_main) {
-//    return m_zzz_main;
-//  } else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
-//    return m_zzz_other;
-//  }
-//}
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ARCHIVES_HPP
