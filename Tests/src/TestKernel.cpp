@@ -136,7 +136,7 @@ int main()
          kernels | std::views::drop(++i)) {
       std::cout << "Comparing " << open_viii::kernel::Header::FILE_NAME << " {"
                 << path.string() << ", " << other_path.string() << "}:\n";
-      std::cout << (kernel == kernel ? "equal" : "not equal") << '\n';
+      std::cout << (std::ranges::equal(kernel.buffer(),other_kernel.buffer()) ? "equal" : "not equal") << '\n';
     }
   }
   return 0;
