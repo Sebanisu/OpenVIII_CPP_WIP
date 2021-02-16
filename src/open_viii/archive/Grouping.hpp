@@ -47,18 +47,28 @@ public:
       m_size(fi.uncompressed_size()),
       m_path(std::move(parent_path)),
       m_nested_path(std::move(child_path)),
-      m_base(tools::get_base_name(child_path))
+      m_base(tools::get_base_name(m_nested_path))
   {
     assert(fi.compression_type() == CompressionTypeT::none);
   }
-  Grouping(T                     data,
+  template<FI_Like fiT>
+  Grouping(fiT fi, std::filesystem::path parent_path)
+    : Grouping(fi, parent_path, parent_path)
+  {}
+  Grouping(T &&                  data,
            std::filesystem::path parent_path,
            std::filesystem::path child_path)
     : m_offset(0),
       m_size(std::ranges::size(data)),
       m_path(std::move(parent_path)),
       m_nested_path(std::move(child_path)),
-      m_base(tools::get_base_name(child_path))
+      m_base(tools::get_base_name(m_nested_path)),
+      m_data(std::move(data))
+  {
+    assert(m_size > 0);
+  }
+  Grouping(T &&data, std::filesystem::path parent_path)
+    : Grouping(std::move(data), parent_path, parent_path)
   {}
   /**
    * get path to file containing archive
