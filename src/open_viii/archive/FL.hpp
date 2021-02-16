@@ -203,15 +203,15 @@ constexpr const static auto EXT = std::string_view(".FL");
   }
   return data.front();
 }
-// static void clean_buffer(std::string &buffer)
-//{
-//
-//  // remove carriage returns
-//  std::erase(buffer, '\r');
-//  // buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'),
-//  // buffer.end());
-//  // change slashes to preferred
-//  tools::replace_slashes(buffer);
-//}
+ static std::string clean_buffer(std::string buffer)
+{
+  // remove carriage returns
+  std::erase(buffer, '\r');
+  // buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'),
+  // buffer.end());
+  // change slashes to preferred
+  tools::replace_slashes(buffer);
+  return buffer;
+}
 }// namespace open_viii::archive::fl
 #endif// !VIIIARCHIVE_FL_HPP

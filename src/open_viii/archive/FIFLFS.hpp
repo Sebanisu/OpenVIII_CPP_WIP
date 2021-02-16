@@ -144,64 +144,55 @@ public:
   //
   //    return TryAddT::not_part_of_archive;
   //  }
-  //  /**
-  //   * Try and Add Nested data. There are 3 parts to an archive so it this
-  //   adds
-  //   * one and goes to next one till all 3 are added.
-  //   * @tparam srcT Can be an container of data, or it will be a filesystem
-  //   path
-  //   * to a file with the data.
-  //   * @tparam datT Data struct with offset, size and compression type.
-  //   * @param src The data or path.
-  //   * @param srcOffset Bytes skipped at the beginning of data or file.
-  //   * @param fileEntry
-  //   * @param fi The Data struct.
-  //   * @return char of 0,1,2, 0 not part of archive, 1 part added, 2 being
-  //   archive
-  //   * full.;
-  //   */
-  //  template<typename srcT, FI_Like datT = archive::FI>
-  //  requires(std::convertible_to<
-  //             srcT,
-  //             std::filesystem::path> || std::ranges::contiguous_range<srcT>)
-  //    TryAddT try_add_nested(const srcT &                 src,
-  //                           const size_t                 src_offset,
-  //                           const std::filesystem::path &file_entry,
-  //                           const datT &                 fi)
-  //  {
-  //    const auto set = [&file_entry](auto &ds) {
-  //      ds.path(file_entry);
-  //      ds.offset(
-  //        0U);// the offset is 0 because we are getting the truncated data
-  //        below.
-  //      ds.get_base_name();
-  //    };
-  //    const auto i = check_extension(file_entry);
-  //    if (i >= 1 && i <= 3) {
-  //      switch (i) {
-  //      case 1: {
-  //        set(m_fl);
-  //        fl::clean_buffer(
-  //          m_fl.data(FS::get_entry<std::string>(src, fi, src_offset)));
-  //        break;
-  //      }
-  //      case 2: {
-  //        set(m_fs);
-  //        m_fs.data(FS::get_entry(src, fi, src_offset));
-  //        break;
-  //      }
-  //      case 3: {
-  //        set(m_fi);
-  //        m_fi.data(FS::get_entry(src, fi, src_offset));
-  //        get_count();
-  //        break;
-  //      }
-  //      }
-  //      compare_base_names();
-  //      return all_set() ? TryAddT::archive_full : TryAddT::added_to_archive;
-  //    }
-  //    return TryAddT::not_part_of_archive;
-  //  }
+  /**
+   * Try and Add Nested data. There are 3 parts to an archive so it this
+   adds
+   * one and goes to next one till all 3 are added.
+   * @tparam srcT Can be an container of data, or it will be a filesystem
+   path
+   * to a file with the data.
+   * @tparam datT Data struct with offset, size and compression type.
+   * @param src The data or path.
+   * @param srcOffset Bytes skipped at the beginning of data or file.
+   * @param fileEntry
+   * @param fi The Data struct.
+   * @return char of 0,1,2, 0 not part of archive, 1 part added, 2 being
+   archive
+   * full.;
+   */
+  template<typename srcT, FI_Like datT = archive::FI>
+  requires(std::convertible_to<
+             srcT,
+             std::filesystem::path> || std::ranges::contiguous_range<srcT>)
+    TryAddT try_add_nested(const srcT &                 src,
+                           const size_t                 src_offset,
+                           const std::filesystem::path &file_entry,
+                           const datT &                 fi)
+  {
+    const fiflfsT i = check_extension(file_entry);
+    switch (i) {
+    case fiflfsT::none:
+      return TryAddT::not_part_of_archive;
+    case fiflfsT::fl: {
+      m_fl = decltype(m_fl)(
+        fl::clean_buffer(FS::get_entry<std::string>(src, fi, src_offset)),
+        "",
+        file_entry);
+      break;
+    }
+    case fiflfsT::fs: {
+      m_fs = decltype(m_fs)(FS::get_entry(src, fi, src_offset), "", file_entry);
+      break;
+    }
+    case fiflfsT::fi: {
+      m_fi = decltype(m_fi)(FS::get_entry(src, fi, src_offset), "", file_entry);
+      get_count();
+      break;
+    }
+    }
+    compare_base_names();
+    return all_set() ? TryAddT::archive_full : TryAddT::added_to_archive;
+  }
   //  void
   //    saveIMG(const std::vector<char> &buffer, const std::string_view &path,
   //    const std::string_view &root = "tmp") const
@@ -341,11 +332,11 @@ public:
   //  }
   auto static check_extension(const std::filesystem::path &path)
   {
-    return static_cast<fiflfsT>(
-      tools::i_ends_with_any_get_offset(path.string(),
-                             std::array{ open_viii::archive::fl::EXT,
-                               open_viii::archive::FS::EXT,
-                               open_viii::archive::FI::EXT }));
+    return static_cast<fiflfsT>(tools::i_ends_with_any_get_offset(
+      path.string(),
+      std::array{ open_viii::archive::fl::EXT,
+                  open_viii::archive::FS::EXT,
+                  open_viii::archive::FI::EXT }));
   }
   void compare_base_names() const
   {
@@ -546,6 +537,7 @@ public:
       return TryAddT::not_part_of_archive;
     case fiflfsT::fi:
       m_fi = decltype(m_fi)(fi_like, parent_path, child_path);
+      get_count();
       break;
     case fiflfsT::fl:
       m_fl = decltype(m_fl)(fi_like, parent_path, child_path);
@@ -569,10 +561,10 @@ public:
           m_fs.data(), m_fs.offset(), virtualPath, fi);
       }
       if (fi.compression_type() == CompressionTypeT::none) {
-        auto localRetVal = archive.try_add(m_fs.path(),
-                                           virtualPath,
-                                           m_fs.offset() + fi.offset(),
-                                           fi.uncompressed_size());
+        auto localRetVal = archive.try_add(
+          FileData(m_fs.offset() + fi.offset(), fi.uncompressed_size()),
+          m_fs.path(),
+          virtualPath);
         //        if (localRetVal != TryAddT::not_part_of_archive) {
         //          std::cout << virtualPath.filename() << " is uncompressed
         //          pointing at location in actual file!\n";

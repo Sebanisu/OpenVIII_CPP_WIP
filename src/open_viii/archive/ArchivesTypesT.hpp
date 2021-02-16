@@ -18,10 +18,10 @@ enum class ArchiveTypeT : std::uint8_t {
   zzz_main,
   zzz_other,
   count,
-  first = static_cast<std::int8_t>(battle),
-  last  = static_cast<std::int8_t>(count) - 1,
+  first = battle,
+  begin = battle,
+  last  = count - 1,
   end   = count,
-  begin = battle
 };
 // static constexpr bool ValidArchiveTypeT(ArchiveTypeT archiveType)
 //  {
@@ -29,12 +29,23 @@ enum class ArchiveTypeT : std::uint8_t {
 //    ArchiveTypeT::begin;
 //  }
 template<std::signed_integral T>
-static constexpr bool test_valid_archive_type_t(T archive_type_t)
+static constexpr bool test_valid_archive_type_t(T    archive_type_t,
+                                                bool include_end = false)
 {
   return (static_cast<std::intmax_t>(archive_type_t)
             >= static_cast<std::intmax_t>(ArchiveTypeT::first)
-          || static_cast<std::intmax_t>(archive_type_t)
-               <= static_cast<std::intmax_t>(ArchiveTypeT::last));
+          && static_cast<std::intmax_t>(archive_type_t)
+               <= static_cast<std::intmax_t>(ArchiveTypeT::last))
+         || (include_end
+             && static_cast<std::intmax_t>(archive_type_t)
+                  == static_cast<std::intmax_t>(ArchiveTypeT::end));
+}
+template<std::signed_integral T>
+static constexpr bool
+  test_valid_archive_type_t(T minT, T maxT, bool include_end = false)
+{
+  return test_valid_archive_type_t(maxT, include_end)
+         && test_valid_archive_type_t(minT) && maxT >= minT;
 }
 template<typename T>
 requires(

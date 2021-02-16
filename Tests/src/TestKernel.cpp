@@ -96,13 +96,13 @@ int main()
   const auto execution_lambda = [&kernels](const std::filesystem::path &path) {
     std::cout << path << std::endl;
     static constexpr auto coo      = open_viii::LangT::en;
-    const auto archives = open_viii::archive::Archives<coo>(path);
+    const auto archives = open_viii::archive::Archives(path, open_viii::LangCommon::to_string<coo>());
+    // TODO remove coo template from archives.
     if(!static_cast<bool>(archives))
     {
       std::cerr << "Failed to load path: " << path.string();
       return;
     }
-    // TODO remove coo template from archives.
     [[maybe_unused]] const auto &main =
       archives.get<open_viii::archive::ArchiveTypeT::main>();
     std::cout << main << std::endl;
@@ -127,8 +127,6 @@ int main()
       }
     });
   };
-//    execution_lambda(
-//      "/mnt/e");
   open_viii::Paths::for_each_path(execution_lambda);
   int i = 0;
   for (const auto &[path, kernel] : kernels) {

@@ -42,13 +42,17 @@ public:
   FileData &operator=(const FileData &) = default;
   FileData &operator=(FileData &&) = default;
   ~FileData()                      = default;
-  [[maybe_unused]] FileData(const std::string_view &filename,
+  [[maybe_unused]] FileData(const std::string_view filename,
                             const unsigned long     offset,
                             unsigned int            size)
     : m_filename(filename), m_offset(offset), m_size(size)
   {
     tools::replace_slashes(m_filename);
   }
+  [[maybe_unused]] FileData(const unsigned long     offset,
+                            unsigned int            size)
+  : FileData(std::string_view(),offset,size)
+  {}
   [[nodiscard]] bool empty() const noexcept
   {
     return m_size == 0 || m_filename.empty();
