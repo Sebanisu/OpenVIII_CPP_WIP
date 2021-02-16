@@ -47,6 +47,7 @@
 #include "open_viii/BulkSectionData.hpp"
 #include <algorithm>
 #include <array>
+#include <compare>
 #include <cstring>
 #include <iostream>
 #include <sstream>
@@ -54,24 +55,27 @@
 #include <string_view>
 #include <utility>
 #include <vector>
-// will be moving kernel into it"s own project once it"svs more fully baked.
 namespace open_viii::kernel {
+/**
+ * Kernel Reader, it parses the header and knows how to get from each section.
+ * @see https://github.com/alexfilth/doomtrain/wiki/Header
+ */
 struct Header
 {
-  // https://github.com/alexfilth/doomtrain/wiki/Header
 private:
   std::vector<char>          m_buffer{};
   std::vector<std::uint32_t> m_section_offsets{};
-  static constexpr auto      FILE_NAME = std::string_view{ "kernel.bin" };
 public:
-  template<SectionTypesT sectionType> static consteval bool section_type_test()
-  {
+  static constexpr auto      FILE_NAME = std::string_view{ "kernel.bin" };
+  auto operator<=>(const Header &right) const noexcept = default;
+  template<SectionTypesT sectionType>
+  static constexpr bool section_type_test = []() {
     return static_cast<int>(sectionType)
              < static_cast<int>(SectionTypesT::count)
            && static_cast<int>(sectionType) >= 0;
-  }
+  }();
   template<SectionTypesT sectionType>
-  requires(section_type_test<sectionType>())
+  requires(section_type_test<sectionType>)
     [[nodiscard]] constexpr std::span<const char> get_span() const
   {
     if (std::ranges::empty(m_buffer)) {
@@ -92,7 +96,7 @@ public:
       m_section_offsets.at(static_cast<size_t>(sectionType)), length);
   }
   template<SectionTypesT sectionType>
-  requires(section_type_test<sectionType>())
+  requires(section_type_test<sectionType>)
     [[nodiscard]] auto get_section_data() const
   {
     using namespace std::string_literals;
@@ -238,33 +242,39 @@ public:
     }
   }
   template<SectionTypesT sectionType>
-  requires(section_type_test<sectionType>())
+  requires(section_type_test<sectionType>)
     [[nodiscard]] constexpr std::string_view get_section_name() const
   {
     return {};
   }
-  template<FIFLFS_Has_get_entry_data mainT> explicit Header(const mainT &main)
+  auto get_section_offsets() const
   {
-    m_buffer         = main.get_entry_data(FILE_NAME);
-    auto buffer_span = std::span<const char>(m_buffer);
-    if (std::ranges::size(buffer_span) < sizeof(std::uint32_t)) {
-      return;
+    auto local_offsets = decltype(m_section_offsets){};
+    auto buffer_span   = std::span<const char>(m_buffer);
+    if (std::ranges::size(buffer_span) < sizeof(uint32_t)) {
+      return local_offsets;
     }
-    std::uint32_t section_count{};
-    std::memcpy(
+    uint32_t section_count{};
+    memcpy(
       &section_count, std::ranges::data(buffer_span), sizeof(section_count));
     if (std::ranges::size(buffer_span)
-        < sizeof(std::uint32_t) * (section_count + 1)) {
-      return;
+        < sizeof(uint32_t) * (section_count + 1)) {
+      return local_offsets;
     }
-    m_section_offsets.reserve(section_count);
+    local_offsets.reserve(section_count);
     while (section_count-- > 0) {
       buffer_span = buffer_span.subspan(sizeof(section_count));
-      std::memcpy(&m_section_offsets.emplace_back(),
-                  std::ranges::data(buffer_span),
-                  sizeof(section_count));
+      memcpy(&local_offsets.emplace_back(),
+             std::ranges::data(buffer_span),
+             sizeof(section_count));
     }
+    return local_offsets;
   }
+  template<FIFLFS_Has_get_entry_data mainT>
+  explicit Header(const mainT &main)
+    : m_buffer(main.get_entry_data(FILE_NAME)),
+      m_section_offsets(get_section_offsets())
+  {}
   [[nodiscard]] const auto &buffer() const noexcept
   {
     return m_buffer;
@@ -289,12 +299,11 @@ public:
   template<int Begin = static_cast<int>(SectionTypesT::begin),
            int End   = static_cast<int>(SectionTypesT::end),
            typename Lambda>
-  requires(section_type_test<static_cast<SectionTypesT>(Begin)>() && Begin < End
-           && (section_type_test<static_cast<SectionTypesT>(End)>()
-               || End
-                    == static_cast<int>(
-                      SectionTypesT::
-                        end))) void static_for([[maybe_unused]] const Lambda &f)
+  requires(
+    section_type_test<static_cast<SectionTypesT>(Begin)> &&Begin < End
+    && (section_type_test<static_cast<SectionTypesT>(
+          End)> || End == static_cast<int>(SectionTypesT::end))) void static_for([[maybe_unused]] const Lambda
+                                                                                   &f)
   {
     if (std::ranges::empty(m_buffer)) {
       return;

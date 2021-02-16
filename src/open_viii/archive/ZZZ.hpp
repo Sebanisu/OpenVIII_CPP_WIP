@@ -158,6 +158,10 @@ public:
         }
       });
   }
+  explicit operator bool() const
+  {
+    return !std::ranges::empty(m_data);
+  }
 };
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ZZZ_HPP

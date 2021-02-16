@@ -213,8 +213,35 @@ private:
     }
     return false;
   }
-
+  void populate_archives_from_path()
+  {
+    tools::execute_on_directory(
+      m_path,
+      {},
+      { FI::EXT, FS::EXT, fl::EXT, ZZZ::EXT },
+      [this](const std::filesystem::path &localPath) {
+        if (localPath.has_stem()) {
+          static_for([&localPath, this](const ArchiveTypeT &archiveTypeT,
+                                        const auto &        stem) {
+            if (!(tools::i_equals(stem,
+                                  localPath.stem().string()))) {
+              return;
+            }
+            try_add(archiveTypeT,
+                    FI(static_cast<uint32_t>(
+                         std::filesystem::file_size(localPath)),
+                       0U),
+                    localPath,
+                    localPath);
+          });
+        }
+      });
+  }
 public:
+  [[nodiscard]] explicit operator bool() const noexcept
+  {
+  return test_set();
+  }
   [[nodiscard]] std::
     variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
     get(const std::string_view &name, bool zzz = false) const
@@ -357,6 +384,7 @@ public:
     return m_field.get_fiflfs_entries(nested_archive);
   }
   Archives() = delete;
+
   /**
    * Preloads all archives in the path.
    * @param path that contains FIFLFS files or ZZZ files.
@@ -364,27 +392,7 @@ public:
   explicit Archives(const std::filesystem::path &path)
     : m_lang(set_lang(path)), m_path(set_path(path, m_lang))
   {
-    tools::execute_on_directory(
-      m_path,
-      {},
-      { FI::EXT, FS::EXT, fl::EXT, ZZZ::EXT },
-      [this](const std::filesystem::path &localPath) {
-        if (localPath.has_stem()) {
-          static_for([&localPath, this](const ArchiveTypeT &archiveTypeT,
-                                        const auto &        stem) {
-            if (!(open_viii::tools::i_equals(stem,
-                                             localPath.stem().string()))) {
-              return;
-            }
-            try_add(archiveTypeT,
-                    FI(static_cast<std::uint32_t>(
-                         std::filesystem::file_size(localPath)),
-                       0U),
-                    localPath,
-                    localPath);
-          });
-        }
-      });
+    populate_archives_from_path();
   }
   //  /**
   //   * Search all the archives. For any of the listed strings.
@@ -508,6 +516,39 @@ public:
         }
       }
     }
+  }
+
+  template<
+    std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::end)-1,
+    std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::begin)>
+  requires((test_valid_archive_type_t(maxT))
+           && test_valid_archive_type_t(minT) && maxT >= minT)
+   bool test_set() const
+  {
+    //todo clean up code.
+    bool ret = true;
+    if constexpr (maxT >= minT) {
+      if constexpr (maxT > minT) {
+        ret = test_set<maxT - 1, minT>();
+      }
+      if(!ret) return ret;
+      constexpr auto archiveType_ =
+        std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(maxT)>{};
+      auto archive = get<archiveType_>();
+      if constexpr (!std::is_null_pointer_v<decltype(archive)>) {
+        if constexpr (std::is_same_v<decltype(archive), std::optional<ZZZ>>) {
+          if (archive.has_value()) {
+            ret = ret && static_cast<bool>(*archive);
+          }
+        } else if constexpr (
+          std::is_same_v<
+            decltype(archive),
+            FIFLFS<false>> || std::is_same_v<decltype(archive), FIFLFS<true>>) {
+          ret = ret && static_cast<bool>(archive);
+        }
+      }
+    }
+    return ret;
   }
   //  template<bool nested = true,
   //    ArchiveTypeT Current,

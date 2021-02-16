@@ -65,7 +65,6 @@ static void out(KernelElementT               kernel_element,
                 }) {
     kernel_element.out(os, buffer);
   } else {
-
     IF_EXIST_WRITE_CASTINT(ability_points_required_to_unlock)
     IF_EXIST_WRITE_CASTINT(ability_data_id)
     IF_EXIST_WRITE_CASTINT(unknown_flags)
@@ -92,16 +91,22 @@ static void out(KernelElementT               kernel_element,
 }
 int main()
 {
-  const auto execution_lambda = [](const std::filesystem::path &path) {
+  std::vector<std::pair<std::filesystem::path, open_viii::kernel::Header>>
+             kernels{};
+  const auto execution_lambda = [&kernels](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    const auto coo      = open_viii::LangT::en;
-    const auto archives = open_viii::archive::Archives<coo>(
-      path);// TODO remove coo template from archives.
+    static constexpr auto coo      = open_viii::LangT::en;
+    const auto archives = open_viii::archive::Archives<coo>(path);
+    if(!static_cast<bool>(archives))
+    {
+      std::cerr << "Failed to load path: " << path.string();
+      return;
+    }
+    // TODO remove coo template from archives.
     [[maybe_unused]] const auto &main =
       archives.get<open_viii::archive::ArchiveTypeT::main>();
     std::cout << main << std::endl;
-    auto kernel =
-      open_viii::kernel::Header{ main };// TODO remove coo template from header.
+    auto &kernel = kernels.emplace_back(path, main).second;
     [[maybe_unused]] const auto &buffer = kernel.buffer();
     std::cout << "kernel.bin " << buffer.size() << " bytes; "
               << kernel.section_count() << " section count\n";
@@ -122,9 +127,17 @@ int main()
       }
     });
   };
-  execution_lambda(
-    "/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII "
-    "Remastered");
-  // open_viii::Paths::for_each_path(execution_lambda);
+//    execution_lambda(
+//      "/mnt/e");
+  open_viii::Paths::for_each_path(execution_lambda);
+  int i = 0;
+  for (const auto &[path, kernel] : kernels) {
+    for (const auto &[other_path, other_kernel] :
+         kernels | std::views::drop(++i)) {
+      std::cout << "Comparing " << open_viii::kernel::Header::FILE_NAME << " {"
+                << path.string() << ", " << other_path.string() << "}:\n";
+      std::cout << (kernel == kernel ? "equal" : "not equal") << '\n';
+    }
+  }
   return 0;
 }
