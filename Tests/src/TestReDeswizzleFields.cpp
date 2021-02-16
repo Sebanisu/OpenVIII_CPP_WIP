@@ -35,8 +35,13 @@ int main()
 {
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
-    const auto archives =
-      open_viii::archive::Archives<open_viii::LangT::en>(path);
+    static constexpr auto coo      = open_viii::LangT::en;
+    const auto            archives = open_viii::archive::Archives(
+      path, open_viii::LangCommon::to_string<coo>());
+    if (!static_cast<bool>(archives)) {
+      std::cerr << "Failed to load path: " << path.string();
+      return;
+    }
     [[maybe_unused]] const auto &field =
       archives.get<open_viii::archive::ArchiveTypeT::field>();
     {

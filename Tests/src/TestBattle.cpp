@@ -56,8 +56,13 @@ int main()
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    const auto archives =
-      open_viii::archive::Archives<open_viii::LangT::en>(path);
+    static constexpr auto coo      = open_viii::LangT::en;
+    const auto            archives = open_viii::archive::Archives(
+      path, open_viii::LangCommon::to_string<coo>());
+    if (!static_cast<bool>(archives)) {
+      std::cerr << "Failed to load path: " << path.string();
+      return;
+    }
     const auto &battle =
       archives.get<open_viii::archive::ArchiveTypeT::battle>();
     battle.execute_on({ open_viii::battle::stage::X::EXT },

@@ -180,7 +180,7 @@ public:
   {}
   template<MenuGroupSectionT sectionT> [[nodiscard]] auto get_section() const
   {
-    if constexpr (tools::any_of(sectionT, COMPLEX_VALUE_ARRAY)
+    if constexpr (std::ranges::any_of(COMPLEX_VALUE_ARRAY,[](const auto &item){return item == sectionT;})
                   || sectionT == MenuGroupSectionT::complex_map) {
       const auto map{ get_section_internal<MenuGroupSectionT::complex_map>()
                         .get_section_buffer(m_data_buffer) };
@@ -212,9 +212,9 @@ public:
                       || sectionT == MenuGroupSectionT::tkmnmes3) {
           return SectionData<MenuMessages>(MenuMessages{ section_buffer },
                                            section_buffer);
-        } else if constexpr (tools::any_of(sectionT, TIM_VALUE_ARRAY)) {
+        } else if constexpr (std::ranges::any_of(TIM_VALUE_ARRAY,[](const auto &item){return item == sectionT;})) {
           return graphics::Tim(section_buffer);
-        } else if constexpr (tools::any_of(sectionT, MES_VALUE_ARRAY)) {
+        } else if constexpr (std::ranges::any_of(MES_VALUE_ARRAY,[](const auto &item){return item == sectionT;})) {
           return SectionData<MenuMessagesSection>(
             MenuMessagesSection{ section_buffer }, section_buffer);
         } else if constexpr (sectionT == MenuGroupSectionT::refine0) {

@@ -26,8 +26,13 @@ int main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    constexpr auto coo      = open_viii::LangT::en;
-    const auto     archives = open_viii::archive::Archives<coo>(path);
+    static constexpr auto coo      = open_viii::LangT::en;
+    const auto            archives = open_viii::archive::Archives(
+      path, open_viii::LangCommon::to_string<coo>());
+    if (!static_cast<bool>(archives)) {
+      std::cerr << "Failed to load path: " << path.string();
+      return;
+    }
     [[maybe_unused]] const auto &menu =
       archives.get<open_viii::archive::ArchiveTypeT::menu>();
     std::cout << menu << std::endl;

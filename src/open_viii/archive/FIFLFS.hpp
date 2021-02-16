@@ -574,22 +574,22 @@ public:
         fi);// when path is sent a different function is used later.
     }();
   }
-  //  [[nodiscard]] FIFLFS<false>
-  //    get_fiflfs(const std::initializer_list<std::string_view> &filename)
-  //    const
-  //  {
-  //    FIFLFS<false> archive{};
-  //    const auto    items = archive::fl::get_all_entries_data(
-  //      m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count,
-  //      filename);
-  //    for (const auto &[id, strVirtualPath] : items) {
-  //      TryAddT tryAddT = get_fiflfs(archive, id, strVirtualPath);
-  //      if (tryAddT == TryAddT::archive_full) {
-  //        break;
-  //      }
-  //    }
-  //    return archive;
-  //  }
+    [[nodiscard]] FIFLFS<false>
+      get_fiflfs(const std::initializer_list<std::string_view> &filename)
+      const
+    {
+      FIFLFS<false> archive{};
+      const auto    items = archive::fl::get_all_entries_data(
+        m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count,
+        filename);
+      for (const auto &[id, strVirtualPath] : items) {
+        TryAddT tryAddT = get_fiflfs(archive, id, strVirtualPath);
+        if (tryAddT == TryAddT::archive_full) {
+          break;
+        }
+      }
+      return archive;
+    }
   [[nodiscard]] std::vector<FIFLFS<false>> get_fiflfs_entries(
     const std::initializer_list<std::string_view> &filename) const
   {

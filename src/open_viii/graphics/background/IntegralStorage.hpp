@@ -90,7 +90,7 @@ public:
   {
     if constexpr (bit_count <= 0) {
     } else {
-      static constexpr auto mask = tools::get_mask<bit_count>();
+      static constexpr auto mask = tools::get_mask<bit_count>;
       add_common(value, bit_count, mask);
     }
   }
@@ -126,7 +126,7 @@ public:
     if constexpr (bit_count <= 0) {
       return nullptr;
     } else {
-      static constexpr auto mask = tools::get_mask<bit_count>();
+      static constexpr auto mask = tools::get_mask<bit_count>;
       if constexpr (bit_count == 1) {
         return extract_common(bit_count, mask) != 0U;
       } else {
