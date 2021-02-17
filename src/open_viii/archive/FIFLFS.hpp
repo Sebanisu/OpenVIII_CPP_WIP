@@ -478,11 +478,14 @@ public:
   //    return vector;
   //  }
   template<typename lambdaT>
-  requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)&&HasNested) void execute_with_nested(
+  requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)) void execute_with_nested(
     const std::initializer_list<std::string_view> &filename,
     const lambdaT                                  lambda,
     const std::initializer_list<std::string_view> &nested_filename = {}) const
   {
+    if(!HasNested) {
+      return;
+    }
     FIFLFS<false> archive{};
     const auto    items = archive::fl::get_all_entries_data(
       m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
