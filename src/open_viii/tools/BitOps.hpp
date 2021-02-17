@@ -71,8 +71,9 @@ static consteval retT flip_bits(retT i)
  */
 template<int bit_count>
 static constexpr auto get_mask = [
-]() requires(bit_count <= number_of_bits<std::uint64_t> && bit_count > 0)
+]()
 {
+  static_assert(bit_count <= number_of_bits<std::uint64_t> && bit_count > 0);
   constexpr auto bit_count_8  = number_of_bits<std::uint8_t>;
   constexpr auto bit_count_16 = number_of_bits<std::uint16_t>;
   constexpr auto bit_count_32 = number_of_bits<std::uint32_t>;
