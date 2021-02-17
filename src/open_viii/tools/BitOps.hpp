@@ -13,7 +13,7 @@ static constexpr auto bits_per_byte = 8U;
  * @see https://godbolt.org/z/qdqeP3
  */
 template<std::integral measuredT = std::uint64_t>
-static constexpr unsigned short number_of_bits = bits_per_byte
+static constexpr std::size_t number_of_bits = bits_per_byte
                                                  * sizeof(measuredT);
 static_assert(number_of_bits<std::uint64_t> == 64U);
 static_assert(number_of_bits<std::uint16_t> == 16U);
@@ -24,17 +24,26 @@ static_assert(number_of_bits<std::uint16_t> == 16U);
  * @return as retT
  */
 template<std::integral retT   = std::uint64_t,
-         std::size_t   lshift = number_of_bits<retT>>
+         std::size_t   lshift = number_of_bits<retT>-1>
 static constexpr retT largest_bit_value = [
-](auto i) requires(lshift <= number_of_bits<retT>)
+]() -> retT
 {
-  retT ret{};
+  std::size_t i;
+  retT ret{1U};
+  if constexpr (number_of_bits<retT> < lshift)
+  {
+    i = number_of_bits<retT>-1;
+  }
+  else
+  {
+    i = lshift -1;
+  }
   for (; i > 0; --i) {
     ret = static_cast<retT>(static_cast<retT>(ret << 1U) | 1U);
   }
   return ret;
 }
-(lshift);
+();
 static_assert(largest_bit_value<std::uint64_t, 5U> == 0b11111U);
 /**
  * flip_bits while keeping the type. unsigned char 0b1U becomes 0b1111'1110U
