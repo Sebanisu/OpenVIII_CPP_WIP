@@ -158,6 +158,12 @@ public:
         }
       });
   }
+  template<typename lambdaT>
+  requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)) void execute_with_nested(
+    [[maybe_unused]] const std::initializer_list<std::string_view> &filename,
+    [[maybe_unused]] const lambdaT                                  lambda,
+    [[maybe_unused]] const std::initializer_list<std::string_view> &nested_filename = {}) const
+  {}
   explicit operator bool() const
   {
     return !std::ranges::empty(m_data);
