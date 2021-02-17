@@ -227,10 +227,10 @@ public:
     char        version = tools::read_val<char>(is);
     FileSection fs{};
     if (std::ranges::equal(type, FileSectionTypeT::BIK)
-        && tools::any_of(version, BIK1)) {
+        && std::ranges::any_of(BIK1,[&version](const auto & item){ return version == item;})) {
       fs.type(FileSectionTypeT::BIK);
     } else if (std::ranges::equal(type, FileSectionTypeT::KB2)
-               && tools::any_of(version, BIK2)) {
+               && std::ranges::any_of(BIK2,[&version](const auto & item){ return version == item;})) {
       fs.type(FileSectionTypeT::KB2);
     } else {
       std::cerr << "location: " << std::hex << is.tellg() << std::endl;
