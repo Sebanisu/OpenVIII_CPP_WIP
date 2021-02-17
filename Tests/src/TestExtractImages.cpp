@@ -24,8 +24,13 @@ int main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    const auto archives =
-      open_viii::archive::Archives<open_viii::LangT::en>(path);
+    static constexpr auto coo      = open_viii::LangT::en;
+    const auto            archives = open_viii::archive::Archives(
+      path, open_viii::LangCommon::to_string<coo>());
+    if (!static_cast<bool>(archives)) {
+      std::cerr << "Failed to load path: " << path.string();
+      return;
+    }
     [[maybe_unused]] static constexpr auto dump_image =
       [](std::vector<char> &&buffer, const std::string &p) {
         if (open_viii::tools::i_ends_with(p, ".lzs")) {
