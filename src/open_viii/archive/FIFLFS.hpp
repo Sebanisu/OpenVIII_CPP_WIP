@@ -46,7 +46,6 @@ private:
   {
     m_count = FI::get_count(m_fi.size());
   }
-
 public:
   [[maybe_unused]] [[nodiscard]] const auto &fi() const noexcept
   {
@@ -94,57 +93,6 @@ public:
   {
     return all_set();
   }
-  /*
-   * 0 = didn't add
-   * 1 = added
-   * 2 = added and all set
-   * */
-  //  TryAddT try_add(const std::filesystem::path &existing_file_path,
-  //    const std::filesystem::path &nested_path = "",
-  //    size_t offset = 0U,
-  //    size_t size = 0U)
-  //  {
-  //    const auto set = [&existing_file_path, &offset, &nested_path, &size,
-  //    this](
-  //                       auto &ds) {
-  //      using gT = decltype(ds);
-  //
-  //      ds = gT()
-  //      ds.path(existing_file_path);
-  //      ds.offset(offset);
-  //      ds.size(size);
-  //      ds.nested_path(nested_path);
-  //      if (nested_path.has_stem()) {
-  //        ds.base(tools::get_base_name(nested_path));
-  //      } else {
-  //        ds.get_base_name();
-  //      }
-  //    };
-  //    const auto i = nested_path.has_extension()
-  //                     ? check_extension(nested_path)
-  //                     : check_extension(existing_file_path);
-  //    if (i >= 1 && i <= 3) {
-  //      switch (i) {
-  //      case 1: {
-  //        set(m_fl);
-  //        break;
-  //      }
-  //      case 2: {
-  //        set(m_fs);
-  //        break;
-  //      }
-  //      case 3: {
-  //        set(m_fi);
-  //        get_count();
-  //        break;
-  //      }
-  //      }
-  //      compare_base_names();
-  //      return all_set() ? TryAddT::archive_full : TryAddT::added_to_archive;
-  //    }
-  //
-  //    return TryAddT::not_part_of_archive;
-  //  }
   /**
    * Try and Add Nested data. There are 3 parts to an archive so it this
    adds
@@ -194,35 +142,6 @@ public:
     compare_base_names();
     return all_set() ? TryAddT::archive_full : TryAddT::added_to_archive;
   }
-  //  void
-  //    saveIMG(const std::vector<char> &buffer, const std::string_view &path,
-  //    const std::string_view &root = "tmp") const
-  //  {
-  //    if (std::ranges::size(buffer) > 0) {
-  //      auto dir = std::filesystem::path(root);
-  //      auto filename = dir / path;
-  //      if (filename.has_extension()) {
-  //        if (tools::i_equals(filename.extension().string(), ".lzs")) {
-  //          graphics::lzs(buffer).Save(filename.string() + ".ppm");
-  //        }
-  //
-  //        if (tools::i_equals(filename.extension().string(), ".tim")) {
-  //          const auto timV = graphics::tim(buffer);
-  //          std::cout << timV;
-  //          timV.Save(filename.string() + ".ppm");
-  //        }
-  //        if (tools::i_equals(filename.extension().string(), ".tdw")) {
-  //          const auto timV = graphics::tdw(buffer);
-  //          std::cout << timV.TIM();
-  //          timV.TIM().Save(filename.string() + ".ppm");
-  //        }
-  //
-  //        if (tools::i_equals(filename.extension().string(), ".tex")) {
-  //          graphics::tex(buffer).Save(filename.string() + ".ppm");
-  //        }
-  //      }
-  //    }
-  //  }
   template<typename dstT = std::vector<char>, FI_Like fiT>
   dstT get_entry_buffer(const fiT &fi) const
   {
@@ -232,105 +151,6 @@ public:
       return FS::get_entry<dstT>(m_fs.path(), fi, m_fs.offset());
     }
   }
-  //  void test() const
-  //  {
-  //    //    if (!std::filesystem::exists(m_fl.path())) {
-  //    //      std::cout << "nested file!\n";
-  //    //    }
-  //    //    std::cout << *this << '\n';
-  //    //    std::cout << "Getting Filenames from : " << m_fl.path() << '\n';
-  //    FIFLFS archive{};
-  //    using namespace std::string_view_literals;
-  //    auto items = archive::fl::get_all_entries_data(
-  //      m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, {});
-  //    for (const auto &item : items) {
-  //      const auto &[id, strVirtualPath] = item;
-  //      // std::cout << "try_add_nested: {" << id << ", " << strVirtualPath <<
-  //      // "}\n";
-  //
-  //      FI_Like auto fi = get_entry_by_index(id);
-  //      {
-  //        TryAddT retVal = [this, &archive, &fi, &strVirtualPath]() {
-  //          std::filesystem::path virtualPath(strVirtualPath);
-  //          if (!std::ranges::empty(m_fs.data())) {
-  //            return archive.try_add_nested(
-  //              m_fs.data(), m_fs.offset(), virtualPath, fi);
-  //          }
-  //
-  //          if (fi.compression_type() == CompressionTypeT::none) {
-  //            auto localRetVal = archive.try_add(m_fs.path(),
-  //              virtualPath,
-  //              m_fs.offset() + fi.offset(),
-  //              fi.uncompressed_size());
-  //            //            if (localRetVal != TryAddT::not_part_of_archive) {
-  //            //              std::cout << virtualPath.filename() << " is
-  //            //              uncompressed pointing at location in actual
-  //            //              file!\n";
-  //            //            }
-  //            return localRetVal;
-  //          }
-  //          return archive.try_add_nested(m_fs.path(),
-  //            m_fs.offset(),
-  //            virtualPath,
-  //            fi);// when path is sent a different function is used later.
-  //        }();
-  //        if (retVal == TryAddT::added_to_archive) {
-  //          continue;
-  //        }
-  //        if (retVal == TryAddT::archive_full) {
-  //          archive.test();
-  //          archive = {};
-  //          continue;
-  //        }
-  //      }
-  //      {
-  //        const auto buffer = get_entry_buffer(fi);
-  //        if (buffer.empty()) {
-  //          //          std::cout << '{' << id << ", "
-  //          //                    << "Empty!"
-  //          //                    << ", " << strVirtualPath << "}" << fi <<
-  //          //                    std::endl;
-  //          if (!(fi.uncompressed_size() == 0
-  //                && fi.compression_type() == CompressionTypeT::none)) {
-  //            exit(EXIT_FAILURE);
-  //          }
-  //        }
-  //        if (fi.uncompressed_size() != buffer.size()) {
-  //          exit(EXIT_FAILURE);
-  //        }
-  //        //        std::cout << '{' << id << ", " << buffer.size() << ", " <<
-  //        //        strVirtualPath << "}" << std::endl;
-  //        tools::write_buffer(buffer, strVirtualPath);
-  //        // saveIMG(buffer, strVirtualPath);
-  //      }
-  //    }
-  //  }
-  //  static auto get_files_from_path(const std::filesystem::path &path)
-  //  {
-  //    const std::filesystem::directory_options options =
-  //      std::filesystem::directory_options::skip_permission_denied;
-  //    std::vector<std::pair<std::string, open_viii::archive::FIFLFS<true>>>
-  //    tmp{}; constexpr auto default_size = 6U;// battle, field, magic, main,
-  //    menu, world tmp.reserve(default_size); auto archive =
-  //    open_viii::archive::FIFLFS<true>(); for (const auto &file_entry :
-  //      std::filesystem::directory_iterator(path, options)) {
-  //      if (archive.try_add(file_entry) != TryAddT::not_part_of_archive) {
-  //        if (archive.all_set()) {// todo confirm basename matches right now
-  //        i'm
-  //                                // assuming the 3 files are together.
-  //          // todo check for language codes to choose correct files
-  //          // auto key = archive.get_base_name();
-  //          auto bn = archive.get_base_name();
-  //          tmp.emplace_back(std::piecewise_construct,
-  //            std::forward_as_tuple(std::move(bn)),
-  //            std::forward_as_tuple(std::move(archive)));
-  //          archive = {};
-  //        }
-  //      }
-  //    }
-  //    tmp.shrink_to_fit();// if there is more than 6 it'll collapse the vector
-  //    return tmp;
-  //  }
   auto static check_extension(const std::filesystem::path &path)
   {
     return static_cast<fiflfsT>(tools::i_ends_with_any_get_offset(
@@ -449,41 +269,13 @@ public:
         lambda(get_entry_buffer(fi), pair.second);
       });
   }
-  //  [[nodiscard]] std::vector<
-  //    std::pair<std::string, std::vector<std::pair<unsigned int,
-  //    std::string>>>> get_all_nested_entries_data(
-  //      [[maybe_unused]] const std::initializer_list<std::string_view>
-  //      &filename)
-  //  {
-  //    if constexpr (!HasNested) {
-  //      return {};
-  //    }
-  //    std::vector<
-  //      std::pair<std::string, std::vector<std::pair<unsigned int,
-  //      std::string>>>> vector{};
-  //    const std::vector<std::pair<unsigned int, std::string>> fls =
-  //      get_vector_of_indexes_and_files({ archive::fl::EXT });
-  //    const std::string &basename = get_base_name();
-  //    for (const auto &fl : fls) {
-  //      const auto fi = get_entry_by_index(fl.first);
-  //      const auto buffer = get_entry_buffer<std::string>(fi);
-  //      auto results =
-  //        archive::fl::get_all_entries_data({}, buffer, 0, 0, 0, filename);
-  //      if (!std::ranges::empty(results)) {
-  //        vector.emplace_back(
-  //          std::make_pair(basename + "::" + tools::get_base_name(fl.second),
-  //            std::move(results)));
-  //      }
-  //    }
-  //    return vector;
-  //  }
   template<typename lambdaT>
   requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)) void execute_with_nested(
     const std::initializer_list<std::string_view> &filename,
     const lambdaT                                  lambda,
     const std::initializer_list<std::string_view> &nested_filename = {}) const
   {
-    if(!HasNested) {
+    if (!HasNested) {
       return;
     }
     FIFLFS<false> archive{};
@@ -495,9 +287,9 @@ public:
       items.cend(),
       [this, &archive, &lambda, &nested_filename](const auto &item) {
         const auto &[id, strVirtualPath] = item;
-        const FI_Like auto fi            = get_entry_by_index(id);
+        const FI_Like auto    fi         = get_entry_by_index(id);
         std::filesystem::path virtualPath(strVirtualPath);
-        const TryAddT      retVal        = [&]() {
+        const TryAddT         retVal = [&]() {
           if (fi.compression_type() == CompressionTypeT::none) {
             return archive.try_add(
               FileData(m_fs.offset() + fi.offset(), fi.uncompressed_size()),
@@ -507,15 +299,14 @@ public:
           return archive.try_add_nested(
             m_fs.path(), m_fs.offset(), virtualPath, fi);
         }();
-        if(retVal == TryAddT::added_to_archive)
-        {
-          std::cout<<"Added:\t" << virtualPath << '\n';
-//          if(static_cast<bool>(archive)) {
-//            retVal = TryAddT::archive_full;
-//          }
+        if (retVal == TryAddT::added_to_archive) {
+          std::cout << "Added:\t" << virtualPath << '\n';
+          //          if(static_cast<bool>(archive)) {
+          //            retVal = TryAddT::archive_full;
+          //          }
         }
         if (retVal == TryAddT::archive_full) {
-          std::cout<<"Full:\t" << archive.get_base_name() << '\n';
+          std::cout << "Full:\t" << archive.get_base_name() << '\n';
           if constexpr (std::
                           invocable<lambdaT, std::vector<char>, std::string>) {
             archive.template execute_on(nested_filename, lambda);
@@ -577,22 +368,20 @@ public:
         fi);// when path is sent a different function is used later.
     }();
   }
-    [[nodiscard]] FIFLFS<false>
-      get_fiflfs(const std::initializer_list<std::string_view> &filename)
-      const
-    {
-      FIFLFS<false> archive{};
-      const auto    items = archive::fl::get_all_entries_data(
-        m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count,
-        filename);
-      for (const auto &[id, strVirtualPath] : items) {
-        TryAddT tryAddT = get_fiflfs(archive, id, strVirtualPath);
-        if (tryAddT == TryAddT::archive_full) {
-          break;
-        }
+  [[nodiscard]] FIFLFS<false>
+    get_fiflfs(const std::initializer_list<std::string_view> &filename) const
+  {
+    FIFLFS<false> archive{};
+    const auto    items = archive::fl::get_all_entries_data(
+      m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
+    for (const auto &[id, strVirtualPath] : items) {
+      TryAddT tryAddT = get_fiflfs(archive, id, strVirtualPath);
+      if (tryAddT == TryAddT::archive_full) {
+        break;
       }
-      return archive;
     }
+    return archive;
+  }
   [[nodiscard]] std::vector<FIFLFS<false>> get_fiflfs_entries(
     const std::initializer_list<std::string_view> &filename) const
   {
