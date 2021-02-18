@@ -62,11 +62,14 @@ def test():
 
 def read_tim_offsets(f):
     while True:
-        tim_offset = struct.unpack('<I', f.read(4))[0]
-        if tim_offset == 0xffffffff:
+        buffer = f.read(4)
+        if len(buffer) == 0:
+            break
+        tim_offset = struct.unpack('<I', buffer)[0]
+        if tim_offset == 0xFFFFFFFF:
             break
         else:
-            yield tim_offset
+            yield tim_offset & 0x00FFFFFF
     pass
 
 
@@ -127,9 +130,75 @@ def walk_path_for_ext(path, extension):
     pass
 
 
+def read_one_header(f):
+    buffer = f.read(4)
+    if len(buffer) == 0:
+        return ()
+    model_offset_textures_and_data = struct.unpack("<I", buffer)[0] + 4
+    print("model_offset_textures_and_data: ", model_offset_textures_and_data)
+    buffer = f.read(4)
+    if len(buffer) == 0:
+        return ()
+    model_data_size = struct.unpack("<I", buffer)[0]
+    print("model_data_size: ", model_data_size)
+    model_data_size_2 = struct.unpack("<I", f.read(4))[0]  # warning sometimes not present!
+    print("model_data_size_2: ", model_data_size_2)
+    if model_data_size != model_data_size_2:
+        print("model_data_size != model_data_size_2: seeking -4")
+        f.seek(-4, 1)
+    dword_check = struct.unpack("<I", f.read(4))[0]
+    print("dword_check: ", hex(dword_check))
+    tim_offsets = []
+    model_offset_data = 0
+    main_chara = False
+    ignore_padding = False
+    if (dword_check >> 24) & 0xFF == 0xD0:
+        model_offset_data = 0xFFFFFFFF
+        main_chara = True
+        f.seek(4, 1)
+    elif (dword_check >> 24) & 0xFF == 0xA0:
+        model_offset_data = 0xFFFFFFFF
+        ignore_padding = True
+        f.seek(8, 1)
+    else:
+        tim_offsets.append(dword_check << 8)  # this one is odd but it's in OpenVIII's code.
+        [tim_offsets.append(tim_off) for tim_off in read_tim_offsets(f)]
+        buffer = f.read(4)
+        if len(buffer) == 0:
+            print("READ TO EOF!")
+            print(tim_offsets)
+            return ()
+        model_offset_data = struct.unpack("<I", buffer)[0]
+    model_name = f.read(8)
+    buffer = f.read(4)
+    if len(buffer) == 0:
+        return ()
+    padding = struct.unpack("<I", buffer)[0]
+    if padding != 0xEEEEEEEE and not ignore_padding:
+        print("Chara one- padding was not 0xEEEEEEEE- check code for ReadBuffer in FieldCharaOne")
+        return ()
+    return (
+        model_offset_textures_and_data, model_data_size, model_data_size_2, tim_offsets, model_offset_data, model_name,
+        padding, main_chara, ignore_padding)
+    pass
+
+
+def process_one(one_path):
+    with open(one_path, 'rb') as f:
+        model_count = struct.unpack("<I", f.read(4))[0]
+        print("MODEL_COUNT: " + str(model_count))
+        # read_one_header(f)
+        model_headers = list(map(lambda x: read_one_header(f), range(model_count)))
+        model_headers = list(filter(lambda x: len(x) > 0, model_headers))
+
+        print(model_headers)
+    pass
+
+
 def all_one(path):
     for file_path in walk_path_for_ext(path, ".one"):
         print(file_path)
+        process_one(file_path)
     pass
 
 
