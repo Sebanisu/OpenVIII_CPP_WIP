@@ -46,6 +46,7 @@ private:
   {
     m_count = FI::get_count(m_fi.size());
   }
+
 public:
   [[maybe_unused]] [[nodiscard]] const auto &fi() const noexcept
   {
@@ -372,7 +373,10 @@ public:
     get_fiflfs(const std::initializer_list<std::string_view> &filename) const
   {
     FIFLFS<false> archive{};
-    const auto    items = archive::fl::get_all_entries_data(
+    if constexpr (!HasNested) {
+      return archive;
+    }
+    const auto items = archive::fl::get_all_entries_data(
       m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
     for (const auto &[id, strVirtualPath] : items) {
       TryAddT tryAddT = get_fiflfs(archive, id, strVirtualPath);
