@@ -15,21 +15,27 @@ private:
   {
     decltype(m_tim_offsets) ret{};
     std::span<const char>   buffer = m_buffer;
-    do {
-      if (std::ranges::size(buffer) < sizeof(std::uint32_t)) {
-        break;
-      }
-      auto val = tools::read_val<std::uint32_t>(buffer);
-      if (val > std::ranges::size(buffer)
-          || val == std::numeric_limits<std::uint32_t>::max()) {
-        break;
-      }
-      buffer = buffer.subspan(sizeof(std::uint32_t));
-      ret.push_back(val);
-    } while (true);
+    read_tim_offsets(ret, buffer);
     return ret;
   }
+
 public:
+  static void read_tim_offsets(std::vector<std::uint32_t> &ret,
+                               std::span<const char> &     buffer)
+  {
+    do {
+      if (std::ranges::size(buffer) < sizeof(uint32_t)) {
+        break;
+      }
+      auto val = tools::read_val<uint32_t>(buffer);
+      if (val > std::ranges::size(buffer)
+          || val == std::numeric_limits<uint32_t>::max()) {
+        break;
+      }
+      buffer = buffer.subspan(sizeof(uint32_t));
+      ret.push_back(val);
+    } while (true);
+  }
   std::uint32_t get_model_offset() const
   {
     std::span<const char> buffer = m_buffer;
