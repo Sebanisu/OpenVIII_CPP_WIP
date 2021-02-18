@@ -30,14 +30,26 @@ def convert_four_bytes_to_int16_set(fourbytes):
 
 
 def convert_int16_set_to_float_set(int16_set):
-    return list(map(lambda x: (float(x) * -360.0) / 4096.0, int16_set))
+    return list(map(lambda x: (float(x) * 360.0) / 4096.0, int16_set))
+
+
+def make_int16_set_negative(int16_set):
+    return list(map(lambda x: -x, int16_set))
 
 
 def print_rot(rot_array):
     int_set = convert_four_bytes_to_int16_set(rot_array)
-    # 0x34 = 0b110100 covers all the values those 2 bits can have.
+    # print(int_set)
+    int_set = swap_x_y_from_int16_set(int_set)
+    int_set = make_int16_set_negative(int_set)
     print(int_set)
+    # 0x34 = 0b110100 covers all the values those 2 bits can have.
     print(convert_int16_set_to_float_set(int_set))
+    pass
+
+
+def swap_x_y_from_int16_set(int_set):
+    return [int_set[1], int_set[0], int_set[2]]  # swap x and y
 
 
 def test():
@@ -68,9 +80,10 @@ def read_mch(mch_path):
         f.seek(model_offset, 0)
         print(model_offset)
         header = struct.unpack('<7I2H8I', f.read(64))
-        print(header)
+        # print(header)
         (cSkeletonBones, cVertices, cTexAnimations, cFaces, cUnk, cSkinObjects, Unk, cTris, cQuads, pBones, pVertices,
          pTexAnimations, pFaces, pUnk, pSkinObjects, pAnimation, Unk2) = header
+        print(pAnimation)
         f.seek(model_offset + pAnimation, 0)
         animations_count = struct.unpack('<H', f.read(2))[0]
         print('Animations Count:' + str(animations_count))
@@ -82,7 +95,7 @@ def read_mch(mch_path):
             print('Animations Bones:' + str(animation_bones))
             for frame in range(animation_frames):
                 print('#### Frame: ' + str(frame))
-                key_point = struct.unpack('<3h', f.read(6))[0]
+                key_point = struct.unpack('<3h', f.read(6))
                 print(key_point)
                 for bone in range(animation_bones):
                     print('#### Bone:')
