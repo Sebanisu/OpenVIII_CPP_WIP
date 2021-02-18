@@ -177,6 +177,8 @@ def read_one_header(f):
     if padding != 0xEEEEEEEE and not ignore_padding:
         print("Chara one- padding was not 0xEEEEEEEE- check code for ReadBuffer in FieldCharaOne")
         return ()
+    model_name = model_name.decode("utf-8", "ignore").rstrip("\x00")
+    print(model_name)
     return (
         model_offset_textures_and_data, model_data_size, model_data_size_2, tim_offsets, model_offset_data, model_name,
         padding, main_chara, ignore_padding)
@@ -189,9 +191,20 @@ def process_one(one_path):
         print("MODEL_COUNT: " + str(model_count))
         # read_one_header(f)
         model_headers = list(map(lambda x: read_one_header(f), range(model_count)))
-        model_headers = list(filter(lambda x: len(x) > 0, model_headers))
+        model_headers = list(filter(lambda x: len(x) > 0, model_headers))  # if .one file is failed to load skip it.
 
-        print(model_headers)
+        for (
+                model_offset_textures_and_data, model_data_size, model_data_size_2, tim_offsets, model_offset_data,
+                model_name,
+                padding, main_chara, ignore_padding) in model_headers:
+            if model_offset_data != 0xFFFFFFFF:
+                f.seek(model_offset_textures_and_data + model_offset_data, 0)
+                # read mch data here.
+            elif main_chara:
+                refid = model_name[1: 4]
+                print("main_chr - refid: ", refid)
+                # this reads the .mch file from the main_chr archive
+
     pass
 
 
