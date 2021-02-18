@@ -73,7 +73,7 @@ def read_tim_offsets(f):
     pass
 
 
-def read_mch(mch_path):
+def read_mch_file(mch_path):
     if os.stat(mch_path).st_size < 64:  # skip dummy files.
         return
     with open(mch_path, 'rb') as f:
@@ -81,44 +81,59 @@ def read_mch(mch_path):
         print(tim_offsets)
         model_offset = struct.unpack('<I', f.read(4))[0]
         f.seek(model_offset, 0)
-        print(model_offset)
-        header = struct.unpack('<7I2H8I', f.read(64))
-        # print(header)
-        (cSkeletonBones, cVertices, cTexAnimations, cFaces, cUnk, cSkinObjects, Unk, cTris, cQuads, pBones, pVertices,
-         pTexAnimations, pFaces, pUnk, pSkinObjects, pAnimation, Unk2) = header
-        print(pAnimation)
-        f.seek(model_offset + pAnimation, 0)
-        animations_count = struct.unpack('<H', f.read(2))[0]
-        print('Animations Count:' + str(animations_count))
-        for animation in range(animations_count):
-            print('#### Animation N.' + str(animation) + ' ####')
-            animation_frames = struct.unpack('<H', f.read(2))[0]
-            animation_bones = struct.unpack('<H', f.read(2))[0]
-            print('Animations Frames:' + str(animation_frames))
-            print('Animations Bones:' + str(animation_bones))
-            for frame in range(animation_frames):
-                print('#### Frame: ' + str(frame))
-                key_point = struct.unpack('<3h', f.read(6))
-                print(key_point)
-                for bone in range(animation_bones):
-                    print('#### Bone:')
-                    rot = struct.unpack('<4B', f.read(4))  # unsigned char
-                    print(rot)
-                    print_rot(rot)
+        read_mch_embedded(f)
     pass
+
+
+def read_mch_embedded(f):
+    model_offset = f.tell()
+    print(model_offset)
+    header = struct.unpack('<7I2H8I', f.read(64))
+    # print(header)
+    (cSkeletonBones, cVertices, cTexAnimations, cFaces, cUnk, cSkinObjects, Unk, cTris, cQuads, pBones, pVertices,
+     pTexAnimations, pFaces, pUnk, pSkinObjects, pAnimation, Unk2) = header
+    print(pAnimation)
+    f.seek(model_offset + pAnimation, 0)
+    read_animations(f)
+
+
+def read_animations(f):
+    buffer = f.read(2)
+    if len(buffer) < 2:
+        return
+    animations_count = struct.unpack('<H', buffer)[0]
+    print('Animations Count:' + str(animations_count))
+    for animation in range(animations_count):
+        print('#### Animation N.' + str(animation) + ' ####')
+        animation_frames = struct.unpack('<H', f.read(2))[0]
+        animation_bones = struct.unpack('<H', f.read(2))[0]
+        print('Animations Frames:' + str(animation_frames))
+        print('Animations Bones:' + str(animation_bones))
+        for frame in range(animation_frames):
+            print('#### Frame: ' + str(frame))
+            key_point = struct.unpack('<3h', f.read(6))
+            print(key_point)
+            for bone in range(animation_bones):
+                print('#### Bone:')
+                buffer = f.read(4)
+                if len(buffer) < 4:
+                    return
+                rot = struct.unpack('<4B', buffer)  # unsigned char
+                print(rot)
+                print_rot(rot)
 
 
 def all_mch(path):
     for file_path in walk_path_for_ext(path, ".mch"):
         print(file_path)
-        read_mch(file_path)
+        read_mch_file(file_path)
     pass
 
 
 # mdl_offset = 16928
 # animation_data_offset = 46644
-# read_mch("p043.mch", mdl_offset + animation_data_offset)
-# read_mch("d043.mch")
+# read_mch_file("p043.mch", mdl_offset + animation_data_offset)
+# read_mch_file("d043.mch")
 # all_mch(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\eng\FIELD\model\main_chr')
 # all_mch(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\x\field\model\main_chr')
 
@@ -200,10 +215,13 @@ def process_one(one_path):
             if model_offset_data != 0xFFFFFFFF:
                 f.seek(model_offset_textures_and_data + model_offset_data, 0)
                 # read mch data here.
+                read_mch_embedded(f)
             elif main_chara:
-                refid = model_name[1: 4]
+                refid = model_name[0: 4] + ".mch"
                 print("main_chr - refid: ", refid)
                 # this reads the .mch file from the main_chr archive
+                f.seek(model_offset_textures_and_data, 0)
+                read_animations(f)  # need to merge animations from .mch file with these.
 
     pass
 
