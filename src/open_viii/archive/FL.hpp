@@ -203,8 +203,9 @@ constexpr const static auto EXT = std::string_view(".FL");
   }
   return data.front();
 }
- static std::string clean_buffer(std::string buffer)
+ static std::string clean_buffer(std::string && in_buffer)
 {
+  std::string buffer(std::move(in_buffer));
   // remove carriage returns
   std::erase(buffer, '\r');
   // buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'),
