@@ -105,4 +105,5 @@ def all_mch(path):
 # animation_data_offset = 46644
 # read_mch("p043.mch", mdl_offset + animation_data_offset)
 # read_mch("d043.mch")
-all_mch('.')
+all_mch(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\eng\FIELD\model\main_chr')
+all_mch(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\x\field\model\main_chr')
