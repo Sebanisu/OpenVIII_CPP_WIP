@@ -453,7 +453,7 @@ public:
     const std::initializer_list<std::string_view> &filename,
     const lambdaT &                                lambda) const
   {
-    return loop(get_execute_on_lambda<true>(filename, lambda));
+    return loop(get_execute_on_lambda<nested>(filename, lambda));
   }
   template<bool nested = true, ArchiveTypeT... aT, typename lambdaT>
   requires((valid_execute_on_lambda<lambdaT>)&&sizeof...(aT)
@@ -461,7 +461,7 @@ public:
                                   &            filename,
                                 const lambdaT &lambda) const
   {
-    return specify<aT...>(get_execute_on_lambda<true>(filename, lambda));
+    return specify<aT...>(get_execute_on_lambda<nested>(filename, lambda));
   }
 };
 }// namespace open_viii::archive
