@@ -20,6 +20,7 @@
 #include "open_viii/graphics/background/Map.hpp"
 #include "open_viii/menu_group/MenuGroupFile.hpp"
 #include "open_viii/paths/Paths.hpp"
+#include "open_viii/graphics/Mch.hpp"
 int main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
@@ -59,27 +60,37 @@ int main()
         } else if (open_viii::tools::i_ends_with(p, ".sp2")) {
           auto t = open_viii::graphics::Sp2(buffer);
           std::cout << p << '\n' << t << '\n';
-        } else if (open_viii::tools::i_ends_with(
+        } else if (open_viii::tools::i_ends_with(p, ".mch")) {
+          auto t = open_viii::graphics::Mch(std::move(buffer));
+          std::cout << p << '\n' << '\n';//t << '\n';
+          t.save(p);
+        }else if (open_viii::tools::i_ends_with(
                      p, open_viii::graphics::background::Mim::EXT)) {
           auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
           std::cout << p << '\n' << t << '\n';
           t.save(p);
         }
       };
-    archives.execute_on({ ".tex",
-                          ".lzs",
-                          ".tim",
-                          ".tdw",
-                          ".sp1",
-                          ".sp2",
-                          open_viii::graphics::background::Mim::EXT },
-                        dump_image);
+//    archives.execute_on<false>({ //".tex",
+//                          //".lzs",
+//                          //".tim",
+//                          //".tdw",
+//                          //".sp1",
+//                          //".sp2",
+//                          ".mch",
+//                          //open_viii::graphics::background::Mim::EXT
+//      },
+//                        dump_image);
+    const open_viii::archive::FIFLFS<true> & field = archives.get<open_viii::archive::ArchiveTypeT::field>();
+    //field.execute_with_nested({"main_chr"},dump_image,{});
+    const auto main_chr = field.get_fiflfs({"main_chr"});
+    main_chr.execute_on({},dump_image);
     // dump images from menu group.
-    [[maybe_unused]] const auto &menu =
-      archives.get<open_viii::archive::ArchiveTypeT::menu>();
-    std::cout << menu << std::endl;
-    auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };
-    mngrpfile.test_tim(
-      menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
+//    [[maybe_unused]] const auto &menu =
+//      archives.get<open_viii::archive::ArchiveTypeT::menu>();
+//    std::cout << menu << std::endl;
+//    auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };
+//    mngrpfile.test_tim(
+//      menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
   });
 }
