@@ -28,28 +28,67 @@ def convert_four_bytes_to_int16_set(fourbytes):
 
 
 def convert_int16_set_to_float_set(int16_set):
-    return list(map(lambda x: (float(x) * 360.0) / 4096.0, int16_set))
+    return list(map(lambda x: (float(x) * -360.0) / 4096.0, int16_set))
+
+
+def print_rot(rot_array):
+    int_set = convert_four_bytes_to_int16_set(rot_array)
+    # 0x34 = 0b110100 covers all the values those 2 bits can have.
+    print(int_set)
+    print(convert_int16_set_to_float_set(int_set))
 
 
 def test():
     for i in range(0, 0xFF):
-        int_set = convert_four_bytes_to_int16_set([i, i, i, 0x34])
-        # 0x34 = 0b110100 covers all the values those 2 bits can have.
-        print(int_set)
-        print(convert_int16_set_to_float_set(int_set))
+        print_rot([i, i, i, 0x34])
     pass
 
 
-#test()
+# test()
+
+def read_tim_offsets(f):
+    while True:
+        tim_offset = struct.unpack('<I', f.read(4))[0]
+        if tim_offset == 0xffffffff:
+            break
+        else:
+            yield tim_offset
+    pass
 
 
-mdl_offset = 16928
-animation_data_offset = 46644
-
-
-def read_mch(mch_path, offset):
+def read_mch(mch_path):
     with open(mch_path, 'rb') as f:
-        f.seek(offset)
+        tim_offsets = [tim_off for tim_off in read_tim_offsets(f)]
+        print(tim_offsets)
+        model_offset = struct.unpack('<I', f.read(4))[0]
+        f.seek(model_offset, 0)
+        print(model_offset)
+        header = struct.unpack('<7I2H8I', f.read(64))
+        print(header)
+        (cSkeletonBones, cVertices, cTexAnimations, cFaces, cUnk, cSkinObjects, Unk, cTris, cQuads, pBones, pVertices,
+         pTexAnimations, pFaces, pUnk, pSkinObjects, pAnimation, Unk2) = header
+        f.seek(model_offset + pAnimation, 0)
+        animations_count = struct.unpack('<H', f.read(2))[0]
+        print('Animations Count:' + str(animations_count))
+        for animation in range(animations_count):
+            print('#### Animation N.' + str(animation) + ' ####')
+            animation_frames = struct.unpack('<H', f.read(2))[0]
+            animation_bones = struct.unpack('<H', f.read(2))[0]
+            print('Animations Frames:' + str(animation_frames))
+            print('Animations Bones:' + str(animation_bones))
+            for frame in range(animation_frames):
+                print('#### Frame: ' + str(frame))
+                key_point = struct.unpack('<3h', f.read(6))[0]
+                print(key_point)
+                for bone in range(animation_bones):
+                    print('#### Bone:')
+                    rot = struct.unpack('<4B', f.read(4))  # unsigned char
+                    print(rot)
+                    print_rot(rot)
+                    # return
 
-        
-read_mch("p043.mch", mdl_offset+animation_data_offset)
+
+# mdl_offset = 16928
+# animation_data_offset = 46644
+# read_mch("p043.mch", mdl_offset + animation_data_offset)
+read_mch("d043.mch")
