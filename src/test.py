@@ -106,11 +106,9 @@ def read_mch(mch_path):
 
 
 def all_mch(path):
-    for file in os.listdir(path):
-        if file.endswith(".mch"):
-            file_path = os.path.join(path, file)
-            print(file_path)
-            read_mch(file_path)
+    for file_path in walk_path_for_ext(path, ".mch"):
+        print(file_path)
+        read_mch(file_path)
     pass
 
 
@@ -118,5 +116,22 @@ def all_mch(path):
 # animation_data_offset = 46644
 # read_mch("p043.mch", mdl_offset + animation_data_offset)
 # read_mch("d043.mch")
-all_mch(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\eng\FIELD\model\main_chr')
-all_mch(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\x\field\model\main_chr')
+# all_mch(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\eng\FIELD\model\main_chr')
+# all_mch(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\x\field\model\main_chr')
+
+def walk_path_for_ext(path, extension):
+    for root, dirnames, filenames in os.walk(path):
+        for filename in filenames:
+            if filename.endswith(extension):
+                yield os.path.join(root, filename)
+    pass
+
+
+def all_one(path):
+    for file_path in walk_path_for_ext(path, ".one"):
+        print(file_path)
+    pass
+
+
+all_one(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\eng\field')
+all_one(r'D:\dev\OpenVIII_CPP_WIP\cmake-build-debug\Tests\src\tmp\ff8\data\x\field')
