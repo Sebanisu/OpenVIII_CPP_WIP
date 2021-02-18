@@ -12,7 +12,9 @@
 # 4096 (2^12) before they are used
 # it looks like what you end up with is: 0b0000'XXNN'NNNN'NN00 XX are the bits from r4,
 # and NNNNNNNN are bits from r1_3
-import numpy, struct
+import numpy
+import struct
+import os
 
 
 def convert_byte_pair_to_int16(r1_3, r4, offset):
@@ -57,6 +59,8 @@ def read_tim_offsets(f):
 
 
 def read_mch(mch_path):
+    if os.stat(mch_path).st_size < 64:  # skip dummy files.
+        return
     with open(mch_path, 'rb') as f:
         tim_offsets = [tim_off for tim_off in read_tim_offsets(f)]
         print(tim_offsets)
@@ -85,10 +89,20 @@ def read_mch(mch_path):
                     rot = struct.unpack('<4B', f.read(4))  # unsigned char
                     print(rot)
                     print_rot(rot)
-                    # return
+    pass
+
+
+def all_mch(path):
+    for file in os.listdir(path):
+        if file.endswith(".mch"):
+            file_path = os.path.join(path, file)
+            print(file_path)
+            read_mch(file_path)
+    pass
 
 
 # mdl_offset = 16928
 # animation_data_offset = 46644
 # read_mch("p043.mch", mdl_offset + animation_data_offset)
-read_mch("d043.mch")
+# read_mch("d043.mch")
+all_mch('.')
