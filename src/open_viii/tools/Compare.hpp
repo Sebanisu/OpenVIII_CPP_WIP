@@ -370,5 +370,36 @@ static_assert(i_ends_with_all(std::string_view("haystack.d"),
 static_assert(!i_ends_with_all(std::string_view("haystack.a"),
                                std::array{ std::string_view(".d"),
                                            std::string_view("h") }));
+constexpr auto search(const std::span<const char> haystack,
+                      const std::span<const char> needle)
+{
+  if (std::ranges::empty(needle) || std::ranges::empty(haystack))
+    return std::ranges::end(haystack);
+  return std::search(std::ranges::begin(haystack),
+                     std::ranges::end(haystack),
+                     std::ranges::begin(needle),
+                     std::ranges::end(needle));
+}
+constexpr auto search(const std::span<const char> haystack, const char *needle)
+{
+  return search(haystack, std::string_view(needle));
+}
+constexpr bool search_bool(const std::span<const char> haystack,
+                           const std::span<const char> needle)
+{
+  return search(haystack, needle) != std::ranges::end(haystack);
+}
+constexpr auto search_bool(const std::span<const char> haystack,
+                           const char *                needle)
+{
+  return search_bool(haystack, std::string_view(needle));
+}
+static_assert(search_bool(std::string_view("abc"), std::string_view("b")));
+static_assert(search_bool(std::string_view("abc"), "b"));
+static_assert(search_bool("abc", std::string_view("b")));
+static_assert(!search_bool(std::string_view("abc"), std::string_view("")));
+static_assert(!search_bool(std::string_view(""), std::string_view("")));
+static_assert(!search_bool(std::string_view(""), std::string_view("b")));
+static_assert(!search_bool(std::string_view("abc"), std::string_view("0")));
 }// namespace open_viii::tools
 #endif// VIIIARCHIVE_COMPARE_HPP

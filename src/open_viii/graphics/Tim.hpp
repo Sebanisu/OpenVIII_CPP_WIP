@@ -124,7 +124,10 @@ public:
   [[nodiscard]] bool check() const
   {
     return m_tim_header.check()
-           && (!m_tim_header.bpp().check() || m_tim_clut_header.check());
+           && (!m_tim_header.bpp().check() || m_tim_clut_header.check())
+           && (area() == std::ranges::size(m_tim_image_data)
+               || area() / 2 == std::ranges::size(m_tim_image_data)
+               || area() * 2 == std::ranges::size(m_tim_image_data));
   }
   [[nodiscard]] std::size_t width() const
   {
@@ -153,7 +156,7 @@ public:
   {
     return m_tim_image_header.rectangle().height();
   }
-  [[nodiscard]] auto area() const
+  [[nodiscard]] std::size_t area() const
   {
     return width()
            * static_cast<std::size_t>(m_tim_image_header.rectangle().height());
@@ -209,24 +212,20 @@ public:
     output.reserve(out_size);
     switch (static_cast<int>(m_tim_header.bpp())) {
     case bpp4: {
-      const auto s = std::span(reinterpret_cast<const Bit4Values *>(
+      const size_t tim_image_data_size = std::ranges::size(m_tim_clut_data);
+      const auto   s         = std::span(reinterpret_cast<const Bit4Values *>(
                                  std::ranges::data(m_tim_image_data)),
-                               std::ranges::size(m_tim_image_data));
-      // break;
-      for (size_t i{}; i < out_size / 2; i++) {
-        // std::bitset<8> bs{ static_cast<std::uint8_t>(timImageData_.at(i /
-        // 2U)) }; static constexpr std::bitset<8> oct1{ 0xF }; static constexpr
-        // std::bitset<8> oct2{ 0xF0 };
-        //        if (i % 2 == 0) {
-        //          output.emplace_back(get_color(row,
-        //          static_cast<std::uint8_t>((bs & oct1).to_ulong())));
-        //        } else {
-        //          output.emplace_back(get_color(row,
-        //          static_cast<std::uint8_t>(((bs & oct2) >> 4U).to_ulong())));
-        //        }
-        const auto values = s[i];
-        output.emplace_back(get_color(row, values.first()));
-        output.emplace_back(get_color(row, values.second()));
+                               tim_image_data_size);
+      const size_t s_size    = std::ranges::size(s);
+      const size_t half_area = out_size / 2;
+      assert(tim_image_data_size > 0U);
+      assert(half_area == s_size);
+      for (size_t i{}; i < half_area /*&& i < std::ranges::size(s)*/; ++i) {
+        const auto &[color1, color2] =
+          s[i];// I did get a crash from this. So i added a range check above.
+               // This shouldn't error unless tim data isn't a valid image.
+        output.emplace_back(get_color(row, color1));
+        output.emplace_back(get_color(row, color2));
       }
       break;
     }

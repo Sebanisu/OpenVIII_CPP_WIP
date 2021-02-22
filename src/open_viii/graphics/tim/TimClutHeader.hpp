@@ -76,7 +76,7 @@ public:
   [[nodiscard]] bool check() const
   {
     return m_image_header.rectangle().x() % XDIVISABLE_BY == 0
-           && m_image_header.rectangle().y() <= MAX_Y;
+           && m_image_header.rectangle().y() <= MAX_Y && m_image_header.rectangle().width() > 0 && m_image_header.rectangle().height() > 0;
     //&& tools::any_of(imageHeader_.rectangle().width(), ValidWidth_); // some
     // non standard sizes.
   }
