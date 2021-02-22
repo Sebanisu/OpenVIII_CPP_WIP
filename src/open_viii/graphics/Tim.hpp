@@ -209,6 +209,8 @@ public:
     static constexpr auto bpp24 = 24U;
     std::vector<dstT>     output{};
     const auto            out_size = area();
+    [[maybe_unused]] const auto out_width = width();
+    [[maybe_unused]] const auto out_height = height();
     output.reserve(out_size);
     switch (static_cast<int>(m_tim_header.bpp())) {
     case bpp4: {
