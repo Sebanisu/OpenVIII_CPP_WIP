@@ -28,12 +28,13 @@ private:
   /**
    * 16 bit color tim.
    */
-  static constexpr std::string_view TIM16_START{ "\x10\x00\x00\x00\x09",
+  static constexpr std::string_view TIM16_START{ "\x10\x00\x00\x00\x02",
                                                  SIZE_TIM_START };
   static_assert(std::ranges::size(TIM4_START) == SIZE_TIM_START);
   static_assert(std::ranges::size(TIM8_START) == SIZE_TIM_START);
   static_assert(std::ranges::size(TIM16_START) == SIZE_TIM_START);
   static constexpr std::array TIM_STARTS{ TIM4_START, TIM8_START, TIM16_START };
+
 public:
   One(std::vector<char> &&buffer)
     : m_buffer(std::move(buffer)),
@@ -41,22 +42,34 @@ public:
   {}
   void save([[maybe_unused]] const std::string &path) const
   {
+    // todo make this generic, extract tim file code to a free function.
     size_t i{};
-    for (const auto &start : TIM_STARTS) {
-      auto buffer = std::span<const char>(m_buffer);
-      while (true) {
-        const auto offset = tools::search(buffer, start);
-        if (offset == std::ranges::end(buffer)) {
-          break;
-        }
-        buffer = std::span<const char>(offset,
-                                       std::ranges::end(buffer));
-        const auto tim = Tim(buffer);
-        buffer = buffer.subspan(std::ranges::size(start)); //TODO figure out why this isn't moving forward past the previous tim.
-        if (tim.check()) {
-          const auto out_path = path + std::to_string(i++);
-          tim.save(out_path);
-        }
+    auto   buffer = std::span<const char>(m_buffer);
+    while (true) {
+      const auto offset = [&buffer]() {
+        // because these tim can be in any order.
+        // todo. maybe have a way to pop items from the TIM_STARTS that don't
+        // have atleast 1 match.
+        return std::ranges::min(
+          TIM_STARTS
+          | std::ranges::views::transform([&buffer](const auto &start) {
+              return tools::search(buffer, start);
+            }));
+      }();
+      if (offset == std::ranges::end(buffer)) {
+        break;
+      }
+      buffer = std::span<const char>(offset, std::ranges::end(buffer));
+      [[maybe_unused]] const auto position =
+        std::ranges::begin(buffer)
+        - std::ranges::begin(std::span<const char>(m_buffer));
+      const auto tim = Tim(buffer);
+      buffer         = buffer.subspan(SIZE_TIM_START);
+      if (tim.check()) {
+        auto       path_parts = std::filesystem::path(path);
+        const auto out_path   = path_parts.stem().string() + std::to_string(i++)
+                              + path_parts.extension().string();
+        tim.save(out_path);
       }
     }
   }

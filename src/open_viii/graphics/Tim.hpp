@@ -95,7 +95,7 @@ public:
         fail = true;
         return;
       }
-      memcpy(&item, std::ranges::data(buffer), sz);
+      tools::read_val(buffer,item);
       buffer = buffer.subspan(sz);
     };
     get_value(m_tim_header);
