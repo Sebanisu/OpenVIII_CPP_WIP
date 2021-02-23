@@ -111,7 +111,6 @@ private:
     }
     return colors;
   }
-
 public:
   Ppm() = default;
   explicit Ppm(const std::filesystem::path &path)
@@ -136,15 +135,9 @@ public:
   {// how do i make the concept reject ranges that aren't of Colors? I'm at
    // least checking for Color down below.
     if (!skip_check) {
+      bool are_colors_all_black = check_if_colors_are_black(data);
       if (width == 0 || height == 0 || std::ranges::empty(data)
-          || std::all_of(std::execution::par_unseq,
-                         data.begin(),
-                         data.end(),
-                         [](const Color auto &color) -> bool {
-                           return color.a() == 0U
-                                  || (color.b() == 0U && color.g() == 0U
-                                      && color.r() == 0U);
-                         })) {
+          || are_colors_all_black) {
         return;
       }
     }
@@ -171,6 +164,17 @@ public:
         }
       },
       filename);
+  }
+  static bool check_if_colors_are_black(const auto &data)
+  {
+    return std::all_of(std::execution::par_unseq,
+                       data.begin(),
+                       data.end(),
+                       [](const Color auto &color) -> bool {
+                         return color.a() == 0U
+                                || (color.b() == 0U && color.g() == 0U
+                                    && color.r() == 0U);
+                       });
   }
   [[nodiscard]] const std::vector<Color24<0, 1, 2>> &colors() const noexcept
   {
