@@ -33,7 +33,6 @@ private:
   static constexpr std::uint16_t UNK_MASK{ 0b1111'1110'0000'0000U };
   static constexpr std::uint16_t UNK_SHIFT{ 9U };
   std::uint16_t                  m_data{};
-
 public:
   TexIdBuffer() = default;
   friend auto operator==(const TexIdBuffer &left, const TexIdBuffer &right)

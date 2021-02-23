@@ -34,7 +34,6 @@ private:
   static_assert(std::ranges::size(TIM8_START) == SIZE_TIM_START);
   static_assert(std::ranges::size(TIM16_START) == SIZE_TIM_START);
   static constexpr std::array TIM_STARTS{ TIM4_START, TIM8_START, TIM16_START };
-
 public:
   One(std::vector<char> &&buffer)
     : m_buffer(std::move(buffer)),
@@ -67,8 +66,11 @@ public:
       buffer         = buffer.subspan(SIZE_TIM_START);
       if (tim.check()) {
         auto       path_parts = std::filesystem::path(path);
-        const auto out_path   = (path_parts.parent_path() / (path_parts.stem().string() + std::to_string(i++)
-                              + path_parts.extension().string())).string();
+        const auto out_path =
+          (path_parts.parent_path()
+           / (path_parts.stem().string() + std::to_string(i++)
+              + path_parts.extension().string()))
+            .string();
         tim.save(out_path);
       }
     }

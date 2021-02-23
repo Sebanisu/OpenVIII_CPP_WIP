@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_TIMCLUTHEADER_HPP
 #define VIIIARCHIVE_TIMCLUTHEADER_HPP
 #include "TimImageHeader.hpp"
+#include <compare>
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timClutHeader
@@ -40,15 +41,16 @@ private:
    */
   [[maybe_unused]] static constexpr std::array VALID_WIDTH = { 16U, 256U };
   TimImageHeader                               m_image_header{};
-
 public:
+  constexpr TimClutHeader()                               = default;
+  constexpr auto operator<=>(const TimClutHeader &) const = default;
   /**
    * Typically the width = number of colors, and height = number of color lookup
    * tables. Sometimes if there is only 16 colors (4bpp) there is multiple
    * groups of 16 in the table.
    * @brief Dimensions of the color lookup table.
    */
-  [[nodiscard]] auto rectangle() const
+  [[nodiscard]] constexpr auto rectangle() const
   {
     return m_image_header.rectangle();
   }
@@ -56,7 +58,7 @@ public:
    * Total size of Color Lookup Table including header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] auto size() const
+  [[nodiscard]] constexpr auto size() const
   {
     return m_image_header.size();
   };
@@ -64,7 +66,7 @@ public:
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] auto data_size() const
+  [[nodiscard]] constexpr auto data_size() const
   {
     return m_image_header.data_size();
   }
@@ -73,10 +75,12 @@ public:
    * Width is usually number of colors should be 16 or 256.
    * @return returns true if valid
    */
-  [[nodiscard]] bool check() const
+  [[nodiscard]] constexpr bool check() const
   {
     return m_image_header.rectangle().x() % XDIVISABLE_BY == 0
-           && m_image_header.rectangle().y() <= MAX_Y && m_image_header.rectangle().width() > 0 && m_image_header.rectangle().height() > 0;
+           && m_image_header.rectangle().y() <= MAX_Y
+           && m_image_header.rectangle().width() > 0
+           && m_image_header.rectangle().height() > 0;
     //&& tools::any_of(imageHeader_.rectangle().width(), ValidWidth_); // some
     // non standard sizes.
   }

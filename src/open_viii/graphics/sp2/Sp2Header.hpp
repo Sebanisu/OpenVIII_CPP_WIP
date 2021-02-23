@@ -22,7 +22,6 @@ struct Sp2Header
 private:
   std::uint32_t              m_count{};
   std::vector<std::uint32_t> m_offsets{};
-
 public:
   Sp2Header() = default;
   explicit Sp2Header(std::span<const char> buffer)

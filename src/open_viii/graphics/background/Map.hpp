@@ -166,7 +166,6 @@ private:
                              }))
       ->y();
   }
-
 public:
   constexpr static auto EXT = std::string_view(".map");
   Map()                     = default;

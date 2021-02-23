@@ -28,7 +28,6 @@ private:
   std::uint8_t  m_unknown4{};
   std::uint8_t  m_unknown5{};
   std::uint8_t  m_unknown6{};
-
 public:
   [[nodiscard]] auto count() const noexcept
   {

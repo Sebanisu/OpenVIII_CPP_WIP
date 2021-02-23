@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #define VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #include "open_viii/graphics/Rectangle.hpp"
+#include <compare>
 #include <cstdint>
 namespace open_viii::graphics {
 /**
@@ -23,20 +24,21 @@ struct TimImageHeader
 private:
   std::uint32_t            m_size{};
   Rectangle<std::uint16_t> m_rectangle{};
-
 public:
+  constexpr TimImageHeader()                               = default;
+  constexpr auto operator<=>(const TimImageHeader &) const = default;
   /**
    * Total Header and Data size
    * @brief size in bytes
    */
-  auto size() const
+  [[nodiscard]] constexpr auto size() const
   {
     return m_size;
   }
   /**
    * Dimensions of data.
    */
-  auto rectangle() const
+  [[nodiscard]] constexpr auto rectangle() const
   {
     return m_rectangle;
   }
@@ -44,7 +46,7 @@ public:
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] auto data_size() const
+  [[nodiscard]] constexpr auto data_size() const
   {
     return m_size - sizeof(TimImageHeader);
   };

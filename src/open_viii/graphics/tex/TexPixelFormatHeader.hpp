@@ -101,7 +101,6 @@ private:
    * Alpha Max
    */
   std::uint32_t m_alpha_max{};
-
 public:
   // Pixel Format
   /**

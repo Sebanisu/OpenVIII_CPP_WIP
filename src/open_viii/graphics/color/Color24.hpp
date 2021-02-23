@@ -32,7 +32,6 @@ requires(r_ < 3U && g_ < 3U && b_ < 3U && r_ != g_ && r_ != b_
 {
 public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 3U };
-
 private:
   mutable std::array<std::uint8_t, EXPLICIT_SIZE> m_parts{};
   template<size_t index, typename T>
@@ -50,7 +49,6 @@ private:
              std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F))
              * std::numeric_limits<std::uint8_t>::max());
   }
-
 public:
   [[nodiscard]] std::uint8_t r() const
   {
