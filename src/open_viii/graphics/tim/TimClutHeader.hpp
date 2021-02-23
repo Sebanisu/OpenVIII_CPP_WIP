@@ -42,7 +42,14 @@ private:
   [[maybe_unused]] static constexpr std::array VALID_WIDTH = { 16U, 256U };
   TimImageHeader                               m_image_header{};
 public:
-  constexpr TimClutHeader()                               = default;
+  constexpr TimClutHeader() = default;
+  explicit constexpr TimClutHeader(TimImageHeader in_image_header)
+    : m_image_header(in_image_header)
+  {}
+  constexpr TimClutHeader(std::uint32_t            in_size,
+                          Rectangle<std::uint16_t> in_rect)
+    : TimClutHeader(TimImageHeader(in_size, in_rect))
+  {}
   constexpr auto operator<=>(const TimClutHeader &) const = default;
   /**
    * Typically the width = number of colors, and height = number of color lookup

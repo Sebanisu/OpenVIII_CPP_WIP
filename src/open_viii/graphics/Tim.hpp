@@ -68,12 +68,27 @@ private:
 
 public:
   Tim() = default;
-  explicit Tim([[maybe_unused]] std::span<const char> buffer)
+  explicit Tim(std::span<const char> buffer)
     : m_tim_header(get_tim_header(buffer)),
       m_tim_clut_header(get_tim_clut_header(buffer)),
       m_tim_clut_data(get_tim_clut_data(buffer)),
       m_tim_image_header(get_tim_image_header(buffer)),
       m_tim_image_data(get_tim_image_data(buffer))
+  {}
+  explicit Tim(
+    TimHeader                                        in_tim_header,
+    TimClutHeader                                    in_tim_clut_header,
+    std::vector<Color16> &&                          in_tim_clut_data,
+    TimImageHeader                                   in_tim_image_header,
+    std::variant<std::vector<Bit4Values>,
+                 std::vector<std::uint8_t>,
+                 std::vector<Color16>,
+                 std::vector<Color24<2U, 1U, 0U>>> &&in_tim_image_data)
+    : m_tim_header(in_tim_header),
+      m_tim_clut_header(in_tim_clut_header),
+      m_tim_clut_data(in_tim_clut_data),
+      m_tim_image_header(in_tim_image_header),
+      m_tim_image_data(in_tim_image_data)
   {}
   template<is_trivially_copyable_and_default_constructible trivialT>
   [[nodiscard]] static auto read_val(std::span<const char> &buffer)

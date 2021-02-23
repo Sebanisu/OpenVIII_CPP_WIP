@@ -24,8 +24,13 @@ struct TimImageHeader
 private:
   std::uint32_t            m_size{};
   Rectangle<std::uint16_t> m_rectangle{};
+
 public:
-  constexpr TimImageHeader()                               = default;
+  constexpr TimImageHeader() = default;
+  constexpr TimImageHeader(std::uint32_t            in_size,
+                           Rectangle<std::uint16_t> in_rect)
+    : m_size(in_size), m_rectangle(in_rect)
+  {}
   constexpr auto operator<=>(const TimImageHeader &) const = default;
   /**
    * Total Header and Data size
