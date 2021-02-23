@@ -91,7 +91,7 @@ int main()
     // field.execute_with_nested({"main_chr"},dump_image,{});
     //    const auto main_chr = field.get_fiflfs({ "main_chr" });
     //    main_chr.execute_on({}, dump_image);
-    field.execute_with_nested({"bccent15"}, dump_image, { ".one" });
+    field.execute_with_nested({"bg2f_21"}, dump_image, { ".one" });
     // dump images from menu group.
     //    [[maybe_unused]] const auto &menu =
     //      archives.get<open_viii::archive::ArchiveTypeT::menu>();

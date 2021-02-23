@@ -77,15 +77,21 @@ public:
   template<is_trivially_copyable_and_default_constructible trivialT>
   [[nodiscard]] static auto read_val(std::span<const char> &buffer)
   {
+    if (std::ranges::size(buffer) < sizeof(trivialT)) {
+      return trivialT();
+    }
     const auto header = tools::read_val<trivialT>(buffer);
     buffer            = buffer.subspan(sizeof(trivialT));
     return header;
   }
-  template<is_default_constructible_has_data_and_size trivialT>
+  template<is_default_constructible_has_data_and_size rangeT>
   [[nodiscard]] static auto read_val(std::span<const char> &buffer,
                                      const auto             bytes)
   {
-    const auto header = tools::read_val<trivialT>(buffer, bytes);
+    if (std::ranges::size(buffer) < bytes) {
+      return rangeT();
+    }
+    const auto header = tools::read_val<rangeT>(buffer, bytes);
     buffer            = buffer.subspan(bytes);
     return header;
   }
