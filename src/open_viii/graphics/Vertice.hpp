@@ -13,7 +13,6 @@ private:
   mainNumberT m_x{};
   mainNumberT m_y{};
   mainNumberT m_z{};
-
 public:
   Vertice() = default;
   Vertice(mainNumberT in_x, mainNumberT in_y, mainNumberT in_z)

@@ -65,6 +65,7 @@ private:
     const std::size_t offset = row * m_tim_clut_header.rectangle().width();
     return m_tim_clut_data.at(offset + color_key);
   }
+
 public:
   Tim() = default;
   explicit Tim([[maybe_unused]] std::span<const char> buffer)
