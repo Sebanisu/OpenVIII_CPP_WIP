@@ -22,9 +22,90 @@
 #include "open_viii/graphics/background/Map.hpp"
 #include "open_viii/menu_group/MenuGroupFile.hpp"
 #include "open_viii/paths/Paths.hpp"
+[[maybe_unused]] static constexpr auto dump_image =
+  [](std::vector<char> &&buffer, const std::string &p) {
+    if (open_viii::tools::i_ends_with(p, ".lzs")) {
+      auto t = open_viii::graphics::Lzs(buffer);
+      std::cout << p << '\n' << t << '\n';
+      t.save(p);
+    } else if (open_viii::tools::i_ends_with(p, ".tim")) {
+      auto t = open_viii::graphics::Tim(buffer);
+      std::cout << p << '\n' << t << '\n';
+      if (t.width() == 0 || t.height() == 0) {
+        open_viii::tools::write_buffer(buffer, p);
+      } else {
+        t.save(p);
+      }
+    } else if (open_viii::tools::i_ends_with(p, ".tex")) {
+      auto t = open_viii::graphics::Tex(buffer);
+      std::cout << p << '\n' << t << '\n';
+      t.save(p);
+    } else if (open_viii::tools::i_ends_with(p, ".tdw")) {
+      auto t = open_viii::graphics::Tdw(buffer);
+      std::cout << p << '\n' << t << '\n';
+      t.save(p);
+    } else if (open_viii::tools::i_ends_with(p, ".sp1")) {
+      auto t = open_viii::graphics::Sp1(buffer);
+      std::cout << p << '\n' << t << '\n';
+    } else if (open_viii::tools::i_ends_with(p, ".sp2")) {
+      auto t = open_viii::graphics::Sp2(buffer);
+      std::cout << p << '\n' << t << '\n';
+    } else if (open_viii::tools::i_ends_with(p, ".mch")) {
+      auto t = open_viii::graphics::Mch(std::move(buffer));
+      std::cout << p << '\n' << '\n';// t << '\n';
+      t.save(p);
+    } else if (open_viii::tools::i_ends_with(p, ".one")) {
+      auto t = open_viii::graphics::One(std::move(buffer));
+      std::cout << p << '\n' << '\n';// t << '\n';
+      t.save(p);
+    } else if (open_viii::tools::i_ends_with(
+                 p, open_viii::graphics::background::Mim::EXT)) {
+      auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
+      std::cout << p << '\n' << t << '\n';
+      t.save(p);
+    }
+  };
+void extract_images_from_path(const std::filesystem::path &path)
+{
+  open_viii::tools::execute_on_directory(
+    path,
+    [](const auto &p) {
+      dump_image(open_viii::tools::read_entire_file(p), p);
+    },
+    [](const auto &p) -> bool {
+      const auto haystack = p.string();
+      return open_viii::tools::i_ends_with_any(haystack, std::array{ std::string_view (".tim") });
+    });
+}
+void extract_per_extension_in_archives(
+  const open_viii::archive::Archives &archives)
+{
+  archives.execute_on<false>(
+    {
+      //".tex",
+      //".lzs",
+      //".tim",
+      //".tdw",
+      //".sp1",
+      //".sp2",
+      //".mch",
+      // open_viii::graphics::background::Mim::EXT
+    },
+    dump_image);
+}
+void extract_menu_group_images(const open_viii::archive::Archives &archives)
+{
+  [[maybe_unused]] const auto &menu =
+    archives.get<open_viii::archive::ArchiveTypeT::menu>();
+  std::cout << menu << std::endl;
+  auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };
+  mngrpfile.test_tim(
+    menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
+}
 int main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
+    extract_images_from_path(path);
     std::cout << path << std::endl;
     static constexpr auto coo      = open_viii::LangT::en;
     const auto            archives = open_viii::archive::Archives(
@@ -33,61 +114,7 @@ int main()
       std::cerr << "Failed to load path: " << path.string();
       return;
     }
-    [[maybe_unused]] static constexpr auto dump_image =
-      [](std::vector<char> &&buffer, const std::string &p) {
-        if (open_viii::tools::i_ends_with(p, ".lzs")) {
-          auto t = open_viii::graphics::Lzs(buffer);
-          std::cout << p << '\n' << t << '\n';
-          t.save(p);
-        } else if (open_viii::tools::i_ends_with(p, ".tim")) {
-          auto t = open_viii::graphics::Tim(buffer);
-          std::cout << p << '\n' << t << '\n';
-          if (t.width() == 0 || t.height() == 0) {
-            open_viii::tools::write_buffer(buffer, p);
-          } else {
-            t.save(p);
-          }
-        } else if (open_viii::tools::i_ends_with(p, ".tex")) {
-          auto t = open_viii::graphics::Tex(buffer);
-          std::cout << p << '\n' << t << '\n';
-          t.save(p);
-        } else if (open_viii::tools::i_ends_with(p, ".tdw")) {
-          auto t = open_viii::graphics::Tdw(buffer);
-          std::cout << p << '\n' << t << '\n';
-          t.save(p);
-        } else if (open_viii::tools::i_ends_with(p, ".sp1")) {
-          auto t = open_viii::graphics::Sp1(buffer);
-          std::cout << p << '\n' << t << '\n';
-        } else if (open_viii::tools::i_ends_with(p, ".sp2")) {
-          auto t = open_viii::graphics::Sp2(buffer);
-          std::cout << p << '\n' << t << '\n';
-        } else if (open_viii::tools::i_ends_with(p, ".mch")) {
-          auto t = open_viii::graphics::Mch(std::move(buffer));
-          std::cout << p << '\n' << '\n';// t << '\n';
-          t.save(p);
-        } else if (open_viii::tools::i_ends_with(p, ".one")) {
-          auto t = open_viii::graphics::One(std::move(buffer));
-          std::cout << p << '\n' << '\n';// t << '\n';
-          t.save(p);
-        } else if (open_viii::tools::i_ends_with(
-                     p, open_viii::graphics::background::Mim::EXT)) {
-          auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
-          std::cout << p << '\n' << t << '\n';
-          t.save(p);
-        }
-      };
-    archives.execute_on<false>(
-      {
-        //".tex",
-        //".lzs",
-        //".tim",
-        //".tdw",
-        //".sp1",
-        //".sp2",
-        //".mch",
-        // open_viii::graphics::background::Mim::EXT
-      },
-      dump_image);
+    extract_per_extension_in_archives(archives);
     //    const open_viii::archive::FIFLFS<true> &field =
     //      archives.get<open_viii::archive::ArchiveTypeT::field>();
     // field.execute_with_nested({"main_chr"},dump_image,{});
@@ -95,11 +122,6 @@ int main()
     //    main_chr.execute_on({}, dump_image);
     // field.execute_with_nested({}, dump_image, { ".one" });
     // dump images from menu group.
-    //    [[maybe_unused]] const auto &menu =
-    //      archives.get<open_viii::archive::ArchiveTypeT::menu>();
-    //    std::cout << menu << std::endl;
-    //    auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };
-    //    mngrpfile.test_tim(
-    //      menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
+    extract_menu_group_images(archives);
   });
 }

@@ -36,8 +36,10 @@ public:
       R"(K:\ff82000)"s,
       R"(/mnt/d/games/ff82000)"s,
       R"(D:\games\ff82000)"s,
-      R"(/mnt/e/)"s,// CD
-      R"(e:\)"s,    // CD
+      R"(/mnt/e/)"s,   // CD
+      R"(e:\)"s,       // CD
+      R"(/mnt/d/tim)"s,// folder with tim files in it
+      R"(e:\tim)"s,    // folder with tim files in it
       R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s,
       R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s
     };
