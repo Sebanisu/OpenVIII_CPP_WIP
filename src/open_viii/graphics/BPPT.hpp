@@ -24,10 +24,11 @@ namespace open_viii::graphics {
 struct BPPT
 {
 private:
-  mutable bool          m_bpp8                       : 1 { false };
-  mutable bool          m_bpp16                      : 1 { false };
+  mutable bool m_bpp8  : 1 { false };
+  mutable bool m_bpp16 : 1 { false };
   /**
-   * might be used sometimes. for some files. I think it could be for multi format
+   * might be used sometimes. for some files. I think it could be for multi
+   * format
    */
   mutable bool          m_unused1                    : 1 { false };
   mutable bool          m_color_lookup_table_present : 1 { false };
@@ -38,11 +39,12 @@ private:
   constexpr static auto RAW8_VALUE  = 0b1U;
   constexpr static auto RAW16_VALUE = 0b10U;
   constexpr static auto CLP_VALUE   = 0b1000U;
+
 public:
-  constexpr static auto BPP4{ 4U };
-  constexpr static auto BPP8{ 8U };
-  constexpr static auto BPP16{ 16U };
-  constexpr static auto BPP24{ 24U };
+  constexpr static auto BPP4  = 4U;
+  constexpr static auto BPP8  = 8U;
+  constexpr static auto BPP16 = 16U;
+  constexpr static auto BPP24 = 24U;
   // consteval friend BPPT operator"" _bpp(unsigned long long int value);
   auto                         operator<=>(const BPPT &) const = default;
   [[nodiscard]] constexpr bool unused() const noexcept
@@ -162,20 +164,16 @@ public:
   {
     //[[maybe_unused]] static constexpr auto size_ = sizeof(BPPT);
     if (bpp4()) {
-      const int ret_val = BPP4;
-      return ret_val;
+      return BPP4;
     }
     if (bpp8()) {
-      const int ret_val = BPP8;
-      return ret_val;
+      return BPP8;
     }
     if (bpp16()) {
-      const int ret_val = BPP16;
-      return ret_val;
+      return BPP16;
     }
     if (bpp24()) {
-      const int ret_val = BPP24;
-      return ret_val;
+      return BPP24;
     }
     return 0;
   }

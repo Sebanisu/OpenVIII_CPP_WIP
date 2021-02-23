@@ -14,27 +14,44 @@
 #include <thread>
 #include <vector>
 namespace open_viii::tools {
-template<is_trivially_copyable_and_default_constructible trivialType,
-         auto                                            sizeOfType>
-[[nodiscard]] static trivialType read_val(std::istream &fp)
+// TODO anything that requires memcpy could maybe be replaced with std::bitcast
+// then the functions could be changes to constexpr.
+/**
+ *
+ * @tparam fixed_size_rangeT
+ * @tparam sizeOfType
+ * @param fp
+ * @return
+ * @todo test?
+ * @todo remove or refactor. Does this function even work in all cases?
+ */
+template<is_trivially_copyable_and_default_constructible fixed_size_rangeT,
+         std::integral auto                              sizeOfType>
+requires(sizeOfType > 0
+         && (has_data_and_size<fixed_size_rangeT>)&&(
+           !has_reserve<fixed_size_rangeT>)&&(!has_resize<fixed_size_rangeT>))
+  [[nodiscard]] static fixed_size_rangeT read_val2(std::istream &fp)
 {
-  trivialType                  item{};
+  fixed_size_rangeT            item{};
   std::array<char, sizeOfType> tmp{};
   fp.read(tmp.data(), tmp.size());
-  if constexpr (requires { std::ranges::data(item); }) {
-    memcpy(std::ranges::data(item),
-           std::ranges::data(tmp),
-           sizeof(*std::ranges::data(item)) * std::ranges::size(item));
-  } else {
-    memcpy(&item, std::ranges::data(tmp), sizeOfType);
-  }
+  // todo umm shouldn't i be checking the size of item?
+  // this would be okay for std::array because the size is part of the type.
+  // but vector or string wouldn't be good because you would need to manually
+  // set size.
+  assert(std::ranges::size(item) > 0);
+  memcpy(std::ranges::data(item),
+         std::ranges::data(tmp),
+         sizeof(decltype(*std::ranges::data(item))) * std::ranges::size(item));
   return item;
 }
-template<is_trivially_copyable_and_default_constructible trivialType>
-[[nodiscard]] static trivialType read_val(std::istream &fp)
-{
-  return read_val<trivialType, sizeof(trivialType)>(fp);
-}
+/**
+ *
+ * @tparam trivialType
+ * @param fp
+ * @param item
+ * @todo test?
+ */
 template<is_trivially_copyable trivialType>
 static void read_val(std::istream &fp, trivialType &item)
 {
@@ -42,25 +59,45 @@ static void read_val(std::istream &fp, trivialType &item)
   fp.read(tmp.data(), tmp.size());
   memcpy(&item, std::ranges::data(tmp), sizeof(item));
 }
-template<typename trivialType>
-requires(requires(trivialType item) {
-  std::ranges::data(item);
-}) static void read_val(std::istream &fp, trivialType &item)
+/**
+ *
+ * @tparam trivialType
+ * @param fp
+ * @param item
+ * @todo test?
+ */
+template<has_data_and_size trivialType>
+static void read_val(std::istream &fp, trivialType &item)
 {
   //  if constexpr( requires(trivialType
   //  t){std::is_same_v<char,decltype(*std::ranges::data(t))>;})
   //  {}
   // if container is type char could just write directly to it.
-  const auto size = sizeof(*std::ranges::data(item)) * std::ranges::size(item);
+  const auto size =
+    sizeof(decltype(*std::ranges::data(item))) * std::ranges::size(item);
   std::vector<char> tmp(size);
   fp.read(std::ranges::data(tmp), static_cast<long>(size));
   memcpy(std::ranges::data(item), std::ranges::data(tmp), size);
 }
+/**
+ *
+ * @tparam trivialType
+ * @param span
+ * @param item
+ * @todo test?
+ */
 template<is_trivially_copyable trivialType>
 static void read_val(const std::span<const char> &span, trivialType &item)
 {
   memcpy(&item, std::ranges::data(span), sizeof(trivialType));
 }
+/**
+ *
+ * @tparam trivialType
+ * @param span
+ * @return
+ * @todo test?
+ */
 template<is_trivially_copyable_and_default_constructible trivialType>
 [[nodiscard]] static trivialType read_val(const std::span<const char> &span)
 {
@@ -68,12 +105,80 @@ template<is_trivially_copyable_and_default_constructible trivialType>
   read_val<trivialType>(span, item);
   return item;
 }
+/**
+ *
+ * @tparam trivialT
+ * @tparam sizeOfType
+ * @param fp
+ * @return
+ * @todo test?
+ */
+template<is_trivially_copyable_and_default_constructible trivialT,
+         std::integral auto                              sizeOfType>
+requires(sizeOfType > 0) [[nodiscard]] static trivialT
+  read_val(std::istream &fp)
+{
+  std::array<char, sizeOfType> tmp{};
+  fp.read(tmp.data(), tmp.size());
+  return read_val<trivialT>(tmp);
+}
+/**
+ *
+ * @tparam trivialType
+ * @param fp
+ * @return
+ * @todo test?
+ */
+template<is_trivially_copyable_and_default_constructible trivialType>
+[[nodiscard]] static trivialType read_val(std::istream &fp)
+{
+  return read_val<trivialType, sizeof(trivialType)>(fp);
+}
+/**
+ *
+ * @tparam trivialT_or_rangeT
+ * @tparam sizeOfType
+ * @param fp
+ * @return
+ * @todo test?
+ */
+template<is_trivially_copyable_and_default_constructible trivialT_or_rangeT,
+  std::integral auto                              sizeOfType>
+requires(sizeOfType > 0) [[nodiscard]] static trivialT_or_rangeT
+safe_read_val(std::istream &fp)
+{
+  const auto current_pos = fp.tellg();
+  fp.seekg(0, std::ios::end);
+  const auto end_pos  = fp.tellg();
+  const auto max_size = std::abs(end_pos - current_pos);
+  fp.seekg(current_pos, std::ios::beg);
+  if (sizeOfType >= max_size) {
+    return read_val<trivialT_or_rangeT, sizeOfType>();
+  }
+  return trivialT_or_rangeT();
+}
+/**
+ *
+ * @tparam trivialType
+ * @param span
+ * @param offset
+ * @return
+ * @todo test?
+ */
 template<is_trivially_copyable_and_default_constructible trivialType>
 [[nodiscard]] static trivialType read_val(const std::span<const char> &span,
                                           std::size_t                  offset)
 {
   return read_val<trivialType>(span.subspan(offset));
 }
+/**
+ *
+ * @tparam trivialType
+ * @param span
+ * @param item
+ * @param size
+ * @todo test?
+ */
 template<has_data_and_size trivialType>
 requires std::ranges::contiguous_range<trivialType> &&
   has_resize<trivialType> static void
@@ -81,7 +186,7 @@ requires std::ranges::contiguous_range<trivialType> &&
            trivialType &                item,
            std::size_t                  size)
 {
-  const auto element_size = sizeof(*std::ranges::data(item));
+  const auto element_size = sizeof(decltype(*std::ranges::data(item)));
   // std::ranges::size(span) / element_size
   item.resize(size);
   if (size != 0) {
@@ -90,6 +195,14 @@ requires std::ranges::contiguous_range<trivialType> &&
            element_size * std::ranges::size(item));
   }
 }
+/**
+ *
+ * @tparam trivialType
+ * @param span
+ * @param size
+ * @return
+ * @todo test?
+ */
 template<is_default_constructible_has_data_and_size trivialType>
 [[nodiscard]] static trivialType read_val(const std::span<const char> &span,
                                           std::size_t                  size)
@@ -98,14 +211,46 @@ template<is_default_constructible_has_data_and_size trivialType>
   read_val(span, item, size);
   return item;
 }
-template<is_default_constructible_has_data_and_size trivialType>
-[[nodiscard]] static trivialType read_val(const std::span<const char> &span)
+/**
+ *
+ * @tparam rangeT
+ * @param span
+ * @return
+ * @todo test?
+ */
+template<is_default_constructible_has_data_and_size rangeT>
+[[nodiscard]] static rangeT read_val(const std::span<const char> &span)
 {
-  trivialType item{};
-  const auto  element_size = sizeof(*std::ranges::data(item));
+  rangeT     item{};
+  constexpr auto element_size = sizeof(decltype(*std::ranges::data(item)));
   read_val(span, item, std::ranges::size(span) / element_size);
   return item;
 }
+/**
+ * Safe version of read_val<rangeT>(span). Check that the span can contain at
+ * least 1 element.
+ * @tparam rangeT Range value.
+ * @param span const char buffer.
+ * @return returns empty range if not safe. Else return value from unsafe
+ * version.
+ * @todo test?
+ */
+template<is_default_constructible_has_data_and_size rangeT>
+[[nodiscard]] static rangeT safe_read_val(const std::span<const char> &span)
+{
+  if (std::ranges::size(span)
+      < sizeof(decltype(*std::ranges::data(rangeT())))) {
+    return rangeT();
+  }
+  return read_val<rangeT>(span);
+}
+/**
+ *
+ * @param fp
+ * @param s
+ * @return
+ * @todo test?
+ */
 template<std::ranges::contiguous_range dstT = std::vector<char>,
          std::integral                 sizeT>
 requires has_resize<dstT> [[maybe_unused]] static auto
@@ -119,6 +264,13 @@ requires has_resize<dstT> [[maybe_unused]] static auto
   fp.read(std::ranges::data(buf), s);
   return buf;
 }
+/**
+ *
+ * @tparam dstT
+ * @param fp
+ * @return
+ * @todo test?
+ */
 template<typename dstT = std::vector<char>>
 [[maybe_unused]] static auto read_entire_stream(std::istream &fp)
 {
@@ -127,6 +279,12 @@ template<typename dstT = std::vector<char>>
   fp.seekg(0, std::ios::beg);          // seek to beginning
   return read_val<dstT>(fp, static_cast<long>(size_of_file));// read entire file
 }
+/**
+ *
+ * @param path
+ * @return
+ * @todo test?
+ */
 static std::optional<std::ifstream> open_file(const std::filesystem::path &path)
 {
   std::optional<std::ifstream> ofp{};
@@ -154,6 +312,14 @@ static std::optional<std::ifstream> open_file(const std::filesystem::path &path)
                 + std::string("\"\n"));
   return ofp;
 }
+/**
+ *
+ * @tparam lambdaT
+ * @param lambda
+ * @param path
+ * @return
+ * @todo test?
+ */
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::istream &>)
   [[maybe_unused]] static bool read_from_file(const lambdaT &lambda,
@@ -167,6 +333,12 @@ requires(std::invocable<lambdaT, std::istream &>)
   }
   return false;
 }
+/**
+ *
+ * @param path
+ * @return
+ * @todo test?
+ */
 template<std::ranges::contiguous_range dstT = std::vector<char>>
 [[maybe_unused]] static dstT read_entire_file(const std::filesystem::path &path)
 {
@@ -184,6 +356,7 @@ template<std::ranges::contiguous_range dstT = std::vector<char>>
  * @param path path to file.
  * @param offset byte offset from beginning
  * @return
+ * @todo test?
  */
 template<is_trivially_copyable_and_default_constructible valueT>
 [[nodiscard]] static valueT
