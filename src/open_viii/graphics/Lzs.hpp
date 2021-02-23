@@ -31,49 +31,40 @@ private:
   std::vector<Color16>     m_colors{};
 
 public:
+  /**
+   *
+   * @param buffer
+   */
   [[maybe_unused]] explicit Lzs(std::span<const char> buffer)
   {
-    {
-      std::uint32_t comp_size{};
-      size_t        sz32 = sizeof(std::uint32_t);
-      if (sz32 > std::ranges::size(buffer)) {
-        return;
-      }
-      std::memcpy(&comp_size, std::ranges::data(buffer), sz32);
-      if (comp_size + sz32 != std::ranges::size(buffer)) {
-        std::cout << "wrong size: " << comp_size << ", "
-                  << std::ranges::size(buffer) << '\n';
-        return;
-      }
-      buffer = buffer.subspan(sz32, comp_size);// skip the size value.
+    if (sizeof(std::uint32_t) > std::ranges::size(buffer)) {
+      return;
     }
-    {
-      auto uncompressed           = compression::LZSS::decompress(buffer);
-      std::span<const char> adj   = uncompressed;
-      size_t                szrec = sizeof(m_rectangle);
-      if (szrec > std::ranges::size(adj)) {
-        return;
-      }
-      std::memcpy(&m_rectangle, std::ranges::data(adj), szrec);
-      std::cout << "size of uncompressed before: " << std::ranges::size(adj)
-                << ", new size: ";
-      adj = adj.subspan(szrec);
-      std::cout << std::ranges::size(adj) << '\n';
-      std::cout << m_rectangle << '\n';
-      static constexpr size_t sz16 = sizeof(Color16);
-      std::cout << sz16 << '\n';
-      const size_t max_bytes = std::ranges::size(adj) / sz16;
-      const size_t area      = m_rectangle.area();
-      size_t       min_size  = std::min(max_bytes, area) * sz16;
-      if (min_size == 0) {
-        m_rectangle = {};
-        return;
-      }
-      m_colors.resize(min_size);
-      std::cout << std::ranges::size(m_colors) << ", " << area << '\n';
-      std::memcpy(
-        std::ranges::data(m_colors), std::ranges::data(adj), min_size);
+    std::vector<char> uncompressed = uncompress(buffer);
+    buffer                         = uncompressed;
+    if (sizeof(m_rectangle) > std::ranges::size(buffer)) {
+      return;
     }
+    m_rectangle = tools::read_val<Rectangle<std::uint16_t>>(buffer);
+    buffer = buffer.subspan(sizeof(m_rectangle));
+
+    static constexpr size_t sz16 = sizeof(Color16);
+    std::cout << sz16 << '\n';
+    const size_t max_bytes = std::ranges::size(buffer) / sz16;
+    const size_t area      = m_rectangle.area();
+    size_t       min_size  = std::min(max_bytes, area) * sz16;
+    if (min_size == 0) {
+      m_rectangle = {};
+      return;
+    }
+    tools::read_val(buffer,m_colors,min_size);
+  }
+  std::vector<char> uncompress(std::span<const char> &buffer) const
+  {
+    uint32_t comp_size = tools::read_val<uint32_t>(buffer);
+    buffer = buffer.subspan(sizeof(uint32_t), comp_size);// skip the size value.
+    auto uncompressed = compression::LZSS::decompress(buffer);
+    return uncompressed;
   }
   [[maybe_unused]] void save(const std::string_view &filename) const
   {
