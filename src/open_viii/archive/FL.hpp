@@ -24,6 +24,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "tl/read.hpp"
 namespace open_viii::archive::fl {
 /**
  * FL files contain internal file structure paths. As a flat text file. This
@@ -137,7 +138,7 @@ constexpr const static auto EXT = std::string_view(".FL");
     auto ss = std::stringstream(data);
     process(ss);
   } else {
-    tools::read_from_file(process, path);
+    tl::read::from_file(process, path);
   }
   std::ranges::sort(vector, [](const auto &left, const auto &right) {
     if (left.second.length() == right.second.length()) {

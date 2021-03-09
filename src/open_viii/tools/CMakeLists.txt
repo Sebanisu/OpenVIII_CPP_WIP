@@ -1,2 +1,2 @@
 add_library(VIIITools INTERFACE)
-target_link_libraries(VIIITools INTERFACE)
+target_link_libraries(VIIITools)

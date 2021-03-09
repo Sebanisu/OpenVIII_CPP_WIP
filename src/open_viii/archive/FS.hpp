@@ -37,14 +37,15 @@ static constexpr auto EXT = std::string_view(".FS");
  */
 template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
          FI_Like                                       fiT  = FI>
-static dstT get_entry(const std::filesystem::path &path,
-                      const fiT &                  fi,
-                      const size_t &               offset = 0U)
+static dstT
+  get_entry(const std::filesystem::path &path,
+            const fiT &                  fi,
+            const size_t &               offset = 0U)
 {
   if (fi.uncompressed_size() == 0) {
     return {};
   }
-  auto ofp = tools::open_file(path);
+  auto ofp = tl::read::open_file(path);
   if (ofp.has_value() && ofp->is_open()) {
     // if compressed will keep decompressing till get size
     // size compressed isn't quite known with out finding the offset of the next
@@ -52,12 +53,13 @@ static dstT get_entry(const std::filesystem::path &path,
     ofp->seekg(static_cast<long>(offset + fi.offset()), std::ios::beg);
     switch (fi.compression_type()) {
     case CompressionTypeT::none: {
-      return tools::read_val<dstT>(*ofp, fi.uncompressed_size());
+      return tl::read::input(&*ofp, true)
+        .template output<dstT>(fi.uncompressed_size());
     }
     case CompressionTypeT::lzss: {
-      unsigned int compSize{ 0 };
-      tools::read_val(*ofp, compSize);
-      dstT buffer = tools::read_val<dstT>(*ofp, compSize);
+      tl::read::input input(&*ofp, true);
+      const auto      compSize = input.template output<std::uint32_t>();
+      dstT            buffer   = input.template output<dstT>(compSize);
       return compression::LZSS::decompress<dstT>(buffer,
                                                  fi.uncompressed_size());
     }
@@ -65,11 +67,11 @@ static dstT get_entry(const std::filesystem::path &path,
       // L4Z header contains size of total section as uint32, 4 byte string
       // the size of the compressed data is the first value minus 8. the second
       // value is something i'm unsure of
-      const auto            sectSize = tools::read_val<std::uint32_t>(*ofp);
+      tl::read::input       input(&*ofp, true);
+      const auto            sectSize = input.output<std::uint32_t>();
       constexpr static auto skipSize = 8U;
-      ofp->seekg(skipSize, std::ios::cur);
-      const auto compSize = sectSize - skipSize;
-      dstT       buffer   = tools::read_val<dstT>(*ofp, compSize);
+      const auto            compSize = sectSize - skipSize;
+      dstT buffer = input.seek(skipSize).template output<dstT>(compSize);
       return compression::l4z::decompress<dstT>(
         buffer.data(), compSize, fi.uncompressed_size());
     }

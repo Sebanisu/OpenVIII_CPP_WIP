@@ -4,6 +4,7 @@
 #ifndef VIIIARCHIVE_FILESECTIONTYPET_HPP
 #define VIIIARCHIVE_FILESECTIONTYPET_HPP
 #include "open_viii/tools/Tools.hpp"
+#include "tl/input.hpp"
 #include <algorithm>
 #include <ranges>
 #include <string_view>
@@ -30,11 +31,13 @@ constexpr static auto KB2 = std::string_view("KB2");
  * @param is = input stream
  * @return array.
  */
-template<bool rewind = false> static auto get_type(std::istream &is)
+template<bool rewind = false>
+static auto
+  get_type(std::istream &is)
 {
   static constexpr auto sz           = 3U;
   const auto            get_type_int = [&is]() {
-    return tools::read_val<std::array<char, sz>>(is);
+    return tl::read_val<std::array<char, sz>>(is);
   };
   if constexpr (rewind) {
     const auto ret = get_type_int();
@@ -53,8 +56,8 @@ template<bool rewind = false> static auto get_type(std::istream &is)
  * @return true or false
  */
 template<typename needleT, typename... haystackT>
-constexpr static bool valid_type(const needleT &needle,
-                                 const haystackT &...haystack)
+constexpr static bool
+  valid_type(const needleT &needle, const haystackT &...haystack)
 {
   if constexpr (sizeof...(haystack) == 0) {
     return valid_type(needle, CAM, BIK, KB2);
@@ -76,9 +79,10 @@ constexpr static bool valid_type(const needleT &needle,
  * @return returns the found value.
  */
 template<typename needleT, typename first_haystackT, typename... haystackT>
-constexpr static auto find_type(const needleT &        needle,
-                                const first_haystackT &first_haystack,
-                                const haystackT &...haystack) noexcept
+constexpr static auto
+  find_type(const needleT &        needle,
+            const first_haystackT &first_haystack,
+            const haystackT &...haystack) noexcept
 {
   if (std::ranges::equal(needle, first_haystack)) {
     return first_haystack;
@@ -96,7 +100,8 @@ constexpr static auto find_type(const needleT &        needle,
  * @return returns found value
  */
 template<typename needleT>
-constexpr static auto find_type(const needleT &needle) noexcept
+constexpr static auto
+  find_type(const needleT &needle) noexcept
 {
   return find_type(needle, CAM, BIK, KB2);
 }

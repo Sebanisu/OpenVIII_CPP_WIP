@@ -6,6 +6,7 @@
 #include "open_viii/Concepts.hpp"
 #include <fstream>
 #include <string_view>
+#include <thread>
 namespace open_viii::tools {
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::ostream &>)

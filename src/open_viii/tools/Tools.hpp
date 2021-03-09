@@ -17,6 +17,5 @@
 #include "Convert.hpp"
 #include "For_Each.hpp"
 #include "Random.hpp"
-#include "Read.hpp"
 #include "Write.hpp"
 #endif// !VIITOOLS_H
