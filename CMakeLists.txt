@@ -8,11 +8,11 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) ## automatically create a module defini
                                          ## symbols found in the input .obj files for a SHARED library on Windows.
 
 # Link this 'library' to use the warnings specified in CompilerWarnings.cmake
-add_library(project_warnings INTERFACE)
+add_library(${PROJECT_NAME}_project_warnings INTERFACE)
 
 # standard compiler warnings
 include(cmake/CompilerWarnings.cmake)
-set_project_warnings(project_warnings WARNINGS_AS_ERRORS)
+set_project_warnings(${PROJECT_NAME}_project_warnings ON)
 
 # get external dependencies.
 include(cmake/lz4.cmake)

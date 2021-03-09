@@ -1,2 +1,1 @@
-add_library(VIIIStrings INTERFACE)
-target_link_libraries(VIIIStrings INTERFACE)
+add_library(${PROJECT_NAME}_VIIIStrings INTERFACE)
