@@ -41,6 +41,7 @@ private:
    */
   [[maybe_unused]] static constexpr std::array VALID_WIDTH = { 16U, 256U };
   TimImageHeader                               m_image_header{};
+
 public:
   constexpr TimClutHeader() = default;
   explicit constexpr TimClutHeader(TimImageHeader in_image_header)
@@ -85,11 +86,11 @@ public:
   [[nodiscard]] constexpr bool check() const
   {
     return m_image_header.rectangle().x() % XDIVISABLE_BY == 0
-           && m_image_header.rectangle().y() <= MAX_Y
-           && m_image_header.rectangle().width() > 0
-           && m_image_header.rectangle().height() > 0;
-    //&& tools::any_of(imageHeader_.rectangle().width(), ValidWidth_); // some
-    // non standard sizes.
+           && m_image_header.rectangle().y() <= MAX_Y && m_image_header.check();
+  }
+  [[nodiscard]] explicit constexpr operator bool() const
+  {
+    return check();
   }
   friend std::ostream &operator<<(std::ostream &os, const TimClutHeader &input)
   {

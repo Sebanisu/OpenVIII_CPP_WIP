@@ -89,6 +89,10 @@ public:
            && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL
            && m_version == VERSION_VAL && m_bpp.check();
   }
+  [[nodiscard]] explicit constexpr operator bool() const
+  {
+    return check();
+  }
   friend std::ostream &operator<<(std::ostream &os, const TimHeader &input)
   {
     //[[maybe_unused]]static constexpr auto size_ = sizeof(input);

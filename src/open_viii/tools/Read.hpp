@@ -143,9 +143,9 @@ template<is_trivially_copyable_and_default_constructible trivialType>
  * @todo test?
  */
 template<is_trivially_copyable_and_default_constructible trivialT_or_rangeT,
-  std::integral auto                              sizeOfType>
+         std::integral auto                              sizeOfType>
 requires(sizeOfType > 0) [[nodiscard]] static trivialT_or_rangeT
-safe_read_val(std::istream &fp)
+  safe_read_val(std::istream &fp)
 {
   const auto current_pos = fp.tellg();
   fp.seekg(0, std::ios::end);
@@ -221,7 +221,7 @@ template<is_default_constructible_has_data_and_size trivialType>
 template<is_default_constructible_has_data_and_size rangeT>
 [[nodiscard]] static rangeT read_val(const std::span<const char> &span)
 {
-  rangeT     item{};
+  rangeT         item{};
   constexpr auto element_size = sizeof(decltype(*std::ranges::data(item)));
   read_val(span, item, std::ranges::size(span) / element_size);
   return item;
@@ -373,6 +373,27 @@ template<is_trivially_copyable_and_default_constructible valueT>
     // failed to read;
   }
   return item;
+}
+template<is_trivially_copyable_and_default_constructible trivialT>
+[[nodiscard]] static auto read_val_safe_mutate(std::span<const char> &buffer)
+{
+  if (std::ranges::size(buffer) < sizeof(trivialT)) {
+    return trivialT();
+  }
+  const auto header = read_val<trivialT>(buffer);
+  buffer            = buffer.subspan(sizeof(trivialT));
+  return header;
+}
+template<is_default_constructible_has_data_and_size rangeT>
+[[nodiscard]] static auto read_val_safe_mutate(std::span<const char> &buffer,
+                                               const auto             bytes)
+{
+  if (std::ranges::size(buffer) < bytes) {
+    return rangeT();
+  }
+  const auto header = read_val<rangeT>(buffer, bytes);
+  buffer            = buffer.subspan(bytes);
+  return header;
 }
 }// namespace open_viii::tools
 #endif// VIIIARCHIVE_READ_HPP

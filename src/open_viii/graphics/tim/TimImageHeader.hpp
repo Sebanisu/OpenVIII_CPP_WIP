@@ -55,6 +55,15 @@ public:
   {
     return m_size - sizeof(TimImageHeader);
   };
+  [[nodiscard]] constexpr bool check() const
+  {
+    return rectangle().width() > 0
+           && rectangle().height() > 0;
+  }
+  [[nodiscard]] explicit constexpr operator bool() const
+  {
+    return check();
+  }
   friend std::ostream &operator<<(std::ostream &os, const TimImageHeader &input)
   {
     return os << '{' << input.size() << " bytes, " << input.m_rectangle << '}';
