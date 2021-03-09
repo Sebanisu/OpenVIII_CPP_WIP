@@ -1,5 +1,4 @@
 add_library(${PROJECT_NAME}_VIIIGraphics INTERFACE)
-target_link_libraries(${PROJECT_NAME}_VIIIGraphics INTERFACE)
 add_subdirectory(color)
 add_subdirectory(tim)
 add_subdirectory(sp1)
