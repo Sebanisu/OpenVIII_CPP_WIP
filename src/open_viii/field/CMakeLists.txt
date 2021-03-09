@@ -1,1 +1,1 @@
-add_library(VIIIField INTERFACE)
+add_library(${PROJECT_NAME}_VIIIField INTERFACE)
