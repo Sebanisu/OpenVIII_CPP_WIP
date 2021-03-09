@@ -16,10 +16,13 @@ set_project_warnings(project_warnings WARNINGS_AS_ERRORS)
 
 # get external dependencies.
 include(cmake/lz4.cmake)
-include(cmake/googletest.cmake)
+#include(cmake/googletest.cmake)
+include(cmake/ut.cmake)
+include(cmake/tools_library.cmake)
 
 
 # include source folders
 add_subdirectory(src)
 add_subdirectory(Tests)
-add_subdirectory(g_tests)
+add_subdirectory(ut)
+#add_subdirectory(g_tests)

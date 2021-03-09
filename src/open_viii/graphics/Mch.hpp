@@ -18,7 +18,6 @@ private:
     read_tim_offsets(ret, buffer);
     return ret;
   }
-
 public:
   static void read_tim_offsets(std::vector<std::uint32_t> &ret,
                                std::span<const char> &     buffer)

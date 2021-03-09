@@ -111,7 +111,6 @@ private:
            + ((static_cast<uint32_t>(tile.y()) + y)
               * static_cast<uint32_t>(m_canvas.width()));
   }
-
 public:
   Deswizzle(const mim_type &     in_mim,
             const Map<map_type> &in_map,

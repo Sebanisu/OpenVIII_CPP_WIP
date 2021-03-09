@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_TIMHEADER_HPP
 #define VIIIARCHIVE_TIMHEADER_HPP
 #include "open_viii/graphics/BPPT.hpp"
+#include <compare>
 #include <cstdint>
 #include <iostream>
 namespace open_viii::graphics {
@@ -66,10 +67,12 @@ private:
   std::uint8_t m_none4{};
 
 public:
+  constexpr TimHeader()                               = default;
+  constexpr auto operator<=>(const TimHeader &) const = default;
   /**
    * @return bits per pixel flags and CLP flag
    */
-  [[nodiscard]] auto bpp() const
+  [[nodiscard]] constexpr auto bpp() const
   {
     return m_bpp;
   }
@@ -80,11 +83,15 @@ public:
    * @brief Test member variables for valid values.
    * @return true if Check test passes.
    */
-  [[nodiscard]] bool check() const
+  [[nodiscard]] constexpr bool check() const
   {
     return m_none0 == 0 && m_none1 == 0 && m_none2 == 0 && m_none3 == 0
            && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL
            && m_version == VERSION_VAL && m_bpp.check();
+  }
+  [[nodiscard]] explicit constexpr operator bool() const
+  {
+    return check();
   }
   friend std::ostream &operator<<(std::ostream &os, const TimHeader &input)
   {

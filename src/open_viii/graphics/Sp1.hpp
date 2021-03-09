@@ -25,7 +25,6 @@ struct Sp1
 {
 private:
   std::vector<std::vector<Sp1Entry>> m_entries{};
-
 public:
   Sp1() = default;
   explicit Sp1(std::span<const char> buffer)

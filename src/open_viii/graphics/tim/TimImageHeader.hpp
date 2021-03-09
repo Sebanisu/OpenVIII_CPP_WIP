@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #define VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #include "open_viii/graphics/Rectangle.hpp"
+#include <compare>
 #include <cstdint>
 namespace open_viii::graphics {
 /**
@@ -25,18 +26,24 @@ private:
   Rectangle<std::uint16_t> m_rectangle{};
 
 public:
+  constexpr TimImageHeader() = default;
+  constexpr TimImageHeader(std::uint32_t            in_size,
+                           Rectangle<std::uint16_t> in_rect)
+    : m_size(in_size), m_rectangle(in_rect)
+  {}
+  constexpr auto operator<=>(const TimImageHeader &) const = default;
   /**
    * Total Header and Data size
    * @brief size in bytes
    */
-  auto size() const
+  [[nodiscard]] constexpr auto size() const
   {
     return m_size;
   }
   /**
    * Dimensions of data.
    */
-  auto rectangle() const
+  [[nodiscard]] constexpr auto rectangle() const
   {
     return m_rectangle;
   }
@@ -44,10 +51,19 @@ public:
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] auto data_size() const
+  [[nodiscard]] constexpr auto data_size() const
   {
     return m_size - sizeof(TimImageHeader);
   };
+  [[nodiscard]] constexpr bool check() const
+  {
+    return rectangle().width() > 0
+           && rectangle().height() > 0;
+  }
+  [[nodiscard]] explicit constexpr operator bool() const
+  {
+    return check();
+  }
   friend std::ostream &operator<<(std::ostream &os, const TimImageHeader &input)
   {
     return os << '{' << input.size() << " bytes, " << input.m_rectangle << '}';

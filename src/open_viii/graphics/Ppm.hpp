@@ -111,6 +111,7 @@ private:
     }
     return colors;
   }
+
 public:
   Ppm() = default;
   explicit Ppm(const std::filesystem::path &path)

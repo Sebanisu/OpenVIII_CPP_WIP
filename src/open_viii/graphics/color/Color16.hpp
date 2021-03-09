@@ -73,7 +73,6 @@ private:
     val     = static_cast<decltype(val)>(val << shift);
     m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
   }
-
 public:
   Color16() = default;
   explicit Color16(std::uint16_t raw_color) : m_value(raw_color) {}

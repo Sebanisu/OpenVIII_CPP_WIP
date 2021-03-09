@@ -14,13 +14,13 @@ template<typename lambdaT>
 static void random_iota(const lambdaT &callback, const std::atomic_bool &stop)
 {
   // test LZSS
-  std::random_device                           rd;
-  std::mt19937                                 gen(rd());
-  std::uniform_int_distribution<unsigned char> dis(0U);
+  static std::random_device                           rd{};
+  static std::mt19937                                 gen(rd());
+  static std::uniform_int_distribution<unsigned char> dis(0U);
   size_t                                       i{ 0 };
-  static const auto run_once = [&callback, &dis, &gen](const size_t &size) {
+  static const auto run_once = [&callback](const size_t &size) {
     return callback(make_container<std::vector<char>>(
-      [&dis, &gen]() {
+      [] {
         return dis(gen);
       },
       size));

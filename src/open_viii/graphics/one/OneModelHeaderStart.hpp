@@ -11,6 +11,7 @@ private:
   std::uint32_t m_size{};
   std::uint32_t m_size2{};
   std::uint32_t m_flag_dword{};
+
 public:
   constexpr OneModelHeaderStart() = default;
   constexpr OneModelHeaderStart(std::uint32_t offset,

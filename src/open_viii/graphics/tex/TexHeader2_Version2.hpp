@@ -24,7 +24,6 @@ private:
    * Unknown 11 (TEX version 2 only)
    */
   std::uint32_t m_unknown_11{};
-
 public:
   /**
    * Unknown 11 (TEX version 2 only)

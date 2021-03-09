@@ -101,7 +101,6 @@ private:
     m_palette_data            = {};
     m_image_data              = {};
   }
-
 public:
   Tex() = default;
   [[maybe_unused]] explicit Tex(std::span<const char> buffer)
