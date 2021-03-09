@@ -12,3 +12,4 @@ External/lz4
 .idea/*
 venv/*
 *.mch
+build/*
