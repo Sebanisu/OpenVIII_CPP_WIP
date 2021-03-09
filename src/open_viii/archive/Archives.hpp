@@ -38,8 +38,8 @@ private:
    * @todo find cross platform way to get to remaster config.txt
    * @param path location of ff8
    */
-  [[nodiscard]] std::string set_lang(const std::filesystem::path &path,
-                                     std::string_view             lang) const
+  [[nodiscard]] std::string
+    set_lang(const std::filesystem::path &path, std::string_view lang) const
   {
     using namespace std::string_literals;
     return [&path, &lang]() -> std::string {
@@ -48,7 +48,7 @@ private:
         // lang.dat overrides the explicitly set one.
         const std::filesystem::path &langDatPath = path / "lang.dat";
         if (std::filesystem::exists(langDatPath)) {
-          return tools::read_entire_file<std::basic_string<char>>(langDatPath);
+          return tl::read::entire_file(langDatPath, std::basic_string<char>());
         }
       }
       // remaster stores the language value in my documents. I don't see a
@@ -63,8 +63,8 @@ private:
    * Set Path to FF8. Will look for Data and lang- folders.
    * @param path location of FF8.
    */
-  static std::filesystem::path set_path(std::filesystem::path path,
-                                        const std::string &   lang)
+  static std::filesystem::path
+    set_path(std::filesystem::path path, const std::string &lang)
   {
     using namespace std::string_literals;
     using namespace std::string_view_literals;
@@ -84,7 +84,8 @@ private:
     }
     return path;
   }
-  [[nodiscard]] bool check_lang_path(const auto &pathString) const
+  [[nodiscard]] bool
+    check_lang_path(const auto &pathString) const
   {
     // no languages in zzz for:
     // field, magic, world
@@ -97,7 +98,7 @@ private:
     const auto langStarting =
       std::filesystem::path(langStartingFilter.string() + m_lang);
     return tools::i_starts_with(pathString, langStartingFilter.string())
-           && !tools::i_starts_with(pathString, langStarting.string());
+        && !tools::i_starts_with(pathString, langStarting.string());
   }
   /**
    * TryToAdd archive of type to archive member variable.
@@ -110,10 +111,11 @@ private:
    * @return
    */
   template<FI_Like fiT>
-  bool try_add(const ArchiveTypeT &         archive_type,
-               fiT                          fi,
-               const std::filesystem::path &path,
-               const std::filesystem::path &nested_path)
+  bool
+    try_add(const ArchiveTypeT &         archive_type,
+            fiT                          fi,
+            const std::filesystem::path &path,
+            const std::filesystem::path &nested_path)
   {
     // this string can be compared to the stem of the filename to determine
     // which archive is try added to.
@@ -183,7 +185,8 @@ private:
   template<typename lambdaT>
   static constexpr bool valid_static_for_lambda_type =
     (std::is_invocable_r_v<bool, lambdaT, ArchiveTypeT, std::string_view>);
-  void populate_archives_from_path()
+  void
+    populate_archives_from_path()
   {
     tools::execute_on_directory(
       m_path,
@@ -216,7 +219,8 @@ private:
   [[maybe_unused]] static constexpr bool valid_execute_on_lambda =
     (std::invocable<lambdaT, std::vector<char>, std::string>)
     || (std::invocable<lambdaT, std::string, std::string>);
-  auto test_valid_lambda() const
+  auto
+    test_valid_lambda() const
   {
     return [](const auto &archive) -> bool {
       return static_cast<bool>(archive);
@@ -237,6 +241,7 @@ private:
       return true;
     };
   }
+
 public:
   /**
    *
@@ -375,8 +380,9 @@ public:
    * archives.
    * @return all results.
    */
-  auto get_nested(
-    const std::initializer_list<std::string_view> &nested_archive) const
+  auto
+    get_nested(
+      const std::initializer_list<std::string_view> &nested_archive) const
   {
     return m_field.get_fiflfs_entries(nested_archive);
   }
@@ -422,7 +428,7 @@ public:
         return ret;
       } else if (takes_valid_archive_type<lambdaT>) {
         const auto &archive = get<archiveType_>();
-        std::cout <<"Loop On: " << get_string<archiveType_>() << '\n';
+        std::cout << "Loop On: " << get_string<archiveType_>() << '\n';
         if constexpr (requires(decltype(archive) a) { a.has_value(); }) {
           if (archive.has_value()) {
             ret = lambda(*archive);
@@ -440,7 +446,8 @@ public:
   {
     return (loop<aT, aT>(lambda) && ...);
   }
-  bool test_set() const
+  bool
+    test_set() const
   {
     return loop(test_valid_lambda());
   }

@@ -57,15 +57,16 @@ public:
   {
     return m_size == 0 || m_filename.empty();
   }
-  explicit FileData(std::istream &fp, const std::uint32_t &string_length)
-    : m_filename(tools::read_val<decltype(m_filename)>(fp, string_length)),
-      m_offset(tools::read_val<decltype(m_offset)>(fp)),
-      m_size(tools::read_val<decltype(m_size)>(fp))
-  {}
-  explicit FileData(std::istream &fp)
-    : FileData(fp, tools::read_val<std::uint32_t>(fp))
+  explicit FileData(tl::read::input input)
+    : m_filename(input.template output<decltype(m_filename)>(input.template output<std::uint32_t>())),
+      m_offset(input.template output<decltype(m_offset)>()),
+      m_size(input.template output<decltype(m_size)>())
   {
     tools::replace_slashes(m_filename);// make sure slashes match compiler
+  }
+  explicit FileData(std::istream &fp)
+  : FileData(tl::read::input{&fp,true})
+  {
   }
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(

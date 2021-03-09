@@ -82,11 +82,9 @@ public:
     if (m_count == 0 || id < m_count) {
       const auto offset = archive::get_fi_entry_offset(id, m_fi.offset());
       if (!std::ranges::empty(m_fi.data())) {
-        return tools::read_val<archive::FI>(m_fi.data(), offset);
-        // return archive::FI(m_fi.data(), id, m_fi.offset());
+        return tl::read::input(m_fi.data()).seek(offset).template output<archive::FI>();
       }
-      return tools::read_value_from_file<archive::FI>(m_fi.path(), offset);
-      // return archive::FI(m_fi.path(), id, m_fi.offset());
+      return tl::read::from_file<archive::FI>(offset,m_fi.path());
     }
     return {};
   }

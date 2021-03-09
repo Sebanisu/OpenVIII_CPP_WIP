@@ -74,7 +74,7 @@ public:
     if (std::ranges::empty(m_span)) {
       return spanT{};
     }
-    return tools::read_val<spanT>(m_span.subspan(id * sizeof(spanT)));
+    return tl::read::input(m_span).seek(id * sizeof(spanT)).template output<spanT>();
   }
   [[maybe_unused]] auto &span() const noexcept
   {

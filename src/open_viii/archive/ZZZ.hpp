@@ -36,15 +36,16 @@ private:
    * uint32_t count_{}; fallowed by array of file data
    */
   std::vector<FileData> m_data{};
-  [[nodiscard]] auto    load_data_from_file() const
+  [[nodiscard]] auto
+    load_data_from_file() const
   {
     std::vector<FileData> data{};
     if (m_path.has_extension()
         && tools::i_equals(m_path.extension().string(), EXT)
         && std::filesystem::exists(m_path)) {
-      tools::read_from_file(
+      tl::read::from_file(
         [&data](std::istream &fp) {
-          auto count{ tools::read_val<uint32_t>(fp) };
+          auto count{ tl::read::input(&fp).template output<uint32_t>() };
           data.reserve(count);
           while (!fp.eof() && count-- != 0U) {
             if ((data.emplace_back(fp).empty())) {
@@ -57,7 +58,8 @@ private:
     }
     return data;
   }
-  void sort_data()
+  void
+    sort_data()
   {
     std::ranges::sort(m_data, [](const FileData &left, const FileData &right) {
       const auto right_string = right.get_path_string();
@@ -65,19 +67,22 @@ private:
       const auto right_size   = std::ranges::size(right_string);
       const auto left_size    = std::ranges::size(left_string);
       if (left_size == right_size) {
-        return left_string < right_string; //clangtidy wants < to be nullptr
+        return left_string < right_string;// clangtidy wants < to be nullptr
       }
       return left_size < right_size;
     });
     m_data.shrink_to_fit();
   }
+
 public:
-  constexpr static auto                      EXT = std::string_view(".zzz");
-  [[maybe_unused]] [[nodiscard]] const auto &data() const noexcept
+  constexpr static auto EXT = std::string_view(".zzz");
+  [[maybe_unused]] [[nodiscard]] const auto &
+    data() const noexcept
   {
     return m_data;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &path() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    path() const noexcept
   {
     return m_path;
   }
@@ -111,15 +116,15 @@ public:
     tmp.shrink_to_fit();
     return tmp;
   }
-  [[nodiscard]] friend std::ostream &operator<<(std::ostream &os,
-                                                const ZZZ &   data)
+  [[nodiscard]] friend std::ostream &
+    operator<<(std::ostream &os, const ZZZ &data)
   {
     return os << '{' << data.path().stem().string() << " zzz {"
               << std::ranges::size(data.data())
               << " File Entries from : " << data.path() << "}}";
   }
-  [[nodiscard]] friend std::ostream &operator<<(std::ostream &            os,
-                                                const std::optional<ZZZ> &data)
+  [[nodiscard]] friend std::ostream &
+    operator<<(std::ostream &os, const std::optional<ZZZ> &data)
   {
     if (data.has_value()) {
       return os << data.value();
@@ -144,8 +149,9 @@ public:
   //    return vector;
   //  }
   template<std::invocable<std::vector<char>, std::string> UnaryFunctionT>
-  void execute_on(const std::initializer_list<std::string_view> &filename,
-                  const UnaryFunctionT &                         unary_function) const
+  void
+    execute_on(const std::initializer_list<std::string_view> &filename,
+               const UnaryFunctionT &unary_function) const
   {
     std::ranges::for_each(
       data(),
@@ -162,7 +168,8 @@ public:
   requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)) void execute_with_nested(
     [[maybe_unused]] const std::initializer_list<std::string_view> &filename,
     [[maybe_unused]] const lambdaT                                  lambda,
-    [[maybe_unused]] const std::initializer_list<std::string_view> &nested_filename = {}) const
+    [[maybe_unused]] const std::initializer_list<std::string_view>
+      &nested_filename = {}) const
   {}
   explicit operator bool() const
   {
