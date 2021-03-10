@@ -185,7 +185,7 @@ template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
 static dstT
   get_entry(tl::read::input input, const fiT fi, const std::size_t offset = 0U)
 {
-  input.seek(offset + fi.offset(),std::ios::beg);
+  input.seek(static_cast<long>(offset + fi.offset()),std::ios::beg);
   // if compressed will keep decompressing till get size
   // size compressed isn't quite known with out finding the offset of the next
   // file and finding difference.
