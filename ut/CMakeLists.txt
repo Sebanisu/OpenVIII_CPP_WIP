@@ -1,3 +1,5 @@
-add_executable(${PROJECT_NAME}_unit_tests
-        unit_tests.cpp)
-target_link_libraries(${PROJECT_NAME}_unit_tests PRIVATE Boost::ut)
+include(../cmake/add_test_common.cmake)
+add_test_common(FS)
+target_link_libraries(${PROJECT_NAME}_FS
+        PRIVATE ${PROJECT_NAME}_VIIIArchive
+        )
