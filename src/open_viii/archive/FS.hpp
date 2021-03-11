@@ -30,10 +30,10 @@ namespace open_viii::archive::FS {
 static constexpr auto EXT = std::string_view(".FS");
 template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
          FI_Like                                       fiT  = FI>
-static dstT
+[[nodiscard]] static dstT
   get_entry(tl::read::input input, const fiT fi, const std::size_t offset = 0U)
 {
-  input.seek(static_cast<long>(offset + fi.offset()),std::ios::beg);
+  input.seek(static_cast<long>(offset + fi.offset()), std::ios::beg);
   // if compressed will keep decompressing till get size
   // size compressed isn't quite known with out finding the offset of the next
   // file and finding difference.
@@ -50,10 +50,11 @@ static dstT
     // L4Z header contains size of total section as uint32, 4 byte string
     // the size of the compressed data is the first value minus 8. the second
     // value is something i'm unsure of
-    constexpr static auto skipSize = 8U;
+    constexpr static auto skipSize = 8;
     const auto            sectSize = input.template output<std::uint32_t>();
     const auto            compSize = sectSize - skipSize;
-    dstT buffer = input.seek(skipSize, std::ios::cur).template output<dstT>(compSize);
+    dstT                  buffer =
+      input.seek(skipSize, std::ios::cur).template output<dstT>(compSize);
     return compression::l4z::decompress<dstT>(
       buffer.data(), compSize, fi.uncompressed_size());
   }
@@ -71,7 +72,7 @@ static dstT
  */
 template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
          FI_Like                                       fiT  = FI>
-static dstT
+[[nodiscard]] static dstT
   get_entry(const std::filesystem::path &path,
             const fiT &                  fi,
             const size_t &               offset = 0U)
@@ -96,8 +97,8 @@ static dstT
  */
 template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
          FI_Like                                       fiT  = FI>
-static dstT
-  get_entry(std::span<const char> data, const fiT &fi, const size_t &offset)
+[[nodiscard]] static dstT
+  get_entry(std::span<const char> data, const fiT &fi, const size_t offset = 0U)
 {
   // it shouldn't be empty
   if (data.empty() || fi.uncompressed_size() == 0) {
