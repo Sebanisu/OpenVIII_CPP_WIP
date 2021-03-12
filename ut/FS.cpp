@@ -11,6 +11,14 @@
 #include <ranges>
 #include <sstream>
 #include <string_view>
+// TODO export the FS writing code into the FS.hpp, I had to write the code to
+// write FS to have something for the read tests to use.
+/**
+ * Mock span data, this is grouping values together for tests. The raw data is
+ * in a string_view and the span points to the same data. Because if you pass a
+ * string_view to the code it thinks it's a path. Fi has offsets and size info
+ * to track where the data is.
+ */
 struct mock_span_data
 {
 private:
@@ -81,7 +89,7 @@ int
     static constexpr mock_span_data   mock3(test_string,
                                           std::size(test_string) - 10);
     const auto                        temp_file =
-      tl::utility::create_temp_file("FS_test.tmp", test_string);
+      tl::utility::create_temp_file("FS_test_uncompressed.tmp", test_string);
     static constexpr auto check_fs = [](auto                  full_data,
                                         const mock_span_data &mock) {
       const auto value = FS::get_entry(full_data, mock.fi());
@@ -138,7 +146,7 @@ int
       add_lzss_data(mock2);
       add_lzss_data(mock3);
       const auto compressed_temp_file = tl::utility::create_temp_file(
-        "FS_test2.tmp",
+        "FS_test_Lzss.tmp",
         std::string_view(std::data(compressed_buffer),
                          std::size(compressed_buffer)));
       "read entire span"_test = [&compressed_buffer, &fi_buffer] {
@@ -195,7 +203,7 @@ int
       add_l4z_data(mock2);
       add_l4z_data(mock3);
       const auto compressed_temp_file = tl::utility::create_temp_file(
-        "FS_test2.tmp",
+        "FS_test_Lz4.tmp",
         std::string_view(std::data(compressed_buffer),
                          std::size(compressed_buffer)));
       "read entire span"_test = [&compressed_buffer, &fi_buffer] {

@@ -6,7 +6,5 @@ int
   using namespace boost::ut::literals;
   using namespace boost::ut::operators::terse;
   using namespace boost::ut;
-  [[maybe_unused]] suite tests = [] {
-
-  };
+  [[maybe_unused]] suite tests = [] {};
 }
