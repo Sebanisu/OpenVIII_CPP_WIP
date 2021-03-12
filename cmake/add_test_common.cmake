@@ -3,7 +3,6 @@ function(add_test_common file_name)
             ${file_name}.cpp)
     target_link_libraries(${PROJECT_NAME}_${file_name}
             PRIVATE Boost::ut
-            PRIVATE ToolsLibrary_tl
             PRIVATE ${PROJECT_NAME}_project_warnings
             )
     target_include_directories(${PROJECT_NAME}_${file_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
