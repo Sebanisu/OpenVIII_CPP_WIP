@@ -33,34 +33,6 @@ target_link_libraries(${PROJECT_NAME}_TestSearchZZZ
         PRIVATE ${PROJECT_NAME}_VIIIPaths
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl)
-#test app LZSS compression and decompression by passing random vector<char> to it with gradually increasing lengths.
-
-add_executable(${PROJECT_NAME}_TestLZSS
-        TestLZSS.hpp
-        TestLZSS.cpp
-        )
-set_target_properties(${PROJECT_NAME}_TestLZSS PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestLZSS
-        PRIVATE ${PROJECT_NAME}_VIIICompression
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-
-
-#test app L4Z compression and decompression by passing random vector<char> to it with gradually increasing lengths.
-add_executable(${PROJECT_NAME}_TestL4Z
-        TestL4Z.hpp
-        TestL4Z.cpp
-        )
-set_target_properties(${PROJECT_NAME}_TestL4Z PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestL4Z
-        PRIVATE ${PROJECT_NAME}_VIIICompression
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-
-        )
 
 ##test kernel.bin
 add_executable(${PROJECT_NAME}_TestKernel
