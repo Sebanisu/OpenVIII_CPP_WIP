@@ -27,10 +27,65 @@
 #include <span>
 #include <utility>
 namespace open_viii::archive::FS {
+/**
+ * Extension
+ */
 static constexpr auto EXT = std::string_view(".FS");
-template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
-         FI_Like                                       fiT  = FI>
-[[nodiscard]] static dstT
+/**
+ * Get entry and uncompress via lzss
+ * @note not meant to be used directly
+ * @tparam outputT type to be returned: example std::string, std::vector<char>
+ * @tparam fiT FI or FI compatible type.
+ * @param input buffer adapter that holds a std::span<char> or a std::istream
+ * @param uncompressed_size number of bytes expected to expand to.
+ * @return output() filled with uncompressed data.
+ */
+template<
+  is_default_constructible_has_data_size_resize outputT = std::vector<char>>
+static outputT
+  get_entry_lzss(tl::read::input &input, const std::uint32_t uncompressed_size)
+{
+  const auto compSize = input.template output<uint32_t>();
+  outputT    buffer   = input.template output<outputT>(compSize);
+  return compression::LZSS::decompress<outputT>(buffer, uncompressed_size);
+}
+/**
+ * Get entry and uncompress via lz4
+ * @note not meant to be used directly
+ * @tparam outputT type to be returned: example std::string, std::vector<char>
+ * @tparam fiT FI or FI compatible type.
+ * @param input buffer adapter that holds a std::span<char> or a std::istream
+ * @param uncompressed_size number of bytes expected to expand to.
+ * @return output() filled with uncompressed data.
+ */
+template<
+  is_default_constructible_has_data_size_resize outputT = std::vector<char>>
+static outputT
+  get_entry_lz4(tl::read::input &input, const std::uint32_t uncompressed_size)
+{// L4Z header contains size of total section as uint32, 4 byte string
+  // the size of the compressed data is the first value minus 8. the second
+  // value is maybe the uint32 value returned at compression time.
+  constexpr static auto skipSize = 8;
+  const auto            sectSize = input.template output<uint32_t>();
+  const auto            compSize = sectSize - skipSize;
+  outputT               buffer =
+    input.seek(skipSize, std::ios::cur).template output<outputT>(compSize);
+  return compression::l4z::decompress<outputT>(
+    buffer.data(), compSize, uncompressed_size);
+}
+/**
+ * Get entry and uncompress via lz4
+ * @tparam outputT type to be returned: example std::string, std::vector<char>
+ * @tparam fiT FI or FI compatible type.
+ * @param input buffer adapter that holds a std::span<char> or a std::istream
+ * @param fi contains compression type, uncompressed size, and offset
+ * @param offset additional offset value added to fi.offset()
+ * @return output() filled with uncompressed data.
+ */
+template<
+  is_default_constructible_has_data_size_resize outputT = std::vector<char>,
+  FI_Like                                       fiT     = FI>
+[[nodiscard]] static outputT
   get_entry(tl::read::input input, const fiT fi, const std::size_t offset = 0U)
 {
   input.seek(static_cast<long>(offset + fi.offset()), std::ios::beg);
@@ -39,40 +94,30 @@ template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
   // file and finding difference.
   switch (fi.compression_type()) {
   case CompressionTypeT::none: {
-    return input.template output<dstT>(fi.uncompressed_size());
+    return input.template output<outputT>(fi.uncompressed_size());
   }
   case CompressionTypeT::lzss: {
-    const auto compSize = input.template output<std::uint32_t>();
-    dstT       buffer   = input.template output<dstT>(compSize);
-    return compression::LZSS::decompress<dstT>(buffer, fi.uncompressed_size());
+    return get_entry_lzss<outputT>(input, fi.uncompressed_size());
   }
   case CompressionTypeT::lz4: {
-    // L4Z header contains size of total section as uint32, 4 byte string
-    // the size of the compressed data is the first value minus 8. the second
-    // value is something i'm unsure of
-    constexpr static auto skipSize = 8;
-    const auto            sectSize = input.template output<std::uint32_t>();
-    const auto            compSize = sectSize - skipSize;
-    dstT                  buffer =
-      input.seek(skipSize, std::ios::cur).template output<dstT>(compSize);
-    return compression::l4z::decompress<dstT>(
-      buffer.data(), compSize, fi.uncompressed_size());
+    return get_entry_lz4<outputT>(input, fi.uncompressed_size());
   }
   }
   throw;
 }
 /**
  * get file entry and decompress it
- * @tparam dstT type being returned
+ * @tparam outputT type being returned
  * @tparam fiT type of FI or FileData that contains offset, size, compression.
  * @param path to file
  * @param fi FI or FileData
  * @param offset to file data in bytes
  * @return uncompressed file
  */
-template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
-         FI_Like                                       fiT  = FI>
-[[nodiscard]] static dstT
+template<
+  is_default_constructible_has_data_size_resize outputT = std::vector<char>,
+  FI_Like                                       fiT     = FI>
+[[nodiscard]] static outputT
   get_entry(const std::filesystem::path &path,
             const fiT &                  fi,
             const size_t &               offset = 0U)
@@ -82,29 +127,30 @@ template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
   }
   auto ofp = tl::read::open_file(path);
   if (ofp.has_value() && ofp->is_open()) {
-    return get_entry<dstT>(tl::read::input(&*ofp, true), fi, offset);
+    return get_entry<outputT>(tl::read::input(&*ofp, true), fi, offset);
   }
   return {};
 }
 /**
  * get file entry and decompress it
- * @tparam dstT type being returned
+ * @tparam outputT type being returned
  * @tparam fiT type of FI or FileData that contains offset, size, compression.
  * @param data buffer with embedded file
  * @param fi FI or FileData
  * @param offset to file data in bytes
  * @return uncompressed file
  */
-template<is_default_constructible_has_data_size_resize dstT = std::vector<char>,
-         FI_Like                                       fiT  = FI>
-[[nodiscard]] static dstT
+template<
+  is_default_constructible_has_data_size_resize outputT = std::vector<char>,
+  FI_Like                                       fiT     = FI>
+[[nodiscard]] static outputT
   get_entry(std::span<const char> data, const fiT &fi, const size_t offset = 0U)
 {
   // it shouldn't be empty
   if (data.empty() || fi.uncompressed_size() == 0) {
     return {};
   }
-  return get_entry<dstT>(tl::read::input(data, true), fi, offset);
+  return get_entry<outputT>(tl::read::input(data, true), fi, offset);
 }
 }// namespace open_viii::archive::FS
 #endif// !VIIIARCHIVE_FS_HPP
