@@ -72,12 +72,12 @@ Only things directly related to accessing FF8 should be in this project. If it's
       - The slowest part is extracting from the nested compressed FIELD archives. So we either need to preextract the files to speed up operations or only extract on an as needed basis.
       - [ ] Extracted files in a directory.
   - [ ]  Support for each of the file formats
-    - [x]  FI
-    - [x]  FS
-    - [x]  FL
+    - [x]  [FI](http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media#.fi_.28File_Index.29)
+    - [x]  [FS](http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media#.fs_.28File_Source.29)
+    - [x]  [FL](http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media#.fl_.28File_List.29)
     - [x]  ZZZ
-    - [x]  TIM
+    - [x]  [TIM](http://wiki.ffrtt.ru/index.php?title=PSX/TIM_format)
     - [x]  LZS
-    - [X]  TEX
-    - [x]  PAK
+    - [X]  [TEX](http://wiki.ffrtt.ru/index.php?title=FF7/TEX_format)
+    - [x]  [PAK](http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK)
   - [ ]  Lightweight render tests. Later on write tests to quickly render things. Much like our debug menu on OpenVIII-monogame. I'll be able to open up maps and view them make sure the drawing logic is good. But like it'll be it's own lightweight exe that just populates a list of maps or something for each type I wanna test.
