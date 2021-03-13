@@ -29,6 +29,9 @@ int
       check_fi(65U, 16U, CompressionTypeT::none);
     };
     "FI check count"_test = [] {
+      // theres a version of get count that takes a file path, it just gets the
+      // filesize and passes it to the other function so I don't think I need to
+      // write a test for it.
       expect(eq(FI::SIZE, sizeof(FI)));
       check_count(0U);
       check_count(1U);
