@@ -29,6 +29,13 @@
 ## Requires:
  - cpp20 gcc currently. I'm using some features visual studio doesn't support yet.
  - https://github.com/lz4/lz4
+## Prefer:
+ - Back end first.
+ - [Lazy operations over Eager](https://www.imperva.com/learn/performance/lazy-loading/). Things that require sorting require being eager.
+ - [Functional style](https://docs.microsoft.com/en-us/archive/msdn-magazine/2012/august/c-functional-style-programming-in-c).
+   - [Immutability](https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-constants-and-immutability)
+ - [Constexpr](https://www.youtube.com/watch?v=HMB9oXFobJc)
+ - [Algorithms over loops](https://www.drdobbs.com/stl-algorithms-vs-hand-written-loops/184401446).
 
 This is WIP and everything is subject to change.
 
@@ -46,13 +53,7 @@ Only things directly related to accessing FF8 should be in this project. If it's
     - [x] LZ4 compression
   - [ ]  I need to add a configuration library, maybe the one FFNx uses. Right now everything is hardcoded.
     -  This will be to store the path[s] to FF8 and such. Right now I'm using a hardcoded list. I could maybe have a windows only app that fetches the FF8 path from the registry. Though I wouldn't write one of those directly in the library because this will be **cross platform**.
-  - Back end first.
-  - [Prefer Lazy operations over Eager](https://www.imperva.com/learn/performance/lazy-loading/). Things that require sorting require being eager.
-  - [Prefer functional style](https://docs.microsoft.com/en-us/archive/msdn-magazine/2012/august/c-functional-style-programming-in-c).
-    - [Prefer Immutability](https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-constants-and-immutability)
-    - [Prefer Constexpr](https://www.youtube.com/watch?v=HMB9oXFobJc)
-      - Constexpr objects are pretty much Immutable when stored in a constexpr varible. So if you need to change one you need to create a new copy with the altered values.
-  - [Prefer algorithms over loops](https://www.drdobbs.com/stl-algorithms-vs-hand-written-loops/184401446).
+ 
   - [x]  Ability to quickly get at what you want.
     - [x]  Made functions to search archives for files and uncompress them.
       - [x]  FIFLFS
@@ -67,4 +68,4 @@ Only things directly related to accessing FF8 should be in this project. If it's
     - [x]  TIM
     - [X]  TEX
     - [x]  PAK
-  - [ ]  Lightweight render tests. Later on may write tests to quickly render things. Much like our debug menu on OpenVIII-monogame. I'll be able to open up maps and view them make sure the drawing logic is good. But like it'll be it's own lightweight exe that just populates a list of maps or something for each type I wanna test.
+  - [ ]  Lightweight render tests. Later on write tests to quickly render things. Much like our debug menu on OpenVIII-monogame. I'll be able to open up maps and view them make sure the drawing logic is good. But like it'll be it's own lightweight exe that just populates a list of maps or something for each type I wanna test.
