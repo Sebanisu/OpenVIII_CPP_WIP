@@ -32,7 +32,7 @@ This is WIP and everything is subject to change.
 
 This is a port of OpenVIII to C++. It's kinda an experiment. I want to keep is a modular as possible so you don't need to include what you don't want.
 
-Only things directly related to accessing FF8 should be in this project. If it's code that could be more generally licensed it should probably be in another library. This library has to be GPL because it refers to projects and references projects under the GPL. Not all the dependencies need to be GPL. I started https://github.com/Sebanisu/ToolsLibrary for things that don't need to be in this project.
+Only things directly related to accessing FF8 should be in this project. If it's code that could be more generally licensed it should probably be in another library. This library has to be GPL because it refers to projects and references projects under the GPL. Not all the dependencies need to be GPL. I started [Tools Library](https://github.com/Sebanisu/ToolsLibrary) for things that don't need to be in this project.
 
 The Plan:
   - **TESTS!!!!** - I'm using [ut](https://github.com/boost-ext/ut) for my testing framework. This was overdue. I have test apps that just dump to console. But I needed unit tests for a long time. If I'm going to alter a file I want to try to make sure it's under test before I change it.
