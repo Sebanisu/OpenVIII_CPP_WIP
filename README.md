@@ -1,4 +1,10 @@
-[![Image of CI passing or not.](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/Sebanisu/openviii-cpp-wip) [![image](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP.svg)](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP/)
+[![Image of CI passing or not.](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/Sebanisu/openviii-cpp-wip)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/sebanisu/OpenVIII_CPP_WIP/issues) 
+[![GPL v3 License](https://img.shields.io/badge/License-GPL_V3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) 
+[![C++ 20](https://img.shields.io/badge/C++%20-20-ff69b4.svg)](https://en.cppreference.com/w/cpp/20) 
+[![GitHub followers](https://img.shields.io/github/followers/sebanisu.svg?style=social&label=Follow)](https://github.com/sebanisu?tab=followers) 
+[![GitHub stars](https://img.shields.io/github/stars/sebanisu/ToolsLibrary.svg?style=social&label=Star)](https://GitHub.com/sebanisu/OpenVIII_CPP_WIP/stargazers/) 
+[![Documentation](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP.svg)](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP/)
 
 Credits:
  - https://github.com/MaKiPL
