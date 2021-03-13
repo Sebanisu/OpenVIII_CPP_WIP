@@ -1,4 +1,4 @@
-![Image of CI passing or not.](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)
+[![Image of CI passing or not.](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/Sebanisu/openviii-cpp-wip) [![image](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP.svg)](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP/)
 
 Credits:
  - https://github.com/MaKiPL
