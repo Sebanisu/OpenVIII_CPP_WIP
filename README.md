@@ -14,6 +14,7 @@
  - [antiquechrono](https://github.com/antiquechrono)
  - [DarkShinryu](https://github.com/DarkShinryu)
  - [julianxhokaxhiu](https://github.com/julianxhokaxhiu)
+ - [niemasd](https://github.com/niemasd/PyFF7)
 
 ## Reference:
  - [Final Fantasy Inside Wiki - FF8](http://wiki.ffrtt.ru/index.php?title=FF8)
@@ -23,6 +24,7 @@
  - [Deling](https://github.com/myst6re/deling), [Hyne](https://github.com/myst6re/hyne)
  - [Doomtrain](https://github.com/DarkShinryu/doomtrain)
  - [FFNx](https://github.com/julianxhokaxhiu/FFNx)
+ - [PyFF7](https://github.com/niemasd/PyFF7)
  
 ## Requires:
  - cpp20 gcc currently. I'm using some features visual studio doesn't support yet.
