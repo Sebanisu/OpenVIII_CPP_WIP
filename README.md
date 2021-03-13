@@ -8,14 +8,14 @@
 [![GitHub stars](https://img.shields.io/github/stars/sebanisu/ToolsLibrary.svg?style=social&label=Star)](https://GitHub.com/sebanisu/OpenVIII_CPP_WIP/stargazers/) 
 [![Documentation](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP.svg)](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP/)
 
-Credits:
+## Credits:
  - [MaKiPL](https://github.com/MaKiPL)
  - [myst6re](https://github.com/myst6re)
  - [antiquechrono](https://github.com/antiquechrono)
  - [DarkShinryu](https://github.com/DarkShinryu)
  - [julianxhokaxhiu](https://github.com/julianxhokaxhiu)
 
-Reference:
+## Reference:
  - [Final Fantasy Inside Wiki - FF8](http://wiki.ffrtt.ru/index.php?title=FF8)
  - [Final Fantasy Inside Wiki - LZSS format](http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format)
  - [Doomtrain Wiki](https://github.com/DarkShinryu/doomtrain/wiki)
@@ -24,24 +24,39 @@ Reference:
  - [Doomtrain](https://github.com/DarkShinryu/doomtrain)
  - [FFNx](https://github.com/julianxhokaxhiu/FFNx)
  
-Requires:
+## Requires:
  - cpp20 gcc currently. I'm using some features visual studio doesn't support yet.
  - https://github.com/lz4/lz4
 
 This is WIP and everything is subject to change.
 
-This is a port of OpenVIII to C++. It's kinda an experiment. I want to keep is a modular as possible so you don't need to include what you don't want.
+This is a port of OpenVIII to C++. It's kinda an experiment. I want to keep is a modular as possible so you don't need to include what you don't want. I want to be able to compile on Linux and Windows atleast. Right now I might be supporting things in GCC that doesn't work in MSVC. I may move things out of the monorepo. I had everything in it's own library but I struggled to keep it working. I have learned some cmake tricks and maybe able to get this to work again.
 
 Only things directly related to accessing FF8 should be in this project. If it's code that could be more generally licensed it should probably be in another library. This library has to be GPL because it refers to projects and references projects under the GPL. Not all the dependencies need to be GPL. I started [Tools Library](https://github.com/Sebanisu/ToolsLibrary) for things that don't need to be in this project.
 
-The Plan:
-  - **TESTS!!!!** - I'm using [ut](https://github.com/boost-ext/ut) for my testing framework. This was overdue. I have test apps that just dump to console. But I needed unit tests for a long time. If I'm going to alter a file I want to try to make sure it's under test before I change it.
-    - I'll probably move the apps that I wrote into their own project using this as a dependency. Like the one that extracts all the archives. 
-  - I need to add a configuration library, maybe the one FFNx uses.
-    - This will be to store the path[s] to FF8 and such. Right now I'm using a hardcoded list. I could maybe have a windows only app that fetches the FF8 path from the registry. Though I wouldn't write one of those directly in the library because this will be **cross platform**.
-  - The doing mostly back end work at first.
-  - Support for each of the file formats
-  - Tests to make sure the code works as I go. Dumping data to check to see if I can read correctly.
-  - Ability to quickly get at what you want.
-  - Later on may write tests to quickly render things. Much like our debug menu on OpenVIII-monogame. I'll be able to open up maps and view them make sure the drawing logic is good. But like it'll be it's own lightweight exe that just populates a list of maps or something for each type I wanna test.
-  - Last thing I'll worry about is the game. 
+## The Plan:
+
+  - [ ] **TESTS!!!!** - I'm using [ut](https://github.com/boost-ext/ut) for my testing framework. This was overdue. I have test apps that just dump to console. But I needed unit tests for a long time. If I'm going to alter a file I want to try to make sure it's under test before I change it.
+    - [ ] I'll probably move the apps that I wrote into their own project using this as a dependency. Like the one that extracts all the archives. 
+    - [x] FS
+    - [x] FI
+    - [x] LZSS compression
+    - [x] LZ4 compression
+  - [ ]  I need to add a configuration library, maybe the one FFNx uses. Right now everything is hardcoded.
+    -  This will be to store the path[s] to FF8 and such. Right now I'm using a hardcoded list. I could maybe have a windows only app that fetches the FF8 path from the registry. Though I wouldn't write one of those directly in the library because this will be **cross platform**.
+  - [x]  Back end first.
+  - [x]  Ability to quickly get at what you want.
+    - [x]  Made functions to search archives for files and uncompress them.
+      - [x]  FIFLFS
+      - [x]  ZZZ
+      - The slowest part is extracting from the nested compressed FIELD archives. So we either need to preextract the files to speed up operations or only extract on an as needed basis.
+      - [ ] Extracted files in a directory.
+  - [ ]  Support for each of the file formats
+    - [x]  FI
+    - [x]  FS
+    - [x]  FL
+    - [x]  ZZZ
+    - [x]  TIM
+    - [X]  TEX
+    - [x]  PAK
+  - [ ]  Lightweight render tests. Later on may write tests to quickly render things. Much like our debug menu on OpenVIII-monogame. I'll be able to open up maps and view them make sure the drawing logic is good. But like it'll be it's own lightweight exe that just populates a list of maps or something for each type I wanna test.
