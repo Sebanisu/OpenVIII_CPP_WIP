@@ -27,8 +27,18 @@
  - [PyFF7](https://github.com/niemasd/PyFF7)
  
 ## Requires:
- - cpp20 gcc currently. I'm using some features visual studio doesn't support yet.
- - https://github.com/lz4/lz4
+ - [C++ 20](https://en.cppreference.com/w/cpp/20)
+ - [GCC 10.2](https://gcc.gnu.org/gcc-10/)
+   - Currently supported.
+ - [MSVC](https://visualstudio.microsoft.com/vs/features/cplusplus/)
+   - I'm using some features visual studio doesn't support yet. But, they are pushing updates out regularly.
+ - [Clang](https://clang.llvm.org/cxx_status.html)
+   - Missing `<ranges>` and missing `<concepts>`.
+ - [lz4](https://github.com/lz4/lz4)
+ - [ut](https://github.com/boost-ext/ut)
+   - For testing.
+ - [Tools Library](https://github.com/Sebanisu/ToolsLibrary)
+   - For parcing buffers into types.
 ## Prefer:
  - Back end first.
  - [Lazy operations over Eager](https://www.imperva.com/learn/performance/lazy-loading/). Things that require sorting require being eager.
