@@ -9,18 +9,20 @@
 [![Documentation](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP.svg)](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP/)
 
 Credits:
- - https://github.com/MaKiPL
- - https://github.com/myst6re
- - https://github.com/antiquechrono
- - https://github.com/DarkShinryu
+ - [MaKiPL](https://github.com/MaKiPL)
+ - [myst6re](https://github.com/myst6re)
+ - [antiquechrono](https://github.com/antiquechrono)
+ - [DarkShinryu](https://github.com/DarkShinryu)
+ - [julianxhokaxhiu](https://github.com/julianxhokaxhiu)
 
 Reference:
- - http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media
- - http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
- - https://github.com/MaKiPL/OpenVIII-monogame
- - https://github.com/myst6re/deling
- - https://github.com/DarkShinryu/doomtrain
- - https://github.com/DarkShinryu/doomtrain/wiki
+ - [Final Fantasy Inside Wiki - FF8](http://wiki.ffrtt.ru/index.php?title=FF8)
+ - [Final Fantasy Inside Wiki - LZSS format](http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format)
+ - [Doomtrain Wiki](https://github.com/DarkShinryu/doomtrain/wiki)
+ - [OpenVIII-monogame](https://github.com/MaKiPL/OpenVIII-monogame)
+ - [Deling](https://github.com/myst6re/deling), [Hyne](https://github.com/myst6re/hyne)
+ - [Doomtrain](https://github.com/DarkShinryu/doomtrain)
+ - [FFNx](https://github.com/julianxhokaxhiu/FFNx)
  
 Requires:
  - cpp20 gcc currently. I'm using some features visual studio doesn't support yet.
@@ -30,7 +32,13 @@ This is WIP and everything is subject to change.
 
 This is a port of OpenVIII to C++. It's kinda an experiment. I want to keep is a modular as possible so you don't need to include what you don't want.
 
+Only things directly related to accessing FF8 should be in this project. If it's code that could be more generally licensed it should probably be in another library. This library has to be GPL because it refers to projects and references projects under the GPL. Not all the dependencies need to be GPL. I started https://github.com/Sebanisu/ToolsLibrary for things that don't need to be in this project.
+
 The Plan:
+  - **TESTS!!!!** - I'm using [ut](https://github.com/boost-ext/ut) for my testing framework. This was overdue. I have test apps that just dump to console. But I needed unit tests for a long time. If I'm going to alter a file I want to try to make sure it's under test before I change it.
+    - I'll probably move the apps that I wrote into their own project using this as a dependency. Like the one that extracts all the archives. 
+  - I need to add a configuration library, maybe the one FFNx uses.
+    - This will be to store the path[s] to FF8 and such. Right now I'm using a hardcoded list. I could maybe have a windows only app that fetches the FF8 path from the registry. Though I wouldn't write one of those directly in the library because this will be **cross platform**.
   - The doing mostly back end work at first.
   - Support for each of the file formats
   - Tests to make sure the code works as I go. Dumping data to check to see if I can read correctly.
