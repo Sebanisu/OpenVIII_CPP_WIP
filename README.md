@@ -35,6 +35,7 @@
  - [Clang](https://clang.llvm.org/cxx_status.html)
    - Missing `<ranges>` and missing `<concepts>`.
  - [lz4](https://github.com/lz4/lz4)
+   - This is used in the remaster's archives.
  - [ut](https://github.com/boost-ext/ut)
    - For testing.
  - [Tools Library](https://github.com/Sebanisu/ToolsLibrary)
@@ -76,6 +77,7 @@ Only things directly related to accessing FF8 should be in this project. If it's
     - [x]  FL
     - [x]  ZZZ
     - [x]  TIM
+    - [x]  LZS
     - [X]  TEX
     - [x]  PAK
   - [ ]  Lightweight render tests. Later on write tests to quickly render things. Much like our debug menu on OpenVIII-monogame. I'll be able to open up maps and view them make sure the drawing logic is good. But like it'll be it's own lightweight exe that just populates a list of maps or something for each type I wanna test.
