@@ -19,7 +19,6 @@ private:
     std::numeric_limits<std::make_unsigned_t<T>>::min(),
     std::numeric_limits<std::make_unsigned_t<T>>::max()
   };
-
 public:
   auto
     operator()([[maybe_unused]] const T &unused) const

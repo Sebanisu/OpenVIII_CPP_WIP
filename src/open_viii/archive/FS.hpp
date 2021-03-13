@@ -152,5 +152,80 @@ template<
   }
   return get_entry<outputT>(tl::read::input(data, true), fi, offset);
 }
+static void
+  append(std::vector<char> &output, const std::span<const char> &input)
+{
+  output.insert(std::ranges::end(output),
+                std::ranges::begin(input),
+                std::ranges::end(input));
+}
+template<typename inputT>
+requires(std::is_trivially_copyable_v<inputT> && !requires(inputT t) {
+  // prevents things that std::span could take from going here
+  std::span<const char>(t);
+}) static void append(std::vector<char> &output, const inputT &input)
+{
+  std::array<char, sizeof(inputT)> input_as_bytes{};
+  std::memcpy(std::data(input_as_bytes), &input, sizeof(inputT));
+  append(output, input_as_bytes);
+}
+static void
+  append_lzss(std::vector<char> &output, const std::span<const char> &input)
+{
+  std::vector<char> new_comp_data = compression::LZSS::compress(input);
+  append(output, static_cast<uint32_t>(std::ranges::size(new_comp_data)));
+  append(output, new_comp_data);
+}
+static void
+  append_l4z(std::vector<char> &output, const std::span<const char> &input)
+{
+  static constexpr auto lz4           = std::string_view("4ZL_", 4U);
+  std::vector<char>     new_comp_data = compression::l4z::compress(input);
+  const auto            compressed_size =
+    static_cast<uint32_t>(std::ranges::size(new_comp_data));
+  append(output, compressed_size + 8U);
+  append(output, lz4);
+  append(output, compressed_size);
+  append(output, new_comp_data);
+}
+// todo I need a version for a std::ostream and a version for a std::vector;
+template<FI_Like fiT = FI>
+static fiT
+  append_entry(std::vector<char> &         output,
+               const std::span<const char> input,
+               const CompressionTypeT compression_type = CompressionTypeT::none)
+{
+  using uncompressed_size_t = std::decay_t<decltype(fiT().uncompressed_size())>;
+  using offset_t            = std::decay_t<decltype(fiT().offset())>;
+  fiT return_value{ static_cast<uncompressed_size_t>(std::ranges::size(input)),
+                    static_cast<offset_t>(std::ranges::size(output)),
+                    compression_type };
+  switch (compression_type) {
+  case CompressionTypeT::none: {
+    append(output, input);
+    return return_value;
+    break;
+  }
+  case CompressionTypeT::lzss: {
+    append_lzss(output, input);
+    return return_value;
+    break;
+  }
+  case CompressionTypeT::lz4: {
+    append_l4z(output, input);
+    return return_value;
+    break;
+  }
+  }
+  throw;
+}
+template<FI_Like fiT = FI>
+static fiT
+  append_entry(std::vector<char> &         output,
+               const std::span<const char> input,
+               const fiT                   in_fi)
+{
+  return append_entry(output, input, in_fi.compression_type());
+}
 }// namespace open_viii::archive::FS
 #endif// !VIIIARCHIVE_FS_HPP

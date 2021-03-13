@@ -115,32 +115,32 @@ int
       check_fs(temp_file.value(), mock3);
     };
     {
+      std::vector<FI> fi_buffer{};
+      fi_buffer.reserve(3);
+      std::vector<char> uncompressed_buffer{};
+      const auto        add_uncompressed_data =
+        [&uncompressed_buffer, &fi_buffer](const mock_span_data &mock) {
+          fi_buffer.push_back(
+            FS::append_entry(uncompressed_buffer, mock.span(), mock.fi()));
+        };
+      add_uncompressed_data(mock1);
+      add_uncompressed_data(mock2);
+      add_uncompressed_data(mock3);
+      "read entire span"_test = [&uncompressed_buffer, &fi_buffer] {
+        check_fs2(uncompressed_buffer, mock1, fi_buffer[0]);
+        check_fs2(uncompressed_buffer, mock2, fi_buffer[1]);
+        check_fs2(uncompressed_buffer, mock3, fi_buffer[2]);
+      };
+    }
+    {
       // write compressed LZSS data to buffer
       std::vector<FI> fi_buffer{};
       fi_buffer.reserve(3);
       std::vector<char> compressed_buffer{};
       const auto        add_lzss_data = [&compressed_buffer,
                                   &fi_buffer](const mock_span_data &mock) {
-        const auto append = [&compressed_buffer](std::vector<char> new_data) {
-          std::uint32_t size = static_cast<std::uint32_t>(std::size(new_data));
-          std::array<char, sizeof(std::uint32_t)> size_as_bytes{};
-          std::memcpy(std::data(size_as_bytes), &size, sizeof(std::uint32_t));
-          compressed_buffer.reserve(std::size(compressed_buffer)
-                                    + sizeof(std::uint32_t)
-                                    + std::size(new_data));
-          compressed_buffer.insert(std::end(compressed_buffer),
-                                   std::begin(size_as_bytes),
-                                   std::end(size_as_bytes));
-          compressed_buffer.insert(std::end(compressed_buffer),
-                                   std::begin(new_data),
-                                   std::end(new_data));
-        };
-        std::size_t       offset        = std::size(compressed_buffer);
-        std::vector<char> new_comp_data = LZSS::compress(mock.span());
-        append(new_comp_data);
-        fi_buffer.emplace_back(mock.fi().uncompressed_size(),
-                               offset,
-                               open_viii::CompressionTypeT::lzss);
+        fi_buffer.push_back(FS::append_entry(
+          compressed_buffer, mock.span(), open_viii::CompressionTypeT::lzss));
       };
       add_lzss_data(mock1);
       add_lzss_data(mock2);
@@ -169,35 +169,8 @@ int
       std::vector<char> compressed_buffer{};
       const auto        add_l4z_data = [&compressed_buffer,
                                  &fi_buffer](const mock_span_data &mock) {
-        const auto append = [&compressed_buffer](std::vector<char> new_data) {
-          std::uint32_t size = static_cast<std::uint32_t>(std::size(new_data));
-          std::array<char, sizeof(std::uint32_t)> size_as_bytes2{};
-          std::memcpy(std::data(size_as_bytes2), &size, sizeof(std::uint32_t));
-          static constexpr std::string_view lz4 = "4ZL_";
-          size                                  = size + 8;
-          std::array<char, sizeof(std::uint32_t)> size_as_bytes1{};
-          std::memcpy(std::data(size_as_bytes1), &size, sizeof(std::uint32_t));
-          compressed_buffer.reserve(std::size(compressed_buffer)
-                                    + (sizeof(std::uint32_t) * 3U)
-                                    + std::size(new_data));
-          compressed_buffer.insert(std::end(compressed_buffer),
-                                   std::begin(size_as_bytes1),
-                                   std::end(size_as_bytes1));
-          compressed_buffer.insert(
-            std::end(compressed_buffer), std::begin(lz4), std::end(lz4));
-          compressed_buffer.insert(std::end(compressed_buffer),
-                                   std::begin(size_as_bytes2),
-                                   std::end(size_as_bytes2));
-          compressed_buffer.insert(std::end(compressed_buffer),
-                                   std::begin(new_data),
-                                   std::end(new_data));
-        };
-        std::size_t       offset        = std::size(compressed_buffer);
-        std::vector<char> new_comp_data = l4z::compress(mock.span());
-        append(new_comp_data);
-        fi_buffer.emplace_back(mock.fi().uncompressed_size(),
-                               offset,
-                               open_viii::CompressionTypeT::lz4);
+        fi_buffer.push_back(FS::append_entry(
+          compressed_buffer, mock.span(), open_viii::CompressionTypeT::lz4));
       };
       add_l4z_data(mock1);
       add_l4z_data(mock2);
