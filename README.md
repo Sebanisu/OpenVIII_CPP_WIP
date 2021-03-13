@@ -76,8 +76,10 @@ Only things directly related to accessing FF8 should be in this project. If it's
     - [x]  [FS](http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media#.fs_.28File_Source.29)
     - [x]  [FL](http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media#.fl_.28File_List.29)
     - [x]  ZZZ
+      - ZZZ is a uncompressed archive with a header of filenames offsets and sizes.  
     - [x]  [TIM](http://wiki.ffrtt.ru/index.php?title=PSX/TIM_format)
     - [x]  LZS
+      -   Lzss compressed raw 16-color pixels. Header is x y width, height.
     - [X]  [TEX](http://wiki.ffrtt.ru/index.php?title=FF7/TEX_format)
     - [x]  [PAK](http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK)
   - [ ]  Lightweight render tests. Later on write tests to quickly render things. Much like our debug menu on OpenVIII-monogame. I'll be able to open up maps and view them make sure the drawing logic is good. But like it'll be it's own lightweight exe that just populates a list of maps or something for each type I wanna test.
