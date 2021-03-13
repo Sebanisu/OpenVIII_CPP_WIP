@@ -42,50 +42,56 @@ private:
   Grouping<std::basic_string<char>>
          m_fl{};// this is char because the file contains strings.
   size_t m_count{};
-  void   get_count() noexcept
+  void
+    get_count() noexcept
   {
     m_count = FI::get_count(m_fi.size());
   }
-
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &fi() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    fi() const noexcept
   {
     return m_fi;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &fs() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    fs() const noexcept
   {
     return m_fs;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &fl() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    fl() const noexcept
   {
     return m_fl;
   }
-  [[nodiscard]] bool all_set() const
+  [[nodiscard]] bool
+    all_set() const
   {
     return m_fi && m_fs && m_fl;
   }
   FIFLFS() = default;
-  [[nodiscard]] friend std::ostream &operator<<(std::ostream &os,
-                                                const FIFLFS &data)
+  [[nodiscard]] friend std::ostream &
+    operator<<(std::ostream &os, const FIFLFS &data)
   {
     const auto str = [](auto fiflfs) {
       return std::ranges::empty(fiflfs.nested_path())
-               ? fiflfs.path()
-               : fiflfs.path() / fiflfs.nested_path();
+             ? fiflfs.path()
+             : fiflfs.path() / fiflfs.nested_path();
     };
     return os << '{' << data.get_base_name() << " {" << data.m_count
               << " File Entries from : " << str(data.m_fi) << ", "
               << str(data.m_fl) << ", " << str(data.m_fs) << "}}";
   }
-  [[nodiscard]] archive::FI get_entry_by_index(const unsigned int &id) const
+  [[nodiscard]] archive::FI
+    get_entry_by_index(const unsigned int &id) const
   {
     if (m_count == 0 || id < m_count) {
-      const auto offset = archive::get_fi_entry_offset(id, m_fi.offset());
       if (!std::ranges::empty(m_fi.data())) {
-        return tools::read_val<archive::FI>(m_fi.data(), offset);
+        return FI(m_fi.data(), id, m_fi.offset());
+        // tools::read_val<archive::FI>(m_fi.data(), offset);
         // return archive::FI(m_fi.data(), id, m_fi.offset());
       }
-      return tools::read_value_from_file<archive::FI>(m_fi.path(), offset);
+      return FI(m_fi.path(), id, m_fi.offset());
+      // tools::read_value_from_file<archive::FI>(m_fi.path(), offset);
       // return archive::FI(m_fi.path(), id, m_fi.offset());
     }
     return {};
@@ -144,7 +150,8 @@ public:
     return all_set() ? TryAddT::archive_full : TryAddT::added_to_archive;
   }
   template<typename dstT = std::vector<char>, FI_Like fiT>
-  dstT get_entry_buffer(const fiT &fi) const
+  dstT
+    get_entry_buffer(const fiT &fi) const
   {
     if (!std::ranges::empty(m_fs.data())) {
       return FS::get_entry<dstT>(m_fs.data(), fi, m_fs.offset());
@@ -160,7 +167,8 @@ public:
                   open_viii::archive::FS::EXT,
                   open_viii::archive::FI::EXT }));
   }
-  void compare_base_names() const
+  void
+    compare_base_names() const
   {
     if ((m_fl.base() == m_fs.base() && m_fi.base() == m_fs.base())
         || std::empty(m_fl.base()) || std::empty(m_fi.base())
@@ -194,7 +202,8 @@ public:
       exit(EXIT_FAILURE);
     }
   }
-  [[nodiscard]] std::string get_base_name() const
+  [[nodiscard]] std::string
+    get_base_name() const
   {
     for (const auto &path : { m_fi.base(), m_fl.base(), m_fs.base() }) {
       if (!std::ranges::empty(path)) {
@@ -204,7 +213,8 @@ public:
     return {};
   }
   template<std::ranges::contiguous_range outT = std::vector<char>, FI_Like fiT>
-  [[nodiscard]] outT get_entry_data(const fiT &fi) const
+  [[nodiscard]] outT
+    get_entry_data(const fiT &fi) const
   {
     return [this, &fi]() {
       if (std::ranges::empty(m_fs.data())) {
@@ -235,7 +245,8 @@ public:
                                                   m_count);
   }
   template<typename outT = std::vector<char>>
-  [[nodiscard]] outT get_entry_data(const std::string_view &filename) const
+  [[nodiscard]] outT
+    get_entry_data(const std::string_view &filename) const
   {
     const auto &[id, path] = get_entry_id_and_path(filename);
     return get_entry_data<outT>(get_entry_by_index(id));
@@ -262,8 +273,8 @@ public:
         | std::views::filter(
           [this](const std::pair<unsigned int, std::string> &pair) -> bool {
             return check_extension(pair.second)
-                   == fiflfsT::none;// prevent from running on nested archives.
-                                    // We have another function for those.
+                == fiflfsT::none;// prevent from running on nested archives.
+                                 // We have another function for those.
           }),
       [this, &lambda](const std::pair<unsigned int, std::string> &pair) {
         auto fi = get_entry_by_index(pair.first);
@@ -319,9 +330,10 @@ public:
       });
   }
   template<FI_Like fiT>
-  [[nodiscard]] TryAddT try_add(fiT                          fi_like,
-                                const std::filesystem::path &parent_path,
-                                const std::filesystem::path &child_path)
+  [[nodiscard]] TryAddT
+    try_add(fiT                          fi_like,
+            const std::filesystem::path &parent_path,
+            const std::filesystem::path &child_path)
   {
     switch (check_extension(child_path)) {
     case fiflfsT::none:
@@ -386,8 +398,9 @@ public:
     }
     return archive;
   }
-  [[nodiscard]] std::vector<FIFLFS<false>> get_fiflfs_entries(
-    const std::initializer_list<std::string_view> &filename) const
+  [[nodiscard]] std::vector<FIFLFS<false>>
+    get_fiflfs_entries(
+      const std::initializer_list<std::string_view> &filename) const
   {
     std::vector<FIFLFS<false>> out{};
     FIFLFS<false>              archive{};
