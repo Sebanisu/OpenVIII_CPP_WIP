@@ -45,9 +45,12 @@ Only things directly related to accessing FF8 should be in this project. If it's
   - [ ]  I need to add a configuration library, maybe the one FFNx uses. Right now everything is hardcoded.
     -  This will be to store the path[s] to FF8 and such. Right now I'm using a hardcoded list. I could maybe have a windows only app that fetches the FF8 path from the registry. Though I wouldn't write one of those directly in the library because this will be **cross platform**.
   - Back end first.
-  - [Perfer Lazy operations over Eager](https://www.imperva.com/learn/performance/lazy-loading/). Things that require sorting require being eager.
-  - [Perfer functional style](https://docs.microsoft.com/en-us/archive/msdn-magazine/2012/august/c-functional-style-programming-in-c).
-  - [Perfer algorithms over loops](https://www.drdobbs.com/stl-algorithms-vs-hand-written-loops/184401446).
+  - [Prefer Lazy operations over Eager](https://www.imperva.com/learn/performance/lazy-loading/). Things that require sorting require being eager.
+  - [Prefer functional style](https://docs.microsoft.com/en-us/archive/msdn-magazine/2012/august/c-functional-style-programming-in-c).
+    - [Prefer Immutability](https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-constants-and-immutability)
+    - [Prefer Constexpr](https://www.youtube.com/watch?v=HMB9oXFobJc)
+      - Constexpr objects are pretty much Immutable when stored in a constexpr varible. So if you need to change one you need to create a new copy with the altered values.
+  - [Prefer algorithms over loops](https://www.drdobbs.com/stl-algorithms-vs-hand-written-loops/184401446).
   - [x]  Ability to quickly get at what you want.
     - [x]  Made functions to search archives for files and uncompress them.
       - [x]  FIFLFS
