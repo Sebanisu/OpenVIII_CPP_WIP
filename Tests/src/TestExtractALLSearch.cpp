@@ -20,7 +20,7 @@ int main()
   std::string needle{};
   std::cout << "Enter string to search for: ";
   std::getline(std::cin, needle);
-  open_viii::tools::replace_slashes(needle);
+  tl::string::replace_slashes(needle);
   if (needle.empty()) {
     return 1;
   }

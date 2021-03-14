@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_FILEDATA_HPP
 #include "FI.hpp"
 #include "open_viii/tools/Tools.hpp"
+#include "tl/string.hpp"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -43,30 +44,29 @@ public:
   FileData &operator=(FileData &&) = default;
   ~FileData()                      = default;
   [[maybe_unused]] FileData(const std::string_view filename,
-                            const unsigned long     offset,
-                            unsigned int            size)
+                            const unsigned long    offset,
+                            unsigned int           size)
     : m_filename(filename), m_offset(offset), m_size(size)
   {
-    tools::replace_slashes(m_filename);
+    tl::string::replace_slashes(m_filename);
   }
-  [[maybe_unused]] FileData(const unsigned long     offset,
-                            unsigned int            size)
-  : FileData(std::string_view(),offset,size)
+  [[maybe_unused]] FileData(const unsigned long offset, unsigned int size)
+    : FileData(std::string_view(), offset, size)
   {}
-  [[nodiscard]] bool empty() const noexcept
+  [[nodiscard]] bool
+    empty() const noexcept
   {
     return m_size == 0 || m_filename.empty();
   }
   explicit FileData(std::istream &fp, const std::uint32_t &string_length)
-    : m_filename(tools::read_val<decltype(m_filename)>(fp, string_length)),
+    : m_filename(tl::string::replace_slashes(
+      tools::read_val<decltype(m_filename)>(fp, string_length))),
       m_offset(tools::read_val<decltype(m_offset)>(fp)),
       m_size(tools::read_val<decltype(m_size)>(fp))
   {}
   explicit FileData(std::istream &fp)
     : FileData(fp, tools::read_val<std::uint32_t>(fp))
-  {
-    tools::replace_slashes(m_filename);// make sure slashes match compiler
-  }
+  {}
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
     const fiT &fi) noexcept
@@ -74,15 +74,17 @@ public:
       m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
   {}
   // size of this file entry in the zzz file.
-  [[maybe_unused]] [[nodiscard]] constexpr auto total_size()
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    total_size()
   {
     return sizeof(unsigned int) + std::ranges::size(m_filename)
-           + sizeof(m_offset) + sizeof(m_size);
+         + sizeof(m_offset) + sizeof(m_size);
   }
   /**
    * gets path as a std::filesystem::path
    */
-  [[maybe_unused]] [[nodiscard]] auto get_path() const
+  [[maybe_unused]] [[nodiscard]] auto
+    get_path() const
   {
     return std::filesystem::path(m_filename);
   }
@@ -111,14 +113,16 @@ public:
   /**
    * get offset of file
    */
-  [[maybe_unused]] [[nodiscard]] constexpr auto offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    offset() const noexcept
   {
     return m_offset;
   }
   /**
    * gets path as a std::string_view
    */
-  [[maybe_unused]] [[nodiscard]] auto get_path_string() const
+  [[maybe_unused]] [[nodiscard]] auto
+    get_path_string() const
   {
     return std::string_view(m_filename);
   }

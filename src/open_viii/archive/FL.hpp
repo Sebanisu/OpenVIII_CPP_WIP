@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_FL_HPP
 #define VIIIARCHIVE_FL_HPP
 #include "open_viii/tools/Tools.hpp"
+#include "tl/string.hpp"
 #include <cassert>
 #include <filesystem>
 #include <fstream>
@@ -35,39 +36,6 @@ namespace open_viii::archive::fl {
  */
 
 /**
- * Remove c:\ drive letter from start of file.
- * @param input
- */
-static void
-  remove_drive_letter(std::string &input)
-{
-  constexpr static auto letters =
-    std::string_view("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-  if (input[1] == ':' && (input[2] == '\\' || input[2] == '/')
-      && std::ranges::any_of(letters, [&input](const char &c) {
-           return input[0] == c;
-         })) {
-    input.erase(0, 3);// remove c:\ from the start of the strings.
-  }
-}
-static std::string
-  remove_drive_letter(std::string &&input)
-{
-  remove_drive_letter(input);
-  return std::move(input);
-}
-/**
- * Remove the \r from the end of the string
- * @param input
- */
-static void
-  remove_carriage_return(std::string &input)
-{
-  while (input.back() == '\r') {
-    input.pop_back();
-  }// remove the carriage return character
-}
-/**
  * Remove the C:\ from the start, remove the \r from the end, and change \ to
  * the correct slash. added skipFixed if data is set then i probably fixed
  * slashes already.
@@ -80,10 +48,10 @@ constexpr static void
   clean_path_string(std::string &input, const bool &skip_fixed = true) noexcept
 {
   if (std::ranges::size(input) > 4) {
-    remove_drive_letter(input);
+    tl::string::remove_drive_letter(input);
     if (skip_fixed) {
-      remove_carriage_return(input);
-      tools::replace_slashes(input);
+      tl::string::remove_carriage_return_from_end(input);
+      tl::string::replace_slashes(input);
     }
   }
 }
@@ -242,14 +210,8 @@ constexpr const static auto EXT = std::string_view(".FL");
 [[maybe_unused]] static std::string
   clean_buffer(std::string &&in_buffer)
 {
-  std::string buffer(std::move(in_buffer));
-  // remove carriage returns
-  std::erase(buffer, '\r');
-  // buffer.erase(std::remove(buffer.begin(), buffer.end(), '\r'),
-  // buffer.end());
-  // change slashes to preferred
-  tools::replace_slashes(buffer);
-  return buffer;
+  return tl::string::replace_slashes(
+    tl::string::remove_carriage_return(std::move(in_buffer)));
 }
 }// namespace open_viii::archive::fl
 #endif// !VIIIARCHIVE_FL_HPP

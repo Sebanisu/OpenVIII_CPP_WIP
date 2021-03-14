@@ -40,12 +40,12 @@ int
       check_count(55U);
     };
     "FI entry offset"_test = [] {
-      expect(eq(get_fi_entry_offset(5U, 5U), 65U));
-      expect(eq(get_fi_entry_offset(45U, 3U), 543U));
-      expect(eq(get_fi_entry_offset(90U, 1U), 1081U));
-      expect(eq(get_fi_entry_offset(2U, 9U), 33U));
-      expect(eq(get_fi_entry_offset(1U, 0U), 12U));
-      expect(eq(get_fi_entry_offset(19U, 55U), 283U));
+      expect(eq(FI::get_fi_entry_offset(5U, 5U), 65U));
+      expect(eq(FI::get_fi_entry_offset(45U, 3U), 543U));
+      expect(eq(FI::get_fi_entry_offset(90U, 1U), 1081U));
+      expect(eq(FI::get_fi_entry_offset(2U, 9U), 33U));
+      expect(eq(FI::get_fi_entry_offset(1U, 0U), 12U));
+      expect(eq(FI::get_fi_entry_offset(19U, 55U), 283U));
     };
   };
 }

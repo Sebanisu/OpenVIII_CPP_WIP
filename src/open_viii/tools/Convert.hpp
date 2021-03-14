@@ -53,16 +53,6 @@ static constexpr auto upper(int ch)
 static_assert(upper('a') == 'A');
 static_assert(upper('a') != 'Z');
 /**
- * replace all slashes with the os's slashes.
- * @param haystack string with slashes
- * @todo add tests
- */
-[[maybe_unused]] static void replace_slashes(std::string &haystack)
-{
-  std::ranges::replace(
-    haystack, '\\', std::filesystem::path::preferred_separator);
-}
-/**
  * use std::to_string and pad the value.
  * @param value initial integer value.
  * @param total_length default {}, sets the desired length
