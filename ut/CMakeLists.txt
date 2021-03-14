@@ -7,7 +7,7 @@ target_link_libraries(${PROJECT_NAME}_FS
 add_test_common(compression)
 target_link_libraries(${PROJECT_NAME}_compression
         PRIVATE ${PROJECT_NAME}_VIIICompression
-        PRIVATE Threads::Threads
+        PRIVATE ToolsLibrary_tl
         )
 add_test_common(FI)
 target_link_libraries(${PROJECT_NAME}_FI
@@ -15,3 +15,4 @@ target_link_libraries(${PROJECT_NAME}_FI
         )
 
 #PRIVATE ToolsLibrary_tl
+#PRIVATE Threads::Threads
