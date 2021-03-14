@@ -14,7 +14,7 @@ target_link_libraries(${PROJECT_NAME}_FI
         PRIVATE ${PROJECT_NAME}_VIIIArchive
         )
 add_test_common(FL)
-target_link_libraries(${PROJECT_NAME}_FI
+target_link_libraries(${PROJECT_NAME}_FL
         PRIVATE ${PROJECT_NAME}_VIIIArchive
         )
 
