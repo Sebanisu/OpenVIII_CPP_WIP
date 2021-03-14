@@ -16,6 +16,7 @@
 #include <cassert>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <initializer_list>
 #include <iostream>
 #include <optional>
@@ -24,6 +25,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
 namespace open_viii::archive::fl {
 /**
  * FL files contain internal file structure paths. As a flat text file. This
@@ -31,6 +33,40 @@ namespace open_viii::archive::fl {
  * The entry will be a string paired with an int that is the line number. This
  * is used to ID the FI entries.
  */
+
+/**
+ * Remove c:\ drive letter from start of file.
+ * @param input
+ */
+static void
+  remove_drive_letter(std::string &input)
+{
+  constexpr static auto letters =
+    std::string_view("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  if (input[1] == ':' && (input[2] == '\\' || input[2] == '/')
+      && std::ranges::any_of(letters, [&input](const char &c) {
+           return input[0] == c;
+         })) {
+    input.erase(0, 3);// remove c:\ from the start of the strings.
+  }
+}
+static std::string
+  remove_drive_letter(std::string &&input)
+{
+  remove_drive_letter(input);
+  return std::move(input);
+}
+/**
+ * Remove the \r from the end of the string
+ * @param input
+ */
+static void
+  remove_carriage_return(std::string &input)
+{
+  while (input.back() == '\r') {
+    input.pop_back();
+  }// remove the carriage return character
+}
 /**
  * Remove the C:\ from the start, remove the \r from the end, and change \ to
  * the correct slash. added skipFixed if data is set then i probably fixed
@@ -40,17 +76,13 @@ namespace open_viii::archive::fl {
  * slashes.
  * @return void
  */
-constexpr static void clean_string(std::string &input,
-                                   const bool & skip_fixed = true) noexcept
+constexpr static void
+  clean_path_string(std::string &input, const bool &skip_fixed = true) noexcept
 {
   if (std::ranges::size(input) > 4) {
-    if (tools::i_starts_with(input, "c:")) {
-      input.erase(0, 3);// remove c:\ from the start of the strings.
-    }
+    remove_drive_letter(input);
     if (skip_fixed) {
-      while (input.back() == '\r') {
-        input.pop_back();
-      }// remove the carriage return character
+      remove_carriage_return(input);
       tools::replace_slashes(input);
     }
   }
@@ -120,7 +152,7 @@ constexpr const static auto EXT = std::string_view(".FL");
             continue;
           }
           // https://youtu.be/oTMSgI1XjF8?t=1727
-          clean_string(
+          clean_path_string(
             vector
               .emplace_back(std::piecewise_construct,
                             std::forward_as_tuple(id),
@@ -139,12 +171,16 @@ constexpr const static auto EXT = std::string_view(".FL");
   } else {
     tools::read_from_file(process, path);
   }
-  std::ranges::sort(vector, [](const auto &left, const auto &right) {
-    if (left.second.length() == right.second.length()) {
-      return left.second < right.second;
-    }
-    return left.second.length() < right.second.length();
-  });
+  std::ranges::sort(vector,
+                    [](const std::pair<std::uint32_t, std::string> &left,
+                       const std::pair<std::uint32_t, std::string> &right) {
+                      const std::string &ls = std::get<1>(left);
+                      const std::string &rs = std::get<1>(right);
+                      if (std::ranges::size(ls) == std::ranges::size(rs)) {
+                        return (ls <=> rs) == std::strong_ordering::less;
+                      }
+                      return std::ranges::size(ls) < std::ranges::size(rs);
+                    });
   return vector;
 }
 // Get all entries from the FL file sorted and cleaned.
@@ -169,7 +205,7 @@ constexpr const static auto EXT = std::string_view(".FL");
  * @param count is max results returned. 0 is unlimited.
  * @return
  */
-[[nodiscard]] static auto
+[[maybe_unused]] [[nodiscard]] static auto
   get_entry_data(const std::filesystem::path &                  path,
                  const std::string &                            data,
                  const std::initializer_list<std::string_view> &needle,
@@ -188,7 +224,7 @@ constexpr const static auto EXT = std::string_view(".FL");
   return buffer.front();
 }
 // Get a single entry that is the first match for needle.
-[[nodiscard]] static auto
+[[maybe_unused]] [[nodiscard]] static auto
   get_entry(const std::filesystem::path &                  path,
             const std::initializer_list<std::string_view> &needle,
             const size_t &                                 offset = 0U,
@@ -203,7 +239,8 @@ constexpr const static auto EXT = std::string_view(".FL");
   }
   return data.front();
 }
- static std::string clean_buffer(std::string && in_buffer)
+[[maybe_unused]] static std::string
+  clean_buffer(std::string &&in_buffer)
 {
   std::string buffer(std::move(in_buffer));
   // remove carriage returns
