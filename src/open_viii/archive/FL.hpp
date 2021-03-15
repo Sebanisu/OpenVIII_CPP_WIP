@@ -57,6 +57,18 @@ constexpr static void
 }
 
 /**
+ * Take out carriage returns and replace slashes.
+ * @param in_buffer multi line string of paths.
+ * @return cleaned.
+ */
+[[nodiscard]] [[maybe_unused]] static std::string
+  clean_buffer(std::string &&in_buffer)
+{
+  return tl::string::replace_slashes(
+    tl::string::remove_carriage_return(std::move(in_buffer)));
+}
+
+/**
  * Remove the C:\ from the start, remove the \r from the end, and change \ to
  * the correct slash. added skipFixed if data is set then i probably fixed
  * slashes already.
@@ -65,7 +77,7 @@ constexpr static void
  * slashes.
  * @return modified input
  */
-[[maybe_unused]] static std::string
+[[nodiscard]] [[maybe_unused]] static std::string
   clean_path_string(std::string &&input,
                     const bool &  skip_fixed = false) noexcept
 {
@@ -84,7 +96,7 @@ constexpr const static auto EXT = std::string_view(".FL");
  * @param limit manual limit placed
  * @return 0 or count or limit;
  */
-static std::size_t
+[[nodiscard]] [[maybe_unused]] static std::size_t
   get_max(const std::size_t &count, const std::size_t &limit)
 {
   if (count != 0U) {
@@ -96,30 +108,62 @@ static std::size_t
   }
   return {};
 }
-static std::vector<std::pair<std::uint32_t, std::string>> &
+
+/**
+ * Sort the strings. to make it easier to choose the correct string first.
+ * shorter length and then what ever str < str2 does.
+ * @param vector pairs of ints and paths
+ */
+static void
+  sort_entries(std::vector<std::pair<std::uint32_t, std::string>> &vector)
+{
+  std::ranges::stable_sort(
+    vector,
+    [](const std::pair<std::uint32_t, std::string> &left,
+       const std::pair<std::uint32_t, std::string> &right) {
+      const std::string &ls = std::get<1>(left);
+      const std::string &rs = std::get<1>(right);
+      if (std::ranges::size(ls) == std::ranges::size(rs)) {
+        return (ls <=> rs) == std::strong_ordering::less;
+      }
+      return std::ranges::size(ls) < std::ranges::size(rs);
+    });
+}
+
+/**
+ * Sort the strings. to make it easier to choose the correct string first.
+ * shorter length and then what ever str < str2 does.
+ * @param vector pairs of ints and paths
+ * @return sorted vector
+ */
+[[nodiscard]] [[maybe_unused]] static std::vector<
+  std::pair<std::uint32_t, std::string>> &
   sort_entries(std::vector<std::pair<std::uint32_t, std::string>> &&vector)
-{// sort the strings. to make it easier to choose the correct string first.
-  // shorter length and then what ever str < str2 does.
-  std::ranges::sort(vector,
-                    [](const std::pair<std::uint32_t, std::string> &left,
-                       const std::pair<std::uint32_t, std::string> &right) {
-                      const std::string &ls = std::get<1>(left);
-                      const std::string &rs = std::get<1>(right);
-                      if (std::ranges::size(ls) == std::ranges::size(rs)) {
-                        return (ls <=> rs) == std::strong_ordering::less;
-                      }
-                      return std::ranges::size(ls) < std::ranges::size(rs);
-                    });
+{
+  sort_entries(vector);
   return vector;
 }
-[[nodiscard]] static std::vector<std::pair<std::uint32_t, std::string>>
-  get_all_entries_data(
-    const tl::read::input &                        cont,
-    const size_t &                                 offset,
-    const size_t &                                 size   = 0U,
-    const size_t &                                 count  = 0U,
-    const std::initializer_list<std::string_view> &needle = {},
-    const size_t &                                 limit  = 0U)
+
+/**
+ * Eagerly populate a vector with pairs of (id,path), then sort it.
+ * @param cont wrapper on istream or span. For the source data.
+ * @param offset to start of data.
+ * @param size + offset is the end of the data.
+ * @param count max count detected from FI filesize / 12U.
+ * @param needle set of strings to search for.
+ * @param limit manually set max count.
+ * @note If size, limit, count are all 0 it'll read till end of file. Or till it
+ * reads an empty line.
+ * @todo make needle a predicate lambda.
+ */
+[[nodiscard]] [[maybe_unused]] static std::vector<
+  std::pair<std::uint32_t, std::string>>
+  get_all_entries(const tl::read::input &                        cont,
+                  const size_t &                                 offset,
+                  const size_t &                                 size   = 0U,
+                  const size_t &                                 count  = 0U,
+                  const std::initializer_list<std::string_view> &needle = {},
+                  const size_t &                                 limit  = 0U)
 {
   std::vector<std::pair<std::uint32_t, std::string>> vector{};
   cont.seek(static_cast<std::intmax_t>(offset), std::ios::beg);
@@ -149,6 +193,39 @@ static std::vector<std::pair<std::uint32_t, std::string>> &
   }
   return sort_entries(std::move(vector));
 }
+// Get all entries from the FL file sorted and cleaned.
+[[nodiscard]] [[maybe_unused]] static auto
+  get_all_entries(const std::filesystem::path &                  path,
+                  const size_t &                                 offset,
+                  const size_t &                                 size   = 0U,
+                  const size_t &                                 count  = 0U,
+                  const std::initializer_list<std::string_view> &needle = {},
+                  const size_t &                                 limit  = 0U)
+{
+
+  std::vector<std::pair<std::uint32_t, std::string>> vector{};
+  tl::read::from_file(
+    [&](std::istream &istream) {
+      vector = get_all_entries(
+        tl::read::input(&istream, true), offset, size, count, needle, limit);
+    },
+    path);
+  return vector;
+}
+
+[[nodiscard]] [[maybe_unused]] static std::vector<
+  std::pair<std::uint32_t, std::string>>
+  get_all_entries(const std::string &                            data,
+                  const size_t &                                 offset,
+                  const size_t &                                 size,
+                  const size_t &                                 count,
+                  const std::initializer_list<std::string_view> &needle,
+                  const size_t &                                 limit)
+{
+  return get_all_entries(
+    tl::read::input(data, true), offset, size, count, needle, limit);
+}
+
 /**
  * Get All entries sorted from file or data buffer.
  * @param path filename path.
@@ -161,7 +238,8 @@ static std::vector<std::pair<std::uint32_t, std::string>> &
  * @param limit max matches; 0 == unlimited
  * @return matches
  */
-[[nodiscard]] static std::vector<std::pair<std::uint32_t, std::string>>
+[[nodiscard]] [[maybe_unused]] static std::vector<
+  std::pair<std::uint32_t, std::string>>
   get_all_entries_data(
     const std::filesystem::path &                  path,
     const std::string &                            data,
@@ -172,82 +250,59 @@ static std::vector<std::pair<std::uint32_t, std::string>> &
     const size_t &                                 limit  = 0U)
 {
 
-  std::vector<std::pair<std::uint32_t, std::string>> vector{};
   if (!std::empty(data) && data.front() != '\0') {
-    vector = get_all_entries_data(
-      tl::read::input(data, true), offset, size, count, needle, limit);
+    return get_all_entries(data, offset, size, count, needle, limit);
   } else {
-    tl::read::from_file(
-      [&](std::istream &istream) {
-        vector = get_all_entries_data(
-          tl::read::input(&istream, true), offset, size, count, needle, limit);
-      },
-      path);
   }
+  return get_all_entries(path, offset, size, count, needle, limit);
+}
 
-  return vector;
-}
-// Get all entries from the FL file sorted and cleaned.
-[[maybe_unused]] [[nodiscard]] static auto
-  get_all_entries(const std::filesystem::path &                  path,
-                  const size_t &                                 offset,
-                  const size_t &                                 size   = 0,
-                  const size_t &                                 count  = 0,
-                  const std::initializer_list<std::string_view> &needle = {})
-{
-  auto tmp = std::string();
-  return get_all_entries_data(path, tmp, offset, size, count, needle);
-}
 /**
  * Get a single entry that is the first match for needle.
- * @param path contains path to file
- * @param data contains buffer of chars //required to be strings for
- * stringstream
+ * @param data contains buffer of chars
  * @param needle is a group of strings to filter the output with.
  * @param offset is the number of bytes to skip.
  * @param size is max number of bytes. 0 is unlimited.
  * @param count is max results returned. 0 is unlimited.
- * @return
  */
-[[maybe_unused]] [[nodiscard]] static auto
+template<typename T>
+[[nodiscard]] [[maybe_unused]] static auto
+  get_entry(const T &                                      data,
+            const std::initializer_list<std::string_view> &needle,
+            const size_t &                                 offset = 0U,
+            const size_t &                                 size   = 0U,
+            const size_t &                                 count  = 0U)
+{
+  auto vector  = get_all_entries(data, offset, size, count, needle, 1U);
+  using valueT = typename decltype(vector)::value_type;
+  if (std::empty(vector)) {
+    return valueT{};
+  }
+  return vector.front();
+}
+
+/**
+ * Get a single entry that is the first match for needle.
+ * @param path contains path to file
+ * @param data contains buffer of chars
+ * @param needle is a group of strings to filter the output with.
+ * @param offset is the number of bytes to skip.
+ * @param size is max number of bytes. 0 is unlimited.
+ * @param count is max results returned. 0 is unlimited.
+ */
+[[nodiscard]] [[maybe_unused]] static auto
   get_entry_data(const std::filesystem::path &                  path,
                  const std::string &                            data,
                  const std::initializer_list<std::string_view> &needle,
                  const size_t &                                 offset = 0U,
                  const size_t &                                 size   = 0U,
                  const size_t &                                 count  = 0U)
-{// Maybe should search all entries instead of using this because this is not
- // sorted. Sorting matters when the
-  // strings are similar. Though this might be faster if only getting a few
-  // files from an archive.
-  auto buffer =
-    get_all_entries_data(path, data, offset, size, count, needle, 1U);
-  if (std::empty(buffer)) {
-    return std::make_pair(0U, std::string());
-  }
-  return buffer.front();
-}
-// Get a single entry that is the first match for needle.
-[[maybe_unused]] [[nodiscard]] static auto
-  get_entry(const std::filesystem::path &                  path,
-            const std::initializer_list<std::string_view> &needle,
-            const size_t &                                 offset = 0U,
-            const size_t &                                 size   = 0U,
-            const size_t &                                 count  = 0U)
-{// Maybe should search all entries instead of using this because this is not
- // sorted. Sorting matters when the strings are similar. Though this might be
- // faster if only getting a few files from an archive.
-  auto data = get_all_entries_data(path, "", offset, size, count, needle, 1U);
-  if (std::empty(data)) {
-    return std::make_pair(0U, std::string());
-  }
-  return data.front();
-}
-[[maybe_unused]] static std::string
-  clean_buffer(std::string &&in_buffer)
 {
-  return tl::string::replace_slashes(
-    tl::string::remove_carriage_return(std::move(in_buffer)));
+  if (std::ranges::empty(data)) {
+    return get_entry(path, needle, offset, size, count);
+  }
+  return get_entry(data, needle, offset, size, count);
 }
+
 }// namespace open_viii::archive::fl
 #endif// !VIIIARCHIVE_FL_HPP
