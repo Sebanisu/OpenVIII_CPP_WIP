@@ -13,8 +13,6 @@ int
   using namespace std::string_view_literals;
   [[maybe_unused]] suite tests = [] {
     "clean_path_string"_test = [] {
-      /* on windows the \ stays on linux it's a /
-       * so the only things the same are removing \r and c:\ */
       const auto check = [](std::string input) {
         const auto find_r = [](const char &c) -> bool {
           return c == '\r';
@@ -23,8 +21,17 @@ int
         std::string_view view{ input };
         const auto       start = view.substr(0, 3U);
         const auto       has_r = std::ranges::none_of(input, find_r);
-        expect(neq(start,R"(c:\)"sv));
-        expect(neq(start,R"(C:\)"sv));
+        if constexpr (std::filesystem::path::preferred_separator == '/') {
+          const auto find_slash = [](const char &c) -> bool {
+            return c == '\\';
+          };
+          /* on windows the \ stays on linux it's a /
+           * so the only things the same are removing \r and c:\ */
+          const auto has_slash = std::ranges::none_of(input, find_slash);
+          expect(has_slash);
+        }
+        expect(neq(start, R"(c:\)"sv));
+        expect(neq(start, R"(C:\)"sv));
         expect(has_r);
       };
       check(R"(c:\test\blah\blah\blah)"s);
