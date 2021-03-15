@@ -13,9 +13,9 @@
 #ifndef VIIIARCHIVE_FL_HPP
 #define VIIIARCHIVE_FL_HPP
 #include "open_viii/tools/Tools.hpp"
-#include "tl/string.hpp"
 #include "tl/input.hpp"
 #include "tl/read.hpp"
+#include "tl/string.hpp"
 #include <cassert>
 #include <filesystem>
 #include <fstream>
@@ -59,18 +59,6 @@ constexpr static void
 }
 
 /**
- * Take out carriage returns and replace slashes.
- * @param in_buffer multi line string of paths.
- * @return cleaned.
- */
-[[nodiscard]] [[maybe_unused]] static std::string
-  clean_buffer(std::string &&in_buffer)
-{
-  return tl::string::replace_slashes(
-    tl::string::remove_carriage_return(std::move(in_buffer)));
-}
-
-/**
  * Remove the C:\ from the start, remove the \r from the end, and change \ to
  * the correct slash. added skipFixed if data is set then i probably fixed
  * slashes already.
@@ -88,6 +76,20 @@ constexpr static void
 }
 
 /**
+ * Take out carriage returns and replace slashes.
+ * @param in_buffer multi line string of paths.
+ * @return cleaned.
+ */
+[[nodiscard]] [[maybe_unused]] static std::string
+  clean_buffer(std::string &&in_buffer)
+{
+  return tl::string::replace_slashes(tl::string::remove_carriage_return(
+    tl::string::erase_string_from_string(std::move(in_buffer),
+                                         std::string_view(R"(c:\)"),
+                                         std::string_view(R"(C:\)"))));
+}
+
+/**
  * File extension
  */
 constexpr const static auto EXT = std::string_view(".FL");
@@ -98,15 +100,14 @@ constexpr const static auto EXT = std::string_view(".FL");
  * @param limit manual limit placed
  * @return 0 or count or limit;
  */
-[[nodiscard]] [[maybe_unused]] static std::size_t
+[[nodiscard]] [[maybe_unused]] static constexpr std::size_t
   get_max(const std::size_t &count, const std::size_t &limit)
 {
-  if (count != 0U) {
-    if (limit != 0U && count > limit) {
-      return limit;
-    } else {
-      return count;
-    }
+  std::array<std::size_t, 2U> args = { count, limit };
+  std::ranges::sort(args);
+  for (const auto arg : args) {
+    if (arg != 0U)
+      return arg;
   }
   return {};
 }
@@ -242,14 +243,13 @@ static void
  */
 [[nodiscard]] [[maybe_unused]] static std::vector<
   std::pair<std::uint32_t, std::string>>
-  get_all_entries_data(
-    const std::filesystem::path &                  path,
-    const std::string &                            data,
-    const size_t &                                 offset,
-    const size_t &                                 size   = 0U,
-    const size_t &                                 count  = 0U,
-    const std::initializer_list<std::string_view> &needle = {},
-    const size_t &                                 limit  = 0U)
+  get_all_entries(const std::filesystem::path &                  path,
+                  const std::string &                            data,
+                  const size_t &                                 offset,
+                  const size_t &                                 size   = 0U,
+                  const size_t &                                 count  = 0U,
+                  const std::initializer_list<std::string_view> &needle = {},
+                  const size_t &                                 limit  = 0U)
 {
 
   if (!std::empty(data) && data.front() != '\0') {
@@ -293,12 +293,12 @@ template<typename T>
  * @param count is max results returned. 0 is unlimited.
  */
 [[nodiscard]] [[maybe_unused]] static auto
-  get_entry_data(const std::filesystem::path &                  path,
-                 const std::string &                            data,
-                 const std::initializer_list<std::string_view> &needle,
-                 const size_t &                                 offset = 0U,
-                 const size_t &                                 size   = 0U,
-                 const size_t &                                 count  = 0U)
+  get_entry(const std::filesystem::path &                  path,
+            const std::string &                            data,
+            const std::initializer_list<std::string_view> &needle,
+            const size_t &                                 offset = 0U,
+            const size_t &                                 size   = 0U,
+            const size_t &                                 count  = 0U)
 {
   if (std::ranges::empty(data)) {
     return get_entry(path, needle, offset, size, count);

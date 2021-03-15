@@ -47,6 +47,7 @@ private:
   {
     m_count = FI::get_count(m_fi.size());
   }
+
 public:
   [[maybe_unused]] [[nodiscard]] const auto &
     fi() const noexcept
@@ -237,12 +238,12 @@ public:
       return open_viii::archive::fl::get_entry(
         m_fl.path(), { filename }, m_fl.offset(), m_fl.size(), m_count);
     }
-    return open_viii::archive::fl::get_entry_data(m_fl.path(),
-                                                  m_fl.data(),
-                                                  { filename },
-                                                  m_fl.offset(),
-                                                  m_fl.size(),
-                                                  m_count);
+    return open_viii::archive::fl::get_entry(m_fl.path(),
+                                             m_fl.data(),
+                                             { filename },
+                                             m_fl.offset(),
+                                             m_fl.size(),
+                                             m_count);
   }
   template<typename outT = std::vector<char>>
   [[nodiscard]] outT
@@ -255,7 +256,7 @@ public:
     get_vector_of_indexes_and_files(
       const std::initializer_list<std::string_view> &filename) const
   {
-    return archive::fl::get_all_entries_data(
+    return archive::fl::get_all_entries(
       m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
   }
   template<typename lambdaT>
@@ -291,7 +292,7 @@ public:
       return;
     }
     FIFLFS<false> archive{};
-    const auto    items = archive::fl::get_all_entries_data(
+    const auto    items = archive::fl::get_all_entries(
       m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
     std::for_each(
       std::execution::seq,
@@ -388,7 +389,7 @@ public:
     if constexpr (!HasNested) {
       return archive;
     }
-    const auto items = archive::fl::get_all_entries_data(
+    const auto items = archive::fl::get_all_entries(
       m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
     for (const auto &[id, strVirtualPath] : items) {
       TryAddT tryAddT = get_fiflfs(archive, id, strVirtualPath);
@@ -404,7 +405,7 @@ public:
   {
     std::vector<FIFLFS<false>> out{};
     FIFLFS<false>              archive{};
-    const auto                 items = archive::fl::get_all_entries_data(
+    const auto                 items = archive::fl::get_all_entries(
       m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
     for (const auto &[id, strVirtualPath] : items) {
       switch (get_fiflfs(archive, id, strVirtualPath)) {
