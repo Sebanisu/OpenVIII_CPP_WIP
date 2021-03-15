@@ -14,6 +14,8 @@
 #define VIIIARCHIVE_FL_HPP
 #include "open_viii/tools/Tools.hpp"
 #include "tl/string.hpp"
+#include "tl/input.hpp"
+#include "tl/read.hpp"
 #include <cassert>
 #include <filesystem>
 #include <fstream>
