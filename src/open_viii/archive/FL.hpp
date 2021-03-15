@@ -55,7 +55,100 @@ constexpr static void
     }
   }
 }
+
+/**
+ * Remove the C:\ from the start, remove the \r from the end, and change \ to
+ * the correct slash. added skipFixed if data is set then i probably fixed
+ * slashes already.
+ * @param input updates this string
+ * @param skipFixed if false skip removing the \r from end and skip replacing
+ * slashes.
+ * @return modified input
+ */
+[[maybe_unused]] static std::string
+  clean_path_string(std::string &&input,
+                    const bool &  skip_fixed = false) noexcept
+{
+  clean_path_string(input, skip_fixed);
+  return std::move(input);
+}
+
+/**
+ * File extension
+ */
 constexpr const static auto EXT = std::string_view(".FL");
+
+/**
+ * Decide how much to reserve based on known count or a set limit.
+ * @param count computed max count
+ * @param limit manual limit placed
+ * @return 0 or count or limit;
+ */
+static std::size_t
+  get_max(const std::size_t &count, const std::size_t &limit)
+{
+  if (count != 0U) {
+    if (limit != 0U && count > limit) {
+      return limit;
+    } else {
+      return count;
+    }
+  }
+  return {};
+}
+static std::vector<std::pair<std::uint32_t, std::string>> &
+  sort_entries(std::vector<std::pair<std::uint32_t, std::string>> &&vector)
+{// sort the strings. to make it easier to choose the correct string first.
+  // shorter length and then what ever str < str2 does.
+  std::ranges::sort(vector,
+                    [](const std::pair<std::uint32_t, std::string> &left,
+                       const std::pair<std::uint32_t, std::string> &right) {
+                      const std::string &ls = std::get<1>(left);
+                      const std::string &rs = std::get<1>(right);
+                      if (std::ranges::size(ls) == std::ranges::size(rs)) {
+                        return (ls <=> rs) == std::strong_ordering::less;
+                      }
+                      return std::ranges::size(ls) < std::ranges::size(rs);
+                    });
+  return vector;
+}
+[[nodiscard]] static std::vector<std::pair<std::uint32_t, std::string>>
+  get_all_entries_data(
+    const tl::read::input &                        cont,
+    const size_t &                                 offset,
+    const size_t &                                 size   = 0U,
+    const size_t &                                 count  = 0U,
+    const std::initializer_list<std::string_view> &needle = {},
+    const size_t &                                 limit  = 0U)
+{
+  std::vector<std::pair<std::uint32_t, std::string>> vector{};
+  cont.seek(static_cast<std::intmax_t>(offset), std::ios::beg);
+  std::size_t max = get_max(count, limit);
+  if (max != 0) {
+    vector.reserve(max);
+  }
+  // id numerical order is same order as fi data. So need to keep the id so
+  // we can reference the fi correctly.
+  {
+    for (std::uint32_t id = 0; (count == 0U || std::ranges::size(vector) < max)
+                               && (size == 0U || (cont.tell() < size + offset));
+         ++id) {
+      const std::string inner_path = clean_path_string(cont.get_line());
+      if (std::ranges::empty(inner_path)) {
+        break;
+      }
+      if (!tools::i_find_any(inner_path, needle)) {
+        continue;
+      }
+
+      // https://youtu.be/oTMSgI1XjF8?t=1727
+      vector.emplace_back(std::piecewise_construct,
+                          std::forward_as_tuple(id),
+                          std::forward_as_tuple(std::move(inner_path)));
+    }
+  }
+  return sort_entries(std::move(vector));
+}
 /**
  * Get All entries sorted from file or data buffer.
  * @param path filename path.
@@ -68,7 +161,7 @@ constexpr const static auto EXT = std::string_view(".FL");
  * @param limit max matches; 0 == unlimited
  * @return matches
  */
-[[nodiscard]] static std::vector<std::pair<unsigned int, std::string>>
+[[nodiscard]] static std::vector<std::pair<std::uint32_t, std::string>>
   get_all_entries_data(
     const std::filesystem::path &                  path,
     const std::string &                            data,
@@ -78,77 +171,20 @@ constexpr const static auto EXT = std::string_view(".FL");
     const std::initializer_list<std::string_view> &needle = {},
     const size_t &                                 limit  = 0U)
 {
-  // TODO break this code up
-  std::vector<std::pair<unsigned int, std::string>> vector{};
-  const auto                                        process =
-    [&limit, &count, &size, &vector, &offset, &needle, &data](auto &cont) {
-      {// Get length
-        cont.seekg(0, std::ios::end);
-        auto length = cont.tellg();
-        // Goto Offset
-        if (!cont.seekg(static_cast<long>(offset))) {
-          // Error on failure
-          std::cerr << "failed to seek to offset: " << offset
-                    << "; length: " << length << ";\n";
-          exit(EXIT_FAILURE);
-        }
-      }
-      if (count > 0) {
-        if (limit > 0 && count > limit) {
-          vector.reserve(limit);
-        } else {
-          vector.reserve(count);
-        }
-      }
-      // id numerical order is same order as fi data. So need to keep the id so
-      // we can reference the fi correctly.
-      {
-        std::basic_string<char> inner_path;
-        for (unsigned int id = 0;
-             (count == 0U || std::ranges::size(vector) < count)
-               && (size == 0U
-                   || static_cast<std::size_t>(cont.tellg()) < size + offset)
-               && [&inner_path, &cont]() -> bool {
-               if (cont.seekg(3, std::ios::cur)) {
-                 /* skip c:\ */
-                 return static_cast<bool>(std::getline(cont, inner_path));
-               }
-               return false;
-             }();
-             id++) {
-          if (!tools::i_find_any(inner_path, needle)) {
-            continue;
-          }
-          // https://youtu.be/oTMSgI1XjF8?t=1727
-          clean_path_string(
-            vector
-              .emplace_back(std::piecewise_construct,
-                            std::forward_as_tuple(id),
-                            std::forward_as_tuple(std::move(inner_path)))
-              .second,
-            std::empty(data));
-          inner_path = {};
-        }
-      }
-    };
-  // sort the strings. to make it easier to choose the correct string first.
-  // shorter length and then what ever str < str2 does.
+
+  std::vector<std::pair<std::uint32_t, std::string>> vector{};
   if (!std::empty(data) && data.front() != '\0') {
-    auto ss = std::stringstream(data);
-    process(ss);
+    vector = get_all_entries_data(
+      tl::read::input(data, true), offset, size, count, needle, limit);
   } else {
-    tools::read_from_file(process, path);
+    tl::read::from_file(
+      [&](std::istream &istream) {
+        vector = get_all_entries_data(
+          tl::read::input(&istream, true), offset, size, count, needle, limit);
+      },
+      path);
   }
-  std::ranges::sort(vector,
-                    [](const std::pair<std::uint32_t, std::string> &left,
-                       const std::pair<std::uint32_t, std::string> &right) {
-                      const std::string &ls = std::get<1>(left);
-                      const std::string &rs = std::get<1>(right);
-                      if (std::ranges::size(ls) == std::ranges::size(rs)) {
-                        return (ls <=> rs) == std::strong_ordering::less;
-                      }
-                      return std::ranges::size(ls) < std::ranges::size(rs);
-                    });
+
   return vector;
 }
 // Get all entries from the FL file sorted and cleaned.
