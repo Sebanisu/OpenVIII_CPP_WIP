@@ -47,15 +47,13 @@ namespace open_viii::archive::fl {
  * @return void
  */
 constexpr static void
-  clean_path_string(std::string &input, const bool &skip_fixed = true) noexcept
+  clean_path_string(std::string &input) noexcept
 {
 
   if (std::ranges::size(input) > 4 && input[1] == ':') {
     tl::string::remove_drive_letter(input);
-    if (skip_fixed) {
-      tl::string::remove_carriage_return_from_end(input);
-      tl::string::replace_slashes(input);
-    }
+    tl::string::remove_carriage_return_from_end(input);
+    tl::string::replace_slashes(input);
   }
 }
 
@@ -69,10 +67,8 @@ constexpr static void
  * @return modified input
  */
 [[nodiscard]] [[maybe_unused]] static std::string
-  clean_path_string(std::string &&input,
-                    const bool &  skip_fixed = false) noexcept
-{
-  clean_path_string(input, skip_fixed);
+  clean_path_string(std::string &&input) noexcept{
+  clean_path_string(input);
   return std::move(input);
 }
 
