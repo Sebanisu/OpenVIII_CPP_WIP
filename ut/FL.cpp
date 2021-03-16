@@ -56,18 +56,43 @@ C\test5\test6\)"s);
           "(c:\\test1\\\r\nc:\\test2\\test3\\\r\nC:\\test4\\test5\\\r\nC:\\test5\\test6\\\r\n"s);
       };
     }
-    "get_max"_test         = [] {
-      static const auto check = [](std::size_t count, std::size_t limit, std::size_t expected)
-      {
-        expect(eq(open_viii::archive::fl::get_max(count,limit),expected));
-      };
-      check(0U,0U,0U);
-      check(0U,1U,1U);
-      check(10U,1U,1U);
-      check(1U,10U,1U);
+    "get_max"_test = [] {
+      static const auto check =
+        [](std::size_t count, std::size_t limit, std::size_t expected) {
+          expect(eq(open_viii::archive::fl::get_max(count, limit), expected));
+        };
+      check(0U, 0U, 0U);
+      check(0U, 1U, 1U);
+      check(10U, 1U, 1U);
+      check(1U, 10U, 1U);
     };
-    "sort_entries"_test    = [] {
-      /* this test will be giving unsorted data and comparing it to the sorted one.*/
+    "sort_entries"_test = [] {
+      /* this test will be giving unsorted data and comparing it to the sorted
+       * one.*/
+      static const auto check =
+        [](std::vector<std::pair<std::uint32_t, std::string>> &&unsorted,
+           std::vector<std::pair<std::uint32_t, std::string>> &&expected) {
+          const auto vector =
+            open_viii::archive::fl::sort_entries(std::move(unsorted));
+          auto f2 = std::ranges::begin(expected);
+          for (auto f = std::ranges::begin(vector);
+               f != std::ranges::end(vector);
+               ++f, ++f2) {
+            expect(eq(f->second, f2->second));
+          }
+        };
+      check(std::vector{ std::make_pair(0U, R"(c:\c)"s),
+                         std::make_pair(0U, R"(c:\aa)"s),
+                         std::make_pair(0U, R"(c:\b)"s),
+                         std::make_pair(0U, R"(c:\cc)"s),
+                         std::make_pair(0U, R"(c:\a)"s),
+                         std::make_pair(0U, R"(c:\bb)"s) },
+            std::vector{ std::make_pair(0U, R"(c:\a)"s),
+                         std::make_pair(0U, R"(c:\b)"s),
+                         std::make_pair(0U, R"(c:\c)"s),
+                         std::make_pair(0U, R"(c:\aa)"s),
+                         std::make_pair(0U, R"(c:\bb)"s),
+                         std::make_pair(0U, R"(c:\cc)"s) });
     };
     "get_all_entries"_test = [] {};
     "get_entry"_test       = [] {};

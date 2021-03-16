@@ -117,7 +117,7 @@ constexpr const static auto EXT = std::string_view(".FL");
 static void
   sort_entries(std::vector<std::pair<std::uint32_t, std::string>> &vector)
 {
-  std::ranges::stable_sort(
+  std::ranges::sort(
     vector,
     [](const std::pair<std::uint32_t, std::string> &left,
        const std::pair<std::uint32_t, std::string> &right) {
