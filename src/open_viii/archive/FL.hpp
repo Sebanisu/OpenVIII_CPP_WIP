@@ -67,7 +67,8 @@ constexpr static void
  * @return modified input
  */
 [[nodiscard]] [[maybe_unused]] static std::string
-  clean_path_string(std::string &&input) noexcept{
+  clean_path_string(std::string &&input) noexcept
+{
   clean_path_string(input);
   return std::move(input);
 }
@@ -115,19 +116,18 @@ constexpr const static auto EXT = std::string_view(".FL");
  * @param vector pairs of ints and paths
  */
 static void
-  sort_entries(std::vector<std::pair<std::uint32_t, std::string>> &vector)
+  sort_entries(std::span<std::pair<std::uint32_t, std::string>> vector)
 {
-  std::ranges::sort(
-    vector,
-    [](const std::pair<std::uint32_t, std::string> &left,
-       const std::pair<std::uint32_t, std::string> &right) {
-      const std::string &ls = std::get<1>(left);
-      const std::string &rs = std::get<1>(right);
-      if (std::ranges::size(ls) == std::ranges::size(rs)) {
-        return (ls <=> rs) == std::strong_ordering::less;
-      }
-      return std::ranges::size(ls) < std::ranges::size(rs);
-    });
+  std::ranges::sort(vector,
+                    [](const std::pair<std::uint32_t, std::string> &left,
+                       const std::pair<std::uint32_t, std::string> &right) {
+                      const std::string &ls = std::get<1>(left);
+                      const std::string &rs = std::get<1>(right);
+                      if (std::ranges::size(ls) == std::ranges::size(rs)) {
+                        return (ls <=> rs) == std::strong_ordering::less;
+                      }
+                      return std::ranges::size(ls) < std::ranges::size(rs);
+                    });
 }
 
 /**
@@ -136,12 +136,11 @@ static void
  * @param vector pairs of ints and paths
  * @return sorted vector
  */
-[[nodiscard]] [[maybe_unused]] static std::vector<
-  std::pair<std::uint32_t, std::string>> &
+[[nodiscard]] [[maybe_unused]] static auto
   sort_entries(std::vector<std::pair<std::uint32_t, std::string>> &&vector)
 {
   sort_entries(vector);
-  return vector;
+  return std::move(vector);
 }
 
 /**
