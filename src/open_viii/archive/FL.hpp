@@ -35,6 +35,7 @@ namespace open_viii::archive::fl {
  * class is used to search the strings for a filename or grab all the entries.
  * The entry will be a string paired with an int that is the line number. This
  * is used to ID the FI entries.
+ * @todo refactor this to reduce parameters and reduce functions.
  */
 
 /**

@@ -1,6 +1,7 @@
 #include <boost/ut.hpp>// single header
 // import boost.ut;        // single module (C++20)
 #include "open_viii/archive/FL.hpp"
+#include "tl/algorithm.hpp"
 #include "tl/utility.hpp"
 #include <string>
 int
@@ -94,7 +95,61 @@ C\test5\test6\)"s);
                          std::make_pair(0U, R"(c:\bb)"s),
                          std::make_pair(0U, R"(c:\cc)"s) });
     };
-    "get_all_entries"_test = [] {};
-    "get_entry"_test       = [] {};
+
+    {
+      static const auto sample_fl        = R"(C:\ff8\Data\eng\FIELD\mapdata.fi
+C:\ff8\Data\eng\FIELD\mapdata\ec.fi
+C:\ff8\Data\eng\FIELD\mapdata\te.fi
+C:\ff8\Data\eng\FIELD\mapdata\bc\bcmin22a.fi
+C:\ff8\Data\eng\FIELD\mapdata\bc\bccent1a.fi
+C:\ff8\Data\eng\FIELD\mapdata\bc\bcport1b.fi
+C:\ff8\Data\eng\FIELD\mapdata\bc\bchtr1a.fi
+C:\ff8\Data\eng\FIELD\mapdata\bc\bchtl1a.fi
+C:\ff8\Data\eng\FIELD\mapdata\bc\bcsaka1a.fi
+C:\ff8\Data\eng\FIELD\mapdata\bc\bcform1a.fi)"s;
+      static constexpr std::size_t count = 10U;
+      static const auto            sample_fl_path =
+        tl::utility::create_temp_file("sample_fl_test_file.fl", sample_fl);
+      "get_all_entries"_test = [] {
+        static const auto check =
+          [](const std::initializer_list<std::string_view> needle = {},
+             const std::size_t expected_count                     = 10U) {
+            expect(sample_fl_path.has_value());
+            const auto from_file = open_viii::archive::fl::get_all_entries(
+              sample_fl_path.value(), ""s, 0U, 0U, count, needle);
+            const auto from_string = open_viii::archive::fl::get_all_entries(
+              sample_fl_path.value(), sample_fl, 0U, 0U, 0U, needle);
+            tl::algorithm::for_each(
+              [](const auto &a, const auto &b) {
+                expect(eq(a.first, b.first));
+                expect(eq(a.second, b.second));
+              },
+              from_file,
+              from_string);
+            expect(eq(std::ranges::size(from_file), expected_count));
+            expect(eq(std::ranges::size(from_string), expected_count));
+          };
+        check();
+        check({ "bc"sv }, 7U);
+        check({ "form"sv }, 1U);
+      };
+      "get_entry"_test = [] {
+        static const auto check =
+          [](const std::initializer_list<std::string_view> needle,
+             const std::string_view                        expected_result) {
+            expect(sample_fl_path.has_value());
+            const auto from_file = open_viii::archive::fl::get_entry(
+              sample_fl_path.value(), ""s, needle, 0U, 0U, count);
+            const auto from_string = open_viii::archive::fl::get_entry(
+              sample_fl_path.value(), sample_fl, needle, 0U, 0U, 0U);
+
+            expect(eq(from_file.first, from_string.first));
+            expect(eq(from_file.second, from_string.second));
+            expect(eq(from_file.second, expected_result));
+          };
+        check({ "bc"sv }, "ff8/Data/eng/FIELD/mapdata/bc/bcmin22a.fi"sv);
+        check({ "form"sv }, "ff8/Data/eng/FIELD/mapdata/bc/bcform1a.fi"sv);
+      };
+    }
   };
 }
