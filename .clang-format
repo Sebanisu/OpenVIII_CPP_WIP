@@ -77,7 +77,7 @@ KeepEmptyLinesAtTheStartOfBlocks: true
 Language: Cpp
 MacroBlockBegin: ''
 MacroBlockEnd: ''
-MaxEmptyLinesToKeep: 0
+MaxEmptyLinesToKeep: 1
 NamespaceIndentation: Inner
 PointerAlignment: Right
 ReflowComments: true

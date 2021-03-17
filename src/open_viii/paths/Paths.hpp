@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_TESTPATHS_H
 #define VIIIARCHIVE_TESTPATHS_H
 #include "open_viii/tools/Tools.hpp"
+#include "tl/string.hpp"
 #include <algorithm>
 #include <array>
 #include <filesystem>
@@ -22,34 +23,36 @@ namespace open_viii {
 struct Paths
 {
 public:
-  static auto &get()
+  static auto &
+    get()
   {
     using namespace std::literals::string_literals;
-    static std::array paths = {
-      // R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY
-      // VIII/Data/lang-en)"s,
-      // R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY
-      // VIII\Data\lang-en)"s,
-      R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"s,
-      R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"s,
-      R"(/mnt/k/ff82000)"s,
-      R"(K:\ff82000)"s,
-      R"(/mnt/d/games/ff82000)"s,
-      R"(D:\games\ff82000)"s,
-      R"(/mnt/e/)"s,   // CD
-      R"(e:\)"s,       // CD
-      R"(/mnt/d/tim)"s,// folder with tim files in it
-      R"(e:\tim)"s,    // folder with tim files in it
-      R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s,
-      R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s
+    const static std::array paths = {
+      tl::string::replace_slashes(
+        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"s),
+      tl::string::replace_slashes(
+        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"s),
+      tl::string::replace_slashes(R"(/mnt/k/ff82000)"s),
+      tl::string::replace_slashes(R"(K:\ff82000)"s),
+      tl::string::replace_slashes(R"(/mnt/d/games/ff82000)"s),
+      tl::string::replace_slashes(R"(D:\games\ff82000)"s),
+      tl::string::replace_slashes(R"(/mnt/e/)"s),// CD
+      tl::string::replace_slashes(R"(e:\)"s),    // CD
+      tl::string::replace_slashes(
+        R"(/mnt/d/tim)"s),                      // folder with tim files in it
+      tl::string::replace_slashes(R"(d:\tim)"s),// folder with tim files in it
+      tl::string::replace_slashes(
+        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s),
+      tl::string::replace_slashes(
+        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s)
     };
     return paths;
   }
   template<std::invocable<std::filesystem::path> lambdaT>
-  static auto for_each_path(const lambdaT &lambda)
+  static auto
+    for_each_path(const lambdaT &lambda)
   {
-    std::ranges::for_each(get(), [&lambda](std::string &path) {
-      open_viii::tools::replace_slashes(path);
+    std::ranges::for_each(get(), [&lambda](const std::string &path) {
       const auto      fs_path = std::filesystem::path(path);
       std::error_code ec{};
       if (std::filesystem::exists(fs_path, ec)) {
