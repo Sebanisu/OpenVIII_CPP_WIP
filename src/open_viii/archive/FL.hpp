@@ -174,7 +174,7 @@ static void
   // id numerical order is same order as fi data. So need to keep the id so
   // we can reference the fi correctly.
   {
-    for (std::uint32_t id = 0; (max == 0U || std::ranges::size(vector) < max)
+    for (std::uint32_t id = 0; (max == 0U || std::ranges::size(vector) != max)
                                && (size == 0U || (cont.tell() < size + offset));
          ++id) {
       const std::string inner_path = clean_path_string(cont.get_line());
