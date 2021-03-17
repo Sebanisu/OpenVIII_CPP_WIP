@@ -62,6 +62,7 @@ Only things directly related to accessing FF8 should be in this project. If it's
     - [x] FI
     - [x] LZSS compression
     - [x] LZ4 compression
+    - [x] FL
   - [ ]  I need to add a configuration library, maybe the one FFNx uses. Right now everything is hardcoded.
     -  This will be to store the path[s] to FF8 and such. Right now I'm using a hardcoded list. I could maybe have a windows only app that fetches the FF8 path from the registry. Though I wouldn't write one of those directly in the library because this will be **cross platform**.
  
