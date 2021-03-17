@@ -168,13 +168,13 @@ static void
   std::vector<std::pair<std::uint32_t, std::string>> vector{};
   cont.seek(static_cast<std::intmax_t>(offset), std::ios::beg);
   std::size_t max = get_max(count, limit);
-  if (max != 0) {
+  if (max != 0U) {
     vector.reserve(max);
   }
   // id numerical order is same order as fi data. So need to keep the id so
   // we can reference the fi correctly.
   {
-    for (std::uint32_t id = 0; (count == 0U || std::ranges::size(vector) < max)
+    for (std::uint32_t id = 0; (max == 0U || std::ranges::size(vector) < max)
                                && (size == 0U || (cont.tell() < size + offset));
          ++id) {
       const std::string inner_path = clean_path_string(cont.get_line());
