@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_FILEDATA_HPP
 #include "FI.hpp"
 #include "open_viii/tools/Tools.hpp"
+#include "tl/input.hpp"
 #include "tl/string.hpp"
 #include <filesystem>
 #include <fstream>
@@ -38,43 +39,45 @@ private:
 
 public:
   constexpr FileData() = default;
-  [[maybe_unused]] FileData(const std::string_view filename,
-                            const unsigned long    offset,
-                            unsigned int           size)
-    : m_filename(filename), m_offset(offset), m_size(size)
-  {
-    tl::string::replace_slashes(m_filename);
-  }
+  [[maybe_unused]] FileData(std::string         filename,
+                            const unsigned long offset,
+                            unsigned int        size)
+    : m_filename(tl::string::replace_slashes(std::move(filename))),
+      m_offset(offset),
+      m_size(size)
+  {}
   [[maybe_unused]] FileData(const unsigned long offset, unsigned int size)
-    : FileData(std::string_view(), offset, size)
+    : FileData(decltype(m_filename){}, offset, size)
+  {}
+  explicit FileData(tl::read::input fp, const std::uint32_t &string_length)
+    : FileData(fp.output(decltype(m_filename)(string_length, '\0')),
+               fp.output<decltype(m_offset)>(),
+               fp.output<decltype(m_size)>())
+  {}
+  explicit FileData(tl::read::input fp)
+    : FileData(fp, fp.template output<std::uint32_t>())
+  {}
+  explicit FileData(std::istream &fp) : FileData(tl::read::input(&fp, true)) {}
+  explicit FileData(std::span<const char> fp)
+    : FileData(tl::read::input(fp, true))
   {}
   [[nodiscard]] bool
     empty() const noexcept
   {
     return m_size == 0 || m_filename.empty();
   }
-  explicit FileData(std::istream &fp, const std::uint32_t &string_length)
-    : m_filename(tl::string::replace_slashes(
-      tools::read_val<decltype(m_filename)>(fp, string_length))),
-      m_offset(tools::read_val<decltype(m_offset)>(fp)),
-      m_size(tools::read_val<decltype(m_size)>(fp))
-  {}
-  explicit FileData(std::istream &fp)
-    : FileData(fp, tools::read_val<std::uint32_t>(fp))
-  {}
-  // todo use tl::read::input as main constructor
-  // todo remove tools::read_val
+
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
     const fiT &fi) noexcept
-    : FileData(std::string_view(""),
+    : FileData(decltype(m_filename){},
                static_cast<decltype(m_offset)>(fi.offset()),
                static_cast<decltype(m_size)>(fi.uncompressed_size()))
   {}
   [[maybe_unused]] [[nodiscard]] constexpr auto
     total_size()
   {
-    return sizeof(unsigned int) + std::ranges::size(m_filename)
+    return sizeof(std::uint32_t) + std::ranges::size(m_filename)
          + sizeof(m_offset) + sizeof(m_size);
   }
   /**
