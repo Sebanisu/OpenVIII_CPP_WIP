@@ -14,7 +14,7 @@ int main()
     const auto            archives = open_viii::archive::Archives(
       path, open_viii::LangCommon::to_string<coo>());
     if (!static_cast<bool>(archives)) {
-      std::cerr << "Failed to load path: " << path.string();
+      std::cerr << "Failed to load path: " << path.string() << '\n';
       return;
     }
     const open_viii::archive::FIFLFS<true> &field =
