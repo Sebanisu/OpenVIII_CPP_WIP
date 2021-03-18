@@ -37,12 +37,7 @@ private:
   std::uint32_t m_size{};
 
 public:
-  constexpr FileData()       = default;
-  FileData(const FileData &) = default;
-  FileData(FileData &&)      = default;
-  FileData &operator=(const FileData &) = default;
-  FileData &operator=(FileData &&) = default;
-  ~FileData()                      = default;
+  constexpr FileData() = default;
   [[maybe_unused]] FileData(const std::string_view filename,
                             const unsigned long    offset,
                             unsigned int           size)
@@ -67,13 +62,15 @@ public:
   explicit FileData(std::istream &fp)
     : FileData(fp, tools::read_val<std::uint32_t>(fp))
   {}
+  // todo use tl::read::input as main constructor
+  // todo remove tools::read_val
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
     const fiT &fi) noexcept
-    : m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
-      m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
+    : FileData(std::string_view(""),
+               static_cast<decltype(m_offset)>(fi.offset()),
+               static_cast<decltype(m_size)>(fi.uncompressed_size()))
   {}
-  // size of this file entry in the zzz file.
   [[maybe_unused]] [[nodiscard]] constexpr auto
     total_size()
   {
