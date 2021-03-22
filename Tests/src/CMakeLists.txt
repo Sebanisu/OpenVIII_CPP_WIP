@@ -169,5 +169,6 @@ set_target_properties(${PROJECT_NAME}_lz4_ff8 PROPERTIES OUTPUT_NAME "lz4_ff8")
 target_link_libraries(${PROJECT_NAME}_lz4_ff8
         PRIVATE ${PROJECT_NAME}_VIIICompression
         PRIVATE ${PROJECT_NAME}_project_warnings
+        PRIVATE Threads::Threads
         PRIVATE ToolsLibrary_tl
         )
