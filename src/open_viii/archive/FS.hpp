@@ -185,7 +185,7 @@ static void
     static_cast<uint32_t>(std::ranges::size(new_comp_data));
   append(output, compressed_size + 8U);
   append(output, lz4);
-  append(output, compressed_size);
+  append(output, static_cast<std::uint32_t>(std::ranges::size(input));
   append(output, new_comp_data);
 }
 // todo I need a version for a std::ostream and a version for a std::vector;

@@ -18,7 +18,7 @@ void
   constexpr static std::string_view str = "4ZL_";
   os.write(std::data(str), 4);
   // write int size
-  write_value(os, static_cast<std::uint32_t>(std::size(compressed)));
+  write_value(os, static_cast<std::uint32_t>(std::size(decompressed)));
   // write data
   os.write(std::data(compressed), static_cast<long>(std::size(compressed)));
   os.flush();
