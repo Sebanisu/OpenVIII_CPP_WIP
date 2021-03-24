@@ -45,7 +45,8 @@ private:
    */
   struct CompressImpl
   {
-    [[nodiscard]] [[maybe_unused]] auto operator()(std::span<const char> src)
+    [[nodiscard]] [[maybe_unused]] auto
+      operator()(std::span<const char> src)
     {
       std::uint32_t cur_result{};
       size_t        size_alloc = src.size() / 2U;
@@ -83,7 +84,7 @@ private:
       // character that will appear often.
       // memset(text_buf, 0, r); //std::array should init with 0s.
       std::uint32_t len = 0;
-      for (; len < NODE_SIZE && data < data_end; ++len, ++data) {
+      for (; len < NODE_SIZE && data != data_end; ++len, ++data) {
         m_text_buf.at(r + len) = static_cast<std::uint8_t>(
           *data);// Read 18 bytes into the last 18 bytes of the buffer
       }
@@ -91,7 +92,8 @@ private:
         result.clear();
         return result;// text of size zero
       }
-      for (auto i : std::ranges::iota_view(std::uint32_t{ 1 }, NODE_SIZE)) {
+      // for (auto i : std::ranges::iota_view(std::uint32_t{ 1 }, NODE_SIZE)) {
+      for (std::uint32_t i = 1U; i != NODE_SIZE + 1; ++i) {
         // for (; i <= NODE_SIZE; ++i) {
         insert_node(r - i);// Insert the 18 strings, each of which begins with
                            // one or more 'space' characters.  Note the order in
@@ -138,7 +140,7 @@ private:
         std::uint32_t last_match_length = m_match_length;
         {
           std::uint32_t i{};
-          for (; i < last_match_length && data < data_end; ++i) {
+          for (; i < last_match_length && data != data_end; ++i) {
             std::uint32_t c = static_cast<std::uint8_t>(*data++);
             delete_node(s);// Delete old strings and
             m_text_buf.at(s) = static_cast<std::uint8_t>(c);// read new bytes
@@ -188,7 +190,8 @@ private:
      * as tree node and position in buffer.
      */
     //[&text_buf, &match_length, &match_position]
-    void insert_node(const std::uint32_t &item)
+    void
+      insert_node(const std::uint32_t &item)
     {
       int  cmp = 1U;
       auto key = std::span<std::uint8_t>(m_text_buf);
@@ -246,32 +249,35 @@ private:
       m_parent.at(p) = NOT_USED;// remove p
     };
     // deletes node p from tree
-    void delete_node(auto p)
+    void
+      delete_node(auto p)
     {
       // std::uint32_t q = 0;
       if (m_parent.at(p) == NOT_USED) {
         return;// not in tree
       }
       {
-        std::uint32_t q{};
-        if (m_right_side.at(p) == NOT_USED) {
-          q = m_left_side.at(p);
-        } else if (m_left_side.at(p) == NOT_USED) {
-          q = m_right_side.at(p);
-        } else {
-          q = m_left_side.at(p);
-          if (m_right_side.at(q) != NOT_USED) {
-            do {
-              q = m_right_side.at(q);
-            } while (m_right_side.at(q) != NOT_USED);
-            m_right_side.at(m_parent.at(q)) = m_left_side.at(q);
-            m_parent.at(m_left_side.at(q))  = m_parent.at(q);
-            m_left_side.at(q)               = m_left_side.at(p);
-            m_parent.at(m_left_side.at(p))  = q;
+        auto q = [&p, this]() -> std::uint32_t {
+          if (m_right_side.at(p) == NOT_USED) {
+            return m_left_side.at(p);
+          } else if (m_left_side.at(p) == NOT_USED) {
+            return m_right_side.at(p);
+          } else {
+            std::uint32_t q_i = m_left_side.at(p);
+            if (m_right_side.at(q_i) != NOT_USED) {
+              do {
+                q_i = m_right_side.at(q_i);
+              } while (m_right_side.at(q_i) != NOT_USED);
+              m_right_side.at(m_parent.at(q_i)) = m_left_side.at(q_i);
+              m_parent.at(m_left_side.at(q_i))  = m_parent.at(q_i);
+              m_left_side.at(q_i)               = m_left_side.at(p);
+              m_parent.at(m_left_side.at(p))    = q_i;
+            }
+            m_right_side.at(q_i)            = m_right_side.at(p);
+            m_parent.at(m_right_side.at(p)) = q_i;
+            return q_i;
           }
-          m_right_side.at(q)              = m_right_side.at(p);
-          m_parent.at(m_right_side.at(p)) = q;
-        }
+        }();
         m_parent.at(q) = m_parent.at(p);
         if (m_right_side.at(m_parent.at(p)) == p) {
           m_right_side.at(m_parent.at(p)) = q;
@@ -318,8 +324,8 @@ public:
    @see http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format
    */
   template<typename dstT = std::vector<char>>
-  [[nodiscard]] static dstT decompress(std::span<const char> src,
-                                       size_t                dst_size = 0)
+  [[nodiscard]] static dstT
+    decompress(std::span<const char> src, size_t dst_size = 0)
   {
     dstT dst{};
     if (dst_size > 0) {
@@ -327,28 +333,27 @@ public:
     }
     auto          iterator = src.begin();
     const auto    srcEnd   = std::ranges::end(src);
-    std::uint32_t current{};
     auto          textBuf = std::array<std::uint32_t, N_MINUS1 + F>();
     // ring buffer of size N, with extra F-1 bytes to facilitate string
     // comparison
     auto       r         = N - F;
     auto       flags     = 0U;
     const auto testAtEnd = [&iterator, &srcEnd]() {
-      return iterator + 1 > srcEnd;
+      return (iterator + 1 <=> srcEnd) == std::strong_ordering::greater;
     };
-    while (iterator < srcEnd /*&& (dstSize == 0 || dst.size() < dstSize)*/) {
+    while (iterator != srcEnd /*&& (dstSize == 0 || dst.size() < dstSize)*/) {
       if (((flags >>= 1U) & FLAGS_MASK) == 0) {
         if (testAtEnd()) {
           break;
         }
         flags = static_cast<std::uint8_t>(*iterator++)
-                | FLAGS_BITS;// uses higher byte cleverly to Count eight
+              | FLAGS_BITS;// uses higher byte cleverly to Count eight
       }
       if ((flags & 1U) == 1) {// raw value
         if (testAtEnd()) {
           break;
         }
-        current = static_cast<std::uint8_t>(*iterator++);
+        std::uint32_t current = static_cast<std::uint8_t>(*iterator++);
         // if (dstSize != 0 && dst.size() + 1 >= dstSize) break;
         dst.push_back(static_cast<char>(current));
         textBuf.at(r++) = current;
@@ -367,9 +372,10 @@ public:
         count = (count & COUNT_MASK) + THRESHOLD;
         // read from ring buffer
         // for (std::uint32_t k = 0; k <= count; ++k) {
-        for (auto k : std::ranges::iota_view(std::uint32_t{}, count + 1)) {
+        // for (auto k : std::ranges::iota_view(std::uint32_t{}, count + 1)) {
+        for (std::uint32_t k{}; k != count + 1U; ++k) {
           // get value
-          current = textBuf.at((offset + k) & N_MINUS1);
+          std::uint32_t current = textBuf.at((offset + k) & N_MINUS1);
           // assign value
           // if (dstSize != 0 && dst.size() + 1 >= dstSize) return dst;
           dst.push_back(static_cast<char>(current));
@@ -407,7 +413,8 @@ public:
   *************************************************************
    * Porting to STL - sebanisu.
    * */
-  static auto compress(std::span<const char> span)
+  static auto
+    compress(std::span<const char> span)
   {
     CompressImpl compress_obj{};// complex code moved into abstraction.
     return compress_obj(span);
