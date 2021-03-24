@@ -163,10 +163,23 @@ target_link_libraries(${PROJECT_NAME}_TestJSM
         )
 
 add_executable(${PROJECT_NAME}_lz4_ff8
-        lz4_ff8.cpp)
+        lz4_ff8.cpp
+        lz4_lzss_common_ff8.hpp)
 set_target_properties(${PROJECT_NAME}_lz4_ff8 PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${PROJECT_NAME}_lz4_ff8 PROPERTIES OUTPUT_NAME "lz4_ff8")
 target_link_libraries(${PROJECT_NAME}_lz4_ff8
+        PRIVATE ${PROJECT_NAME}_VIIICompression
+        PRIVATE ${PROJECT_NAME}_project_warnings
+        PRIVATE Threads::Threads
+        PRIVATE ToolsLibrary_tl
+        )
+
+add_executable(${PROJECT_NAME}_lzss_ff8
+        lzss_ff8.cpp
+        lz4_lzss_common_ff8.hpp)
+set_target_properties(${PROJECT_NAME}_lzss_ff8 PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${PROJECT_NAME}_lzss_ff8 PROPERTIES OUTPUT_NAME "lzss_ff8")
+target_link_libraries(${PROJECT_NAME}_lzss_ff8
         PRIVATE ${PROJECT_NAME}_VIIICompression
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE Threads::Threads

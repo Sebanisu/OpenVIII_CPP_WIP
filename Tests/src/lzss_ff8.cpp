@@ -1,5 +1,5 @@
 #include "lz4_lzss_common_ff8.hpp"
-#include "open_viii/compression/L4Z.hpp"
+#include "open_viii/compression/LZSS.hpp"
 
 void
   compress(std::string_view in, std::string_view out)
@@ -11,12 +11,7 @@ void
   }
   std::ofstream os = open_file(out);
   const auto    compressed =
-    open_viii::compression::l4z::compress<std::vector<char>>(decompressed);
-  // write int size+8
-  write_value(os, static_cast<std::uint32_t>(std::size(compressed) + 8U));
-  // write string
-  constexpr static std::string_view str = "4ZL_";
-  os.write(std::data(str), 4);
+    open_viii::compression::LZSS::compress(decompressed);
   // write int size
   write_value(os, static_cast<std::uint32_t>(std::size(compressed)));
   // write data
@@ -30,7 +25,7 @@ void
              unsigned long long expected_size)
 {
   const auto compressed = tl::read::entire_file(in, std::vector<char>());
-  if (std::empty(compressed) || std::size(compressed) <= 12U) {
+  if (std::empty(compressed) || std::size(compressed) <= 4U) {
     std::cerr << "file not found or unable to read: " << std::size(compressed)
               << ", " << in << '\n';
     std::exit(1);
@@ -45,11 +40,10 @@ void
     std::exit(1);
   }
   const auto decompressed =
-    open_viii::compression::l4z::decompress<std::vector<char>>(
-      std::span(compressed).subspan(12U), expected_size);
+    open_viii::compression::LZSS::decompress<std::vector<char>>(
+      std::span(compressed).subspan(4U), expected_size);
   os.write(std::data(decompressed), static_cast<long>(std::size(decompressed)));
 }
-
 int
   main(int argc, [[maybe_unused]] char *argv[])
 {
