@@ -25,9 +25,7 @@ void
   os.close();
 }
 void
-  decompress(std::string_view   in,
-             std::string_view   out,
-             unsigned long long expected_size)
+  decompress(std::string_view in, std::string_view out)
 {
   const auto compressed = tl::read::entire_file(in, std::vector<char>());
   if (std::empty(compressed) || std::size(compressed) <= 12U) {
@@ -38,6 +36,8 @@ void
   std::ofstream os        = open_file(out);
   const auto    input     = tl::read::input(compressed);
   const auto    comp_size = input.output<std::uint32_t>();
+  const auto    expected_size =
+    input.seek(4, std::ios::cur).output<std::uint32_t>();
   if (std::size(compressed) != comp_size + 4U) {
     std::cerr << "Size of file mismatch: per header file size "
               << std::size(compressed) << " should equal " << comp_size + 4U

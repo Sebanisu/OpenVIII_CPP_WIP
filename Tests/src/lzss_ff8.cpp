@@ -9,9 +9,8 @@ void
     std::cerr << "file not found or unable to read " << in << '\n';
     std::exit(1);
   }
-  std::ofstream os = open_file(out);
-  const auto    compressed =
-    open_viii::compression::LZSS::compress(decompressed);
+  std::ofstream os      = open_file(out);
+  const auto compressed = open_viii::compression::LZSS::compress(decompressed);
   // write int size
   write_value(os, static_cast<std::uint32_t>(std::size(compressed)));
   // write data
@@ -20,9 +19,7 @@ void
   os.close();
 }
 void
-  decompress(std::string_view   in,
-             std::string_view   out,
-             unsigned long long expected_size)
+  decompress(std::string_view in, std::string_view out)
 {
   const auto compressed = tl::read::entire_file(in, std::vector<char>());
   if (std::empty(compressed) || std::size(compressed) <= 4U) {
@@ -41,7 +38,7 @@ void
   }
   const auto decompressed =
     open_viii::compression::LZSS::decompress<std::vector<char>>(
-      std::span(compressed).subspan(4U), expected_size);
+      std::span(compressed).subspan(4U));
   os.write(std::data(decompressed), static_cast<long>(std::size(decompressed)));
 }
 int
