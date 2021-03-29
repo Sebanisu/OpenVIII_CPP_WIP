@@ -12,8 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FILEDATA_HPP
 #define VIIIARCHIVE_FILEDATA_HPP
-#include "FI.hpp"
-#include "open_viii/tools/Tools.hpp"
+#include "open_viii/Concepts.hpp"
+#include "tl/input.hpp"
 #include "tl/string.hpp"
 #include <filesystem>
 #include <fstream>
@@ -60,16 +60,14 @@ public:
   }
   explicit FileData(tl::read::input input, const std::uint32_t &string_length)
     : m_filename(tl::string::replace_slashes(
-    input.output<decltype(m_filename)>(std::string(string_length,'\0')))),
+      input.output<decltype(m_filename)>(std::string(string_length, '\0')))),
       m_offset(input.output<decltype(m_offset)>()),
       m_size(input.output<decltype(m_size)>())
   {}
   explicit FileData(tl::read::input input)
     : FileData(input, input.output<std::uint32_t>())
   {}
-  explicit FileData(std::istream &fp)
-    : FileData(tl::read::input(&fp,true), tools::read_val<std::uint32_t>(fp))
-  {}
+  explicit FileData(std::istream &fp) : FileData(tl::read::input(&fp, true)) {}
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
     const fiT &fi)
@@ -162,7 +160,7 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::archive::FileData>
+struct [[maybe_unused]] tuple_size<open_viii::archive::FileData>
   : std::integral_constant<size_t, 3>
 {
 };
@@ -170,7 +168,8 @@ struct tuple_size<open_viii::archive::FileData>
  * type of 1st argument
  * @note required to structured binding support
  */
-template<> struct tuple_element<0, open_viii::archive::FileData>
+template<>
+struct [[maybe_unused]] tuple_element<0, open_viii::archive::FileData>
 {
   using type = std::basic_string<char>;
 };
@@ -178,7 +177,8 @@ template<> struct tuple_element<0, open_viii::archive::FileData>
  * type of 2nd argument
  * @note required to structured binding support
  */
-template<> struct tuple_element<1, open_viii::archive::FileData>
+template<>
+struct [[maybe_unused]] tuple_element<1, open_viii::archive::FileData>
 {
   using type = std::uint64_t;
 };
@@ -186,7 +186,8 @@ template<> struct tuple_element<1, open_viii::archive::FileData>
  * type of 3rd argument
  * @note required to structured binding support
  */
-template<> struct tuple_element<2, open_viii::archive::FileData>
+template<>
+struct [[maybe_unused]] tuple_element<2, open_viii::archive::FileData>
 {
   using type = std::uint32_t;
 };

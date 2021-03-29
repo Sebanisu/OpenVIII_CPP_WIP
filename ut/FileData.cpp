@@ -1,5 +1,6 @@
 #include <boost/ut.hpp>// single header
 // import boost.ut;        // single module (C++20)
+#include "open_viii/archive/FI.hpp"
 #include "open_viii/archive/FileData.hpp"
 int
   main()
@@ -86,9 +87,8 @@ int
           }));
         };
       };
-      given("raw_buffer") = []
-      {
-        auto input = tl::read::input(sample_hex,true);
+      given("raw_buffer") = [] {
+        auto input = tl::read::input(sample_hex, true);
         check_fd_sample(input);
       };
     };

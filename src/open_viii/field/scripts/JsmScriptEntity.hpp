@@ -76,7 +76,7 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::field::scripts::JsmScriptEntity>
+struct [[maybe_unused]] tuple_size<open_viii::field::scripts::JsmScriptEntity>
   : std::integral_constant<size_t, 2U>
 {
 };
@@ -84,7 +84,7 @@ struct tuple_size<open_viii::field::scripts::JsmScriptEntity>
  * type of argument 0
  * @note required to structured binding support
  */
-template<> struct tuple_element<0U, open_viii::field::scripts::JsmScriptEntity>
+template<> struct [[maybe_unused]] tuple_element<0U, open_viii::field::scripts::JsmScriptEntity>
 {
   using type = std::uint16_t;
 };
@@ -92,7 +92,7 @@ template<> struct tuple_element<0U, open_viii::field::scripts::JsmScriptEntity>
  * type of argument 1
  * @note required to structured binding support
  */
-template<> struct tuple_element<1U, open_viii::field::scripts::JsmScriptEntity>
+template<> struct [[maybe_unused]] tuple_element<1U, open_viii::field::scripts::JsmScriptEntity>
 {
   using type = std::uint16_t;
 };
