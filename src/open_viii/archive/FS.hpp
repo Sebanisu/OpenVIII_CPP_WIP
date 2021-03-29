@@ -152,6 +152,7 @@ template<
   }
   return get_entry<outputT>(tl::read::input(data, true), fi, offset);
 }
+// todo I need a version for a std::ostream and a version for a std::vector;
 static void
   append(std::vector<char> &output, const std::span<const char> &input)
 {
@@ -160,6 +161,7 @@ static void
                 std::ranges::end(input));
 }
 template<typename inputT>
+// todo I need a version for a std::ostream and a version for a std::vector;
 requires(std::is_trivially_copyable_v<inputT> && !requires(inputT t) {
   // prevents things that std::span could take from going here
   std::span<const char>(t);
@@ -169,6 +171,7 @@ requires(std::is_trivially_copyable_v<inputT> && !requires(inputT t) {
   std::memcpy(std::data(input_as_bytes), &input, sizeof(inputT));
   append(output, input_as_bytes);
 }
+// todo I need a version for a std::ostream and a version for a std::vector;
 static void
   append_lzss(std::vector<char> &output, const std::span<const char> &input)
 {
@@ -176,6 +179,7 @@ static void
   append(output, static_cast<uint32_t>(std::ranges::size(new_comp_data)));
   append(output, new_comp_data);
 }
+// todo I need a version for a std::ostream and a version for a std::vector;
 static void
   append_l4z(std::vector<char> &output, const std::span<const char> &input)
 {
