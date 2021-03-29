@@ -58,14 +58,14 @@ public:
   {
     return m_size == 0 || m_filename.empty();
   }
-  explicit FileData(std::istream &fp, const std::uint32_t &string_length)
+  explicit FileData(tl::read::input input, const std::uint32_t &string_length)
     : m_filename(tl::string::replace_slashes(
-      tools::read_val<decltype(m_filename)>(fp, string_length))),
-      m_offset(tools::read_val<decltype(m_offset)>(fp)),
-      m_size(tools::read_val<decltype(m_size)>(fp))
+    input.output<decltype(m_filename)>(std::string(string_length,'\0')))),
+      m_offset(input.output<decltype(m_offset)>()),
+      m_size(input.output<decltype(m_size)>())
   {}
   explicit FileData(std::istream &fp)
-    : FileData(fp, tools::read_val<std::uint32_t>(fp))
+    : FileData(tl::read::input(&fp,true), tools::read_val<std::uint32_t>(fp))
   {}
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
@@ -73,10 +73,11 @@ public:
     : m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
       m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
   {
-   if(fi.compression_type() != CompressionTypeT::none)
-   {
-     throw std::invalid_argument("Compression Type must be none as FileData doesn't store compressed data");
-   }
+    if (fi.compression_type() != CompressionTypeT::none) {
+      throw std::invalid_argument(
+        "Compression Type must be none as FileData doesn't store compressed "
+        "data");
+    }
   }
   // size of this file entry in the zzz file.
   [[maybe_unused]] [[nodiscard]] constexpr auto
