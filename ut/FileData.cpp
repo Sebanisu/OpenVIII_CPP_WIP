@@ -86,7 +86,11 @@ int
           }));
         };
       };
-      // check_fd(samplehex);
+      given("raw_buffer") = []
+      {
+        auto input = tl::read::input(sample_hex,true);
+        check_fd_sample(input);
+      };
     };
   };
 }

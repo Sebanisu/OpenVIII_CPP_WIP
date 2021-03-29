@@ -64,6 +64,9 @@ public:
       m_offset(input.output<decltype(m_offset)>()),
       m_size(input.output<decltype(m_size)>())
   {}
+  explicit FileData(tl::read::input input)
+    : FileData(input, input.output<std::uint32_t>())
+  {}
   explicit FileData(std::istream &fp)
     : FileData(tl::read::input(&fp,true), tools::read_val<std::uint32_t>(fp))
   {}
