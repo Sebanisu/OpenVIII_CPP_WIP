@@ -17,6 +17,10 @@ add_test_common(FL)
 target_link_libraries(${PROJECT_NAME}_FL
         PRIVATE ${PROJECT_NAME}_VIIIArchive
         )
+add_test_common(FileData)
+target_link_libraries(${PROJECT_NAME}_FileData
+        PRIVATE ${PROJECT_NAME}_VIIIArchive
+        )
 
 #PRIVATE ToolsLibrary_tl
 #PRIVATE Threads::Threads

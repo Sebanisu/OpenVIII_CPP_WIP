@@ -219,14 +219,14 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::archive::FI> : std::integral_constant<size_t, 3>
+struct [[maybe_unused]] tuple_size<open_viii::archive::FI> : std::integral_constant<size_t, 3>
 {
 };
 /**
  * type of 1st argument
  * @note required to structured binding support
  */
-template<> struct tuple_element<0, open_viii::archive::FI>
+template<> struct [[maybe_unused]] tuple_element<0, open_viii::archive::FI>
 {
   using type = std::uint32_t;
 };
@@ -234,7 +234,7 @@ template<> struct tuple_element<0, open_viii::archive::FI>
  * type of 2nd argument
  * @note required to structured binding support
  */
-template<> struct tuple_element<1, open_viii::archive::FI>
+template<> struct [[maybe_unused]] tuple_element<1, open_viii::archive::FI>
 {
   using type = std::uint32_t;
 };
@@ -242,7 +242,7 @@ template<> struct tuple_element<1, open_viii::archive::FI>
  * type of 3rd argument
  * @note required to structured binding support
  */
-template<> struct tuple_element<2, open_viii::archive::FI>
+template<> struct [[maybe_unused]] tuple_element<2, open_viii::archive::FI>
 {
   using type = open_viii::CompressionTypeT;
 };

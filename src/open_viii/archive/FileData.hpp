@@ -12,8 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_FILEDATA_HPP
 #define VIIIARCHIVE_FILEDATA_HPP
-#include "FI.hpp"
-#include "open_viii/tools/Tools.hpp"
+#include "open_viii/Concepts.hpp"
+#include "tl/input.hpp"
 #include "tl/string.hpp"
 #include <filesystem>
 #include <fstream>
@@ -58,24 +58,31 @@ public:
   {
     return m_size == 0 || m_filename.empty();
   }
-  explicit FileData(std::istream &fp, const std::uint32_t &string_length)
+  explicit FileData(tl::read::input input, const std::uint32_t &string_length)
     : m_filename(tl::string::replace_slashes(
-      tools::read_val<decltype(m_filename)>(fp, string_length))),
-      m_offset(tools::read_val<decltype(m_offset)>(fp)),
-      m_size(tools::read_val<decltype(m_size)>(fp))
+      input.output<decltype(m_filename)>(std::string(string_length, '\0')))),
+      m_offset(input.output<decltype(m_offset)>()),
+      m_size(input.output<decltype(m_size)>())
   {}
-  explicit FileData(std::istream &fp)
-    : FileData(fp, tools::read_val<std::uint32_t>(fp))
+  explicit FileData(tl::read::input input)
+    : FileData(input, input.output<std::uint32_t>())
   {}
+  explicit FileData(std::istream &fp) : FileData(tl::read::input(&fp, true)) {}
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
-    const fiT &fi) noexcept
+    const fiT &fi)
     : m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
       m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
-  {}
+  {
+    if (fi.compression_type() != CompressionTypeT::none) {
+      throw std::invalid_argument(
+        "Compression Type must be none as FileData doesn't store compressed "
+        "data");
+    }
+  }
   // size of this file entry in the zzz file.
   [[maybe_unused]] [[nodiscard]] constexpr auto
-    total_size()
+    total_size() const noexcept
   {
     return sizeof(unsigned int) + std::ranges::size(m_filename)
          + sizeof(m_offset) + sizeof(m_size);
@@ -153,7 +160,7 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct tuple_size<open_viii::archive::FileData>
+struct [[maybe_unused]] tuple_size<open_viii::archive::FileData>
   : std::integral_constant<size_t, 3>
 {
 };
@@ -161,7 +168,8 @@ struct tuple_size<open_viii::archive::FileData>
  * type of 1st argument
  * @note required to structured binding support
  */
-template<> struct tuple_element<0, open_viii::archive::FileData>
+template<>
+struct [[maybe_unused]] tuple_element<0, open_viii::archive::FileData>
 {
   using type = std::basic_string<char>;
 };
@@ -169,7 +177,8 @@ template<> struct tuple_element<0, open_viii::archive::FileData>
  * type of 2nd argument
  * @note required to structured binding support
  */
-template<> struct tuple_element<1, open_viii::archive::FileData>
+template<>
+struct [[maybe_unused]] tuple_element<1, open_viii::archive::FileData>
 {
   using type = std::uint64_t;
 };
@@ -177,7 +186,8 @@ template<> struct tuple_element<1, open_viii::archive::FileData>
  * type of 3rd argument
  * @note required to structured binding support
  */
-template<> struct tuple_element<2, open_viii::archive::FileData>
+template<>
+struct [[maybe_unused]] tuple_element<2, open_viii::archive::FileData>
 {
   using type = std::uint32_t;
 };
