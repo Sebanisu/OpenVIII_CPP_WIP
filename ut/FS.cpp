@@ -6,6 +6,7 @@
 #include "open_viii/compression/L4Z.hpp"
 #include "open_viii/compression/LZSS.hpp"
 #include "tl/utility.hpp"
+#include "tl/write.hpp"
 #include <algorithm>
 #include <cstdint>
 #include <ranges>
