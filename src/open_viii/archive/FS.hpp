@@ -153,18 +153,21 @@ template<
   }
   return get_entry<outputT>(tl::read::input(data, true), fi, offset);
 }
-// todo I need a version for a std::ostream and a version for a std::vector;
 
+template<typename T>
+requires(tl::concepts::is_contiguous_with_insert<T> || std::is_base_of_v<std::ostream,std::decay_t<T>>)
 static void
-  append_lzss(std::vector<char> &output, const std::span<const char> &input)
+  append_lzss(T &output, const std::span<const char> &input)
 {
   std::vector<char> new_comp_data = compression::LZSS::compress(input);
   tl::write::append(output, static_cast<uint32_t>(std::ranges::size(new_comp_data)));
   tl::write::append(output, new_comp_data);
 }
-// todo I need a version for a std::ostream and a version for a std::vector;
+
+template<typename T>
+requires(tl::concepts::is_contiguous_with_insert<T> || std::is_base_of_v<std::ostream,std::decay_t<T>>)
 static void
-  append_l4z(std::vector<char> &output, const std::span<const char> &input)
+  append_l4z(T &output, const std::span<const char> &input)
 {
   static constexpr auto lz4           = std::string_view("4ZL_", 4U);
   std::vector<char>     new_comp_data = compression::l4z::compress(input);
@@ -175,17 +178,18 @@ static void
   tl::write::append(output, static_cast<std::uint32_t>(std::ranges::size(input)));
   tl::write::append(output, new_comp_data);
 }
-// todo I need a version for a std::ostream and a version for a std::vector;
-template<FI_Like fiT = FI>
+
+template<typename T,FI_Like fiT = FI>
+requires(tl::concepts::is_contiguous_with_insert<T> || std::is_base_of_v<std::ostream,std::decay_t<T>>)
 static fiT
-  append_entry(std::vector<char> &         output,
+  append_entry(T &         output,
                const std::span<const char> input,
                const CompressionTypeT compression_type = CompressionTypeT::none)
 {
   using uncompressed_size_t = std::decay_t<decltype(fiT().uncompressed_size())>;
   using offset_t            = std::decay_t<decltype(fiT().offset())>;
   fiT return_value{ static_cast<uncompressed_size_t>(std::ranges::size(input)),
-                    static_cast<offset_t>(std::ranges::size(output)),
+                    static_cast<offset_t>(tl::utility::get_position(output)),
                     compression_type };
   switch (compression_type) {
   case CompressionTypeT::none: {
