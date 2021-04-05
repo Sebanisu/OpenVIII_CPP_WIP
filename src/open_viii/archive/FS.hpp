@@ -18,6 +18,7 @@
 #include "open_viii/tools/Tools.hpp"
 #include "tl/input.hpp"
 #include "tl/read.hpp"
+#include "tl/write.hpp"
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -28,9 +29,15 @@
 #include <utility>
 namespace open_viii::archive::FS {
 /**
+ * File Source
+ * @see http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media#.fs_.28File_Source.29
+ */
+
+/**
  * Extension
  */
 static constexpr auto EXT = std::string_view(".FS");
+
 /**
  * Get entry and uncompress via lzss
  * @note not meant to be used directly
@@ -39,6 +46,8 @@ static constexpr auto EXT = std::string_view(".FS");
  * @param input buffer adapter that holds a std::span<char> or a std::istream
  * @param uncompressed_size number of bytes expected to expand to.
  * @return output() filled with uncompressed data.
+ * @note lzss doesn't need the uncompressed size to extract the data but it's
+ * used to reserve the memory before uncompressing.
  */
 template<
   is_default_constructible_has_data_size_resize outputT = std::vector<char>>
@@ -49,6 +58,7 @@ static outputT
   outputT    buffer   = input.template output<outputT>(compSize);
   return compression::LZSS::decompress<outputT>(buffer, uncompressed_size);
 }
+
 /**
  * Get entry and uncompress via lz4
  * @note not meant to be used directly
@@ -57,22 +67,24 @@ static outputT
  * @param input buffer adapter that holds a std::span<char> or a std::istream
  * @param uncompressed_size number of bytes expected to expand to.
  * @return output() filled with uncompressed data.
+ * @note L4Z header contains size of total section as uint32, 4 byte string, and
+ * a uint32 of the uncompressed size.
  */
 template<
   is_default_constructible_has_data_size_resize outputT = std::vector<char>>
 static outputT
-  get_entry_lz4(tl::read::input &input, const std::uint32_t uncompressed_size)
-{// L4Z header contains size of total section as uint32, 4 byte string
-  // the size of the compressed data is the first value minus 8. the second
-  // value is maybe the uint32 value returned at compression time.
-  constexpr static auto skipSize = 8;
-  const auto            sectSize = input.template output<uint32_t>();
-  const auto            compSize = sectSize - skipSize;
-  outputT               buffer =
-    input.seek(skipSize, std::ios::cur).template output<outputT>(compSize);
+  get_entry_lz4(tl::read::input &input)
+{
+  constexpr static auto skip_size       = 8;
+  const auto            section_size    = input.template output<uint32_t>();
+  const std::uint32_t   compressed_size = section_size - skip_size;
+  const std::uint32_t   uncompressed_size =
+    input.seek(4, std::ios::cur).template output<uint32_t>();
+  outputT buffer = input.template output<outputT>(compressed_size);
   return compression::l4z::decompress<outputT>(
-    buffer.data(), compSize, uncompressed_size);
+    buffer.data(), compressed_size, uncompressed_size);
 }
+
 /**
  * Get entry and uncompress via lz4
  * @tparam outputT type to be returned: example std::string, std::vector<char>
@@ -100,11 +112,12 @@ template<
     return get_entry_lzss<outputT>(input, fi.uncompressed_size());
   }
   case CompressionTypeT::lz4: {
-    return get_entry_lz4<outputT>(input, fi.uncompressed_size());
+    return get_entry_lz4<outputT>(input);
   }
   }
   throw;
 }
+
 /**
  * get file entry and decompress it
  * @tparam outputT type being returned
@@ -131,6 +144,7 @@ template<
   }
   return {};
 }
+
 /**
  * get file entry and decompress it
  * @tparam outputT type being returned
@@ -152,57 +166,69 @@ template<
   }
   return get_entry<outputT>(tl::read::input(data, true), fi, offset);
 }
+}// namespace open_viii::archive::FS
+namespace open_viii::archive {
+
+/**
+ * Append lzss compressed entry
+ * @tparam T type of output buffer.
+ * @param output buffer to write to.
+ * @param input buffer to read from.
+ */
+template<is_insertable_or_ostream T>
 static void
-  append(std::vector<char> &output, const std::span<const char> &input)
-{
-  output.insert(std::ranges::end(output),
-                std::ranges::begin(input),
-                std::ranges::end(input));
-}
-template<typename inputT>
-requires(std::is_trivially_copyable_v<inputT> && !requires(inputT t) {
-  // prevents things that std::span could take from going here
-  std::span<const char>(t);
-}) static void append(std::vector<char> &output, const inputT &input)
-{
-  std::array<char, sizeof(inputT)> input_as_bytes{};
-  std::memcpy(std::data(input_as_bytes), &input, sizeof(inputT));
-  append(output, input_as_bytes);
-}
-static void
-  append_lzss(std::vector<char> &output, const std::span<const char> &input)
+  append_lzss(T &output, const std::span<const char> &input)
 {
   std::vector<char> new_comp_data = compression::LZSS::compress(input);
-  append(output, static_cast<uint32_t>(std::ranges::size(new_comp_data)));
-  append(output, new_comp_data);
+  tl::write::append(output,
+                    static_cast<uint32_t>(std::ranges::size(new_comp_data)));
+  tl::write::append(output, new_comp_data);
 }
+
+/**
+ * Append lz4 compressed entry
+ * @tparam T type of output buffer.
+ * @param output buffer to write to.
+ * @param input buffer to read from.
+ */
+template<is_insertable_or_ostream T>
 static void
-  append_l4z(std::vector<char> &output, const std::span<const char> &input)
+  append_l4z(T &output, const std::span<const char> &input)
 {
   static constexpr auto lz4           = std::string_view("4ZL_", 4U);
   std::vector<char>     new_comp_data = compression::l4z::compress(input);
   const auto            compressed_size =
     static_cast<uint32_t>(std::ranges::size(new_comp_data));
-  append(output, compressed_size + 8U);
-  append(output, lz4);
-  append(output, static_cast<std::uint32_t>(std::ranges::size(input)));
-  append(output, new_comp_data);
+  tl::write::append(output, compressed_size + 8U);
+  tl::write::append(output, lz4);
+  tl::write::append(output,
+                    static_cast<std::uint32_t>(std::ranges::size(input)));
+  tl::write::append(output, new_comp_data);
 }
-// todo I need a version for a std::ostream and a version for a std::vector;
-template<FI_Like fiT = FI>
+
+/**
+ * Append entry to FS and get back FI like data where it is in the FS file.
+ * @tparam T type of output buffer.
+ * @tparam fiT FI like data type returned
+ * @param output buffer to write to.
+ * @param input buffer to read from.
+ * @param compression_type desired compression value: none, lzss, lz4
+ * @return return FI like data.
+ */
+template<is_insertable_or_ostream T, FI_Like fiT = FI>
 static fiT
-  append_entry(std::vector<char> &         output,
+  append_entry(T &                         output,
                const std::span<const char> input,
                const CompressionTypeT compression_type = CompressionTypeT::none)
 {
   using uncompressed_size_t = std::decay_t<decltype(fiT().uncompressed_size())>;
   using offset_t            = std::decay_t<decltype(fiT().offset())>;
   fiT return_value{ static_cast<uncompressed_size_t>(std::ranges::size(input)),
-                    static_cast<offset_t>(std::ranges::size(output)),
+                    static_cast<offset_t>(tl::utility::get_position(output)),
                     compression_type };
   switch (compression_type) {
   case CompressionTypeT::none: {
-    append(output, input);
+    tl::write::append(output, input);
     return return_value;
     break;
   }
@@ -217,15 +243,24 @@ static fiT
     break;
   }
   }
-  throw;
+  throw;// it's an error to get here.
 }
-template<FI_Like fiT = FI>
-static fiT
-  append_entry(std::vector<char> &         output,
-               const std::span<const char> input,
-               const fiT                   in_fi)
+
+/**
+ * Append entry to FS and get back FI like data where it is in the FS file.
+ * @tparam in_fiT FI like data type incoming
+ * @tparam out_fiT FI like data type returned
+ * @tparam T type of output buffer.
+ * @param output buffer to write to.
+ * @param input buffer to read from.
+ * @param in_fi incoming FI it's just grabbing the compression type from it.
+ * @return return FI like data.
+ */
+template<FI_Like in_fiT = FI, FI_Like out_fiT = FI, is_insertable_or_ostream T>
+static out_fiT
+  append_entry(T &output, const std::span<const char> input, const in_fiT in_fi)
 {
   return append_entry(output, input, in_fi.compression_type());
 }
-}// namespace open_viii::archive::FS
+}// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FS_HPP

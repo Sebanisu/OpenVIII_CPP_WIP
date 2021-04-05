@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_CONCEPTS_HPP
 #define VIIIARCHIVE_CONCEPTS_HPP
 #include "CompressionTypeT.hpp"
+#include "tl/concepts.hpp"
 #include <concepts>
 #include <cstdint>
 #include <string_view>
@@ -156,5 +157,18 @@ concept Foreach_Archive_Lambda =
 //      std::initializer_list<std::string_view> &filename, lambdaT lambda) {
 //         a.execute_with_nested({}, filename, lambda);
 //       });
+
+/**
+ * concepts used by FS
+ */
+
+/**
+ * @tparam T Accept things like std::string or std::ostream
+ */
+template<typename T>
+concept is_insertable_or_ostream =
+  tl::concepts::is_contiguous_with_insert<
+    T> || std::is_base_of_v<std::ostream, std::decay_t<T>>;
+
 }// namespace open_viii
 #endif// VIIIARCHIVE_CONCEPTS_HPP

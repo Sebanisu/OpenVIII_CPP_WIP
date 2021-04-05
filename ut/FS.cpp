@@ -4,15 +4,10 @@
 #include "open_viii/archive/FI.hpp"
 #include "open_viii/archive/FS.hpp"
 #include "open_viii/compression/L4Z.hpp"
-#include "open_viii/compression/LZSS.hpp"
-#include "tl/utility.hpp"
 #include <algorithm>
 #include <cstdint>
-#include <ranges>
-#include <sstream>
+#include <span>
 #include <string_view>
-// TODO export the FS writing code into the FS.hpp, I had to write the code to
-// write FS to have something for the read tests to use.
 /**
  * Mock span data, this is grouping values together for tests. The raw data is
  * in a string_view and the span points to the same data. Because if you pass a
@@ -25,6 +20,7 @@ private:
   std::string_view       m_string_view{};
   std::span<const char>  m_span{};
   open_viii::archive::FI m_fi{};
+
 public:
   constexpr mock_span_data(std::string_view            string_view,
                            std::uint32_t               offset = 0,
@@ -97,7 +93,15 @@ int
     };
     static constexpr auto check_fs2 =
       [](auto full_data, const mock_span_data &mock, const FI &fi) {
-        const auto value = FS::get_entry(full_data, fi);
+        const auto value = [&]() {
+          if constexpr (requires(decltype(full_data) fd) {
+                          std::span<const char>(fd);
+                        }) {
+            return FS::get_entry(std::span<const char>(full_data), fi);
+          } else {
+            return FS::get_entry(full_data, fi);
+          }
+        }();
         expect(std::ranges::equal(value, mock.string_view()));
       };
     "read entire span"_test = [] {
@@ -121,7 +125,7 @@ int
       const auto        add_uncompressed_data =
         [&uncompressed_buffer, &fi_buffer](const mock_span_data &mock) {
           fi_buffer.push_back(
-            FS::append_entry(uncompressed_buffer, mock.span(), mock.fi()));
+            append_entry(uncompressed_buffer, mock.span(), mock.fi()));
         };
       add_uncompressed_data(mock1);
       add_uncompressed_data(mock2);
@@ -139,7 +143,7 @@ int
       std::vector<char> compressed_buffer{};
       const auto        add_lzss_data = [&compressed_buffer,
                                   &fi_buffer](const mock_span_data &mock) {
-        fi_buffer.push_back(FS::append_entry(
+        fi_buffer.push_back(append_entry(
           compressed_buffer, mock.span(), open_viii::CompressionTypeT::lzss));
       };
       add_lzss_data(mock1);
@@ -169,7 +173,7 @@ int
       std::vector<char> compressed_buffer{};
       const auto        add_l4z_data = [&compressed_buffer,
                                  &fi_buffer](const mock_span_data &mock) {
-        fi_buffer.push_back(FS::append_entry(
+        fi_buffer.push_back(append_entry(
           compressed_buffer, mock.span(), open_viii::CompressionTypeT::lz4));
       };
       add_l4z_data(mock1);
@@ -190,6 +194,66 @@ int
         check_fs2(compressed_temp_file.value(), mock1, fi_buffer[0]);
         check_fs2(compressed_temp_file.value(), mock2, fi_buffer[1]);
         check_fs2(compressed_temp_file.value(), mock3, fi_buffer[2]);
+      };
+    }
+    {
+      // write compressed L4Z data to buffer stream
+      std::vector<FI> fi_buffer{};
+      fi_buffer.reserve(3);
+      std::stringstream compressed_buffer{};
+      const auto        add_l4z_data = [&compressed_buffer,
+                                 &fi_buffer](const mock_span_data &mock) {
+        fi_buffer.push_back(append_entry(
+          compressed_buffer, mock.span(), open_viii::CompressionTypeT::lz4));
+      };
+      add_l4z_data(mock1);
+      add_l4z_data(mock2);
+      add_l4z_data(mock3);
+      std::string string_buffer = compressed_buffer.str();
+      "read entire span"_test   = [&string_buffer, &fi_buffer] {
+        check_fs2(string_buffer, mock1, fi_buffer[0]);
+        check_fs2(string_buffer, mock2, fi_buffer[1]);
+        check_fs2(string_buffer, mock3, fi_buffer[2]);
+      };
+    }
+    {
+      // write compressed LZSS data to buffer stream
+      std::vector<FI> fi_buffer{};
+      fi_buffer.reserve(3);
+      std::stringstream compressed_buffer{};
+      const auto        add_lzss_data = [&compressed_buffer,
+        &fi_buffer](const mock_span_data &mock) {
+        fi_buffer.push_back(append_entry(
+          compressed_buffer, mock.span(), open_viii::CompressionTypeT::lzss));
+      };
+      add_lzss_data(mock1);
+      add_lzss_data(mock2);
+      add_lzss_data(mock3);
+      std::string string_buffer = compressed_buffer.str();
+      "read entire span"_test   = [&string_buffer, &fi_buffer] {
+        check_fs2(string_buffer, mock1, fi_buffer[0]);
+        check_fs2(string_buffer, mock2, fi_buffer[1]);
+        check_fs2(string_buffer, mock3, fi_buffer[2]);
+      };
+    }
+    {
+      // write compressed uncompressed data to buffer stream
+      std::vector<FI> fi_buffer{};
+      fi_buffer.reserve(3);
+      std::stringstream compressed_buffer{};
+      const auto        add_uncompressed_data = [&compressed_buffer,
+        &fi_buffer](const mock_span_data &mock) {
+        fi_buffer.push_back(append_entry(
+          compressed_buffer, mock.span(), open_viii::CompressionTypeT::none));
+      };
+      add_uncompressed_data(mock1);
+      add_uncompressed_data(mock2);
+      add_uncompressed_data(mock3);
+      std::string string_buffer = compressed_buffer.str();
+      "read entire span"_test   = [&string_buffer, &fi_buffer] {
+        check_fs2(string_buffer, mock1, fi_buffer[0]);
+        check_fs2(string_buffer, mock2, fi_buffer[1]);
+        check_fs2(string_buffer, mock3, fi_buffer[2]);
       };
     }
   };
