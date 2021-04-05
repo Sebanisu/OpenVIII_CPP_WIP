@@ -125,7 +125,7 @@ int
       const auto        add_uncompressed_data =
         [&uncompressed_buffer, &fi_buffer](const mock_span_data &mock) {
           fi_buffer.push_back(
-            FS::append_entry(uncompressed_buffer, mock.span(), mock.fi()));
+            append_entry(uncompressed_buffer, mock.span(), mock.fi()));
         };
       add_uncompressed_data(mock1);
       add_uncompressed_data(mock2);
@@ -143,7 +143,7 @@ int
       std::vector<char> compressed_buffer{};
       const auto        add_lzss_data = [&compressed_buffer,
                                   &fi_buffer](const mock_span_data &mock) {
-        fi_buffer.push_back(FS::append_entry(
+        fi_buffer.push_back(append_entry(
           compressed_buffer, mock.span(), open_viii::CompressionTypeT::lzss));
       };
       add_lzss_data(mock1);
@@ -173,7 +173,7 @@ int
       std::vector<char> compressed_buffer{};
       const auto        add_l4z_data = [&compressed_buffer,
                                  &fi_buffer](const mock_span_data &mock) {
-        fi_buffer.push_back(FS::append_entry(
+        fi_buffer.push_back(append_entry(
           compressed_buffer, mock.span(), open_viii::CompressionTypeT::lz4));
       };
       add_l4z_data(mock1);
@@ -203,7 +203,7 @@ int
       std::stringstream compressed_buffer{};
       const auto        add_l4z_data = [&compressed_buffer,
                                  &fi_buffer](const mock_span_data &mock) {
-        fi_buffer.push_back(FS::append_entry(
+        fi_buffer.push_back(append_entry(
           compressed_buffer, mock.span(), open_viii::CompressionTypeT::lz4));
       };
       add_l4z_data(mock1);
@@ -223,7 +223,7 @@ int
       std::stringstream compressed_buffer{};
       const auto        add_lzss_data = [&compressed_buffer,
         &fi_buffer](const mock_span_data &mock) {
-        fi_buffer.push_back(FS::append_entry(
+        fi_buffer.push_back(append_entry(
           compressed_buffer, mock.span(), open_viii::CompressionTypeT::lzss));
       };
       add_lzss_data(mock1);
@@ -243,7 +243,7 @@ int
       std::stringstream compressed_buffer{};
       const auto        add_uncompressed_data = [&compressed_buffer,
         &fi_buffer](const mock_span_data &mock) {
-        fi_buffer.push_back(FS::append_entry(
+        fi_buffer.push_back(append_entry(
           compressed_buffer, mock.span(), open_viii::CompressionTypeT::none));
       };
       add_uncompressed_data(mock1);
