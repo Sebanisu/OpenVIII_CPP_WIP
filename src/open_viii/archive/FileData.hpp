@@ -40,22 +40,24 @@ private:
   std::uint32_t m_size{};
 
 public:
-  constexpr FileData()       = default;
-/**
- * Piecemeal constructor
- * @param filename path to file
- * @param offset path to
- * @param size
- */
-  [[maybe_unused]] FileData(const std::string_view filename,
-                            const unsigned long    offset,
-                            unsigned int           size)
-    : m_filename(filename), m_offset(offset), m_size(size)
+  constexpr FileData() = default;
+  /**
+   * Piecemeal constructor
+   * @param filename path to file
+   * @param offset path to
+   * @param size
+   */
+  [[maybe_unused]] FileData(std::string         filename,
+                            const unsigned long offset,
+                            unsigned int        size)
+    : m_filename(tl::string::replace_slashes(std::move(filename))),
+      m_offset(offset),
+      m_size(size)
   {
     tl::string::replace_slashes(m_filename);
   }
   [[maybe_unused]] FileData(const unsigned long offset, unsigned int size)
-    : FileData(std::string_view(), offset, size)
+    : FileData(std::string(), offset, size)
   {}
   [[nodiscard]] bool
     empty() const noexcept
@@ -72,6 +74,12 @@ public:
     : FileData(input, input.output<std::uint32_t>())
   {}
   explicit FileData(std::istream &fp) : FileData(tl::read::input(&fp, true)) {}
+  explicit FileData(std::span<const char> *const fp)
+    : FileData(tl::read::input(fp, true))
+  {}
+  explicit FileData(std::span<const char> fp)
+    : FileData(tl::read::input(&fp, true))
+  {}
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
     const fiT &fi)
@@ -85,9 +93,9 @@ public:
     }
   }
   template<FI_Like fiT>
-  requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
-    const std::string &filename, const fiT &fi)
-    : m_filename(filename),
+  requires(!std::is_same_v<fiT, FileData>) explicit FileData(
+    std::string filename, const fiT &fi)
+    : m_filename(tl::string::replace_slashes(std::move(filename))),
       m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
       m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
   {
@@ -146,23 +154,28 @@ public:
    * gets path as a std::string_view
    */
   [[maybe_unused]] [[nodiscard]] auto
-    get_path_string() const
+    get_path_string_view() const
   {
     return std::string_view(m_filename);
   }
-  //  [[maybe_unused]] [[nodiscard]] auto get_tuple() const
-  //  {
-  //    return std::make_tuple(get_path_string(), offset(), size());
-  //  }
+  /**
+   * gets path as a std::string
+   */
+  [[maybe_unused]] [[nodiscard]] auto
+    get_path_string() const
+  {
+    return m_filename;
+  }
+
   /**
    * gets member variables
    * @note required to structured binding support
    */
   template<std::size_t I>
-  requires(I < 3) [[nodiscard]] const auto &get() const noexcept
+  requires(I < 3) [[nodiscard]] auto get() const noexcept
   {
     if constexpr (I == 0) {
-      return m_filename;
+      return std::string_view(m_filename);
     } else if constexpr (I == 1) {
       return m_offset;
     } else if constexpr (I == 2) {
@@ -181,7 +194,8 @@ template<is_insertable_or_ostream T>
 static void
   append_entry(T &output, const FileData fd)
 {
-  const auto string = fd.get_path_string();
+  std::string string = std::string(fd.get_path_string_view());
+  tl::string::undo_replace_slashes(string);
   tl::write::append(output, static_cast<std::uint32_t>(std::size(string)));
   tl::write::append(output, string);
   tl::write::append(output, fd.offset(), fd.uncompressed_size());
@@ -205,7 +219,7 @@ struct [[maybe_unused]] tuple_size<open_viii::archive::FileData>
 template<>
 struct [[maybe_unused]] tuple_element<0, open_viii::archive::FileData>
 {
-  using type = std::basic_string<char>;
+  using type = std::string_view;
 };
 /**
  * type of 2nd argument

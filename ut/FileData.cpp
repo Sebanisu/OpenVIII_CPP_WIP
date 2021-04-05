@@ -10,6 +10,7 @@ int
   using namespace boost::ut;
   using namespace boost::ut::bdd;
   using namespace std::string_view_literals;
+  using namespace std::string_literals;
   using namespace open_viii::archive;
   using namespace open_viii;
   [[maybe_unused]] suite tests = [] {
@@ -65,8 +66,8 @@ int
           expects(FileData(252U, 658U), {}, 16U, 658U, 252U, true);
         };
         then("A string, a size and an offset") = [] {
-          expects(FileData(R"(test\test)"sv, 252U, 658U),
-                  "test/test"sv,
+          expects(FileData(R"(test\test)"s, 252U, 658U),
+                  "test/test"s,
                   25U,
                   658U,
                   252U,
@@ -91,6 +92,16 @@ int
         auto input = tl::read::input(sample_hex, true);
         check_fd_sample(input);
       };
+    };
+    "FileData append"_test = [] {
+      std::vector<char> buffer{};
+      append_entry(buffer, FileData("test/test.test",5U, 10U));
+      expect(eq(buffer[8], '\\'));
+      expect(eq(std::size(buffer), 30U));
+      const auto local_fi = FileData(buffer);
+      expect(eq(local_fi.get_path_string(), "test/test.test"sv));
+      expect(eq(local_fi.offset(), 5U));
+      expect(eq(local_fi.uncompressed_size(), 10U));
     };
   };
 }
