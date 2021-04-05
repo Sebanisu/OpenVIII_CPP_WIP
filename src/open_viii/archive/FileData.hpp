@@ -20,6 +20,9 @@
 #include <iostream>
 #include <string>
 namespace open_viii::archive {
+/**
+ * FileData is an FI Like that contains the filepath, offset and size.
+ */
 struct [[maybe_unused]] FileData
 {
 private:
@@ -38,11 +41,12 @@ private:
 
 public:
   constexpr FileData()       = default;
-  FileData(const FileData &) = default;
-  FileData(FileData &&)      = default;
-  FileData &operator=(const FileData &) = default;
-  FileData &operator=(FileData &&) = default;
-  ~FileData()                      = default;
+/**
+ * Piecemeal constructor
+ * @param filename path to file
+ * @param offset path to
+ * @param size
+ */
   [[maybe_unused]] FileData(const std::string_view filename,
                             const unsigned long    offset,
                             unsigned int           size)
@@ -72,6 +76,19 @@ public:
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
     const fiT &fi)
     : m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
+      m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
+  {
+    if (fi.compression_type() != CompressionTypeT::none) {
+      throw std::invalid_argument(
+        "Compression Type must be none as FileData doesn't store compressed "
+        "data");
+    }
+  }
+  template<FI_Like fiT>
+  requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
+    const std::string &filename, const fiT &fi)
+    : m_filename(filename),
+      m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
       m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
   {
     if (fi.compression_type() != CompressionTypeT::none) {
@@ -153,7 +170,24 @@ public:
     }
   }
 };
+
+/**
+ * Append FileData to buffer.
+ * @tparam T type of output buffer.
+ * @param output buffer to write to.
+ * @param fd incoming FI it's just grabbing the compression type from it.
+ */
+template<is_insertable_or_ostream T>
+static void
+  append_entry(T &output, const FileData fd)
+{
+  const auto string = fd.get_path_string();
+  tl::write::append(output, static_cast<std::uint32_t>(std::size(string)));
+  tl::write::append(output, string);
+  tl::write::append(output, fd.offset(), fd.uncompressed_size());
+}
 }// namespace open_viii::archive
+
 namespace std {
 /**
  * define number of arguments

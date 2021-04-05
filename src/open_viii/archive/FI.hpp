@@ -13,8 +13,10 @@
 #ifndef VIIIARCHIVE_FI_HPP
 #define VIIIARCHIVE_FI_HPP
 #include "open_viii/CompressionTypeT.hpp"
+#include "open_viii/Concepts.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include "tl/read.hpp"
+#include "tl/write.hpp"
 #include <algorithm>
 #include <array>
 #include <cstring>
@@ -212,6 +214,19 @@ public:
   }
 };
 static_assert(sizeof(FI) == FI::SIZE);
+
+/**
+ *
+ * @tparam T type of output buffer.
+ * @param output buffer to write to.
+ * @param in_fi incoming FI it's just grabbing the compression type from it.
+ */
+template<is_insertable_or_ostream T>
+static void
+  append_entry(T &output, const FI in_fi)
+{
+  tl::write::append(output, in_fi);
+}
 }// namespace open_viii::archive
 namespace std {
 /**
@@ -219,7 +234,8 @@ namespace std {
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] tuple_size<open_viii::archive::FI> : std::integral_constant<size_t, 3>
+struct [[maybe_unused]] tuple_size<open_viii::archive::FI>
+  : std::integral_constant<size_t, 3>
 {
 };
 /**

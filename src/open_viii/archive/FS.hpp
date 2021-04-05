@@ -33,20 +33,6 @@ namespace open_viii::archive::FS {
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media#.fs_.28File_Source.29
  */
 
-namespace concepts {
-  /**
-   * concepts used by FS
-   */
-
-  /**
-   * @tparam T Accept things like std::string or std::ostream
-   */
-  template<typename T>
-  concept is_insertable_or_ostream =
-    tl::concepts::is_contiguous_with_insert<
-      T> || std::is_base_of_v<std::ostream, std::decay_t<T>>;
-}// namespace concepts
-
 /**
  * Extension
  */
@@ -180,6 +166,8 @@ template<
   }
   return get_entry<outputT>(tl::read::input(data, true), fi, offset);
 }
+}// namespace open_viii::archive::FS
+namespace open_viii::archive {
 
 /**
  * Append lzss compressed entry
@@ -187,7 +175,7 @@ template<
  * @param output buffer to write to.
  * @param input buffer to read from.
  */
-template<concepts::is_insertable_or_ostream T>
+template<is_insertable_or_ostream T>
 static void
   append_lzss(T &output, const std::span<const char> &input)
 {
@@ -203,7 +191,7 @@ static void
  * @param output buffer to write to.
  * @param input buffer to read from.
  */
-template<concepts::is_insertable_or_ostream T>
+template<is_insertable_or_ostream T>
 static void
   append_l4z(T &output, const std::span<const char> &input)
 {
@@ -227,7 +215,7 @@ static void
  * @param compression_type desired compression value: none, lzss, lz4
  * @return return FI like data.
  */
-template<concepts::is_insertable_or_ostream T, FI_Like fiT = FI>
+template<is_insertable_or_ostream T, FI_Like fiT = FI>
 static fiT
   append_entry(T &                         output,
                const std::span<const char> input,
@@ -268,13 +256,11 @@ static fiT
  * @param in_fi incoming FI it's just grabbing the compression type from it.
  * @return return FI like data.
  */
-template<FI_Like                            in_fiT  = FI,
-         FI_Like                            out_fiT = FI,
-         concepts::is_insertable_or_ostream T>
+template<FI_Like in_fiT = FI, FI_Like out_fiT = FI, is_insertable_or_ostream T>
 static out_fiT
   append_entry(T &output, const std::span<const char> input, const in_fiT in_fi)
 {
   return append_entry(output, input, in_fi.compression_type());
 }
-}// namespace open_viii::archive::FS
+}// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FS_HPP

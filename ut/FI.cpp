@@ -47,5 +47,13 @@ int
       expect(eq(FI::get_fi_entry_offset(1U, 0U), 12U));
       expect(eq(FI::get_fi_entry_offset(19U, 55U), 283U));
     };
+    "FI append"_test = [] {
+      std::vector<char> buffer{};
+      append_entry(buffer, FI(5U, 10U));
+      expect(eq(std::size(buffer), 12U));
+      const auto local_fi = FI(buffer, 0U, 0U);
+      expect(eq(local_fi.offset(), 10U));
+      expect(eq(local_fi.uncompressed_size(), 5U));
+    };
   };
 }
