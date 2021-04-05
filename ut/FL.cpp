@@ -12,6 +12,7 @@ int
   using namespace boost::ut;
   using namespace std::string_literals;
   using namespace std::string_view_literals;
+  using namespace open_viii::archive;
   [[maybe_unused]] suite tests = [] {
     {
       static const auto check_path_strings = [](std::string &&input) {
@@ -151,5 +152,17 @@ C:\ff8\Data\eng\FIELD\mapdata\bc\bcform1a.fi)"s;
         check({ "form"sv }, "ff8/Data/eng/FIELD/mapdata/bc/bcform1a.fi"sv);
       };
     }
+    "FileData append"_test = [] {
+      std::string buffer{};
+      append_entry(buffer, "test/test1.test"sv);
+      append_entry(buffer, "test/test2.test"sv);
+      append_entry(buffer, "test/test3.test"sv);
+      expect(eq(buffer[7], '\\'));
+      expect(eq(std::size(buffer), 60U));
+      const auto entries = open_viii::archive::fl::get_all_entries("",buffer,0U);
+      expect(eq(entries.at(0).second, "test/test1.test"sv));
+      expect(eq(entries.at(1).second, "test/test2.test"sv));
+      expect(eq(entries.at(2).second, "test/test3.test"sv));
+    };
   };
 }

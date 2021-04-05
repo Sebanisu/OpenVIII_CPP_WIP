@@ -16,6 +16,7 @@
 #include "tl/input.hpp"
 #include "tl/read.hpp"
 #include "tl/string.hpp"
+#include "tl/write.hpp"
 #include <cassert>
 #include <filesystem>
 #include <fstream>
@@ -302,6 +303,38 @@ template<typename T>
   }
   return get_entry(data, needle, offset, size, count);
 }
-
 }// namespace open_viii::archive::fl
+namespace open_viii::archive {
+
+/**
+ * Append FL path to buffer.
+ * @tparam T type of output buffer.
+ * @param path being wrote.
+ * @note path is prepended with c:\ and appended with \r\n.
+ */
+template<is_insertable_or_ostream T>
+static void
+  append_entry(T &output, const std::filesystem::path &path)
+{
+  using namespace std::string_literals;
+  std::string string = "c:\\"s + path.string() + "\r\n"s;
+  tl::string::undo_replace_slashes(string);
+  tl::write::append(output, string);
+}
+///**
+// * Append FL path to buffer.
+// * @tparam T type of output buffer.
+// * @param path being wrote.
+// * @note path is prepended with c:\ and appended with \r\n.
+// */
+//template<is_insertable_or_ostream T>
+//static void
+//  append_entry(T &output, const std::string_view &path)
+//{
+//  using namespace std::string_literals;
+//  std::string string = "c:\\"s + std::string(path) + "\r\n"s;
+//  tl::string::undo_replace_slashes(string);
+//  tl::write::append(output, string);
+//}
+}// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FL_HPP
