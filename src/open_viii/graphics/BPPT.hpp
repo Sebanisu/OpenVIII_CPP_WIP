@@ -24,14 +24,14 @@ namespace open_viii::graphics {
 struct BPPT
 {
 private:
-  mutable bool m_bpp8  : 1 { false };
-  mutable bool m_bpp16 : 1 { false };
+  bool m_bpp8  : 1 { false };
+  bool m_bpp16 : 1 { false };
   /**
    * might be used sometimes. for some files. I think it could be for multi
    * format
    */
-  mutable bool          m_unused1                    : 1 { false };
-  mutable bool          m_color_lookup_table_present : 1 { false };
+  bool                  m_unused1                    : 1 { false };
+  bool                  m_color_lookup_table_present : 1 { false };
   bool                  m_unused2                    : 1 { false };
   bool                  m_unused3                    : 1 { false };
   bool                  m_unused4                    : 1 { false };
@@ -39,14 +39,23 @@ private:
   constexpr static auto RAW8_VALUE  = 0b1U;
   constexpr static auto RAW16_VALUE = 0b10U;
   constexpr static auto CLP_VALUE   = 0b1000U;
+  constexpr BPPT(bool bpp8, bool bpp16, bool color_lookup_table_present)
+    : m_bpp8(bpp8),
+      m_bpp16(bpp16),
+      m_color_lookup_table_present(color_lookup_table_present)
+  {}
+
 public:
-  constexpr static auto BPP4  = 4U;
-  constexpr static auto BPP8  = 8U;
-  constexpr static auto BPP16 = 16U;
-  constexpr static auto BPP24 = 24U;
-  // consteval friend BPPT operator"" _bpp(unsigned long long int value);
-  auto                         operator<=>(const BPPT &) const = default;
-  [[nodiscard]] constexpr bool unused() const noexcept
+  constexpr BPPT() = default;
+  enum : unsigned int {
+    BPP4  = 4U,
+    BPP8  = 8U,
+    BPP16 = 16U,
+    BPP24 = 24U,
+  };
+  auto operator<=>(const BPPT &) const = default;
+  [[nodiscard]] constexpr bool
+    unused() const noexcept
   {
     return m_unused1 && m_unused2 && m_unused3 && m_unused4 && m_unused5;
   }
@@ -55,59 +64,48 @@ public:
    * not set;
    * @return true if 4bpp
    */
-  constexpr void bpp4(bool in) const noexcept
+  static constexpr BPPT
+    as_bpp4() noexcept
   {
-    if (in) {
-      m_bpp8                       = false;
-      m_bpp16                      = false;
-      m_color_lookup_table_present = true;
-    }
+    return BPPT(false, false, true);
   }
   /**
    * Test bits to check if color lookup table is present and 8bpp is set and
    * 16bpp is not set;
    * @return true if 8bpp
    */
-  constexpr void bpp8(bool in) const
+  static constexpr BPPT
+    as_bpp8() noexcept
   {
-    if (in) {
-      m_bpp8                       = true;
-      m_bpp16                      = false;
-      m_color_lookup_table_present = true;
-    }
+    return BPPT(true, false, true);
   }
   /**
    * Test bits to check if color lookup table is not present and 8bpp is not set
    * and 16bpp is set;
    * @return true if 16bpp
    */
-  constexpr void bpp16(bool in) const
+  static constexpr BPPT
+    as_bpp16() noexcept
   {
-    if (in) {
-      m_bpp8                       = false;
-      m_bpp16                      = true;
-      m_color_lookup_table_present = false;
-    }
+    return BPPT(false, true, false);
   }
   /**
    * Test bits to check if color lookup table is not present and 8bpp is set and
    * 16bpp is set;
    * @return true if 24bpp
    */
-  constexpr void bpp24(bool in) const
+  static constexpr BPPT
+    as_bpp24() noexcept
   {
-    if (in) {
-      m_bpp8                       = true;
-      m_bpp16                      = true;
-      m_color_lookup_table_present = false;
-    }
+    return BPPT(true, true, false);
   }
   /**
    * Test bits to check if color lookup table is present and 8bpp and 16bpp are
    * not set;
    * @return true if 4bpp
    */
-  [[nodiscard]] constexpr bool bpp4() const noexcept
+  [[nodiscard]] constexpr bool
+    bpp4() const noexcept
   {
     return !unused() && !m_bpp8 && !m_bpp16 && m_color_lookup_table_present;
   }
@@ -116,7 +114,8 @@ public:
    * 16bpp is not set;
    * @return true if 8bpp
    */
-  [[nodiscard]] constexpr bool bpp8() const noexcept
+  [[nodiscard]] constexpr bool
+    bpp8() const noexcept
   {
     return !unused() && m_bpp8 && !m_bpp16 && m_color_lookup_table_present;
   }
@@ -125,7 +124,8 @@ public:
    * and 16bpp is set;
    * @return true if 16bpp
    */
-  [[nodiscard]] constexpr bool bpp16() const noexcept
+  [[nodiscard]] constexpr bool
+    bpp16() const noexcept
   {
     return !unused() && !m_bpp8 && m_bpp16 && !m_color_lookup_table_present;
   }
@@ -134,7 +134,8 @@ public:
    * 16bpp is set;
    * @return true if 24bpp
    */
-  [[nodiscard]] constexpr bool bpp24() const noexcept
+  [[nodiscard]] constexpr bool
+    bpp24() const noexcept
   {
     return !unused() && m_bpp8 && m_bpp16 && !m_color_lookup_table_present;
   }
@@ -143,7 +144,8 @@ public:
    * 16bpp is not set;
    * @return true if 16bpp
    */
-  [[nodiscard]] constexpr bool color_lookup_table_present() const
+  [[nodiscard]] constexpr bool
+    color_lookup_table_present() const
   {
     return !unused() && !m_bpp16 && m_color_lookup_table_present;
   }
@@ -151,7 +153,8 @@ public:
    * Test that one of the valid states is true.
    * @return true if is a valid state.
    */
-  [[nodiscard]] constexpr bool check() const noexcept
+  [[nodiscard]] constexpr bool
+    check() const noexcept
   {
     return bpp4() || bpp8() || bpp16() || bpp24();
   }
@@ -159,9 +162,8 @@ public:
   {
     return check();
   }
-  [[nodiscard]] constexpr explicit operator int() const
+  [[nodiscard]] constexpr explicit operator char() const
   {
-    //[[maybe_unused]] static constexpr auto size_ = sizeof(BPPT);
     if (bpp4()) {
       return BPP4;
     }
@@ -176,22 +178,32 @@ public:
     }
     return 0;
   }
-  //  _4bpp = 0b0U, /**< is coded as std::uint8_t of value 0. 4 bits per per
-  //  pixel */ _8bpp = 0b1U, /**< is coded as std::uint8_t of value 1. 8 bits
-  //  per per pixel */ _16bpp = 0b10U, /**< is coded as std::uint8_t of value 2.
-  //  16 bits per per pixel */ _24bpp = _8bpp | _16bpp, /**< is coded as
-  //  std::uint8_t of value 3. 24 bits per per pixel */ CLP = 0b1000, /**< is
-  //  coded as std::uint8_t of value 8. CLP flag for color lookup table present.
-  //  This is required for
-  //                   4bpp and 8bpp. */
-  constexpr std::uint8_t raw() const noexcept
+  [[nodiscard]] constexpr explicit operator int() const
+  {
+    return static_cast<int>(operator char());
+  }
+  /**
+   *   _4bpp = 0b0U,  is coded as std::uint8_t of value 0. 4 bits per per
+    pixel
+    _8bpp = 0b1U, is coded as std::uint8_t of value 1. 8 bits
+    per per pixel
+    _16bpp = 0b10U, is coded as std::uint8_t of value 2.
+    16 bits per per pixel
+    _24bpp = _8bpp | _16bpp, is coded as
+    std::uint8_t of value 3. 24 bits per per pixel
+    CLP = 0b1000U, is
+    coded as std::uint8_t of value 8. CLP flag for color lookup table present.
+    This is required for 4bpp and 8bpp.
+   */
+  constexpr std::uint8_t
+    raw() const noexcept
   {
     return static_cast<std::uint8_t>(
       (m_bpp8 ? RAW8_VALUE : 0U) + (m_bpp16 ? RAW16_VALUE : 0U)
       + (m_color_lookup_table_present ? CLP_VALUE : 0U));
   }
-  friend std::ostream &operator<<(std::ostream &               os,
-                                  [[maybe_unused]] const BPPT &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, [[maybe_unused]] const BPPT &input)
   {
     return os << "{BPP: " << static_cast<int>(input)
               << ", CLP: " << input.m_color_lookup_table_present << '}';
@@ -200,22 +212,16 @@ public:
 namespace literals {
   consteval BPPT operator""_bpp(unsigned long long int value)
   {
-    BPPT r{};
     switch (value) {
     case BPPT::BPP4:
-      r.bpp4(true);
-      break;
+      return BPPT::as_bpp4();
     case BPPT::BPP8:
-      r.bpp8(true);
-      break;
+      return BPPT::as_bpp8();
     case BPPT::BPP16:
-      r.bpp16(true);
-      break;
+      return BPPT::as_bpp16();
     case BPPT::BPP24:
-      r.bpp24(true);
-      break;
+      return BPPT::as_bpp24();
     }
-    return r;
   }
 }// namespace literals
 static_assert(sizeof(BPPT) == 1U);
