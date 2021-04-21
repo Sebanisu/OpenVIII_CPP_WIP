@@ -28,9 +28,10 @@ namespace open_viii::graphics {
  * @see https://github.com/myst6re/deling/blob/master/FF8Image.cpp#L30
  * @see http://www.raphnet.net/electronique/psx_adaptor/Playstation.txt
  * @see http://www.psxdev.net/forum/viewtopic.php?t=109
- * @see https://mrclick.zophar.net/TilEd/download/timgfx.txt
- * @see http://www.elisanet.fi/6581/PSX/doc/Playstation_Hardware.pdf
- * @see http://www.elisanet.fi/6581/PSX/doc/psx.pdf
+ * @see http://www.elisanet.fi/6581/PSX/doc/Playstation_Hardware.pdf // link has died
+ * @see https://retrocdn.net/File:PlayStation_Hardware.pdf
+ * @see http://www.elisanet.fi/6581/PSX/doc/psx.pdf // link has died
+ * @see https://gamehacking.org/faqs/PSX.pdf
  * @see http://www.romhacking.net/documents/31/
  * @see http://mrclick.zophar.net/TilEd/download/timgfx.txt
  * @see http://fileformats.archiveteam.org/wiki/TIM_(PlayStation_graphics)
