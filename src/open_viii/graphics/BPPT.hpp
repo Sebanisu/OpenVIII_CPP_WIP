@@ -20,25 +20,27 @@ namespace open_viii::graphics {
  * \ingroup graphics
  * @brief Contains 4 to 24 bits per pixel flags. Also a CLP flag for color
  * lookup table.
+ * @note Lack of documentation on mixed_format but from what I understand
+ * neither of the bpp8 or bpp16 bits are set. And the color lookup table might
+ * be used.
  */
 struct BPPT
 {
 private:
-  bool m_bpp8  : 1 { false };
-  bool m_bpp16 : 1 { false };
-  /**
-   * might be used sometimes. for some files. I think it could be for multi
-   * format
-   */
-  bool                  m_unused1                    : 1 { false };
-  bool                  m_color_lookup_table_present : 1 { false };
-  bool                  m_unused2                    : 1 { false };
-  bool                  m_unused3                    : 1 { false };
-  bool                  m_unused4                    : 1 { false };
-  bool                  m_unused5                    : 1 { false };
-  constexpr static auto RAW8_VALUE  = 0b1U;
-  constexpr static auto RAW16_VALUE = 0b10U;
-  constexpr static auto CLP_VALUE   = 0b1000U;
+  bool m_bpp8                       : 1 { false };
+  bool m_bpp16                      : 1 { false };
+  bool m_mixed_format               : 1 { false };
+  bool m_color_lookup_table_present : 1 { false };
+  bool m_unused2                    : 1 { false };
+  bool m_unused3                    : 1 { false };
+  bool m_unused4                    : 1 { false };
+  bool m_unused5                    : 1 { false };
+  enum : std::uint8_t {
+    RAW8_VALUE  = 0b1U,
+    RAW16_VALUE = 0b10U,
+    MIXED_VALUE = 0b100U,
+    CLP_VALUE   = 0b1000U
+  };
   constexpr BPPT(bool bpp8, bool bpp16, bool color_lookup_table_present)
     : m_bpp8(bpp8),
       m_bpp16(bpp16),
@@ -57,7 +59,7 @@ public:
   [[nodiscard]] constexpr bool
     unused() const noexcept
   {
-    return m_unused1 && m_unused2 && m_unused3 && m_unused4 && m_unused5;
+    return m_mixed_format && m_unused2 && m_unused3 && m_unused4 && m_unused5;
   }
   /**
    * Test bits to check if color lookup table is present and 8bpp and 16bpp are
