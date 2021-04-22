@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.18)
 project(VIIIArchive C CXX)
 
 set(CMAKE_CXX_STANDARD 20) ## Supported values are 98, 11, 14, 17, and 20.
@@ -20,6 +20,8 @@ include(cmake/lz4.cmake)
 include(cmake/ut.cmake)
 include(cmake/tools_library.cmake)
 
+# include docs folders
+add_subdirectory(docs)
 
 # include source folders
 add_subdirectory(src)
