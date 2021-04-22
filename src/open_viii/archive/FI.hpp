@@ -51,11 +51,11 @@ public:
   /**
    * Expected size of the FI struct, used for a static assert after.
    */
-  constexpr static const std::size_t SIZE = 12U;
+  static constexpr std::size_t SIZE = 12U;
   /**
    * File extension for FI
    */
-  constexpr static const auto EXT = std::string_view(".FI", 3U);
+  static constexpr auto EXT = std::string_view(".FI", 3U);
   /**
    * Get uncompressed size for this entry.
    */
