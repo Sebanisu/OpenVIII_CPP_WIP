@@ -21,6 +21,7 @@ enum class LangT : std::uint8_t {
   fr,
   de,
   it,
+  es,
   jp,
 };
 }// namespace open_viii
