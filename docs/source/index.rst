@@ -7,15 +7,13 @@ Welcome to OpenVIII_CPP_WIP's documentation!
 ============================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   archive
+   graphics
+..
+   compression
+   menu_group
+   pak
+   paths
+   strings
+   tools
 
-.. doxygenstruct:: open_viii
-   :members:
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

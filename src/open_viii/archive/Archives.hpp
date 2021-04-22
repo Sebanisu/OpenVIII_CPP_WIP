@@ -20,6 +20,9 @@
 #include <type_traits>
 #include <variant>
 namespace open_viii::archive {
+/**
+ * Contains all the types of ArchivesTypesT
+ */
 struct Archives
 {
 private:
@@ -84,6 +87,11 @@ private:
     }
     return path;
   }
+  /**
+   * Check path for "lang-"
+   * @param pathString
+   * @return
+   */
   [[nodiscard]] bool check_lang_path(const auto &pathString) const
   {
     // no languages in zzz for:
@@ -180,9 +188,16 @@ private:
     }
     return false;
   }
+  /**
+   * Is this a valid lambda type
+   * @tparam lambdaT
+   */
   template<typename lambdaT>
   static constexpr bool valid_static_for_lambda_type =
     (std::is_invocable_r_v<bool, lambdaT, ArchiveTypeT, std::string_view>);
+  /**
+   * Populate all archives from path
+   */
   void populate_archives_from_path()
   {
     tools::execute_on_directory(
@@ -207,11 +222,19 @@ private:
         }
       });
   }
+  /**
+   * lambda takes all Archive types
+   * @tparam lambdaT
+   */
   template<typename lambdaT>
   static constexpr bool takes_valid_archive_type =
     (std::is_invocable_r_v<bool, lambdaT, decltype(m_battle)>)
     || (std::is_invocable_r_v<bool, lambdaT, decltype(m_field)>)
     || std::is_invocable_r_v<bool, lambdaT, decltype(*m_zzz_main)>;
+  /**
+   * does lambda take a vector or a string
+   * @tparam lambdaT
+   */
   template<typename lambdaT>
   [[maybe_unused]] static constexpr bool valid_execute_on_lambda =
     (std::invocable<lambdaT, std::vector<char>, std::string>)
@@ -222,6 +245,14 @@ private:
       return static_cast<bool>(archive);
     };
   }
+  /**
+   * Get lambda that will pass valid data to the other lambda.
+   * @tparam nested
+   * @tparam lambdaT
+   * @param filename
+   * @param lambda
+   * @return
+   */
   template<bool nested = true, typename lambdaT>
   requires(valid_execute_on_lambda<lambdaT>) auto get_execute_on_lambda(
     const std::initializer_list<std::string_view> &filename,
@@ -239,7 +270,7 @@ private:
   }
 public:
   /**
-   *
+   * Get archive via ArchiveTypeT
    * @tparam archiveType_
    * @return
    */
@@ -265,6 +296,10 @@ public:
       return m_zzz_other;
     }
   }
+  /**
+   * convert to bool
+   * @return
+   */
   [[nodiscard]] explicit operator bool() const noexcept
   {
     return test_set();
@@ -434,20 +469,44 @@ public:
     }
     return ret;
   }
+  /**
+   * run lambda on listed types.
+   * @tparam aT
+   * @tparam lambdaT
+   * @param lambda
+   * @return
+   */
   template<ArchiveTypeT... aT, typename lambdaT>
   requires(test_valid_archive_type_t(aT)
            && ...) bool specify(const lambdaT &lambda)
   {
     return (loop<aT, aT>(lambda) && ...);
   }
+  /**
+   * if true all archives are valid.
+   * @return
+   */
   bool test_set() const
   {
     return loop(test_valid_lambda());
   }
+  /**
+   * if true listed archives are valid
+   * @tparam aT
+   * @return
+   */
   template<ArchiveTypeT... aT> requires(sizeof...(aT) > 0) bool test_set()
   {
     return specify<aT...>(test_valid_lambda());
   }
+  /**
+   * execute on all archives the following lambda.
+   * @tparam nested
+   * @tparam lambdaT
+   * @param filename
+   * @param lambda
+   * @return
+   */
   template<bool nested = true, typename lambdaT>
   requires(valid_execute_on_lambda<lambdaT>) bool execute_on(
     const std::initializer_list<std::string_view> &filename,
@@ -455,6 +514,15 @@ public:
   {
     return loop(get_execute_on_lambda<nested>(filename, lambda));
   }
+  /**
+   * execute on all listed archives the following lambda.
+   * @tparam nested
+   * @tparam aT
+   * @tparam lambdaT
+   * @param filename
+   * @param lambda
+   * @return
+   */
   template<bool nested = true, ArchiveTypeT... aT, typename lambdaT>
   requires((valid_execute_on_lambda<lambdaT>)&&sizeof...(aT)
            > 0) bool execute_on(const std::initializer_list<std::string_view>
