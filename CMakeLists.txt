@@ -21,7 +21,9 @@ include(cmake/ut.cmake)
 include(cmake/tools_library.cmake)
 
 # include docs folders
-add_subdirectory(docs)
+if(${DOCS} STREQUAL "YES")
+    add_subdirectory(docs)
+endif()
 
 # include source folders
 add_subdirectory(src)
