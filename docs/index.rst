@@ -10,7 +10,8 @@ Welcome to OpenVIII_CPP_WIP's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+.. doxygenstruct:: open_viii
+   :members:
 
 Indices and tables
 ==================
