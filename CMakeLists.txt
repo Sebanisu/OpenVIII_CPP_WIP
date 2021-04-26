@@ -20,11 +20,10 @@ include(cmake/lz4.cmake)
 include(cmake/ut.cmake)
 include(cmake/tools_library.cmake)
 
-
 set(DOCS "NO" CACHE STRING "Build documentation")
 # include docs folders
 if(${DOCS} STREQUAL "YES")
-    add_subdirectory(docs)
+    add_subdirectory(raw_docs)
 endif()
 
 # include source folders

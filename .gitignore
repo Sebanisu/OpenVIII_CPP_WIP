@@ -13,6 +13,6 @@ External/lz4
 venv/*
 *.mch
 build/*
-docs/html
-docs/latex
-docs/_*/
+raw_docs/html
+raw_docs/latex
+raw_docs/_*/
