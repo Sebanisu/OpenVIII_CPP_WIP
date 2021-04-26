@@ -36,7 +36,7 @@ add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
 
 set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/source)
 file(GLOB_RECURSE SPHINX_SOURCE_SOURCE_CODE ${SPHINX_SOURCE}/*.md ${SPHINX_SOURCE}/*.rst)
-set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
+set(SPHINX_BUILD ${PROJECT_SOURCE_DIR}/docs)
 set(SPHINX_INDEX_FILE ${SPHINX_BUILD}/index.html)
 
 # Only regenerate Sphinx when:
@@ -65,3 +65,8 @@ add_custom_target(Sphinx ALL DEPENDS ${SPHINX_INDEX_FILE})
 include(GNUInstallDirs)
 install(DIRECTORY ${SPHINX_BUILD}
         DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
+set(NOJEKYLL_IN ${CMAKE_CURRENT_SOURCE_DIR}/.nojekyll)
+set(NOJEKYLL_OUT ${SPHINX_BUILD}/.nojekyll)
+# Replace variables inside @@ with the current values
+configure_file(${NOJEKYLL_IN} ${NOJEKYLL_OUT} @ONLY)

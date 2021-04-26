@@ -1,2 +1,0 @@
-breathe
-myst_parser
