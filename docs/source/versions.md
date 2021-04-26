@@ -1,10 +1,6 @@
 Supported Versions
 =====
 
-```{toctree}
-```
-
-
 ```{tab} 2000
 [2000 CD release](https://www.pcgamingwiki.com/wiki/Final_Fantasy_VIII)
 

@@ -1,9 +1,6 @@
 Archive Library
 =====
 
-```{toctree}
-```
-
 The Archive Library supports reading and writing files from the PC releases of the game.
 
 [File List](#file-list) contains one or more path strings. Each starting with `C:\ff8\Data\` ending with `\r\n`. These are in the same order as
