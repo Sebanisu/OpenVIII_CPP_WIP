@@ -9,6 +9,7 @@ Welcome to OpenVIII_CPP_WIP's documentation!
 .. toctree::
    archive
    graphics
+   versions
 ..
    compression
    menu_group

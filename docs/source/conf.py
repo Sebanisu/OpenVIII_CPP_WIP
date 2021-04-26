@@ -28,7 +28,7 @@ author = 'Sebanisu'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["breathe", "myst_parser", "sphinx_tabs.tabs"]
+extensions = ["breathe", "myst_parser", "sphinx_inline_tabs"]
 
 # Breathe Configuration
 breathe_default_project = "OpenVIII_CPP_WIP"
