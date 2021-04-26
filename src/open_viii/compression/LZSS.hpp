@@ -20,24 +20,24 @@ namespace open_viii::compression {
 struct LZSS
 {
 private:
-  constexpr static const std::uint32_t R_SIZE          = 4078U;
-  constexpr static const std::uint32_t MATCH_MASK      = 0xF0U;
-  constexpr static const std::uint32_t P_OFFSET        = 4097U;
-  constexpr static const std::uint32_t FLAGS_MASK      = 0x100U;
-  constexpr static const std::uint32_t FLAGS_BITS      = 0xFF00U;
-  constexpr static const std::uint32_t OFFSET_MASK     = MATCH_MASK;
-  constexpr static const std::uint32_t COUNT_MASK      = 0x0FU;
-  constexpr static const std::uint32_t NOT_USED        = 4096U;
-  constexpr static const std::uint32_t NODE_SIZE       = 18U;
-  constexpr static const auto          F               = 18U;
-  constexpr static const auto          F_MINUS1        = F - 1;
-  constexpr static const auto          N               = NOT_USED;
-  constexpr static const auto          N_MINUS1        = N - 1U;
-  constexpr static const auto          THRESHOLD       = 2U;
-  constexpr static const auto          RIGHT_SIDE_SIZE = 4353;
-  constexpr static const int           N_PLUS1         = N + 1U;
-  constexpr static const int           N_PLUS2         = N + 1U;
-  constexpr static const int           N_PLUS17        = N + F_MINUS1;
+  static constexpr std::uint32_t R_SIZE          = 4078U;
+  static constexpr std::uint32_t MATCH_MASK      = 0xF0U;
+  static constexpr std::uint32_t P_OFFSET        = 4097U;
+  static constexpr std::uint32_t FLAGS_MASK      = 0x100U;
+  static constexpr std::uint32_t FLAGS_BITS      = 0xFF00U;
+  static constexpr std::uint32_t OFFSET_MASK     = MATCH_MASK;
+  static constexpr std::uint32_t COUNT_MASK      = 0x0FU;
+  static constexpr std::uint32_t NOT_USED        = 4096U;
+  static constexpr std::uint32_t NODE_SIZE       = 18U;
+  static constexpr auto          F               = 18U;
+  static constexpr auto          F_MINUS1        = F - 1;
+  static constexpr auto          N               = NOT_USED;
+  static constexpr auto          N_MINUS1        = N - 1U;
+  static constexpr auto          THRESHOLD       = 2U;
+  static constexpr auto          RIGHT_SIDE_SIZE = 4353;
+  static constexpr int           N_PLUS1         = N + 1U;
+  static constexpr int           N_PLUS2         = N + 1U;
+  static constexpr int           N_PLUS17        = N + F_MINUS1;
   /**
    * @note I was getting a complexity warning as all the code was in one
    * function. So I moved the code into a struct. So I could change the lambda's

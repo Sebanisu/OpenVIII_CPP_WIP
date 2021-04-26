@@ -14,6 +14,9 @@
 #define VIIIARCHIVE_LANGCOMMON_HPP
 #include "LangT.hpp"
 namespace open_viii {
+/**
+ * Lang Common for conversion from enum to 2 letter language code
+ */
 struct LangCommon
 {
 public:
@@ -22,7 +25,13 @@ public:
   static constexpr std::string_view DE{ "de" };
   static constexpr std::string_view IT{ "it" };
   static constexpr std::string_view JP{ "jp" };
+  static constexpr std::string_view ES{ "es" };
   static constexpr std::string_view EMPTY{ "" };
+  /**
+   * from langT to string
+   * @tparam langVal
+   * @return
+   */
   template<LangT langVal>
   [[maybe_unused]] [[nodiscard]] static constexpr std::string_view
     to_string() noexcept
@@ -35,12 +44,19 @@ public:
       return DE;
     } else if constexpr (langVal == LangT::it) {
       return IT;
+    } else if constexpr (langVal == LangT::es) {
+      return ES;
     } else if constexpr (langVal == LangT::jp) {
       return JP;
     } else {
       return EMPTY;
     }
   }
+  /**
+   * from string to langT
+   * @param str_val
+   * @return
+   */
   [[maybe_unused]] [[nodiscard]] static constexpr LangT
     from_string(std::string_view str_val) noexcept
   {
@@ -56,6 +72,9 @@ public:
       }
       if (open_viii::tools::i_equals(str_val, IT)) {
         return LangT::it;
+      }
+      if (open_viii::tools::i_equals(str_val, ES)) {
+        return LangT::es;
       }
       if (open_viii::tools::i_equals(str_val, JP)) {
         return LangT::jp;

@@ -9,6 +9,10 @@
 #include "FileData.hpp"
 #include "open_viii/Concepts.hpp"
 namespace open_viii::archive {
+
+/**
+ * Grouping contains the location of the file and/or the raw data.
+ */
 template<std::ranges::contiguous_range T> struct [[maybe_unused]] Grouping
 {
 private:

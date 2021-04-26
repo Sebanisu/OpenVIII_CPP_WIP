@@ -35,11 +35,11 @@ struct FI
   // changed to int because libraries require casting to int anyway.
 private:
   /**
-   * Uncompressed Size of entry
+   * Uncompressed Size
    */
   std::uint32_t m_uncompressed_size{};
   /**
-   * Offset to entry
+   * Offset
    */
   std::uint32_t m_offset{};
   /**
@@ -51,32 +51,32 @@ public:
   /**
    * Expected size of the FI struct, used for a static assert after.
    */
-  constexpr static const std::size_t SIZE = 12U;
+  static constexpr std::size_t SIZE = 12U;
   /**
    * File extension for FI
    */
-  constexpr static const auto EXT = std::string_view(".FI", 3U);
+  static constexpr auto EXT = std::string_view(".FI", 3U);
   /**
-   * Get uncompressed size for this entry.
+   * Uncompressed size in bytes.
    */
   [[nodiscard]] constexpr auto
-    uncompressed_size() const noexcept
+    uncompressed_size() const noexcept -> std::uint32_t
   {
     return m_uncompressed_size;
   }
   /**
-   * Get offset for this entry.
+   * Offset is distance from beginning in bytes.
    */
   [[nodiscard]] constexpr auto
-    offset() const noexcept
+    offset() const noexcept -> std::uint32_t
   {
     return m_offset;
   }
   /**
-   * Get Compression type for this entry.
+   * Compression type (uncompressed, lzss, or lz4).
    */
   [[nodiscard]] constexpr auto
-    compression_type() const noexcept
+    compression_type() const noexcept -> CompressionTypeT
   {
     return m_compression_type;
   }
@@ -156,7 +156,7 @@ public:
    * Get count of possible entries based on file_size
    * @param file_size total bytes in a file.
    */
-  [[nodiscard]] constexpr static std::size_t
+  [[nodiscard]] static constexpr std::size_t
     get_count(const std::size_t &file_size) noexcept
   {
     return file_size / SIZE;
@@ -166,25 +166,13 @@ public:
    * @param path to file containing the FI entries.
    * @return If path doesn't exist returns 0.
    */
-  [[maybe_unused]] [[nodiscard]] std::size_t static get_count(
-    const std::filesystem::path &path)
+  [[maybe_unused]] [[nodiscard]] static std::size_t
+    get_count(const std::filesystem::path &path)
   {
     if (std::filesystem::exists(path)) {
       return get_count(std::filesystem::file_size(path));
     }
     return {};
-  }
-  /**
-   * Dump values to ostream.
-   * @param os out stream value
-   * @param data FI entry
-   */
-  [[nodiscard]] friend std::ostream &
-    operator<<(std::ostream &os, const FI &data)
-  {
-    os << '{' << data.m_uncompressed_size << ", " << data.m_offset << ", "
-       << static_cast<unsigned int>(data.m_compression_type) << '}';
-    return os;
   }
   /**
    * gets member variables
@@ -207,7 +195,7 @@ public:
    * @param offset, the number of bytes to start of first FI entry
    * @return id * 12 + offset
    */
-  [[nodiscard]] constexpr static std::size_t
+  [[nodiscard]] static constexpr std::size_t
     get_fi_entry_offset(const std::size_t &id, const std::size_t &offset = 0U)
   {
     return (id * FI::SIZE) + offset;
@@ -222,10 +210,22 @@ static_assert(sizeof(FI) == FI::SIZE);
  * @param in_fi incoming FI it's just grabbing the compression type from it.
  */
 template<is_insertable_or_ostream T>
-static void
+void
   append_entry(T &output, const FI in_fi)
 {
   tl::write::append(output, in_fi);
+}
+/**
+ * Dump values to ostream.
+ * @param os out stream value
+ * @param data FI entry
+ */
+[[nodiscard]] std::ostream &
+  operator<<(std::ostream &os, const FI &data)
+{
+  os << '{' << data.uncompressed_size() << ", " << data.offset() << ", "
+     << static_cast<unsigned int>(data.compression_type()) << '}';
+  return os;
 }
 }// namespace open_viii::archive
 namespace std {
