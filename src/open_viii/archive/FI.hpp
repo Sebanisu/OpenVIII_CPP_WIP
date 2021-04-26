@@ -35,11 +35,11 @@ struct FI
   // changed to int because libraries require casting to int anyway.
 private:
   /**
-   * Uncompressed Size of entry
+   * Uncompressed Size
    */
   std::uint32_t m_uncompressed_size{};
   /**
-   * Offset to entry
+   * Offset
    */
   std::uint32_t m_offset{};
   /**
@@ -57,26 +57,26 @@ public:
    */
   static constexpr auto EXT = std::string_view(".FI", 3U);
   /**
-   * Get uncompressed size for this entry.
+   * Uncompressed size in bytes.
    */
   [[nodiscard]] constexpr auto
-    uncompressed_size() const noexcept
+    uncompressed_size() const noexcept -> std::uint32_t
   {
     return m_uncompressed_size;
   }
   /**
-   * Get offset for this entry.
+   * Offset is distance from beginning in bytes.
    */
   [[nodiscard]] constexpr auto
-    offset() const noexcept
+    offset() const noexcept -> std::uint32_t
   {
     return m_offset;
   }
   /**
-   * Get Compression type for this entry.
+   * Compression type (uncompressed, lzss, or lz4).
    */
   [[nodiscard]] constexpr auto
-    compression_type() const noexcept
+    compression_type() const noexcept -> CompressionTypeT
   {
     return m_compression_type;
   }
