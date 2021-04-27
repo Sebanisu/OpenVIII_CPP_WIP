@@ -129,11 +129,17 @@
         <div class="section" id="archive-library">
 <h1>Archive Library<a class="headerlink" href="#archive-library" title="Permalink to this headline">¶</a></h1>
 <p>The Archive Library supports reading and writing files from the PC releases of the game.</p>
-<p><a class="reference external" href="#file-list">File List</a> contains one or more path strings. Each starting with <code class="docutils literal notranslate"><span class="pre">C:\ff8\Data\</span></code> ending with <code class="docutils literal notranslate"><span class="pre">\r\n</span></code>. These are in the same order as
+<p><a class="reference external" href="#file-list">File List</a> contains one or more path strings. Each starting with <code class="docutils literal notranslate"><span class="pre">C:\ff8\Data\</span></code> ending with <a class="reference external" href="https://en.wikipedia.org/wiki/Newline#Representation"><code class="docutils literal notranslate"><span class="pre">\r\n</span></code></a>. These are in the same order as
 the <a class="reference external" href="#file-index">File Index</a>. You scan the <a class="reference external" href="#file-list">File List</a> to find the items you want, while doing this you would increment a counter. The counter is
 used to know which entry to get from <a class="reference external" href="#file-index">File Index</a>. Lastly, you use the <a class="reference external" href="#file-index">File Index</a> to read from the <a class="reference external" href="#file-source">File Source</a>.</p>
 <p><a class="reference external" href="#zzz">ZZZ</a> contains multiple files including <a class="reference external" href="#fiflfs">FLFIFS</a> archives of different languages. The <a class="reference external" href="#zzz">ZZZ</a> header starts with the number of entries
 followed by <a class="reference external" href="#filedata">FileData</a> entries. <a class="reference external" href="#file-source">File Source</a> functions can accept <a class="reference external" href="#filedata">FileData</a> entries to extract from <a class="reference external" href="#zzz">ZZZ</a> files.</p>
+<p><strong>References:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media">http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media</a></p></li>
+<li><p><a class="reference external" href="https://github.com/myst6re/deling">https://github.com/myst6re/deling</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MaKiPL/OpenVIII-monogame">https://github.com/MaKiPL/OpenVIII-monogame</a></p></li>
+</ul>
 <div class="section" id="archives">
 <h2>Archives<a class="headerlink" href="#archives" title="Permalink to this headline">¶</a></h2>
 <dl class="cpp struct">
@@ -146,7 +152,8 @@ followed by <a class="reference external" href="#filedata">FileData</a> entries.
 <dl class="cpp enum">
 <dt id="_CPPv4N9open_viii7archive12ArchiveTypeTE">
 <span id="_CPPv3N9open_viii7archive12ArchiveTypeTE"></span><span id="_CPPv2N9open_viii7archive12ArchiveTypeTE"></span><span class="target" id="ArchivesTypesT_8hpp_1aaab44fd35d121ea0b4bba08aee0c0dca"></span><em class="property"><span class="pre">enum</span> </em><code class="sig-prename descclassname"><span class="pre">open_viii</span><span class="pre">::</span><span class="pre">archive</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">ArchiveTypeT</span></code><a class="headerlink" href="#_CPPv4N9open_viii7archive12ArchiveTypeTE" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p><em>Values:</em></p>
+<dd><p>There are 6 main FIFLFS archives for ff8 and 2 2 main zzz archives for ff8 remaster. These enums are for get&lt;&gt; in archives to ask for the one you want. </p>
+<p><em>Values:</em></p>
 <dl class="cpp enumerator">
 <dt id="_CPPv4N9open_viii7archive12ArchiveTypeT6battleE">
 <span id="_CPPv3N9open_viii7archive12ArchiveTypeT6battleE"></span><span id="_CPPv2N9open_viii7archive12ArchiveTypeT6battleE"></span><span class="target" id="ArchivesTypesT_8hpp_1aaab44fd35d121ea0b4bba08aee0c0dcaaa5101e70e5a075abab1c08c7a6c39612"></span><em class="property"><span class="pre">enumerator</span> </em><code class="sig-name descname"><span class="pre">battle</span></code><a class="headerlink" href="#_CPPv4N9open_viii7archive12ArchiveTypeT6battleE" title="Permalink to this definition">¶</a><br/></dt>
@@ -188,12 +195,12 @@ followed by <a class="reference external" href="#filedata">FileData</a> entries.
 <span id="_CPPv3N9open_viii7archive12ArchiveTypeT5firstE"></span><span id="_CPPv2N9open_viii7archive12ArchiveTypeT5firstE"></span><span class="target" id="ArchivesTypesT_8hpp_1aaab44fd35d121ea0b4bba08aee0c0dcaa8b04d5e3775d298e78455efc5ca404d5"></span><em class="property"><span class="pre">enumerator</span> </em><code class="sig-name descname"><span class="pre">first</span></code><a class="headerlink" href="#_CPPv4N9open_viii7archive12ArchiveTypeT5firstE" title="Permalink to this definition">¶</a><br/></dt>
 <dd></dd></dl>
 <dl class="cpp enumerator">
-<dt id="_CPPv4N9open_viii7archive12ArchiveTypeT5beginE">
-<span id="_CPPv3N9open_viii7archive12ArchiveTypeT5beginE"></span><span id="_CPPv2N9open_viii7archive12ArchiveTypeT5beginE"></span><span class="target" id="ArchivesTypesT_8hpp_1aaab44fd35d121ea0b4bba08aee0c0dcaa8d589afa4dfaeeed85fff5aa78e5ff6a"></span><em class="property"><span class="pre">enumerator</span> </em><code class="sig-name descname"><span class="pre">begin</span></code><a class="headerlink" href="#_CPPv4N9open_viii7archive12ArchiveTypeT5beginE" title="Permalink to this definition">¶</a><br/></dt>
-<dd></dd></dl>
-<dl class="cpp enumerator">
 <dt id="_CPPv4N9open_viii7archive12ArchiveTypeT4lastE">
 <span id="_CPPv3N9open_viii7archive12ArchiveTypeT4lastE"></span><span id="_CPPv2N9open_viii7archive12ArchiveTypeT4lastE"></span><span class="target" id="ArchivesTypesT_8hpp_1aaab44fd35d121ea0b4bba08aee0c0dcaa98bd1c45684cf587ac2347a92dd7bb51"></span><em class="property"><span class="pre">enumerator</span> </em><code class="sig-name descname"><span class="pre">last</span></code><a class="headerlink" href="#_CPPv4N9open_viii7archive12ArchiveTypeT4lastE" title="Permalink to this definition">¶</a><br/></dt>
+<dd></dd></dl>
+<dl class="cpp enumerator">
+<dt id="_CPPv4N9open_viii7archive12ArchiveTypeT5beginE">
+<span id="_CPPv3N9open_viii7archive12ArchiveTypeT5beginE"></span><span id="_CPPv2N9open_viii7archive12ArchiveTypeT5beginE"></span><span class="target" id="ArchivesTypesT_8hpp_1aaab44fd35d121ea0b4bba08aee0c0dcaa8d589afa4dfaeeed85fff5aa78e5ff6a"></span><em class="property"><span class="pre">enumerator</span> </em><code class="sig-name descname"><span class="pre">begin</span></code><a class="headerlink" href="#_CPPv4N9open_viii7archive12ArchiveTypeT5beginE" title="Permalink to this definition">¶</a><br/></dt>
 <dd></dd></dl>
 <dl class="cpp enumerator">
 <dt id="_CPPv4N9open_viii7archive12ArchiveTypeT3endE">
@@ -691,8 +698,8 @@ Remove the C:\ from the start, remove the \r from the end, and change \ to the c
 <dd><p>gets path as a std::string </p>
 </dd></dl>
 <dl class="cpp function">
-<dt>
-<span class="target" id="structopen__viii_1_1archive_1_1FileData_1a333a0d8fe6329867dc2d994ffa1a0172"></span><code class="sig-name descname"><span class="pre">template&lt;std::size_t</span> <span class="pre">I&gt;</span> <span class="pre">inline</span>  <span class="pre">requires</span> <span class="pre">(I&lt;</span> <span class="pre">3)</span> <span class="pre">auto</span> <span class="pre">get()</span> <span class="pre">const</span> <span class="pre">noexcept</span></code></dt>
+<dt id="_CPPv4I_NSt6size_tEENK9open_viii7archive8FileData3getEDav">
+<span id="_CPPv3I_NSt6size_tEENK9open_viii7archive8FileData3getEv"></span><span id="_CPPv2I_NSt6size_tEENK9open_viii7archive8FileData3getEv"></span><span class="pre">template&lt;</span><span class="pre">std</span><span class="pre">::</span><span class="pre">size_t</span> <code class="sig-name descname"><span class="pre">I</span></code><span class="pre">&gt;</span><br/><span class="target" id="structopen__viii_1_1archive_1_1FileData_1a7beae952658a1a2c0ba7aaf64adbd362"></span><em class="property"><span class="pre">inline</span></em> <span class="pre">auto</span> <code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">noexcept</span></em><a class="headerlink" href="#_CPPv4I_NSt6size_tEENK9open_viii7archive8FileData3getEDav" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>gets member variables <dl class="simple">
 <dt><strong>Note</strong></dt><dd><p>required to structured binding support </p>
 </dd>

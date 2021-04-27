@@ -3,12 +3,17 @@ Archive Library
 
 The Archive Library supports reading and writing files from the PC releases of the game.
 
-[File List](#file-list) contains one or more path strings. Each starting with `C:\ff8\Data\` ending with `\r\n`. These are in the same order as
+[File List](#file-list) contains one or more path strings. Each starting with `C:\ff8\Data\` ending with [`\r\n`](https://en.wikipedia.org/wiki/Newline#Representation). These are in the same order as
 the [File Index](#file-index). You scan the [File List](#file-list) to find the items you want, while doing this you would increment a counter. The counter is
 used to know which entry to get from [File Index](#file-index). Lastly, you use the [File Index](#file-index) to read from the [File Source](#file-source).
 
 [ZZZ](#zzz) contains multiple files including [FLFIFS](#fiflfs) archives of different languages. The [ZZZ](#zzz) header starts with the number of entries
 followed by [FileData](#filedata) entries. [File Source](#file-source) functions can accept [FileData](#filedata) entries to extract from [ZZZ](#zzz) files.
+
+**References:**
+* <http://wiki.ffrtt.ru/index.php?title=FF8/PC_Media>
+* <https://github.com/myst6re/deling>
+* <https://github.com/MaKiPL/OpenVIII-monogame>
 
 ## Archives
 
