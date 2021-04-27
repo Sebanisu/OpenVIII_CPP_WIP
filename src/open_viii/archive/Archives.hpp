@@ -281,7 +281,7 @@ public:
    * @return
    */
   template<ArchiveTypeT archiveType_>
-  requires(test_valid_archive_type_t(archiveType_)) const
+  requires(valid_archive_type_t<archiveType_>) const
     auto &get() const noexcept
   {
     if constexpr (archiveType_ == ArchiveTypeT::battle) {
@@ -378,7 +378,7 @@ public:
     return std::monostate{};
   }
   template<ArchiveTypeT archiveType_>
-  requires(test_valid_archive_type_t(archiveType_)) constexpr std::string_view
+  requires(valid_archive_type_t<archiveType_>) constexpr std::string_view
     get_string() const noexcept
   {// this string can be compared to the stem of the filename to determine which
    // archive is try added to.
@@ -445,13 +445,13 @@ public:
            std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::end),
            typename lambdaT>
   requires(
-    test_valid_archive_type_t(minT, maxT, true)
+    valid_archive_type_t<minT> && valid_archive_type_t<maxT, true>
     && ((takes_valid_archive_type<lambdaT>)
         || (valid_static_for_lambda_type<lambdaT>))) bool loop(const lambdaT
                                                                  &lambda) const
   {
     bool ret{ true };
-    if constexpr (test_valid_archive_type_t(minT, maxT - 1)) {
+    if constexpr (test_valid_archive_type_t(minT) && test_valid_archive_type_t(maxT - 1)) {
       ret = loop<minT, maxT - 1>(lambda);
       if (!ret)
         return ret;
@@ -484,7 +484,7 @@ public:
    * @return
    */
   template<ArchiveTypeT... aT, typename lambdaT>
-  requires(test_valid_archive_type_t(aT)
+  requires(valid_archive_type_t<aT>
            && ...) bool specify(const lambdaT &lambda)
   {
     return (loop<aT, aT>(lambda) && ...);

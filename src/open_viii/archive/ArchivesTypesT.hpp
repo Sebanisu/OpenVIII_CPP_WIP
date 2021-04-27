@@ -6,10 +6,13 @@
 #include <concepts>
 #include <cstdint>
 namespace open_viii::archive {
-// There are 6 main FIFLFS archives and 2 main zzz archives for ff8 and ff8
-// remaster.
+
+/**
+ * There are 6 main FIFLFS archives for ff8 and 2 2 main zzz archives for ff8
+remaster. These enums are for get<> in archives to ask for the one you want.
+ */
 enum class ArchiveTypeT : std::uint8_t {
-  battle,
+  battle = 0U,
   field,
   magic,
   main,
@@ -18,51 +21,104 @@ enum class ArchiveTypeT : std::uint8_t {
   zzz_main,
   zzz_other,
   count,
-  first = battle,
+  first = 0U,
+  last  = count - 1U,
   begin = battle,
-  last  = count - 1,
   end   = count,
 };
-// static constexpr bool ValidArchiveTypeT(ArchiveTypeT archiveType)
-//  {
-//    return archiveType < ArchiveTypeT::end && archiveType >=
-//    ArchiveTypeT::begin;
-//  }
-template<std::signed_integral T>
-static constexpr bool test_valid_archive_type_t(T    archive_type_t,
-                                                bool include_end = false)
+
+/**
+ * Confirm valid value of enum ArchiveTypeT
+ * @param I ArchiveTypeT equivalent
+ * @param include_end if true ArchiveTypeT::end is a valid value
+ * @return true if valid.
+ */
+constexpr bool
+  test_valid_archive_type_t(std::signed_integral auto I,
+                            bool                      include_end = false)
 {
-  return (static_cast<std::intmax_t>(archive_type_t)
-            >= static_cast<std::intmax_t>(ArchiveTypeT::first)
-          && static_cast<std::intmax_t>(archive_type_t)
-               <= static_cast<std::intmax_t>(ArchiveTypeT::last))
-         || (include_end
-             && static_cast<std::intmax_t>(archive_type_t)
-                  == static_cast<std::intmax_t>(ArchiveTypeT::end));
+  return ((static_cast<std::intmax_t>(I)
+           >= static_cast<std::intmax_t>(ArchiveTypeT::first))
+          && (static_cast<std::intmax_t>(I)
+              <= static_cast<std::intmax_t>(ArchiveTypeT::last)))
+      || (include_end
+          && (static_cast<std::intmax_t>(I)
+              == static_cast<std::intmax_t>(ArchiveTypeT::end)));
 }
-template<std::signed_integral T>
-static constexpr bool
-  test_valid_archive_type_t(T minT, T maxT, bool include_end = false)
+
+/**
+ * Confirm valid value of enum ArchiveTypeT
+ * @tparam I ArchiveTypeT equivalent
+ * @tparam include_end if true ArchiveTypeT::end is a valid value
+ */
+template<auto I, bool include_end = false>
+concept valid_archive_type_t_signed = test_valid_archive_type_t(I, include_end);
+constexpr bool
+  test_valid_archive_type_t(std::unsigned_integral auto I,
+                            bool                        include_end = false)
 {
-  return test_valid_archive_type_t(maxT, include_end)
-         && test_valid_archive_type_t(minT) && maxT >= minT;
+  return static_cast<std::size_t>(I)
+        <= static_cast<std::size_t>(ArchiveTypeT::last)
+      || (include_end
+          && (static_cast<std::size_t>(I)
+              == static_cast<std::size_t>(ArchiveTypeT::end)));
 }
-template<typename T>
-requires(
-  std::unsigned_integral<
-    T> || std::is_same_v<T, ArchiveTypeT>) static constexpr bool test_valid_archive_type_t(T archive_type_t)
+
+/**
+ * Confirm valid value of enum ArchiveTypeT
+ * @tparam I ArchiveTypeT equivalent
+ * @tparam include_end if true ArchiveTypeT::end is a valid value
+ */
+template<auto I, bool include_end = false>
+concept valid_archive_type_t_unsigned = test_valid_archive_type_t(I,
+                                                                  include_end);
+
+/**
+ * Confirm valid value of enum ArchiveTypeT
+ * @param I ArchiveTypeT equivalent
+ * @param include_end if true ArchiveTypeT::end is a valid value
+ * @return true if valid.
+ */
+constexpr bool
+  test_valid_archive_type_t(ArchiveTypeT I, bool include_end = false)
 {
-  return (static_cast<std::size_t>(archive_type_t)
-            >= static_cast<std::size_t>(ArchiveTypeT::first)
-          || static_cast<std::size_t>(archive_type_t)
-               <= static_cast<std::size_t>(ArchiveTypeT::last));
+  return test_valid_archive_type_t(static_cast<std::size_t>(I), include_end);
 }
-//
-// template<ArchiveTypeT archiveTypeT>
-// concept ValidArchiveTypeT = (static_cast<std::intmax_t>(archiveTypeT) >=
-// static_cast<std::intmax_t>(ArchiveTypeT::first)
-//                             || static_cast<std::intmax_t>(archiveTypeT)
-//                                  <=
-//                                  static_cast<std::intmax_t>(ArchiveTypeT::last));
+
+/**
+ * Confirm valid value of enum ArchiveTypeT
+ * @tparam I ArchiveTypeT equivalent
+ * @tparam include_end if true ArchiveTypeT::end is a valid value
+ */
+template<ArchiveTypeT I, bool include_end = false>
+concept valid_archive_type_t_enum = test_valid_archive_type_t(I, include_end);
+
+/**
+ * Confirm valid value of enum ArchiveTypeT
+ * @tparam I ArchiveTypeT equivalent
+ * @tparam include_end if true ArchiveTypeT::end is a valid value
+ */
+template<auto I, bool include_end = false>
+concept valid_archive_type_t =
+  valid_archive_type_t_signed<I, include_end> || valid_archive_type_t_unsigned<
+    I,
+    include_end> || valid_archive_type_t_enum<I, include_end>;
+
+static_assert(valid_archive_type_t<ArchiveTypeT::battle>);
+static_assert(valid_archive_type_t<ArchiveTypeT::field>);
+static_assert(valid_archive_type_t<ArchiveTypeT::magic>);
+static_assert(valid_archive_type_t<ArchiveTypeT::main>);
+static_assert(valid_archive_type_t<ArchiveTypeT::menu>);
+static_assert(valid_archive_type_t<ArchiveTypeT::world>);
+static_assert(valid_archive_type_t<ArchiveTypeT::zzz_main>);
+static_assert(valid_archive_type_t<ArchiveTypeT::zzz_other>);
+static_assert(valid_archive_type_t<ArchiveTypeT::first>);
+static_assert(valid_archive_type_t<ArchiveTypeT::last>);
+static_assert(valid_archive_type_t<ArchiveTypeT::begin>);
+static_assert(!valid_archive_type_t<ArchiveTypeT::end>);
+static_assert(valid_archive_type_t<ArchiveTypeT::end, true>);
+static_assert(!valid_archive_type_t<-1>);
+static_assert(!valid_archive_type_t<99>);
+static_assert(!valid_archive_type_t<99U>);
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ARCHIVESTYPEST_HPP

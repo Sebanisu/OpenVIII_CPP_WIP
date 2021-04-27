@@ -172,8 +172,10 @@ public:
    * @note required to structured binding support
    */
   template<std::size_t I>
-  requires(I < 3) [[nodiscard]] auto get() const noexcept
+  [[nodiscard]] auto
+    get() const noexcept
   {
+    static_assert(I < 3);
     if constexpr (I == 0) {
       return std::string_view(m_filename);
     } else if constexpr (I == 1) {
