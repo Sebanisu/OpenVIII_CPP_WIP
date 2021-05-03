@@ -28,6 +28,6 @@ endif()
 
 # include source folders
 add_subdirectory(src)
-add_subdirectory(Tests)
+add_subdirectory(applications)
 add_subdirectory(ut)
 #add_subdirectory(g_tests)
