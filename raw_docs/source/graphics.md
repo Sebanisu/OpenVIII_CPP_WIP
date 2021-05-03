@@ -2,17 +2,17 @@ Graphics Library
 =====
 
 ## Images
-
+```{toctree}
 On all image types, usually, black is 100% transparent.
+tim
+tex
+png
+```
+
 
 ```{tab} TIM
 
-Pretty much everything else is some variation on 
-[Playstation TIM](http://fileformats.archiveteam.org/wiki/TIM_(PlayStation_graphics)).
-All of these images use [15-bit](https://en.wikipedia.org/wiki/High_color#15-bit_high_color)
-1555 (Alpha, Blue, Green, Red) high color. The alpha bit is special on playstation. 
-So you might have to ignore it unless the image doesn't look correct. Many files have these embedded into 
-them.
+
 ```
 
 ```{tab} TEX

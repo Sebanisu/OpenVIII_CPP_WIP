@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Supported Versions" href="versions.html" /><link rel="prev" title="Archive Library" href="archive.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="TIM file" href="tim.html" /><link rel="prev" title="Archive Library" href="archive.html" />
 
     <meta name="generator" content="sphinx-3.5.1, furo 2021.04.11.beta34"/>
         <title>Graphics Library - OpenVIII_CPP_WIP documentation</title>
@@ -110,7 +110,12 @@
 </form><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="archive.html">Archive Library</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Graphics Library</a></li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Graphics Library</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tim.html">TIM file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tex.html">TEX file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="png.html">PNG file</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="versions.html">Supported Versions</a></li>
 </ul>
 
@@ -130,15 +135,33 @@
 <h1>Graphics Library<a class="headerlink" href="#graphics-library" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="images">
 <h2>Images<a class="headerlink" href="#images" title="Permalink to this headline">¶</a></h2>
-<p>On all image types, usually, black is 100% transparent.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tim.html">TIM file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tim.html#bit">16-bit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tim.html#stp">STP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tim.html#blend-modes">Blend Modes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tim.html#bit-to-8-bit">5 bit to 8 bit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tim.html#header">Header</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tim.html#sub-header">Sub Header</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tim.html#clut">CLUT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tim.html#image-data">Image Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tim.html#bpp">4 bpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tim.html#id1">8 bpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tim.html#id2">16 bpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tim.html#id3">24 bpp</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tex.html">TEX file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="png.html">PNG file</a></li>
+</ul>
+</div>
 <div class="tab-set docutils container">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">TIM</label><div class="tab-content docutils container">
-<p>Pretty much everything else is some variation on
-<a class="reference external" href="http://fileformats.archiveteam.org/wiki/TIM_(PlayStation_graphics)">Playstation TIM</a>.
-All of these images use <a class="reference external" href="https://en.wikipedia.org/wiki/High_color#15-bit_high_color">15-bit</a>
-1555 (Alpha, Blue, Green, Red) high color. The alpha bit is special on playstation.
-So you might have to ignore it unless the image doesn’t look correct. Many files have these embedded into
-them.</p>
 </div>
 <input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">TEX</label><div class="tab-content docutils container">
 <p><a class="reference external" href="http://wiki.ffrtt.ru/index.php?title=FF7/TEX_format">TEX</a></p>
@@ -156,12 +179,12 @@ them.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="versions.html">
+          <a class="next-page" href="tim.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Supported Versions</div>
+                <div class="title">TIM file</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>

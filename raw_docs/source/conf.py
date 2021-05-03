@@ -57,6 +57,18 @@ html_sidebars = {'**': [
     "sidebar/scroll-end.html",
 ]
 }
+myst_enable_extensions = [
+    #"amsmath",
+    #"colon_fence",
+    #"deflist",
+    #"dollarmath",
+    #"html_admonition",
+    #"html_image",
+    "linkify",
+    #"replacements",
+    #"smartquotes",
+    #"substitution"
+]
 html_theme_options = {
     # # Options of read the docs theme
     # 'logo_only': False,
