@@ -11,13 +11,13 @@ Getting Started
 * [gcc-10 & g++-10](https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/ppa)
   * [update-alternatives](https://linuxconfig.org/how-to-switch-between-multiple-gcc-and-g-compiler-versions-on-ubuntu-20-04-lts-focal-fossa)
 
-### Documentation Prerequisites
+### Documentation prerequisites
 
 * [doxygen](https://www.tutorialspoint.com/how-to-install-doxygen-on-ubuntu) or [download](https://www.doxygen.nl/download.html)
 * [graphviz](https://graphviz.org/download/)
 * [python3-dev & python3-pip](https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server)
 
-#### Python Packages
+__Python Packages__
 
 * [sphinx](https://pypi.org/project/Sphinx/)
 * [sphinx-inline-tabs](https://pypi.org/project/sphinx-inline-tabs/)
@@ -26,15 +26,15 @@ Getting Started
 * [myst_parser](https://pypi.org/project/myst-parser/)
 * [linkify-it-py](https://pypi.org/project/linkify-it-py/)
 
-## Checkout the repository:
+## Checkout the repository
 
 ```shell
 git clone https://github.com/Sebanisu/OpenVIII_CPP_WIP.git --recursive
 ```
 
-## Build Tests and Applications
+## Build tests and applications
 
-### Run Cmake
+### Run cmake
 
 ```shell
 cd OpenVIII_CPP_WIP
@@ -53,10 +53,10 @@ __If you want documentation built as well__
 cmake -G "Ninja Multi-Config" -B build -DDOCS:STRING=YES
 ```
 
-    You might need to clear out the `docs` directory before building. As it won't overwrite some files if unless it detects a change. Documentation is checked in,
-    so it shows on GitHub pages. `.nojekyl` is required to work on GitHub pages, and cmake will generate it.
+You might need to clear out the `docs` directory before building. As it won't overwrite some files if unless it detects a change. Documentation is checked in,
+so it shows on GitHub pages. `.nojekyl` is required to work on GitHub pages, and cmake will generate it.
 
-### Run Ninja
+### Run ninja
 
 __To build debug__
 
@@ -70,7 +70,7 @@ __To build release__
 ninja -C build -f build-Release.ninja
 ```
 
-### Run Tests
+### Run tests
 
 ```shell
 ninja -C build test
@@ -87,14 +87,14 @@ ctest -C debug --verbose
 cd ..
 ```
 
-### Run Documentation
+### Open documentation
 
 ```shell
 cd docs
 # open index.html
 ```
 
-### Run Applications
+### Run applications
 
 ```shell
 cd build

@@ -151,14 +151,13 @@
 </ul>
 </div>
 <div class="section" id="documentation-prerequisites">
-<h3>Documentation Prerequisites<a class="headerlink" href="#documentation-prerequisites" title="Permalink to this headline">¶</a></h3>
+<h3>Documentation prerequisites<a class="headerlink" href="#documentation-prerequisites" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.tutorialspoint.com/how-to-install-doxygen-on-ubuntu">doxygen</a> or <a class="reference external" href="https://www.doxygen.nl/download.html">download</a></p></li>
 <li><p><a class="reference external" href="https://graphviz.org/download/">graphviz</a></p></li>
 <li><p><a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server">python3-dev &amp; python3-pip</a></p></li>
 </ul>
-<div class="section" id="python-packages">
-<h4>Python Packages<a class="headerlink" href="#python-packages" title="Permalink to this headline">¶</a></h4>
+<p><strong>Python Packages</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://pypi.org/project/Sphinx/">sphinx</a></p></li>
 <li><p><a class="reference external" href="https://pypi.org/project/sphinx-inline-tabs/">sphinx-inline-tabs</a></p></li>
@@ -169,17 +168,16 @@
 </ul>
 </div>
 </div>
-</div>
 <div class="section" id="checkout-the-repository">
-<h2>Checkout the repository:<a class="headerlink" href="#checkout-the-repository" title="Permalink to this headline">¶</a></h2>
+<h2>Checkout the repository<a class="headerlink" href="#checkout-the-repository" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/Sebanisu/OpenVIII_CPP_WIP.git --recursive
 </pre></div>
 </div>
 </div>
 <div class="section" id="build-tests-and-applications">
-<h2>Build Tests and Applications<a class="headerlink" href="#build-tests-and-applications" title="Permalink to this headline">¶</a></h2>
+<h2>Build tests and applications<a class="headerlink" href="#build-tests-and-applications" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="run-cmake">
-<h3>Run Cmake<a class="headerlink" href="#run-cmake" title="Permalink to this headline">¶</a></h3>
+<h3>Run cmake<a class="headerlink" href="#run-cmake" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> OpenVIII_CPP_WIP
 mkdir build
 </pre></div>
@@ -192,13 +190,11 @@ mkdir build
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cmake -G <span class="s2">"Ninja Multi-Config"</span> -B build -DDOCS:STRING<span class="o">=</span>YES
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>You might need to clear out the `docs` directory before building. As it won't overwrite some files if unless it detects a change. Documentation is checked in,
-so it shows on GitHub pages. `.nojekyl` is required to work on GitHub pages, and cmake will generate it.
-</pre></div>
-</div>
+<p>You might need to clear out the <code class="docutils literal notranslate"><span class="pre">docs</span></code> directory before building. As it won’t overwrite some files if unless it detects a change. Documentation is checked in,
+so it shows on GitHub pages. <code class="docutils literal notranslate"><span class="pre">.nojekyl</span></code> is required to work on GitHub pages, and cmake will generate it.</p>
 </div>
 <div class="section" id="run-ninja">
-<h3>Run Ninja<a class="headerlink" href="#run-ninja" title="Permalink to this headline">¶</a></h3>
+<h3>Run ninja<a class="headerlink" href="#run-ninja" title="Permalink to this headline">¶</a></h3>
 <p><strong>To build debug</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ninja -C build
 </pre></div>
@@ -209,7 +205,7 @@ so it shows on GitHub pages. `.nojekyl` is required to work on GitHub pages, and
 </div>
 </div>
 <div class="section" id="run-tests">
-<h3>Run Tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h3>
+<h3>Run tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ninja -C build <span class="nb">test</span>
 </pre></div>
 </div>
@@ -222,15 +218,15 @@ ctest -C debug --verbose
 </pre></div>
 </div>
 </div>
-<div class="section" id="run-documentation">
-<h3>Run Documentation<a class="headerlink" href="#run-documentation" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="open-documentation">
+<h3>Open documentation<a class="headerlink" href="#open-documentation" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> docs
 <span class="c1"># open index.html</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="run-applications">
-<h3>Run Applications<a class="headerlink" href="#run-applications" title="Permalink to this headline">¶</a></h3>
+<h3>Run applications<a class="headerlink" href="#run-applications" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> build
 <span class="nb">cd</span> applications
 <span class="c1"># dir or ls</span>
@@ -318,19 +314,16 @@ ctest -C debug --verbose
 <li><a class="reference internal" href="#">Getting Started</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
 <li><a class="reference internal" href="#compiler">Compiler</a></li>
-<li><a class="reference internal" href="#documentation-prerequisites">Documentation Prerequisites</a><ul>
-<li><a class="reference internal" href="#python-packages">Python Packages</a></li>
+<li><a class="reference internal" href="#documentation-prerequisites">Documentation prerequisites</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a class="reference internal" href="#checkout-the-repository">Checkout the repository:</a></li>
-<li><a class="reference internal" href="#build-tests-and-applications">Build Tests and Applications</a><ul>
-<li><a class="reference internal" href="#run-cmake">Run Cmake</a></li>
-<li><a class="reference internal" href="#run-ninja">Run Ninja</a></li>
-<li><a class="reference internal" href="#run-tests">Run Tests</a></li>
-<li><a class="reference internal" href="#run-documentation">Run Documentation</a></li>
-<li><a class="reference internal" href="#run-applications">Run Applications</a></li>
+<li><a class="reference internal" href="#checkout-the-repository">Checkout the repository</a></li>
+<li><a class="reference internal" href="#build-tests-and-applications">Build tests and applications</a><ul>
+<li><a class="reference internal" href="#run-cmake">Run cmake</a></li>
+<li><a class="reference internal" href="#run-ninja">Run ninja</a></li>
+<li><a class="reference internal" href="#run-tests">Run tests</a></li>
+<li><a class="reference internal" href="#open-documentation">Open documentation</a></li>
+<li><a class="reference internal" href="#run-applications">Run applications</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#windows-msvc">Windows MSVC</a><ul>
