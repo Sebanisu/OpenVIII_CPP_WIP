@@ -66,7 +66,7 @@ include(GNUInstallDirs)
 install(DIRECTORY ${SPHINX_BUILD}
         DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
-# Copy .nojekyll to docs folder. 
+# Copy .nojekyll to docs folder.
 set(NOJEKYLL_IN ${CMAKE_CURRENT_SOURCE_DIR}/.nojekyll)
 set(NOJEKYLL_OUT ${SPHINX_BUILD}/.nojekyll)
 configure_file(${NOJEKYLL_IN} ${NOJEKYLL_OUT} @ONLY)

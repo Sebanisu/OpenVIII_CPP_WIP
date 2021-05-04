@@ -10,6 +10,7 @@ Welcome to OpenVIII_CPP_WIP's documentation!
 =====
 
 ```{toctree}
+getting_started
 archive
 graphics
 versions
