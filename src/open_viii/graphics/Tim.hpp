@@ -46,8 +46,9 @@ private:
                std::vector<std::uint8_t>,
                std::vector<Color16>,
                std::vector<Color24<2U, 1U, 0U>>>
-                     m_tim_image_data{};
-  [[nodiscard]] auto size_of_image_data() const
+    m_tim_image_data{};
+  [[nodiscard]] std::size_t
+    size_of_image_data() const noexcept
   {
     return std::visit(
       [](const auto &variant) {
@@ -55,8 +56,9 @@ private:
       },
       m_tim_image_data);
   }
-  [[nodiscard]] Color16 get_color([[maybe_unused]] std::uint16_t row,
-                                  [[maybe_unused]] std::uint8_t color_key) const
+  [[nodiscard]] Color16
+    get_color([[maybe_unused]] std::uint16_t row,
+              [[maybe_unused]] std::uint8_t  color_key) const
   {
     if (m_tim_clut_header.rectangle().width() == 0
         || m_tim_clut_header.rectangle().height() == 0) {
@@ -65,7 +67,9 @@ private:
     const std::size_t offset = row * m_tim_clut_header.rectangle().width();
     return m_tim_clut_data.at(offset + color_key);
   }
-  template<typename dstT> auto get_4bpp_colors(uint16_t row) const
+  template<typename dstT>
+  auto
+    get_4bpp_colors(uint16_t row) const
   {
     std::vector<dstT> output{};
     output.reserve(size_of_image_data() * 2U);
@@ -78,7 +82,9 @@ private:
       });
     return output;
   }
-  template<typename dstT> auto get_8bbp_colors(uint16_t row) const
+  template<typename dstT>
+  auto
+    get_8bbp_colors(uint16_t row) const
   {
     std::vector<dstT> output{};
     output.reserve(size_of_image_data());
@@ -90,7 +96,9 @@ private:
                            });
     return output;
   }
-  template<typename dstT> auto get_16bpp_colors() const
+  template<typename dstT>
+  auto
+    get_16bpp_colors() const
   {
     std::vector<dstT> output{};
     output.reserve(size_of_image_data());
@@ -101,7 +109,9 @@ private:
                            });
     return output;
   }
-  template<typename dstT> auto get_24bpp_colors() const
+  template<typename dstT>
+  auto
+    get_24bpp_colors() const
   {
     std::vector<dstT> output{};
     output.reserve(size_of_image_data());
@@ -137,7 +147,8 @@ public:
       m_tim_image_data(std::move(in_tim_image_data))
   {}
 
-  [[nodiscard]] static TimHeader get_tim_header(std::span<const char> &buffer)
+  [[nodiscard]] static TimHeader
+    get_tim_header(std::span<const char> &buffer)
   {
     return tools::read_val_safe_mutate<TimHeader>(buffer);
   }
@@ -156,8 +167,8 @@ public:
     if (!m_tim_clut_header.check() || m_tim_clut_header.data_size() == 0U) {
       return {};
     }
-    return tools::read_val_safe_mutate<std::vector<Color16>>(buffer,
-                                          m_tim_clut_header.data_size());
+    return tools::read_val_safe_mutate<std::vector<Color16>>(
+      buffer, m_tim_clut_header.data_size());
   }
   [[nodiscard]] TimImageHeader
     get_tim_image_header(std::span<const char> &buffer) const
@@ -175,16 +186,16 @@ public:
     }
     switch (static_cast<int>(m_tim_header.bpp())) {
     case 4: {
-      return tools::read_val_safe_mutate<std::vector<Bit4Values>>(buffer,
-                                               m_tim_image_header.data_size());
+      return tools::read_val_safe_mutate<std::vector<Bit4Values>>(
+        buffer, m_tim_image_header.data_size());
     }
     case 8: {
       return tools::read_val_safe_mutate<std::vector<std::uint8_t>>(
         buffer, m_tim_image_header.data_size());
     }
     case 16: {
-      return tools::read_val_safe_mutate<std::vector<Color16>>(buffer,
-                                            m_tim_image_header.data_size());
+      return tools::read_val_safe_mutate<std::vector<Color16>>(
+        buffer, m_tim_image_header.data_size());
     }
     case 24: {
       return tools::read_val_safe_mutate<std::vector<Color24<2, 1, 0>>>(
@@ -194,15 +205,17 @@ public:
     assert(false);
     return {};
   }
-  [[nodiscard]] bool check() const
+  [[nodiscard]] bool
+    check() const
   {
     const size_t sizeOfImageData = size_of_image_data();
     const size_t a               = area();
     return m_tim_header && (!m_tim_header.bpp() || m_tim_clut_header)
-           && (a == sizeOfImageData || a / 2 == sizeOfImageData
-               || a * 2 == sizeOfImageData);
+        && (a == sizeOfImageData || a / 2 == sizeOfImageData
+            || a * 2 == sizeOfImageData);
   }
-  [[nodiscard]] std::size_t width() const
+  [[nodiscard]] std::size_t
+    width() const
   {
     static constexpr auto bpp4_step{ 4 };
     static constexpr auto bpp8_step{ 2 };
@@ -225,41 +238,50 @@ public:
     }
     return {};// invalid value
   }
-  [[nodiscard]] auto height() const
+  [[nodiscard]] auto
+    height() const
   {
     return m_tim_image_header.rectangle().height();
   }
-  [[nodiscard]] std::size_t area() const
+  [[nodiscard]] std::size_t
+    area() const
   {
     return width()
-           * static_cast<std::size_t>(m_tim_image_header.rectangle().height());
+         * static_cast<std::size_t>(m_tim_image_header.rectangle().height());
   }
-  [[maybe_unused]] [[nodiscard]] auto x() const
+  [[maybe_unused]] [[nodiscard]] auto
+    x() const
   {
     return m_tim_image_header.rectangle().x();
   }
-  [[maybe_unused]] [[nodiscard]] auto y() const
+  [[maybe_unused]] [[nodiscard]] auto
+    y() const
   {
     return m_tim_image_header.rectangle().y();
   }
-  [[maybe_unused]] [[nodiscard]] auto clut_x() const
+  [[maybe_unused]] [[nodiscard]] auto
+    clut_x() const
   {
     return m_tim_clut_header.rectangle().x();
   }
-  [[maybe_unused]] [[nodiscard]] auto clut_y() const
+  [[maybe_unused]] [[nodiscard]] auto
+    clut_y() const
   {
     return m_tim_clut_header.rectangle().y();
   }
-  [[nodiscard]] auto size() const
+  [[nodiscard]] auto
+    size() const
   {
     return sizeof(m_tim_header) + m_tim_clut_header.size()
-           + m_tim_image_header.size();
+         + m_tim_image_header.size();
   }
-  [[nodiscard]] auto clut_rows() const
+  [[nodiscard]] auto
+    clut_rows() const
   {
     return m_tim_clut_header.rectangle().height();
   }
-  [[maybe_unused]] [[nodiscard]] auto clut_colors() const
+  [[maybe_unused]] [[nodiscard]] auto
+    clut_colors() const
   {
     return m_tim_clut_header.rectangle().width();
   }
@@ -267,7 +289,8 @@ public:
   {
     return check();
   }
-  friend std::ostream &operator<<(std::ostream &os, const Tim &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Tim &input)
   {
     return os << '{' << input.m_tim_header << ", " << input.m_tim_clut_header
               << ", " << input.m_tim_image_header
@@ -302,8 +325,11 @@ public:
       assert(area() == tim_image_data_size);
       return get_24bpp_colors<dstT>();
     }
+    default: {
+      assert(false);
+      return {};
     }
-    assert(false);
+    }
   }
   /**
    * Update the dims of the clut.
@@ -311,7 +337,8 @@ public:
    * is number of palettes.
    * @return A new Tim with the new clut dims.
    */
-  Tim force_tim_clut_dims(Point<std::uint16_t> width_height) const
+  Tim
+    force_tim_clut_dims(Point<std::uint16_t> width_height) const
   {
     if (m_tim_clut_header.rectangle().area() < width_height.area()) {
       // return empty tim if area is too large.
@@ -332,8 +359,8 @@ public:
    * @param height usually is number of palettes.
    * @return A new Tim with the new clut dims.
    */
-  [[maybe_unused]] Tim force_tim_clut_dims(std::uint16_t width,
-                                           std::uint16_t height) const
+  [[maybe_unused]] Tim
+    force_tim_clut_dims(std::uint16_t width, std::uint16_t height) const
   {
     return force_tim_clut_dims(Point<std::uint16_t>(width, height));
   }
@@ -341,7 +368,8 @@ public:
    *
    * @param filename
    */
-  [[maybe_unused]] void save(std::string_view filename) const
+  [[maybe_unused]] void
+    save(std::string_view filename) const
   {
     if (clut_rows() == 0) {
       Ppm::save(get_colors<Color24<0, 1, 2>>(), width(), height(), filename);
@@ -349,17 +377,21 @@ public:
       auto path = std::filesystem::path(filename);
       for (std::uint16_t i = 0; i < clut_rows(); i++) {
         const auto out_path = (path.parent_path() / path.stem()).string() + '_'
-                              + std::to_string(i) + path.extension().string();
+                            + std::to_string(i) + path.extension().string();
         Ppm::save(get_colors<Color24<0, 1, 2>>(i), width(), height(), out_path);
       }
     }
   }
 };
-template<> auto Tim::get_16bpp_colors<Color16>() const
+template<>
+auto
+  Tim::get_16bpp_colors<Color16>() const
 {
   return std::get<2>(m_tim_image_data);
 }
-template<> auto Tim::get_24bpp_colors<Color24<2, 1, 0>>() const
+template<>
+auto
+  Tim::get_24bpp_colors<Color24<2, 1, 0>>() const
 {
   return std::get<3>(m_tim_image_data);
 }

@@ -20,6 +20,16 @@
 #include <type_traits>
 #include <variant>
 namespace open_viii::archive {
+template<typename T>
+concept does_have_has_value = requires(T a)
+{
+  a.has_value();
+};
+template<typename T, typename lambdaT>
+concept does_have_execute_with_nested = requires(T a, lambdaT l)
+{
+  a.execute_with_nested({}, l, {});
+};
 /**
  * Reads a path looking for ZZZ or FIFLFS archives. It remembers the locations
  * of the archives, and serves serves as a front end to access them.
@@ -102,8 +112,7 @@ private:
     // main menu battle
     static constexpr auto data      = "data";
     static constexpr auto langStart = "lang-";
-    const auto            langStartingFilter =
-      std::filesystem::__cxx11::path(data) / langStart;
+    const auto langStartingFilter   = std::filesystem::path(data) / langStart;
     const auto langStarting =
       std::filesystem::path(langStartingFilter.string() + m_lang);
     return tools::i_starts_with(pathString, langStartingFilter.string())
@@ -265,9 +274,9 @@ private:
   {
     return [&filename, &lambda](const auto &archive) -> bool {
       archive.execute_on(filename, lambda);
-      if constexpr (nested && requires(decltype(archive) a, lambdaT l) {
-                      a.execute_with_nested({}, l, {});
-                    }) {
+      if constexpr (nested
+                    && does_have_execute_with_nested<decltype(archive),
+                                                     lambdaT>) {
         archive.execute_with_nested({}, lambda, filename);
       }
       return true;
@@ -281,8 +290,7 @@ public:
    * @return
    */
   template<ArchiveTypeT archiveType_>
-  requires(valid_archive_type_t<archiveType_>) const
-    auto &get() const noexcept
+  requires(valid_archive_type_t<archiveType_>) const auto &get() const noexcept
   {
     if constexpr (archiveType_ == ArchiveTypeT::battle) {
       return m_battle;
@@ -420,7 +428,7 @@ public:
     get_nested(
       const std::initializer_list<std::string_view> &nested_archive) const
   {
-    return m_field.get_fiflfs_entries(nested_archive);
+    return get_fiflfs_entries(m_field, nested_archive);
   }
   Archives() = delete;
   /**
@@ -445,13 +453,15 @@ public:
            std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::end),
            typename lambdaT>
   requires(
-    valid_archive_type_t<minT> && valid_archive_type_t<maxT, true>
-    && ((takes_valid_archive_type<lambdaT>)
-        || (valid_static_for_lambda_type<lambdaT>))) bool loop(const lambdaT
-                                                                 &lambda) const
+    valid_archive_type_t<minT> &&valid_archive_type_t<
+      maxT,
+      true> && ((takes_valid_archive_type<lambdaT>) || (valid_static_for_lambda_type<lambdaT>))) bool loop(const lambdaT
+                                                                                                             &lambda)
+    const
   {
     bool ret{ true };
-    if constexpr (test_valid_archive_type_t(minT) && test_valid_archive_type_t(maxT - 1)) {
+    if constexpr (test_valid_archive_type_t(minT)
+                  && test_valid_archive_type_t(maxT - 1)) {
       ret = loop<minT, maxT - 1>(lambda);
       if (!ret)
         return ret;
@@ -465,16 +475,18 @@ public:
       } else if (takes_valid_archive_type<lambdaT>) {
         const auto &archive = get<archiveType_>();
         std::cout << "Loop On: " << get_string<archiveType_>() << '\n';
-        if constexpr (requires(decltype(archive) a) { a.has_value(); }) {
+        if constexpr (does_have_has_value<decltype(archive)>) {
           if (archive.has_value()) {
             ret = lambda(*archive);
           }
         } else {
           ret = lambda(archive);
         }
+        return ret;
       }
+    } else {
+      return ret;
     }
-    return ret;
   }
   /**
    * run lambda on listed types.
@@ -484,8 +496,7 @@ public:
    * @return
    */
   template<ArchiveTypeT... aT, typename lambdaT>
-  requires(valid_archive_type_t<aT>
-           && ...) bool specify(const lambdaT &lambda)
+  requires(valid_archive_type_t<aT> &&...) bool specify(const lambdaT &lambda)
   {
     return (loop<aT, aT>(lambda) && ...);
   }

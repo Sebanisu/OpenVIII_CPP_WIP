@@ -21,24 +21,41 @@ struct Bit4Values
 private:
   static constexpr std::uint8_t MASK_4_BIT        = 0xFU;
   static constexpr std::uint8_t OFFSET_MASK_4_BIT = 0xF0U;
-  static constexpr std::uint8_t SHIFT_8_BITS      = 8U;
+  static constexpr std::uint8_t SHIFT_4_BITS      = 4U;
   std::uint8_t                  m_first  : 4U {};
   std::uint8_t                  m_second : 4U {};
+
 public:
   constexpr Bit4Values() = default;
-  constexpr Bit4Values(const std::uint8_t &in_first,
-                       const std::uint8_t &in_second)
-    : m_first(in_first & MASK_4_BIT), m_second(in_second & MASK_4_BIT)
-  {}
-  constexpr explicit Bit4Values(const std::uint8_t &in_raw)
-    : m_first(static_cast<std::uint8_t>((in_raw >> SHIFT_8_BITS)) & MASK_4_BIT),
-      m_second(in_raw & MASK_4_BIT)
-  {}
+
+  static Bit4Values
+    create(const std::uint8_t in_raw)
+  {
+    Bit4Values out{};
+    std::memcpy(&out, &in_raw, sizeof(out));
+    return out;
+  }
+  static Bit4Values
+    create(const std::uint8_t in_first, const std::uint8_t in_second)
+  {
+    return create(
+      static_cast<uint8_t>((in_first & MASK_4_BIT) << SHIFT_4_BITS)
+      | (in_second & MASK_4_BIT));
+  }
+  //  constexpr Bit4Values(const std::uint8_t in_first,
+  //                       const std::uint8_t in_second)
+  //    : m_first(in_first & MASK_4_BIT), m_second(in_second & MASK_4_BIT)
+  //  {}
+  //  constexpr explicit Bit4Values(const std::uint8_t in_raw)
+  //    : m_first(static_cast<std::uint8_t>((in_raw >> SHIFT_4_BITS)) &
+  //    MASK_4_BIT),
+  //      m_second((in_raw & MASK_4_BIT))
+  //  {}
   constexpr explicit operator std::uint8_t() const noexcept
   {
     return static_cast<std::uint8_t>(
       static_cast<std::uint8_t>(
-        static_cast<std::uint8_t>(m_first << SHIFT_8_BITS) & OFFSET_MASK_4_BIT)
+        static_cast<std::uint8_t>(m_first << SHIFT_4_BITS) & OFFSET_MASK_4_BIT)
       | (m_second));
   }
   /**
@@ -61,22 +78,24 @@ public:
   //    if      constexpr(I == 0) return first;
   //    else if constexpr(I == 1) return second;
   //  }
-  [[nodiscard]] constexpr std::uint8_t first() const noexcept
+  [[nodiscard]] constexpr std::uint8_t
+    first() const noexcept
   {
     return m_first;
   }
-  [[nodiscard]] constexpr std::uint8_t second() const noexcept
+  [[nodiscard]] constexpr std::uint8_t
+    second() const noexcept
   {
     return m_second;
   }
-  std::uint8_t first(const std::uint8_t &value) noexcept
-  {
-    return m_first = value & MASK_4_BIT;
-  }
-  std::uint8_t second(const std::uint8_t &value) noexcept
-  {
-    return m_second = value & MASK_4_BIT;
-  }
+  //  std::uint8_t first(const std::uint8_t &value) noexcept
+  //  {
+  //    return m_first = value & MASK_4_BIT;
+  //  }
+  //  std::uint8_t second(const std::uint8_t &value) noexcept
+  //  {
+  //    return m_second = value & MASK_4_BIT;
+  //  }
   static constexpr std::size_t EXPECTED_SIZE = 1U;
 };
 static_assert(sizeof(Bit4Values) == Bit4Values::EXPECTED_SIZE);
@@ -95,7 +114,8 @@ struct [[maybe_unused]] tuple_size<open_viii::graphics::Bit4Values>
  * type of arguments
  * @note required to structured binding support
  */
-template<size_t I> struct [[maybe_unused]] tuple_element<I, open_viii::graphics::Bit4Values>
+template<size_t I>
+struct [[maybe_unused]] tuple_element<I, open_viii::graphics::Bit4Values>
 {
   using type = uint8_t;
 };

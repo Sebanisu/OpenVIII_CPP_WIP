@@ -29,7 +29,7 @@ namespace open_viii::tools {
  * @return char string
  * @todo needs tests?
  */
-[[maybe_unused]] static std::string u8_to_s(const std::u8string_view &s8)
+[[maybe_unused]] std::string u8_to_s(const std::u8string_view &s8)
 {
   auto sv = u8_to_sv(s8);
   return { sv.begin(), sv.end() };
@@ -41,15 +41,15 @@ namespace open_viii::tools {
  * @note ::toupper is not constexpr
  * @see https://en.cppreference.com/w/cpp/string/byte/toupper
  */
-static constexpr auto upper(int ch)
+static constexpr auto upper = [](auto ch)
 {
   if (std::is_constant_evaluated()) {
     constexpr char upper_offset = 'a' - 'A';
     // this is really basic but should cover everything we do.
-    return (ch >= 'a' && ch <= 'z') ? ch - upper_offset : ch;
+    return static_cast<decltype(ch)>((ch >= 'a' && ch <= 'z') ? ch - upper_offset : ch);
   }
-  return ::toupper(ch);
-}
+  return static_cast<decltype(ch)>(::toupper(ch));
+};
 static_assert(upper('a') == 'A');
 static_assert(upper('a') != 'Z');
 /**

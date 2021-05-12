@@ -8,7 +8,7 @@
 #include "open_viii/paths/Paths.hpp"
 #include <array>
 #include <iostream>
-[[maybe_unused]] static void test_vertice()
+[[maybe_unused]] void test_vertice()
 {
   auto v  = open_viii::graphics::Vertice<std::int16_t>{ -1, 2, -3 };
   auto v2 = v / 2.1F;
@@ -23,7 +23,7 @@
             << v5 << '\n'
             << v6 << '\n';
 }
-[[maybe_unused]] static void test_clut_ids()
+[[maybe_unused]] void test_clut_ids()
 {
   static constexpr std::array<std::uint16_t, 16U> clutids = {
     0x003CU, 0x403CU, 0x803CU, 0xC03CU, 0x003DU, 0x403DU, 0x803DU, 0xC03DU,
@@ -34,14 +34,14 @@
       clutid)) << '\n';
   }
 }
-[[maybe_unused]] static void test_bit4values()
+[[maybe_unused]] void test_bit4values()
 {
-  open_viii::graphics::Bit4Values b4v = { 1, 5 };
+  const auto b4v = open_viii::graphics::Bit4Values::create( 1, 5 );
   auto [a, b]                         = b4v;
   std::cout << '(' << static_cast<std::uint16_t>(a) << ','
             << static_cast<std::uint16_t>(b) << ")\n";
 }
-[[maybe_unused]] static void test_shapes()
+[[maybe_unused]] void test_shapes()
 {
   constexpr open_viii::battle::stage::Triangle triangle{};
   constexpr open_viii::battle::stage::Quad     quad{};

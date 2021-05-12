@@ -53,7 +53,7 @@ private:
         return tools::search(buffer, start);
       }));
   }
-  Tim get_tim(auto offset, std::span<const char> &buffer) const
+  static Tim get_tim(auto offset, std::span<const char> &buffer)
   {
     buffer        = std::span<const char>(offset, std::ranges::end(buffer));
     const Tim tim = Tim(buffer);

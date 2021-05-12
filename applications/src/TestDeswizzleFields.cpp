@@ -41,7 +41,7 @@ int main()
             open_viii::graphics::background::Mim{ e.get_entry_data(mim_name),
                                                   basename };
           const auto process =
-            [&mim, &e, &mim_name, &map_name, &basename](const auto &map) {
+            [&mim, &e, &mim_name, &map_name, &basename](auto map) {
               std::cout << "  " << basename << '\n';
               map.save_csv(e.get_full_path(map_name));
               open_viii::graphics::background::Deswizzle(

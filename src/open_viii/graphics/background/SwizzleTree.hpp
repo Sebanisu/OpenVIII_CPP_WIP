@@ -111,7 +111,7 @@ public:
         get_path_with_ext(open_viii::graphics::background::Mim::EXT).substr(1)),
       m_output_prefix((m_dir_path / m_dir_name).string()),
       m_archive(
-        field.get_fiflfs({ m_fi_filename, m_fl_filename, m_fs_filename })),
+        get_fiflfs(field,{ m_fi_filename, m_fl_filename, m_fs_filename })),
       m_mim_type(get_mim_type())
   {}
   /**
