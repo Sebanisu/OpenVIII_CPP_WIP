@@ -5,6 +5,7 @@
 #define VIIIARCHIVE_CAMFRAME_HPP
 #include "open_viii/graphics/Point.hpp"
 #include "open_viii/graphics/Vertice.hpp"
+#include <array>
 namespace open_viii {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK#CAM_files

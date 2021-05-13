@@ -400,7 +400,7 @@ template<is_trivially_copyable_and_default_constructible trivialT>
 }
 template<is_default_constructible_has_data_and_size rangeT>
 [[nodiscard]] static auto
-  read_val_safe_mutate(std::span<const char> &buffer, const auto bytes)
+  read_val_safe_mutate(std::span<const char> &buffer, const std::size_t bytes)
 {
   if (std::ranges::size(buffer) < bytes) {
     return rangeT();

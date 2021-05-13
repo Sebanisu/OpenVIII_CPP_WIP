@@ -104,7 +104,7 @@ private:
     output.reserve(size_of_image_data());
     std::ranges::transform(std::get<2>(m_tim_image_data),
                            std::back_inserter(output),
-                           [](const Color16 color) {
+                           [](const Color16 & color) {
                              return static_cast<dstT>(color);
                            });
     return output;
@@ -117,7 +117,7 @@ private:
     output.reserve(size_of_image_data());
     std::ranges::transform(std::get<3>(m_tim_image_data),
                            std::back_inserter(output),
-                           [](const Color24<2, 1, 0> color) {
+                           [](const Color24<2, 1, 0> & color) {
                              return static_cast<dstT>(color);
                            });
     return output;

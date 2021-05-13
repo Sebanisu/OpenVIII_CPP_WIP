@@ -29,6 +29,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <compare>
 
 namespace open_viii::archive::fl {
 /**
@@ -126,7 +127,7 @@ void
                       const std::string &ls = std::get<1>(left);
                       const std::string &rs = std::get<1>(right);
                       if (std::ranges::size(ls) == std::ranges::size(rs)) {
-                        return (ls <=> rs) == std::strong_ordering::less;
+                        return ls.compare(rs) < 0;
                       }
                       return std::ranges::size(ls) < std::ranges::size(rs);
                     });

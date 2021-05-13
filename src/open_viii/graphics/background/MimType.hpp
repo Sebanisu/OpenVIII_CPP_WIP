@@ -64,12 +64,12 @@ public:
     return static_cast<std::size_t>(BYTES_PER_PALETTE)
            * static_cast<std::size_t>(m_palettes);
   }
-  [[nodiscard]] std::size_t width() const noexcept
+  [[nodiscard]] constexpr std::size_t width() const noexcept
   {
     return static_cast<std::size_t>(OUT_WIDTH)
            * static_cast<std::size_t>(m_texture_pages);
   }
-  [[nodiscard]] std::size_t width(const int &bbp) const noexcept
+  [[nodiscard]] constexpr std::size_t width(const int &bbp) const noexcept
   {
     return (width() * DEFAULT_BPP) / static_cast<std::size_t>(bbp);
   }
@@ -78,11 +78,11 @@ public:
     return palette_section_size()
            + (width() * static_cast<std::size_t>(OUT_HEIGHT));
   }
-  [[nodiscard]] consteval static auto &height() noexcept
+  [[nodiscard]] constexpr static auto height() noexcept
   {
     return OUT_HEIGHT;
   }
-  [[nodiscard]] auto canvas(int bpp = DEFAULT_BPP, std::uint8_t scale = 1)
+  [[nodiscard]] constexpr auto canvas(int bpp = DEFAULT_BPP, std::uint8_t scale = 1)
   {
     return Rectangle<std::size_t>(0, 0, width(bpp) * scale, height() * scale);
   }
