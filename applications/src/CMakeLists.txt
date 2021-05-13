@@ -33,7 +33,7 @@ target_link_libraries(${PROJECT_NAME}_TestSearchZZZ
         PRIVATE ${PROJECT_NAME}_VIIIPaths
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl)
-
+if (NOT MSVC)
 ##test kernel.bin
 add_executable(${PROJECT_NAME}_TestKernel
         TestKernel.cpp TestKernel.hpp)
@@ -46,6 +46,7 @@ target_link_libraries(${PROJECT_NAME}_TestKernel
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+endif()
 
 ##test mngrphd.bin and mngrp.bin
 add_executable(${PROJECT_NAME}_TestMenuGroup

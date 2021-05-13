@@ -24,12 +24,12 @@ int
       run(run_once);
     };
     "lz4 compress and uncompress"_test = []() {
-      const auto run_once = [&]<size_t i>() {
-        const auto                  random_char = tl::random::iota<char, i>();
+      const auto run_once = [&]<size_t i2>() {
+        const auto                  random_char = tl::random::iota<char, i2>();
         [[maybe_unused]] const auto compressed_random_char =
           open_viii::compression::l4z::compress(random_char);
         [[maybe_unused]] const auto decompressed_random_char =
-          open_viii::compression::l4z::decompress(compressed_random_char, i);
+          open_viii::compression::l4z::decompress(compressed_random_char, i2);
         expect(std::ranges::equal(random_char, decompressed_random_char));
       };
       run(run_once);

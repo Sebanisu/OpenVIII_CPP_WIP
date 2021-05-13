@@ -296,7 +296,7 @@ template<typename dstT = std::vector<char>>
  * @return
  * @todo test?
  */
-static std::optional<std::ifstream>
+[[maybe_unused]] std::optional<std::ifstream>
   open_file(const std::filesystem::path &path)
 {
   std::optional<std::ifstream> ofp{};
