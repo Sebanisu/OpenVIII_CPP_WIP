@@ -87,8 +87,9 @@ public:
               << " File Entries from : " << str(data.m_fi) << ", "
               << str(data.m_fl) << ", " << str(data.m_fs) << "}}";
   }
+  template<std::unsigned_integral T>
   [[nodiscard]] archive::FI
-    get_entry_by_index(const unsigned int &id) const
+    get_entry_by_index(const T id) const
   {
     if (m_count == 0 || id < m_count) {
       if (!std::ranges::empty(m_fi.data())) {
