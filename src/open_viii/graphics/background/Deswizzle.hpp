@@ -31,8 +31,8 @@ requires(
 {
 private:
   using outColorT = Color24<0, 1, 2>;
-  const mim_type *          m_mim;
-  const map_type *          m_map;
+  const mim_type                  &m_mim{};
+  map_type                  m_map{};
   std::string               m_path{};
   std::vector<std::uint8_t> m_unique_palettes{};
   Rectangle<std::int32_t>   m_canvas{};
@@ -40,7 +40,7 @@ private:
   auto
     find_unique_palettes() const
   {
-    const auto &tiles     = m_map->tiles();
+    const auto &tiles     = m_map.tiles();
     auto        pupu_view = tiles | std::views::transform([](const auto &tile) {
                        return tile.palette_id();
                      });
@@ -54,7 +54,7 @@ private:
   auto
     find_unique_pupu() const
   {
-    const auto &tiles     = m_map->tiles();
+    const auto &tiles     = m_map.tiles();
     auto        pupu_view = tiles | std::views::transform([](const auto &tile) {
                        return Pupu(tile);
                      });
@@ -127,8 +127,8 @@ private:
 
 public:
   Deswizzle(const mim_type &in_mim, const map_type &in_map, std::string in_path)
-    : m_mim(&in_mim),
-      m_map(&in_map),
+    : m_mim(in_mim),
+      m_map(in_map),
       m_path(std::move(in_path)),
       m_unique_palettes(find_unique_palettes()),
       m_canvas(in_map.canvas()),
@@ -140,8 +140,8 @@ public:
     std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
     for_each_pupu([this, &out](const Pupu &pupu) {
       bool        drawn     = false;
-      auto        raw_width = m_mim->get_raw_width(pupu.depth());
-      const auto &tiles     = m_map->tiles();
+      auto        raw_width = m_mim.get_raw_width(pupu.depth());
+      const auto &tiles     = m_map.tiles();
 
       for_each_palette([this, &pupu, &tiles, &drawn, &raw_width, &out](
                          const std::uint8_t &palette) {
@@ -158,11 +158,11 @@ public:
               t.HEIGHT,
               [this, &pupu, &raw_width, &out, &drawn, &t, &palette](
                 const auto &x, const auto &y) {
-                const auto pixel_in = m_mim->get_color(x + t.source_x(),
-                                                       y + t.source_y(),
-                                                       pupu.depth(),
-                                                       palette,
-                                                       t.texture_id());
+                const auto          pixel_in = m_mim.get_color(x + t.source_x(),
+                                                      y + t.source_y(),
+                                                      pupu.depth(),
+                                                      palette,
+                                                      t.texture_id());
                 const std::uint32_t pixel_out = get_output_index(x, y, t);
                 drawn |= set_color(out, pixel_out, pixel_in);
               });
