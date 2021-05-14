@@ -52,12 +52,11 @@ namespace open_viii::archive::fl {
 constexpr void
   clean_path_string(std::string &input) noexcept
 {
-
   if (std::ranges::size(input) > 4 && input[1] == ':') {
     tl::string::remove_drive_letter(input);
     tl::string::remove_carriage_return_from_end(input);
-    tl::string::replace_slashes(input);
   }
+  tl::string::replace_slashes(input);
 }
 
 /**
