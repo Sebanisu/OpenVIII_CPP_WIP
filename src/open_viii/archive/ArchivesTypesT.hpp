@@ -100,9 +100,9 @@ concept valid_archive_type_t_enum = test_valid_archive_type_t(I, include_end);
  */
 template<auto I, bool include_end = false>
 concept valid_archive_type_t =
-  valid_archive_type_t_signed<I, include_end> || valid_archive_type_t_unsigned<
-    I,
-    include_end> || valid_archive_type_t_enum<I, include_end>;
+  valid_archive_type_t_signed<I, include_end>
+    || valid_archive_type_t_unsigned<I,include_end>
+      || valid_archive_type_t_enum<static_cast<ArchiveTypeT>(I), include_end>;
 
 static_assert(valid_archive_type_t<ArchiveTypeT::battle>);
 static_assert(valid_archive_type_t<ArchiveTypeT::field>);

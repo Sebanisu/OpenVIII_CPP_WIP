@@ -37,9 +37,11 @@ public:
   {
     std::cout << '\n' << m_path << '\n';
     {
-      const auto &buffer_begin = std::ranges::begin(m_buffer);
-      const auto  buffer_end   = std::ranges::end(m_buffer);
-      const auto  search       = [&buffer_begin, &buffer_end](
+      const char *buffer_begin = std::ranges::data(m_buffer);
+      const char *buffer_end   = std::ranges::data(m_buffer)
+                             + std::distance(std::ranges::begin(m_buffer),
+                                             std::ranges::end(m_buffer));
+      const auto search = [&buffer_begin, &buffer_end](
                             const std::span<const char> &needle, auto lambda) {
         const auto start   = std::search(buffer_begin,
                                        buffer_end,
@@ -59,10 +61,10 @@ public:
         }
         return start;
       };
-      const auto offset = [&buffer_begin](const auto &start) {
+      const auto offset = [&buffer_begin](const char *start) {
         std::cout << "\tOffset: " << std::hex << std::uppercase
-                  << std::distance(buffer_begin.base(), start.base())
-                  << std::dec << std::nouppercase
+                  << std::distance(buffer_begin, start) << std::dec
+                  << std::nouppercase
                   << '\n';// base() isn't in visual studio so i might need to
                           // cast buffer_begin to a span so they are the same
                           // type. base() converts the iterator to the pointer.
@@ -88,10 +90,10 @@ public:
       std::cout << "\tSIZE: " << camera_size << " bytes" << std::endl;
       std::cout << "MODEL: \n";
       const auto model_start = [&tim_start, &camera_size, &camera_start]() {
-        const auto span =
-          std::span<char>(camera_start, tim_start).subspan(camera_size);
-        std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
-        return std::ranges::begin(span);
+        const auto size = static_cast<int>(camera_size)
+                        - std::distance(camera_start, tim_start);
+        std::cout << "\tSIZE: " << size << " bytes" << std::endl;
+        return camera_start + camera_size;
       }();
       offset(model_start);
       if (m_tim.check()) {

@@ -21,22 +21,24 @@ namespace open_viii::graphics::background {
  * descramble the tiles to something modders can work with.
  * @tparam map_type there are 3 types of maps
  */
-template<typename map_type, typename mim_type = Mim>
+template<typename map_type, typename mim_type>
 requires(
   std::is_same_v<
     map_type,
-    Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct
+    Map<
+      Tile1>> || std::is_same_v<map_type, Map<Tile2>> || std::is_same_v<map_type, Map<Tile3>>) struct
   Deswizzle
 {
 private:
   using outColorT = Color24<0, 1, 2>;
-  const mim_type &                m_mim{};
-  const Map<map_type> &           m_map{};
-  const std::string               m_path{};
-  const std::vector<std::uint8_t> m_unique_palettes{};
-  const Rectangle<std::int32_t>   m_canvas{};
-  const std::vector<Pupu>         m_unique_pupus{};
-  auto                            find_unique_palettes() const
+  const mim_type                  &m_mim{};
+  map_type                  m_map{};
+  std::string               m_path{};
+  std::vector<std::uint8_t> m_unique_palettes{};
+  Rectangle<std::int32_t>   m_canvas{};
+  std::vector<Pupu>         m_unique_pupus{};
+  auto
+    find_unique_palettes() const
   {
     const auto &tiles     = m_map.tiles();
     auto        pupu_view = tiles | std::views::transform([](const auto &tile) {
@@ -49,7 +51,8 @@ private:
     out.erase(last, std::ranges::end(out));
     return out;
   }
-  auto find_unique_pupu() const
+  auto
+    find_unique_pupu() const
   {
     const auto &tiles     = m_map.tiles();
     auto        pupu_view = tiles | std::views::transform([](const auto &tile) {
@@ -62,16 +65,21 @@ private:
     out.erase(last, std::ranges::end(out));
     return out;
   }
-  template<typename lambdaT> void for_each_pupu(const lambdaT &lambda) const
+  template<typename lambdaT>
+  void
+    for_each_pupu(const lambdaT &lambda) const
   {
     std::ranges::for_each(m_unique_pupus, lambda);
   }
-  template<typename lambdaT> void for_each_palette(const lambdaT &lambda) const
+  template<typename lambdaT>
+  void
+    for_each_palette(const lambdaT &lambda) const
   {
     std::ranges::for_each(m_unique_palettes, lambda);
   }
-  void save_out_buffer_and_clear(std::vector<outColorT> &out,
-                                 const Pupu &            pupu) const
+  void
+    save_out_buffer_and_clear(std::vector<outColorT> &out,
+                              const Pupu &            pupu) const
   {
     auto                  path_v = std::filesystem::path(m_path);
     std::stringstream     ss{};
@@ -87,10 +95,11 @@ private:
     static constexpr auto blank = outColorT{};
     std::ranges::fill(out, blank);
   }
-  template<Color cT>
-  bool set_color(std::vector<outColorT> &  out,
-                 const std::integral auto &index_out,
-                 const cT &                color) const
+  template<Color cT, std::integral indT>
+  bool
+    set_color(std::vector<outColorT> &out,
+              const indT &            index_out,
+              const cT &              color) const
   {
     if (!color.is_black()) {
       // assert(out.at(index_out).is_black() || color==out.at(index_out));
@@ -105,16 +114,19 @@ private:
     }
     return false;
   }
-  auto get_output_index(auto &x, auto &y, auto &tile) const
+  template<typename tile_type>
+  std::uint32_t
+    get_output_index(const std::uint32_t x,
+                     const std::uint32_t y,
+                     const tile_type &   tile) const
   {
     return (static_cast<uint32_t>(tile.x()) + x)
-           + ((static_cast<uint32_t>(tile.y()) + y)
-              * static_cast<uint32_t>(m_canvas.width()));
+         + ((static_cast<uint32_t>(tile.y()) + y)
+            * static_cast<uint32_t>(m_canvas.width()));
   }
+
 public:
-  Deswizzle(const mim_type &     in_mim,
-            const Map<map_type> &in_map,
-            std::string          in_path)
+  Deswizzle(const mim_type &in_mim, const map_type &in_map, std::string in_path)
     : m_mim(in_mim),
       m_map(in_map),
       m_path(std::move(in_path)),
@@ -122,37 +134,40 @@ public:
       m_canvas(in_map.canvas()),
       m_unique_pupus(find_unique_pupu())
   {}
-  void save() const
+  void
+    save() const
   {
     std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
     for_each_pupu([this, &out](const Pupu &pupu) {
-      bool drawn     = false;
-      auto raw_width = m_mim.get_raw_width(pupu.depth());
-      for_each_palette(
-        [&pupu, &drawn, &raw_width, &out, this](const std::uint8_t &palette) {
-          std::ranges::for_each(
-            m_map.tiles()
-              | std::views::filter(
-                [&pupu, &palette](const auto &local_t) -> bool {
-                  return local_t.draw() && palette == local_t.palette_id()
-                         && pupu == local_t;
-                }),
-            [&pupu, &raw_width, this, &out, &drawn, &palette](const auto &t) {
-              open_viii::tools::for_each_xy(
-                t.HEIGHT,
-                [&pupu, &raw_width, this, &out, &drawn, &t, &palette](
-                  const auto &x, const auto &y) {
-                  auto pixel_in = m_mim.get_color(
-                    x + t.source_x(),
-                    y + t.source_y(),
-                    pupu.depth(),
-                    palette,
-                    t.texture_id());// get_input_index(x, y, raw_width, t);
-                  auto pixel_out = get_output_index(x, y, t);
-                  drawn |= set_color(out, pixel_out, pixel_in);
-                });
+      bool        drawn     = false;
+      auto        raw_width = m_mim.get_raw_width(pupu.depth());
+      const auto &tiles     = m_map.tiles();
+
+      for_each_palette([this, &pupu, &tiles, &drawn, &raw_width, &out](
+                         const std::uint8_t &palette) {
+        auto filtered_tiles =
+          tiles
+          | std::views::filter([&pupu, &palette](const auto &local_t) -> bool {
+              return local_t.draw() && palette == local_t.palette_id()
+                  && pupu == local_t;
             });
-        });
+        std::ranges::for_each(
+          filtered_tiles,
+          [this, &pupu, &raw_width, &out, &drawn, &palette](const auto &t) {
+            open_viii::tools::for_each_xy(
+              t.HEIGHT,
+              [this, &pupu, &raw_width, &out, &drawn, &t, &palette](
+                const auto &x, const auto &y) {
+                const auto          pixel_in = m_mim.get_color(x + t.source_x(),
+                                                      y + t.source_y(),
+                                                      pupu.depth(),
+                                                      palette,
+                                                      t.texture_id());
+                const std::uint32_t pixel_out = get_output_index(x, y, t);
+                drawn |= set_color(out, pixel_out, pixel_in);
+              });
+          });
+      });
       if (drawn) {
         save_out_buffer_and_clear(out, pupu);
       }

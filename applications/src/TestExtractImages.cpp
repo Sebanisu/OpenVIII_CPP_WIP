@@ -69,8 +69,8 @@ void extract_images_from_path(const std::filesystem::path &path)
 {
   open_viii::tools::execute_on_directory(
     path,
-    [](const auto &p) {
-      dump_image(open_viii::tools::read_entire_file(p), p);
+    [](const std::filesystem::path &p) {
+      dump_image(open_viii::tools::read_entire_file(p), p.string());
     },
     [](const auto &p) -> bool {
       const auto haystack = p.string();

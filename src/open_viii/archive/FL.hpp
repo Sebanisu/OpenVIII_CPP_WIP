@@ -29,6 +29,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <compare>
 
 namespace open_viii::archive::fl {
 /**
@@ -51,12 +52,11 @@ namespace open_viii::archive::fl {
 constexpr void
   clean_path_string(std::string &input) noexcept
 {
-
   if (std::ranges::size(input) > 4 && input[1] == ':') {
     tl::string::remove_drive_letter(input);
     tl::string::remove_carriage_return_from_end(input);
-    tl::string::replace_slashes(input);
   }
+  tl::string::replace_slashes(input);
 }
 
 /**
@@ -126,7 +126,7 @@ void
                       const std::string &ls = std::get<1>(left);
                       const std::string &rs = std::get<1>(right);
                       if (std::ranges::size(ls) == std::ranges::size(rs)) {
-                        return (ls <=> rs) == std::strong_ordering::less;
+                        return ls.compare(rs) < 0;
                       }
                       return std::ranges::size(ls) < std::ranges::size(rs);
                     });

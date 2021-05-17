@@ -148,21 +148,37 @@ C:\ff8\Data\eng\FIELD\mapdata\bc\bcform1a.fi)"s;
             expect(eq(from_file.second, from_string.second));
             expect(eq(from_file.second, expected_result));
           };
-        check({ "bc"sv }, "ff8/Data/eng/FIELD/mapdata/bc/bcmin22a.fi"sv);
-        check({ "form"sv }, "ff8/Data/eng/FIELD/mapdata/bc/bcform1a.fi"sv);
+
+        if constexpr (std::filesystem::path::preferred_separator == '/') {
+          check({ "bc"sv }, "ff8/Data/eng/FIELD/mapdata/bc/bcmin22a.fi"sv);
+          check({ "form"sv }, "ff8/Data/eng/FIELD/mapdata/bc/bcform1a.fi"sv);
+        } else {
+          check({ "bc"sv },
+                "ff8\\Data\\eng\\FIELD\\mapdata\\bc\\bcmin22a.fi"sv);
+          check({ "form"sv },
+                "ff8\\Data\\eng\\FIELD\\mapdata\\bc\\bcform1a.fi"sv);
+        }
       };
     }
-    "FileData append"_test = [] {
+    "FL append"_test = [] {
       std::string buffer{};
       append_entry(buffer, "test/test1.test"sv);
       append_entry(buffer, "test/test2.test"sv);
       append_entry(buffer, "test/test3.test"sv);
       expect(eq(buffer[7], '\\'));
       expect(eq(std::size(buffer), 60U));
-      const auto entries = open_viii::archive::fl::get_all_entries("",buffer,0U);
-      expect(eq(entries.at(0).second, "test/test1.test"sv));
-      expect(eq(entries.at(1).second, "test/test2.test"sv));
-      expect(eq(entries.at(2).second, "test/test3.test"sv));
+      const auto entries =
+        open_viii::archive::fl::get_all_entries("", buffer, 0U);
+
+      if constexpr (std::filesystem::path::preferred_separator == '/') {
+        expect(eq(entries.at(0).second, "test/test1.test"sv));
+        expect(eq(entries.at(1).second, "test/test2.test"sv));
+        expect(eq(entries.at(2).second, "test/test3.test"sv));
+      } else {
+        expect(eq(entries.at(0).second, "test\\test1.test"sv));
+        expect(eq(entries.at(1).second, "test\\test2.test"sv));
+        expect(eq(entries.at(2).second, "test\\test3.test"sv));
+      }
     };
   };
 }

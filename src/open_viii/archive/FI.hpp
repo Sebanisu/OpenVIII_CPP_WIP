@@ -140,7 +140,7 @@ public:
    * @param path containing all the FI entries
    * @param offset location from start where the desired entry is.
    */
-  FI(const std::filesystem::path &path, std::intmax_t offset)
+  FI(const std::filesystem::path &path, long offset)
     : FI(tl::read::from_file<FI>(offset, path))
   {}
   /**
@@ -150,16 +150,17 @@ public:
    * @param offset to entry 0.
    */
   FI(const std::filesystem::path &path, std::size_t id, std::size_t offset)
-    : FI(path, static_cast<std::intmax_t>(get_fi_entry_offset(id, offset)))
+    : FI(path, static_cast<long>(get_fi_entry_offset(id, offset)))
   {}
   /**
    * Get count of possible entries based on file_size
    * @param file_size total bytes in a file.
    */
-  [[nodiscard]] static constexpr std::size_t
-    get_count(const std::size_t &file_size) noexcept
+   template<std::unsigned_integral T>
+  [[nodiscard]] static constexpr auto
+    get_count(const T &file_size) noexcept
   {
-    return file_size / SIZE;
+    return static_cast<std::size_t>(file_size / SIZE);
   }
   /**
    * Get count of possible entries based on file_size

@@ -65,19 +65,19 @@ public:
     b(input_color.b());
     a(input_color.a());
   }
-  [[nodiscard]] std::uint8_t r() const
+  [[nodiscard]] constexpr std::uint8_t r() const
   {
     return m_parts.at(r_);
   }
-  [[nodiscard]] std::uint8_t g() const
+  [[nodiscard]] constexpr std::uint8_t g() const
   {
     return m_parts.at(g_);
   }
-  [[nodiscard]] std::uint8_t b() const
+  [[nodiscard]] constexpr std::uint8_t b() const
   {
     return m_parts.at(b_);
   }
-  [[nodiscard]] std::uint8_t a() const
+  [[nodiscard]] constexpr std::uint8_t a() const
   {
     return m_parts.at(a_);
   }
@@ -112,6 +112,10 @@ public:
                 const Color32<r_, g_, b_, a_> &right) noexcept = default;
   auto
     operator<=>(const Color32<r_, g_, b_, a_> &right) const noexcept = default;
+  constexpr bool is_black() const noexcept
+  {
+    return r() == 0 && g() == 0 && b() == 0;
+  }
 };
 static_assert(sizeof(Color32<>) == Color32<>::EXPLICIT_SIZE);
 }// namespace open_viii::graphics

@@ -8,6 +8,10 @@
 #include <cstdint>
 #include <span>
 #include <string_view>
+template<typename fdT>
+concept can_be_span_of_char = requires(fdT fd) {
+  std::span<const char>(fd);
+};
 /**
  * Mock span data, this is grouping values together for tests. The raw data is
  * in a string_view and the span points to the same data. Because if you pass a
@@ -94,9 +98,7 @@ int
     static constexpr auto check_fs2 =
       [](auto full_data, const mock_span_data &mock, const FI &fi) {
         const auto value = [&]() {
-          if constexpr (requires(decltype(full_data) fd) {
-                          std::span<const char>(fd);
-                        }) {
+          if constexpr (can_be_span_of_char<decltype(full_data)>) {
             return FS::get_entry(std::span<const char>(full_data), fi);
           } else {
             return FS::get_entry(full_data, fi);

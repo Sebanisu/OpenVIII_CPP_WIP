@@ -119,7 +119,7 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const MovieClip &movie_clip)
   {
     const auto out = [&os](const auto &section) {
-      if constexpr (requires(decltype(section) t) { t.size(); }) {
+      if constexpr (has_size<decltype(section)>) {
         if (section.size() == 0) {
           return;
         }

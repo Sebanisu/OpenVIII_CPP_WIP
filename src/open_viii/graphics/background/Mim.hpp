@@ -23,6 +23,7 @@
 namespace open_viii::graphics::background {
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_MIM
+ * todo rewrite so you don't have to delete the copy constructors. aka no spans in class.
  */
 struct Mim
 {
@@ -33,23 +34,27 @@ private:
   const std::span<const Color16>    m_palette_buffer{};
   const std::span<const Bit4Values> m_image_buffer_bbp4{};
   const std::span<const Color16>    m_image_buffer_bbp16{};
-  [[nodiscard]] static const auto & clut_width() noexcept
+  [[nodiscard]] static const auto &
+    clut_width() noexcept
   {
     return open_viii::graphics::background::MimType::COLORS_PER_PALETTE;
   }
-  [[nodiscard]] std::size_t clut_height() const noexcept
+  [[nodiscard]] std::size_t
+    clut_height() const noexcept
   {
     return ((m_mim_type.palette_section_size()
              - m_mim_type.bytes_skipped_palettes())
             / sizeof(Color16))
-           / clut_width();
+         / clut_width();
   }
-  std::span<const char> set_image_span() const
+  std::span<const char>
+    set_image_span() const
   {
     return std::span<const char>(m_buffer).subspan(
       m_mim_type.palette_section_size());
   }
-  std::span<const Color16> set_palette_span() const
+  std::span<const Color16>
+    set_palette_span() const
   {
     const auto palette_buffer_tmp = std::span<const char>(m_buffer).subspan(
       m_mim_type.bytes_skipped_palettes(),
@@ -58,19 +63,22 @@ private:
                std::ranges::data(palette_buffer_tmp)),
              std::ranges::size(palette_buffer_tmp) / sizeof(Color16) };
   }
-  std::span<const Bit4Values> set_image_span_bpp4() const
+  std::span<const Bit4Values>
+    set_image_span_bpp4() const
   {
     return { reinterpret_cast<const Bit4Values *>(
                std::ranges::data(m_image_buffer)),
              std::ranges::size(m_image_buffer) / sizeof(Bit4Values) };
   }
-  std::span<const Color16> set_image_span_bpp16() const
+  std::span<const Color16>
+    set_image_span_bpp16() const
   {
     return { reinterpret_cast<const Color16 *>(
                std::ranges::data(m_image_buffer)),
              std::ranges::size(m_image_buffer) / sizeof(Color16) };
   }
-  [[nodiscard]] Color16 safe_get_color_from_palette(size_t key) const
+  [[nodiscard]] Color16
+    safe_get_color_from_palette(size_t key) const
   {
     auto size1 = std::ranges::size(m_palette_buffer);
     if (key < size1) {
@@ -78,8 +86,8 @@ private:
     }
     return {};
   }
-  static std::size_t get_palette_key(const std::uint8_t &key,
-                                     const std::size_t & palette)
+  static std::size_t
+    get_palette_key(const std::uint8_t &key, const std::size_t &palette)
   {
     return key + (palette * static_cast<std::size_t>(clut_width()));
   }
@@ -115,6 +123,7 @@ private:
   static constexpr std::array<MimType, 2> TEXTURE_TYPES{
     MimType(24, 13), MimType(16, 12, 0, 2)
   };
+
 public:
   constexpr static auto EXT = std::string_view{ ".mim" };
   Mim()                     = default;
@@ -138,7 +147,8 @@ public:
       m_image_buffer_bbp4(set_image_span_bpp4()),
       m_image_buffer_bbp16(set_image_span_bpp16())
   {}
-  [[nodiscard]] const auto &mim_type() const noexcept
+  [[nodiscard]] const auto &
+    mim_type() const noexcept
   {
     return m_mim_type;
   }
@@ -157,7 +167,8 @@ public:
     }
     return {};
   }
-  friend std::ostream &operator<<(std::ostream &os, const Mim &m)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Mim &m)
   {
     return os << m.m_mim_type;
   }
@@ -199,9 +210,9 @@ public:
     auto out_path = [&palette, &path](const int &bpp_num,
                                       bool       has_palette = true) {
       return (path.parent_path() / path.stem()).string() + "_"
-             + std::to_string(bpp_num) + "bpp"
-             + (has_palette ? "_" + std::to_string(palette) : "")
-             + open_viii::graphics::background::Mim::EXT.data();
+           + std::to_string(bpp_num) + "bpp"
+           + (has_palette ? "_" + std::to_string(palette) : "")
+           + open_viii::graphics::background::Mim::EXT.data();
     };
     if (bpp.bpp8()) {
       auto out = get_image_bpp8(palette);
@@ -247,11 +258,13 @@ public:
       }
     }
   }
-  std::size_t get_raw_width(const BPPT &depth) const
+  std::size_t
+    get_raw_width(const BPPT &depth) const
   {
     return get_raw_width(depth, m_mim_type.width());
   }
-  static std::size_t get_raw_width(const BPPT &depth, std::size_t width)
+  static std::size_t
+    get_raw_width(const BPPT &depth, std::size_t width)
   {
     if (depth.bpp4()) {
       return width * 2U;
@@ -261,12 +274,16 @@ public:
     }
     return width;
   }
+  template<std::unsigned_integral xT,
+           std::unsigned_integral yT,
+           std::unsigned_integral paletteT,
+           std::unsigned_integral texture_idT>
   [[nodiscard]] Color16
-    get_color(const std::unsigned_integral auto &x,
-              const std::unsigned_integral auto &y,
-              const BPPT &                       depth,
-              const std::unsigned_integral auto &palette    = 0U,
-              const std::unsigned_integral auto &texture_id = 0U) const
+    get_color(const xT          x,
+              const yT          y,
+              const BPPT        depth,
+              const paletteT    palette    = 0U,
+              const texture_idT texture_id = 0U) const
   {
     auto                  width               = m_mim_type.width();
     constexpr static auto offset_interval     = 128U;
@@ -297,7 +314,8 @@ public:
     }
     return {};
   }
-  [[maybe_unused]] void save([[maybe_unused]] std::string_view filename) const
+  [[maybe_unused]] void
+    save([[maybe_unused]] std::string_view filename) const
   {
     static constexpr auto ppm_save = [](const std::span<const Color16> &data,
                                         const std::size_t &             width,

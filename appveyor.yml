@@ -1,8 +1,8 @@
 version: 1.0.{build}
 environment:
   matrix:
-#    - job_name: Windows MSVC build
-#      appveyor_build_worker_image: Visual Studio 2019
+    - job_name: Windows MSVC build
+      appveyor_build_worker_image: Visual Studio 2019
 
     - job_name: Linux GCC build and docs
       appveyor_build_worker_image: Ubuntu2004
@@ -33,7 +33,10 @@ for:
   - matrix:
       only:
         - job_name: Windows MSVC build
+    init:
+      - cmd: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"'
     build_script:
-      - cmd: "mkdir build\ncmake -G \"Visual Studio 16 2019\" -B build\nMSBuild build\\ALL_BUILD.vcxproj"
+      - cmd: "mkdir build\ncmake -G \"CodeBlocks - NMake Makefiles\" -B build\ncmake --build build --target all"
+      #- cmd: "mkdir build\ncmake -G \"Visual Studio 16 2019\" -B build\nMSBuild build\\ALL_BUILD.vcxproj"
     test_script:
-      - cmd: "cd build\nctest -C debug --verbose\ncd .."
+      - cmd: "cd build\nctest -C debug --extra-verbose\ncd .."

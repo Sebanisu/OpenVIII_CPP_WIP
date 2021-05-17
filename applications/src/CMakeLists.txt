@@ -33,19 +33,20 @@ target_link_libraries(${PROJECT_NAME}_TestSearchZZZ
         PRIVATE ${PROJECT_NAME}_VIIIPaths
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl)
-
-##test kernel.bin
-add_executable(${PROJECT_NAME}_TestKernel
-        TestKernel.cpp TestKernel.hpp)
-set_target_properties(${PROJECT_NAME}_TestKernel PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestKernel
-        PRIVATE ${PROJECT_NAME}_VIIIStrings
-        PRIVATE ${PROJECT_NAME}_VIIIKernel
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
+if (NOT MSVC)
+    ##test kernel.bin
+    add_executable(${PROJECT_NAME}_TestKernel
+            TestKernel.cpp TestKernel.hpp)
+    set_target_properties(${PROJECT_NAME}_TestKernel PROPERTIES LINKER_LANGUAGE CXX)
+    target_link_libraries(${PROJECT_NAME}_TestKernel
+            PRIVATE ${PROJECT_NAME}_VIIIStrings
+            PRIVATE ${PROJECT_NAME}_VIIIKernel
+            PRIVATE ${PROJECT_NAME}_VIIIPaths
+            PRIVATE ${PROJECT_NAME}_VIIIArchive
+            PRIVATE ${PROJECT_NAME}_project_warnings
+            PRIVATE ToolsLibrary_tl
+            )
+endif ()
 
 ##test mngrphd.bin and mngrp.bin
 add_executable(${PROJECT_NAME}_TestMenuGroup
@@ -162,6 +163,7 @@ target_link_libraries(${PROJECT_NAME}_TestJSM
         PRIVATE ToolsLibrary_tl
         )
 
+#compress file with lz4 like ff8 would. or uncompress
 add_executable(${PROJECT_NAME}_lz4_ff8
         lz4_ff8.cpp
         lz4_lzss_common_ff8.hpp)
@@ -173,7 +175,7 @@ target_link_libraries(${PROJECT_NAME}_lz4_ff8
         PRIVATE Threads::Threads
         PRIVATE ToolsLibrary_tl
         )
-
+#compress file with lzss like ff8 would. or uncompress
 add_executable(${PROJECT_NAME}_lzss_ff8
         lzss_ff8.cpp
         lz4_lzss_common_ff8.hpp)

@@ -14,6 +14,13 @@
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/kernel/Header.hpp"
 #include "open_viii/paths/Paths.hpp"
+template<typename KernelElementT>
+concept has_out_function = requires(KernelElementT        ke,
+                 std::ostream          tstream,
+                 std::span<const char> tspan) {
+  ke.out(tstream, tspan);
+};
+
 /**
  * Dumps values to stream
  * @param os output stream
@@ -58,11 +65,7 @@ static void out(KernelElementT               kernel_element,
   };
   IF_EXIST_WRITE_DECODE_STRING(name_offset)
   IF_EXIST_WRITE_DECODE_STRING(description_offset)
-  if constexpr (requires(KernelElementT        ke,
-                         std::ostream          tstream,
-                         std::span<const char> tspan) {
-                  ke.out(tstream, tspan);
-                }) {
+  if constexpr (has_out_function<KernelElementT>) {
     kernel_element.out(os, buffer);
   } else {
     IF_EXIST_WRITE_CASTINT(ability_points_required_to_unlock)
@@ -93,9 +96,9 @@ int main()
 {
   std::vector<std::pair<std::filesystem::path, open_viii::kernel::Header>>
              kernels{};
+  static constexpr auto coo      = open_viii::LangT::en;
   const auto execution_lambda = [&kernels](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    static constexpr auto coo      = open_viii::LangT::en;
     const auto archives = open_viii::archive::Archives(path, open_viii::LangCommon::to_string<coo>());
     if(!static_cast<bool>(archives))
     {
