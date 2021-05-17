@@ -6,8 +6,10 @@
 #define VIIIARCHIVE_FIFLFS_EXTRACT_HPP
 #include "open_viii/archive/FIFLFS.hpp"
 #include <filesystem>
+#include <iostream>
+#include <string_view>
 void
-  extract_fiflfs(std::filesystem::path src, std::filesystem::path dst)
+  fiflfs_extract(std::filesystem::path src, std::filesystem::path dst)
 {
   std::cout << "Loading Archive\n";
   const open_viii::archive::FIFLFS<false> archive(src);
