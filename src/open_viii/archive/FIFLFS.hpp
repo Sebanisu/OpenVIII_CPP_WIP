@@ -27,6 +27,12 @@
 #include <thread>
 #include <utility>
 namespace open_viii::archive {
+template<typename lambdaT>
+concept executable_buffer_path =
+  std::invocable<lambdaT, std::vector<char>, std::string>;
+template<typename lambdaT>
+concept executable_buffer_path_fi =
+  std::invocable<lambdaT, std::vector<char>, std::string, FI>;
 enum class fiflfsT {
   none,
   fl,
@@ -75,6 +81,36 @@ public:
     return m_fi && m_fs && m_fl;
   }
   FIFLFS() = default;
+  FIFLFS(std::filesystem::path src)
+  {
+    const auto parent_path = src.parent_path();
+    std::cout << "Parent Path: " << parent_path << std::endl;
+    const auto stem = src.stem().string();
+    std::cout << "Archive Name: " << stem << std::endl;
+    open_viii::tools::execute_on_directory(
+      parent_path,
+      { stem },
+      { FI::EXT, FS::EXT, fl::EXT },
+      [this](const std::filesystem::path &path) {
+        std::string   cur_path = path.string();
+        const TryAddT result   = try_add(
+          FI(static_cast<std::uint32_t>(std::filesystem::file_size(path)), 0U),
+          path,
+          path);
+        switch (result) {
+        case TryAddT::added_to_archive:
+          std::cout << "added: " << path << '\n';
+          break;
+        case TryAddT::archive_full:
+          std::cout << "added: " << path << '\n';
+          std::cout << "Archive Loaded\n";
+          break;
+        case TryAddT::not_part_of_archive:
+          std::cout << "not added: " << path << '\n';
+          break;
+        }
+      });
+  }
   [[nodiscard]] friend std::ostream &
     operator<<(std::ostream &os, const FIFLFS &data)
   {
@@ -266,26 +302,27 @@ public:
       m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
   }
   template<typename lambdaT>
-  requires(std::invocable<
-           lambdaT,
-           std::vector<char>,
-           std::string>) void execute_on(const std::
-                                           initializer_list<std::string_view>
-                                             &          filename,
-                                         const lambdaT &lambda) const
+  requires(executable_buffer_path<lambdaT> || executable_buffer_path_fi<lambdaT>) void execute_on(
+    const std::initializer_list<std::string_view> &filename,
+    const lambdaT &                                lambda) const
   {
     const auto results = get_vector_of_indexes_and_files(filename);
     std::ranges::for_each(
       results
-        | std::views::filter(
-          [this](const std::pair<unsigned int, std::string> &pair) -> bool {
-            return check_extension(pair.second)
-                == fiflfsT::none;// prevent from running on nested archives.
-                                 // We have another function for those.
-          }),
+//        | std::views::filter(
+//          [this](const std::pair<unsigned int, std::string> &pair) -> bool {
+//            return check_extension(pair.second)
+//                == fiflfsT::none;// prevent from running on nested archives.
+//                                 // We have another function for those.
+//          })
+        ,
       [this, &lambda](const std::pair<unsigned int, std::string> &pair) {
         auto fi = get_entry_by_index(pair.first);
-        lambda(get_entry_buffer(fi), pair.second);
+        if constexpr (executable_buffer_path<lambdaT>) {
+          lambda(get_entry_buffer(fi), pair.second);
+        } else if constexpr (executable_buffer_path_fi<lambdaT>) {
+          lambda(get_entry_buffer(fi), pair.second, fi);
+        }
       });
   }
   template<typename lambdaT>
