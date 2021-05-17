@@ -201,3 +201,17 @@ target_link_libraries(${PROJECT_NAME}_fiflfs_extract
         PRIVATE Threads::Threads
         PRIVATE ToolsLibrary_tl
         )
+
+#fiflfs files create not nested
+add_executable(${PROJECT_NAME}_fiflfs_create
+        fiflfs_create.cpp
+        fiflfs_create.hpp)
+set_target_properties(${PROJECT_NAME}_fiflfs_create PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${PROJECT_NAME}_fiflfs_create PROPERTIES OUTPUT_NAME "fiflfs_create")
+target_link_libraries(${PROJECT_NAME}_fiflfs_create
+        PRIVATE ${PROJECT_NAME}_VIIICompression
+        PRIVATE ${PROJECT_NAME}_VIIIArchive
+        PRIVATE ${PROJECT_NAME}_project_warnings
+        PRIVATE Threads::Threads
+        PRIVATE ToolsLibrary_tl
+        )
