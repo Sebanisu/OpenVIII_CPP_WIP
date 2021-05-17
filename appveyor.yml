@@ -34,7 +34,7 @@ for:
       only:
         - job_name: Windows MSVC build
     build_script:
-      - cmd: "vcvarsall.bat\nmkdir build\ncmake -G \"CodeBlocks - NMake Makefiles\" -B build\ncmake --build build --target all"
+      - cmd: "\"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat\"\nmkdir build\ncmake -G \"CodeBlocks - NMake Makefiles\" -B build\ncmake --build build --target all"
         #      - cmd: "mkdir build\ncmake -G \"Visual Studio 16 2019\" -B build\nMSBuild build\\ALL_BUILD.vcxproj"
     test_script:
       - cmd: "cd build\nctest -C debug --extra-verbose\ncd .."
