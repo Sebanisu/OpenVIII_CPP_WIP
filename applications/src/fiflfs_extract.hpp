@@ -14,6 +14,11 @@ void
 {
   std::cout << "Loading Archive\n";
   const open_viii::archive::FIFLFS<false> archive(src);
+  if(!archive.all_set())
+  {
+    std::cerr << "Failed to load archive" << std::endl;
+    exit(1);
+  }
   std::cout << "Extracting " << src << " to " << dst << '\n';
   const auto   target_folder       = dst.string();
   const auto   target_compress_dat = target_folder + ".compress";
