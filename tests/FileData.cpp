@@ -122,7 +122,12 @@ int
       expect(eq(buffer[8], '\\'));
       expect(eq(std::size(buffer), 30U));
       const auto local_fi = FileData(buffer);
-      expect(eq(local_fi.get_path_string(), "test\\test.test"sv));
+      if constexpr (std::filesystem::path::preferred_separator == '/') {
+        expect(eq(local_fi.get_path_string(), "test/test.test"sv));
+      }
+      else {
+        expect(eq(local_fi.get_path_string(), "test\\test.test"sv));
+      }
       expect(eq(local_fi.offset(), 5U));
       expect(eq(local_fi.uncompressed_size(), 10U));
     };
