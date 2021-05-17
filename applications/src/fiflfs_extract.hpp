@@ -9,7 +9,8 @@
 #include <iostream>
 #include <string_view>
 void
-  fiflfs_extract(std::filesystem::path src, std::filesystem::path dst)
+  fiflfs_extract(const std::filesystem::path src,
+                 const std::filesystem::path dst)
 {
   std::cout << "Loading Archive\n";
   const open_viii::archive::FIFLFS<false> archive(src);

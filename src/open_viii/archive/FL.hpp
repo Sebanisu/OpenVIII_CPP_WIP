@@ -92,7 +92,7 @@ constexpr void
 /**
  * File extension
  */
-static constexpr auto EXT = std::string_view(".FL");
+static constexpr auto EXT = std::string_view(".fl");
 
 /**
  * Decide how much to reserve based on known count or a set limit.
