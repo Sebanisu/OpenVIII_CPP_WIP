@@ -187,3 +187,17 @@ target_link_libraries(${PROJECT_NAME}_lzss_ff8
         PRIVATE Threads::Threads
         PRIVATE ToolsLibrary_tl
         )
+
+#fiflfs files extract not nested
+add_executable(${PROJECT_NAME}_fiflfs_extract
+        fiflfs_extract.cpp
+        fiflfs_extract.hpp)
+set_target_properties(${PROJECT_NAME}_fiflfs_extract PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${PROJECT_NAME}_fiflfs_extract PROPERTIES OUTPUT_NAME "fiflfs_extract")
+target_link_libraries(${PROJECT_NAME}_fiflfs_extract
+        PRIVATE ${PROJECT_NAME}_VIIICompression
+        PRIVATE ${PROJECT_NAME}_VIIIArchive
+        PRIVATE ${PROJECT_NAME}_project_warnings
+        PRIVATE Threads::Threads
+        PRIVATE ToolsLibrary_tl
+        )
