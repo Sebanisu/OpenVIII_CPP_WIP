@@ -9,7 +9,10 @@ Getting Started
 ### Compiler
 
 * [gcc-10 & g++-10](https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/ppa)
-  * [update-alternatives](https://linuxconfig.org/how-to-switch-between-multiple-gcc-and-g-compiler-versions-on-ubuntu-20-04-lts-focal-fossa)
+    * [update-alternatives](https://linuxconfig.org/how-to-switch-between-multiple-gcc-and-g-compiler-versions-on-ubuntu-20-04-lts-focal-fossa)
+* [msvc 16.9.4 or msvc 16.9.5](https://docs.microsoft.com/en-us/visualstudio/releases/2019/release-notes)
+* [msvc 16.10](https://docs.microsoft.com/en-us/visualstudio/releases/2019/release-notes-preview) is currently broken
+  with [boost::ut](https://github.com/boost-ext/ut)
 
 ### Documentation prerequisites
 
@@ -122,11 +125,15 @@ cd build
 ctest -C debug --verbose 
 cd ..
 ```
+
 ## Windows MSVC - NMake
+
 ### Load development environment
+
 ```dosbatch
 "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"
 ```
+
 ### Run cmake
 
 ```dosbatch
