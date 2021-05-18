@@ -307,15 +307,7 @@ public:
     const lambdaT &                                lambda) const
   {
     const auto results = get_vector_of_indexes_and_files(filename);
-    std::ranges::for_each(
-      results
-//        | std::views::filter(
-//          [this](const std::pair<unsigned int, std::string> &pair) -> bool {
-//            return check_extension(pair.second)
-//                == fiflfsT::none;// prevent from running on nested archives.
-//                                 // We have another function for those.
-//          })
-        ,
+    const auto process =
       [this, &lambda](const std::pair<unsigned int, std::string> &pair) {
         auto fi = get_entry_by_index(pair.first);
         if constexpr (executable_buffer_path<lambdaT>) {
@@ -323,7 +315,20 @@ public:
         } else if constexpr (executable_buffer_path_fi<lambdaT>) {
           lambda(get_entry_buffer(fi), pair.second, fi);
         }
-      });
+      };
+    if constexpr (HasNested) {
+      std::ranges::for_each(
+        results
+          | std::views::filter(
+            [this](const std::pair<unsigned int, std::string> &pair) -> bool {
+              return check_extension(pair.second)
+                  == fiflfsT::none;// prevent from running on nested archives.
+                                   // We have another function for those.
+            }),
+        process);
+    } else {
+      std::ranges::for_each(results, process);
+    }
   }
   template<typename lambdaT>
   requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)) void execute_with_nested(
