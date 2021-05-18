@@ -102,7 +102,7 @@ cd applications
 # dir or ls
 ```
 
-## Windows MSVC
+## Windows MSVC - MSBuild
 
 ### Run cmake
 
@@ -118,6 +118,29 @@ __For more verbose output__
 
 ```dosbatch
 MSBuild build\ALL_BUILD.vcxproj 
+cd build 
+ctest -C debug --verbose 
+cd ..
+```
+## Windows MSVC - NMake
+### Load development environment
+```dosbatch
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"
+```
+### Run cmake
+
+```dosbatch
+cd OpenVIII_CPP_WIP
+mkdir build
+cmake -G "CodeBlocks - NMake Makefiles" -B build
+```
+
+### Run tests
+
+__For more verbose output__
+
+```dosbatch
+cmake --build build --target all
 cd build 
 ctest -C debug --verbose 
 cd ..

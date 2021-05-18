@@ -234,8 +234,8 @@ ctest -C debug --verbose
 </div>
 </div>
 </div>
-<div class="section" id="windows-msvc">
-<h2>Windows MSVC<a class="headerlink" href="#windows-msvc" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="windows-msvc-msbuild">
+<h2>Windows MSVC - MSBuild<a class="headerlink" href="#windows-msvc-msbuild" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>Run cmake<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-dosbatch notranslate"><div class="highlight"><pre><span></span><span class="k">cd</span> OpenVIII_CPP_WIP
@@ -248,6 +248,33 @@ cmake -G <span class="s2">"Visual Studio 16 2019"</span> -B build
 <h3>Run tests<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p><strong>For more verbose output</strong></p>
 <div class="highlight-dosbatch notranslate"><div class="highlight"><pre><span></span>MSBuild build\ALL_BUILD.vcxproj 
+<span class="k">cd</span> build 
+ctest -C debug --verbose 
+<span class="k">cd</span> ..
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="windows-msvc-nmake">
+<h2>Windows MSVC - NMake<a class="headerlink" href="#windows-msvc-nmake" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="load-development-environment">
+<h3>Load development environment<a class="headerlink" href="#load-development-environment" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-dosbatch notranslate"><div class="highlight"><pre><span></span><span class="s2">"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3>Run cmake<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-dosbatch notranslate"><div class="highlight"><pre><span></span><span class="k">cd</span> OpenVIII_CPP_WIP
+<span class="k">mkdir</span> build
+cmake -G <span class="s2">"CodeBlocks - NMake Makefiles"</span> -B build
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>Run tests<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p><strong>For more verbose output</strong></p>
+<div class="highlight-dosbatch notranslate"><div class="highlight"><pre><span></span>cmake --build build --target all
 <span class="k">cd</span> build 
 ctest -C debug --verbose 
 <span class="k">cd</span> ..
@@ -326,9 +353,15 @@ ctest -C debug --verbose
 <li><a class="reference internal" href="#run-applications">Run applications</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#windows-msvc">Windows MSVC</a><ul>
+<li><a class="reference internal" href="#windows-msvc-msbuild">Windows MSVC - MSBuild</a><ul>
 <li><a class="reference internal" href="#id1">Run cmake</a></li>
 <li><a class="reference internal" href="#id2">Run tests</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#windows-msvc-nmake">Windows MSVC - NMake</a><ul>
+<li><a class="reference internal" href="#load-development-environment">Load development environment</a></li>
+<li><a class="reference internal" href="#id3">Run cmake</a></li>
+<li><a class="reference internal" href="#id4">Run tests</a></li>
 </ul>
 </li>
 </ul>
