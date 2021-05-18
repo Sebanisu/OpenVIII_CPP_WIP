@@ -26,6 +26,7 @@
 #include <utility>
 namespace open_viii::archive {
 /**
+ * ZZZ file archive from FF8 remaster.
  * @see https://github.com/myst6re/qt-zzz
  */
 struct [[maybe_unused]] ZZZ

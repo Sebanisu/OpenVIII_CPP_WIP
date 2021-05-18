@@ -20,8 +20,8 @@ static constexpr void
   for_each_xy(const intT max_x, const intT max_y, const lambdaT &lambda)
 {
   constexpr intT start{};
-  for (const auto y : std::views::iota(start, max_y)) {
-    for (const auto x : std::views::iota(start, max_x)) {
+  for (auto y = start; y != max_y; ++y) {
+    for (auto x = start; x != max_x; ++x) {
       if constexpr (std::is_invocable_r_v<bool, lambdaT, intT, intT>) {
         if (lambda(x, y)) {
           return;// short circuit
@@ -38,7 +38,8 @@ static constexpr void
  * @param max_y max y
  * @return total of all x and y values
  */
-static consteval auto test_for_each_xy(std::size_t max_x, std::size_t max_y)
+static consteval auto
+  test_for_each_xy(std::size_t max_x, std::size_t max_y)
 {
   std::size_t total{};
   for_each_xy(max_x, max_y, [&total](const auto x, const auto y) {
@@ -55,7 +56,8 @@ template<std::unsigned_integral intT, std::invocable<intT, intT> lambdaT>
  * @param max_xy max x and max y.
  * @param lambda lambda to execute f(x,y)
  */
-static constexpr void for_each_xy(const intT &max_xy, const lambdaT &lambda)
+static constexpr void
+  for_each_xy(const intT &max_xy, const lambdaT &lambda)
 {
   for_each_xy(max_xy, max_xy, lambda);
 }
@@ -64,7 +66,8 @@ static constexpr void for_each_xy(const intT &max_xy, const lambdaT &lambda)
  * @param max_xy max x and max y.
  * @return total of all x and y values
  */
-static consteval auto test_for_each_xy(std::size_t max_xy)
+static consteval auto
+  test_for_each_xy(std::size_t max_xy)
 {
   return test_for_each_xy(max_xy, max_xy);
 }
@@ -80,14 +83,15 @@ static_assert(test_for_each_xy(5U) == 100U);
  */
 template<std::invocable<std::filesystem::path> UnaryOperationT,
          typename BinaryOperationT>
-static void execute_on_directory(
-  const std::filesystem::path &directory,
-  UnaryOperationT              unary_function,
-  BinaryOperationT             binary_function =
-    true) requires((std::is_same_v<std::decay<BinaryOperationT>, bool>)
-                   || (std::is_invocable_r_v<bool,
-                                             BinaryOperationT,
-                                             std::filesystem::path>))
+static void
+  execute_on_directory(
+    const std::filesystem::path &directory,
+    UnaryOperationT              unary_function,
+    BinaryOperationT             binary_function =
+      true) requires((std::is_same_v<std::decay<BinaryOperationT>, bool>)
+                     || (std::is_invocable_r_v<bool,
+                                               BinaryOperationT,
+                                               std::filesystem::path>))
 {
   const std::filesystem::directory_options options =
     std::filesystem::directory_options::skip_permission_denied;
@@ -129,12 +133,12 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
   execute_on_directory(
     dir, lambda, [&filenames, &extensions](const std::filesystem::path &path) {
       return std::filesystem::is_regular_file(path)
-             && (std::ranges::empty(extensions)
-                 || (path.has_extension()
-                     && i_ends_with_any(path.extension().string(), extensions)))
-             && (std::ranges::empty(filenames)
-                 || (path.has_stem()
-                     && i_find_any(path.stem().string(), filenames)));
+          && (std::ranges::empty(extensions)
+              || (path.has_extension()
+                  && i_ends_with_any(path.extension().string(), extensions)))
+          && (std::ranges::empty(filenames)
+              || (path.has_stem()
+                  && i_find_any(path.stem().string(), filenames)));
     });
 }
 /**
@@ -155,7 +159,7 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
   execute_on_directory(
     dir, lambda, [&path_contains](const std::filesystem::path &path) {
       return std::filesystem::is_directory(path)
-             && tools::i_find_any(path.string(), path_contains);
+          && tools::i_find_any(path.string(), path_contains);
     });
 }
 }// namespace open_viii::tools

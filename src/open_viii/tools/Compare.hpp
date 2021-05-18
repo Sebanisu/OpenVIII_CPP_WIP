@@ -9,6 +9,13 @@
 #include <ranges>
 #include <span>
 namespace open_viii::tools {
+
+    template<typename t1,typename t2>
+    concept can_upper = requires(t1 c1, t2 c2)
+    {
+        upper(c1) == upper(c2);
+    };
+
 /**
  * Check if two characters are equal case insensitive
  * @param ch1 character 1
@@ -17,9 +24,7 @@ namespace open_viii::tools {
  */
 constexpr static auto TOUPPER_EQUALS_PREDICATE = [](const auto &ch1,
                                                     const auto &ch2) -> bool {
-  if constexpr (requires(decltype(ch1) c1, decltype(ch2) c2) {
-                  upper(c1) == upper(c2);
-                }) {
+  if constexpr (can_upper<decltype(ch1),decltype(ch2)>) {
     return upper(ch1) == upper(ch2);
   } else {
     return ch1 == ch2;

@@ -5,7 +5,11 @@
 #define VIIIARCHIVE_RANDOMIOTA_HPP
 #include <iterator>
 #include <random>
-template<> struct RandomIOTAInterator
+/**
+ * Random IOTA Iterator
+ * @deprecated
+ */
+template<> struct RandomIOTAIterator
 {
   using iterator_category = std::forward_iterator_tag;
   using difference_type   = std::ptrdiff_t;
@@ -58,11 +62,13 @@ public:
   using value_type = std::size_t;
   explicit RandomIOTA(value_type size) : m_size(size) {}
   // Iterator definition here ...
-  RandomIOTAInterator begin()
+  RandomIOTAIterator
+    begin()
   {
     return RandomIOTAInterator(0);
   }
-  RandomIOTAInterator end()
+  RandomIOTAIterator
+    end()
   {
     return RandomIOTAInterator(m_size);
   }// 200 is out of bounds

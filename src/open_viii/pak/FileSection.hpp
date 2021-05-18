@@ -10,6 +10,9 @@
 #include <string>
 #include <utility>
 namespace open_viii {
+/**
+ * Collection of data related to a file section of a pak file.
+ */
 struct FileSection
 {
 private:
