@@ -3,9 +3,37 @@
 //
 #ifndef VIIIARCHIVE_ONE_HPP
 #define VIIIARCHIVE_ONE_HPP
+#include "BPPT.hpp"
 #include "Mch.hpp"
 #include "one/OneModel.hpp"
 namespace open_viii::graphics {
+constexpr auto
+  get_tim_header_start(const BPPT bpp)
+{
+  return std::array<char, 5U>{ 0x10, 0x0, 0x0, 0x0, static_cast<char>(bpp) };
+}
+constexpr auto get_time_header_starts()
+{
+  /**
+   * 4 bit color tim.
+   */
+  constexpr auto TIM4_START = get_tim_header_start(BPPT::as_bpp4());
+  /**
+   * 8 bit color tim.
+   */
+  constexpr auto TIM8_START = get_tim_header_start(BPPT::as_bpp8());
+  /**
+   * 16 bit color tim.
+   */
+  constexpr auto TIM16_START = get_tim_header_start(BPPT::as_bpp16());
+  /**
+   * 24 bit color tim.
+   */
+  constexpr auto TIM24_START = get_tim_header_start(BPPT::as_bpp24());
+  return std::array{
+    TIM4_START, TIM8_START, TIM16_START, TIM24_START
+  };
+}
 /**
  * @note world\esk\chara.one has 16 tim files
  */
@@ -14,35 +42,9 @@ struct One
 private:
   std::vector<char>     m_buffer{};
   std::uint32_t         m_count{};
-  static constexpr auto SIZE_TIM_START = 5U;
-  /**
-   * 4 bit color tim.
-   */
-  static constexpr std::string_view TIM4_START{ "\x10\x00\x00\x00\x08",
-                                                SIZE_TIM_START };
-  /**
-   * 8 bit color tim.
-   */
-  static constexpr std::string_view TIM8_START{ "\x10\x00\x00\x00\x09",
-                                                SIZE_TIM_START };
-  /**
-   * 16 bit color tim.
-   */
-  static constexpr std::string_view TIM16_START{ "\x10\x00\x00\x00\x02",
-                                                 SIZE_TIM_START };
-  /**
-   * 24 bit color tim.
-   */
-  static constexpr std::string_view TIM24_START{ "\x10\x00\x00\x00\x03",
-                                                 SIZE_TIM_START };
-  static_assert(std::ranges::size(TIM4_START) == SIZE_TIM_START);
-  static_assert(std::ranges::size(TIM8_START) == SIZE_TIM_START);
-  static_assert(std::ranges::size(TIM16_START) == SIZE_TIM_START);
-  static_assert(std::ranges::size(TIM24_START) == SIZE_TIM_START);
-  static constexpr std::array TIM_STARTS{
-    TIM4_START, TIM8_START, TIM16_START, TIM24_START
-  };
-  auto get_next_offset(const std::span<const char> &buffer) const
+  static constexpr auto TIM_STARTS = get_time_header_starts();
+  auto
+    get_next_offset(const std::span<const char> &buffer) const
   {
     // could be a coroutine using std::generator
     // because these tim can be in any order.
@@ -57,7 +59,7 @@ private:
   {
     buffer        = std::span<const char>(offset, std::ranges::end(buffer));
     const Tim tim = Tim(buffer);
-    buffer        = buffer.subspan(SIZE_TIM_START);
+    buffer        = buffer.subspan(std::ranges::size(TIM_STARTS.front()));
     return tim;
   }
 
@@ -66,7 +68,8 @@ public:
     : m_buffer(std::move(buffer)),
       m_count(tools::read_val<std::uint32_t>(m_buffer))
   {}
-  bool save_tim(const std::string &path, const size_t i, const Tim &tim) const
+  bool
+    save_tim(const std::string &path, const size_t i, const Tim &tim) const
   {
     if (tim) {
       auto       path_parts = std::filesystem::path(path);
@@ -79,7 +82,8 @@ public:
     }
     return false;
   }
-  void save([[maybe_unused]] const std::string &path) const
+  void
+    save([[maybe_unused]] const std::string &path) const
   {
     // todo make this generic, extract tim file code to a free function.
     size_t i{};
