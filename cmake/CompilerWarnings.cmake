@@ -5,6 +5,9 @@
 function(set_project_warnings project_name)
     option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" TRUE)
 
+    set(MSVC_SANITIZER
+            #/fsanitize=address # I donno why this doesn't work.
+            )
     set(MSVC_WARNINGS
             /W4 # Baseline reasonable warnings
             /w14242 # 'identifier': conversion from 'type1' to 'type1', possible loss of data
@@ -29,8 +32,12 @@ function(set_project_warnings project_name)
             /w14906 # string literal cast to 'LPWSTR'
             /w14928 # illegal copy-initialization; more than one user-defined conversion has been implicitly applied
             /permissive- # standards conformance mode for MSVC compiler.
+            ${MSVC_SANITIZER}
             )
-
+    set(CLANG_SANITIZER
+            -fno-omit-frame-pointer
+            -fsanitize=address
+            )
     set(CLANG_WARNINGS
             -Wall
             -Wextra # reasonable and standard
@@ -48,6 +55,7 @@ function(set_project_warnings project_name)
             -Wnull-dereference # warn if a null dereference is detected
             -Wdouble-promotion # warn if float is implicit promoted to double
             -Wformat=2 # warn on security issues around functions that format output (ie printf)
+            ${CLANG_SANITIZER}
             )
 
     if (WARNINGS_AS_ERRORS)
@@ -64,6 +72,17 @@ function(set_project_warnings project_name)
             -Wuseless-cast # warn if you perform a cast to the same type
             #   -Wfatal-errors
             )
+    set(GCC_SANITIZER
+            ${CLANG_SANITIZER})
+    if (MSVC)
+        set(PROJECT_SANITIZER ${MSVC_SANITIZER})
+    elseif (CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+        set(PROJECT_SANITIZER ${CLANG_SANITIZER})
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(PROJECT_SANITIZER ${GCC_SANITIZER})
+    else ()
+        message(AUTHOR_WARNING "No compiler warnings set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
+    endif ()
 
     if (MSVC)
         set(PROJECT_WARNINGS ${MSVC_WARNINGS})
@@ -76,5 +95,6 @@ function(set_project_warnings project_name)
     endif ()
 
     target_compile_options(${project_name} INTERFACE ${PROJECT_WARNINGS})
+    target_link_options(${project_name} INTERFACE ${PROJECT_SANITIZER})
 
 endfunction()

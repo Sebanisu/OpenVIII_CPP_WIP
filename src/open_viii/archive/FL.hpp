@@ -29,6 +29,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <compare>
 
 namespace open_viii::archive::fl {
 /**
@@ -48,15 +49,14 @@ namespace open_viii::archive::fl {
  * slashes.
  * @return void
  */
-constexpr static void
+constexpr void
   clean_path_string(std::string &input) noexcept
 {
-
   if (std::ranges::size(input) > 4 && input[1] == ':') {
     tl::string::remove_drive_letter(input);
     tl::string::remove_carriage_return_from_end(input);
-    tl::string::replace_slashes(input);
   }
+  tl::string::replace_slashes(input);
 }
 
 /**
@@ -68,7 +68,7 @@ constexpr static void
  * slashes.
  * @return modified input
  */
-[[nodiscard]] [[maybe_unused]] static std::string
+[[nodiscard]] [[maybe_unused]] std::string
   clean_path_string(std::string &&input) noexcept
 {
   clean_path_string(input);
@@ -80,7 +80,7 @@ constexpr static void
  * @param in_buffer multi line string of paths.
  * @return cleaned.
  */
-[[nodiscard]] [[maybe_unused]] static std::string
+[[nodiscard]] [[maybe_unused]] std::string
   clean_buffer(std::string &&in_buffer)
 {
   return tl::string::replace_slashes(tl::string::remove_carriage_return(
@@ -92,7 +92,7 @@ constexpr static void
 /**
  * File extension
  */
-constexpr const static auto EXT = std::string_view(".FL");
+static constexpr auto EXT = std::string_view(".fl");
 
 /**
  * Decide how much to reserve based on known count or a set limit.
@@ -100,7 +100,7 @@ constexpr const static auto EXT = std::string_view(".FL");
  * @param limit manual limit placed
  * @return 0 or count or limit;
  */
-[[nodiscard]] [[maybe_unused]] static constexpr std::size_t
+[[nodiscard]] [[maybe_unused]] constexpr std::size_t
   get_max(const std::size_t &count, const std::size_t &limit)
 {
   std::array<std::size_t, 2U> args = { count, limit };
@@ -117,7 +117,7 @@ constexpr const static auto EXT = std::string_view(".FL");
  * shorter length and then what ever str < str2 does.
  * @param vector pairs of ints and paths
  */
-static void
+void
   sort_entries(std::span<std::pair<std::uint32_t, std::string>> vector)
 {
   std::ranges::sort(vector,
@@ -126,7 +126,7 @@ static void
                       const std::string &ls = std::get<1>(left);
                       const std::string &rs = std::get<1>(right);
                       if (std::ranges::size(ls) == std::ranges::size(rs)) {
-                        return (ls <=> rs) == std::strong_ordering::less;
+                        return ls.compare(rs) < 0;
                       }
                       return std::ranges::size(ls) < std::ranges::size(rs);
                     });
@@ -138,7 +138,7 @@ static void
  * @param vector pairs of ints and paths
  * @return sorted vector
  */
-[[nodiscard]] [[maybe_unused]] static auto
+[[nodiscard]] [[maybe_unused]] auto
   sort_entries(std::vector<std::pair<std::uint32_t, std::string>> &&vector)
 {
   sort_entries(vector);
@@ -157,7 +157,7 @@ static void
  * reads an empty line.
  * @todo make needle a predicate lambda.
  */
-[[nodiscard]] [[maybe_unused]] static std::vector<
+[[nodiscard]] [[maybe_unused]] std::vector<
   std::pair<std::uint32_t, std::string>>
   get_all_entries(const tl::read::input &                        cont,
                   const size_t &                                 offset,
@@ -195,7 +195,7 @@ static void
   return sort_entries(std::move(vector));
 }
 // Get all entries from the FL file sorted and cleaned.
-[[nodiscard]] [[maybe_unused]] static auto
+[[nodiscard]] [[maybe_unused]] auto
   get_all_entries(const std::filesystem::path &                  path,
                   const size_t &                                 offset,
                   const size_t &                                 size   = 0U,
@@ -214,7 +214,7 @@ static void
   return vector;
 }
 
-[[nodiscard]] [[maybe_unused]] static std::vector<
+[[nodiscard]] [[maybe_unused]] std::vector<
   std::pair<std::uint32_t, std::string>>
   get_all_entries(const std::string &                            data,
                   const size_t &                                 offset,
@@ -239,7 +239,7 @@ static void
  * @param limit max matches; 0 == unlimited
  * @return matches
  */
-[[nodiscard]] [[maybe_unused]] static std::vector<
+[[nodiscard]] [[maybe_unused]] std::vector<
   std::pair<std::uint32_t, std::string>>
   get_all_entries(const std::filesystem::path &                  path,
                   const std::string &                            data,
@@ -266,7 +266,7 @@ static void
  * @param count is max results returned. 0 is unlimited.
  */
 template<typename T>
-[[nodiscard]] [[maybe_unused]] static auto
+[[nodiscard]] [[maybe_unused]] auto
   get_entry(const T &                                      data,
             const std::initializer_list<std::string_view> &needle,
             const size_t &                                 offset = 0U,
@@ -290,7 +290,7 @@ template<typename T>
  * @param size is max number of bytes. 0 is unlimited.
  * @param count is max results returned. 0 is unlimited.
  */
-[[nodiscard]] [[maybe_unused]] static auto
+[[nodiscard]] [[maybe_unused]] auto
   get_entry(const std::filesystem::path &                  path,
             const std::string &                            data,
             const std::initializer_list<std::string_view> &needle,
@@ -313,7 +313,7 @@ namespace open_viii::archive {
  * @note path is prepended with c:\ and appended with \r\n.
  */
 template<is_insertable_or_ostream T>
-static void
+void
   append_entry(T &output, const std::filesystem::path &path)
 {
   using namespace std::string_literals;
@@ -327,8 +327,8 @@ static void
 // * @param path being wrote.
 // * @note path is prepended with c:\ and appended with \r\n.
 // */
-//template<is_insertable_or_ostream T>
-//static void
+// template<is_insertable_or_ostream T>
+// void
 //  append_entry(T &output, const std::string_view &path)
 //{
 //  using namespace std::string_literals;

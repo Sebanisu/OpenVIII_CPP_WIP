@@ -36,7 +36,7 @@ namespace open_viii::archive::FS {
 /**
  * Extension
  */
-static constexpr auto EXT = std::string_view(".FS");
+static constexpr auto EXT = std::string_view(".fs");
 
 /**
  * Get entry and uncompress via lzss
@@ -261,6 +261,13 @@ static out_fiT
   append_entry(T &output, const std::span<const char> input, const in_fiT in_fi)
 {
   return append_entry(output, input, in_fi.compression_type());
+}
+template<is_insertable_or_ostream T>
+static FI
+append_entry(T &output, const std::filesystem::path input, const CompressionTypeT in_compress)
+{
+  const auto buffer = open_viii::tools::read_entire_file(input);
+  return append_entry(output, buffer, in_compress);
 }
 }// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FS_HPP

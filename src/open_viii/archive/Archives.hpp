@@ -20,6 +20,20 @@
 #include <type_traits>
 #include <variant>
 namespace open_viii::archive {
+template<typename T>
+concept does_have_has_value = requires(T a)
+{
+  a.has_value();
+};
+template<typename T, typename lambdaT>
+concept does_have_execute_with_nested = requires(T a, lambdaT l)
+{
+  a.execute_with_nested({}, l, {});
+};
+/**
+ * Reads a path looking for ZZZ or FIFLFS archives. It remembers the locations
+ * of the archives, and serves serves as a front end to access them.
+ */
 struct Archives
 {
 private:
@@ -35,11 +49,11 @@ private:
   std::optional<ZZZ>    m_zzz_other{};
   /**
    * Search for lang.dat from steam 2013 release.
-   * @todo find cross platform way to get to remaster config.txt
+   * @todo find cross platform way to get to remaster config.txt for remaster
    * @param path location of ff8
    */
-  [[nodiscard]] std::string set_lang(const std::filesystem::path &path,
-                                     std::string_view             lang) const
+  [[nodiscard]] std::string
+    set_lang(const std::filesystem::path &path, std::string_view lang) const
   {
     using namespace std::string_literals;
     return [&path, &lang]() -> std::string {
@@ -63,8 +77,8 @@ private:
    * Set Path to FF8. Will look for Data and lang- folders.
    * @param path location of FF8.
    */
-  static std::filesystem::path set_path(std::filesystem::path path,
-                                        const std::string &   lang)
+  static std::filesystem::path
+    set_path(std::filesystem::path path, const std::string &lang)
   {
     using namespace std::string_literals;
     using namespace std::string_view_literals;
@@ -84,7 +98,13 @@ private:
     }
     return path;
   }
-  [[nodiscard]] bool check_lang_path(const auto &pathString) const
+  /**
+   * Check path for "lang-"
+   * @param pathString
+   * @return
+   */
+  [[nodiscard]] bool
+    check_lang_path(const auto &pathString) const
   {
     // no languages in zzz for:
     // field, magic, world
@@ -92,12 +112,11 @@ private:
     // main menu battle
     static constexpr auto data      = "data";
     static constexpr auto langStart = "lang-";
-    const auto            langStartingFilter =
-      std::filesystem::__cxx11::path(data) / langStart;
+    const auto langStartingFilter   = std::filesystem::path(data) / langStart;
     const auto langStarting =
       std::filesystem::path(langStartingFilter.string() + m_lang);
     return tools::i_starts_with(pathString, langStartingFilter.string())
-           && !tools::i_starts_with(pathString, langStarting.string());
+        && !tools::i_starts_with(pathString, langStarting.string());
   }
   /**
    * TryToAdd archive of type to archive member variable.
@@ -110,10 +129,11 @@ private:
    * @return
    */
   template<FI_Like fiT>
-  bool try_add(const ArchiveTypeT &         archive_type,
-               fiT                          fi,
-               const std::filesystem::path &path,
-               const std::filesystem::path &nested_path)
+  bool
+    try_add(const ArchiveTypeT &         archive_type,
+            fiT                          fi,
+            const std::filesystem::path &path,
+            const std::filesystem::path &nested_path)
   {
     // this string can be compared to the stem of the filename to determine
     // which archive is try added to.
@@ -180,10 +200,18 @@ private:
     }
     return false;
   }
+  /**
+   * Is this a valid lambda type
+   * @tparam lambdaT
+   */
   template<typename lambdaT>
   static constexpr bool valid_static_for_lambda_type =
     (std::is_invocable_r_v<bool, lambdaT, ArchiveTypeT, std::string_view>);
-  void populate_archives_from_path()
+  /**
+   * Populate all archives from path
+   */
+  void
+    populate_archives_from_path()
   {
     tools::execute_on_directory(
       m_path,
@@ -207,21 +235,38 @@ private:
         }
       });
   }
+  /**
+   * lambda takes all Archive types
+   * @tparam lambdaT
+   */
   template<typename lambdaT>
   static constexpr bool takes_valid_archive_type =
     (std::is_invocable_r_v<bool, lambdaT, decltype(m_battle)>)
     || (std::is_invocable_r_v<bool, lambdaT, decltype(m_field)>)
     || std::is_invocable_r_v<bool, lambdaT, decltype(*m_zzz_main)>;
+  /**
+   * does lambda take a vector or a string
+   * @tparam lambdaT
+   */
   template<typename lambdaT>
   [[maybe_unused]] static constexpr bool valid_execute_on_lambda =
     (std::invocable<lambdaT, std::vector<char>, std::string>)
     || (std::invocable<lambdaT, std::string, std::string>);
-  auto test_valid_lambda() const
+  auto
+    test_valid_lambda() const
   {
     return [](const auto &archive) -> bool {
       return static_cast<bool>(archive);
     };
   }
+  /**
+   * Get lambda that will pass valid data to the other lambda.
+   * @tparam nested
+   * @tparam lambdaT
+   * @param filename
+   * @param lambda
+   * @return
+   */
   template<bool nested = true, typename lambdaT>
   requires(valid_execute_on_lambda<lambdaT>) auto get_execute_on_lambda(
     const std::initializer_list<std::string_view> &filename,
@@ -229,23 +274,23 @@ private:
   {
     return [&filename, &lambda](const auto &archive) -> bool {
       archive.execute_on(filename, lambda);
-      if constexpr (nested && requires(decltype(archive) a, lambdaT l) {
-                      a.execute_with_nested({}, l, {});
-                    }) {
+      if constexpr (nested
+                    && does_have_execute_with_nested<decltype(archive),
+                                                     lambdaT>) {
         archive.execute_with_nested({}, lambda, filename);
       }
       return true;
     };
   }
+
 public:
   /**
-   *
+   * Get archive via ArchiveTypeT
    * @tparam archiveType_
    * @return
    */
   template<ArchiveTypeT archiveType_>
-  requires(test_valid_archive_type_t(archiveType_)) const
-    auto &get() const noexcept
+  requires(valid_archive_type_t<archiveType_>) const auto &get() const noexcept
   {
     if constexpr (archiveType_ == ArchiveTypeT::battle) {
       return m_battle;
@@ -265,6 +310,10 @@ public:
       return m_zzz_other;
     }
   }
+  /**
+   * convert to bool
+   * @return
+   */
   [[nodiscard]] explicit operator bool() const noexcept
   {
     return test_set();
@@ -337,7 +386,7 @@ public:
     return std::monostate{};
   }
   template<ArchiveTypeT archiveType_>
-  requires(test_valid_archive_type_t(archiveType_)) constexpr std::string_view
+  requires(valid_archive_type_t<archiveType_>) constexpr std::string_view
     get_string() const noexcept
   {// this string can be compared to the stem of the filename to determine which
    // archive is try added to.
@@ -375,10 +424,11 @@ public:
    * archives.
    * @return all results.
    */
-  auto get_nested(
-    const std::initializer_list<std::string_view> &nested_archive) const
+  auto
+    get_nested(
+      const std::initializer_list<std::string_view> &nested_archive) const
   {
-    return m_field.get_fiflfs_entries(nested_archive);
+    return get_fiflfs_entries(m_field, nested_archive);
   }
   Archives() = delete;
   /**
@@ -403,13 +453,15 @@ public:
            std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::end),
            typename lambdaT>
   requires(
-    test_valid_archive_type_t(minT, maxT, true)
-    && ((takes_valid_archive_type<lambdaT>)
-        || (valid_static_for_lambda_type<lambdaT>))) bool loop(const lambdaT
-                                                                 &lambda) const
+    valid_archive_type_t<minT> &&valid_archive_type_t<
+      maxT,
+      true> && ((takes_valid_archive_type<lambdaT>) || (valid_static_for_lambda_type<lambdaT>))) bool loop(const lambdaT
+                                                                                                             &lambda)
+    const
   {
     bool ret{ true };
-    if constexpr (test_valid_archive_type_t(minT, maxT - 1)) {
+    if constexpr (test_valid_archive_type_t(minT)
+                  && test_valid_archive_type_t(maxT - 1)) {
       ret = loop<minT, maxT - 1>(lambda);
       if (!ret)
         return ret;
@@ -422,32 +474,59 @@ public:
         return ret;
       } else if (takes_valid_archive_type<lambdaT>) {
         const auto &archive = get<archiveType_>();
-        std::cout <<"Loop On: " << get_string<archiveType_>() << '\n';
-        if constexpr (requires(decltype(archive) a) { a.has_value(); }) {
+        std::cout << "Loop On: " << get_string<archiveType_>() << '\n';
+        if constexpr (does_have_has_value<decltype(archive)>) {
           if (archive.has_value()) {
             ret = lambda(*archive);
           }
         } else {
           ret = lambda(archive);
         }
+        return ret;
       }
+    } else {
+      return ret;
     }
-    return ret;
   }
+  /**
+   * run lambda on listed types.
+   * @tparam aT
+   * @tparam lambdaT
+   * @param lambda
+   * @return
+   */
   template<ArchiveTypeT... aT, typename lambdaT>
-  requires(test_valid_archive_type_t(aT)
-           && ...) bool specify(const lambdaT &lambda)
+  requires(valid_archive_type_t<aT> &&...) bool specify(const lambdaT &lambda)
   {
     return (loop<aT, aT>(lambda) && ...);
   }
-  bool test_set() const
+  /**
+   * if true all archives are valid.
+   * @return
+   */
+  bool
+    test_set() const
   {
     return loop(test_valid_lambda());
   }
-  template<ArchiveTypeT... aT> requires(sizeof...(aT) > 0) bool test_set()
+  /**
+   * if true listed archives are valid
+   * @tparam aT
+   * @return
+   */
+  template<ArchiveTypeT... aT>
+  requires(sizeof...(aT) > 0) bool test_set()
   {
     return specify<aT...>(test_valid_lambda());
   }
+  /**
+   * execute on all archives the following lambda.
+   * @tparam nested
+   * @tparam lambdaT
+   * @param filename
+   * @param lambda
+   * @return
+   */
   template<bool nested = true, typename lambdaT>
   requires(valid_execute_on_lambda<lambdaT>) bool execute_on(
     const std::initializer_list<std::string_view> &filename,
@@ -455,6 +534,15 @@ public:
   {
     return loop(get_execute_on_lambda<nested>(filename, lambda));
   }
+  /**
+   * execute on all listed archives the following lambda.
+   * @tparam nested
+   * @tparam aT
+   * @tparam lambdaT
+   * @param filename
+   * @param lambda
+   * @return
+   */
   template<bool nested = true, ArchiveTypeT... aT, typename lambdaT>
   requires((valid_execute_on_lambda<lambdaT>)&&sizeof...(aT)
            > 0) bool execute_on(const std::initializer_list<std::string_view>

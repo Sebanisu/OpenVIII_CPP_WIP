@@ -33,7 +33,9 @@ private:
   // uint32_t characterAbilityFlags_ : 3;// cpp20 allows default member
   // initializers for bitfields add {} in cpp20.
   // std::array<std::uint8_t, 3> m_character_ability_flags{};
-  std::uint32_t m_character_ability_flags : 3U {};
+  std::uint8_t m_character_ability_flags0 {};
+  std::uint8_t m_character_ability_flags1 {};
+  std::uint8_t m_character_ability_flags2 {};
 public:
   constexpr static auto EXPECTED_SIZE = 8U;
   constexpr auto
@@ -70,7 +72,7 @@ public:
     //    static_cast<CharacterAbilityFlagsT>(static_cast<uint32_t>(out) <<
     //    // 1U);
     //    return out;
-    return static_cast<CharacterAbilityFlagsT>(m_character_ability_flags);
+    return static_cast<CharacterAbilityFlagsT>(m_character_ability_flags0<<16U | m_character_ability_flags1<<8U | m_character_ability_flags2);
   }
   std::ostream &out(std::ostream &                                os,
                     [[maybe_unused]] const std::span<const char> &buffer) const

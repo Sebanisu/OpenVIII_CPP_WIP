@@ -22,64 +22,75 @@
 namespace open_viii {
 template<typename T>
 concept Number = std::floating_point<T> || std::integral<T>;
-template<typename T> concept Color_R = requires(T a)
+template<typename T>
+concept Color_R = requires(T a)
 {
   {
     a.r()
-  }
-  ->std::convertible_to<std::uint8_t>;
+    } -> std::integral;
 };
-template<typename T> concept Color_G = requires(T a)
+template<typename T>
+concept Color_G = requires(T a)
 {
   {
     a.g()
-  }
-  ->std::convertible_to<std::uint8_t>;
+    } -> std::integral;
 };
-template<typename T> concept Color_B = requires(T a)
+template<typename T>
+concept Color_B = requires(T a)
 {
+
   {
     a.b()
-  }
-  ->std::convertible_to<std::uint8_t>;
+    } -> std::integral;
 };
-template<typename T> concept Color_A = requires(T a)
+template<typename T>
+concept Color_A = requires(T a)
 {
   {
     a.a()
-  }
-  ->std::convertible_to<std::uint8_t>;
+    } -> std::integral;
 };
 template<typename T>
-concept Color = Color_A<T> &&Color_B<T> &&Color_G<T> &&Color_R<T>;
-template<typename T> concept FIFLFS_Has_get_entry_data = requires(T a)
+concept is_bool = std::is_same_v<T,bool>;
+template<typename T>
+concept Color_is_black = requires(T a)
+{
+  {
+  a.is_black()
+  } -> is_bool;
+};
+template<typename T>
+concept Color = Color_A<T> && Color_B<T> && Color_G<T> && Color_R<T> && Color_is_black<T>;
+template<typename T>
+concept FIFLFS_Has_get_entry_data = requires(T a)
 {
   a.get_entry_data(std::string_view(""));
 };
-template<typename T> concept FI_Like_UncompressedSize = requires(T a)
+template<typename T>
+concept FI_Like_UncompressedSize = requires(T a)
 {
   {
     a.uncompressed_size()
-  }
-  ->std::integral;
+    } -> std::integral;
 };
-template<typename T> concept FI_Like_Offset = requires(T a)
+template<typename T>
+concept FI_Like_Offset = requires(T a)
 {
   {
     a.offset()
-  }
-  ->std::integral;
+    } -> std::integral;
 };
-template<typename T> concept FI_Like_CompressionType = requires(T a)
+template<typename T>
+concept FI_Like_CompressionType = requires(T a)
 {
   {
     a.compression_type()
-  }
-  ->std::convertible_to<CompressionTypeT>;
+    } -> std::convertible_to<CompressionTypeT>;
 };
 template<typename T>
-concept FI_Like =
-  FI_Like_CompressionType<T> &&FI_Like_Offset<T> &&FI_Like_UncompressedSize<T>;
+concept FI_Like = FI_Like_CompressionType<T> && FI_Like_Offset<
+  T> && FI_Like_UncompressedSize<T>;
 template<typename T> concept Point_Like = (requires (T a)
 {{a.x()}->Number;} &&
   requires (T a)
@@ -94,43 +105,46 @@ template<typename T, std::size_t current = 0U> concept Shape_Like = (
 
   );
 template<typename lambdaT, typename pointT>
-concept TakesTwoPointsReturnsPoint =
-  Point_Like<pointT> &&std::regular_invocable<lambdaT, pointT, pointT>
-    &&Point_Like<std::invoke_result_t<lambdaT, pointT, pointT>>;
+concept TakesTwoPointsReturnsPoint = Point_Like<pointT> && std::
+  regular_invocable<lambdaT, pointT, pointT> && Point_Like<
+    std::invoke_result_t<lambdaT, pointT, pointT>>;
 template<typename trivialType>
 concept is_trivially_copyable = std::is_trivially_copyable_v<trivialType>;
 template<typename trivialType>
 concept is_default_constructible = std::is_default_constructible_v<trivialType>;
-template<typename trivialType> concept has_data = requires(trivialType item)
+template<typename trivialType>
+concept has_data = requires(trivialType item)
 {
   std::ranges::data(item);
 };
-template<typename trivialType> concept has_size = requires(trivialType item)
+template<typename trivialType>
+concept has_size = requires(trivialType item)
 {
   std::ranges::size(item);
 };
 template<typename trivialType>
-concept has_data_and_size = has_data<trivialType> &&has_size<trivialType>;
+concept has_data_and_size = has_data<trivialType> && has_size<trivialType>;
 template<typename trivialType>
-concept is_trivially_copyable_and_default_constructible =
-  is_trivially_copyable<trivialType>
-    &&std::is_default_constructible_v<trivialType>;
+concept is_trivially_copyable_and_default_constructible = is_trivially_copyable<
+  trivialType> && std::is_default_constructible_v<trivialType>;
 template<typename trivialType>
 concept is_default_constructible_has_data_and_size =
-  std::is_default_constructible_v<trivialType>
-    &&has_data_and_size<trivialType> && !is_trivially_copyable<trivialType>;
-template<typename Type> concept has_resize = requires(Type a)
+  std::is_default_constructible_v<trivialType> && has_data_and_size<
+    trivialType> && !is_trivially_copyable<trivialType>;
+template<typename Type>
+concept has_resize = requires(Type a)
 {
   a.resize(static_cast<std::size_t>(0U));
 };
-template<typename Type> concept has_reserve = requires(Type a)
+template<typename Type>
+concept has_reserve = requires(Type a)
 {
   a.reserve(static_cast<std::size_t>(0U));
 };
 template<typename trivialType>
 concept is_default_constructible_has_data_size_resize =
-  is_default_constructible_has_data_and_size<trivialType>
-    &&has_resize<trivialType>;
+  is_default_constructible_has_data_and_size<trivialType> && has_resize<
+    trivialType>;
 template<typename lambdaT>
 concept Foreach_Archive_Lambda =
   std::invocable<lambdaT, std::vector<char>, std::string>;
@@ -166,9 +180,8 @@ concept Foreach_Archive_Lambda =
  * @tparam T Accept things like std::string or std::ostream
  */
 template<typename T>
-concept is_insertable_or_ostream =
-  tl::concepts::is_contiguous_with_insert<
-    T> || std::is_base_of_v<std::ostream, std::decay_t<T>>;
+concept is_insertable_or_ostream = tl::concepts::is_contiguous_with_insert<
+  T> || std::is_base_of_v<std::ostream, std::decay_t<T>>;
 
 }// namespace open_viii
 #endif// VIIIARCHIVE_CONCEPTS_HPP
