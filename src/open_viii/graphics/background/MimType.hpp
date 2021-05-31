@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <cassert>
 namespace open_viii::graphics::background {
 struct MimType
 {
@@ -47,7 +48,7 @@ public:
   {}
   [[nodiscard]] const auto &type() const noexcept
   {
-    assert(m_type >= 0 && m_type <= 3);
+    assert(m_type == 0 || m_type == 1 || m_type == 2 || m_type == 3);
     return m_type;
   }
   void type(std::uint8_t new_type) const noexcept

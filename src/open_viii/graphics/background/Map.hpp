@@ -39,7 +39,8 @@ private:
   /**
    * remove invalid tiles from buffer.
    */
-  void remove_invalid()
+  void
+    remove_invalid()
   {
     static constexpr auto cmp = [](const auto &x) {
       static constexpr auto end_x{ 0x7FFFU };
@@ -53,7 +54,8 @@ private:
   /**
    * Sort the data and then remove duplicates.
    */
-  void sort_remove_duplicates()
+  void
+    sort_remove_duplicates()
   {
     // unique requires sorted data to work.
     sort();
@@ -63,7 +65,8 @@ private:
   /**
    * Sort in draw order.
    */
-  void sort()
+  void
+    sort()
   {
     static constexpr auto cmp = [](const auto &l, const auto &r) -> bool {
       if (l.z() > r.z()) {
@@ -107,14 +110,16 @@ private:
    * Some tiles are drawn off screen to create a texture we are going to shift
    * everything to at least (0,0)
    */
-  void shift_to_origin() const noexcept
+  void
+    shift_to_origin() const noexcept
   {
     m_offset = Point(min_x(), min_y());
     if (m_offset.x() < 0 || m_offset.y() < 0) {
       shift(m_offset.abs());
     }
   }
-  [[nodiscard]] constexpr auto min_x() const noexcept
+  [[nodiscard]] constexpr auto
+    min_x() const noexcept
   {
     return (std::min_element(m_tiles.cbegin(),
                              m_tiles.cend(),
@@ -123,7 +128,8 @@ private:
                              }))
       ->x();
   }
-  [[nodiscard]] auto minmax_x() const noexcept
+  [[nodiscard]] auto
+    minmax_x() const noexcept
   {
     return std::minmax_element(m_tiles.cbegin(),
                                m_tiles.cend(),
@@ -131,7 +137,8 @@ private:
                                  return a.x() < b.x();
                                });
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto max_x() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    max_x() const noexcept
   {
     return (std::max_element(m_tiles.cbegin(),
                              m_tiles.cend(),
@@ -140,7 +147,8 @@ private:
                              }))
       ->x();
   }
-  [[nodiscard]] auto minmax_y() const noexcept
+  [[nodiscard]] auto
+    minmax_y() const noexcept
   {
     return std::minmax_element(m_tiles.cbegin(),
                                m_tiles.cend(),
@@ -148,7 +156,8 @@ private:
                                  return a.y() < b.y();
                                });
   }
-  [[nodiscard]] constexpr auto min_y() const noexcept
+  [[nodiscard]] constexpr auto
+    min_y() const noexcept
   {
     return (std::min_element(m_tiles.cbegin(),
                              m_tiles.cend(),
@@ -157,7 +166,8 @@ private:
                              }))
       ->y();
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto max_y() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    max_y() const noexcept
   {
     return (std::max_element(m_tiles.cbegin(),
                              m_tiles.cend(),
@@ -166,6 +176,7 @@ private:
                              }))
       ->y();
   }
+
 public:
   constexpr static auto EXT = std::string_view(".map");
   Map()                     = default;
@@ -173,22 +184,35 @@ public:
    * Import tiles from a raw buffer.
    * @param buffer is a raw char buffer.
    */
-  explicit Map(const std::vector<char> &buffer)
+  explicit Map(const std::vector<char> &buffer,
+               bool                     sort_remove = true,
+               bool                     shift       = true)
   {
     const auto count         = std::ranges::size(buffer) / sizeof(map_type);
     const auto size_in_bytes = count * sizeof(map_type);
     m_tiles.resize(count);
     std::memcpy(
       std::ranges::data(m_tiles), std::ranges::data(buffer), size_in_bytes);
-    remove_invalid();
-    sort_remove_duplicates();
-    shift_to_origin();
+    if (sort_remove) {
+      remove_invalid();
+      sort_remove_duplicates();
+    }
+    if (shift) {
+      shift_to_origin();
+    }
   }
-  [[nodiscard]] const auto &tiles() const noexcept
+  explicit Map(const std::filesystem::path &path,
+               bool                         sort_remove = true,
+               bool                         shift       = true)
+    : Map(tools::read_entire_file(path), sort_remove, shift)
+  {}
+  [[nodiscard]] const auto &
+    tiles() const noexcept
   {
     return m_tiles;
   }
-  [[nodiscard]] const auto *operator->() const noexcept
+  [[nodiscard]] const auto *
+    operator->() const noexcept
   {
     return &m_tiles;
   }
@@ -196,7 +220,8 @@ public:
    * Get a rectangle large enough to hold all the tiles.
    * @return rectangle
    */
-  [[nodiscard]] Rectangle<std::int32_t> canvas() const noexcept
+  [[nodiscard]] Rectangle<std::int32_t>
+    canvas() const noexcept
   {
     const auto l_minmax_x                                  = minmax_x();
     const auto l_minmax_y                                  = minmax_y();
@@ -218,7 +243,8 @@ public:
    * @param x horizontal shift
    * @param y vertical shift
    */
-  void shift(const std::int16_t &x, const std::int16_t &y) const noexcept
+  void
+    shift(const std::int16_t &x, const std::int16_t &y) const noexcept
   {
     std::ranges::transform(
       m_tiles, std::ranges::begin(m_tiles), [&x, &y](auto t) {
@@ -227,31 +253,60 @@ public:
         return t;
       });
   }
-  void shift(const Point<std::int16_t> &point) const noexcept
+  void
+    shift(const Point<std::int16_t> &point) const noexcept
   {
     shift(point.x(), point.y());
   }
-  [[nodiscard]] friend std::ostream &operator<<(std::ostream &os, const Map &m)
+  [[nodiscard]] friend std::ostream &
+    operator<<(std::ostream &os, const Map &m)
   {
     return os << std::ranges::size(m.m_tiles) << ", "
               << std::ranges::size(m.m_t2) << ", " << std::ranges::size(m.m_t3)
               << '\n';
   }
-  void save_csv(const std::string_view &in_path) const
+  void
+    save_csv(const std::string_view &in_path) const
   {
     auto path = std::filesystem::path(in_path);
     tools::write_buffer(
       [this](std::ostream &os) {
         os
-          << R"("Depth","Blend Mode","Blend Other","Layer ID","Texture ID","Palette ID","Animation ID","Animation State","Source X","Source Y","X","Y","Z","PUPU ID")"
+          << R"("Index","Raw bytes","Draw","BPP","Blend Mode","Blend Other","Layer","Texture Page","Palette","Animation","Animation Frame","Source X","Source Y","X","Y","Z")"
           << '\n';
+        std::size_t i{};
         std::for_each(
           std::ranges::cbegin(m_tiles),
           std::ranges::cend(m_tiles),
-          [this, &os](const auto &t) {
-            os << '"' << t.depth() << "\","
-               << static_cast<uint16_t>(t.blend_mode()) << ','
-               << static_cast<uint16_t>(t.blend()) << ','
+          [&os, &i](const auto &t) {
+            std::array<char, sizeof(t)> raw{};
+            std::memcpy(raw.data(), &t, sizeof(t));
+            os << i++ << ','
+               << '"' << "0x";
+            for (char c : raw)
+              os << std::hex << std::setfill('0') << std::setw(2)
+                 << std::uppercase << (static_cast<unsigned short>(c) & 0xFFU);
+            os << std::dec << std::setfill(' ') << std::setw(1)
+               << std::nouppercase
+               << "\","
+               << t.draw() << ','
+               << int{ t.depth() } << ",\"" <<
+              [&t]() {
+                switch (t.blend_mode()) {
+                case open_viii::graphics::background::BlendModeT::half_add:
+                  return "Half Add";
+                case open_viii::graphics::background::BlendModeT::add:
+                  return "Add";
+                case open_viii::graphics::background::BlendModeT::subtract:
+                  return "Subtract";
+                case open_viii::graphics::background::BlendModeT::quarter_add:
+                  return "Quarter Add";
+                case open_viii::graphics::background::BlendModeT::none:
+                default:
+                  return "None";
+                }
+              }()
+               << "\"," << static_cast<uint16_t>(t.blend()) << ','
                << static_cast<uint16_t>(t.layer_id()) << ','
                << static_cast<uint16_t>(t.texture_id()) << ','
                << static_cast<uint16_t>(t.palette_id()) << ','
@@ -259,13 +314,13 @@ public:
                << static_cast<uint16_t>(t.animation_state()) << ','
                << static_cast<uint16_t>(t.source_x()) << ','
                << static_cast<uint16_t>(t.source_y()) << ','
-               << static_cast<uint16_t>(t.x()) << ','
-               << static_cast<uint16_t>(t.y()) << ','
-               << static_cast<uint16_t>(t.z()) << ',' << Pupu(t)
+               << static_cast<int16_t>(t.x()) << ','
+               << static_cast<int16_t>(t.y()) << ','
+               << static_cast<int16_t>(t.z()) << ','//<< Pupu(t)
                << '\n';// std::nouppercase << std::dec << std::setw(0U)
           });
       },
-      (path.parent_path() / path.stem()).string() + "_map.csv");
+      (path.parent_path() / path.stem()).string() + ".csv");
   }
   //  [[nodiscard]] auto used_depth_and_palette() const
   //  {

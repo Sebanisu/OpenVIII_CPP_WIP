@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
-project(VIIIArchive C CXX)
+project(OpenVIII_CPP_WIP
+        DESCRIPTION "Port of OpenVIII core library to C++20"
+        LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20) ## Supported values are 98, 11, 14, 17, and 20.
 set(CMAKE_CXX_STANDARD_REQUIRED ON) ## the value of the CXX_STANDARD target property is treated as a requirement

@@ -40,11 +40,11 @@ static_assert(!TOUPPER_EQUALS_PREDICATE('a', 'Z'));
  * @param str2 string 2
  * @return returns true if both strings are equal regardless of case
  */
-[[maybe_unused]] [[nodiscard]] constexpr static bool
-  i_equals(const std::string_view str1, const std::string_view str2)
+[[maybe_unused]] constexpr static auto
+  i_equals = [](const std::string_view str1, const std::string_view str2) ->bool
 {
   return std::ranges::equal(str1, str2, TOUPPER_EQUALS_PREDICATE);
-}
+};
 static_assert(i_equals(std::string_view(""), std::string_view("")));
 static_assert(i_equals(std::string_view("ab"), "AB"));
 static_assert(i_equals(std::string_view("ab"), std::string_view("AB")));
