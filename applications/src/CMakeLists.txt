@@ -216,13 +216,28 @@ target_link_libraries(${PROJECT_NAME}_fiflfs_create
         PRIVATE ToolsLibrary_tl
         )
 
-#fiflfs files create not nested
+#convert tile map to csv
 add_executable(${PROJECT_NAME}_tile_map_to_csv
         tile_map_to_csv.cpp
         tile_map_to_csv.hpp)
 set_target_properties(${PROJECT_NAME}_tile_map_to_csv PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${PROJECT_NAME}_tile_map_to_csv PROPERTIES OUTPUT_NAME "tile_map_to_csv")
 target_link_libraries(${PROJECT_NAME}_tile_map_to_csv
+        PRIVATE ${PROJECT_NAME}_VIIIArchive
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
+        PRIVATE ${PROJECT_NAME}_VIIITools
+        PRIVATE ${PROJECT_NAME}_project_warnings
+        PRIVATE Threads::Threads
+        PRIVATE ToolsLibrary_tl
+        )
+
+#convert back from csv to tile map
+add_executable(${PROJECT_NAME}_tile_csv_to_map
+        tile_csv_to_map.cpp
+        tile_csv_to_map.hpp)
+set_target_properties(${PROJECT_NAME}_tile_csv_to_map PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${PROJECT_NAME}_tile_csv_to_map PROPERTIES OUTPUT_NAME "tile_csv_to_map")
+target_link_libraries(${PROJECT_NAME}_tile_csv_to_map
         PRIVATE ${PROJECT_NAME}_VIIIArchive
         PRIVATE ${PROJECT_NAME}_VIIIGraphics
         PRIVATE ${PROJECT_NAME}_VIIITools
