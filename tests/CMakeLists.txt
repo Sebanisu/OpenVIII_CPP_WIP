@@ -22,5 +22,12 @@ target_link_libraries(${PROJECT_NAME}_FileData
         PRIVATE ${PROJECT_NAME}_VIIIArchive
         )
 
+add_test_common(BackgroundTiles)
+target_link_libraries(${PROJECT_NAME}_BackgroundTiles
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
+        PRIVATE ToolsLibrary_tl
+        PRIVATE Threads::Threads
+        )
+
 #PRIVATE ToolsLibrary_tl
 #PRIVATE Threads::Threads
