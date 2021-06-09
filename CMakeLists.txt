@@ -21,6 +21,7 @@ include(cmake/lz4.cmake)
 #include(cmake/googletest.cmake)
 include(cmake/ut.cmake)
 include(cmake/tools_library.cmake)
+include(cmake/ctre.cmake)
 
 set(DOCS "NO" CACHE STRING "Build documentation")
 # include docs folders
