@@ -10,4 +10,7 @@ function(add_test_common file_name)
     add_test(
             NAME ${PROJECT_NAME}_${file_name} COMMAND ${PROJECT_NAME}_${file_name}
     )
+#    target_compile_definitions(${PROJECT_NAME}_${file_name}
+#            PRIVATE BOOST_UT_DISABLE_MODULE
+#            )
 endfunction()
