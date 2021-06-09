@@ -155,11 +155,11 @@ public:
           filtered_tiles,
           [this, &pupu, &raw_width, &out, &drawn, &palette](const auto &t) {
             open_viii::tools::for_each_xy(
-              t.HEIGHT,
+              t.height(),
               [this, &pupu, &raw_width, &out, &drawn, &t, &palette](
                 const auto &x, const auto &y) {
-                const auto          pixel_in = m_mim.get_color(x + t.source_x(),
-                                                      y + t.source_y(),
+                const auto          pixel_in = m_mim.get_color(static_cast<std::uint32_t>((x + t.source_x())),
+                                                      static_cast<std::uint32_t>((y + t.source_y())),
                                                       pupu.depth(),
                                                       palette,
                                                       t.texture_id());
