@@ -23,7 +23,9 @@ template<Number dimT> struct Point
 private:
   dimT m_x{};
   dimT m_y{};
+
 public:
+  using value_type = dimT;
   constexpr Point() = default;
   constexpr Point(const dimT &in_x, const dimT &in_y) noexcept
     : m_x(in_x), m_y(in_y){};
@@ -35,7 +37,8 @@ public:
     m_x = static_cast<dimT>(r.x());
     m_y = static_cast<dimT>(r.y());
   }
-  [[nodiscard]] constexpr auto abs() const noexcept
+  [[nodiscard]] constexpr auto
+    abs() const noexcept
   {
     if constexpr (std::signed_integral<dimT> || std::floating_point<dimT>) {
       return Point<dimT>(static_cast<dimT>(std::abs(m_x)),
@@ -48,7 +51,8 @@ public:
    * X coordinate.
    * @return x
    */
-  [[nodiscard]] constexpr auto x() const noexcept
+  [[nodiscard]] constexpr auto
+    x() const noexcept
   {
     return m_x;
   }
@@ -56,7 +60,8 @@ public:
    * Y coordinate.
    * @return y
    */
-  [[nodiscard]] constexpr auto y() const noexcept
+  [[nodiscard]] constexpr auto
+    y() const noexcept
   {
     return m_y;
   }
@@ -65,7 +70,8 @@ public:
    * @param x is new X coordinate.
    * @return x
    */
-  void x(const dimT &x) noexcept
+  void
+    x(const dimT &x) noexcept
   {
     m_x = x;
   }
@@ -74,7 +80,8 @@ public:
    * @param y is new Y coordinate.
    * @return y
    */
-  void y(const dimT &y) noexcept
+  void
+    y(const dimT &y) noexcept
   {
     m_y = y;
   }
@@ -82,7 +89,8 @@ public:
    * assuming x and y are width and height
    * @return area;
    */
-  [[nodiscard]] constexpr auto area() const noexcept
+  [[nodiscard]] constexpr auto
+    area() const noexcept
   {
     if constexpr (std::unsigned_integral<dimT>) {
       return static_cast<std::size_t>(m_x) * static_cast<std::size_t>(m_y);
@@ -120,9 +128,20 @@ public:
     return { static_cast<dimT>(m_x + input.m_x),
              static_cast<dimT>(m_y + input.m_y) };
   }
-  friend std::ostream &operator<<(std::ostream &os, const Point<dimT> &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Point<dimT> &input)
   {
-    return os << '{' << input.m_x << ", " << input.m_y << '}';
+    return os << '{' << +input.m_x << ", " << +input.m_y << '}';
+  }
+  [[nodiscard]] constexpr Point<dimT>
+    with_x(dimT in_x) const noexcept
+  {
+    return { in_x, m_y };
+  }
+  [[nodiscard]] constexpr Point<dimT>
+    with_y(dimT in_y) const noexcept
+  {
+    return { m_x, in_y };
   }
 };
 /**
@@ -131,8 +150,8 @@ public:
  * @return the max
  */
 template<Number dimT>
-[[nodiscard]] constexpr static Point<dimT> max(const Point<dimT> &rhs,
-                                               const Point<dimT> &lhs) noexcept
+[[nodiscard]] constexpr static Point<dimT>
+  max(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
 {
   return { std::max(rhs.x(), lhs.x()), std::max(rhs.y(), lhs.y()) };
 }
@@ -142,8 +161,8 @@ template<Number dimT>
  * @return the min
  */
 template<Number dimT>
-[[nodiscard]] constexpr static Point<dimT> min(const Point<dimT> &rhs,
-                                               const Point<dimT> &lhs) noexcept
+[[nodiscard]] constexpr static Point<dimT>
+  min(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
 {
   return { std::min(rhs.x(), lhs.x()), std::min(rhs.y(), lhs.y()) };
 }
