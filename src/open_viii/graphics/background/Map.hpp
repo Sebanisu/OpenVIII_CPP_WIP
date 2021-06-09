@@ -22,6 +22,7 @@
 #include <bitset>
 #include <cstdint>
 #include <filesystem>
+#include <variant>
 namespace open_viii::graphics::background {
 template<typename map_type = Tile1>
 requires(
@@ -206,6 +207,20 @@ public:
                bool                         shift       = true)
     : Map(tools::read_entire_file(path), sort_remove, shift)
   {}
+  template<std::invocable tile_funcT> explicit Map(tile_funcT tile_func)
+  {
+    bool       on   = true;
+    const auto push = [this, &on](auto item) {
+      if constexpr (std::is_same_v<decltype(item), map_type>) {
+        m_tiles.push_back(item);
+      } else {
+        on = false;
+      }
+    };
+    while (on) {
+      std::visit(push, tile_func());
+    }
+  }
   [[nodiscard]] const auto &
     tiles() const noexcept
   {
@@ -246,12 +261,10 @@ public:
   void
     shift(const std::int16_t &x, const std::int16_t &y) const noexcept
   {
-    std::ranges::transform(
-      m_tiles, std::ranges::begin(m_tiles), [&x, &y](auto t) {
-        t.x(static_cast<std::int16_t>(t.x() + x));
-        t.y(static_cast<std::int16_t>(t.y() + y));
-        return t;
-      });
+    const auto xy = Point(x, y);
+    std::ranges::transform(m_tiles, std::ranges::begin(m_tiles), [&xy](auto t) {
+      return t.with_xy(t.xy() + xy);
+    });
   }
   void
     shift(const Point<std::int16_t> &point) const noexcept
@@ -281,15 +294,12 @@ public:
           [&os, &i](const auto &t) {
             std::array<char, sizeof(t)> raw{};
             std::memcpy(raw.data(), &t, sizeof(t));
-            os << i++ << ','
-               << '"' << "0x";
+            os << i++ << ',' << '"' << "0x";
             for (char c : raw)
               os << std::hex << std::setfill('0') << std::setw(2)
                  << std::uppercase << (static_cast<unsigned short>(c) & 0xFFU);
             os << std::dec << std::setfill(' ') << std::setw(1)
-               << std::nouppercase
-               << "\","
-               << t.draw() << ','
+               << std::nouppercase << "\"," << t.draw() << ','
                << int{ t.depth() } << ",\"" <<
               [&t]() {
                 switch (t.blend_mode()) {
