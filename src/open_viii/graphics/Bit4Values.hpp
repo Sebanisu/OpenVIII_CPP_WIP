@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <type_traits>
 #include <utility>
+#include <cstring>
 namespace open_viii::graphics {
 struct Bit4Values
 {
