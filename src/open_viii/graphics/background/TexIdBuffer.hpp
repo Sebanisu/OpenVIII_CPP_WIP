@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_TEXIDBUFFER_HPP
 #define VIIIARCHIVE_TEXIDBUFFER_HPP
 #include "open_viii/graphics/BPPT.hpp"
+#include <compare>
 #include <cstdint>
 namespace open_viii::graphics::background {
 /**
@@ -24,56 +25,110 @@ namespace open_viii::graphics::background {
 struct TexIdBuffer
 {
 private:
-  static constexpr std::uint16_t ID_MASK{ 0b0000'0000'0000'1111U };
-  static constexpr std::uint16_t DRAW_MASK{ 0b0000'0000'0001'0000U };
-  static constexpr std::uint16_t BLEND_MASK{ 0b0000'0000'0110'0000U };
-  static constexpr std::uint16_t BLEND_SHIFT{ 6U };
-  static constexpr std::uint16_t DEPTH_MASK{ 0b0000'0001'1000'0000U };
-  static constexpr std::uint16_t DEPTH_SHIFT{ 7U };
-  static constexpr std::uint16_t UNK_MASK{ 0b1111'1110'0000'0000U };
-  static constexpr std::uint16_t UNK_SHIFT{ 9U };
-  std::uint16_t                  m_data{};
+  enum : std::uint16_t {
+    ID_MASK            = 0b0000'0000'0000'1111U,
+    ID_INVERSE_MASK    = 0b1111'1111'1111'0000U,
+    DRAW_MASK          = 0b0000'0000'0001'0000U,
+    DRAW_INVERSE_MASK  = 0b1111'1111'1110'1111U,
+    BLEND_MASK         = 0b0000'0000'0110'0000U,
+    BLEND_INVERSE_MASK = 0b1111'1111'1001'1111U,
+    BLEND_SHIFT        = 6U,
+    DEPTH_MASK         = 0b0000'0001'1000'0000U,
+    DEPTH_INVERSE_MASK = 0b1111'1110'0111'1111U,
+    DEPTH_SHIFT        = 7U,
+    UNK_MASK           = 0b1111'1110'0000'0000U,
+    UNK_INVERSE_MASK   = 0b0000'0001'1111'1111U,
+    UNK_SHIFT          = 9U,
+  };
+  std::uint16_t m_data{};
+
 public:
-  TexIdBuffer() = default;
-  friend auto operator==(const TexIdBuffer &left, const TexIdBuffer &right)
+  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE  = 2U;
+  constexpr TexIdBuffer()                               = default;
+  constexpr auto operator<=>(const TexIdBuffer &) const = default;
+  [[nodiscard]] constexpr TexIdBuffer
+    with_id(std::uint8_t in_id) const noexcept
   {
-    return left.m_data == right.m_data;
+    TexIdBuffer out{};
+    out.m_data = static_cast<std::uint16_t>((m_data & ID_INVERSE_MASK))
+               | static_cast<std::uint16_t>((in_id & ID_MASK));
+    return out;
   }
-  [[nodiscard]] std::uint8_t id() const noexcept
+  [[nodiscard]] constexpr std::uint8_t
+    id() const noexcept
   {
     return static_cast<std::uint8_t>(m_data & ID_MASK);
   }
-  [[nodiscard]] std::uint8_t blend() const noexcept
+  [[nodiscard]] constexpr TexIdBuffer
+    with_blend(std::uint8_t in_blend) const noexcept
+  {
+    TexIdBuffer out{};
+    out.m_data =
+      (m_data & BLEND_INVERSE_MASK)
+      | static_cast<std::uint16_t>(((in_blend << BLEND_SHIFT) & BLEND_MASK));
+    return out;
+  }
+  [[nodiscard]] std::uint8_t
+    blend() const noexcept
   {
     return static_cast<std::uint8_t>(
       static_cast<std::uint16_t>(m_data & BLEND_MASK) >> BLEND_SHIFT);
   }
-  [[nodiscard]] bool draw() const noexcept
+  [[nodiscard]] constexpr TexIdBuffer
+    with_draw(bool in_blend) const noexcept
   {
-    return (m_data & DRAW_MASK) != 0;
+    TexIdBuffer out{};
+    out.m_data = (m_data & DRAW_INVERSE_MASK)
+               | (in_blend ? std::uint16_t{ DRAW_MASK } : std::uint16_t{ 0U });
+    return out;
   }
-  [[nodiscard]] BPPT depth() const noexcept
+  [[nodiscard]] bool
+    draw() const noexcept
+  {
+    return (m_data & DRAW_MASK) != 0U;
+  }
+  [[nodiscard]] constexpr TexIdBuffer
+    with_depth(BPPT in_depth) const noexcept
+  {
+    TexIdBuffer out{};
+    out.m_data = (m_data & DEPTH_INVERSE_MASK)
+               | static_cast<std::uint16_t>((in_depth.raw() << DEPTH_SHIFT)
+                                            & DEPTH_MASK);
+    return out;
+  }
+  [[nodiscard]] BPPT
+    depth() const noexcept
   {
     auto raw = static_cast<std::uint8_t>(
       static_cast<std::uint16_t>(m_data & DEPTH_MASK) >> DEPTH_SHIFT);
-    BPPT out{};
-    if (raw == 0) {
-      out.bpp4(true);
-    } else if (raw == 1) {
-      out.bpp8(true);
-    } else if (raw == 2) {
-      out.bpp16(true);
-    } else if (raw == 3) {
-      out.bpp24(true);
+    using namespace graphics::literals;
+    switch (raw) {
+    case 0b00U:
+    default:
+      return 4_bpp;
+    case 0b01U:
+      return 8_bpp;
+    case 0b10U:
+      return 16_bpp;
+    case 0b11U:
+      return 24_bpp;
     }
+  }
+  [[nodiscard]] constexpr TexIdBuffer
+    with_unk(BPPT in_unk) const noexcept
+  {
+    TexIdBuffer out{};
+    out.m_data =
+      (m_data & UNK_INVERSE_MASK)
+      | static_cast<std::uint16_t>(((in_unk.raw() << UNK_SHIFT) & UNK_MASK));
     return out;
   }
-  [[nodiscard]] std::uint8_t unk() const noexcept
+  [[nodiscard]] std::uint8_t
+    unk() const noexcept
   {
     return static_cast<std::uint8_t>(
       static_cast<std::uint16_t>(m_data & UNK_MASK) >> UNK_SHIFT);
   }
-  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 2U };
 };
 static_assert(sizeof(TexIdBuffer) == TexIdBuffer::EXPLICIT_SIZE);
 }// namespace open_viii::graphics::background
