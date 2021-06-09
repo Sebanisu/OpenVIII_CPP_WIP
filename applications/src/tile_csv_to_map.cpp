@@ -177,7 +177,7 @@ int
     const auto raw_bytes = out_hex_to_vector(results.get<2>());
     auto       vtile     = get_tile(raw_bytes);
     std::visit(
-      [&results](auto &tile) {
+      [&](auto &tile) {
         if constexpr (!std::is_same_v<std::decay_t<decltype(tile)>,
                                       std::monostate>) {
           [[maybe_unused]] const auto &[re_whole,
