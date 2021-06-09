@@ -15,6 +15,7 @@
 #include "MimType.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
+#include "TileCommon.hpp"
 #include "open_viii/graphics/Bit4Values.hpp"
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Ppm.hpp"
@@ -23,7 +24,8 @@
 namespace open_viii::graphics::background {
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_MIM
- * todo rewrite so you don't have to delete the copy constructors. aka no spans in class.
+ * todo rewrite so you don't have to delete the copy constructors. aka no spans
+ * in class.
  */
 struct Mim
 {
@@ -148,9 +150,8 @@ public:
       m_image_buffer_bbp16(set_image_span_bpp16())
   {}
   explicit Mim(const std::filesystem::path &path)
-  : Mim(open_viii::tools::read_entire_file(path),path.string())
-  {
-  }
+    : Mim(open_viii::tools::read_entire_file(path), path.string())
+  {}
   [[nodiscard]] const auto &
     mim_type() const noexcept
   {
@@ -278,24 +279,21 @@ public:
     }
     return width;
   }
-  template<std::unsigned_integral xT,
-           std::unsigned_integral yT,
-           std::unsigned_integral paletteT,
-           std::unsigned_integral texture_idT>
   [[nodiscard]] Color16
-    get_color(const xT          x,
-              const yT          y,
-              const BPPT        depth,
-              const paletteT    palette    = 0U,
-              const texture_idT texture_id = 0U) const
+    get_color(const std::uint32_t x,
+              const std::uint32_t y,
+              const BPPT          depth,
+              const std::uint8_t  palette    = 0U,
+              const std::uint8_t  texture_id = 0U) const
   {
-    auto                  width               = m_mim_type.width();
-    constexpr static auto offset_interval     = 128U;
-    auto                  texture_page_offset = offset_interval;
+    auto                  width = m_mim_type.width();
+    constexpr static auto offset_interval =
+      background::TileCommonConstants::texture_page_width;
+    auto texture_page_offset = static_cast<std::uint32_t>(offset_interval);
     if (depth.bpp8()) {
       texture_page_offset *= texture_id;
       return safe_get_color_from_palette(get_palette_key(
-        static_cast<uint8_t>(
+        static_cast<std::uint8_t>(
           m_image_buffer[x + texture_page_offset + (y * width)]),
         palette));
     }
