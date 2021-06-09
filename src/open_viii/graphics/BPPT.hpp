@@ -20,6 +20,7 @@ namespace open_viii::graphics {
  * \ingroup graphics
  * @brief Contains 4 to 24 bits per pixel flags. Also a CLP flag for color
  * lookup table.
+ * @todo make immutable. And since there are only 4 valid states. Have for static constexpr initializers.
  */
 struct BPPT
 {
@@ -198,7 +199,7 @@ public:
   }
 };
 namespace literals {
-  consteval BPPT operator""_bpp(unsigned long long int value)
+  constexpr BPPT operator""_bpp(unsigned long long int value)
   {
     BPPT r{};
     switch (value) {
