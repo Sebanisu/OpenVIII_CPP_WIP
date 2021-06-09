@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_PALETTEID_HPP
 #define VIIIARCHIVE_PALETTEID_HPP
 #include <cstdint>
+#include <compare>
 namespace open_viii::graphics::background {
 /**
  * 4 bit paletteID nested inside of 16 bits of data.
@@ -31,10 +32,7 @@ private:
   std::uint16_t                  m_data{};
 public:
   PaletteID() = default;
-  friend auto operator==(const PaletteID &left, const PaletteID &right)
-  {
-    return left.m_data == right.m_data;
-  }
+  constexpr auto operator<=>(const PaletteID &) const = default;
   [[nodiscard]] std::uint8_t thirty() const noexcept
   {
     return static_cast<std::uint8_t>(m_data & THIRTY_MASK);
