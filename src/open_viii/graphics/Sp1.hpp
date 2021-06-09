@@ -25,6 +25,7 @@ struct Sp1
 {
 private:
   std::vector<std::vector<Sp1Entry>> m_entries{};
+
 public:
   Sp1() = default;
   explicit Sp1(std::span<const char> buffer)
@@ -46,15 +47,18 @@ public:
       s = s.subspan(1);
     }
   }
-  [[nodiscard]] const auto &at(const size_t i) const
+  [[nodiscard]] const auto &
+    at(const size_t i) const
   {
     return m_entries.at(i);
   }
-  [[nodiscard]] auto size() const
+  [[nodiscard]] auto
+    size() const
   {
     return std::ranges::size(m_entries);
   }
-  friend std::ostream &operator<<(std::ostream &os, const Sp1 &s)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Sp1 &s)
   {
     os << "{ Entry Groups Count: " << s.size() << " {";
     for (const auto &eg : s.m_entries) {

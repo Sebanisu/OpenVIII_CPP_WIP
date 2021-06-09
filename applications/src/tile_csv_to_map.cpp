@@ -56,7 +56,7 @@ int
     return EXIT_FAILURE;
   }
   puts(argv[1]);
-  auto csv_path = std::string_view(argv[1]);
+  auto       csv_path       = std::string_view(argv[1]);
 
   const auto tile_type_view = [&csv_path]() -> std::optional<std::string_view> {
     if (auto [whole, tile_type_match] =

@@ -65,8 +65,8 @@ public:
     // TODO rework this. It does not work
     //    }
   }
-  friend std::ostream &operator<<(std::ostream &                   os,
-                                  const CameraAnimationCollection &in)
+  friend std::ostream &
+    operator<<(std::ostream &os, const CameraAnimationCollection &in)
   {
     os << "{\n\t\t\t SET COUNT: " << in.m_set_count
        << "\n\t\t\t SET OFFSETS: " << '[';

@@ -35,13 +35,16 @@ private:
   uint8_t             m_enable_boost{};
   StatT               m_stat_to_increase{};
   uint8_t             m_increase_value{};
+
 public:
   constexpr auto operator<=>(const GFAbilities &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -55,7 +58,8 @@ public:
   {
     return m_ability_points_required_to_unlock;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto enable_boost() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    enable_boost() const noexcept
   {
     return m_enable_boost != 0;
   }
@@ -64,12 +68,14 @@ public:
   {
     return m_stat_to_increase;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto increase_value() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    increase_value() const noexcept
   {
     return m_increase_value;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     os << ", " << static_cast<int>(m_ability_points_required_to_unlock);
     os << ", " << static_cast<int>(m_enable_boost);

@@ -14,12 +14,14 @@ private:
     static_cast<std::int8_t>(sizeof(intT) * 8);
   mutable intT        m_pupu_id{};
   mutable std::int8_t m_bits{ BITS_PER_LONG };
+
 public:
   IntegralStorageCommon() = default;
   constexpr explicit IntegralStorageCommon(intT input_pupu_id)
     : m_pupu_id(input_pupu_id)
   {}
-  bool seek(std::int8_t offset) const noexcept
+  bool
+    seek(std::int8_t offset) const noexcept
   {
     const auto i = m_bits - offset;
     if (i > 0 || i <= BITS_PER_LONG) {
@@ -28,23 +30,28 @@ public:
     }
     return false;
   }
-  void reset() const noexcept
+  void
+    reset() const noexcept
   {
     m_bits = BITS_PER_LONG;
   }
-  void write(const std::unsigned_integral auto &value)
+  void
+    write(const std::unsigned_integral auto &value)
   {
     m_pupu_id |= value << static_cast<intT>(m_bits);
   }
-  intT read(const intT &mask) const noexcept
+  intT
+    read(const intT &mask) const noexcept
   {
     return (m_pupu_id >> static_cast<intT>(m_bits)) & mask;
   }
-  bool empty() const noexcept
+  bool
+    empty() const noexcept
   {
     return m_pupu_id == 0U;
   }
-  const intT &get_id() const noexcept
+  const intT &
+    get_id() const noexcept
   {
     return m_pupu_id;
   }
@@ -53,20 +60,23 @@ template<std::unsigned_integral intT> struct Writer
 {
 private:
   mutable IntegralStorageCommon<intT> m_data{};
-  void                                add_common(const intT         value,
-                                                 const std::int8_t &shift,
-                                                 const intT &       mask) const noexcept
+  void
+    add_common(const intT         value,
+               const std::int8_t &shift,
+               const intT &       mask) const noexcept
   {
     if (m_data.seek(shift)) {
       m_data.write(value & mask);
     }
   }
+
 public:
   Writer() = default;
   constexpr explicit Writer(intT input_pupu_id)
     : m_data(IntegralStorageCommon(input_pupu_id))
   {}
-  [[nodiscard]] auto &data() const noexcept
+  [[nodiscard]] auto &
+    data() const noexcept
   {
     return m_data;
   }
@@ -84,7 +94,8 @@ public:
     }
   }
   template<int bit_count, std::unsigned_integral input>
-  void add_uint(const input &value) const noexcept
+  void
+    add_uint(const input &value) const noexcept
   {
     if constexpr (bit_count <= 0) {
     } else {
@@ -92,7 +103,8 @@ public:
       add_common(value, bit_count, mask);
     }
   }
-  const intT &get_id() const noexcept
+  const intT &
+    get_id() const noexcept
   {
     return m_data.get_id();
   }
@@ -101,24 +113,29 @@ template<std::unsigned_integral intT> struct Reader
 {
 private:
   mutable IntegralStorageCommon<intT> m_data{};
-  intT                                extract_common(const std::int8_t &  shift,
-                                                     const std::uint64_t &mask) const noexcept
+  intT
+    extract_common(const std::int8_t &  shift,
+                   const std::uint64_t &mask) const noexcept
   {
     if (m_data.seek(shift)) {
       return (m_data.read(mask));
     }
     return 0U;
   }
+
 public:
   Reader() = default;
   constexpr explicit Reader(intT input_pupu_id)
     : m_data(IntegralStorageCommon(input_pupu_id))
   {}
-  [[nodiscard]] const auto &data() const noexcept
+  [[nodiscard]] const auto &
+    data() const noexcept
   {
     return m_data;
   }
-  template<int bit_count> auto extract_uint() const noexcept
+  template<int bit_count>
+  auto
+    extract_uint() const noexcept
   {
     if constexpr (bit_count <= 0) {
       return nullptr;
@@ -131,7 +148,8 @@ public:
       }
     }
   }
-  [[maybe_unused]] [[nodiscard]] auto extract_depth() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto
+    extract_depth() const noexcept
   {
     switch (extract_uint<2>()) {
     default: {
@@ -152,7 +170,8 @@ public:
     }
     }
   }
-  const intT &get_id() const noexcept
+  const intT &
+    get_id() const noexcept
   {
     return m_data.get_id();
   }

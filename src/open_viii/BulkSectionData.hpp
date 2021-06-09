@@ -33,7 +33,8 @@ public:
     const std::span<const char> &text_span = {})
     : m_span{ span }, m_text_span{ text_span }
   {}
-  [[nodiscard]] size_t size() const
+  [[nodiscard]] size_t
+    size() const
   {
     const auto calc_size = [this]() {
       return std::ranges::size(m_span) / sizeof(spanT);
@@ -48,7 +49,9 @@ public:
       return max;
     }
   }
-  template<std::unsigned_integral T = std::size_t> auto at(const T id_v) const
+  template<std::unsigned_integral T = std::size_t>
+  auto
+    at(const T id_v) const
   {
     auto id = static_cast<size_t>(id_v);
     if constexpr (std::is_same_v<T, ItemIdT>) {
@@ -69,18 +72,21 @@ public:
     }
     return operator[](id);
   }
-  auto operator[](size_t id) const noexcept
+  auto
+    operator[](size_t id) const noexcept
   {
     if (std::ranges::empty(m_span)) {
       return spanT{};
     }
     return tools::read_val<spanT>(m_span.subspan(id * sizeof(spanT)));
   }
-  [[maybe_unused]] auto &span() const noexcept
+  [[maybe_unused]] auto &
+    span() const noexcept
   {
     return m_span;
   }
-  [[maybe_unused]] auto &text_span() const noexcept
+  [[maybe_unused]] auto &
+    text_span() const noexcept
   {
     return m_text_span;
   }

@@ -31,7 +31,7 @@ requires(
 {
 private:
   using outColorT = Color24<0, 1, 2>;
-  const mim_type                  &m_mim{};
+  const mim_type &          m_mim{};
   map_type                  m_map{};
   std::string               m_path{};
   std::vector<std::uint8_t> m_unique_palettes{};
@@ -158,11 +158,12 @@ public:
               t.height(),
               [this, &pupu, &raw_width, &out, &drawn, &t, &palette](
                 const auto &x, const auto &y) {
-                const auto          pixel_in = m_mim.get_color(static_cast<std::uint32_t>((x + t.source_x())),
-                                                      static_cast<std::uint32_t>((y + t.source_y())),
-                                                      pupu.depth(),
-                                                      palette,
-                                                      t.texture_id());
+                const auto pixel_in = m_mim.get_color(
+                  static_cast<std::uint32_t>((x + t.source_x())),
+                  static_cast<std::uint32_t>((y + t.source_y())),
+                  pupu.depth(),
+                  palette,
+                  t.texture_id());
                 const std::uint32_t pixel_out = get_output_index(x, y, t);
                 drawn |= set_color(out, pixel_out, pixel_in);
               });

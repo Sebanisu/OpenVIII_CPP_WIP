@@ -14,8 +14,7 @@ void
 {
   std::cout << "Loading Archive\n";
   const open_viii::archive::FIFLFS<false> archive(src);
-  if(!archive.all_set())
-  {
+  if (!archive.all_set()) {
     std::cerr << "Failed to load archive" << std::endl;
     exit(1);
   }

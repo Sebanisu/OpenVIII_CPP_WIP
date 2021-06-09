@@ -12,8 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_PALETTEID_HPP
 #define VIIIARCHIVE_PALETTEID_HPP
-#include <cstdint>
 #include <compare>
+#include <cstdint>
 namespace open_viii::graphics::background {
 /**
  * 4 bit paletteID nested inside of 16 bits of data.
@@ -30,19 +30,23 @@ private:
   static constexpr std::uint16_t ZERO_MASK{ 0b1111'1100'0000'0000U };
   static constexpr std::uint16_t ZERO_SHIFT{ 12U };
   std::uint16_t                  m_data{};
+
 public:
-  PaletteID() = default;
+  PaletteID()                                         = default;
   constexpr auto operator<=>(const PaletteID &) const = default;
-  [[nodiscard]] std::uint8_t thirty() const noexcept
+  [[nodiscard]] std::uint8_t
+    thirty() const noexcept
   {
     return static_cast<std::uint8_t>(m_data & THIRTY_MASK);
   }
-  [[nodiscard]] std::uint8_t id() const noexcept
+  [[nodiscard]] std::uint8_t
+    id() const noexcept
   {
     return static_cast<std::uint8_t>(
       static_cast<std::uint16_t>(m_data & ID_MASK) >> ID_SHIFT);
   }
-  [[nodiscard]] std::uint8_t zero() const noexcept
+  [[nodiscard]] std::uint8_t
+    zero() const noexcept
   {
     return static_cast<std::uint8_t>(
       static_cast<std::uint16_t>(m_data & ZERO_MASK) >> ZERO_SHIFT);

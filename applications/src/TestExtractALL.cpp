@@ -13,7 +13,8 @@
 #include "TestExtractALL.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/paths/Paths.hpp"
-int main()
+int
+  main()
 {
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
@@ -29,7 +30,7 @@ int main()
       [](const std::vector<char> &in_buffer, const std::string &in_path) {
         open_viii::tools::write_buffer(in_buffer, in_path);
       };
-    archives.execute_on({ }, dump);
+    archives.execute_on({}, dump);
     // archives.get<open_viii::archive::ArchiveTypeT::field>().execute_with_nested({},dump,{});
   });
   const auto end  = std::chrono::steady_clock::now();

@@ -36,14 +36,16 @@ public:
    * Total Header and Data size
    * @brief size in bytes
    */
-  [[nodiscard]] constexpr auto size() const
+  [[nodiscard]] constexpr auto
+    size() const
   {
     return m_size;
   }
   /**
    * Dimensions of data.
    */
-  [[nodiscard]] constexpr auto rectangle() const
+  [[nodiscard]] constexpr auto
+    rectangle() const
   {
     return m_rectangle;
   }
@@ -51,20 +53,22 @@ public:
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] constexpr auto data_size() const
+  [[nodiscard]] constexpr auto
+    data_size() const
   {
     return m_size - sizeof(TimImageHeader);
   };
-  [[nodiscard]] constexpr bool check() const
+  [[nodiscard]] constexpr bool
+    check() const
   {
-    return rectangle().width() > 0
-           && rectangle().height() > 0;
+    return rectangle().width() > 0 && rectangle().height() > 0;
   }
   [[nodiscard]] explicit constexpr operator bool() const
   {
     return check();
   }
-  friend std::ostream &operator<<(std::ostream &os, const TimImageHeader &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const TimImageHeader &input)
   {
     return os << '{' << input.size() << " bytes, " << input.m_rectangle << '}';
   }

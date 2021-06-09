@@ -25,42 +25,48 @@ public:
   /**
    * Get Start "F8P" 3 bytes
    */
-  [[nodiscard]] constexpr auto start() const noexcept
+  [[nodiscard]] constexpr auto
+    start() const noexcept
   {
     return m_start;
   }
   /**
    * Set Start "F8P" 3 bytes
    */
-  void start(std::array<char, 3U> in_start) noexcept
+  void
+    start(std::array<char, 3U> in_start) noexcept
   {
     m_start = in_start;
   }
   /**
    * Get Unknown 3 bytes
    */
-  [[nodiscard]] constexpr auto unk() const noexcept
+  [[nodiscard]] constexpr auto
+    unk() const noexcept
   {
     return m_unk;
   }
   /**
    * Set Unknown 3 bytes
    */
-  void unk(std::array<char, 3U> in_unk) noexcept
+  void
+    unk(std::array<char, 3U> in_unk) noexcept
   {
     m_unk = in_unk;
   }
   /**
    * Get Count of frames. Sometimes there are extra frames in the file.
    */
-  [[nodiscard]] constexpr auto count() const noexcept
+  [[nodiscard]] constexpr auto
+    count() const noexcept
   {
     return m_count;
   }
   /**
    * Set Count of frames.
    */
-  void count(std::uint16_t in_count) noexcept
+  void
+    count(std::uint16_t in_count) noexcept
   {
     m_count = in_count;
   }
@@ -71,7 +77,8 @@ public:
   /**
    * verify start() == "F8P"
    */
-  [[nodiscard]] constexpr bool valid_start() const noexcept
+  [[nodiscard]] constexpr bool
+    valid_start() const noexcept
   {
     return std::ranges::equal(m_start, EXPECTED_START);
   }
@@ -79,7 +86,8 @@ public:
    * Expected Size of struct in bytes
    */
   constexpr static auto EXPECTED_SIZE{ 8U };
-  friend std::ostream &operator<<(std::ostream &os, const CamHeader &cam_header)
+  friend std::ostream &
+    operator<<(std::ostream &os, const CamHeader &cam_header)
   {
     return os << '{' << cam_header.m_start[0] << cam_header.m_start[1]
               << cam_header.m_start[2] << ',' << cam_header.m_unk[0]

@@ -29,9 +29,10 @@ namespace open_viii::compression::l4z {
 template<typename dstT = std::vector<char>,
          std::integral srcSizeT,
          std::integral dstSizeT>
-[[nodiscard]] [[maybe_unused]] static dstT decompress(const char *    src_data,
-                                                      const srcSizeT &src_size,
-                                                      const dstSizeT &dst_size)
+[[nodiscard]] [[maybe_unused]] static dstT
+  decompress(const char *    src_data,
+             const srcSizeT &src_size,
+             const dstSizeT &dst_size)
 {
   if (src_size < 0 || dst_size < 0) {
     return {};
@@ -65,7 +66,8 @@ template<typename dstT = std::vector<char>, std::integral dstSizeT>
     std::ranges::data(src), std::ranges::size(src), dst_size);
 }
 template<typename dstT = std::vector<char>>
-static dstT compress(const std::span<const char> &src)
+static dstT
+  compress(const std::span<const char> &src)
 {
   dstT       dst{};
   const auto srcSize = static_cast<int>(std::ranges::size(src));

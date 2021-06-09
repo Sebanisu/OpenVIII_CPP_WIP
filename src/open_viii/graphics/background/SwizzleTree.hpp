@@ -34,7 +34,8 @@ private:
     // the FL files contain \\ I change to / in post for easy dumping to linux
     // and support of filesystem.
   }
-  [[nodiscard]] MimType get_mim_type() const
+  [[nodiscard]] MimType
+    get_mim_type() const
   {
     if (static_cast<bool>(m_archive)) {
       std::vector<std::pair<unsigned int, std::string>> mims =
@@ -51,18 +52,21 @@ private:
     }
     return {};
   }
-  const MimType &mim_type() const noexcept
+  const MimType &
+    mim_type() const noexcept
   {
     return m_mim_type;
   }
-  [[nodiscard]] std::vector<char> get_mim_buffer() const
+  [[nodiscard]] std::vector<char>
+    get_mim_buffer() const
   {
     if (static_cast<bool>(m_archive)) {
       return m_archive.get_entry_data({ m_mim_filename });
     }
     return {};
   }
-  [[nodiscard]] std::vector<char> get_map_buffer() const
+  [[nodiscard]] std::vector<char>
+    get_map_buffer() const
   {
     if (static_cast<bool>(m_archive)) {
       return m_archive.get_entry_data({ m_map_filename });
@@ -96,6 +100,7 @@ private:
     // const auto r = Deswizzle<map_type>(get_map_buffer(), m_dir_path,
     // m_dir_name, m_output_prefix); r.process();
   }
+
 public:
   SwizzleTree(const open_viii::archive::FIFLFS<true> &field,
               const std::filesystem::path &           dir_path)
@@ -111,7 +116,7 @@ public:
         get_path_with_ext(open_viii::graphics::background::Mim::EXT).substr(1)),
       m_output_prefix((m_dir_path / m_dir_name).string()),
       m_archive(
-        get_fiflfs(field,{ m_fi_filename, m_fl_filename, m_fs_filename })),
+        get_fiflfs(field, { m_fi_filename, m_fl_filename, m_fs_filename })),
       m_mim_type(get_mim_type())
   {}
   /**
@@ -144,7 +149,8 @@ public:
    * spawn a reswizzle object using the mim_type to decide what template
    * arguments should be.
    */
-  void reswizzle() const
+  void
+    reswizzle() const
   {
     if (m_mim_type.type() == 1) {
       reswizzle_with_type<Tile1>();
@@ -158,7 +164,8 @@ public:
    * spawn a deswizzle object using the mim_type to decide what template
    * arguments should be.
    */
-  void deswizzle() const
+  void
+    deswizzle() const
   {
     if (m_mim_type.type() == 1) {
       deswizzle_with_type<Tile1>();

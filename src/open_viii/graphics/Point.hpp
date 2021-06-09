@@ -25,7 +25,7 @@ private:
   dimT m_y{};
 
 public:
-  using value_type = dimT;
+  using value_type  = dimT;
   constexpr Point() = default;
   constexpr Point(const dimT &in_x, const dimT &in_y) noexcept
     : m_x(in_x), m_y(in_y){};

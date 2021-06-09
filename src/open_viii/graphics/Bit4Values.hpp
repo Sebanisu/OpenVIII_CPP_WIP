@@ -13,9 +13,9 @@
 #ifndef VIIIARCHIVE_4BITVALUES_H
 #define VIIIARCHIVE_4BITVALUES_H
 #include <cstdint>
+#include <cstring>
 #include <type_traits>
 #include <utility>
-#include <cstring>
 namespace open_viii::graphics {
 struct Bit4Values
 {
@@ -39,9 +39,8 @@ public:
   static Bit4Values
     create(const std::uint8_t in_first, const std::uint8_t in_second)
   {
-    return create(
-      static_cast<uint8_t>((in_first & MASK_4_BIT) << SHIFT_4_BITS)
-      | (in_second & MASK_4_BIT));
+    return create(static_cast<uint8_t>((in_first & MASK_4_BIT) << SHIFT_4_BITS)
+                  | (in_second & MASK_4_BIT));
   }
   //  constexpr Bit4Values(const std::uint8_t in_first,
   //                       const std::uint8_t in_second)

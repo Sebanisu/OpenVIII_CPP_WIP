@@ -16,8 +16,9 @@
 #include "open_viii/paths/Paths.hpp"
 template<typename KernelElementT>
 concept has_out_function = requires(KernelElementT        ke,
-                 std::ostream          tstream,
-                 std::span<const char> tspan) {
+                                    std::ostream          tstream,
+                                    std::span<const char> tspan)
+{
   ke.out(tstream, tspan);
 };
 
@@ -27,9 +28,10 @@ concept has_out_function = requires(KernelElementT        ke,
  * @param buffer contains encoded names and descriptions
  */
 template<open_viii::LangT langVal, typename KernelElementT>
-static void out(KernelElementT               kernel_element,
-                std::ostream &               os,
-                const std::span<const char> &buffer)
+static void
+  out(KernelElementT               kernel_element,
+      std::ostream &               os,
+      const std::span<const char> &buffer)
 {
 #define IF_EXIST_WRITE_DECODE_STRING(function_name)                            \
   {                                                                            \
@@ -92,16 +94,17 @@ static void out(KernelElementT               kernel_element,
 #undef IF_EXIST_WRITE_DECODE_STRING
   }
 }
-int main()
+int
+  main()
 {
   std::vector<std::pair<std::filesystem::path, open_viii::kernel::Header>>
-             kernels{};
-  static constexpr auto coo      = open_viii::LangT::en;
+                        kernels{};
+  static constexpr auto coo   = open_viii::LangT::en;
   const auto execution_lambda = [&kernels](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    const auto archives = open_viii::archive::Archives(path, open_viii::LangCommon::to_string<coo>());
-    if(!static_cast<bool>(archives))
-    {
+    const auto archives = open_viii::archive::Archives(
+      path, open_viii::LangCommon::to_string<coo>());
+    if (!static_cast<bool>(archives)) {
       std::cerr << "Failed to load path: " << path.string() << '\n';
       return;
     }
@@ -136,7 +139,10 @@ int main()
          kernels | std::views::drop(++i)) {
       std::cout << "Comparing " << open_viii::kernel::Header::FILE_NAME << " {"
                 << path.string() << ", " << other_path.string() << "}:\n";
-      std::cout << (std::ranges::equal(kernel.buffer(),other_kernel.buffer()) ? "equal" : "not equal") << '\n';
+      std::cout << (std::ranges::equal(kernel.buffer(), other_kernel.buffer())
+                      ? "equal"
+                      : "not equal")
+                << '\n';
     }
   }
   return 0;

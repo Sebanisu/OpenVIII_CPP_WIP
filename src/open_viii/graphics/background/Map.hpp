@@ -36,7 +36,7 @@ private:
   /**
    * offset holds the original position of canvas.
    */
-  mutable Point<std::int16_t> m_offset{};
+  mutable Point<std::int16_t>   m_offset{};
   /**
    * remove invalid tiles from buffer.
    */

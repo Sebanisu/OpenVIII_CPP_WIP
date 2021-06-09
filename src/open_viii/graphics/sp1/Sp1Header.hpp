@@ -23,6 +23,7 @@ struct Sp1Header
 private:
   std::uint32_t          m_offset_count{};
   std::vector<Sp1Offset> m_offsets{};
+
 public:
   Sp1Header() = default;
   explicit Sp1Header(std::span<const char> buffer)
@@ -46,11 +47,13 @@ public:
       std::memcpy(std::ranges::data(m_offsets), std::ranges::data(buffer), sz);
     }
   }
-  [[nodiscard]] auto size() const noexcept
+  [[nodiscard]] auto
+    size() const noexcept
   {
     return m_offset_count;
   }
-  [[nodiscard]] const auto &offsets() const noexcept
+  [[nodiscard]] const auto &
+    offsets() const noexcept
   {
     return m_offsets;
   }

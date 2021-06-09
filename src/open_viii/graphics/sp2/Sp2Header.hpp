@@ -22,6 +22,7 @@ struct Sp2Header
 private:
   std::uint32_t              m_count{};
   std::vector<std::uint32_t> m_offsets{};
+
 public:
   Sp2Header() = default;
   explicit Sp2Header(std::span<const char> buffer)
@@ -33,11 +34,13 @@ public:
                 std::ranges::data(buffer),
                 sizeof(std::uint32_t) * m_count);
   }
-  [[nodiscard]] const auto &offsets() const noexcept
+  [[nodiscard]] const auto &
+    offsets() const noexcept
   {
     return m_offsets;
   }
-  [[nodiscard]] auto &size() const noexcept
+  [[nodiscard]] auto &
+    size() const noexcept
   {
     return m_count;
   }

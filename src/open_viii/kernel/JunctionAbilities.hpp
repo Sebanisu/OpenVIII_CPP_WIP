@@ -31,14 +31,17 @@ private:
   EncodedStringOffset m_description_offset{};
   std::uint8_t        m_ability_points_required_to_unlock{};
   std::uint32_t       m_junction_flags : 3U {};
+
 public:
   constexpr auto
     operator<=>(const JunctionAbilities &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -52,12 +55,14 @@ public:
   {
     return m_ability_points_required_to_unlock;
   }
-  [[nodiscard]] constexpr JunctionFlagsT junction_flags() const
+  [[nodiscard]] constexpr JunctionFlagsT
+    junction_flags() const
   {
     return static_cast<JunctionFlagsT>(m_junction_flags);
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << ", "
               << static_cast<uint32_t>(m_ability_points_required_to_unlock)

@@ -124,7 +124,8 @@ private:
 public:
   // static constexpr std::array LangCodes = { "en"sv, "fr"sv, "es"sv, "it"sv,
   // "de"sv, "jp" };
-  static constexpr auto &get_code_page()
+  static constexpr auto &
+    get_code_page()
   {
     if constexpr (langVal == LangT::jp) {
       return JP_CODE_PAGE;

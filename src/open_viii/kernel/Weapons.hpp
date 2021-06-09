@@ -64,9 +64,11 @@ private:
   std::uint8_t         m_weapon_tier{};
   std::uint8_t         m_critical_bonus{};
   std::uint8_t         m_melee_weapon{};
+
 public:
   constexpr auto operator<=>(const Weapons &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
@@ -75,19 +77,23 @@ public:
   {
     return m_renzokuken_finishers;
   }
-  [[nodiscard]] constexpr auto unknown() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown() const noexcept
   {
     return m_unknown;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto character_id() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    character_id() const noexcept
   {
     return m_character_id;
   }
-  [[nodiscard]] constexpr auto attack_type() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto attack_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    attack_power() const noexcept
   {
     return m_attack_power;
   }
@@ -96,24 +102,29 @@ public:
   {
     return m_attack_parameter;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto str_bonus() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    str_bonus() const noexcept
   {
     return m_str_bonus;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto weapon_tier() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    weapon_tier() const noexcept
   {
     return m_weapon_tier;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto critical_bonus() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    critical_bonus() const noexcept
   {
     return m_critical_bonus;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto melee_weapon() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    melee_weapon() const noexcept
   {
     return m_melee_weapon != 0;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << ", " << static_cast<std::uint32_t>(m_renzokuken_finishers)
               << ", " << static_cast<std::uint32_t>(m_unknown) << ", "

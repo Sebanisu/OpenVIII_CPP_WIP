@@ -35,39 +35,47 @@ private:
   outputT             m_output{};
 
 public:
-  [[nodiscard]] const auto &offset() const noexcept
+  [[nodiscard]] const auto &
+    offset() const noexcept
   {
     return m_offset;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &amount_received() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    amount_received() const noexcept
   {
     return m_amount_received;
   }
-  [[nodiscard]] const auto &unknown0() const noexcept
+  [[nodiscard]] const auto &
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] const auto &unknown1() const noexcept
+  [[nodiscard]] const auto &
+    unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] const auto &input() const noexcept
+  [[nodiscard]] const auto &
+    input() const noexcept
   {
     return m_input;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &amount_required() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    amount_required() const noexcept
   {
     return m_amount_required;
   }
-  [[nodiscard]] const auto &output() const noexcept
+  [[nodiscard]] const auto &
+    output() const noexcept
   {
     return m_output;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &               os,
-                    const std::span<const char> &buffer          = ""sv,
-                    const intmax_t               offset          = 0,
-                    bool                         skip_first_null = false) const
+  std::ostream &
+    out(std::ostream &               os,
+        const std::span<const char> &buffer          = ""sv,
+        const intmax_t               offset          = 0,
+        bool                         skip_first_null = false) const
   {
     const auto temp =
       m_offset.decoded_string<langVal>(buffer, offset, skip_first_null);

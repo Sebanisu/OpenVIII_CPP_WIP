@@ -10,11 +10,11 @@
 #include <span>
 namespace open_viii::tools {
 
-    template<typename t1,typename t2>
-    concept can_upper = requires(t1 c1, t2 c2)
-    {
-        upper(c1) == upper(c2);
-    };
+template<typename t1, typename t2>
+concept can_upper = requires(t1 c1, t2 c2)
+{
+  upper(c1) == upper(c2);
+};
 
 /**
  * Check if two characters are equal case insensitive
@@ -24,7 +24,7 @@ namespace open_viii::tools {
  */
 constexpr static auto TOUPPER_EQUALS_PREDICATE = [](const auto &ch1,
                                                     const auto &ch2) -> bool {
-  if constexpr (can_upper<decltype(ch1),decltype(ch2)>) {
+  if constexpr (can_upper<decltype(ch1), decltype(ch2)>) {
     return upper(ch1) == upper(ch2);
   } else {
     return ch1 == ch2;
@@ -40,9 +40,8 @@ static_assert(!TOUPPER_EQUALS_PREDICATE('a', 'Z'));
  * @param str2 string 2
  * @return returns true if both strings are equal regardless of case
  */
-[[maybe_unused]] constexpr static auto
-  i_equals = [](const std::string_view str1, const std::string_view str2) ->bool
-{
+[[maybe_unused]] constexpr static auto i_equals =
+  [](const std::string_view str1, const std::string_view str2) -> bool {
   return std::ranges::equal(str1, str2, TOUPPER_EQUALS_PREDICATE);
 };
 static_assert(i_equals(std::string_view(""), std::string_view("")));
@@ -89,7 +88,7 @@ static_assert(!i_find(std::string_view("abc"), std::string_view("0")));
 static constexpr auto i_starts_with =
   [](const std::string_view haystack, const std::string_view starting) -> bool {
   return std::ranges::size(haystack) >= std::ranges::size(starting)
-         && i_equals(starting, haystack.substr(0, std::ranges::size(starting)));
+      && i_equals(starting, haystack.substr(0, std::ranges::size(starting)));
 };
 static_assert(i_starts_with(std::string_view("12345"), std::string_view("1")));
 static_assert(i_starts_with(std::string_view("12345"), "1"));
@@ -124,7 +123,7 @@ static_assert(!i_ends_with(std::string_view("12345"), std::string_view("1")));
            const auto &                  lambda)
 {
   return std::ranges::empty(needles)
-         || std::ranges::any_of(
+      || std::ranges::any_of(
            needles,
            [&lambda, &haystack](const std::string_view needle) -> bool {
              return lambda(haystack, needle);
@@ -208,8 +207,8 @@ static_assert(!i_ends_with_any(std::string_view("haystack.a"),
                     ++i;
                     return lambda(inside_haystack, needle);
                   })
-           ? i
-           : 0U;
+         ? i
+         : 0U;
 }
 static_assert(with_any_get_offset(std::string_view("haystack.a"),
                                   std::array{ std::string_view(".a"),
@@ -309,7 +308,7 @@ static_assert(i_ends_with_any_get_offset(std::string_view("haystack.b"),
            const auto &                  lambda)
 {
   return std::ranges::empty(needles)
-         || std::ranges::all_of(
+      || std::ranges::all_of(
            needles,
            [&lambda, &haystack](const std::string_view needle) -> bool {
              return lambda(haystack, needle);
@@ -375,8 +374,9 @@ static_assert(i_ends_with_all(std::string_view("haystack.d"),
 static_assert(!i_ends_with_all(std::string_view("haystack.a"),
                                std::array{ std::string_view(".d"),
                                            std::string_view("h") }));
-constexpr auto search(const std::span<const char> haystack,
-                      const std::span<const char> needle)
+constexpr auto
+  search(const std::span<const char> haystack,
+         const std::span<const char> needle)
 {
   if (std::ranges::empty(needle) || std::ranges::empty(haystack))
     return std::ranges::end(haystack);
@@ -385,17 +385,19 @@ constexpr auto search(const std::span<const char> haystack,
                      std::ranges::begin(needle),
                      std::ranges::end(needle));
 }
-constexpr auto search(const std::span<const char> haystack, const char *needle)
+constexpr auto
+  search(const std::span<const char> haystack, const char *needle)
 {
   return search(haystack, std::string_view(needle));
 }
-constexpr bool search_bool(const std::span<const char> haystack,
-                           const std::span<const char> needle)
+constexpr bool
+  search_bool(const std::span<const char> haystack,
+              const std::span<const char> needle)
 {
   return search(haystack, needle) != std::ranges::end(haystack);
 }
-constexpr auto search_bool(const std::span<const char> haystack,
-                           const char *                needle)
+constexpr auto
+  search_bool(const std::span<const char> haystack, const char *needle)
 {
   return search_bool(haystack, std::string_view(needle));
 }

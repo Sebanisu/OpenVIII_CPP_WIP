@@ -108,74 +108,92 @@ private:
   JunctionStatusesT   m_j_statuses_defend_flag{};
   GFGroup<uint8_t>    m_compatibility{};
   uint16_t            m_unknown3{};
+
 public:
   constexpr Magic()                                             = default;
   constexpr auto operator<=>(const Magic &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
-  [[nodiscard]] constexpr auto magic_id() const noexcept
+  [[nodiscard]] constexpr auto
+    magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[nodiscard]] constexpr auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] constexpr auto attack_type() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto spell_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    spell_power() const noexcept
   {
     return m_spell_power;
   }
-  [[nodiscard]] constexpr auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] constexpr auto target() const noexcept
+  [[nodiscard]] constexpr auto
+    target() const noexcept
   {
     return m_target;
   }
-  [[nodiscard]] constexpr auto attack_flags() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto draw_resist() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    draw_resist() const noexcept
   {
     return m_draw_resist;
   }
-  [[nodiscard]] constexpr auto hit_count() const noexcept
+  [[nodiscard]] constexpr auto
+    hit_count() const noexcept
   {
     return m_hit_count;
   }
-  [[nodiscard]] constexpr auto element() const noexcept
+  [[nodiscard]] constexpr auto
+    element() const noexcept
   {
     return m_element;
   }
-  [[nodiscard]] constexpr auto unknown2() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }
-  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto status_attack() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    status_attack() const noexcept
   {
     return m_status_attack;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto junction_stats() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    junction_stats() const noexcept
   {
     return m_junction_stats;
   }
@@ -219,16 +237,19 @@ public:
   {
     return m_j_statuses_defend_flag;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto compatibility() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    compatibility() const noexcept
   {
     return m_compatibility;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto unknown3() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    unknown3() const noexcept
   {
     return m_unknown3;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
               << static_cast<std::uint32_t>(m_unknown0) << ", "

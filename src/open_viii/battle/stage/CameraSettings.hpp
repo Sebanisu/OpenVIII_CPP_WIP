@@ -14,7 +14,8 @@ struct CameraSettings
 {
   static constexpr auto      UNK_SIZE = 24U;
   std::array<char, UNK_SIZE> m_unk{};
-  friend std::ostream &operator<<(std::ostream &os, const CameraSettings &in)
+  friend std::ostream &
+    operator<<(std::ostream &os, const CameraSettings &in)
   {
     os << "{0x" << std::hex << std::uppercase;
     std::ranges::for_each(in.m_unk, [&os](const char &c) {

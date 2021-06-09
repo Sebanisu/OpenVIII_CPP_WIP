@@ -27,11 +27,13 @@ private:
 
 public:
   constexpr static std::string_view FILENAME = "mngrphd.bin";
-  static constexpr auto             size()
+  static constexpr auto
+    size()
   {
     return COUNT;
   }
-  [[nodiscard]] const auto &sections() const
+  [[nodiscard]] const auto &
+    sections() const
   {
     return m_sections;
   }

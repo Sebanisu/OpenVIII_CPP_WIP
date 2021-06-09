@@ -26,7 +26,7 @@ private:
   /**
    * Each frame section of cam file is this many bytes
    */
-  static constexpr auto CAM_SECTION_SIZE = static_cast<char>(0x2C);
+  static constexpr auto CAM_SECTION_SIZE       = static_cast<char>(0x2C);
   /**
    * If false don't extract low res videos!
    */
@@ -34,17 +34,17 @@ private:
   /**
    *  Known valid Bink video formats "a,d,f,g,h,i"
    */
-  static constexpr std::array<char, 6> BIK1 = { 0x61, 0x64, 0x66,
+  static constexpr std::array<char, 6> BIK1    = { 0x61, 0x64, 0x66,
                                                 0x67, 0x68, 0x69 };
   /**
    * Known valid Bink 2 video formats "b,d,f,g,h,i"
    */
-  static constexpr std::array<char, 6> BIK2 = { 0x62, 0x64, 0x66,
+  static constexpr std::array<char, 6> BIK2    = { 0x62, 0x64, 0x66,
                                                 0x67, 0x68, 0x69 };
   /**
    * Each Movie has 1 cam and 2 versions of the video.
    */
-  std::vector<MovieClip> m_movies;
+  std::vector<MovieClip>               m_movies;
   ///// <summary>
   ///// Depending on type you read it differently.
   ///// </summary>
@@ -57,8 +57,8 @@ private:
   /**
    * Remembers detected disc number.
    */
-  int                   m_disc_cache{ -1 };
-  std::filesystem::path m_file_path{};
+  int                                  m_disc_cache{ -1 };
+  std::filesystem::path                m_file_path{};
 
 public:
   explicit Pak(std::filesystem::path path) : m_file_path(std::move(path))
@@ -78,7 +78,8 @@ public:
    * Total number of movies detected
    * @return count of movies
    */
-  [[nodiscard]] auto count() const noexcept
+  [[nodiscard]] auto
+    count() const noexcept
   {
     return std::ranges::size(m_movies);
   }
@@ -86,7 +87,8 @@ public:
    * Current path
    * @return ref to path of pak file.
    */
-  [[maybe_unused]] [[nodiscard]] const auto &file_path() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    file_path() const noexcept
   {
     return m_file_path;
   }
@@ -94,7 +96,8 @@ public:
    * Each Movie has 1 cam and 2 versions of the video.
    * @return vector of movies.
    */
-  [[maybe_unused]] [[nodiscard]] const auto &movies() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    movies() const noexcept
   {
     return m_movies;
   }
@@ -103,7 +106,8 @@ public:
    * @param i = index
    * @return Movie clip
    */
-  [[nodiscard]] const auto &operator[](const std::size_t i) const noexcept
+  [[nodiscard]] const auto &
+    operator[](const std::size_t i) const noexcept
   {
     return m_movies[i];
   }
@@ -112,11 +116,13 @@ public:
    * @param i = index
    * @return Movie clip
    */
-  [[nodiscard]] const auto &at(const std::size_t i) const noexcept
+  [[nodiscard]] const auto &
+    at(const std::size_t i) const noexcept
   {
     return m_movies.at(i);
   }
-  void extract(std::filesystem::path dest_path)
+  void
+    extract(std::filesystem::path dest_path)
   {
     std::cout << "Extracting \"" << m_file_path.string() << "\"\n";
     tools::read_from_file(
@@ -162,21 +168,23 @@ public:
    * @param suffix suffix that gets appended to end of names
    * @return std::string
    */
-  std::string generate_file_name(const std::string &extension,
-                                 const std::string &suffix = {})
+  std::string
+    generate_file_name(const std::string &extension,
+                       const std::string &suffix = {})
   {
     using namespace std::string_literals;
     static constexpr auto length = 2U;
     return "disc"s + tools::to_string_with_padding(get_disc_number(), length)
-           + "_"s + tools::to_string_with_padding(count(), length) + suffix
-           + extension;
+         + "_"s + tools::to_string_with_padding(count(), length) + suffix
+         + extension;
   }
   /**
    * Extract number from filename. typically there is 1 digit for the disc
    * number.
    * @return disc number.
    */
-  int get_disc_number()
+  int
+    get_disc_number()
   {
     auto stem = m_file_path.stem().string();
     if (m_disc_cache == -1) {
@@ -192,7 +200,8 @@ public:
     }
     return m_disc_cache - 1;
   }
-  void get_cam(std::istream &is, MovieClip &movie)
+  void
+    get_cam(std::istream &is, MovieClip &movie)
   { /**
      * Read cam file offset and size
      */
@@ -218,19 +227,24 @@ public:
     movie.cam(Cam(is, fs));
     movie.cam_fs(std::move(fs));
   }
-  void get_bik(std::istream &               is,
-               MovieClip &                  movie,
-               const std::span<const char> &type)
+  void
+    get_bik(std::istream &               is,
+            MovieClip &                  movie,
+            const std::span<const char> &type)
   { /**
      * Read Bink video offset and size
      */
     char        version = tools::read_val<char>(is);
     FileSection fs{};
     if (std::ranges::equal(type, FileSectionTypeT::BIK)
-        && std::ranges::any_of(BIK1,[&version](const auto & item){ return version == item;})) {
+        && std::ranges::any_of(BIK1, [&version](const auto &item) {
+             return version == item;
+           })) {
       fs.type(FileSectionTypeT::BIK);
     } else if (std::ranges::equal(type, FileSectionTypeT::KB2)
-               && std::ranges::any_of(BIK2,[&version](const auto & item){ return version == item;})) {
+               && std::ranges::any_of(BIK2, [&version](const auto &item) {
+                    return version == item;
+                  })) {
       fs.type(FileSectionTypeT::KB2);
     } else {
       std::cerr << "location: " << std::hex << is.tellg() << std::endl;
@@ -274,7 +288,8 @@ public:
    * Read complete pak file for offsets and sizes of each section.
    * @param path File path info
    */
-  void read()
+  void
+    read()
   {
     tools::read_from_file(
       [this](std::istream &is) {
@@ -299,7 +314,8 @@ public:
       },
       m_file_path);
   }
-  friend std::ostream &operator<<(std::ostream &os, const Pak &pak)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Pak &pak)
   {
     os << pak.m_file_path << '\n';
     os << "{| class=\"wikitable sortable\"\n! FileName !! Frames !! Offset !! "

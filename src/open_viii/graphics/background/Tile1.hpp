@@ -20,8 +20,8 @@
 #include "open_viii/graphics/Point.hpp"
 #include "open_viii/graphics/Rectangle.hpp"
 #include <array>
-#include <string_view>
 #include <cstdint>
+#include <string_view>
 namespace open_viii::graphics::background {
 /**
  * @see
@@ -42,6 +42,7 @@ protected:
   constexpr static auto EXPECTED_SIZE     = 16U;
   impl_Tile1()                            = default;
   constexpr static auto FORCE_TYPE_VALUES = std::array<std::string_view, 0U>{};
+
 public:
   constexpr auto operator<=>(const impl_Tile1 &) const = default;
 };

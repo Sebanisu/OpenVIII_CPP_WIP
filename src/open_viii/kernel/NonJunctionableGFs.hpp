@@ -111,87 +111,102 @@ private:
   BattleOnlyStatusesT m_battle_only_statuses{};
   PersistentStatusesT m_persistent_statuses{};
   // std::uint8_t Unknown3_{}; // assuming this is part of persistent statuses.
-  std::uint8_t m_power_mod{};// (used in damage formula)
-  std::uint8_t m_level_mod{};// (used in damage formula)
+  std::uint8_t        m_power_mod{};// (used in damage formula)
+  std::uint8_t        m_level_mod{};// (used in damage formula)
 public:
   constexpr auto
     operator<=>(const NonJunctionableGFs &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto magic_id() const noexcept
+  [[nodiscard]] constexpr auto
+    magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[nodiscard]] constexpr auto attack_type() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto gf_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    gf_power() const noexcept
   {
     return m_gf_power;
   }// (used in damage formula)
-  [[nodiscard]] constexpr auto status_attack_enabler() const noexcept
+  [[nodiscard]] constexpr auto
+    status_attack_enabler() const noexcept
   {
     return m_status_attack_enabler;
   }
-  [[nodiscard]] constexpr auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto status_flags() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    status_flags() const noexcept
   {
     return m_status_flags;
   }
-  [[nodiscard]] constexpr auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] constexpr auto unknown2() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[nodiscard]] constexpr auto element() const noexcept
+  [[nodiscard]] constexpr auto
+    element() const noexcept
   {
     return m_element;
   }
-  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }
-  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }
   // [[nodiscard]] constexpr auto  Unknown3() const noexcept { return Unknown3_;
   // } // assuming this is part of persistent statuses.
-  [[nodiscard]] constexpr auto power_mod() const noexcept
+  [[nodiscard]] constexpr auto
+    power_mod() const noexcept
   {
     return m_power_mod;
   }// (used in damage formula)
-  [[maybe_unused]] [[nodiscard]] constexpr auto level_mod() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    level_mod() const noexcept
   {
     return m_level_mod;
   }// (used in damage formula)
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os
-           << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-           << static_cast<std::uint32_t>(m_attack_type) << ", "
-           << static_cast<std::uint32_t>(m_gf_power)// (used in damage formula)
-           << ", " << static_cast<std::uint32_t>(m_status_attack_enabler)
-           << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
-           << static_cast<std::uint32_t>(m_status_flags) << ", "
-           << static_cast<std::uint32_t>(m_unknown1) << ", "
-           << static_cast<std::uint32_t>(m_unknown2) << ", "
-           << static_cast<std::uint32_t>(m_element) << ", "
-           << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
-           << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
-           << static_cast<std::uint32_t>(m_power_mod)// (used in damage formula)
-           << ", "
-           << static_cast<std::uint32_t>(m_level_mod)// (used in damage formula)
+        << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+        << static_cast<std::uint32_t>(m_attack_type) << ", "
+        << static_cast<std::uint32_t>(m_gf_power)// (used in damage formula)
+        << ", " << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+        << static_cast<std::uint32_t>(m_unknown0) << ", "
+        << static_cast<std::uint32_t>(m_status_flags) << ", "
+        << static_cast<std::uint32_t>(m_unknown1) << ", "
+        << static_cast<std::uint32_t>(m_unknown2) << ", "
+        << static_cast<std::uint32_t>(m_element) << ", "
+        << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
+        << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
+        << static_cast<std::uint32_t>(m_power_mod)// (used in damage formula)
+        << ", "
+        << static_cast<std::uint32_t>(m_level_mod)// (used in damage formula)
       ;
   }
 };

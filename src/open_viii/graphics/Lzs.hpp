@@ -29,6 +29,7 @@ struct [[maybe_unused]] Lzs
 private:
   Rectangle<std::uint16_t> m_rectangle{};
   std::vector<Color16>     m_colors{};
+
 public:
   [[maybe_unused]] explicit Lzs(std::span<const char> buffer)
   {
@@ -74,11 +75,13 @@ public:
         std::ranges::data(m_colors), std::ranges::data(adj), min_size);
     }
   }
-  [[maybe_unused]] void save(const std::string_view &filename) const
+  [[maybe_unused]] void
+    save(const std::string_view &filename) const
   {
     Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
   }
-  friend std::ostream &operator<<(std::ostream &os, const Lzs &l)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Lzs &l)
   {
     return os << '{' << l.m_rectangle << "}\n";
   }

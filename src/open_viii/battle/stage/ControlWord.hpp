@@ -17,25 +17,29 @@ private:
 public:
   constexpr ControlWord() = default;
   constexpr explicit ControlWord(uint16_t word) : m_word(word) {}
-  [[nodiscard]] constexpr bool end() const noexcept
+  [[nodiscard]] constexpr bool
+    end() const noexcept
   {
     return m_word == END_VAL;
   }
-  [[nodiscard]] constexpr auto fov() const noexcept
+  [[nodiscard]] constexpr auto
+    fov() const noexcept
   {
     constexpr std::uint16_t shift = 0x6U;
     constexpr std::uint8_t  mask  = 0x3U;
     return static_cast<FovTypeT>(static_cast<std::uint16_t>(m_word >> shift)
                                  & mask);
   }
-  [[nodiscard]] constexpr auto roll() const noexcept
+  [[nodiscard]] constexpr auto
+    roll() const noexcept
   {
     constexpr std::uint16_t shift = 0x8U;
     constexpr std::uint8_t  mask  = 0x3U;
     return static_cast<RollTypeT>(static_cast<std::uint16_t>(m_word >> shift)
                                   & mask);
   }
-  [[nodiscard]] constexpr auto layout() const noexcept
+  [[nodiscard]] constexpr auto
+    layout() const noexcept
   {
     constexpr std::uint8_t mask = 0x1U;
     return static_cast<LayoutTypeT>(m_word & mask);

@@ -52,16 +52,17 @@ concept Color_A = requires(T a)
     } -> std::integral;
 };
 template<typename T>
-concept is_bool = std::is_same_v<T,bool>;
+concept is_bool = std::is_same_v<T, bool>;
 template<typename T>
 concept Color_is_black = requires(T a)
 {
   {
-  a.is_black()
-  } -> is_bool;
+    a.is_black()
+    } -> is_bool;
 };
 template<typename T>
-concept Color = Color_A<T> && Color_B<T> && Color_G<T> && Color_R<T> && Color_is_black<T>;
+concept Color =
+  Color_A<T> && Color_B<T> && Color_G<T> && Color_R<T> && Color_is_black<T>;
 template<typename T>
 concept FIFLFS_Has_get_entry_data = requires(T a)
 {

@@ -28,23 +28,28 @@ private:
   std::array<MenuMessagesSection, DEFAULT_SIZE> m_sub_sections{};
 
 public:
-  [[nodiscard]] auto size() const noexcept
+  [[nodiscard]] auto
+    size() const noexcept
   {
     return m_size;
   }
-  [[nodiscard]] auto sections() const noexcept
+  [[nodiscard]] auto
+    sections() const noexcept
   {
     return m_sections;
   }
-  [[maybe_unused]] [[nodiscard]] auto sub_sections() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto
+    sub_sections() const noexcept
   {
     return m_sub_sections;
   }
-  [[nodiscard]] auto begin() const noexcept
+  [[nodiscard]] auto
+    begin() const noexcept
   {
     return m_sub_sections.begin();
   }
-  [[nodiscard]] auto end() const noexcept
+  [[nodiscard]] auto
+    end() const noexcept
   {
     return m_sub_sections.end();
   }

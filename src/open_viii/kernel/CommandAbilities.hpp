@@ -33,6 +33,7 @@ private:
   std::uint8_t        m_index_to_battle_command{};
   std::uint8_t        m_unknown0{};
   std::uint8_t        m_unknown1{};
+
 public:
   constexpr auto
     operator<=>(const CommandAbilities &right) const noexcept = default;
@@ -40,14 +41,16 @@ public:
    * Offset to encoded name
    * @return EncodedStringOffset
    */
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
   /**
    * Offset to encoded description
    */
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -70,11 +73,13 @@ public:
   {
     return m_index_to_battle_command;
   }
-  [[nodiscard]] constexpr auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] constexpr auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown1() const noexcept
   {
     return m_unknown1;
   }

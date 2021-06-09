@@ -21,20 +21,23 @@ public:
   //  {
   //    return m_animation_offsets[i];
   //  }
-  [[nodiscard]] std::uint16_t at(const size_t &i) const
+  [[nodiscard]] std::uint16_t
+    at(const size_t &i) const
   {
     return m_animation_offsets.at(i);
   }
-  [[nodiscard]] static std::size_t size() noexcept
+  [[nodiscard]] static std::size_t
+    size() noexcept
   {
     return COUNT;
   }
-  [[nodiscard]] auto operator*() noexcept
+  [[nodiscard]] auto
+    operator*() noexcept
   {
     return &m_animation_offsets;
   }
-  friend std::ostream &operator<<(std::ostream &            os,
-                                  const CameraAnimationSet &in)
+  friend std::ostream &
+    operator<<(std::ostream &os, const CameraAnimationSet &in)
   {
     os << '[';
     {

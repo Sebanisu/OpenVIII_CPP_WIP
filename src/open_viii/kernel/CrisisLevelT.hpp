@@ -24,32 +24,38 @@ private:
 public:
   constexpr auto
     operator<=>(const CrisisLevelT<T> &right) const noexcept = default;
-  [[nodiscard]] auto &begin()
+  [[nodiscard]] auto &
+    begin()
   {
     return m_levels.begin();
   }
-  [[nodiscard]] auto &end()
+  [[nodiscard]] auto &
+    end()
   {
     return m_levels.end();
   }
-  [[nodiscard]] constexpr auto level1() const noexcept
+  [[nodiscard]] constexpr auto
+    level1() const noexcept
   {
     return m_levels.at(0);
   }
-  [[nodiscard]] constexpr auto level2() const noexcept
+  [[nodiscard]] constexpr auto
+    level2() const noexcept
   {
     return m_levels.at(1);
   }
-  [[nodiscard]] constexpr auto level3() const noexcept
+  [[nodiscard]] constexpr auto
+    level3() const noexcept
   {
     return m_levels.at(2);
   }
-  [[nodiscard]] constexpr auto level4() const noexcept
+  [[nodiscard]] constexpr auto
+    level4() const noexcept
   {
     return m_levels.at(3);
   }
-  friend std::ostream &operator<<(std::ostream &         os,
-                                  const CrisisLevelT<T> &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const CrisisLevelT<T> &input)
   {
     os << '{';
     bool start{ true };

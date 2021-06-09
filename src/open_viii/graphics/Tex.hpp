@@ -57,8 +57,8 @@ private:
   TexHeader2Version2    m_tex_header2_version2{};
   std::span<const char> m_palette_data{};
   std::span<const char> m_image_data{};
-  [[nodiscard]] auto    get_color_from_palette(std::uint32_t row,
-                                               std::uint8_t  key) const
+  [[nodiscard]] auto
+    get_color_from_palette(std::uint32_t row, std::uint8_t key) const
   {
     if (m_tex_header.num_palettes() == 0
         || key > m_tex_header.num_colors_per_palette()) {
@@ -75,11 +75,13 @@ private:
         .subspan(row * m_tex_header.num_colors_per_palette());
     return Color32<0, 1, 2, 3>(palette_span[key]);
   }
-  [[nodiscard]] auto size_of_palette() const noexcept
+  [[nodiscard]] auto
+    size_of_palette() const noexcept
   {
     return m_tex_header.palette_size() * sizeof(std::uint32_t);
   }// I think this is correct.
-  [[nodiscard]] auto palette_locator() const noexcept
+  [[nodiscard]] auto
+    palette_locator() const noexcept
   {
     static constexpr auto version1size = 0xECU;
     static constexpr auto version2size = 0xF0U;
@@ -88,11 +90,13 @@ private:
     }
     return version1size;
   }
-  [[nodiscard]] auto texture_locator() const noexcept
+  [[nodiscard]] auto
+    texture_locator() const noexcept
   {
     return size_of_palette() + palette_locator();
   }
-  void reset()
+  void
+    reset()
   {
     m_tex_header              = {};
     m_tex_pixel_format_header = {};
@@ -101,6 +105,7 @@ private:
     m_palette_data            = {};
     m_image_data              = {};
   }
+
 public:
   Tex() = default;
   [[maybe_unused]] explicit Tex(std::span<const char> buffer)
@@ -201,7 +206,8 @@ public:
     }
     return ret;
   };
-  [[maybe_unused]] void save(std::string_view filename) const
+  [[maybe_unused]] void
+    save(std::string_view filename) const
   {
     if (m_tex_header.num_palettes() == 0) {
       Ppm::save(get_colors(),
@@ -221,7 +227,8 @@ public:
       }
     }
   }
-  friend std::ostream &operator<<(std::ostream &os, const Tex &t)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Tex &t)
   {
     return os << "{Version: " << t.m_tex_header.version()
               << ", BPP: " << t.m_tex_header.bits_per_index()

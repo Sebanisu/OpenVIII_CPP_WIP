@@ -28,15 +28,18 @@ struct QuistisBlueMagicLimitBreakParams
 {
 private:
   CrisisLevelT<QuistisBlueMagicLimitBreakParam> m_blue_magic_data{};
+
 public:
   constexpr auto operator<=>(
     const QuistisBlueMagicLimitBreakParams &right) const noexcept = default;
-  [[nodiscard]] const auto *operator->() const noexcept
+  [[nodiscard]] const auto *
+    operator->() const noexcept
   {
     return &m_blue_magic_data;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << m_blue_magic_data;
   }

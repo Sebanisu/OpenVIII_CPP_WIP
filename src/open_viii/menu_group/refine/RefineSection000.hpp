@@ -66,50 +66,60 @@ private:
     m_forbid_mag_rf{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &t_mag_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    t_mag_rf() const noexcept
   {
     return m_t_mag_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &i_mag_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    i_mag_rf() const noexcept
   {
     return m_i_mag_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &f_mag_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    f_mag_rf() const noexcept
   {
     return m_f_mag_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &l_mag_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    l_mag_rf() const noexcept
   {
     return m_l_mag_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &time_mag_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    time_mag_rf() const noexcept
   {
     return m_time_mag_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &st_mag_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    st_mag_rf() const noexcept
   {
     return m_st_mag_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &supt_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    supt_rf() const noexcept
   {
     return m_supt_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &forbid_mag_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    forbid_mag_rf() const noexcept
   {
     return m_forbid_mag_rf;
   }
-  [[nodiscard]] static constexpr auto size()
+  [[nodiscard]] static constexpr auto
+    size()
   {
     return T_MAG_RF_COUNT + I_MAG_RF_COUNT + F_MAG_RF_COUNT + L_MAG_RF_COUNT
-           + TIME_MAG_RF_COUNT + ST_MAG_RF_COUNT + SUPT_RF_COUNT
-           + FORBID_MAG_RF_COUNT;
+         + TIME_MAG_RF_COUNT + ST_MAG_RF_COUNT + SUPT_RF_COUNT
+         + FORBID_MAG_RF_COUNT;
   }
   template<LangT langVal, typename T>
-  std::ostream &out_array(const T &                    arr,
-                          std::ostream &               os,
-                          const std::span<const char> &buffer = ""sv,
-                          const intmax_t               offset = 0,
-                          bool skip_first_null                = false) const
+  std::ostream &
+    out_array(const T &                    arr,
+              std::ostream &               os,
+              const std::span<const char> &buffer          = ""sv,
+              const intmax_t               offset          = 0,
+              bool                         skip_first_null = false) const
   {
     for (const auto item : arr) {
       item.template out<langVal>(os, buffer, offset, skip_first_null);
@@ -118,10 +128,11 @@ public:
     return os;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &               os,
-                    const std::span<const char> &buffer          = ""sv,
-                    const intmax_t               offset          = 0,
-                    bool                         skip_first_null = false) const
+  std::ostream &
+    out(std::ostream &               os,
+        const std::span<const char> &buffer          = ""sv,
+        const intmax_t               offset          = 0,
+        bool                         skip_first_null = false) const
   {
     os << "tMagRF:\n";
     out_array<langVal>(m_t_mag_rf, os, buffer, offset, skip_first_null);

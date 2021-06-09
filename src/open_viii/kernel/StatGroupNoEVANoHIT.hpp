@@ -29,36 +29,43 @@ public:
   static constexpr auto LUCK{ 6U };
   constexpr auto
     operator<=>(const StatGroupNoEVANoHIT<T> &right) const noexcept = default;
-  [[nodiscard]] constexpr T hp() const noexcept
+  [[nodiscard]] constexpr T
+    hp() const noexcept
   {
     return m_stats.at(HP);
   }
-  [[nodiscard]] constexpr T str() const noexcept
+  [[nodiscard]] constexpr T
+    str() const noexcept
   {
     return m_stats.at(STR);
   }
-  [[nodiscard]] constexpr T vit() const noexcept
+  [[nodiscard]] constexpr T
+    vit() const noexcept
   {
     return m_stats.at(VIT);
   }
-  [[nodiscard]] constexpr T mag() const noexcept
+  [[nodiscard]] constexpr T
+    mag() const noexcept
   {
     return m_stats.at(MAG);
   }
-  [[nodiscard]] constexpr T spr() const noexcept
+  [[nodiscard]] constexpr T
+    spr() const noexcept
   {
     return m_stats.at(SPR);
   }
-  [[nodiscard]] constexpr T spd() const noexcept
+  [[nodiscard]] constexpr T
+    spd() const noexcept
   {
     return m_stats.at(SPD);
   }
-  [[nodiscard]] constexpr T luck() const noexcept
+  [[nodiscard]] constexpr T
+    luck() const noexcept
   {
     return m_stats.at(LUCK);
   }
-  friend std::ostream &operator<<(std::ostream &                os,
-                                  const StatGroupNoEVANoHIT<T> &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const StatGroupNoEVANoHIT<T> &input)
   {
     bool first{ true };
     for (const auto &item : input.m_stats) {
@@ -89,6 +96,7 @@ public:
     }
     return os;
   }
+
 private:
   std::array<T, MAX_COUNT> m_stats{};
 };

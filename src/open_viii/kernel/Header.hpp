@@ -65,14 +65,15 @@ struct Header
 private:
   std::vector<char>          m_buffer{};
   std::vector<std::uint32_t> m_section_offsets{};
+
 public:
-  static constexpr auto      FILE_NAME = std::string_view{ "kernel.bin" };
+  static constexpr auto FILE_NAME = std::string_view{ "kernel.bin" };
   auto operator<=>(const Header &right) const noexcept = default;
   template<SectionTypesT sectionType>
   static constexpr bool section_type_test = []() {
     return static_cast<int>(sectionType)
-             < static_cast<int>(SectionTypesT::count)
-           && static_cast<int>(sectionType) >= 0;
+           < static_cast<int>(SectionTypesT::count)
+        && static_cast<int>(sectionType) >= 0;
   }();
   template<SectionTypesT sectionType>
   requires(section_type_test<sectionType>)
@@ -85,7 +86,7 @@ public:
       if constexpr (static_cast<int>(sectionType)
                     >= (static_cast<int>(SectionTypesT::count) - 1)) {
         return std::ranges::size(m_buffer)
-               - m_section_offsets.at(static_cast<size_t>(sectionType));
+             - m_section_offsets.at(static_cast<size_t>(sectionType));
       } else {
         return static_cast<size_t>(
           m_section_offsets.at(static_cast<size_t>(sectionType) + 1)
@@ -247,7 +248,8 @@ public:
   {
     return {};
   }
-  auto get_section_offsets() const
+  auto
+    get_section_offsets() const
   {
     auto local_offsets = decltype(m_section_offsets){};
     auto buffer_span   = std::span<const char>(m_buffer);
@@ -275,15 +277,18 @@ public:
     : m_buffer(main.get_entry_data(FILE_NAME)),
       m_section_offsets(get_section_offsets())
   {}
-  [[nodiscard]] const auto &buffer() const noexcept
+  [[nodiscard]] const auto &
+    buffer() const noexcept
   {
     return m_buffer;
   }
-  [[nodiscard]] auto section_count() const noexcept
+  [[nodiscard]] auto
+    section_count() const noexcept
   {
     return m_section_offsets.size();
   }
-  [[nodiscard]] const auto &section_offsets() const noexcept
+  [[nodiscard]] const auto &
+    section_offsets() const noexcept
   {
     return m_section_offsets;
   }
@@ -446,8 +451,9 @@ template<>
   return "Quistis Blue Magic Limit Break"sv;
 }
 template<>
-[[nodiscard]] constexpr std::string_view Header::get_section_name<
-  SectionTypesT::quistis_blue_magic_limit_break_params>() const
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<
+    SectionTypesT::quistis_blue_magic_limit_break_params>() const
 {
   return "Quistis Blue Magic Limit Break Params"sv;
 }
@@ -584,8 +590,9 @@ template<>
   return "Command Abilities Text"sv;
 }
 template<>
-[[nodiscard]] constexpr std::string_view Header::get_section_name<
-  SectionTypesT::stat_percent_increase_abilities_text>() const
+[[nodiscard]] constexpr std::string_view
+  Header::get_section_name<
+    SectionTypesT::stat_percent_increase_abilities_text>() const
 {
   return "Stat Percent Increase Abilities Text"sv;
 }

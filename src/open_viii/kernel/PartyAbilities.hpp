@@ -33,14 +33,17 @@ private:
   std::uint8_t        m_flag{};
   std::uint8_t        m_unknown0{};
   std::uint8_t        m_unknown1{};
+
 public:
   constexpr auto
     operator<=>(const PartyAbilities &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -54,20 +57,24 @@ public:
   {
     return m_ability_points_required_to_unlock;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto flag() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    flag() const noexcept
   {
     return m_flag;
   }
-  [[nodiscard]] constexpr auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] constexpr auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown1() const noexcept
   {
     return m_unknown1;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << ", "
               << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)

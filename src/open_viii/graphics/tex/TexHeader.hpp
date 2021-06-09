@@ -139,91 +139,104 @@ public:
   /**
    *Version (must be 1 for ff7 or 2 for ff8)
    */
-  [[nodiscard]] auto version() const noexcept
+  [[nodiscard]] auto
+    version() const noexcept
   {
     return m_version;
   }
   /**
    * Unknown 1
    */
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_1() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    unknown_1() const noexcept
   {
     return m_unknown_1;
   }
   /**
    * Color Key Flag
    */
-  [[maybe_unused]] [[nodiscard]] const auto &color_key_flag() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    color_key_flag() const noexcept
   {
     return m_color_key_flag;
   }
   /**
    * Unknown 2
    */
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_2() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    unknown_2() const noexcept
   {
     return m_unknown_2;
   }
   /**
    * Unknown 3
    */
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_3() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    unknown_3() const noexcept
   {
     return m_unknown_3;
   }
   /**
    * Minimum Number of Bits per Color
    */
-  [[maybe_unused]] [[nodiscard]] const auto &min_bits_per_color() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    min_bits_per_color() const noexcept
   {
     return m_min_bits_per_color;
   }
   /**
    * Maximum Number of Bits per Color
    */
-  [[maybe_unused]] [[nodiscard]] const auto &max_bits_per_color() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    max_bits_per_color() const noexcept
   {
     return m_max_bits_per_color;
   }
   /**
    * Minimum Number of Alpha Bits
    */
-  [[maybe_unused]] [[nodiscard]] const auto &min_alpha_bits() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    min_alpha_bits() const noexcept
   {
     return m_min_alpha_bits;
   }
   /**
    * Maximum Number of Alpha Bits
    */
-  [[maybe_unused]] [[nodiscard]] const auto &max_alpha_bits() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    max_alpha_bits() const noexcept
   {
     return m_max_alpha_bits;
   }
   /**
    * Minimum Number of Bits per Pixel
    */
-  [[maybe_unused]] [[nodiscard]] const auto &min_bits_per_pixel() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    min_bits_per_pixel() const noexcept
   {
     return m_min_bits_per_pixel;
   }
   /**
    * Maximum Number of Bits per Pixel
    */
-  [[maybe_unused]] [[nodiscard]] const auto &max_bits_per_pixel() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    max_bits_per_pixel() const noexcept
   {
     return m_max_bits_per_pixel;
   }
   /**
    * Unknown 4
    */
-  [[maybe_unused]] [[nodiscard]] const auto &unknown_4() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    unknown_4() const noexcept
   {
     return m_unknown_4;
   }
   /**
    * Number of Palettes
    */
-  [[maybe_unused]] [[nodiscard]] const auto &num_palettes() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    num_palettes() const noexcept
   {
     return m_num_palettes;
   }
@@ -238,49 +251,56 @@ public:
   /**
    * Bit Depth
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bit_depth() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    bit_depth() const noexcept
   {
     return m_bit_depth;
   }
   /**
    * Image Width
    */
-  [[maybe_unused]] [[nodiscard]] const auto &image_width() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    image_width() const noexcept
   {
     return m_image_width;
   }
   /**
    * Image Height
    */
-  [[maybe_unused]] [[nodiscard]] const auto &image_height() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    image_height() const noexcept
   {
     return m_image_height;
   }
   /**
    * Bytes per Row (usually ignored and assumed to be bytes per pixel * width)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bytes_per_row() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    bytes_per_row() const noexcept
   {
     return m_bytes_per_row;
   }
   /**
    * Unknown 5
    */
-  [[nodiscard]] auto unknown_5() const noexcept
+  [[nodiscard]] auto
+    unknown_5() const noexcept
   {
     return m_unknown_5;
   }
   /**
    * Palette Flag (indicates the presence of a palette)
    */
-  [[maybe_unused]] [[nodiscard]] bool palette_flag() const noexcept
+  [[maybe_unused]] [[nodiscard]] bool
+    palette_flag() const noexcept
   {
     return m_palette_flag != 0;
   }
   /**
    * Bits per Index (always 0 for non_paletted images)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bits_per_index() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    bits_per_index() const noexcept
   {
     return m_bits_per_index;
   }
@@ -295,7 +315,8 @@ public:
   /**
    * Palette Size (always number of palettes * colors per palette)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &palette_size() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    palette_size() const noexcept
   {
     return m_palette_size;
   }
@@ -311,21 +332,24 @@ public:
   /**
    * Runtime Data 1 (ignored on load)
    */
-  [[maybe_unused]] [[nodiscard]] const auto &runtime_data_1() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    runtime_data_1() const noexcept
   {
     return m_runtime_data_1;
   }
   /**
    * Number of Bits per Pixel
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bits_per_pixel() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    bits_per_pixel() const noexcept
   {
     return m_bits_per_pixel;
   }
   /**
    * Number of Bytes per Pixel
    */
-  [[maybe_unused]] [[nodiscard]] const auto &bytes_per_pixel() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    bytes_per_pixel() const noexcept
   {
     return m_bytes_per_pixel;
   }
@@ -333,16 +357,18 @@ public:
    * Area of image
    * @return Height * Width
    */
-  [[maybe_unused]] [[nodiscard]] std::size_t image_area() const noexcept
+  [[maybe_unused]] [[nodiscard]] std::size_t
+    image_area() const noexcept
   {
     return static_cast<std::size_t>(m_image_width)
-           * static_cast<std::size_t>(m_image_height);
+         * static_cast<std::size_t>(m_image_height);
   }
   /**
    * Test for valid values.
    * @return
    */
-  [[nodiscard]] bool check() const noexcept
+  [[nodiscard]] bool
+    check() const noexcept
   {
     static constexpr auto bpp1  = 1U;
     static constexpr auto bpp2  = 2U;
@@ -353,10 +379,10 @@ public:
     static constexpr auto bpp24 = 24U;
     static constexpr auto bpp32 = 32U;
     return (m_version == 1 || m_version == 2)
-           && ((m_bits_per_pixel == bpp8 && m_bytes_per_pixel == bpp1)
-               || (m_bits_per_pixel == bpp16 && m_bytes_per_pixel == bpp2)
-               || (m_bits_per_pixel == bpp24 && m_bytes_per_pixel == bpp3)
-               || (m_bits_per_pixel == bpp32 && m_bytes_per_pixel == bpp4));
+        && ((m_bits_per_pixel == bpp8 && m_bytes_per_pixel == bpp1)
+            || (m_bits_per_pixel == bpp16 && m_bytes_per_pixel == bpp2)
+            || (m_bits_per_pixel == bpp24 && m_bytes_per_pixel == bpp3)
+            || (m_bits_per_pixel == bpp32 && m_bytes_per_pixel == bpp4));
   }
 };
 }// namespace open_viii::graphics

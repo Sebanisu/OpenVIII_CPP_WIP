@@ -27,6 +27,7 @@ template<Number dimT> struct Rectangle
 private:
   Point<dimT> m_top_left{};
   Point<dimT> m_width_height{};
+
 public:
   constexpr Rectangle() = default;
   constexpr auto
@@ -49,14 +50,16 @@ public:
   /**
    * @return Left coordinate.
    */
-  [[maybe_unused]] [[nodiscard]] constexpr auto left() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    left() const noexcept
   {
     return x();
   }
   /**
    * @return Left coordinate.
    */
-  [[nodiscard]] constexpr auto x() const noexcept
+  [[nodiscard]] constexpr auto
+    x() const noexcept
   {
     return m_top_left.x();
   }
@@ -66,7 +69,8 @@ public:
    * @return Left coordinate.
    *
    */
-  void x(const dimT &in_x) noexcept
+  void
+    x(const dimT &in_x) noexcept
   {
     m_top_left.x(in_x);
   }
@@ -75,21 +79,24 @@ public:
    * @param x is new Left coordinate.
    * @return Left coordinate.
    */
-  void left(const dimT &in_x) const noexcept
+  void
+    left(const dimT &in_x) const noexcept
   {
     x(in_x);
   }
   /**
    * @return Top coordinate.
    */
-  [[maybe_unused]] [[nodiscard]] constexpr auto top() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    top() const noexcept
   {
     return y();
   }
   /**
    * @return Top coordinate.
    */
-  [[nodiscard]] constexpr auto y() const noexcept
+  [[nodiscard]] constexpr auto
+    y() const noexcept
   {
     return m_top_left.y();
   }
@@ -98,7 +105,8 @@ public:
    * @param y is new Top coordinate.
    * @return Top coordinate.
    */
-  void y(const dimT &in_y) noexcept
+  void
+    y(const dimT &in_y) noexcept
   {
     m_top_left.y(in_y);
   }
@@ -107,21 +115,24 @@ public:
    * @param y is new Top coordinate.
    * @return Top coordinate.
    */
-  void top(const dimT &in_y) noexcept
+  void
+    top(const dimT &in_y) noexcept
   {
     y(in_y);
   }
   /**
    * @return Right coordinate.
    */
-  [[nodiscard]] constexpr auto right() const noexcept
+  [[nodiscard]] constexpr auto
+    right() const noexcept
   {
     return m_top_left.x() + m_width_height.y();
   }
   /**
    * @return Set Right coordinate.
    */
-  void right(const dimT right) noexcept
+  void
+    right(const dimT right) noexcept
   {
     if (right >= m_top_left.x()) {
       m_width_height.X(m_top_left.x() - right);
@@ -131,7 +142,8 @@ public:
   /**
    * @return Set Bottom coordinate.
    */
-  void bottom(const dimT bottom) noexcept
+  void
+    bottom(const dimT bottom) noexcept
   {
     if (bottom >= m_top_left.y()) {
       m_width_height.Y(m_top_left.y() - bottom);
@@ -141,14 +153,16 @@ public:
   /**
    * @return Bottom coordinate.
    */
-  [[maybe_unused]] [[nodiscard]] constexpr auto bottom() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    bottom() const noexcept
   {
     return m_top_left.y() + m_width_height.y();
   }
   /**
    * @return Width.
    */
-  [[nodiscard]] constexpr auto width() const noexcept
+  [[nodiscard]] constexpr auto
+    width() const noexcept
   {
     return m_width_height.x();
   }
@@ -157,14 +171,16 @@ public:
    * @param width is new Width value.
    * @return Width.
    */
-  void width(const dimT &in_width) noexcept
+  void
+    width(const dimT &in_width) noexcept
   {
     return m_width_height.x(in_width);
   }
   /**
    * @return Height.
    */
-  [[nodiscard]] constexpr auto height() const noexcept
+  [[nodiscard]] constexpr auto
+    height() const noexcept
   {
     return m_width_height.y();
   }
@@ -173,16 +189,18 @@ public:
    * @param height is new Height value.
    * @return Height.
    */
-  void height(dimT in_height) const noexcept
+  void
+    height(dimT in_height) const noexcept
   {
     m_width_height.y(in_height);
   }
-  [[nodiscard]] constexpr auto area() const noexcept
+  [[nodiscard]] constexpr auto
+    area() const noexcept
   {
     return m_width_height.area();
   }
-  friend std::ostream &operator<<(std::ostream &         os,
-                                  const Rectangle<dimT> &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Rectangle<dimT> &input)
   {
     return os << "{(X, Y) = " << input.m_top_left
               << ", (Width, Height) = " << input.m_width_height << '}';
@@ -199,11 +217,13 @@ public:
     return { m_top_left * input.m_top_left,
              m_width_height * input.m_width_height };
   }
-  constexpr Point<dimT> top_left() const noexcept
+  constexpr Point<dimT>
+    top_left() const noexcept
   {
     return m_top_left;
   }
-  constexpr Point<dimT> width_height() const noexcept
+  constexpr Point<dimT>
+    width_height() const noexcept
   {
     return m_width_height;
   }

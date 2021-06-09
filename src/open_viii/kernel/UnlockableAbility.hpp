@@ -24,22 +24,27 @@ private:
   UnlockerT    m_unlocker{};
   std::uint8_t m_unknown{};
   AbilitiesT   m_ability{};
+
 public:
   constexpr auto
     operator<=>(const UnlockableAbility &right) const noexcept = default;
-  [[nodiscard]] constexpr auto unlocker() const noexcept
+  [[nodiscard]] constexpr auto
+    unlocker() const noexcept
   {
     return m_unlocker;
   }
-  [[nodiscard]] constexpr auto unknown() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown() const noexcept
   {
     return m_unknown;
   }
-  [[nodiscard]] constexpr auto ability() const noexcept
+  [[nodiscard]] constexpr auto
+    ability() const noexcept
   {
     return m_ability;
   }
-  friend auto &operator<<(std::ostream &os, const UnlockableAbility &ua)
+  friend auto &
+    operator<<(std::ostream &os, const UnlockableAbility &ua)
   {
     return os << '{' << static_cast<std::uint32_t>(ua.unlocker()) << ", "
               << static_cast<std::uint32_t>(ua.unknown()) << ", "

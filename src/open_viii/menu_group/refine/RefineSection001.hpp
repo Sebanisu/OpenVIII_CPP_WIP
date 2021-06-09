@@ -52,39 +52,47 @@ private:
   std::array<RefineEntry<ItemIdT, ItemIdT>, TOOL_RF_COUNT> m_tool_rf{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &recov_med_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    recov_med_rf() const noexcept
   {
     return m_recov_med_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &st_med_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    st_med_rf() const noexcept
   {
     return m_st_med_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &ammo_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    ammo_rf() const noexcept
   {
     return m_ammo_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &forbid_med_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    forbid_med_rf() const noexcept
   {
     return m_forbid_med_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &gf_recov_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    gf_recov_rf() const noexcept
   {
     return m_gf_recov_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &gf_abl_med_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    gf_abl_med_rf() const noexcept
   {
     return m_gf_abl_med_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &tool_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    tool_rf() const noexcept
   {
     return m_tool_rf;
   }
-  [[nodiscard]] static constexpr auto size()
+  [[nodiscard]] static constexpr auto
+    size()
   {
     return RECOV_MED_RF_COUNT + ST_MED_RF_COUNT + AMMO_RF_COUNT
-           + FORBID_MED_RF_COUNT + GF_RECOV_RF_COUNT + GF_ABL_MED_RF_COUNT
-           + TOOL_RF_COUNT;
+         + FORBID_MED_RF_COUNT + GF_RECOV_RF_COUNT + GF_ABL_MED_RF_COUNT
+         + TOOL_RF_COUNT;
   }
   template<LangT langVal, typename T>
   [[maybe_unused]] std::ostream &
@@ -100,10 +108,11 @@ public:
     return os;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &               os,
-                    const std::span<const char> &buffer          = ""sv,
-                    const intmax_t               offset          = 0,
-                    bool                         skip_first_null = false) const
+  std::ostream &
+    out(std::ostream &               os,
+        const std::span<const char> &buffer          = ""sv,
+        const intmax_t               offset          = 0,
+        bool                         skip_first_null = false) const
   {
     os << "recovMedRF:\n";
     out_array<langVal>(m_recov_med_rf, os, buffer, offset, skip_first_null);

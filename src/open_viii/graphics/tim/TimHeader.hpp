@@ -28,7 +28,7 @@ private:
   /**
    * @brief expected value of tag_ is 0x10.
    */
-  static constexpr auto TAG_VAL = 0x10;
+  static constexpr auto TAG_VAL     = 0x10;
   /**
    * @brief expected value of version_ is 0x0.
    */
@@ -36,35 +36,35 @@ private:
   /**
    * @brief tag_ is first byte of a TIM file.
    */
-  std::uint8_t m_tag{};
+  std::uint8_t          m_tag{};
   /**
    * @brief version_ is second byte of a TIM file.
    */
-  std::uint8_t m_version{};
+  std::uint8_t          m_version{};
   /**
    * @brief value should be 0.
    */
-  std::uint8_t m_none0{};
+  std::uint8_t          m_none0{};
   /**
    * @brief value should be 0.
    */
-  std::uint8_t m_none1{};
+  std::uint8_t          m_none1{};
   /**
    * @brief bits per pixel flags and CLP flag
    */
-  BPPT m_bpp{};
+  BPPT                  m_bpp{};
   /**
    * @brief value should be 0.
    */
-  std::uint8_t m_none2{};
+  std::uint8_t          m_none2{};
   /**
    * @brief value should be 0.
    */
-  std::uint8_t m_none3{};
+  std::uint8_t          m_none3{};
   /**
    * @brief value should be 0 or 22
    */
-  std::uint8_t m_none4{};
+  std::uint8_t          m_none4{};
 
 public:
   constexpr TimHeader()                               = default;
@@ -72,7 +72,8 @@ public:
   /**
    * @return bits per pixel flags and CLP flag
    */
-  [[nodiscard]] constexpr auto bpp() const
+  [[nodiscard]] constexpr auto
+    bpp() const
   {
     return m_bpp;
   }
@@ -83,17 +84,19 @@ public:
    * @brief Test member variables for valid values.
    * @return true if Check test passes.
    */
-  [[nodiscard]] constexpr bool check() const
+  [[nodiscard]] constexpr bool
+    check() const
   {
     return m_none0 == 0 && m_none1 == 0 && m_none2 == 0 && m_none3 == 0
-           && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL
-           && m_version == VERSION_VAL && m_bpp.check();
+        && /*(none4_ == 0 || none4_ == 22) &&*/ m_tag == TAG_VAL
+        && m_version == VERSION_VAL && m_bpp.check();
   }
   [[nodiscard]] explicit constexpr operator bool() const
   {
     return check();
   }
-  friend std::ostream &operator<<(std::ostream &os, const TimHeader &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const TimHeader &input)
   {
     //[[maybe_unused]]static constexpr auto size_ = sizeof(input);
     return os << "{ Tag: " << static_cast<uint32_t>(input.m_tag)

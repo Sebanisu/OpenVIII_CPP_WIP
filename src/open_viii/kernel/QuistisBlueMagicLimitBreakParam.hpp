@@ -26,35 +26,41 @@ private:
   PersistentStatusesT m_persistent_statuses{};
   std::uint8_t        m_attack_power{};
   std::uint8_t        m_attack_param{};
+
 public:
   constexpr auto operator<=>(
     const QuistisBlueMagicLimitBreakParam &right) const noexcept = default;
-  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }
-  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }
-  [[nodiscard]] constexpr auto attack_power() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_power() const noexcept
   {
     return m_attack_power;
   }
-  [[nodiscard]] constexpr auto attack_param() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_param() const noexcept
   {
     return m_attack_param;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << '{' << static_cast<std::uint32_t>(battle_only_statuses())
               << ", " << static_cast<std::uint32_t>(persistent_statuses())
               << ", " << static_cast<std::uint32_t>(attack_power()) << ", "
               << static_cast<std::uint32_t>(attack_param()) << '}';
   }
-  friend std::ostream &operator<<(std::ostream &                         os,
-                                  const QuistisBlueMagicLimitBreakParam &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const QuistisBlueMagicLimitBreakParam &input)
   {
     return input.out(os, "");
   }

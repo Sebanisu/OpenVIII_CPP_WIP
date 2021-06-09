@@ -9,10 +9,9 @@
 namespace open_viii::tools {
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::ostream &>)
-  [[maybe_unused]] bool write_buffer(
-    const lambdaT &         lambda,
-    const std::string_view &path,
-    const std::string_view &root = "tmp")
+  [[maybe_unused]] bool write_buffer(const lambdaT &         lambda,
+                                     const std::string_view &path,
+                                     const std::string_view &root = "tmp")
 {
   auto dir      = std::filesystem::path(root);
   auto filename = dir / path;
@@ -26,8 +25,8 @@ requires(std::invocable<lambdaT, std::ostream &>)
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   //    if (fp.is_open()) {
-//  const auto &string = filename.string();
-//  std::cout << "Saving: \t\"" << string << "\"\n";// << std::flush;
+  //  const auto &string = filename.string();
+  //  std::cout << "Saving: \t\"" << string << "\"\n";// << std::flush;
   lambda(fp);
   fp.close();
   return true;

@@ -25,32 +25,39 @@ public:
                                 std::uint32_t flag_dword)
     : OneModelHeaderStart(offset, size, size, flag_dword)
   {}
-  constexpr std::uint32_t offset() const noexcept
+  constexpr std::uint32_t
+    offset() const noexcept
   {
     return m_offset;
   }
-  constexpr std::uint32_t size() const noexcept
+  constexpr std::uint32_t
+    size() const noexcept
   {
     return m_size;
   }
-  constexpr std::uint32_t size2() const noexcept
+  constexpr std::uint32_t
+    size2() const noexcept
   {
     return m_size2;
   }
-  constexpr std::uint32_t flag_dword() const noexcept
+  constexpr std::uint32_t
+    flag_dword() const noexcept
   {
     return m_flag_dword;
   }
-  constexpr std::uint32_t get_flag_from_dword() const noexcept
+  constexpr std::uint32_t
+    get_flag_from_dword() const noexcept
   {
     return ((m_flag_dword >> 24) & 0xFF);
   }
-  constexpr bool is_main_chr() const noexcept
+  constexpr bool
+    is_main_chr() const noexcept
   {
     constexpr auto main_chr_flag = 0xD0U;
     return get_flag_from_dword() == main_chr_flag;
   }
-  constexpr bool is_unknown_object() const noexcept
+  constexpr bool
+    is_unknown_object() const noexcept
   {
     constexpr auto main_chr_flag = 0xA0U;
     return get_flag_from_dword() == main_chr_flag;

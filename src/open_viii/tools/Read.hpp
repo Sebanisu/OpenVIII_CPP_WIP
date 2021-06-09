@@ -192,10 +192,10 @@ static void
            trivialType &                item,
            std::size_t                  size)
 {
-  const auto element_size = sizeof(decltype(*std::ranges::data(item)));
+  const auto  element_size = sizeof(decltype(*std::ranges::data(item)));
   // std::ranges::size(span) / element_size
   std::size_t size_of_span = std::ranges::size(span);
-  item.resize(std::min(size,element_size * size_of_span));
+  item.resize(std::min(size, element_size * size_of_span));
   if (size != 0) {
     memcpy(std::ranges::data(item),
            std::ranges::data(span),
@@ -305,7 +305,7 @@ template<typename dstT = std::vector<char>>
     return ofp;
   }
   if (ec) {
-    //std::cerr << ec.message().c_str() << std::endl;
+    // std::cerr << ec.message().c_str() << std::endl;
     ec.clear();
     return ofp;
   }
@@ -320,8 +320,8 @@ template<typename dstT = std::vector<char>>
     // next time it'd work fine (╯°□°)╯︵ ┻━┻
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
-//  std::cout << std::string("Loading: \t\"") << path.string()
-//            << std::string("\"\n");
+  //  std::cout << std::string("Loading: \t\"") << path.string()
+  //            << std::string("\"\n");
   return ofp;
 }
 /**

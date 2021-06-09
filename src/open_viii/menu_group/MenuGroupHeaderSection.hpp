@@ -28,11 +28,13 @@ private:
   std::uint32_t                  m_size{};
 
 public:
-  [[nodiscard]] auto file_offset() const noexcept
+  [[nodiscard]] auto
+    file_offset() const noexcept
   {
     return m_file_offset - PERM_OFFSET;
   }
-  [[nodiscard]] const auto &size() const noexcept
+  [[nodiscard]] const auto &
+    size() const noexcept
   {
     return m_size;
   }

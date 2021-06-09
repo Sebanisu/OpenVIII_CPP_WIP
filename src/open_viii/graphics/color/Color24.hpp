@@ -32,49 +32,64 @@ requires(r_ < 3U && g_ < 3U && b_ < 3U && r_ != g_ && r_ != b_
 {
 public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 3U };
+
 private:
   mutable std::array<std::uint8_t, EXPLICIT_SIZE> m_parts{};
   template<size_t index, typename T>
   requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) std::uint8_t
-    set(T value) const
+    set(T value)
+  const
   {
     return m_parts[index] = static_cast<std::uint8_t>(std::clamp(
              value,
              static_cast<T>(0),
              static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
   }
-  template<size_t index, std::floating_point T> std::uint8_t set(T value) const
+  template<size_t index, std::floating_point T>
+  std::uint8_t
+    set(T value) const
   {
     return m_parts[index] = static_cast<std::uint8_t>(
              std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F))
              * std::numeric_limits<std::uint8_t>::max());
   }
+
 public:
-  [[nodiscard]] std::uint8_t r() const
+  [[nodiscard]] std::uint8_t
+    r() const
   {
     return m_parts.at(r_);
   }
-  [[nodiscard]] std::uint8_t g() const
+  [[nodiscard]] std::uint8_t
+    g() const
   {
     return m_parts.at(g_);
   }
-  [[nodiscard]] std::uint8_t b() const
+  [[nodiscard]] std::uint8_t
+    b() const
   {
     return m_parts.at(b_);
   }
-  [[nodiscard]] std::uint8_t a() const
+  [[nodiscard]] std::uint8_t
+    a() const
   {
     return std::numeric_limits<std::uint8_t>::max();
   }
-  template<Number T> std::uint8_t r(const T &value) const
+  template<Number T>
+  std::uint8_t
+    r(const T &value) const
   {
     return set<r_, T>(value);
   }
-  template<Number T> std::uint8_t g(const T &value) const
+  template<Number T>
+  std::uint8_t
+    g(const T &value) const
   {
     return set<g_, T>(value);
   }
-  template<Number T> std::uint8_t b(const T &value) const
+  template<Number T>
+  std::uint8_t
+    b(const T &value) const
   {
     return set<b_, T>(value);
   }
@@ -93,8 +108,8 @@ public:
   friend auto operator<=>(const Color24<r_, g_, b_> &left,
                           const Color24<r_, g_, b_> &right) noexcept = default;
   auto operator<=>(const Color24<r_, g_, b_> &right) const noexcept  = default;
-  friend std::ostream &operator<<(std::ostream &             os,
-                                  const Color24<r_, g_, b_> &color)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Color24<r_, g_, b_> &color)
   {
     return os << std::uppercase << std::hex << '{'
               << static_cast<std::size_t>(color.R()) << ", "
@@ -103,7 +118,8 @@ public:
               << static_cast<std::size_t>(color.A()) << '}' << std::dec
               << std::nouppercase;
   }
-  bool is_black() const noexcept
+  bool
+    is_black() const noexcept
   {
     return std::ranges::all_of(m_parts, [](const auto &i) -> bool {
       return i == 0;

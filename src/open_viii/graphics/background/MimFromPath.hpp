@@ -18,23 +18,28 @@ public:
   {
   public:
     static constexpr auto MAX_PALETTES_PLUS_1 = 18U;
+
   private:
     mutable std::array<Ppm, MAX_PALETTES_PLUS_1> m_palettes{};
+
   public:
-    [[nodiscard]] auto &at(const size_t &palette) const
+    [[nodiscard]] auto &
+      at(const size_t &palette) const
     {
       return m_palettes.at(palette);
     }
-    void set(const size_t &palette, Ppm &&value) const
+    void
+      set(const size_t &palette, Ppm &&value) const
     {
       m_palettes.at(palette) = std::move(value);
     }
-    [[nodiscard]] auto &to_array() const noexcept
+    [[nodiscard]] auto &
+      to_array() const noexcept
     {
       return m_palettes;
     }
-    friend std::ostream &operator<<(std::ostream &            os,
-                                    const TexturesByPalettes &data)
+    friend std::ostream &
+      operator<<(std::ostream &os, const TexturesByPalettes &data)
     {
       std::ranges::for_each(data.to_array(), [&os](const Ppm &ppm) {
         if (!ppm.empty()) {
@@ -48,15 +53,18 @@ public:
   {
   public:
     static constexpr auto MAX_TEXTURE_PAGES = 14U;
+
   private:
     mutable std::array<TexturesByPalettes, MAX_TEXTURE_PAGES> m_texture_pages{};
+
   public:
-    [[nodiscard]] auto &at(const size_t &texture_page) const
+    [[nodiscard]] auto &
+      at(const size_t &texture_page) const
     {
       return m_texture_pages.at(texture_page);
     }
-    [[nodiscard]] auto &at(const size_t &texture_page,
-                           const size_t &palette) const
+    [[nodiscard]] auto &
+      at(const size_t &texture_page, const size_t &palette) const
     {
       return m_texture_pages.at(texture_page).at(palette);
     }
@@ -65,12 +73,13 @@ public:
     {
       m_texture_pages.at(texture_page).set(palette, std::move(value));
     }
-    [[nodiscard]] auto &to_array() const noexcept
+    [[nodiscard]] auto &
+      to_array() const noexcept
     {
       return m_texture_pages;
     }
-    friend std::ostream &operator<<(std::ostream &                os,
-                                    const PalettesByTexturePages &data)
+    friend std::ostream &
+      operator<<(std::ostream &os, const PalettesByTexturePages &data)
     {
       std::ranges::for_each(data.to_array(),
                             [&os](const TexturesByPalettes &tbp) {
@@ -79,6 +88,7 @@ public:
       return os;
     }
   };
+
 private:
   static constexpr auto DEFAULT_PALETTE =
     TexturesByPalettes::MAX_PALETTES_PLUS_1 - 1;
@@ -87,7 +97,8 @@ private:
   const std::string_view       m_dir_name{};
   const std::string &          m_output_prefix{};
   const PalettesByTexturePages m_textures{};
-  auto                         get_textures() const
+  auto
+    get_textures() const
   {
     PalettesByTexturePages textures{};
     open_viii::tools::execute_on_directory(
@@ -140,6 +151,7 @@ private:
     std::cout << textures << '\n';
     return textures;
   }
+
 public:
   MimFromPath() = default;
   explicit MimFromPath(MimType                      mim_type,
@@ -152,15 +164,17 @@ public:
       m_output_prefix(output_prefix),
       m_textures(get_textures())
   {}
-  std::size_t get_raw_width(const BPPT &depth) const
+  std::size_t
+    get_raw_width(const BPPT &depth) const
   {
     return Mim::get_raw_width(depth, m_mim_type.width());
   }
-  Color auto get_color([[maybe_unused]] const std::size_t & x,
-                       [[maybe_unused]] const std::size_t & y,
-                       [[maybe_unused]] const BPPT &        depth,
-                       [[maybe_unused]] const std::uint8_t &palette,
-                       [[maybe_unused]] const std::uint8_t &texture_id) const
+  Color auto
+    get_color([[maybe_unused]] const std::size_t & x,
+              [[maybe_unused]] const std::size_t & y,
+              [[maybe_unused]] const BPPT &        depth,
+              [[maybe_unused]] const std::uint8_t &palette,
+              [[maybe_unused]] const std::uint8_t &texture_id) const
   {
     const auto &palette_texture = m_textures.at(texture_id, palette);
     if (!palette_texture.empty()) {

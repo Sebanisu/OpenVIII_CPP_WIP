@@ -17,36 +17,44 @@ template<> struct RandomIOTAIterator
   using pointer           = value_type *;// or also value_type*
   using reference         = value_type &;// or also value_type&
   explicit RandomIOTA(std::size_t current) : gen(rd()), m_current(size) {}
-  reference operator*() const
+  reference
+    operator*() const
   {
     return m_current;
   }
-  pointer operator->()
+  pointer
+    operator->()
   {
     return &m_current;
   }
-  Iterator &operator++()
+  Iterator &
+    operator++()
   {
     ++m_current;
     m_random_value = get_random();
     return *this;
   }
-  Iterator operator++(int)
+  Iterator
+    operator++(int)
   {
     Iterator tmp = *this;
     ++(*this);
     return tmp;
   }
-  friend bool operator==(const Iterator &a, const Iterator &b)
+  friend bool
+    operator==(const Iterator &a, const Iterator &b)
   {
     return a.m_current == b.m_current;
   };
-  friend bool operator!=(const Iterator &a, const Iterator &b)
+  friend bool
+    operator!=(const Iterator &a, const Iterator &b)
   {
     return a.m_current != b.m_current;
   };
+
 private:
-  auto get_random()
+  auto
+    get_random()
   {
     return dis(gen);
   }

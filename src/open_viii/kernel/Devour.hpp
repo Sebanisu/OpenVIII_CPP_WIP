@@ -67,23 +67,26 @@ public:
   static constexpr auto eighth                                   = 1.0F / 8.0F;
   static constexpr auto sixteenth                                = 1.0F / 16.0F;
   constexpr auto operator<=>(const Devour &right) const noexcept = default;
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
   /**
    * HP and Status //false is damage, true is heal.
    */
-  [[nodiscard]] constexpr auto damage_or_heal() const noexcept
+  [[nodiscard]] constexpr auto
+    damage_or_heal() const noexcept
   {
     return (m_damage_or_heal & 0x1U) == 0;
   }
-  [[nodiscard]] constexpr auto percent_quantity() const noexcept
+  [[nodiscard]] constexpr auto
+    percent_quantity() const noexcept
   {
     const auto flag_set = [this](const PercentQuantityT &flag) {
       return (static_cast<uint8_t>(m_percent_quantity)
               & static_cast<uint8_t>(flag))
-             != 0;
+          != 0;
     };
     float out{};
     if (flag_set(PercentQuantityT::full)) {
@@ -106,14 +109,16 @@ public:
   /**
    * statuses 8-39
    */
-  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }
   /**
    * statuses 0-7
    */
-  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }
@@ -127,8 +132,9 @@ public:
   {
     return m_raised_stat_hp_quantity;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << ", " << static_cast<std::uint32_t>(damage_or_heal()) << ", "
               << percent_quantity() << ", "

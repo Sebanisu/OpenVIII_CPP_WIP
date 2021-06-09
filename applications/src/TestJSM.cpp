@@ -5,7 +5,8 @@
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/field/scripts/Jsm.hpp"
 #include "open_viii/paths/Paths.hpp"
-int main()
+int
+  main()
 {
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {

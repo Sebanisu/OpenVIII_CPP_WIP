@@ -52,8 +52,10 @@ private:
     //    }
     return static_cast<signed>(std::ranges::size(buffer)) - offset;
   }
-  [[nodiscard]] static auto get_string_at_offset(
-    const std::span<const char> &buffer, intmax_t offset, bool skip_first_null)
+  [[nodiscard]] static auto
+    get_string_at_offset(const std::span<const char> &buffer,
+                         intmax_t                     offset,
+                         bool                         skip_first_null)
   {
     using namespace std::literals::string_view_literals;
     if (offset >= 0 && !std::empty(buffer)
@@ -74,9 +76,10 @@ private:
 public:
   constexpr auto
     operator<=>(const EncodedStringOffset &right) const noexcept = default;
-  [[nodiscard]] auto raw_bytes(const std::span<const char> &buffer,
-                               const intmax_t               offset = 0,
-                               bool skip_first_null = false) const
+  [[nodiscard]] auto
+    raw_bytes(const std::span<const char> &buffer,
+              const intmax_t               offset          = 0,
+              bool                         skip_first_null = false) const
   {
     if (m_offset == INT16_MAX) {
       return std::span<const char>{};
@@ -85,14 +88,16 @@ public:
       buffer, static_cast<intmax_t>(m_offset) + offset, skip_first_null);
   }
   template<LangT langVal>
-  [[nodiscard]] auto decoded_string(const std::span<const char> &buffer,
-                                    const intmax_t               offset = 0,
-                                    bool skip_first_null = false) const
+  [[nodiscard]] auto
+    decoded_string(const std::span<const char> &buffer,
+                   const intmax_t               offset          = 0,
+                   bool                         skip_first_null = false) const
   {
     return FF8String<langVal>::decode(
       raw_bytes(buffer, offset, skip_first_null));
   }
-  [[nodiscard]] constexpr auto offset() const noexcept
+  [[nodiscard]] constexpr auto
+    offset() const noexcept
   {
     return m_offset;
   }

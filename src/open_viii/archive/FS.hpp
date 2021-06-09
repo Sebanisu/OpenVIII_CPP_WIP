@@ -264,7 +264,9 @@ static out_fiT
 }
 template<is_insertable_or_ostream T>
 static FI
-append_entry(T &output, const std::filesystem::path input, const CompressionTypeT in_compress)
+  append_entry(T &                         output,
+               const std::filesystem::path input,
+               const CompressionTypeT      in_compress)
 {
   const auto buffer = open_viii::tools::read_entire_file(input);
   return append_entry(output, buffer, in_compress);

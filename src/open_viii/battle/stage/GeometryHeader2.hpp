@@ -29,11 +29,13 @@ private:
   std::uint32_t m_padding{};
 
 public:
-  [[nodiscard]] const auto &triangle_count() const noexcept
+  [[nodiscard]] const auto &
+    triangle_count() const noexcept
   {
     return m_triangle_count;
   }
-  [[nodiscard]] const auto &quad_count() const noexcept
+  [[nodiscard]] const auto &
+    quad_count() const noexcept
   {
     return m_quad_count;
   };

@@ -386,7 +386,8 @@ enum class opcodeT : std::uint16_t {
   COUNT = END,
   BEGIN = 0U,
 };
-static constexpr bool validOpcodeT(const opcodeT opcode)
+static constexpr bool
+  validOpcodeT(const opcodeT opcode)
 {
   return (opcode >= opcodeT::BEGIN) && (opcode< opcodeT::END));
 };

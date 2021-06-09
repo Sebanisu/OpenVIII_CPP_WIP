@@ -12,15 +12,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_impl_Tile2_HPP
 #define VIIIARCHIVE_impl_Tile2_HPP
-#include <compare>
-#include "TileCommon.hpp"
 #include "BlendModeT.hpp"
 #include "LayerID.hpp"
 #include "PaletteID.hpp"
 #include "TexIdBuffer.hpp"
+#include "TileCommon.hpp"
 #include "open_viii/graphics/Point.hpp"
 #include "open_viii/graphics/Rectangle.hpp"
 #include <array>
+#include <compare>
 #include <cstdint>
 #include <string_view>
 namespace open_viii::graphics::background {

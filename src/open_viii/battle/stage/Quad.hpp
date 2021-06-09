@@ -41,19 +41,23 @@ public:
   {
     return (std::rotl(in_clut_raw, SHIFT_2_BIT) & MASK_4_BIT);
   }
-  [[nodiscard]] std::uint8_t clut() const noexcept
+  [[nodiscard]] std::uint8_t
+    clut() const noexcept
   {
     return clut(m_raw_clut);
   }
-  [[nodiscard]] std::uint8_t texture_page() const noexcept
+  [[nodiscard]] std::uint8_t
+    texture_page() const noexcept
   {
     return m_raw_texture_page.second();
   }
-  [[nodiscard]] auto color() const noexcept
+  [[nodiscard]] auto
+    color() const noexcept
   {
     return m_color;
   }
-  [[nodiscard]] bool hide() const noexcept
+  [[nodiscard]] bool
+    hide() const noexcept
   {
     return m_raw_hide != 0U;
   }

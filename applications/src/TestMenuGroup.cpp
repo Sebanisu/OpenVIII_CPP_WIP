@@ -22,7 +22,8 @@
 #include "open_viii/menu_group/refine/RefineSection003.hpp"
 #include "open_viii/menu_group/refine/RefineSection004.hpp"
 #include "open_viii/paths/Paths.hpp"
-int main()
+int
+  main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;

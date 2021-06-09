@@ -64,93 +64,111 @@ private:
 public:
   constexpr auto
     operator<=>(const TeamLagunaLimitBreaks &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
-  [[nodiscard]] constexpr auto magic_id() const noexcept
+  [[nodiscard]] constexpr auto
+    magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[nodiscard]] constexpr auto attack_type() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[nodiscard]] constexpr auto attack_power() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_power() const noexcept
   {
     return m_attack_power;
   }
-  [[nodiscard]] constexpr auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] constexpr auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] constexpr auto target() const noexcept
+  [[nodiscard]] constexpr auto
+    target() const noexcept
   {
     return m_target;
   }
-  [[nodiscard]] constexpr auto attack_flags() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[nodiscard]] constexpr auto hit_count() const noexcept
+  [[nodiscard]] constexpr auto
+    hit_count() const noexcept
   {
     return m_hit_count;
   }
-  [[nodiscard]] constexpr auto element() const noexcept
+  [[nodiscard]] constexpr auto
+    element() const noexcept
   {
     return m_element;
   }
-  [[nodiscard]] constexpr auto element_attack_percent() const noexcept
+  [[nodiscard]] constexpr auto
+    element_attack_percent() const noexcept
   {
     return m_element_attack_percent;
   }
-  [[nodiscard]] constexpr auto status_attack_enabler() const noexcept
+  [[nodiscard]] constexpr auto
+    status_attack_enabler() const noexcept
   {
     return m_status_attack_enabler;
   }
-  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }// statuses 0-7
-  [[nodiscard]] constexpr auto unknown2() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[nodiscard]] constexpr auto unknown3() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown3() const noexcept
   {
     return m_unknown3;
   }
-  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }// statuses 8-39
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os
-           << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-           << static_cast<std::uint32_t>(m_attack_type) << ", "
-           << static_cast<std::uint32_t>(m_attack_power) << ", "
-           << static_cast<std::uint32_t>(m_unknown0) << ", "
-           << static_cast<std::uint32_t>(m_unknown1) << ", "
-           << static_cast<std::uint32_t>(m_target) << ", "
-           << static_cast<std::uint32_t>(m_attack_flags) << ", "
-           << static_cast<std::uint32_t>(m_hit_count) << ", "
-           << static_cast<std::uint32_t>(m_element) << ", "
-           << static_cast<std::uint32_t>(m_element_attack_percent) << ", "
-           << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-           << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
-           << ", " << static_cast<std::uint32_t>(m_unknown2) << ", "
-           << static_cast<std::uint32_t>(m_unknown3) << ", "
-           << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
+        << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+        << static_cast<std::uint32_t>(m_attack_type) << ", "
+        << static_cast<std::uint32_t>(m_attack_power) << ", "
+        << static_cast<std::uint32_t>(m_unknown0) << ", "
+        << static_cast<std::uint32_t>(m_unknown1) << ", "
+        << static_cast<std::uint32_t>(m_target) << ", "
+        << static_cast<std::uint32_t>(m_attack_flags) << ", "
+        << static_cast<std::uint32_t>(m_hit_count) << ", "
+        << static_cast<std::uint32_t>(m_element) << ", "
+        << static_cast<std::uint32_t>(m_element_attack_percent) << ", "
+        << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+        << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
+        << ", " << static_cast<std::uint32_t>(m_unknown2) << ", "
+        << static_cast<std::uint32_t>(m_unknown3) << ", "
+        << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
       ;
   }
 };

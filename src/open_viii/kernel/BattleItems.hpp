@@ -66,7 +66,8 @@ private:
 public:
   static constexpr std::size_t EXPECTED_SIZE                          = 24U;
   constexpr auto operator<=>(const BattleItems &right) const noexcept = default;
-  [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
@@ -75,35 +76,43 @@ public:
   {
     return m_description_offset;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto magic_id() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto attack_type() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto attack_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    attack_power() const noexcept
   {
     return m_attack_power;
   }
-  [[nodiscard]] constexpr auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] constexpr auto target() const noexcept
+  [[nodiscard]] constexpr auto
+    target() const noexcept
   {
     return m_target;
   }
-  [[nodiscard]] constexpr auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto attack_flags() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[nodiscard]] constexpr auto unknown2() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown2() const noexcept
   {
     return m_unknown2;
   }
@@ -117,46 +126,52 @@ public:
   {
     return m_persistent_statuses;
   }// statuses 0-7
-  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }// statuses 8-39
-  [[maybe_unused]] [[nodiscard]] constexpr auto attack_param() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    attack_param() const noexcept
   {
     return m_attack_param;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto unknown3() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    unknown3() const noexcept
   {
     return m_unknown3;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto hit_count() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    hit_count() const noexcept
   {
     return m_hit_count;
   }
-  [[nodiscard]] constexpr auto element() const noexcept
+  [[nodiscard]] constexpr auto
+    element() const noexcept
   {
     return m_element;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os
-           << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-           << static_cast<std::uint32_t>(m_attack_type) << ", "
-           << static_cast<std::uint32_t>(m_attack_power) << ", "
-           << static_cast<std::uint32_t>(m_unknown0) << ", "
-           << static_cast<std::uint32_t>(m_target) << ", "
-           << static_cast<std::uint32_t>(m_unknown1) << ", "
-           << static_cast<std::uint32_t>(m_attack_flags) << ", "
-           << static_cast<std::uint32_t>(m_unknown2) << ", "
-           << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-           << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
-           << ", "
-           << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
-           << ", " << static_cast<std::uint32_t>(m_attack_param) << ", "
-           << static_cast<std::uint32_t>(m_unknown3) << ", "
-           << static_cast<std::uint32_t>(m_hit_count) << ", "
-           << static_cast<std::uint32_t>(m_element);
+        << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
+        << static_cast<std::uint32_t>(m_attack_type) << ", "
+        << static_cast<std::uint32_t>(m_attack_power) << ", "
+        << static_cast<std::uint32_t>(m_unknown0) << ", "
+        << static_cast<std::uint32_t>(m_target) << ", "
+        << static_cast<std::uint32_t>(m_unknown1) << ", "
+        << static_cast<std::uint32_t>(m_attack_flags) << ", "
+        << static_cast<std::uint32_t>(m_unknown2) << ", "
+        << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+        << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
+        << ", "
+        << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
+        << ", " << static_cast<std::uint32_t>(m_attack_param) << ", "
+        << static_cast<std::uint32_t>(m_unknown3) << ", "
+        << static_cast<std::uint32_t>(m_hit_count) << ", "
+        << static_cast<std::uint32_t>(m_element);
   }
 };
 static_assert(sizeof(BattleItems) == BattleItems::EXPECTED_SIZE);

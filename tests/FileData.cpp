@@ -124,8 +124,7 @@ int
       const auto local_fi = FileData(buffer);
       if constexpr (std::filesystem::path::preferred_separator == '/') {
         expect(eq(local_fi.get_path_string(), "test/test.test"sv));
-      }
-      else {
+      } else {
         expect(eq(local_fi.get_path_string(), "test\\test.test"sv));
       }
       expect(eq(local_fi.offset(), 5U));

@@ -20,13 +20,14 @@ namespace open_viii::graphics {
  * \ingroup graphics
  * @brief Contains 4 to 24 bits per pixel flags. Also a CLP flag for color
  * lookup table.
- * @todo make immutable. And since there are only 4 valid states. Have for static constexpr initializers.
+ * @todo make immutable. And since there are only 4 valid states. Have for
+ * static constexpr initializers.
  */
 struct BPPT
 {
 private:
-  mutable bool m_bpp8  : 1 { false };
-  mutable bool m_bpp16 : 1 { false };
+  mutable bool          m_bpp8                       : 1 { false };
+  mutable bool          m_bpp16                      : 1 { false };
   /**
    * might be used sometimes. for some files. I think it could be for multi
    * format
@@ -40,14 +41,16 @@ private:
   constexpr static auto RAW8_VALUE  = 0b1U;
   constexpr static auto RAW16_VALUE = 0b10U;
   constexpr static auto CLP_VALUE   = 0b1000U;
+
 public:
-  constexpr static auto BPP4  = 4U;
-  constexpr static auto BPP8  = 8U;
-  constexpr static auto BPP16 = 16U;
-  constexpr static auto BPP24 = 24U;
+  constexpr static auto BPP4                            = 4U;
+  constexpr static auto BPP8                            = 8U;
+  constexpr static auto BPP16                           = 16U;
+  constexpr static auto BPP24                           = 24U;
   // consteval friend BPPT operator"" _bpp(unsigned long long int value);
-  auto                         operator<=>(const BPPT &) const = default;
-  [[nodiscard]] constexpr bool unused() const noexcept
+  auto                  operator<=>(const BPPT &) const = default;
+  [[nodiscard]] constexpr bool
+    unused() const noexcept
   {
     return m_unused1 && m_unused2 && m_unused3 && m_unused4 && m_unused5;
   }
@@ -56,7 +59,8 @@ public:
    * not set;
    * @return true if 4bpp
    */
-  constexpr void bpp4(bool in) const noexcept
+  constexpr void
+    bpp4(bool in) const noexcept
   {
     if (in) {
       m_bpp8                       = false;
@@ -69,7 +73,8 @@ public:
    * 16bpp is not set;
    * @return true if 8bpp
    */
-  constexpr void bpp8(bool in) const
+  constexpr void
+    bpp8(bool in) const
   {
     if (in) {
       m_bpp8                       = true;
@@ -82,7 +87,8 @@ public:
    * and 16bpp is set;
    * @return true if 16bpp
    */
-  constexpr void bpp16(bool in) const
+  constexpr void
+    bpp16(bool in) const
   {
     if (in) {
       m_bpp8                       = false;
@@ -95,7 +101,8 @@ public:
    * 16bpp is set;
    * @return true if 24bpp
    */
-  constexpr void bpp24(bool in) const
+  constexpr void
+    bpp24(bool in) const
   {
     if (in) {
       m_bpp8                       = true;
@@ -108,7 +115,8 @@ public:
    * not set;
    * @return true if 4bpp
    */
-  [[nodiscard]] constexpr bool bpp4() const noexcept
+  [[nodiscard]] constexpr bool
+    bpp4() const noexcept
   {
     return !unused() && !m_bpp8 && !m_bpp16 && m_color_lookup_table_present;
   }
@@ -117,7 +125,8 @@ public:
    * 16bpp is not set;
    * @return true if 8bpp
    */
-  [[nodiscard]] constexpr bool bpp8() const noexcept
+  [[nodiscard]] constexpr bool
+    bpp8() const noexcept
   {
     return !unused() && m_bpp8 && !m_bpp16 && m_color_lookup_table_present;
   }
@@ -126,7 +135,8 @@ public:
    * and 16bpp is set;
    * @return true if 16bpp
    */
-  [[nodiscard]] constexpr bool bpp16() const noexcept
+  [[nodiscard]] constexpr bool
+    bpp16() const noexcept
   {
     return !unused() && !m_bpp8 && m_bpp16 && !m_color_lookup_table_present;
   }
@@ -135,7 +145,8 @@ public:
    * 16bpp is set;
    * @return true if 24bpp
    */
-  [[nodiscard]] constexpr bool bpp24() const noexcept
+  [[nodiscard]] constexpr bool
+    bpp24() const noexcept
   {
     return !unused() && m_bpp8 && m_bpp16 && !m_color_lookup_table_present;
   }
@@ -144,7 +155,8 @@ public:
    * 16bpp is not set;
    * @return true if 16bpp
    */
-  [[nodiscard]] constexpr bool color_lookup_table_present() const
+  [[nodiscard]] constexpr bool
+    color_lookup_table_present() const
   {
     return !unused() && !m_bpp16 && m_color_lookup_table_present;
   }
@@ -152,7 +164,8 @@ public:
    * Test that one of the valid states is true.
    * @return true if is a valid state.
    */
-  [[nodiscard]] constexpr bool check() const noexcept
+  [[nodiscard]] constexpr bool
+    check() const noexcept
   {
     return bpp4() || bpp8() || bpp16() || bpp24();
   }
@@ -185,14 +198,15 @@ public:
   //  coded as std::uint8_t of value 8. CLP flag for color lookup table present.
   //  This is required for
   //                   4bpp and 8bpp. */
-  constexpr std::uint8_t raw() const noexcept
+  constexpr std::uint8_t
+    raw() const noexcept
   {
     return static_cast<std::uint8_t>(
       (m_bpp8 ? RAW8_VALUE : 0U) + (m_bpp16 ? RAW16_VALUE : 0U)
       + (m_color_lookup_table_present ? CLP_VALUE : 0U));
   }
-  friend std::ostream &operator<<(std::ostream &               os,
-                                  [[maybe_unused]] const BPPT &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, [[maybe_unused]] const BPPT &input)
   {
     return os << "{BPP: " << static_cast<int>(input)
               << ", CLP: " << input.m_color_lookup_table_present << '}';

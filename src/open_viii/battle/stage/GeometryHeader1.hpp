@@ -31,14 +31,16 @@ private:
   std::uint16_t m_number_vertices{};
 
 public:
-  [[nodiscard]] const auto &number_vertices() const noexcept
+  [[nodiscard]] const auto &
+    number_vertices() const noexcept
   {
     return m_number_vertices;
   }
-  [[nodiscard]] bool test() const noexcept
+  [[nodiscard]] bool
+    test() const noexcept
   {
     return m_always_1_1 == 1U && m_always_1_2 == 1U && m_always_0_1 == 0U
-           && m_always_0_2 == 0U && m_number_vertices > 0;
+        && m_always_0_2 == 0U && m_number_vertices > 0;
   }
   static constexpr std::size_t EXPECTED_SIZE = 6U;
 };

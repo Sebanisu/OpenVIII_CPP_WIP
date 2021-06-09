@@ -1,2 +1,2 @@
-This library is for decompressing LZSS and LZ4. It only has compression for LZSS because writing saves and such requires
-it. LZ4 is only used by the Remaster. You technically don't need to write back to anything in LZ4.
+This library is for decompressing LZSS and LZ4. It only has compression for LZSS because writing saves and such requires it. LZ4 is only used by the Remaster.
+You technically don't need to write back to anything in LZ4.

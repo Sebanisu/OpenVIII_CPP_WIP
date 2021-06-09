@@ -42,6 +42,7 @@ protected:
   impl_Tile3()                            = default;
   static constexpr auto FORCE_TYPE_VALUES =
     std::array{ std::string_view("logo") };
+
 public:
   constexpr auto operator<=>(const impl_Tile3 &) const = default;
 };

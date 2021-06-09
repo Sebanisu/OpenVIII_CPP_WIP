@@ -25,16 +25,18 @@ private:
 public:
   constexpr auto
     operator<=>(const SequenceAndTimer &right) const noexcept = default;
-  [[nodiscard]] constexpr auto sequence() const noexcept
+  [[nodiscard]] constexpr auto
+    sequence() const noexcept
   {
     return m_sequence;
   }
-  [[nodiscard]] constexpr auto timer() const noexcept
+  [[nodiscard]] constexpr auto
+    timer() const noexcept
   {
     return m_timer;
   }
-  friend std::ostream &operator<<(std::ostream &          os,
-                                  const SequenceAndTimer &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const SequenceAndTimer &input)
   {
     return os << '{' << static_cast<std::uint32_t>(input.sequence()) << ", "
               << static_cast<std::uint32_t>(input.timer()) << '}';

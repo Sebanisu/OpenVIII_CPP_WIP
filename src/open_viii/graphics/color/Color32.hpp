@@ -39,9 +39,12 @@ requires(r_ < 4U && g_ < 4U && b_ < 4U && r_ != g_ && r_ != b_ && g_ != b_
 {
 public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 4U };
+
 private:
-  mutable std::array<std::uint8_t, EXPLICIT_SIZE>            m_parts{};
-  template<size_t index, std::floating_point T> std::uint8_t set(T value) const
+  mutable std::array<std::uint8_t, EXPLICIT_SIZE> m_parts{};
+  template<size_t index, std::floating_point T>
+  std::uint8_t
+    set(T value) const
   {
     return m_parts[index] = static_cast<std::uint8_t>(
              std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F))
@@ -49,13 +52,15 @@ private:
   }
   template<size_t index, typename T>
   requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) std::uint8_t
-    set(T value) const
+    set(T value)
+  const
   {
     return m_parts[index] = static_cast<std::uint8_t>(std::clamp(
              value,
              static_cast<T>(0U),
              static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
   }
+
 public:
   Color32() = default;
   template<Color c_t> explicit Color32(c_t input_color)
@@ -65,40 +70,52 @@ public:
     b(input_color.b());
     a(input_color.a());
   }
-  [[nodiscard]] constexpr std::uint8_t r() const
+  [[nodiscard]] constexpr std::uint8_t
+    r() const
   {
     return m_parts.at(r_);
   }
-  [[nodiscard]] constexpr std::uint8_t g() const
+  [[nodiscard]] constexpr std::uint8_t
+    g() const
   {
     return m_parts.at(g_);
   }
-  [[nodiscard]] constexpr std::uint8_t b() const
+  [[nodiscard]] constexpr std::uint8_t
+    b() const
   {
     return m_parts.at(b_);
   }
-  [[nodiscard]] constexpr std::uint8_t a() const
+  [[nodiscard]] constexpr std::uint8_t
+    a() const
   {
     return m_parts.at(a_);
   }
-  template<Number T> std::uint8_t r(const T &value) const
+  template<Number T>
+  std::uint8_t
+    r(const T &value) const
   {
     return set<r_, T>(value);
   }
-  template<Number T> std::uint8_t g(const T &value) const
+  template<Number T>
+  std::uint8_t
+    g(const T &value) const
   {
     return set<g_, T>(value);
   }
-  template<Number T> std::uint8_t b(const T &value) const
+  template<Number T>
+  std::uint8_t
+    b(const T &value) const
   {
     return set<b_, T>(value);
   }
-  template<Number T> std::uint8_t a(const T &value) const
+  template<Number T>
+  std::uint8_t
+    a(const T &value) const
   {
     return set<a_, T>(value);
   }
-  friend std::ostream &operator<<(std::ostream &                 os,
-                                  const Color32<r_, g_, b_, a_> &color)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Color32<r_, g_, b_, a_> &color)
   {
     return os << std::uppercase << std::hex << '{'
               << static_cast<std::size_t>(color.R()) << ", "
@@ -112,7 +129,8 @@ public:
                 const Color32<r_, g_, b_, a_> &right) noexcept = default;
   auto
     operator<=>(const Color32<r_, g_, b_, a_> &right) const noexcept = default;
-  constexpr bool is_black() const noexcept
+  constexpr bool
+    is_black() const noexcept
   {
     return r() == 0 && g() == 0 && b() == 0;
   }

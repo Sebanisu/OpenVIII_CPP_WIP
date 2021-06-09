@@ -18,7 +18,8 @@ struct MenuMessagesSection
 {
 private:
   std::vector<EncodedStringOffset> m_data{};
-  [[nodiscard]] auto *             data()
+  [[nodiscard]] auto *
+    data()
   {
     return m_data.data();
   }
@@ -29,19 +30,23 @@ public:
   //  {
   //    data_.resize(count);
   //  }
-  void resize(const size_t count)
+  void
+    resize(const size_t count)
   {
     m_data.resize(count);
   }
-  [[nodiscard]] auto begin() const
+  [[nodiscard]] auto
+    begin() const
   {
     return m_data.begin();
   }
-  [[nodiscard]] auto end() const
+  [[nodiscard]] auto
+    end() const
   {
     return m_data.end();
   }
-  [[nodiscard]] auto size() const
+  [[nodiscard]] auto
+    size() const
   {
     return m_data.size();
   }
@@ -50,7 +55,8 @@ public:
   //    return data_.at(index);
   //  }
   template<typename T = std::vector<char>>
-  void set_data(const T &buffer, const size_t &count)
+  void
+    set_data(const T &buffer, const size_t &count)
   {
     //[Count of Subsections] = [Start of file] + [Section value]
     auto totalBytes = count * sizeof(std::uint16_t);

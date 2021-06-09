@@ -25,41 +25,51 @@ private:
   int8_t  m_offset_x{};
   uint8_t m_height{};
   int8_t  m_offset_y{};
+
 public:
-  [[nodiscard]] const auto &x() const noexcept
+  [[nodiscard]] const auto &
+    x() const noexcept
   {
     return m_x;
   }
-  [[nodiscard]] const auto &y() const noexcept
+  [[nodiscard]] const auto &
+    y() const noexcept
   {
     return m_y;
   }
-  [[nodiscard]] const auto &unknown1() const noexcept
+  [[nodiscard]] const auto &
+    unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] const auto &unknown2() const noexcept
+  [[nodiscard]] const auto &
+    unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[nodiscard]] const auto &width() const noexcept
+  [[nodiscard]] const auto &
+    width() const noexcept
   {
     return m_width;
   }
-  [[nodiscard]] const auto &offset_x() const noexcept
+  [[nodiscard]] const auto &
+    offset_x() const noexcept
   {
     return m_offset_x;
   }
-  [[nodiscard]] const auto &height() const noexcept
+  [[nodiscard]] const auto &
+    height() const noexcept
   {
     return m_height;
   }
-  [[nodiscard]] const auto &offset_y() const noexcept
+  [[nodiscard]] const auto &
+    offset_y() const noexcept
   {
     return m_offset_y;
   }
   Sp1Entry() = default;
-  friend std::ostream &operator<<(std::ostream &os, const Sp1Entry &e)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Sp1Entry &e)
   {
     return os << "{ (X, Y) = (" << static_cast<std::size_t>(e.m_x) << ", "
               << static_cast<std::size_t>(e.m_y) << "), (W, H) = ("

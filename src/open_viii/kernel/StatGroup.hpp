@@ -34,43 +34,53 @@ public:
   static constexpr auto LUCK{ 8U };
   constexpr auto
     operator<=>(const StatGroup<T> &right) const noexcept = default;
-  [[maybe_unused]] [[nodiscard]] constexpr T hp() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr T
+    hp() const noexcept
   {
     return m_stats.at(HP);
   }
-  [[nodiscard]] constexpr T str() const noexcept
+  [[nodiscard]] constexpr T
+    str() const noexcept
   {
     return m_stats.at(STR);
   }
-  [[maybe_unused]] [[nodiscard]] constexpr T vit() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr T
+    vit() const noexcept
   {
     return m_stats.at(VIT);
   }
-  [[nodiscard]] constexpr T mag() const noexcept
+  [[nodiscard]] constexpr T
+    mag() const noexcept
   {
     return m_stats.at(MAG);
   }
-  [[nodiscard]] constexpr T spr() const noexcept
+  [[nodiscard]] constexpr T
+    spr() const noexcept
   {
     return m_stats.at(SPR);
   }
-  [[nodiscard]] constexpr T spd() const noexcept
+  [[nodiscard]] constexpr T
+    spd() const noexcept
   {
     return m_stats.at(SPD);
   }
-  [[maybe_unused]] [[nodiscard]] constexpr T eva() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr T
+    eva() const noexcept
   {
     return m_stats.at(EVA);
   }
-  [[nodiscard]] constexpr T hit() const noexcept
+  [[nodiscard]] constexpr T
+    hit() const noexcept
   {
     return m_stats.at(HIT);
   }
-  [[maybe_unused]] [[nodiscard]] constexpr T luck() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr T
+    luck() const noexcept
   {
     return m_stats.at(LUCK);
   }
-  friend std::ostream &operator<<(std::ostream &os, const StatGroup<T> &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const StatGroup<T> &input)
   {
     bool first{ true };
     for (const auto &item : input.m_stats) {
@@ -101,6 +111,7 @@ public:
     }
     return os;
   }
+
 private:
   std::array<T, STAT_COUNT> m_stats{};
 };

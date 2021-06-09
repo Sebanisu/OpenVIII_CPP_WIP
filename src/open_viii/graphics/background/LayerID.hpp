@@ -39,7 +39,8 @@ public:
     with_id(std::uint8_t in_id) const noexcept
   {
     LayerID out{};
-    out.m_data = static_cast<std::uint8_t>((m_data & ID_INVERSE_MASK) | ((in_id << ID_SHIFT) & ID_MASK));
+    out.m_data = static_cast<std::uint8_t>((m_data & ID_INVERSE_MASK)
+                                           | ((in_id << ID_SHIFT) & ID_MASK));
     return out;
   }
 };

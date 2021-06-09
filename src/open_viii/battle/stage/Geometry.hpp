@@ -35,7 +35,8 @@ private:
   GeometryHeader2       m_geometry_header2{};
   std::vector<Triangle> m_triangles{};
   std::vector<Triangle> m_quads{};
-  static long           calc_pad(long position)
+  static long
+    calc_pad(long position)
   {
     return (position % 4) + 4;
   }

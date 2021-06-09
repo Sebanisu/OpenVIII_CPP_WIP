@@ -13,7 +13,8 @@
 #include "TestExtractPAK.hpp"
 #include "open_viii/pak/Pak.hpp"
 #include "open_viii/paths/Paths.hpp"
-int main()
+int
+  main()
 {
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;

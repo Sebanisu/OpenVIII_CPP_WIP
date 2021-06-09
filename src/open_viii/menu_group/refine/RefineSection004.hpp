@@ -30,24 +30,28 @@ private:
   std::array<RefineEntry<RefineCardID, ItemIdT>, CARD_MOD_COUNT> m_card_mod{};
 
 public:
-  [[nodiscard]] const auto &card_mod() const noexcept
+  [[nodiscard]] const auto &
+    card_mod() const noexcept
   {
     return m_card_mod;
   }
-  [[nodiscard]] const auto *operator->() const
+  [[nodiscard]] const auto *
+    operator->() const
   {
     return &m_card_mod;
   }
-  [[nodiscard]] static constexpr auto size()
+  [[nodiscard]] static constexpr auto
+    size()
   {
     return CARD_MOD_COUNT;
   }
   template<LangT langVal, typename T>
-  std::ostream &out_array(const T &                    arr,
-                          std::ostream &               os,
-                          const std::span<const char> &buffer = ""sv,
-                          const intmax_t               offset = 0,
-                          bool skip_first_null                = false) const
+  std::ostream &
+    out_array(const T &                    arr,
+              std::ostream &               os,
+              const std::span<const char> &buffer          = ""sv,
+              const intmax_t               offset          = 0,
+              bool                         skip_first_null = false) const
   {
     for (const auto item : arr) {
       (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
@@ -55,10 +59,11 @@ public:
     return os;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &               os,
-                    const std::span<const char> &buffer          = ""sv,
-                    const intmax_t               offset          = 0,
-                    bool                         skip_first_null = false) const
+  std::ostream &
+    out(std::ostream &               os,
+        const std::span<const char> &buffer          = ""sv,
+        const intmax_t               offset          = 0,
+        bool                         skip_first_null = false) const
   {
     os << "cardMod:\n";
     out_array<langVal>(m_card_mod, os, buffer, offset, skip_first_null);

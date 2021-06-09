@@ -47,51 +47,63 @@ private:
   std::uint8_t        m_status_attack_enabler{};
   PersistentStatusesT m_persistent_statuses{};
   BattleOnlyStatusesT m_battle_only_statuses{};
+
 public:
   constexpr auto
     operator<=>(const CommandAbilitiesData &right) const noexcept = default;
-  [[nodiscard]] constexpr auto magic_id() const noexcept
+  [[nodiscard]] constexpr auto
+    magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[nodiscard]] constexpr auto unknown() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown() const noexcept
   {
     return m_unknown;
   }
-  [[nodiscard]] constexpr auto attack_type() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto attack_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    attack_power() const noexcept
   {
     return m_attack_power;
   }
-  [[nodiscard]] constexpr auto attack_flags() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[nodiscard]] constexpr auto hit_count() const noexcept
+  [[nodiscard]] constexpr auto
+    hit_count() const noexcept
   {
     return m_hit_count;
   }
-  [[nodiscard]] constexpr auto element() const noexcept
+  [[nodiscard]] constexpr auto
+    element() const noexcept
   {
     return m_element;
   }
-  [[nodiscard]] constexpr auto status_attack_enabler() const noexcept
+  [[nodiscard]] constexpr auto
+    status_attack_enabler() const noexcept
   {
     return m_status_attack_enabler;
   }
-  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }
-  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << m_magic_id << ", " << m_unknown << ", "
               << static_cast<std::uint32_t>(m_attack_type) << ", "

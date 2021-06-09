@@ -72,13 +72,13 @@ private:
       // for(i=0 ; i<N ; ++i)	parent[i] = NotUsed;
       std::ranges::fill(m_parent, NOT_USED);
       std::ranges::fill(std::span(m_right_side).subspan(N_PLUS1), NOT_USED);
-      code_buf[0] = 0;// code_buf[1..16] saves eight units of code, and
+      code_buf[0]       = 0;// code_buf[1..16] saves eight units of code, and
                       // code_buf[0] works as eight flags, "1" representing
       // that the unit is an unencoded letter (1 byte), "0" a
       // position-and-length pair (2 bytes). Thus, eight units require at most
       // 16 bytes of code.
-      std::uint32_t s = 0;
-      std::uint32_t r = R_SIZE;
+      std::uint32_t s   = 0;
+      std::uint32_t r   = R_SIZE;
       //	for(i=s ; i<r ; ++i)
       //		text_buf[i] = '\x0';//Clear the buffer with  any
       // character that will appear often.
@@ -193,9 +193,9 @@ private:
     void
       insert_node(const std::uint32_t &item)
     {
-      int  cmp = 1U;
-      auto key = std::span<std::uint8_t>(m_text_buf);
-      key      = key.subspan(item);
+      int  cmp              = 1U;
+      auto key              = std::span<std::uint8_t>(m_text_buf);
+      key                   = key.subspan(item);
       // auto key = text_buf.begin() + item;
       std::uint32_t p       = P_OFFSET + key[0];
       m_right_side.at(item) = m_left_side.at(item) = NOT_USED;
@@ -331,9 +331,9 @@ public:
     if (dst_size > 0) {
       dst.reserve(dst_size);
     }
-    auto          iterator = src.begin();
-    const auto    srcEnd   = std::ranges::end(src);
-    auto          textBuf = std::array<std::uint32_t, N_MINUS1 + F>();
+    auto       iterator  = src.begin();
+    const auto srcEnd    = std::ranges::end(src);
+    auto       textBuf   = std::array<std::uint32_t, N_MINUS1 + F>();
     // ring buffer of size N, with extra F-1 bytes to facilitate string
     // comparison
     auto       r         = N - F;

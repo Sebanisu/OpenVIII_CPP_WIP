@@ -18,6 +18,7 @@
 #include "tl/string.hpp"
 #include "tl/write.hpp"
 #include <cassert>
+#include <compare>
 #include <filesystem>
 #include <fstream>
 #include <functional>
@@ -29,7 +30,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <compare>
 
 namespace open_viii::archive::fl {
 /**

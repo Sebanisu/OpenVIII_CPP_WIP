@@ -10,7 +10,7 @@ namespace open_viii::battle::stage {
 struct GpuFlags
 {
 public:
-  bool v0 : 1 {};// 0x1
+  bool v0  : 1 {};// 0x1
   /**
    * Second bit seems to effect fire / light blending.
    */

@@ -36,7 +36,9 @@ public:
       std::string_view{ buffer.data() + sizeof(m_unknown) + sizeof(length),
                         length };
   }
-  template<LangT langVal> std::ostream &out(std::ostream &os) const
+  template<LangT langVal>
+  std::ostream &
+    out(std::ostream &os) const
   {
     const auto temp = FF8String<langVal>::decode(m_buffer);
     return os << tools::u8_to_sv(temp);
@@ -50,16 +52,18 @@ private:
   std::uint16_t m_index{};
 
 public:
-  [[nodiscard]] auto offset() const noexcept
+  [[nodiscard]] auto
+    offset() const noexcept
   {
     return m_offset;
   }
-  [[nodiscard]] auto index() const noexcept
+  [[nodiscard]] auto
+    index() const noexcept
   {
     return m_index;
   }
-  friend std::ostream &operator<<(std::ostream &                     os,
-                                  const ComplexStringSectionOffsets &item)
+  friend std::ostream &
+    operator<<(std::ostream &os, const ComplexStringSectionOffsets &item)
   {
     return os << '{' << item.index() << ", " << item.offset() << '}';
   }
@@ -83,11 +87,13 @@ public:
       m_buffer = buffer.subspan(sizeof(m_count));
     }
   }
-  [[nodiscard]] auto size() const
+  [[nodiscard]] auto
+    size() const
   {
     return m_count;
   }
-  [[nodiscard]] ComplexStringSectionOffsets at(const size_t &id) const
+  [[nodiscard]] ComplexStringSectionOffsets
+    at(const size_t &id) const
   {
     ComplexStringSectionOffsets d{};
     if (id >= m_count || sizeof(d) * id >= std::ranges::size(m_buffer)) {
@@ -96,7 +102,8 @@ public:
     memcpy(&d, m_buffer.data() + (sizeof(d) * id), sizeof(d));
     return d;
   }
-  [[nodiscard]] auto at(const ComplexStringSectionOffsets &offsets) const
+  [[nodiscard]] auto
+    at(const ComplexStringSectionOffsets &offsets) const
   {
     const auto temp = m_data.at(offsets.index());
     return ComplexStringSectionEntry{ std::string_view{

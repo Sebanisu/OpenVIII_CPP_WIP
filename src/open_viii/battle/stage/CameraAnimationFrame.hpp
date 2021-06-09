@@ -25,19 +25,23 @@ public:
       m_is_frame_ending_shot(is_frame_ending_shots),
       m_look_at(look_at)
   {}
-  [[nodiscard]] constexpr auto is_frame_durations_shot() const noexcept
+  [[nodiscard]] constexpr auto
+    is_frame_durations_shot() const noexcept
   {
     return m_is_frame_durations_shot;
   }
-  [[nodiscard]] constexpr auto world() const noexcept
+  [[nodiscard]] constexpr auto
+    world() const noexcept
   {
     return m_world;
   }
-  [[nodiscard]] constexpr auto is_frame_ending_shots() const noexcept
+  [[nodiscard]] constexpr auto
+    is_frame_ending_shots() const noexcept
   {
     return m_is_frame_ending_shot;
   }
-  [[nodiscard]] constexpr auto look_at() const noexcept
+  [[nodiscard]] constexpr auto
+    look_at() const noexcept
   {
     return m_look_at;
   }

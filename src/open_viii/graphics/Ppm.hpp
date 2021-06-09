@@ -29,7 +29,8 @@ private:
   std::filesystem::path         m_path{};
   Point<std::uint16_t>          m_width_height{};
   std::vector<Color24<0, 1, 2>> m_colors{};
-  Point<std::uint16_t>          get_width_height(const std::string &buffer)
+  Point<std::uint16_t>
+    get_width_height(const std::string &buffer)
   {
     Point<std::uint16_t> point{};
     // the support is mostly limited to the same type that is made by the save
@@ -40,12 +41,12 @@ private:
     // sample header ss << "P6\n# THIS IS A COMMENT\n" << width << " " << height
     // << "\n255\n"; sample header ss << "P6\n# THIS IS A COMMENT\n" << width <<
     // " " << height << " 255\n";
-    auto        ss = std::stringstream(buffer);
-    std::string line{};
-    std::string type{};
-    std::string comment{};
-    std::string w_h{};
-    std::string bytesize{};
+    auto                 ss = std::stringstream(buffer);
+    std::string          line{};
+    std::string          type{};
+    std::string          comment{};
+    std::string          w_h{};
+    std::string          bytesize{};
     while ((std::ranges::empty(bytesize) || std::ranges::empty(w_h))
            && std::getline(ss, line)) {
       if (line == "P6") {
@@ -95,7 +96,8 @@ private:
     }
     return point;
   }
-  auto get_colors(std::span<const char> buffer_span)
+  auto
+    get_colors(std::span<const char> buffer_span)
   {
     std::vector<Color24<0, 1, 2>> colors{};
     const auto                    area          = m_width_height.area();
@@ -122,17 +124,19 @@ public:
       m_width_height(get_width_height(buffer)),
       m_colors(get_colors(buffer))
   {}
-  bool empty() const noexcept
+  bool
+    empty() const noexcept
   {
     return std::ranges::empty(m_colors) || m_width_height.x() <= 0
-           || m_width_height.y() <= 0;
+        || m_width_height.y() <= 0;
   }
   template<std::ranges::contiguous_range cT>
-  static void save(const cT &              data,
-                   std::size_t             width,
-                   std::size_t             height,
-                   const std::string_view &input,
-                   bool                    skip_check = false)
+  static void
+    save(const cT &              data,
+         std::size_t             width,
+         std::size_t             height,
+         const std::string_view &input,
+         bool                    skip_check = false)
   {// how do i make the concept reject ranges that aren't of Colors? I'm at
    // least checking for Color down below.
     if (!skip_check) {
@@ -166,30 +170,35 @@ public:
       },
       filename);
   }
-  static bool check_if_colors_are_black(const auto &data)
+  static bool
+    check_if_colors_are_black(const auto &data)
   {
     return std::all_of(std::execution::par_unseq,
                        data.begin(),
                        data.end(),
                        [](const Color auto &color) -> bool {
                          return color.a() == 0U
-                                || (color.b() == 0U && color.g() == 0U
-                                    && color.r() == 0U);
+                             || (color.b() == 0U && color.g() == 0U
+                                 && color.r() == 0U);
                        });
   }
-  [[nodiscard]] const std::vector<Color24<0, 1, 2>> &colors() const noexcept
+  [[nodiscard]] const std::vector<Color24<0, 1, 2>> &
+    colors() const noexcept
   {
     return m_colors;
   }
-  [[nodiscard]] constexpr auto width() const noexcept
+  [[nodiscard]] constexpr auto
+    width() const noexcept
   {
     return m_width_height.x();
   }
-  [[nodiscard]] constexpr auto height() const noexcept
+  [[nodiscard]] constexpr auto
+    height() const noexcept
   {
     return m_width_height.y();
   }
-  [[nodiscard]] const auto &width_height() const noexcept
+  [[nodiscard]] const auto &
+    width_height() const noexcept
   {
     return m_width_height;
   }
@@ -198,7 +207,8 @@ public:
   {
     return at(x + (y * static_cast<std::size_t>(m_width_height.x())));
   }
-  const Color24<0, 1, 2> &at(const size_t i) const noexcept
+  const Color24<0, 1, 2> &
+    at(const size_t i) const noexcept
   {
     static constexpr Color24<0, 1, 2> black{};
     if (i < std::ranges::size(m_colors)) {
@@ -206,7 +216,8 @@ public:
     }
     return black;
   }
-  friend std::ostream &operator<<(std::ostream &os, const Ppm &ppm)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Ppm &ppm)
   {
     return os << "(Width, Height): " << ppm.m_width_height << "\t" << ppm.m_path
               << '\n';

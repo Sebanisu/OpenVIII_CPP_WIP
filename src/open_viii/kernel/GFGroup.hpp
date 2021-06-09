@@ -39,71 +39,88 @@ public:
   static constexpr auto TONBERRY{ 14U };
   static constexpr auto EDEN{ 15U };
   constexpr auto operator<=>(const GFGroup<T> &right) const noexcept = default;
-  [[nodiscard]] constexpr T quetzalcoatl() const noexcept
+  [[nodiscard]] constexpr T
+    quetzalcoatl() const noexcept
   {
     return m_gfs.at(QUETZALCOATL);
   }
-  [[nodiscard]] constexpr T shiva() const noexcept
+  [[nodiscard]] constexpr T
+    shiva() const noexcept
   {
     return m_gfs.at(SHIVA);
   }
-  [[nodiscard]] constexpr T ifrit() const noexcept
+  [[nodiscard]] constexpr T
+    ifrit() const noexcept
   {
     return m_gfs.at(IFRIT);
   }
-  [[nodiscard]] constexpr T siren() const noexcept
+  [[nodiscard]] constexpr T
+    siren() const noexcept
   {
     return m_gfs.at(SIREN);
   }
-  [[nodiscard]] constexpr T brothers() const noexcept
+  [[nodiscard]] constexpr T
+    brothers() const noexcept
   {
     return m_gfs.at(BROTHERS);
   }
-  [[nodiscard]] constexpr T diablos() const noexcept
+  [[nodiscard]] constexpr T
+    diablos() const noexcept
   {
     return m_gfs.at(DIABLOS);
   }
-  [[nodiscard]] constexpr T carbuncle() const noexcept
+  [[nodiscard]] constexpr T
+    carbuncle() const noexcept
   {
     return m_gfs.at(CARBUNCLE);
   }
-  [[nodiscard]] constexpr T leviathan() const noexcept
+  [[nodiscard]] constexpr T
+    leviathan() const noexcept
   {
     return m_gfs.at(LEVIATHAN);
   }
-  [[nodiscard]] constexpr T pandemona() const noexcept
+  [[nodiscard]] constexpr T
+    pandemona() const noexcept
   {
     return m_gfs.at(PANDEMONA);
   }
-  [[nodiscard]] constexpr T cerberus() const noexcept
+  [[nodiscard]] constexpr T
+    cerberus() const noexcept
   {
     return m_gfs.at(CERBERUS);
   }
-  [[nodiscard]] constexpr T alexander() const noexcept
+  [[nodiscard]] constexpr T
+    alexander() const noexcept
   {
     return m_gfs.at(ALEXANDER);
   }
-  [[nodiscard]] constexpr T doomtrain() const noexcept
+  [[nodiscard]] constexpr T
+    doomtrain() const noexcept
   {
     return m_gfs.at(DOOMTRAIN);
   }
-  [[nodiscard]] constexpr T bahamut() const noexcept
+  [[nodiscard]] constexpr T
+    bahamut() const noexcept
   {
     return m_gfs.at(BAHAMUT);
   }
-  [[nodiscard]] constexpr T cactuar() const noexcept
+  [[nodiscard]] constexpr T
+    cactuar() const noexcept
   {
     return m_gfs.at(CACTUAR);
   }
-  [[nodiscard]] constexpr T tonberry() const noexcept
+  [[nodiscard]] constexpr T
+    tonberry() const noexcept
   {
     return m_gfs.at(TONBERRY);
   }
-  [[nodiscard]] constexpr T eden() const noexcept
+  [[nodiscard]] constexpr T
+    eden() const noexcept
   {
     return m_gfs.at(EDEN);
   }
-  friend auto &operator<<(std::ostream &os, const GFGroup<T> &in)
+  friend auto &
+    operator<<(std::ostream &os, const GFGroup<T> &in)
   {
     os << '{';
     bool first = true;
@@ -121,6 +138,7 @@ public:
     }
     return os << '}';
   }
+
 private:
   std::array<T, MAX_G_FS> m_gfs{};
 };

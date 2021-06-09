@@ -28,10 +28,12 @@ private:
   std::uint32_t           m_tim_offset{};
   std::vector<Bit4Values> m_widths{};
   Tim                     m_tim{};
-  [[nodiscard]] auto      widths_size() const noexcept
+  [[nodiscard]] auto
+    widths_size() const noexcept
   {
     return m_tim_offset - m_widths_offset;
   }
+
 public:
   Tdw() = default;
   explicit Tdw([[maybe_unused]] std::span<const char> buffer)
@@ -63,7 +65,8 @@ public:
     }
     m_tim = Tim{ buffer_bak.subspan(m_tim_offset) };
   }
-  [[nodiscard]] auto operator[](size_t i) const
+  [[nodiscard]] auto
+    operator[](size_t i) const
   {
     bool first = (i % 2U == 0U);
     i /= 2U;
@@ -72,15 +75,18 @@ public:
     }
     return m_widths.at(i).second();
   }
-  [[nodiscard]] auto size() const
+  [[nodiscard]] auto
+    size() const
   {
     return std::ranges::size(m_widths) * 2U;
   }
-  [[nodiscard]] const Tim &tim() const
+  [[nodiscard]] const Tim &
+    tim() const
   {
     return m_tim;
   }
-  friend std::ostream &operator<<(std::ostream &os, const Tdw &t)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Tdw &t)
   {
     os << t.size() << " char widths: ";
     for (const Bit4Values &w : t.m_widths) {
@@ -89,7 +95,8 @@ public:
     }
     return os << '\n' << t.m_tim;
   }
-  void save(const std::string_view &path)
+  void
+    save(const std::string_view &path)
   {
     m_tim.save(path);
   }

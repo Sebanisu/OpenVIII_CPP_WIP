@@ -28,11 +28,11 @@ private:
    * values that aren't standard.
    * @brief X value must be divisible by 4;
    */
-  static constexpr auto XDIVISABLE_BY{ 4U };
+  static constexpr auto                        XDIVISABLE_BY{ 4U };
   /**
    * @brief Y max value is 511
    */
-  static constexpr auto MAX_Y{ 511U };
+  static constexpr auto                        MAX_Y{ 511U };
   /**
    * 4 bit can only read up to 16 values and 8 bit can only read up to 256
    * values. But There are larger other sizes. The game uses
@@ -58,7 +58,8 @@ public:
    * groups of 16 in the table.
    * @brief Dimensions of the color lookup table.
    */
-  [[nodiscard]] constexpr auto rectangle() const
+  [[nodiscard]] constexpr auto
+    rectangle() const
   {
     return m_image_header.rectangle();
   }
@@ -66,7 +67,8 @@ public:
    * Total size of Color Lookup Table including header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] constexpr auto size() const
+  [[nodiscard]] constexpr auto
+    size() const
   {
     return m_image_header.size();
   };
@@ -74,7 +76,8 @@ public:
    * Total size of Color Lookup Table data without header.
    * @brief Size in bytes.
    */
-  [[nodiscard]] constexpr auto data_size() const
+  [[nodiscard]] constexpr auto
+    data_size() const
   {
     return m_image_header.data_size();
   }
@@ -83,16 +86,18 @@ public:
    * Width is usually number of colors should be 16 or 256.
    * @return returns true if valid
    */
-  [[nodiscard]] constexpr bool check() const
+  [[nodiscard]] constexpr bool
+    check() const
   {
     return m_image_header.rectangle().x() % XDIVISABLE_BY == 0
-           && m_image_header.rectangle().y() <= MAX_Y && m_image_header.check();
+        && m_image_header.rectangle().y() <= MAX_Y && m_image_header.check();
   }
   [[nodiscard]] explicit constexpr operator bool() const
   {
     return check();
   }
-  friend std::ostream &operator<<(std::ostream &os, const TimClutHeader &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const TimClutHeader &input)
   {
     return os << input.m_image_header
               << " {Colors:" << input.m_image_header.rectangle().width()

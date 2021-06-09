@@ -29,11 +29,13 @@ public:
   {
     // can be constexpr with bitcast. memcpy is not constexpr.
   }
-  [[nodiscard]] const CameraHeader &camera_header() const noexcept
+  [[nodiscard]] const CameraHeader &
+    camera_header() const noexcept
   {
     return m_camera_header;
   }
-  [[nodiscard]] const CameraSettings &camera_settings() const noexcept
+  [[nodiscard]] const CameraSettings &
+    camera_settings() const noexcept
   {
     return m_camera_settings;
   }
@@ -42,7 +44,8 @@ public:
   {
     return m_camera_animation_collection;
   }
-  friend std::ostream &operator<<(std::ostream &os, const Camera &in)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Camera &in)
   {
     return os << "{\n\t\t HEADER: " << in.m_camera_header
               << "\n\t\t SETTINGS: " << in.m_camera_settings

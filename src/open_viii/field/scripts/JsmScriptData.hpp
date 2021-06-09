@@ -14,14 +14,16 @@ private:
   std::uint32_t m_data{};
 
 public:
-  [[nodiscard]] constexpr opcodeT opcode() const noexcept
+  [[nodiscard]] constexpr opcodeT
+    opcode() const noexcept
   {
     constexpr std::uint16_t mask  = 0x1FFU;// 9 bits mask
     constexpr std::uint16_t shift = 23;
     return static_cast<opcodeT>(static_cast<std::uint16_t>(m_data >> shift)
                                 & mask)
   }
-  [[nodiscard]] constexpr std::uint32_t parameter() const noexcept
+  [[nodiscard]] constexpr std::uint32_t
+    parameter() const noexcept
   {
     constexpr std::uint16_t mask = 0x7FFFFFU;// 23 bits mask
     return static_cast<opcodeT>(static_cast<std::uint16_t>(m_data >> shift)
@@ -56,7 +58,9 @@ struct [[maybe_unused]] tuple_size<open_viii::field::scripts::JsmScriptData>
  * type of argument 0
  * @note required to structured binding support
  */
-template<> struct [[maybe_unused]] tuple_element<0U, open_viii::field::scripts::JsmScriptData>
+template<>
+struct [[maybe_unused]] tuple_element<0U,
+                                      open_viii::field::scripts::JsmScriptData>
 {
   using type = open_viii::field::scripts::opcodeT;
 };
@@ -64,7 +68,9 @@ template<> struct [[maybe_unused]] tuple_element<0U, open_viii::field::scripts::
  * type of argument 1
  * @note required to structured binding support
  */
-template<> struct [[maybe_unused]] tuple_element<1U, open_viii::field::scripts::JsmScriptData>
+template<>
+struct [[maybe_unused]] tuple_element<1U,
+                                      open_viii::field::scripts::JsmScriptData>
 {
   using type = std::uint32_t;
 };

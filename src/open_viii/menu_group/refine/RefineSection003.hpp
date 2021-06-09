@@ -29,24 +29,28 @@ private:
   std::array<RefineEntry<ItemIdT, ItemIdT>, MED_LVUP_COUNT> m_med_lv_up{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &med_lv_up() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    med_lv_up() const noexcept
   {
     return m_med_lv_up;
   }
-  [[nodiscard]] const auto *operator->() const
+  [[nodiscard]] const auto *
+    operator->() const
   {
     return &m_med_lv_up;
   }
-  [[nodiscard]] static constexpr auto size()
+  [[nodiscard]] static constexpr auto
+    size()
   {
     return MED_LVUP_COUNT;
   }
   template<LangT langVal, typename T>
-  std::ostream &out_array(const T &                    arr,
-                          std::ostream &               os,
-                          const std::span<const char> &buffer = ""sv,
-                          const intmax_t               offset = 0,
-                          bool skip_first_null                = false) const
+  std::ostream &
+    out_array(const T &                    arr,
+              std::ostream &               os,
+              const std::span<const char> &buffer          = ""sv,
+              const intmax_t               offset          = 0,
+              bool                         skip_first_null = false) const
   {
     for (const auto item : arr) {
       (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
@@ -54,10 +58,11 @@ public:
     return os;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &               os,
-                    const std::span<const char> &buffer          = ""sv,
-                    const intmax_t               offset          = 0,
-                    bool                         skip_first_null = false) const
+  std::ostream &
+    out(std::ostream &               os,
+        const std::span<const char> &buffer          = ""sv,
+        const intmax_t               offset          = 0,
+        bool                         skip_first_null = false) const
   {
     os << "MedLVUP:\n";
     out_array<langVal>(m_med_lv_up, os, buffer, offset, skip_first_null);

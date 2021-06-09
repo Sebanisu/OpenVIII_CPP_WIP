@@ -18,22 +18,26 @@ private:
 
 public:
   constexpr JsmOldEntity() = default;
-  [[nodiscard]] constexpr std::uint16_t raw() const noexcept
+  [[nodiscard]] constexpr std::uint16_t
+    raw() const noexcept
   {
     return m_raw;
   }
-  [[nodiscard]] constexpr auto count() const noexcept
+  [[nodiscard]] constexpr auto
+    count() const noexcept
   {
     constexpr std::uint8_t mask = 0xFFU;
     return static_cast<std::uint8_t>(m_raw & mask);
   }
-  [[nodiscard]] constexpr std::uint16_t label() const noexcept
+  [[nodiscard]] constexpr std::uint16_t
+    label() const noexcept
   {
     constexpr std::uint16_t mask  = 0xFF;
     constexpr std::uint16_t shift = 8U;
     return static_cast<std::uint16_t>(m_raw >> shift) & mask;
   }
-  [[nodiscard]] constexpr std::size_t calc_total() const
+  [[nodiscard]] constexpr std::size_t
+    calc_total() const
   {
     return label() + count() + 1U;
   }
@@ -67,7 +71,9 @@ struct [[maybe_unused]] tuple_size<open_viii::field::scripts::JsmOldEntity>
  * type of argument 0
  * @note required to structured binding support
  */
-template<> struct [[maybe_unused]] tuple_element<0U, open_viii::field::scripts::JsmOldEntity>
+template<>
+struct [[maybe_unused]] tuple_element<0U,
+                                      open_viii::field::scripts::JsmOldEntity>
 {
   using type = std::uint16_t;
 };
@@ -75,7 +81,9 @@ template<> struct [[maybe_unused]] tuple_element<0U, open_viii::field::scripts::
  * type of argument 1
  * @note required to structured binding support
  */
-template<> struct [[maybe_unused]] tuple_element<1U, open_viii::field::scripts::JsmOldEntity>
+template<>
+struct [[maybe_unused]] tuple_element<1U,
+                                      open_viii::field::scripts::JsmOldEntity>
 {
   using type = std::uint16_t;
 };

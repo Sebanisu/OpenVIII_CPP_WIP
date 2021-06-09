@@ -37,12 +37,12 @@ private:
   static constexpr std::size_t     PUPUPATH_GROUP_COUNT = 3U;
   const std::vector<PupuPath>      m_pupu_paths{};
   const std::vector<std::uint16_t> m_valid_texture_ids{};
-  mutable std::uint8_t m_scale{};// when I can detect the scale this will
-                                 // probably be mutable or I can detect on init
-  const Point<uint16_t>                                    m_map_width_height{};
-  mutable std::uint32_t                                    m_width{};
-  mutable std::uint32_t                                    m_height{};
-  mutable std::uint32_t                                    m_area{};
+  mutable std::uint8_t  m_scale{};// when I can detect the scale this will
+                                  // probably be mutable or I can detect on init
+  const Point<uint16_t> m_map_width_height{};
+  mutable std::uint32_t m_width{};
+  mutable std::uint32_t m_height{};
+  mutable std::uint32_t m_area{};
   static constexpr std::size_t                             PALETTE_COUNT = 16U;
   mutable std::array<std::vector<map_type>, PALETTE_COUNT> m_skip{};
   mutable std::vector<open_viii::graphics::Color24<0, 1, 2>> m_out{};

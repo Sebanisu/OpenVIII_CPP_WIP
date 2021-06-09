@@ -9,7 +9,8 @@
 #include <span>
 #include <string_view>
 template<typename fdT>
-concept can_be_span_of_char = requires(fdT fd) {
+concept can_be_span_of_char = requires(fdT fd)
+{
   std::span<const char>(fd);
 };
 /**
@@ -224,7 +225,7 @@ int
       fi_buffer.reserve(3);
       std::stringstream compressed_buffer{};
       const auto        add_lzss_data = [&compressed_buffer,
-        &fi_buffer](const mock_span_data &mock) {
+                                  &fi_buffer](const mock_span_data &mock) {
         fi_buffer.push_back(append_entry(
           compressed_buffer, mock.span(), open_viii::CompressionTypeT::lzss));
       };
@@ -243,11 +244,11 @@ int
       std::vector<FI> fi_buffer{};
       fi_buffer.reserve(3);
       std::stringstream compressed_buffer{};
-      const auto        add_uncompressed_data = [&compressed_buffer,
-        &fi_buffer](const mock_span_data &mock) {
-        fi_buffer.push_back(append_entry(
-          compressed_buffer, mock.span(), open_viii::CompressionTypeT::none));
-      };
+      const auto        add_uncompressed_data =
+        [&compressed_buffer, &fi_buffer](const mock_span_data &mock) {
+          fi_buffer.push_back(append_entry(
+            compressed_buffer, mock.span(), open_viii::CompressionTypeT::none));
+        };
       add_uncompressed_data(mock1);
       add_uncompressed_data(mock2);
       add_uncompressed_data(mock3);

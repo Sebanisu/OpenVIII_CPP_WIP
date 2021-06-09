@@ -34,14 +34,17 @@ private:
   std::uint8_t        m_menu_file_index{};
   std::uint8_t        m_start_offset{};
   std::uint8_t        m_end_offset{};
+
 public:
   constexpr auto
     operator<=>(const MenuAbilities &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -55,20 +58,24 @@ public:
   {
     return m_ability_points_required_to_unlock;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto menu_file_index() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    menu_file_index() const noexcept
   {
     return m_menu_file_index;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto start_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    start_offset() const noexcept
   {
     return m_start_offset;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto end_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    end_offset() const noexcept
   {
     return m_end_offset;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << ", "
               << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)

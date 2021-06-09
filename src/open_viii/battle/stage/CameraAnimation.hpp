@@ -173,27 +173,33 @@ public:
       //    }
     }
   }
-  [[nodiscard]] auto &operator[](std::size_t i) noexcept
+  [[nodiscard]] auto &
+    operator[](std::size_t i) noexcept
   {
     return m_frames[i];
   }
-  [[nodiscard]] auto &at(std::size_t i)
+  [[nodiscard]] auto &
+    at(std::size_t i)
   {
     return m_frames.at(i);
   }
-  [[nodiscard]] auto size() const noexcept
+  [[nodiscard]] auto
+    size() const noexcept
   {
     return m_frames.size();
   }
-  [[nodiscard]] const auto &main_controller() const noexcept
+  [[nodiscard]] const auto &
+    main_controller() const noexcept
   {
     return m_main_controller;//, if 0xFFFF then return
   }
-  [[nodiscard]] const std::uint16_t &starting_fov_usually() const noexcept
+  [[nodiscard]] const std::uint16_t &
+    starting_fov_usually() const noexcept
   {
     return m_starting_fov;//~280
   }
-  [[nodiscard]] const std::uint16_t &ending_fov() const noexcept
+  [[nodiscard]] const std::uint16_t &
+    ending_fov() const noexcept
   {
     return m_ending_fov;// ~006
   }

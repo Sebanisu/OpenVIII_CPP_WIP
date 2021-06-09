@@ -35,7 +35,8 @@ requires(current < shapeT::COUNT) [[nodiscard]] constexpr static pointT
 V values.
 //   */
 template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
-[[nodiscard]] constexpr static pointT max_uv(const shapeT &shape)
+[[nodiscard]] constexpr static pointT
+  max_uv(const shapeT &shape)
 {
   return for_each_uv(shape, [](const pointT &a, const pointT &b) {
     return graphics::max(a, b);
@@ -47,7 +48,8 @@ template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
  * values.
  */
 template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
-[[nodiscard]] constexpr static pointT min_uv(const shapeT &shape)
+[[nodiscard]] constexpr static pointT
+  min_uv(const shapeT &shape)
 {
   return for_each_uv(shape, [](const pointT &a, const pointT &b) {
     return graphics::min(a, b);
@@ -57,7 +59,8 @@ template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
  * returns a rectangle containing the triangle.
  * @return
  */
-[[nodiscard]] constexpr static auto rectangle(const Shape_Like auto &shape)
+[[nodiscard]] constexpr static auto
+  rectangle(const Shape_Like auto &shape)
 {
   const auto min_uv_value = min_uv(shape);
   return Rectangle(min_uv_value, max_uv(shape) - min_uv_value);

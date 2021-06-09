@@ -38,6 +38,7 @@ private:
   static constexpr int BIT4     = 4;
   static constexpr int BIT8     = 8;
   static constexpr int BIT16    = 16;
+
 public:
   Pupu() = default;
   template<typename tileT>
@@ -54,23 +55,28 @@ public:
       m_animation_state(tile.animation_state())
   {}
   auto operator<=>(const Pupu &) const = default;
-  auto operator==(const Pupu &right) const
+  auto
+    operator==(const Pupu &right) const
   {
     return nullptr == (*this <=> right);
   }
-  friend auto operator<=>(const Pupu &left, const BPPT &right)
+  friend auto
+    operator<=>(const Pupu &left, const BPPT &right)
   {
     return left.m_depth <=> right;
   }
-  friend auto operator<=>(const BPPT &right, const Pupu &left)
+  friend auto
+    operator<=>(const BPPT &right, const Pupu &left)
   {
     return left.m_depth <=> right;
   }
-  friend auto operator==(const Pupu &left, const BPPT &right)
+  friend auto
+    operator==(const Pupu &left, const BPPT &right)
   {
     return nullptr == (left.m_depth <=> right);
   }
-  friend auto operator==(const BPPT &right, const Pupu &left)
+  friend auto
+    operator==(const BPPT &right, const Pupu &left)
   {
     return nullptr == (left.m_depth <=> right);
   }
@@ -82,10 +88,10 @@ public:
     operator==(const Pupu &left, const tileT &right)
   {
     return left.m_z == right.z() && left.m_depth == right.depth()
-           && left.m_layer_id == right.layer_id()
-           && left.m_blend_mode == right.blend_mode()
-           && left.m_animation_id == right.animation_id()
-           && left.m_animation_state == right.animation_state();
+        && left.m_layer_id == right.layer_id()
+        && left.m_blend_mode == right.blend_mode()
+        && left.m_animation_id == right.animation_id()
+        && left.m_animation_state == right.animation_state();
   }
   template<typename tileT>
   requires(
@@ -95,10 +101,10 @@ public:
     operator==(const tileT &left, const Pupu &right)
   {
     return right.m_z == left.z() && right.m_depth == left.depth()
-           && right.m_layer_id == left.layer_id()
-           && right.m_blend_mode == left.blend_mode()
-           && right.m_animation_id == left.animation_id()
-           && right.m_animation_state == left.animation_state();
+        && right.m_layer_id == left.layer_id()
+        && right.m_blend_mode == left.blend_mode()
+        && right.m_animation_id == left.animation_id()
+        && right.m_animation_state == left.animation_state();
   }
   template<typename tileT>
   requires(
@@ -109,15 +115,16 @@ public:
     const noexcept
   {
     return m_depth == left.depth() && m_layer_id == left.layer_id()
-           && m_blend_mode == left.blend_mode()
-           && m_animation_id == left.animation_id()
-           && m_animation_state == left.animation_state();
+        && m_blend_mode == left.blend_mode()
+        && m_animation_id == left.animation_id()
+        && m_animation_state == left.animation_state();
   }
   /**
    * Computes the ID from the values.
    * @return all the values as one uint64
    */
-  [[nodiscard]] std::uint64_t generate() const noexcept
+  [[nodiscard]] std::uint64_t
+    generate() const noexcept
   {
     const integral_storage::Writer<std::uint64_t> pupu_writer{};
     pupu_writer.add_depth(m_depth);
@@ -132,7 +139,8 @@ public:
   {
     return generate();
   }
-  friend std::ostream &operator<<(std::ostream &os, const Pupu &input)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Pupu &input)
   {
     return os << std::uppercase << std::hex << std::setfill('0')
               << std::setw(16U) << input.generate() << std::nouppercase
@@ -154,27 +162,33 @@ public:
   explicit Pupu(std::string_view hex)
     : Pupu(std::strtoull(std::ranges::data(hex), nullptr, HEX_BASE))
   {}
-  [[nodiscard]] const std::uint16_t &z() const noexcept
+  [[nodiscard]] const std::uint16_t &
+    z() const noexcept
   {
     return m_z;
   }
-  [[nodiscard]] const BPPT &depth() const noexcept
+  [[nodiscard]] const BPPT &
+    depth() const noexcept
   {
     return m_depth;
   }
-  [[nodiscard]] const std::uint8_t &layer_id() const noexcept
+  [[nodiscard]] const std::uint8_t &
+    layer_id() const noexcept
   {
     return m_layer_id;
   }
-  [[nodiscard]] const BlendModeT &blend_mode() const noexcept
+  [[nodiscard]] const BlendModeT &
+    blend_mode() const noexcept
   {
     return m_blend_mode;
   }
-  [[nodiscard]] const std::uint8_t &animation_id() const noexcept
+  [[nodiscard]] const std::uint8_t &
+    animation_id() const noexcept
   {
     return m_animation_id;
   }
-  [[nodiscard]] const std::uint8_t &animation_state() const noexcept
+  [[nodiscard]] const std::uint8_t &
+    animation_state() const noexcept
   {
     return m_animation_state;
   }

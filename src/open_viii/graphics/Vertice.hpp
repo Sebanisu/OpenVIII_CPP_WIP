@@ -13,6 +13,7 @@ private:
   mainNumberT m_x{};
   mainNumberT m_y{};
   mainNumberT m_z{};
+
 public:
   Vertice() = default;
   Vertice(mainNumberT in_x, mainNumberT in_y, mainNumberT in_z)
@@ -24,56 +25,70 @@ public:
       m_y(static_cast<mainNumberT>(lhs.y())),
       m_z(static_cast<mainNumberT>(lhs.z()))
   {}
-  template<Number numberT> auto operator/(numberT lhs)
+  template<Number numberT>
+  auto
+    operator/(numberT lhs)
   {
     return Vertice<numberT>{ static_cast<numberT>(m_x) / lhs,
                              static_cast<numberT>(m_y) / lhs,
                              static_cast<numberT>(m_z) / lhs };
   }
-  template<Number numberT> auto operator*(numberT lhs)
+  template<Number numberT>
+  auto
+    operator*(numberT lhs)
   {
     return Vertice<numberT>{ static_cast<numberT>(m_x) * lhs,
                              static_cast<numberT>(m_y) * lhs,
                              static_cast<numberT>(m_z) * lhs };
   }
-  template<Number numberT> auto operator-(numberT lhs)
+  template<Number numberT>
+  auto
+    operator-(numberT lhs)
   {
     return Vertice<numberT>{ static_cast<numberT>(m_x) - lhs,
                              static_cast<numberT>(m_y) - lhs,
                              static_cast<numberT>(m_z) - lhs };
   }
-  template<Number numberT> auto operator+(numberT lhs)
+  template<Number numberT>
+  auto
+    operator+(numberT lhs)
   {
     return Vertice<numberT>{ static_cast<numberT>(m_x) + lhs,
                              static_cast<numberT>(m_y) + lhs,
                              static_cast<numberT>(m_z) + lhs };
   }
-  [[nodiscard]] auto x() const noexcept
+  [[nodiscard]] auto
+    x() const noexcept
   {
     return m_x;
   }
-  [[nodiscard]] auto y() const noexcept
+  [[nodiscard]] auto
+    y() const noexcept
   {
     return m_y;
   }
-  [[nodiscard]] auto z() const noexcept
+  [[nodiscard]] auto
+    z() const noexcept
   {
     return m_z;
   }
-  void x(mainNumberT in_x) noexcept
+  void
+    x(mainNumberT in_x) noexcept
   {
     m_x = in_x;
   }
-  void y(mainNumberT in_y) noexcept
+  void
+    y(mainNumberT in_y) noexcept
   {
     m_y = in_y;
   }
-  void z(mainNumberT in_z) noexcept
+  void
+    z(mainNumberT in_z) noexcept
   {
     m_z = in_z;
   }
-  friend std::ostream &operator<<(std::ostream &              os,
-                                  const Vertice<mainNumberT> &lhs)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Vertice<mainNumberT> &lhs)
   {
     return os << '(' << lhs.x() << ", " << lhs.y() << ", " << lhs.z() << ')';
   }

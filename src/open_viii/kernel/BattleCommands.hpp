@@ -35,10 +35,12 @@ private:
   std::uint8_t        m_unknown_flags{};
   TargetT             m_target{};
   std::uint8_t        m_unknown{};
+
 public:
   constexpr auto
     operator<=>(const BattleCommands &right) const noexcept = default;
-  [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
@@ -47,19 +49,23 @@ public:
   {
     return m_description_offset;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto ability_data_id() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    ability_data_id() const noexcept
   {
     return m_ability_data_id;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto unknown_flags() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    unknown_flags() const noexcept
   {
     return m_unknown_flags;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto get_target() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    get_target() const noexcept
   {
     return m_target;
   }
-  [[nodiscard]] auto unknown() const noexcept
+  [[nodiscard]] auto
+    unknown() const noexcept
   {
     return m_unknown;
   }

@@ -18,7 +18,8 @@ namespace open_viii::tools {
  * @return char string_view.
  * @todo needs tests?
  */
-[[maybe_unused]] static std::string_view u8_to_sv(const std::u8string_view &s8)
+[[maybe_unused]] static std::string_view
+  u8_to_sv(const std::u8string_view &s8)
 {
   return { reinterpret_cast<const char *>(s8.data()), s8.size() };
 }
@@ -29,7 +30,8 @@ namespace open_viii::tools {
  * @return char string
  * @todo needs tests?
  */
-[[maybe_unused]] std::string u8_to_s(const std::u8string_view &s8)
+[[maybe_unused]] std::string
+  u8_to_s(const std::u8string_view &s8)
 {
   auto sv = u8_to_sv(s8);
   return { sv.begin(), sv.end() };
@@ -41,12 +43,12 @@ namespace open_viii::tools {
  * @note ::toupper is not constexpr
  * @see https://en.cppreference.com/w/cpp/string/byte/toupper
  */
-static constexpr auto upper = [](auto ch)
-{
+static constexpr auto upper = [](auto ch) {
   if (std::is_constant_evaluated()) {
     constexpr char upper_offset = 'a' - 'A';
     // this is really basic but should cover everything we do.
-    return static_cast<decltype(ch)>((ch >= 'a' && ch <= 'z') ? ch - upper_offset : ch);
+    return static_cast<decltype(ch)>(
+      (ch >= 'a' && ch <= 'z') ? ch - upper_offset : ch);
   }
   return static_cast<decltype(ch)>(::toupper(ch));
 };
@@ -63,9 +65,10 @@ static_assert(upper('a') != 'Z');
  * @todo add tests
  */
 template<std::integral intT>
-std::string to_string_with_padding(const intT &      value,
-                                   const std::size_t total_length  = {},
-                                   const char        pad_character = '0')
+std::string
+  to_string_with_padding(const intT &      value,
+                         const std::size_t total_length  = {},
+                         const char        pad_character = '0')
 {
   auto str = std::to_string(value);
   if (str.length() < total_length)
@@ -73,8 +76,8 @@ std::string to_string_with_padding(const intT &      value,
       str.front() == '-' ? 1 : 0, total_length - str.length(), pad_character);
   return str;
 }
-[[maybe_unused]] [[nodiscard]] std::string get_base_name(
-  const std::filesystem::path &path)
+[[maybe_unused]] [[nodiscard]] std::string
+  get_base_name(const std::filesystem::path &path)
 {
   if (path.string().empty()) {
     return {};

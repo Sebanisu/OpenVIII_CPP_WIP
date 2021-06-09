@@ -11,17 +11,21 @@ struct Slot
 private:
   std::uint8_t m_magic_id{};
   std::uint8_t m_count{};
+
 public:
   constexpr auto operator<=>(const Slot &right) const noexcept = default;
-  [[nodiscard]] constexpr auto magic_id() const noexcept
+  [[nodiscard]] constexpr auto
+    magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[nodiscard]] constexpr auto count() const noexcept
+  [[nodiscard]] constexpr auto
+    count() const noexcept
   {
     return m_count;
   }
-  friend std::ostream &operator<<(std::ostream &os, const Slot &slot)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Slot &slot)
   {
     return os << '{' << static_cast<uint16_t>(slot.magic_id()) << ", "
               << static_cast<uint16_t>(slot.count()) << '}';

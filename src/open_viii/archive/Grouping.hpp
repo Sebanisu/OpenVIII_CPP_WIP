@@ -19,11 +19,11 @@ private:
   /**
    * Offset from beginning of file in bytes. Shouldn't read before this.
    */
-  std::size_t m_offset{};
+  std::size_t           m_offset{};
   /**
    * Max size in bytes. Shouldn't read beyond this limit.
    */
-  std::size_t m_size{};
+  std::size_t           m_size{};
   /**
    * Archive path. This file should exist on filesystem.
    */
@@ -36,11 +36,12 @@ private:
    * Stem of filename aka basename. The part of the filename before the
    * extension
    */
-  std::string m_base{};
+  std::string           m_base{};
   /**
    * Char based container. Example Vector<char> or String.
    */
-  T m_data{};
+  T                     m_data{};
+
 public:
   Grouping() = default;
   template<FI_Like fiT>
@@ -78,7 +79,8 @@ public:
    * get path to file containing archive
    * @return
    */
-  [[nodiscard]] const std::filesystem::path &path() const noexcept
+  [[nodiscard]] const std::filesystem::path &
+    path() const noexcept
   {
     return m_path;
   }
@@ -94,7 +96,8 @@ public:
    * get offset in bytes to start
    * @return
    */
-  [[nodiscard]] std::size_t offset() const noexcept
+  [[nodiscard]] std::size_t
+    offset() const noexcept
   {
     return m_offset;
   }
@@ -110,7 +113,8 @@ public:
    * get Size of file / also defaults size if value is 0.
    * @return size_t
    */
-  [[nodiscard]] std::size_t size() const noexcept
+  [[nodiscard]] std::size_t
+    size() const noexcept
   {
     if (m_size == 0U) {
       if (!std::ranges::empty(data())) {
@@ -133,7 +137,8 @@ public:
    * get loaded data buffer
    * @return
    */
-  [[nodiscard]] const T &data() const noexcept
+  [[nodiscard]] const T &
+    data() const noexcept
   {
     return m_data;
   }
@@ -150,7 +155,8 @@ public:
    * stem of filename upper cased
    * @return
    */
-  [[nodiscard]] const std::string &base() const noexcept
+  [[nodiscard]] const std::string &
+    base() const noexcept
   {
     return m_base;
   }
@@ -173,7 +179,8 @@ public:
    * get path inside file
    * @return
    */
-  [[nodiscard]] const std::filesystem::path &nested_path() const noexcept
+  [[nodiscard]] const std::filesystem::path &
+    nested_path() const noexcept
   {
     return m_nested_path;
   }
@@ -191,8 +198,8 @@ public:
   explicit operator bool() const
   {
     return (!std::ranges::empty(m_path) && std::filesystem::exists(m_path))
-           || !std::ranges::empty(m_data)
-           || (!std::ranges::empty(m_path) && (m_offset > 0 || m_size > 0));
+        || !std::ranges::empty(m_data)
+        || (!std::ranges::empty(m_path) && (m_offset > 0 || m_size > 0));
   }
 };
 }// namespace open_viii::archive

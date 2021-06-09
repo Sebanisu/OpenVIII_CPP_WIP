@@ -49,63 +49,78 @@ private:
   std::uint8_t        m_status_attack{};
   std::uint8_t        m_critical_bonus{};
   std::uint8_t        m_unknown4{};
+
 public:
   constexpr auto operator<=>(
     const QuistisBlueMagicLimitBreak &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
-  [[nodiscard]] constexpr auto magic_id() const noexcept
+  [[nodiscard]] constexpr auto
+    magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[nodiscard]] constexpr auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] constexpr auto attack_type() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[nodiscard]] constexpr auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] constexpr auto unknown2() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[nodiscard]] constexpr auto attack_flags() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[nodiscard]] constexpr auto unknown3() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown3() const noexcept
   {
     return m_unknown3;
   }
-  [[nodiscard]] constexpr auto element() const noexcept
+  [[nodiscard]] constexpr auto
+    element() const noexcept
   {
     return m_element;
   }
-  [[nodiscard]] constexpr auto status_attack() const noexcept
+  [[nodiscard]] constexpr auto
+    status_attack() const noexcept
   {
     return m_status_attack;
   }
-  [[nodiscard]] constexpr auto critical_bonus() const noexcept
+  [[nodiscard]] constexpr auto
+    critical_bonus() const noexcept
   {
     return m_critical_bonus;
   }
-  [[nodiscard]] constexpr auto unknown4() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown4() const noexcept
   {
     return m_unknown4;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
               << static_cast<std::uint32_t>(m_unknown0) << ", "

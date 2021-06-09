@@ -33,14 +33,17 @@ private:
   std::uint8_t        m_stat_to_increase{};
   std::uint8_t        m_increased_value{};
   std::uint8_t        m_unknown0{};
+
 public:
   constexpr auto operator<=>(
     const StatPercentIncreaseAbilities &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto description_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    description_offset() const noexcept
   {
     return m_description_offset;
   }
@@ -59,16 +62,19 @@ public:
   {
     return m_stat_to_increase;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto increased_value() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    increased_value() const noexcept
   {
     return m_increased_value;
   }
-  [[nodiscard]] constexpr auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << ", "
               << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)

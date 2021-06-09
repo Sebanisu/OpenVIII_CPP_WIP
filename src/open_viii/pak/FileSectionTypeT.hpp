@@ -16,21 +16,23 @@ constexpr static auto NONE = std::string_view("");
  * Cam file
  * @remark F8P
  */
-constexpr static auto CAM = std::string_view("F8P");
+constexpr static auto CAM  = std::string_view("F8P");
 /**
  * Bink Video
  */
-constexpr static auto BIK = std::string_view("BIK");
+constexpr static auto BIK  = std::string_view("BIK");
 /**
  * Bink Video Version 2.
  */
-constexpr static auto KB2 = std::string_view("KB2");
+constexpr static auto KB2  = std::string_view("KB2");
 /**
  * get_type 3 character array from stream.
  * @param is = input stream
  * @return array.
  */
-template<bool rewind = false> static auto get_type(std::istream &is)
+template<bool rewind = false>
+static auto
+  get_type(std::istream &is)
 {
   static constexpr auto sz           = 3U;
   const auto            get_type_int = [&is]() {
@@ -53,8 +55,8 @@ template<bool rewind = false> static auto get_type(std::istream &is)
  * @return true or false
  */
 template<typename needleT, typename... haystackT>
-constexpr static bool valid_type(const needleT &needle,
-                                 const haystackT &...haystack)
+constexpr static bool
+  valid_type(const needleT &needle, const haystackT &...haystack)
 {
   if constexpr (sizeof...(haystack) == 0) {
     return valid_type(needle, CAM, BIK, KB2);
@@ -76,9 +78,10 @@ constexpr static bool valid_type(const needleT &needle,
  * @return returns the found value.
  */
 template<typename needleT, typename first_haystackT, typename... haystackT>
-constexpr static auto find_type(const needleT &        needle,
-                                const first_haystackT &first_haystack,
-                                const haystackT &...haystack) noexcept
+constexpr static auto
+  find_type(const needleT &        needle,
+            const first_haystackT &first_haystack,
+            const haystackT &...haystack) noexcept
 {
   if (std::ranges::equal(needle, first_haystack)) {
     return first_haystack;
@@ -96,7 +99,8 @@ constexpr static auto find_type(const needleT &        needle,
  * @return returns found value
  */
 template<typename needleT>
-constexpr static auto find_type(const needleT &needle) noexcept
+constexpr static auto
+  find_type(const needleT &needle) noexcept
 {
   return find_type(needle, CAM, BIK, KB2);
 }

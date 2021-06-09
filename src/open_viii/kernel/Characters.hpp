@@ -40,11 +40,11 @@ namespace open_viii::kernel {
 struct Characters
 {
 private:
-  EncodedStringOffset m_name_offset{};
-  std::uint8_t        m_crisis_level_hp_multiplier{};
-  GenderT             m_gender{};
-  std::uint8_t        m_limit_break_id{};
-  std::uint8_t        m_limit_break_param{};
+  EncodedStringOffset         m_name_offset{};
+  std::uint8_t                m_crisis_level_hp_multiplier{};
+  GenderT                     m_gender{};
+  std::uint8_t                m_limit_break_id{};
+  std::uint8_t                m_limit_break_param{};
   //  std::uint8_t EXP0;
   //  std::uint8_t EXP1;
   //  std::uint8_t EXP[2];
@@ -78,9 +78,11 @@ private:
   //  std::uint8_t LUCK2;
   //  std::uint8_t LUCK3;
   StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> m_stats{};
+
 public:
   constexpr auto operator<=>(const Characters &right) const noexcept = default;
-  [[maybe_unused]] [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
@@ -89,11 +91,13 @@ public:
   {
     return m_crisis_level_hp_multiplier;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto gender() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    gender() const noexcept
   {
     return m_gender;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto limit_break_id() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    limit_break_id() const noexcept
   {
     return m_limit_break_id;
   }
@@ -102,20 +106,24 @@ public:
   {
     return m_limit_break_param;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto exp() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    exp() const noexcept
   {
     return m_exp;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto stats() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    stats() const noexcept
   {
     return m_stats;
   }
-  [[nodiscard]] auto operator->() const noexcept
+  [[nodiscard]] auto
+    operator->() const noexcept
   {
     return &m_stats;
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os << ", "
               << static_cast<std::uint32_t>(m_crisis_level_hp_multiplier)

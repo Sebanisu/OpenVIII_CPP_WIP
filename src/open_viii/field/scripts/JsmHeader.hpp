@@ -18,19 +18,19 @@ private:
   /**
    * Count of door entity
    */
-  std::uint8_t m_count_door_entities{};
+  std::uint8_t  m_count_door_entities{};
   /**
    * Count of walkmesh line entity
    */
-  std::uint8_t m_count_walk_mesh_line_entities{};
+  std::uint8_t  m_count_walk_mesh_line_entities{};
   /**
    * Count of background entity
    */
-  std::uint8_t m_count_background_entities{};
+  std::uint8_t  m_count_background_entities{};
   /**
    * Count of other entity
    */
-  std::uint8_t m_count_other_entities{};
+  std::uint8_t  m_count_other_entities{};
   /**
    * Offset section 1
    */
@@ -112,7 +112,7 @@ public:
   [[nodiscard]] auto constexpr offset_background_entities() const noexcept
   {
     return offset_walk_mesh_line_entities()
-           + sizeof(JsmEntity) * count_walk_mesh_line_entities();
+         + sizeof(JsmEntity) * count_walk_mesh_line_entities();
   }
   /**
    * Count of other entity
@@ -127,15 +127,16 @@ public:
   [[nodiscard]] auto constexpr offset_other_entities() const noexcept
   {
     return offset_background_entities()
-           + sizeof(JsmEntity) * count_background_entities();
+         + sizeof(JsmEntity) * count_background_entities();
   }
   /**
    * count section 1
    */
-  [[nodiscard]] constexpr auto count_section_1() const noexcept
+  [[nodiscard]] constexpr auto
+    count_section_1() const noexcept
   {
     return (offset_script_data() - offset_section_1())
-           / sizeof(JsmScriptEntity);
+         / sizeof(JsmScriptEntity);
   }
   /**
    * Offset section 1
@@ -160,7 +161,8 @@ static_assert(sizeof(JsmHeader) == JsmHeader::EXPECTED_SIZE);
  * @param in read in header data.
  * @return possible valid header.
  */
-static constexpr JsmHeader fix_jsm_header_counts(JsmHeader in) noexcept
+static constexpr JsmHeader
+  fix_jsm_header_counts(JsmHeader in) noexcept
 {
   const auto expected_count = in.expected_count();
   const auto fix = [&expected_count]<std::unsigned_integral T>(T count) -> T {

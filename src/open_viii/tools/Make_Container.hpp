@@ -10,7 +10,8 @@ requires requires(containerT c, fillT t)
 {
   c.emplace_back(t());
 }
-containerT make_container(const fillT &filler, size_t size)
+containerT
+  make_container(const fillT &filler, size_t size)
 {
   containerT data{};
   data.reserve(size);
@@ -20,7 +21,8 @@ containerT make_container(const fillT &filler, size_t size)
   return data;
 }
 template<has_reserve containerT, typename... restT>
-containerT make_container(const restT &&...rest)
+containerT
+  make_container(const restT &&...rest)
 {
   containerT data{};
   data.reserve(sizeof...(rest));

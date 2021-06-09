@@ -39,8 +39,8 @@ private:
   static constexpr std::uint_fast8_t                  CONVERT_SHIFT = { 3U };
   static constexpr std::uint_fast8_t GET_HIGH_BIT_SHIFT             = { 2U };
   static constexpr std::uint_fast8_t LARGEST_5_BIT_VALUE{ 0b0001'1111 };
-  [[nodiscard]] std::uint8_t         convert(const std::uint16_t &    mask,
-                                             const std::uint_fast8_t &shift) const
+  [[nodiscard]] std::uint8_t
+    convert(const std::uint16_t &mask, const std::uint_fast8_t &shift) const
   {
     auto temp = static_cast<std::uint16_t>(
       static_cast<std::uint16_t>(m_value & mask) >> shift);
@@ -48,12 +48,15 @@ private:
       (static_cast<std::uint16_t>(temp << CONVERT_SHIFT)
        | static_cast<std::uint16_t>(temp >> GET_HIGH_BIT_SHIFT)));
   }
-  template<std::unsigned_integral T> static constexpr T flip(const T input)
+  template<std::unsigned_integral T>
+  static constexpr T
+    flip(const T input)
   {
     return std::numeric_limits<T>::max() - input;
   }
   template<std::floating_point T>
-  void set(T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
+  void
+    set(T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
   {
     std::uint16_t val{ static_cast<std::uint_fast8_t>(
       std::clamp(input, static_cast<T>(0.0F), static_cast<T>(1.0F))
@@ -73,6 +76,7 @@ private:
     val     = static_cast<decltype(val)>(val << shift);
     m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
   }
+
 public:
   Color16() = default;
   explicit Color16(std::uint16_t raw_color) : m_value(raw_color) {}
@@ -96,7 +100,8 @@ public:
    * Color Blue stored as 5 bit.
    * @return 8 bit color value.
    */
-  [[nodiscard]] std::uint8_t b() const
+  [[nodiscard]] std::uint8_t
+    b() const
   {
     return convert(BLUE_MASK, BLUE_SHIFT);
   }
@@ -104,7 +109,8 @@ public:
    * Color Green stored as 5 bit.
    * @return 8 bit color value.
    */
-  [[nodiscard]] std::uint8_t g() const
+  [[nodiscard]] std::uint8_t
+    g() const
   {
     return convert(GREEN_MASK, GREEN_SHIFT);
   }
@@ -112,7 +118,8 @@ public:
    * Color Red stored as 5 bit.
    * @return 8 bit color value.
    */
-  [[nodiscard]] std::uint8_t r() const
+  [[nodiscard]] std::uint8_t
+    r() const
   {
     return convert(RED_MASK, RED_SHIFT);
   }
@@ -122,7 +129,9 @@ public:
    * @tparam T is an integral value. Clamped to 0-255.
    * @param b is a new blue value.
    */
-  template<Number T> [[maybe_unused]] std::uint8_t b(const T &b_in) const
+  template<Number T>
+  [[maybe_unused]] std::uint8_t
+    b(const T &b_in) const
   {
     set(b_in, BLUE_MASK, BLUE_SHIFT);
     return b();
@@ -133,7 +142,9 @@ public:
    * @tparam T is an integral value. Clamped to 0-255.
    * @param g is a new blue value.
    */
-  template<Number T> [[maybe_unused]] std::uint8_t g(const T &g_in) const
+  template<Number T>
+  [[maybe_unused]] std::uint8_t
+    g(const T &g_in) const
   {
     set(g_in, GREEN_MASK, GREEN_SHIFT);
     return g();
@@ -144,7 +155,9 @@ public:
    * @tparam T is an integral value. Clamped to 0-255.
    * @param r is a new blue value.
    */
-  template<Number T> [[maybe_unused]] std::uint8_t r(const T &r_in) const
+  template<Number T>
+  [[maybe_unused]] std::uint8_t
+    r(const T &r_in) const
   {
     set(r_in, RED_MASK, RED_SHIFT);
     return r();
@@ -153,7 +166,8 @@ public:
    * Special transparency bit
    * @return true or false
    */
-  [[maybe_unused]] [[nodiscard]] bool stp() const
+  [[maybe_unused]] [[nodiscard]] bool
+    stp() const
   {
     return (m_value & STP_MASK) != 0;
   }
@@ -161,7 +175,8 @@ public:
    * Special transparency bit
    * @return true or false
    */
-  [[maybe_unused]] bool stp(bool enabled) const
+  [[maybe_unused]] bool
+    stp(bool enabled) const
   {
     if (enabled) {
       m_value |= STP_MASK;
@@ -173,22 +188,26 @@ public:
   /**
    * @return true if color is black. at least all the color bits are 0.
    */
-  [[nodiscard]] bool is_black() const
+  [[nodiscard]] bool
+    is_black() const
   {
     return (m_value & ALL_COLOR_MASK) == 0;
   }
   /**
    * @return true if color is transparent Black. all bits are 0.
    */
-  [[nodiscard]] [[maybe_unused]] bool is_transparent_black() const
+  [[nodiscard]] [[maybe_unused]] bool
+    is_transparent_black() const
   {
     return m_value == 0;
   }
-  [[nodiscard]] std::uint8_t a() const
+  [[nodiscard]] std::uint8_t
+    a() const
   {
     return is_black() ? 0U : std::numeric_limits<std::uint8_t>::max();
   }
-  friend std::ostream &operator<<(std::ostream &os, const Color16 &color)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Color16 &color)
   {
     return os << std::uppercase << std::hex << '{'
               << static_cast<std::size_t>(color.r()) << ", "

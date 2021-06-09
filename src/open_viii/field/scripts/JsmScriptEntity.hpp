@@ -14,11 +14,13 @@ private:
 
 public:
   constexpr JsmScriptEntity() = default;
-  [[nodiscard]] constexpr std::uint16_t raw() const noexcept
+  [[nodiscard]] constexpr std::uint16_t
+    raw() const noexcept
   {
     return m_raw;
   }
-  [[nodiscard]] constexpr std::uint16_t position() const noexcept
+  [[nodiscard]] constexpr std::uint16_t
+    position() const noexcept
   {
     /**
      * they use 0x7FFF but once you shift over 2 or multiply by 4 the left 2
@@ -27,7 +29,7 @@ public:
      * @see
      * https://github.com/myst6re/deling/blob/develop/src/files/JsmFile.cpp#L154
      */
-    constexpr std::uint16_t mask = 0xFFFCU;
+    constexpr std::uint16_t mask  = 0xFFFCU;
     /**
      * multiply by 4 == left shift by 2.
      * @see
@@ -38,7 +40,8 @@ public:
     //(entryPointScript & 0x7FFF)*4; this is doing a shift and mask.
     return static_cast<std::uint16_t>(m_raw << shift) & mask;
   }
-  [[nodiscard]] constexpr bool flag() const noexcept
+  [[nodiscard]] constexpr bool
+    flag() const noexcept
   {
     constexpr std::uint16_t mask  = 0x1U;
     constexpr std::uint16_t shift = 15U;
@@ -48,7 +51,8 @@ public:
    * This bit is lost in the transfer. Unsure if it's just unimportant.
    * @return
    */
-  [[nodiscard]] constexpr bool unk() const noexcept
+  [[nodiscard]] constexpr bool
+    unk() const noexcept
   {
     constexpr std::uint16_t mask  = 0x1U;
     constexpr std::uint16_t shift = 14U;
@@ -84,7 +88,10 @@ struct [[maybe_unused]] tuple_size<open_viii::field::scripts::JsmScriptEntity>
  * type of argument 0
  * @note required to structured binding support
  */
-template<> struct [[maybe_unused]] tuple_element<0U, open_viii::field::scripts::JsmScriptEntity>
+template<>
+struct [[maybe_unused]] tuple_element<
+  0U,
+  open_viii::field::scripts::JsmScriptEntity>
 {
   using type = std::uint16_t;
 };
@@ -92,7 +99,10 @@ template<> struct [[maybe_unused]] tuple_element<0U, open_viii::field::scripts::
  * type of argument 1
  * @note required to structured binding support
  */
-template<> struct [[maybe_unused]] tuple_element<1U, open_viii::field::scripts::JsmScriptEntity>
+template<>
+struct [[maybe_unused]] tuple_element<
+  1U,
+  open_viii::field::scripts::JsmScriptEntity>
 {
   using type = std::uint16_t;
 };

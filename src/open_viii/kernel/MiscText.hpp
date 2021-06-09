@@ -26,9 +26,11 @@ struct MiscText
 {
 private:
   EncodedStringOffset m_name_offset{};
+
 public:
   constexpr auto operator<=>(const MiscText &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }

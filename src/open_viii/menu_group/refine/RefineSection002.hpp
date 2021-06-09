@@ -34,24 +34,28 @@ private:
     m_high_mag_rf{};
 
 public:
-  [[maybe_unused]] [[nodiscard]] const auto &mid_mag_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    mid_mag_rf() const noexcept
   {
     return m_mid_mag_rf;
   }
-  [[maybe_unused]] [[nodiscard]] const auto &high_mag_rf() const noexcept
+  [[maybe_unused]] [[nodiscard]] const auto &
+    high_mag_rf() const noexcept
   {
     return m_high_mag_rf;
   }
-  [[nodiscard]] static constexpr auto size()
+  [[nodiscard]] static constexpr auto
+    size()
   {
     return MID_MAG_RF_COUNT + HIGH_MAG_RF_COUNT;
   }
   template<LangT langVal, typename T>
-  std::ostream &out_array(const T &                    arr,
-                          std::ostream &               os,
-                          const std::span<const char> &buffer = ""sv,
-                          const intmax_t               offset = 0,
-                          bool skip_first_null                = false) const
+  std::ostream &
+    out_array(const T &                    arr,
+              std::ostream &               os,
+              const std::span<const char> &buffer          = ""sv,
+              const intmax_t               offset          = 0,
+              bool                         skip_first_null = false) const
   {
     for (const auto item : arr) {
       (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
@@ -59,10 +63,11 @@ public:
     return os;
   }
   template<LangT langVal>
-  std::ostream &out(std::ostream &               os,
-                    const std::span<const char> &buffer          = ""sv,
-                    const intmax_t               offset          = 0,
-                    bool                         skip_first_null = false) const
+  std::ostream &
+    out(std::ostream &               os,
+        const std::span<const char> &buffer          = ""sv,
+        const intmax_t               offset          = 0,
+        bool                         skip_first_null = false) const
   {
     os << "midMagRF_:\n";
     out_array<langVal>(m_mid_mag_rf, os, buffer, offset, skip_first_null);

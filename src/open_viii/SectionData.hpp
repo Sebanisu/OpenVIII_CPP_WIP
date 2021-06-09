@@ -14,11 +14,12 @@
 #define VIIIARCHIVE_SECTIONDATA_HPP
 #include <string_view>
 namespace open_viii {
-template<typename spanT> requires(sizeof(spanT) > 0U) struct SectionData
+template<typename spanT>
+requires(sizeof(spanT) > 0U) struct SectionData
 {
 private:
   // data
-  spanT m_span{};
+  spanT            m_span{};
   // strings
   std::string_view m_text_span{};
 
@@ -27,27 +28,33 @@ public:
                                         const std::string_view &text_span = {})
     : m_span{ span }, m_text_span{ text_span }
   {}
-  [[nodiscard]] auto begin() const
+  [[nodiscard]] auto
+    begin() const
   {
     return m_span.begin();
   }
-  [[nodiscard]] auto end() const
+  [[nodiscard]] auto
+    end() const
   {
     return m_span.end();
   }
-  [[nodiscard]] size_t size() const
+  [[nodiscard]] size_t
+    size() const
   {
     return std::ranges::size(m_span) / sizeof(spanT);
   }
-  const auto *operator->() const
+  const auto *
+    operator->() const
   {
     return &m_span;
   }
-  [[maybe_unused]] auto &span() const noexcept
+  [[maybe_unused]] auto &
+    span() const noexcept
   {
     return m_span;
   }
-  auto &text_span() const noexcept
+  auto &
+    text_span() const noexcept
   {
     return m_text_span;
   }

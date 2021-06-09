@@ -11,16 +11,19 @@ private:
   std::vector<char>          m_buffer{};
   std::vector<std::uint32_t> m_tim_offsets{};
   std::uint32_t              m_model_offset{};
-  decltype(m_tim_offsets)    get_tim_offsets() const
+  decltype(m_tim_offsets)
+    get_tim_offsets() const
   {
     decltype(m_tim_offsets) ret{};
     std::span<const char>   buffer = m_buffer;
     read_tim_offsets(ret, buffer);
     return ret;
   }
+
 public:
-  static void read_tim_offsets(std::vector<std::uint32_t> &ret,
-                               std::span<const char> &     buffer)
+  static void
+    read_tim_offsets(std::vector<std::uint32_t> &ret,
+                     std::span<const char> &     buffer)
   {
     do {
       if (std::ranges::size(buffer) < sizeof(uint32_t)) {
@@ -35,7 +38,8 @@ public:
       ret.push_back(val);
     } while (true);
   }
-  std::uint32_t get_model_offset() const
+  std::uint32_t
+    get_model_offset() const
   {
     std::span<const char> buffer = m_buffer;
     if (std::ranges::size(buffer) < sizeof(std::uint32_t) * 2) {
@@ -49,7 +53,8 @@ public:
       m_tim_offsets(get_tim_offsets()),
       m_model_offset(get_model_offset())
   {}
-  void save(const std::string &path)
+  void
+    save(const std::string &path)
   {
     for (size_t i{}; const auto tim_offset : m_tim_offsets) {
       const auto tim_span = std::span<const char>(m_buffer).subspan(tim_offset);

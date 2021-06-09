@@ -24,6 +24,7 @@ struct Sp2
 {
 private:
   std::vector<Sp2Entry> m_entries{};
+
 public:
   Sp2() = default;
   explicit Sp2(std::span<const char> buffer)
@@ -38,15 +39,18 @@ public:
       s = s.subspan(1);
     }
   }
-  [[nodiscard]] const auto &at(const size_t i) const
+  [[nodiscard]] const auto &
+    at(const size_t i) const
   {
     return m_entries.at(i);
   }
-  [[nodiscard]] auto size() const
+  [[nodiscard]] auto
+    size() const
   {
     return std::ranges::size(m_entries);
   }
-  friend std::ostream &operator<<(std::ostream &os, const Sp2 &s)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Sp2 &s)
   {
     os << "{ Entry Count: " << s.size() << " {";
     for (const auto &e : s.m_entries) {

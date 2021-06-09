@@ -37,11 +37,11 @@ private:
   /**
    * Uncompressed Size
    */
-  std::uint32_t m_uncompressed_size{};
+  std::uint32_t    m_uncompressed_size{};
   /**
    * Offset
    */
-  std::uint32_t m_offset{};
+  std::uint32_t    m_offset{};
   /**
    * Compression Type
    */
@@ -55,7 +55,7 @@ public:
   /**
    * File extension for FI
    */
-  static constexpr auto EXT = std::string_view(".fi", 3U);
+  static constexpr auto        EXT  = std::string_view(".fi", 3U);
   /**
    * Uncompressed size in bytes.
    */
@@ -156,7 +156,7 @@ public:
    * Get count of possible entries based on file_size
    * @param file_size total bytes in a file.
    */
-   template<std::unsigned_integral T>
+  template<std::unsigned_integral T>
   [[nodiscard]] static constexpr auto
     get_count(const T &file_size) noexcept
   {

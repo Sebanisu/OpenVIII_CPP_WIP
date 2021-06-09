@@ -46,7 +46,8 @@ public:
         return static_cast<std::size_t>(sz) / sizeof(CamFrame);
       }())
   {}
-  friend std::ostream &operator<<(std::ostream &os, const Cam &cam)
+  friend std::ostream &
+    operator<<(std::ostream &os, const Cam &cam)
   {
     os << cam.m_header << '\n';
     os << '{';

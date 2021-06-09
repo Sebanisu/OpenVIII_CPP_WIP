@@ -3,8 +3,8 @@
 //
 #ifndef VIIIARCHIVE_BITOPS_HPP
 #define VIIIARCHIVE_BITOPS_HPP
-#include <limits>
 #include <concepts>
+#include <limits>
 namespace open_viii::tools {
 static constexpr auto bits_per_byte = 8U;
 /**
@@ -13,8 +13,7 @@ static constexpr auto bits_per_byte = 8U;
  * @see https://godbolt.org/z/qdqeP3
  */
 template<std::integral measuredT = std::uint64_t>
-static constexpr std::size_t number_of_bits = bits_per_byte
-                                                 * sizeof(measuredT);
+static constexpr std::size_t number_of_bits = bits_per_byte * sizeof(measuredT);
 static_assert(number_of_bits<std::uint64_t> == 64U);
 static_assert(number_of_bits<std::uint16_t> == 16U);
 /**
@@ -24,26 +23,20 @@ static_assert(number_of_bits<std::uint16_t> == 16U);
  * @return as retT
  */
 template<std::integral retT   = std::uint64_t,
-         std::size_t   lshift = number_of_bits<retT>-1>
-static constexpr retT largest_bit_value = [
-]() -> retT
-{
+         std::size_t   lshift = number_of_bits<retT> - 1>
+static constexpr retT largest_bit_value = []() -> retT {
   std::size_t i;
-  retT ret{1U};
-  if constexpr (number_of_bits<retT> < lshift)
-  {
-    i = number_of_bits<retT>-1;
-  }
-  else
-  {
-    i = lshift -1;
+  retT        ret{ 1U };
+  if constexpr (number_of_bits<retT> < lshift) {
+    i = number_of_bits<retT> - 1;
+  } else {
+    i = lshift - 1;
   }
   for (; i > 0; --i) {
     ret = static_cast<retT>(static_cast<retT>(ret << 1U) | 1U);
   }
   return ret;
-}
-();
+}();
 static_assert(largest_bit_value<std::uint64_t, 5U> == 0b11111U);
 /**
  * flip_bits while keeping the type. unsigned char 0b1U becomes 0b1111'1110U
@@ -51,7 +44,8 @@ static_assert(largest_bit_value<std::uint64_t, 5U> == 0b11111U);
  * @see https://godbolt.org/z/qdqeP3
  */
 template<std::integral retT = std::uint64_t>
-static consteval retT flip_bits(retT i)
+static consteval retT
+  flip_bits(retT i)
 {
   if constexpr (std::signed_integral<retT>) {
     // i don't know if the signed version make since.
@@ -70,9 +64,7 @@ static consteval retT flip_bits(retT i)
  * return type.
  */
 template<int bit_count>
-static constexpr auto get_mask = [
-]()
-{
+static constexpr auto get_mask = []() {
   static_assert(bit_count <= number_of_bits<std::uint64_t> && bit_count > 0);
   constexpr auto bit_count_8  = number_of_bits<std::uint8_t>;
   constexpr auto bit_count_16 = number_of_bits<std::uint16_t>;
@@ -88,8 +80,7 @@ static constexpr auto get_mask = [
   } else if constexpr (bit_count > bit_count_32 /* && bit_count <= 64*/) {
     return largest_bit_value<std::uint64_t, bit_count>;
   }
-}
-();
+}();
 static_assert(get_mask<5U> == 0b11111U);
 static_assert(get_mask<16U> == 0b1111'1111'1111'1111U);
 static_assert(flip_bits(get_mask<5U>) == 0b11100000U);

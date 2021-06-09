@@ -27,11 +27,11 @@ namespace open_viii::graphics {
  * @return true if both the same.
  */
 template<Color cT1, Color cT2>
-requires(!std::is_same_v<cT1, cT2>) auto operator==(const cT1 &left,
-                                                    const cT2 &right)
+requires(!std::is_same_v<cT1, cT2>) auto
+  operator==(const cT1 &left, const cT2 &right)
 {
   return left.r() == right.r() && left.g() == right.g() && left.b() == right.b()
-         && left.a() == right.a();
+      && left.a() == right.a();
 }
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR_HPP

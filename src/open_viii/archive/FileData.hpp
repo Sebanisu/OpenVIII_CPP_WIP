@@ -33,11 +33,11 @@ private:
   /**
    * offset to file
    */
-  std::uint64_t m_offset{};
+  std::uint64_t           m_offset{};
   /**
    * size of the file
    */
-  std::uint32_t m_size{};
+  std::uint32_t           m_size{};
 
 public:
   constexpr FileData() = default;

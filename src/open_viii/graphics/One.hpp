@@ -12,9 +12,9 @@ namespace open_viii::graphics {
 struct One
 {
 private:
-  std::vector<char>     m_buffer{};
-  std::uint32_t         m_count{};
-  static constexpr auto SIZE_TIM_START = 5U;
+  std::vector<char>                 m_buffer{};
+  std::uint32_t                     m_count{};
+  static constexpr auto             SIZE_TIM_START = 5U;
   /**
    * 4 bit color tim.
    */
@@ -42,7 +42,8 @@ private:
   static constexpr std::array TIM_STARTS{
     TIM4_START, TIM8_START, TIM16_START, TIM24_START
   };
-  auto get_next_offset(const std::span<const char> &buffer) const
+  auto
+    get_next_offset(const std::span<const char> &buffer) const
   {
     // could be a coroutine using std::generator
     // because these tim can be in any order.
@@ -53,7 +54,8 @@ private:
         return tools::search(buffer, start);
       }));
   }
-  static Tim get_tim(auto offset, std::span<const char> &buffer)
+  static Tim
+    get_tim(auto offset, std::span<const char> &buffer)
   {
     buffer        = std::span<const char>(offset, std::ranges::end(buffer));
     const Tim tim = Tim(buffer);
@@ -66,7 +68,8 @@ public:
     : m_buffer(std::move(buffer)),
       m_count(tools::read_val<std::uint32_t>(m_buffer))
   {}
-  bool save_tim(const std::string &path, const size_t i, const Tim &tim) const
+  bool
+    save_tim(const std::string &path, const size_t i, const Tim &tim) const
   {
     if (tim) {
       auto       path_parts = std::filesystem::path(path);
@@ -79,7 +82,8 @@ public:
     }
     return false;
   }
-  void save([[maybe_unused]] const std::string &path) const
+  void
+    save([[maybe_unused]] const std::string &path) const
   {
     // todo make this generic, extract tim file code to a free function.
     size_t i{};

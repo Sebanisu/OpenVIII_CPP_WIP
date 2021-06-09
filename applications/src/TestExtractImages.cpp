@@ -35,7 +35,8 @@
         open_viii::tools::write_buffer(buffer, p);
       } else {
         t.save(p);
-        auto os = std::fstream(p+".dat",std::ios::binary|std::ios::trunc|std::ios::out);
+        auto os = std::fstream(
+          p + ".dat", std::ios::binary | std::ios::trunc | std::ios::out);
         os << t;
       }
     } else if (open_viii::tools::i_ends_with(p, ".tex")) {
@@ -67,7 +68,8 @@
       t.save(p);
     }
   };
-void extract_images_from_path(const std::filesystem::path &path)
+void
+  extract_images_from_path(const std::filesystem::path &path)
 {
   open_viii::tools::execute_on_directory(
     path,
@@ -76,11 +78,13 @@ void extract_images_from_path(const std::filesystem::path &path)
     },
     [](const auto &p) -> bool {
       const auto haystack = p.string();
-      return open_viii::tools::i_ends_with_any(haystack, std::array{ std::string_view (".tim") });
+      return open_viii::tools::i_ends_with_any(
+        haystack, std::array{ std::string_view(".tim") });
     });
 }
-void extract_per_extension_in_archives(
-  const open_viii::archive::Archives &archives)
+void
+  extract_per_extension_in_archives(
+    const open_viii::archive::Archives &archives)
 {
   archives.execute_on<false>(
     {
@@ -95,7 +99,8 @@ void extract_per_extension_in_archives(
     },
     dump_image);
 }
-void extract_menu_group_images(const open_viii::archive::Archives &archives)
+void
+  extract_menu_group_images(const open_viii::archive::Archives &archives)
 {
   [[maybe_unused]] const auto &menu =
     archives.get<open_viii::archive::ArchiveTypeT::menu>();
@@ -104,27 +109,29 @@ void extract_menu_group_images(const open_viii::archive::Archives &archives)
   mngrpfile.test_tim(
     menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));
 }
-int main()
+int
+  main()
 {
-//  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
-//    extract_images_from_path(path);
-//    std::cout << path << std::endl;
-//    static constexpr auto coo      = open_viii::LangT::en;
-//    const auto            archives = open_viii::archive::Archives(
-//      path, open_viii::LangCommon::to_string<coo>());
-//    if (!static_cast<bool>(archives)) {
-//      std::cerr << "Failed to load path: " << path.string() << '\n';
-//      return;
-//    }
-//    extract_per_extension_in_archives(archives);
-//    //    const open_viii::archive::FIFLFS<true> &field =
-//    //      archives.get<open_viii::archive::ArchiveTypeT::field>();
-//    // field.execute_with_nested({"main_chr"},dump_image,{});
-//    //    const auto main_chr = field.get_fiflfs({ "main_chr" });
-//    //    main_chr.execute_on({}, dump_image);
-//    // field.execute_with_nested({}, dump_image, { ".one" });
-//    // dump images from menu group.
-//    extract_menu_group_images(archives);
-//  });
-extract_images_from_path(R"(D:\dev\OpenVIII_CPP_WIP\cmake-build-release\applications\src\Release\tmp\ff8\data\eng\World\esk)");
+  //  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
+  //    extract_images_from_path(path);
+  //    std::cout << path << std::endl;
+  //    static constexpr auto coo      = open_viii::LangT::en;
+  //    const auto            archives = open_viii::archive::Archives(
+  //      path, open_viii::LangCommon::to_string<coo>());
+  //    if (!static_cast<bool>(archives)) {
+  //      std::cerr << "Failed to load path: " << path.string() << '\n';
+  //      return;
+  //    }
+  //    extract_per_extension_in_archives(archives);
+  //    //    const open_viii::archive::FIFLFS<true> &field =
+  //    //      archives.get<open_viii::archive::ArchiveTypeT::field>();
+  //    // field.execute_with_nested({"main_chr"},dump_image,{});
+  //    //    const auto main_chr = field.get_fiflfs({ "main_chr" });
+  //    //    main_chr.execute_on({}, dump_image);
+  //    // field.execute_with_nested({}, dump_image, { ".one" });
+  //    // dump images from menu group.
+  //    extract_menu_group_images(archives);
+  //  });
+  extract_images_from_path(
+    R"(D:\dev\OpenVIII_CPP_WIP\cmake-build-release\applications\src\Release\tmp\ff8\data\eng\World\esk)");
 }

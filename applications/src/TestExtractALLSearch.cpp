@@ -14,7 +14,8 @@
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/paths/Paths.hpp"
 #include <string>
-int main()
+int
+  main()
 {
   // test FIFLFS
   std::string needle{};

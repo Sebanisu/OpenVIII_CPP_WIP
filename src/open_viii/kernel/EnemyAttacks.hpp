@@ -59,47 +59,58 @@ private:
 public:
   constexpr auto
     operator<=>(const EnemyAttacks &right) const noexcept = default;
-  [[nodiscard]] constexpr auto name_offset() const noexcept
+  [[nodiscard]] constexpr auto
+    name_offset() const noexcept
   {
     return m_name_offset;
   }
-  [[nodiscard]] constexpr auto magic_id() const noexcept
+  [[nodiscard]] constexpr auto
+    magic_id() const noexcept
   {
     return m_magic_id;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto camera_change() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    camera_change() const noexcept
   {
     return m_camera_change;
   }
-  [[nodiscard]] constexpr auto unknown0() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown0() const noexcept
   {
     return m_unknown0;
   }
-  [[nodiscard]] constexpr auto attack_type() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_type() const noexcept
   {
     return m_attack_type;
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto attack_power() const noexcept
+  [[maybe_unused]] [[nodiscard]] constexpr auto
+    attack_power() const noexcept
   {
     return m_attack_power;
   }
-  [[nodiscard]] constexpr auto attack_flags() const noexcept
+  [[nodiscard]] constexpr auto
+    attack_flags() const noexcept
   {
     return m_attack_flags;
   }
-  [[nodiscard]] constexpr auto unknown1() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown1() const noexcept
   {
     return m_unknown1;
   }
-  [[nodiscard]] constexpr auto element() const noexcept
+  [[nodiscard]] constexpr auto
+    element() const noexcept
   {
     return m_element;
   }
-  [[nodiscard]] constexpr auto unknown2() const noexcept
+  [[nodiscard]] constexpr auto
+    unknown2() const noexcept
   {
     return m_unknown2;
   }
-  [[nodiscard]] constexpr auto status_attack_enabler() const noexcept
+  [[nodiscard]] constexpr auto
+    status_attack_enabler() const noexcept
   {
     return m_status_attack_enabler;
   }
@@ -108,31 +119,34 @@ public:
   {
     return m_attack_parameter;
   }
-  [[nodiscard]] constexpr auto persistent_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    persistent_statuses() const noexcept
   {
     return m_persistent_statuses;
   }// statuses 0-7
-  [[nodiscard]] constexpr auto battle_only_statuses() const noexcept
+  [[nodiscard]] constexpr auto
+    battle_only_statuses() const noexcept
   {
     return m_battle_only_statuses;
   }// statuses 8-31
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     return os
-           << static_cast<std::uint32_t>(m_magic_id) << ", " << m_camera_change
-           << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
-           << static_cast<std::uint32_t>(m_attack_type) << ", "
-           << static_cast<std::uint32_t>(m_attack_power) << ", "
-           << static_cast<std::uint32_t>(m_attack_flags) << ", "
-           << static_cast<std::uint32_t>(m_unknown1) << ", "
-           << static_cast<std::uint32_t>(m_element) << ", "
-           << static_cast<std::uint32_t>(m_unknown2) << ", "
-           << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-           << static_cast<std::uint32_t>(m_attack_parameter) << ", "
-           << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
-           << ", "
-           << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-31
+        << static_cast<std::uint32_t>(m_magic_id) << ", " << m_camera_change
+        << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
+        << static_cast<std::uint32_t>(m_attack_type) << ", "
+        << static_cast<std::uint32_t>(m_attack_power) << ", "
+        << static_cast<std::uint32_t>(m_attack_flags) << ", "
+        << static_cast<std::uint32_t>(m_unknown1) << ", "
+        << static_cast<std::uint32_t>(m_element) << ", "
+        << static_cast<std::uint32_t>(m_unknown2) << ", "
+        << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
+        << static_cast<std::uint32_t>(m_attack_parameter) << ", "
+        << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
+        << ", "
+        << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-31
       ;
   }
 };

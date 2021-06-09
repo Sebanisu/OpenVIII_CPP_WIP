@@ -32,7 +32,8 @@ static void
             std::ranges::end(out),
             open_viii::graphics::Color24<0, 1, 2>{});
 }
-int main()
+int
+  main()
 {
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {

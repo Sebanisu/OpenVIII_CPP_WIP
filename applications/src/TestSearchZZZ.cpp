@@ -13,7 +13,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestSearchZZZ.hpp"
 #include "open_viii/paths/Paths.hpp"
-int main()
+int
+  main()
 {
   static constexpr std::array extensions = { open_viii::archive::FI::EXT,
                                              open_viii::archive::fl::EXT,

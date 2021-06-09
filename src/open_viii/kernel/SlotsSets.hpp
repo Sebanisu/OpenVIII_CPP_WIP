@@ -26,16 +26,19 @@ struct SlotsSets
 public:
   static constexpr auto TOTAL                                       = 8U;
   constexpr auto operator<=>(const SlotsSets &right) const noexcept = default;
-  [[nodiscard]] const auto &slots() const noexcept
+  [[nodiscard]] const auto &
+    slots() const noexcept
   {
     return m_slots;
   }
-  friend std::ostream &operator<<(std::ostream &os, const SlotsSets &set)
+  friend std::ostream &
+    operator<<(std::ostream &os, const SlotsSets &set)
   {
     return set.out(os, {});
   }
-  std::ostream &out(std::ostream &                                os,
-                    [[maybe_unused]] const std::span<const char> &buffer) const
+  std::ostream &
+    out(std::ostream &                                os,
+        [[maybe_unused]] const std::span<const char> &buffer) const
   {
     os << '{';
     bool first = true;
