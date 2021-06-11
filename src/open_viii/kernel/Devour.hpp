@@ -61,12 +61,13 @@ private:
   std::uint8_t        m_raised_stat_hp_quantity{};
 
 public:
-  static constexpr auto full                                     = 1.0F;
-  static constexpr auto half                                     = 1.0F / 2.0F;
-  static constexpr auto quarter                                  = 1.0F / 4.0F;
-  static constexpr auto eighth                                   = 1.0F / 8.0F;
-  static constexpr auto sixteenth                                = 1.0F / 16.0F;
-  constexpr auto operator<=>(const Devour &right) const noexcept = default;
+  static constexpr auto full      = 1.0F;
+  static constexpr auto half      = 1.0F / 2.0F;
+  static constexpr auto quarter   = 1.0F / 4.0F;
+  static constexpr auto eighth    = 1.0F / 8.0F;
+  static constexpr auto sixteenth = 1.0F / 16.0F;
+  constexpr auto
+    operator<=>(const Devour &right) const noexcept = default;
   [[nodiscard]] constexpr auto
     description_offset() const noexcept
   {

@@ -41,26 +41,27 @@ public:
       const char *buffer_end   = std::ranges::data(m_buffer)
                              + std::distance(std::ranges::begin(m_buffer),
                                              std::ranges::end(m_buffer));
-      const auto search = [&buffer_begin, &buffer_end](
-                            const std::span<const char> &needle, auto lambda) {
-        const auto start   = std::search(buffer_begin,
-                                       buffer_end,
-                                       std::ranges::begin(needle),
-                                       std::ranges::end(needle));
-        const auto match   = start == buffer_end;
-        const auto message = [&match]() {
-          if (match) {
-            return "Couldn't find it.";
-          }
-          // return "Found it.";
-          return "";
-        };
-        std::cout << message() << '\n';
-        if (!match) {
-          lambda(start);
-        }
-        return start;
-      };
+      const auto search
+        = [&buffer_begin, &buffer_end](const std::span<const char> &needle,
+                                       auto                         lambda) {
+            const auto start   = std::search(buffer_begin,
+                                           buffer_end,
+                                           std::ranges::begin(needle),
+                                           std::ranges::end(needle));
+            const auto match   = start == buffer_end;
+            const auto message = [&match]() {
+              if (match) {
+                return "Couldn't find it.";
+              }
+              // return "Found it.";
+              return "";
+            };
+            std::cout << message() << '\n';
+            if (!match) {
+              lambda(start);
+            }
+            return start;
+          };
       const auto offset = [&buffer_begin](const char *start) {
         std::cout << "\tOffset: " << std::hex << std::uppercase
                   << std::distance(buffer_begin, start) << std::dec
@@ -70,21 +71,21 @@ public:
                           // type. base() converts the iterator to the pointer.
       };
       std::cout << "TIM: ";
-      const auto tim_start =
-        search(TIM_START, [this, &buffer_end](const auto &start) {
-          const auto &span = std::span<const char>(start, buffer_end);
-          m_tim            = graphics::Tim(span);
-          std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
-          std::cout << "\tINFO: " << m_tim << std::endl;
-        });
+      const auto tim_start
+        = search(TIM_START, [this, &buffer_end](const auto &start) {
+            const auto &span = std::span<const char>(start, buffer_end);
+            m_tim            = graphics::Tim(span);
+            std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
+            std::cout << "\tINFO: " << m_tim << std::endl;
+          });
       offset(tim_start);
       std::cout << "CAMERA: ";
-      const auto camera_start =
-        search(CAMERA_START, [this, &tim_start](const auto &start) {
-          auto span = std::span<const char>(start, tim_start);
-          m_camera  = Camera(span);
-          std::cout << "\tINFO: " << m_camera << std::endl;
-        });
+      const auto camera_start
+        = search(CAMERA_START, [this, &tim_start](const auto &start) {
+            auto span = std::span<const char>(start, tim_start);
+            m_camera  = Camera(span);
+            std::cout << "\tINFO: " << m_camera << std::endl;
+          });
       offset(camera_start);
       const auto camera_size = m_camera.camera_header().camera_data_size();
       std::cout << "\tSIZE: " << camera_size << " bytes" << std::endl;

@@ -24,8 +24,9 @@ namespace open_viii::kernel {
 struct SlotsSets
 {
 public:
-  static constexpr auto TOTAL                                       = 8U;
-  constexpr auto operator<=>(const SlotsSets &right) const noexcept = default;
+  static constexpr auto TOTAL = 8U;
+  constexpr auto
+    operator<=>(const SlotsSets &right) const noexcept = default;
   [[nodiscard]] const auto &
     slots() const noexcept
   {
@@ -45,7 +46,8 @@ public:
     for (const auto &item : slots()) {
       if (!first) {
         os << ", ";
-      } else {
+      }
+      else {
         first = false;
       }
       os << item;

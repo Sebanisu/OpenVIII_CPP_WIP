@@ -37,5 +37,5 @@ enum class JunctionFlagsT : std::uint32_t// cannot contain all abilities because
   ability3  = 0x20000,
   ability4  = 0x40000,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_JUNCTIONFLAGST_HPP

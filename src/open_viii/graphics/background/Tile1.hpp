@@ -44,7 +44,8 @@ protected:
   constexpr static auto FORCE_TYPE_VALUES = std::array<std::string_view, 0U>{};
 
 public:
-  constexpr auto operator<=>(const impl_Tile1 &) const = default;
+  constexpr auto
+    operator<=>(const impl_Tile1 &) const = default;
 };
 using Tile1 = TileCommon<impl_Tile1>;
 static_assert(sizeof(Tile1) == Tile1::EXPECTED_SIZE);

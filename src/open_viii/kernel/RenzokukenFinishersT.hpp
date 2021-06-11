@@ -14,12 +14,13 @@
 #define VIIIARCHIVE_RENZOKUKENFINISHERST_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class RenzokukenFinishersT : std::uint8_t {
+enum class RenzokukenFinishersT : std::uint8_t
+{
   none          = 0x00,
   rough_divide  = 0x01,
   fated_circle  = 0x02,
   blasting_zone = 0x04,
   lion_heart    = 0x08,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_RENZOKUKENFINISHERST_HPP

@@ -140,8 +140,7 @@ public:
                             std::vector<std::uint8_t>,
                             std::vector<Color16>,
                             std::vector<Color24<2U, 1U, 0U>>> in_tim_image_data)
-    : m_tim_header(in_tim_header),
-      m_tim_clut_header(in_tim_clut_header),
+    : m_tim_header(in_tim_header), m_tim_clut_header(in_tim_clut_header),
       m_tim_clut_data(std::move(in_tim_clut_data)),
       m_tim_image_header(in_tim_image_header),
       m_tim_image_data(std::move(in_tim_image_data))
@@ -168,7 +167,8 @@ public:
       return {};
     }
     return tools::read_val_safe_mutate<std::vector<Color16>>(
-      buffer, m_tim_clut_header.data_size());
+      buffer,
+      m_tim_clut_header.data_size());
   }
   [[nodiscard]] TimImageHeader
     get_tim_image_header(std::span<const char> &buffer) const
@@ -187,19 +187,23 @@ public:
     switch (static_cast<int>(m_tim_header.bpp())) {
     case 4: {
       return tools::read_val_safe_mutate<std::vector<Bit4Values>>(
-        buffer, m_tim_image_header.data_size());
+        buffer,
+        m_tim_image_header.data_size());
     }
     case 8: {
       return tools::read_val_safe_mutate<std::vector<std::uint8_t>>(
-        buffer, m_tim_image_header.data_size());
+        buffer,
+        m_tim_image_header.data_size());
     }
     case 16: {
       return tools::read_val_safe_mutate<std::vector<Color16>>(
-        buffer, m_tim_image_header.data_size());
+        buffer,
+        m_tim_image_header.data_size());
     }
     case 24: {
       return tools::read_val_safe_mutate<std::vector<Color24<2, 1, 0>>>(
-        buffer, m_tim_image_header.data_size());
+        buffer,
+        m_tim_image_header.data_size());
     }
     }
     assert(false);
@@ -300,7 +304,8 @@ public:
   [[nodiscard]] std::vector<dstT>
     get_colors([[maybe_unused]] std::uint16_t row = 0U) const
   {
-    enum {
+    enum
+    {
       bpp4,
       bpp8,
       bpp16,
@@ -344,14 +349,14 @@ public:
       // return empty tim if area is too large.
       return {};
     }
-    return Tim(
-      m_tim_header,
-      TimClutHeader(m_tim_clut_header.size(),
-                    Rectangle<std::uint16_t>(
-                      m_tim_clut_header.rectangle().top_left(), width_height)),
-      m_tim_clut_data,
-      m_tim_image_header,
-      m_tim_image_data);
+    return Tim(m_tim_header,
+               TimClutHeader(m_tim_clut_header.size(),
+                             Rectangle<std::uint16_t>(
+                               m_tim_clut_header.rectangle().top_left(),
+                               width_height)),
+               m_tim_clut_data,
+               m_tim_image_header,
+               m_tim_image_data);
   }
   /**
    * Update the dims of the clut.
@@ -373,7 +378,8 @@ public:
   {
     if (clut_rows() == 0) {
       Ppm::save(get_colors<Color24<0, 1, 2>>(), width(), height(), filename);
-    } else {
+    }
+    else {
       auto path = std::filesystem::path(filename);
       for (std::uint16_t i = 0; i < clut_rows(); i++) {
         const auto out_path = (path.parent_path() / path.stem()).string() + '_'

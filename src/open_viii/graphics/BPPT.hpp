@@ -43,12 +43,13 @@ private:
   constexpr static auto CLP_VALUE   = 0b1000U;
 
 public:
-  constexpr static auto BPP4                            = 4U;
-  constexpr static auto BPP8                            = 8U;
-  constexpr static auto BPP16                           = 16U;
-  constexpr static auto BPP24                           = 24U;
+  constexpr static auto BPP4  = 4U;
+  constexpr static auto BPP8  = 8U;
+  constexpr static auto BPP16 = 16U;
+  constexpr static auto BPP24 = 24U;
   // consteval friend BPPT operator"" _bpp(unsigned long long int value);
-  auto                  operator<=>(const BPPT &) const = default;
+  auto
+    operator<=>(const BPPT &) const = default;
   [[nodiscard]] constexpr bool
     unused() const noexcept
   {

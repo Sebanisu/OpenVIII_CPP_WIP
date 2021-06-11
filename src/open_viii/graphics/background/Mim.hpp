@@ -98,12 +98,13 @@ private:
   {
     std::vector<Color16> out{};
     out.reserve(std::ranges::size(m_image_buffer));
-    std::ranges::transform(m_image_buffer,
-                           std::back_inserter(out),
-                           [&palette, this](const char &c) -> Color16 {
-                             return safe_get_color_from_palette(get_palette_key(
-                               static_cast<uint8_t>(c), palette));
-                           });
+    std::ranges::transform(
+      m_image_buffer,
+      std::back_inserter(out),
+      [&palette, this](const char &c) -> Color16 {
+        return safe_get_color_from_palette(
+          get_palette_key(static_cast<uint8_t>(c), palette));
+      });
     return out;
   }
   [[nodiscard]] std::vector<Color16>
@@ -111,19 +112,21 @@ private:
   {
     std::vector<Color16> out{};
     out.reserve(std::ranges::size(m_image_buffer_bbp4) * 2);
-    std::ranges::for_each(
-      m_image_buffer_bbp4, [&palette, this, &out](const Bit4Values &key) {
-        const auto output = [&out, &palette, this](const uint8_t &input) {
-          out.emplace_back(
-            safe_get_color_from_palette(get_palette_key(input, palette)));
-        };
-        output(key.first());
-        output(key.second());
-      });
+    std::ranges::for_each(m_image_buffer_bbp4,
+                          [&palette, this, &out](const Bit4Values &key) {
+                            const auto output
+                              = [&out, &palette, this](const uint8_t &input) {
+                                  out.emplace_back(safe_get_color_from_palette(
+                                    get_palette_key(input, palette)));
+                                };
+                            output(key.first());
+                            output(key.second());
+                          });
     return out;
   }
   static constexpr std::array<MimType, 2> TEXTURE_TYPES{
-    MimType(24, 13), MimType(16, 12, 0, 2)
+    MimType(24, 13),
+    MimType(16, 12, 0, 2)
   };
 
 public:
@@ -132,8 +135,12 @@ public:
   ~Mim()                    = default;
   Mim(Mim &&)               = delete;
   Mim(const Mim &)          = delete;
-  Mim &operator=(const Mim &) = delete;
-  Mim &operator=(Mim &&) = delete;
+  Mim &
+    operator=(const Mim &)
+    = delete;
+  Mim &
+    operator=(Mim &&)
+    = delete;
   /**
    * Load up the raw pixel data, 4bpp, 8bpp or 16bpp Needs at least basename to
    * check or it'll use size of buffer to find type 1 or 2. Type is used to know
@@ -144,8 +151,7 @@ public:
   explicit Mim(std::vector<char> &&buffer, std::string_view name = {})
     : m_buffer(std::move(buffer)),
       m_mim_type(get_texture_type(std::ranges::size(m_buffer), name)),
-      m_image_buffer(set_image_span()),
-      m_palette_buffer(set_palette_span()),
+      m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
       m_image_buffer_bbp4(set_image_span_bpp4()),
       m_image_buffer_bbp16(set_image_span_bpp16())
   {}
@@ -164,7 +170,8 @@ public:
       if (m.file_size() == mim_filesize) {
         if (tools::i_find_any(name, Tile3::FORCE_TYPE_VALUES)) {
           m.type(3);
-        } else if (tools::i_find_any(name, Tile2::FORCE_TYPE_VALUES)) {
+        }
+        else if (tools::i_find_any(name, Tile2::FORCE_TYPE_VALUES)) {
           m.type(2);
         }
         return m;
@@ -204,21 +211,22 @@ public:
                static_cast<std::size_t>(clut_width()),
                clut_height(),
                ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
-      } else if constexpr (std::invocable<lambdaT,
-                                          std::span<const Color16>,
-                                          std::size_t>) {
+      }
+      else if constexpr (std::invocable<lambdaT,
+                                        std::span<const Color16>,
+                                        std::size_t>) {
         lambda(m_palette_buffer, static_cast<std::size_t>(clut_width()));
       }
       return;
     }
-    auto width    = m_mim_type.width();
-    auto out_path = [&palette, &path](const int &bpp_num,
-                                      bool       has_palette = true) {
-      return (path.parent_path() / path.stem()).string() + "_"
-           + std::to_string(bpp_num) + "bpp"
-           + (has_palette ? "_" + std::to_string(palette) : "")
-           + open_viii::graphics::background::Mim::EXT.data();
-    };
+    auto width = m_mim_type.width();
+    auto out_path
+      = [&palette, &path](const int &bpp_num, bool has_palette = true) {
+          return (path.parent_path() / path.stem()).string() + "_"
+               + std::to_string(bpp_num) + "bpp"
+               + (has_palette ? "_" + std::to_string(palette) : "")
+               + open_viii::graphics::background::Mim::EXT.data();
+        };
     if (bpp.bpp8()) {
       auto out = get_image_bpp8(palette);
       if constexpr (std::invocable<lambdaT,
@@ -226,13 +234,16 @@ public:
                                    std::size_t,
                                    std::size_t,
                                    std::string>) {
-        lambda(
-          out, width, std::ranges::size(out) / width, out_path(BPPT::BPP8));
-      } else if (std::
-                   invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+        lambda(out,
+               width,
+               std::ranges::size(out) / width,
+               out_path(BPPT::BPP8));
+      }
+      else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
         lambda(out, width);
       }
-    } else if (bpp.bpp4()) {
+    }
+    else if (bpp.bpp4()) {
       std::vector<Color16> out = get_image_bpp4(palette);
       width *= 2U;
       if constexpr (std::invocable<lambdaT,
@@ -240,13 +251,16 @@ public:
                                    std::size_t,
                                    std::size_t,
                                    std::string>) {
-        lambda(
-          out, width, std::ranges::size(out) / width, out_path(BPPT::BPP4));
-      } else if (std::
-                   invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+        lambda(out,
+               width,
+               std::ranges::size(out) / width,
+               out_path(BPPT::BPP4));
+      }
+      else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
         lambda(out, width);
       }
-    } else if (bpp.bpp16()) {
+    }
+    else if (bpp.bpp16()) {
       width /= 2U;
       if constexpr (std::invocable<lambdaT,
                                    std::span<const Color16>,
@@ -257,8 +271,8 @@ public:
                (width),
                std::ranges::size(m_image_buffer_bbp16) / width,
                out_path(BPPT::BPP16, false));
-      } else if (std::
-                   invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+      }
+      else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
         lambda(m_image_buffer_bbp16, width);
       }
     }
@@ -287,8 +301,8 @@ public:
               const std::uint8_t  texture_id = 0U) const
   {
     auto                  width = m_mim_type.width();
-    constexpr static auto offset_interval =
-      background::TileCommonConstants::texture_page_width;
+    constexpr static auto offset_interval
+      = background::TileCommonConstants::texture_page_width;
     auto texture_page_offset = static_cast<std::uint32_t>(offset_interval);
     if (depth.bpp8()) {
       texture_page_offset *= texture_id;
@@ -299,8 +313,8 @@ public:
     }
     if (depth.bpp4()) {
       texture_page_offset *= 2U * texture_id;
-      const Bit4Values pair =
-        m_image_buffer_bbp4[(x + texture_page_offset) / 2U + (y * width)];
+      const Bit4Values pair
+        = m_image_buffer_bbp4[(x + texture_page_offset) / 2U + (y * width)];
       if (x % 2U == 0) {
         return safe_get_color_from_palette(
           get_palette_key(pair.first(), palette));

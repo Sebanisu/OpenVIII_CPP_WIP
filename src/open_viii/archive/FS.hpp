@@ -49,8 +49,8 @@ static constexpr auto EXT = std::string_view(".fs");
  * @note lzss doesn't need the uncompressed size to extract the data but it's
  * used to reserve the memory before uncompressing.
  */
-template<
-  is_default_constructible_has_data_size_resize outputT = std::vector<char>>
+template<is_default_constructible_has_data_size_resize outputT
+         = std::vector<char>>
 static outputT
   get_entry_lzss(tl::read::input &input, const std::uint32_t uncompressed_size)
 {
@@ -70,19 +70,20 @@ static outputT
  * @note L4Z header contains size of total section as uint32, 4 byte string, and
  * a uint32 of the uncompressed size.
  */
-template<
-  is_default_constructible_has_data_size_resize outputT = std::vector<char>>
+template<is_default_constructible_has_data_size_resize outputT
+         = std::vector<char>>
 static outputT
   get_entry_lz4(tl::read::input &input)
 {
   constexpr static auto skip_size       = 8;
   const auto            section_size    = input.template output<uint32_t>();
   const std::uint32_t   compressed_size = section_size - skip_size;
-  const std::uint32_t   uncompressed_size =
-    input.seek(4, std::ios::cur).template output<uint32_t>();
+  const std::uint32_t   uncompressed_size
+    = input.seek(4, std::ios::cur).template output<uint32_t>();
   outputT buffer = input.template output<outputT>(compressed_size);
-  return compression::l4z::decompress<outputT>(
-    buffer.data(), compressed_size, uncompressed_size);
+  return compression::l4z::decompress<outputT>(buffer.data(),
+                                               compressed_size,
+                                               uncompressed_size);
 }
 
 /**
@@ -94,9 +95,9 @@ static outputT
  * @param offset additional offset value added to fi.offset()
  * @return output() filled with uncompressed data.
  */
-template<
-  is_default_constructible_has_data_size_resize outputT = std::vector<char>,
-  FI_Like                                       fiT     = FI>
+template<is_default_constructible_has_data_size_resize outputT
+         = std::vector<char>,
+         FI_Like fiT = FI>
 [[nodiscard]] static outputT
   get_entry(tl::read::input input, const fiT fi, const std::size_t offset = 0U)
 {
@@ -127,9 +128,9 @@ template<
  * @param offset to file data in bytes
  * @return uncompressed file
  */
-template<
-  is_default_constructible_has_data_size_resize outputT = std::vector<char>,
-  FI_Like                                       fiT     = FI>
+template<is_default_constructible_has_data_size_resize outputT
+         = std::vector<char>,
+         FI_Like fiT = FI>
 [[nodiscard]] static outputT
   get_entry(const std::filesystem::path &path,
             const fiT &                  fi,
@@ -154,9 +155,9 @@ template<
  * @param offset to file data in bytes
  * @return uncompressed file
  */
-template<
-  is_default_constructible_has_data_size_resize outputT = std::vector<char>,
-  FI_Like                                       fiT     = FI>
+template<is_default_constructible_has_data_size_resize outputT
+         = std::vector<char>,
+         FI_Like fiT = FI>
 [[nodiscard]] static outputT
   get_entry(std::span<const char> data, const fiT &fi, const size_t offset = 0U)
 {
@@ -197,8 +198,8 @@ static void
 {
   static constexpr auto lz4           = std::string_view("4ZL_", 4U);
   std::vector<char>     new_comp_data = compression::l4z::compress(input);
-  const auto            compressed_size =
-    static_cast<uint32_t>(std::ranges::size(new_comp_data));
+  const auto            compressed_size
+    = static_cast<uint32_t>(std::ranges::size(new_comp_data));
   tl::write::append(output, compressed_size + 8U);
   tl::write::append(output, lz4);
   tl::write::append(output,

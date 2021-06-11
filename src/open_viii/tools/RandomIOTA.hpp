@@ -9,7 +9,8 @@
  * Random IOTA Iterator
  * @deprecated
  */
-template<> struct RandomIOTAIterator
+template<>
+struct RandomIOTAIterator
 {
   using iterator_category = std::forward_iterator_tag;
   using difference_type   = std::ptrdiff_t;

@@ -37,7 +37,8 @@ private:
   uint8_t             m_increase_value{};
 
 public:
-  constexpr auto operator<=>(const GFAbilities &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const GFAbilities &right) const noexcept = default;
   [[nodiscard]] constexpr auto
     name_offset() const noexcept
   {

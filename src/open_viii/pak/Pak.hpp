@@ -34,17 +34,17 @@ private:
   /**
    *  Known valid Bink video formats "a,d,f,g,h,i"
    */
-  static constexpr std::array<char, 6> BIK1    = { 0x61, 0x64, 0x66,
-                                                0x67, 0x68, 0x69 };
+  static constexpr std::array<char, 6> BIK1
+    = { 0x61, 0x64, 0x66, 0x67, 0x68, 0x69 };
   /**
    * Known valid Bink 2 video formats "b,d,f,g,h,i"
    */
-  static constexpr std::array<char, 6> BIK2    = { 0x62, 0x64, 0x66,
-                                                0x67, 0x68, 0x69 };
+  static constexpr std::array<char, 6> BIK2
+    = { 0x62, 0x64, 0x66, 0x67, 0x68, 0x69 };
   /**
    * Each Movie has 1 cam and 2 versions of the video.
    */
-  std::vector<MovieClip>               m_movies;
+  std::vector<MovieClip> m_movies;
   ///// <summary>
   ///// Depending on type you read it differently.
   ///// </summary>
@@ -57,8 +57,8 @@ private:
   /**
    * Remembers detected disc number.
    */
-  int                                  m_disc_cache{ -1 };
-  std::filesystem::path                m_file_path{};
+  int                    m_disc_cache{ -1 };
+  std::filesystem::path  m_file_path{};
 
 public:
   explicit Pak(std::filesystem::path path) : m_file_path(std::move(path))
@@ -128,7 +128,8 @@ public:
     tools::read_from_file(
       [this, &dest_path](std::istream &is) {
         std::ranges::for_each(
-          m_movies, [&is, &dest_path](const MovieClip &item) {
+          m_movies,
+          [&is, &dest_path](const MovieClip &item) {
             const auto e = [&dest_path, &is](const FileSection &fs) {
               auto out_path = dest_path / fs.file_name();
               if ([&out_path, &fs]() -> bool {
@@ -241,12 +242,14 @@ public:
              return version == item;
            })) {
       fs.type(FileSectionTypeT::BIK);
-    } else if (std::ranges::equal(type, FileSectionTypeT::KB2)
-               && std::ranges::any_of(BIK2, [&version](const auto &item) {
-                    return version == item;
-                  })) {
+    }
+    else if (std::ranges::equal(type, FileSectionTypeT::KB2)
+             && std::ranges::any_of(BIK2, [&version](const auto &item) {
+                  return version == item;
+                })) {
       fs.type(FileSectionTypeT::KB2);
-    } else {
+    }
+    else {
       std::cerr << "location: " << std::hex << is.tellg() << std::endl;
       std::cerr << "bink version and type mismatch...\t" << fs.type() << '\t'
                 << static_cast<int32_t>(version) << std::dec << std::endl;
@@ -269,11 +272,13 @@ public:
       movie.bink_high(std::move(fs));
       movie.mutable_bink_high().file_name(
         generate_file_name(get_ext(movie.bink_high().type()), "h"s));
-    } else {
+    }
+    else {
       if (fs.size() > movie.bink_high().size()) {
         movie.swap_bink();
         movie.bink_high(std::move(fs));
-      } else {
+      }
+      else {
         movie.bink_low(std::move(fs));
       }
       movie.mutable_bink_high().file_name(
@@ -299,12 +304,15 @@ public:
         MovieClip movie{};
         while (!is.eof()) {
           auto type = FileSectionTypeT::get_type(is);
-          if (FileSectionTypeT::valid_type(
-                type, FileSectionTypeT::BIK, FileSectionTypeT::KB2)) {
+          if (FileSectionTypeT::valid_type(type,
+                                           FileSectionTypeT::BIK,
+                                           FileSectionTypeT::KB2)) {
             get_bik(is, movie, type);
-          } else if (std::ranges::equal(type, FileSectionTypeT::CAM)) {
+          }
+          else if (std::ranges::equal(type, FileSectionTypeT::CAM)) {
             get_cam(is, movie);
-          } else if (!is.eof()) {
+          }
+          else if (!is.eof()) {
             std::cerr << "location: " << std::hex << is.tellg() << std::endl;
             std::cerr << "unknown\t\"" << type[0] << type[1] << type[2]
                       << std::dec << "\"" << std::endl;

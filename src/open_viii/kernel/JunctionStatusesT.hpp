@@ -14,7 +14,8 @@
 #define VIIIARCHIVE_JUNCTIONSTATUSEST_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class JunctionStatusesT : std::uint16_t {
+enum class JunctionStatusesT : std::uint16_t
+{
   // https://github.com/DarkShinryu/doomtrain/wiki/Characters-J-Statuses
   none      = 0x0,
   death     = 0x1,
@@ -31,5 +32,5 @@ enum class JunctionStatusesT : std::uint16_t {
   confusion = 0x800,
   drain     = 0x1000,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_JUNCTIONSTATUSEST_HPP

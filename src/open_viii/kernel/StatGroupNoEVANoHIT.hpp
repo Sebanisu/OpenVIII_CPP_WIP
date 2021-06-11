@@ -16,7 +16,8 @@
 #include <compare>
 #include <iostream>
 namespace open_viii::kernel {
-template<typename T> struct StatGroupNoEVANoHIT
+template<typename T>
+struct StatGroupNoEVANoHIT
 {
 public:
   static constexpr auto MAX_COUNT{ 7U };
@@ -71,23 +72,27 @@ public:
     for (const auto &item : input.m_stats) {
       if (!first) {
         os << ", ";
-      } else {
+      }
+      else {
         first = false;
       }
       if constexpr (std::is_integral_v<T>) {
         os << static_cast<size_t>(item);
-      } else {
+      }
+      else {
         os << '{';
         bool subFirst{ true };
         for (const auto &subItem : item) {
           if (!subFirst) {
             os << ", ";
-          } else {
+          }
+          else {
             subFirst = false;
           }
           if (std::is_integral_v<decltype(subItem)>) {
             os << static_cast<size_t>(subItem);
-          } else {
+          }
+          else {
             os << subItem;
           }
         }

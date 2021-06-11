@@ -51,7 +51,8 @@ public:
                           Rectangle<std::uint16_t> in_rect)
     : TimClutHeader(TimImageHeader(in_size, in_rect))
   {}
-  constexpr auto operator<=>(const TimClutHeader &) const = default;
+  constexpr auto
+    operator<=>(const TimClutHeader &) const = default;
   /**
    * Typically the width = number of colors, and height = number of color lookup
    * tables. Sometimes if there is only 16 colors (4bpp) there is multiple

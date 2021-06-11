@@ -22,11 +22,12 @@ concept can_upper = requires(t1 c1, t2 c2)
  * @param ch2 character 2
  * @return true if both are the same or after to uppercase are both same.
  */
-constexpr static auto TOUPPER_EQUALS_PREDICATE = [](const auto &ch1,
-                                                    const auto &ch2) -> bool {
+constexpr static auto TOUPPER_EQUALS_PREDICATE
+  = [](const auto &ch1, const auto &ch2) -> bool {
   if constexpr (can_upper<decltype(ch1), decltype(ch2)>) {
     return upper(ch1) == upper(ch2);
-  } else {
+  }
+  else {
     return ch1 == ch2;
   }
 };
@@ -40,8 +41,8 @@ static_assert(!TOUPPER_EQUALS_PREDICATE('a', 'Z'));
  * @param str2 string 2
  * @return returns true if both strings are equal regardless of case
  */
-[[maybe_unused]] constexpr static auto i_equals =
-  [](const std::string_view str1, const std::string_view str2) -> bool {
+[[maybe_unused]] constexpr static auto i_equals
+  = [](const std::string_view str1, const std::string_view str2) -> bool {
   return std::ranges::equal(str1, str2, TOUPPER_EQUALS_PREDICATE);
 };
 static_assert(i_equals(std::string_view(""), std::string_view("")));
@@ -58,8 +59,8 @@ static_assert(!i_equals(std::string_view("123"), std::string_view("124")));
  * @param needle
  * @return true if both values
  */
-static constexpr auto i_find = [](const std::string_view haystack,
-                                  const std::string_view needle) -> bool {
+static constexpr auto i_find
+  = [](const std::string_view haystack, const std::string_view needle) -> bool {
   if (std::ranges::empty(haystack) || std::ranges::empty(needle)
       || std::ranges::size(haystack) < std::ranges::size(needle)) {
     return false;
@@ -99,15 +100,16 @@ static_assert(!i_starts_with(std::string_view("12345"), std::string_view("5")));
  * @param ending needle to be at end of string
  * @return if the start of haystack contains ending return true
  */
-static constexpr auto i_ends_with = [](const std::string_view haystack,
-                                       const std::string_view ending) -> bool {
+static constexpr auto i_ends_with
+  = [](const std::string_view haystack, const std::string_view ending) -> bool {
   return i_starts_with(haystack.substr(std::ranges::size(haystack)
                                        - std::min(std::ranges::size(haystack),
                                                   std::ranges::size(ending))),
                        ending);
 };
-static_assert(i_ends_with(
-  std::string_view("ff8/Data/eng/FIELD/model/main_chr/d000.mch"), ".mch"));
+static_assert(
+  i_ends_with(std::string_view("ff8/Data/eng/FIELD/model/main_chr/d000.mch"),
+              ".mch"));
 static_assert(i_ends_with(std::string_view("12345"), std::string_view("5")));
 static_assert(!i_ends_with(std::string_view("12345"), std::string_view("1")));
 /**

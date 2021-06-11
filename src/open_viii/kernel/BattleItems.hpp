@@ -64,8 +64,9 @@ private:
   ElementT            m_element{};
 
 public:
-  static constexpr std::size_t EXPECTED_SIZE                          = 24U;
-  constexpr auto operator<=>(const BattleItems &right) const noexcept = default;
+  static constexpr std::size_t EXPECTED_SIZE = 24U;
+  constexpr auto
+    operator<=>(const BattleItems &right) const noexcept = default;
   [[maybe_unused]] [[nodiscard]] constexpr auto
     name_offset() const noexcept
   {

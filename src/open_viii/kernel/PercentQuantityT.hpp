@@ -5,7 +5,8 @@
 #define VIIIARCHIVE_PERCENTQUANTITYT_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class PercentQuantityT : std::uint8_t {
+enum class PercentQuantityT : std::uint8_t
+{
   none [[maybe_unused]] = 0x00,// 0% = 0x00
   sixteenth             = 0x01,// 6.25% = 0x01,
   eighth                = 0x02,// 12.50% = 0x02
@@ -13,5 +14,5 @@ enum class PercentQuantityT : std::uint8_t {
   half                  = 0x08,// 50% = 0x08
   full                  = 0x10,// 100% = 0x10
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_PERCENTQUANTITYT_HPP

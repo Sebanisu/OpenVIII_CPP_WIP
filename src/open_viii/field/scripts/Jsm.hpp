@@ -54,7 +54,8 @@ private:
     get_script_entities(const std::span<const char> &buffer) const
   {
     return tools::read_val<std::vector<JsmScriptEntity>>(
-      buffer.subspan(m_header.offset_section_1()), m_header.count_section_1());
+      buffer.subspan(m_header.offset_section_1()),
+      m_header.count_section_1());
   }
 
 public:

@@ -14,7 +14,8 @@
 #define VIIIARCHIVE_STATT_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class StatT : std::uint8_t {
+enum class StatT : std::uint8_t
+{
   hp,
   str,
   vit,
@@ -36,5 +37,5 @@ enum class StatT : std::uint8_t {
   st_def4,
   none = 0xFF,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_STATT_HPP

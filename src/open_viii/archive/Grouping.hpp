@@ -13,7 +13,8 @@ namespace open_viii::archive {
 /**
  * Grouping contains the location of the file and/or the raw data.
  */
-template<std::ranges::contiguous_range T> struct [[maybe_unused]] Grouping
+template<std::ranges::contiguous_range T>
+struct [[maybe_unused]] Grouping
 {
 private:
   /**
@@ -49,8 +50,7 @@ public:
            std::filesystem::path parent_path,
            std::filesystem::path child_path)
     : m_offset(static_cast<std::size_t>(fi.offset())),
-      m_size(fi.uncompressed_size()),
-      m_path(std::move(parent_path)),
+      m_size(fi.uncompressed_size()), m_path(std::move(parent_path)),
       m_nested_path(std::move(child_path)),
       m_base(tools::get_base_name(m_nested_path))
   {
@@ -63,12 +63,9 @@ public:
   Grouping(T &&                  data,
            std::filesystem::path parent_path,
            std::filesystem::path child_path)
-    : m_offset(0),
-      m_size(std::ranges::size(data)),
-      m_path(std::move(parent_path)),
-      m_nested_path(std::move(child_path)),
-      m_base(tools::get_base_name(m_nested_path)),
-      m_data(std::move(data))
+    : m_offset(0), m_size(std::ranges::size(data)),
+      m_path(std::move(parent_path)), m_nested_path(std::move(child_path)),
+      m_base(tools::get_base_name(m_nested_path)), m_data(std::move(data))
   {
     assert(m_size > 0);
   }
@@ -119,7 +116,8 @@ public:
     if (m_size == 0U) {
       if (!std::ranges::empty(data())) {
         return std::ranges::size(data());
-      } else if (std::filesystem::exists(path())) {
+      }
+      else if (std::filesystem::exists(path())) {
         return static_cast<std::size_t>(std::filesystem::file_size(path()));
       }
     }

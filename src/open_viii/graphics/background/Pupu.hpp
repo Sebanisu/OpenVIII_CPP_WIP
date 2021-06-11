@@ -47,14 +47,12 @@ public:
       tileT,
       Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) constexpr explicit Pupu(tileT
                                                                                                                       tile)
-    : m_z(tile.z()),
-      m_depth(tile.depth()),
-      m_layer_id(tile.layer_id()),
-      m_blend_mode(tile.blend_mode()),
-      m_animation_id(tile.animation_id()),
+    : m_z(tile.z()), m_depth(tile.depth()), m_layer_id(tile.layer_id()),
+      m_blend_mode(tile.blend_mode()), m_animation_id(tile.animation_id()),
       m_animation_state(tile.animation_state())
   {}
-  auto operator<=>(const Pupu &) const = default;
+  auto
+    operator<=>(const Pupu &) const = default;
   auto
     operator==(const Pupu &right) const
   {

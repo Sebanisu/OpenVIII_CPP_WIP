@@ -63,7 +63,8 @@ private:
 
 public:
   Color32() = default;
-  template<Color c_t> explicit Color32(c_t input_color)
+  template<Color c_t>
+  explicit Color32(c_t input_color)
   {
     r(input_color.r());
     g(input_color.g());

@@ -99,15 +99,18 @@ public:
   //    return std::numeric_limits<std::uint8_t>::max();
   //  }
   Color24() = default;
-  template<Color cT> explicit Color24(cT color)
+  template<Color cT>
+  explicit Color24(cT color)
   {
     r(color.r());
     g(color.g());
     b(color.b());
   }
-  friend auto operator<=>(const Color24<r_, g_, b_> &left,
-                          const Color24<r_, g_, b_> &right) noexcept = default;
-  auto operator<=>(const Color24<r_, g_, b_> &right) const noexcept  = default;
+  friend auto
+    operator<=>(const Color24<r_, g_, b_> &left,
+                const Color24<r_, g_, b_> &right) noexcept = default;
+  auto
+    operator<=>(const Color24<r_, g_, b_> &right) const noexcept = default;
   friend std::ostream &
     operator<<(std::ostream &os, const Color24<r_, g_, b_> &color)
   {

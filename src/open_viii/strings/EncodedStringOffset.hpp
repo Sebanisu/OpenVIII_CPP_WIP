@@ -84,8 +84,9 @@ public:
     if (m_offset == INT16_MAX) {
       return std::span<const char>{};
     }
-    return get_string_at_offset(
-      buffer, static_cast<intmax_t>(m_offset) + offset, skip_first_null);
+    return get_string_at_offset(buffer,
+                                static_cast<intmax_t>(m_offset) + offset,
+                                skip_first_null);
   }
   template<LangT langVal>
   [[nodiscard]] auto

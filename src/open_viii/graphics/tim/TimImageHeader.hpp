@@ -31,7 +31,8 @@ public:
                            Rectangle<std::uint16_t> in_rect)
     : m_size(in_size), m_rectangle(in_rect)
   {}
-  constexpr auto operator<=>(const TimImageHeader &) const = default;
+  constexpr auto
+    operator<=>(const TimImageHeader &) const = default;
   /**
    * Total Header and Data size
    * @brief size in bytes

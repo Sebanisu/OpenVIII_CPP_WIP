@@ -300,7 +300,8 @@ public:
     for (const auto &item : m_unlockable_abilities) {
       if (!first) {
         os << ", ";
-      } else {
+      }
+      else {
         first = false;
       }
       os << item;

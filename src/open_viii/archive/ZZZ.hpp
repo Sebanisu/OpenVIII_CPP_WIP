@@ -170,7 +170,8 @@ public:
     [[maybe_unused]] const std::initializer_list<std::string_view> &filename,
     [[maybe_unused]] const lambdaT                                  lambda,
     [[maybe_unused]] const std::initializer_list<std::string_view>
-      &nested_filename = {}) const
+      &nested_filename
+    = {}) const
   {}
   explicit operator bool() const
   {

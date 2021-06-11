@@ -36,7 +36,8 @@ public:
       }
       buffer = buffer.subspan(sizeof(uint32_t));
       ret.push_back(val);
-    } while (true);
+    }
+    while (true);
   }
   std::uint32_t
     get_model_offset() const
@@ -49,8 +50,7 @@ public:
       sizeof(std::uint32_t) * (std::ranges::size(m_tim_offsets) + 1)));
   }
   Mch(std::vector<char> &&buffer)
-    : m_buffer(std::move(buffer)),
-      m_tim_offsets(get_tim_offsets()),
+    : m_buffer(std::move(buffer)), m_tim_offsets(get_tim_offsets()),
       m_model_offset(get_model_offset())
   {}
   void

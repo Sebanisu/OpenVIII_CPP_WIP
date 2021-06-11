@@ -66,7 +66,9 @@ private:
   }
   template<typename T>
   requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) void set(
-    T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
+    T                        input,
+    std::uint16_t            mask,
+    const std::uint_fast8_t &shift) const
   {
     std::uint16_t val{ static_cast<std::uint_fast8_t>(
       std::clamp(input,
@@ -80,9 +82,10 @@ private:
 public:
   Color16() = default;
   explicit Color16(std::uint16_t raw_color) : m_value(raw_color) {}
-  friend auto operator<=>(const Color16 &left,
-                          const Color16 &right) noexcept       = default;
-  auto        operator<=>(const Color16 &right) const noexcept = default;
+  friend auto
+    operator<=>(const Color16 &left, const Color16 &right) noexcept = default;
+  auto
+    operator<=>(const Color16 &right) const noexcept = default;
   template<Color cT>
   requires(!std::is_same_v<Color16, cT>) explicit Color16(cT color)
   {
@@ -92,7 +95,8 @@ public:
     // pass stp bit? assuming alpha is 100% *shrugs*
     if (m_value == 0) {
       stp(true);
-    } else {
+    }
+    else {
       stp(false);
     }
   }
@@ -180,7 +184,8 @@ public:
   {
     if (enabled) {
       m_value |= STP_MASK;
-    } else {
+    }
+    else {
       m_value |= ALL_COLOR_MASK;
     }
     return enabled;

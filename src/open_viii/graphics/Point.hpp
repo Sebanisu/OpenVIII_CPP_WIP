@@ -18,7 +18,8 @@
 #include <concepts>
 #include <iostream>
 namespace open_viii::graphics {
-template<Number dimT> struct Point
+template<Number dimT>
+struct Point
 {
 private:
   dimT m_x{};
@@ -29,7 +30,8 @@ public:
   constexpr Point() = default;
   constexpr Point(const dimT &in_x, const dimT &in_y) noexcept
     : m_x(in_x), m_y(in_y){};
-  constexpr auto operator<=>(const Point<dimT> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const Point<dimT> &right) const noexcept = default;
   template<typename T>
   requires((std::integral<T> || std::floating_point<T>)&&!std::
              is_same_v<T, dimT>) explicit Point(const Point<T> &r)
@@ -43,7 +45,8 @@ public:
     if constexpr (std::signed_integral<dimT> || std::floating_point<dimT>) {
       return Point<dimT>(static_cast<dimT>(std::abs(m_x)),
                          static_cast<dimT>(std::abs(m_y)));
-    } else {
+    }
+    else {
       return *this;
     }
   }
@@ -94,9 +97,11 @@ public:
   {
     if constexpr (std::unsigned_integral<dimT>) {
       return static_cast<std::size_t>(m_x) * static_cast<std::size_t>(m_y);
-    } else if constexpr (std::signed_integral<dimT>) {
+    }
+    else if constexpr (std::signed_integral<dimT>) {
       return static_cast<std::intmax_t>(m_x) * static_cast<std::intmax_t>(m_y);
-    } else if constexpr (std::floating_point<dimT>) {
+    }
+    else if constexpr (std::floating_point<dimT>) {
       return m_x * m_y;
     }
   }

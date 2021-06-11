@@ -16,7 +16,8 @@
 #include <compare>
 #include <iostream>
 namespace open_viii::kernel {
-template<typename T> struct CrisisLevelT
+template<typename T>
+struct CrisisLevelT
 {
 private:
   std::array<T, 4> m_levels{};
@@ -65,7 +66,8 @@ public:
       }
       if constexpr (std::is_integral_v<T>) {
         os << static_cast<uint32_t>(level);
-      } else {
+      }
+      else {
         os << level;
       }
       start = false;

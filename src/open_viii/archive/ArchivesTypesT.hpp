@@ -11,7 +11,8 @@ namespace open_viii::archive {
  * There are 6 main FIFLFS archives for ff8 and 2 2 main zzz archives for ff8
 remaster. These enums are for get<> in archives to ask for the one you want.
  */
-enum class ArchiveTypeT : std::uint8_t {
+enum class ArchiveTypeT : std::uint8_t
+{
   battle = 0U,
   field,
   magic,
@@ -70,8 +71,8 @@ constexpr bool
  * @tparam include_end if true ArchiveTypeT::end is a valid value
  */
 template<auto I, bool include_end = false>
-concept valid_archive_type_t_unsigned = test_valid_archive_type_t(I,
-                                                                  include_end);
+concept valid_archive_type_t_unsigned
+  = test_valid_archive_type_t(I, include_end);
 
 /**
  * Confirm valid value of enum ArchiveTypeT
@@ -99,10 +100,10 @@ concept valid_archive_type_t_enum = test_valid_archive_type_t(I, include_end);
  * @tparam include_end if true ArchiveTypeT::end is a valid value
  */
 template<auto I, bool include_end = false>
-concept valid_archive_type_t =
-  valid_archive_type_t_signed<I, include_end> || valid_archive_type_t_unsigned<
-    I,
-    include_end> || valid_archive_type_t_enum
+concept valid_archive_type_t
+  = valid_archive_type_t_signed<I, include_end> || valid_archive_type_t_unsigned<
+      I,
+      include_end> || valid_archive_type_t_enum
   < static_cast<ArchiveTypeT>(I)
 , include_end > ;
 

@@ -38,7 +38,8 @@ public:
   static constexpr auto CACTUAR{ 13U };
   static constexpr auto TONBERRY{ 14U };
   static constexpr auto EDEN{ 15U };
-  constexpr auto operator<=>(const GFGroup<T> &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const GFGroup<T> &right) const noexcept = default;
   [[nodiscard]] constexpr T
     quetzalcoatl() const noexcept
   {
@@ -127,12 +128,14 @@ public:
     for (const auto &item : in.m_gfs) {
       if (!first) {
         os << ", ";
-      } else {
+      }
+      else {
         first = false;
       }
       if (std::is_integral_v<decltype(item)>) {
         os << static_cast<std::size_t>(item);
-      } else {
+      }
+      else {
         os << item;
       }
     }

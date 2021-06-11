@@ -69,7 +69,8 @@ private:
               auto lss = std::stringstream(line);
               lss >> width;
               lss >> height;
-            } else if (count == 2) {// 000 000 000
+            }
+            else if (count == 2) {// 000 000 000
               auto lss = std::stringstream(line);
               lss >> width;
               lss >> height;
@@ -86,8 +87,8 @@ private:
     const auto start = ss.tellg();
     ss.seekg(0, std::ios::end);
     const auto end = ss.tellg();
-    const auto sz =
-      static_cast<std::size_t>(end - start) / sizeof(Color24<0, 1, 2>);
+    const auto sz
+      = static_cast<std::size_t>(end - start) / sizeof(Color24<0, 1, 2>);
     if (sz != point.area()) {
       std::cerr << m_path << "\n\t" << sz << " != area of " << point
                 << std::endl;
@@ -104,8 +105,9 @@ private:
     static constexpr auto         color_size    = sizeof(Color24<0, 1, 2>);
     const auto                    size_of_bytes = area * color_size;
     if (area > 0 && std::ranges::size(buffer_span) > size_of_bytes) {
-      buffer_span = buffer_span.subspan(
-        std::ranges::size(buffer_span) - size_of_bytes, size_of_bytes);
+      buffer_span
+        = buffer_span.subspan(std::ranges::size(buffer_span) - size_of_bytes,
+                              size_of_bytes);
       colors.resize(area);
       std::memcpy(std::ranges::data(colors),
                   std::ranges::data(buffer_span),
@@ -120,8 +122,7 @@ public:
     : Ppm(tools::read_entire_file<std::string>(path), path)
   {}
   explicit Ppm(const std::string &buffer, std::filesystem::path path = {})
-    : m_path(std::move(path)),
-      m_width_height(get_width_height(buffer)),
+    : m_path(std::move(path)), m_width_height(get_width_height(buffer)),
       m_colors(get_colors(buffer))
   {}
   bool

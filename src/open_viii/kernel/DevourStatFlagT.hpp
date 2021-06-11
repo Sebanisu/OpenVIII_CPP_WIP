@@ -5,7 +5,8 @@
 #define VIIIARCHIVE_DEVOURSTATFLAGT_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class DevourStatFlagT : std::uint8_t {
+enum class DevourStatFlagT : std::uint8_t
+{
   none                 = 0x00,
   str                  = 0x01,
   vit [[maybe_unused]] = 0x02,
@@ -13,5 +14,5 @@ enum class DevourStatFlagT : std::uint8_t {
   spr                  = 0x08,
   spd                  = 0x10,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_DEVOURSTATFLAGT_HPP

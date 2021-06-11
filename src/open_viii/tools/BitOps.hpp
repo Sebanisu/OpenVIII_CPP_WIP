@@ -29,7 +29,8 @@ static constexpr retT largest_bit_value = []() -> retT {
   retT        ret{ 1U };
   if constexpr (number_of_bits<retT> < lshift) {
     i = number_of_bits<retT> - 1;
-  } else {
+  }
+  else {
     i = lshift - 1;
   }
   for (; i > 0; --i) {
@@ -51,7 +52,8 @@ static consteval retT
     // i don't know if the signed version make since.
     using unsigned_retT = typename std::make_unsigned<retT>::type;
     return static_cast<retT>(flip_bits<unsigned_retT>(i));
-  } else {
+  }
+  else {
     constexpr auto max = std::numeric_limits<retT>::max();
     return static_cast<retT>(max - i);
   }
@@ -71,13 +73,17 @@ static constexpr auto get_mask = []() {
   constexpr auto bit_count_32 = number_of_bits<std::uint32_t>;
   if constexpr (bit_count <= 0) {
     return uint8_t(0U);
-  } else if constexpr (bit_count >= 1 && bit_count <= bit_count_8) {
+  }
+  else if constexpr (bit_count >= 1 && bit_count <= bit_count_8) {
     return largest_bit_value<std::uint8_t, bit_count>;
-  } else if constexpr (bit_count > bit_count_8 && bit_count <= bit_count_16) {
+  }
+  else if constexpr (bit_count > bit_count_8 && bit_count <= bit_count_16) {
     return largest_bit_value<std::uint16_t, bit_count>;
-  } else if constexpr (bit_count > bit_count_16 && bit_count <= bit_count_32) {
+  }
+  else if constexpr (bit_count > bit_count_16 && bit_count <= bit_count_32) {
     return largest_bit_value<std::uint32_t, bit_count>;
-  } else if constexpr (bit_count > bit_count_32 /* && bit_count <= 64*/) {
+  }
+  else if constexpr (bit_count > bit_count_32 /* && bit_count <= 64*/) {
     return largest_bit_value<std::uint64_t, bit_count>;
   }
 }();

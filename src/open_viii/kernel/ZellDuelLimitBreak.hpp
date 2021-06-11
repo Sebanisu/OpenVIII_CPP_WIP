@@ -183,7 +183,8 @@ public:
     for (const auto &button : m_button_sequence) {
       if (!first) {
         os << ", ";
-      } else {
+      }
+      else {
         first = false;
       }
       os << static_cast<std::uint32_t>(button);

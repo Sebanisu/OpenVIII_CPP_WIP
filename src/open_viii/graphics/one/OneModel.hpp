@@ -26,7 +26,8 @@ struct OneModel
     if (m_model_header_start.is_main_chr()) {
       buffer = buffer.subspan(4);
       return {};
-    } else if (m_model_header_start.is_unknown_object()) {
+    }
+    else if (m_model_header_start.is_unknown_object()) {
       buffer = buffer.subspan(8);
       return {};
     }

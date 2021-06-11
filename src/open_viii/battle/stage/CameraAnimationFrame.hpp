@@ -20,10 +20,8 @@ public:
                                  graphics::Vertice<std::uint16_t> world,
                                  std::uint16_t is_frame_ending_shots,
                                  graphics::Vertice<std::uint16_t> look_at)
-    : m_is_frame_durations_shot(is_frame_durations_shot),
-      m_world(world),
-      m_is_frame_ending_shot(is_frame_ending_shots),
-      m_look_at(look_at)
+    : m_is_frame_durations_shot(is_frame_durations_shot), m_world(world),
+      m_is_frame_ending_shot(is_frame_ending_shots), m_look_at(look_at)
   {}
   [[nodiscard]] constexpr auto
     is_frame_durations_shot() const noexcept

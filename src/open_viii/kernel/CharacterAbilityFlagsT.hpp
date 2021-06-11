@@ -14,7 +14,8 @@
 #define VIIIARCHIVE_CHARACTERABILITYFLAGST_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class CharacterAbilityFlagsT : std::uint32_t {
+enum class CharacterAbilityFlagsT : std::uint32_t
+{
   none                           = 0x0,
   mug                            = 0x1,
   med_data [[maybe_unused]]      = 0x2,
@@ -37,5 +38,5 @@ enum class CharacterAbilityFlagsT : std::uint32_t {
   auto_potion [[maybe_unused]]   = 0x40000,
   ribbon                         = 0x80000,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_CHARACTERABILITYFLAGST_HPP

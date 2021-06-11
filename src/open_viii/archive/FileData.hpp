@@ -51,8 +51,7 @@ public:
                             const unsigned long offset,
                             unsigned int        size)
     : m_filename(tl::string::replace_slashes(std::move(filename))),
-      m_offset(offset),
-      m_size(size)
+      m_offset(offset), m_size(size)
   {
     tl::string::replace_slashes(m_filename);
   }
@@ -83,8 +82,9 @@ public:
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
     const fiT &fi)
-    : m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
-      m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
+    : m_offset{ static_cast<decltype(m_offset)>(fi.offset()) }, m_size{
+        static_cast<decltype(m_size)>(fi.uncompressed_size())
+      }
   {
     if (fi.compression_type() != CompressionTypeT::none) {
       throw std::invalid_argument(
@@ -94,10 +94,12 @@ public:
   }
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) explicit FileData(
-    std::string filename, const fiT &fi)
+    std::string filename,
+    const fiT & fi)
     : m_filename(tl::string::replace_slashes(std::move(filename))),
-      m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
-      m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
+      m_offset{ static_cast<decltype(m_offset)>(fi.offset()) }, m_size{
+        static_cast<decltype(m_size)>(fi.uncompressed_size())
+      }
   {
     if (fi.compression_type() != CompressionTypeT::none) {
       throw std::invalid_argument(
@@ -178,9 +180,11 @@ public:
     static_assert(I < 3);
     if constexpr (I == 0) {
       return std::string_view(m_filename);
-    } else if constexpr (I == 1) {
+    }
+    else if constexpr (I == 1) {
       return m_offset;
-    } else if constexpr (I == 2) {
+    }
+    else if constexpr (I == 2) {
       return m_size;
     }
   }

@@ -76,8 +76,8 @@ static void
   //  t){std::is_same_v<char,decltype(*std::ranges::data(t))>;})
   //  {}
   // if container is type char could just write directly to it.
-  const auto size =
-    sizeof(decltype(*std::ranges::data(item))) * std::ranges::size(item);
+  const auto size
+    = sizeof(decltype(*std::ranges::data(item))) * std::ranges::size(item);
   std::vector<char> tmp(size);
   fp.read(std::ranges::data(tmp), static_cast<long>(size));
   memcpy(std::ranges::data(item), std::ranges::data(tmp), size);

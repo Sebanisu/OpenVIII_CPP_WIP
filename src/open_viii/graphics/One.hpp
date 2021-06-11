@@ -39,9 +39,10 @@ private:
   static_assert(std::ranges::size(TIM8_START) == SIZE_TIM_START);
   static_assert(std::ranges::size(TIM16_START) == SIZE_TIM_START);
   static_assert(std::ranges::size(TIM24_START) == SIZE_TIM_START);
-  static constexpr std::array TIM_STARTS{
-    TIM4_START, TIM8_START, TIM16_START, TIM24_START
-  };
+  static constexpr std::array TIM_STARTS{ TIM4_START,
+                                          TIM8_START,
+                                          TIM16_START,
+                                          TIM24_START };
   auto
     get_next_offset(const std::span<const char> &buffer) const
   {

@@ -14,7 +14,8 @@
 #define VIIIARCHIVE_TARGETT_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class TargetT : std::uint8_t {
+enum class TargetT : std::uint8_t
+{
   none          = 0x00,
   dead          = 0x01,
   unk02         = 0x02,
@@ -25,5 +26,5 @@ enum class TargetT : std::uint8_t {
   enemy         = 0x40,
   unk80         = 0x80,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_TARGETT_HPP

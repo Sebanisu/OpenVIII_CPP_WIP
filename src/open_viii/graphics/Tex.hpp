@@ -67,12 +67,12 @@ private:
     if (row > m_tex_header.num_palettes()) {
       row = 0U;
     }
-    const auto palette_span =
-      std::span(reinterpret_cast<const Color32<2, 1, 0, 3> *>(
-                  std::ranges::data(m_palette_data)),
-                m_tex_header.num_colors_per_palette()
-                  * m_tex_header.num_palettes())
-        .subspan(row * m_tex_header.num_colors_per_palette());
+    const auto palette_span
+      = std::span(reinterpret_cast<const Color32<2, 1, 0, 3> *>(
+                    std::ranges::data(m_palette_data)),
+                  m_tex_header.num_colors_per_palette()
+                    * m_tex_header.num_palettes())
+          .subspan(row * m_tex_header.num_colors_per_palette());
     return Color32<0, 1, 2, 3>(palette_span[key]);
   }
   [[nodiscard]] auto
@@ -147,8 +147,8 @@ public:
         reset();
         return;
       }
-      m_palette_data =
-        buffer_backup.subspan(palette_locator(), size_of_palette());
+      m_palette_data
+        = buffer_backup.subspan(palette_locator(), size_of_palette());
     }
     if (std::ranges::size(buffer_backup) < texture_locator()) {
       reset();
@@ -166,7 +166,8 @@ public:
         ret.emplace_back(
           get_color_from_palette(palette_row, static_cast<std::uint8_t>(i)));
       }
-    } else {
+    }
+    else {
       static constexpr auto bpp16 = 16U;
       static constexpr auto bpp32 = 32U;
       switch (m_tex_header.bits_per_pixel()) {
@@ -214,7 +215,8 @@ public:
                 m_tex_header.image_width(),
                 m_tex_header.image_height(),
                 filename);
-    } else {
+    }
+    else {
       auto path = std::filesystem::path(filename);
       for (std::uint16_t i = 0; i < m_tex_header.num_palettes(); i++) {
         auto ss = std::stringstream{};

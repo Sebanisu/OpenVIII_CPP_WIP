@@ -15,7 +15,8 @@
 #include <cstdint>
 namespace open_viii::kernel {
 //"https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/MainForm.Designer.cs"
-enum class UnlockerT : std::uint8_t {
+enum class UnlockerT : std::uint8_t
+{
   none,
   gf_level1,
   gf_level2,

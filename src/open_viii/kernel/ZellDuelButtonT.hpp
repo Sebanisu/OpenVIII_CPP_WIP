@@ -13,7 +13,8 @@
 #ifndef VIIIARCHIVE_ZELLDUELBUTTONT_HPP
 #define VIIIARCHIVE_ZELLDUELBUTTONT_HPP
 namespace open_viii::kernel {
-enum class ZellDuelButtonT : std::uint16_t {
+enum class ZellDuelButtonT : std::uint16_t
+{
   end      = 0x0001,
   up       = 0x0010,
   right    = 0x0020,
@@ -29,5 +30,5 @@ enum class ZellDuelButtonT : std::uint16_t {
   square   = 0x8000,
   none     = 0xFFFF,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ZELLDUELBUTTONT_HPP

@@ -72,8 +72,9 @@ std::string
 {
   auto str = std::to_string(value);
   if (str.length() < total_length)
-    str.insert(
-      str.front() == '-' ? 1 : 0, total_length - str.length(), pad_character);
+    str.insert(str.front() == '-' ? 1 : 0,
+               total_length - str.length(),
+               pad_character);
   return str;
 }
 [[maybe_unused]] [[nodiscard]] std::string

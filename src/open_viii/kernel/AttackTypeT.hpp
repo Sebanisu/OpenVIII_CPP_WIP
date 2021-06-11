@@ -15,7 +15,8 @@
 #include <cstdint>
 namespace open_viii::kernel {
 // https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/Resources/Attack_Type_List.txt"/>
-enum class AttackTypeT : std::uint8_t {
+enum class AttackTypeT : std::uint8_t
+{
   none,
   physical_attack [[maybe_unused]],
   magic_attack [[maybe_unused]],

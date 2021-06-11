@@ -35,8 +35,9 @@ private:
   std::uint8_t        m_unknown0{};
 
 public:
-  constexpr auto operator<=>(
-    const StatPercentIncreaseAbilities &right) const noexcept = default;
+  constexpr auto
+    operator<=>(
+      const StatPercentIncreaseAbilities &right) const noexcept = default;
   [[nodiscard]] constexpr auto
     name_offset() const noexcept
   {

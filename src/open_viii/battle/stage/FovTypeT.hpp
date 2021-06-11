@@ -5,10 +5,11 @@
 #define VIIIARCHIVE_FOVTYPET_HPP
 #include <cstdint>
 namespace open_viii::battle::stage {
-enum struct FovTypeT : std::uint8_t {
+enum struct FovTypeT : std::uint8_t
+{
   default_fov   = 1U,
   same_fov      = 2U,
   different_fov = 3U,
 };
-}
+}// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_FOVTYPET_HPP

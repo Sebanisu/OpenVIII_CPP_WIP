@@ -17,7 +17,8 @@ namespace open_viii::kernel {
 /**
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Statuses-0
  */
-enum class PersistentStatusesT : std::uint16_t {
+enum class PersistentStatusesT : std::uint16_t
+{
   none       = 0x00,
   death      = 0x01,
   poison     = 0x02,

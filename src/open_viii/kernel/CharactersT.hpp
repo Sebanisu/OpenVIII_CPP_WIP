@@ -19,7 +19,8 @@ namespace open_viii::kernel {
  * @notes I noticed some values were in order of these characters so I made
  * those values into arrays and put the character names into an enum.
  */
-enum class CharactersT : std::uint8_t {
+enum class CharactersT : std::uint8_t
+{
   squall_leonhart = 0x0,
   zell_dincht     = 0x1,
   irvine_kinneas  = 0x2,

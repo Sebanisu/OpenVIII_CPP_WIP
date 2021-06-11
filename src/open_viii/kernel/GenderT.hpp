@@ -14,9 +14,10 @@
 #define VIIIARCHIVE_GENDERT_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class GenderT : std::uint8_t {
+enum class GenderT : std::uint8_t
+{
   male   = 0,
   female = 1,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_GENDERT_HPP

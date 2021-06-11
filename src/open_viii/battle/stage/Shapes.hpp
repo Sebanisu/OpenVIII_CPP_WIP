@@ -25,7 +25,8 @@ requires(current < shapeT::COUNT) [[nodiscard]] constexpr static pointT
     return std::invoke(lambda,
                        shape.template uv<current>(),
                        for_each_uv<current + 1>(shape, lambda));
-  } else {
+  }
+  else {
     return shape.template uv<current>();
   }
 }

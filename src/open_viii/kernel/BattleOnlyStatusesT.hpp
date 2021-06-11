@@ -17,7 +17,8 @@ namespace open_viii::kernel {
 /**
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Statuses-1
  */
-enum class BattleOnlyStatusesT : std::uint32_t {
+enum class BattleOnlyStatusesT : std::uint32_t
+{
   none                            = 0x0,
   sleep [[maybe_unused]]          = 0x1,
   haste [[maybe_unused]]          = 0x2,

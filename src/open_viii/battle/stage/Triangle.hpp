@@ -65,9 +65,11 @@ public:
   {
     if constexpr (I == 0U) {
       return m_uv1;
-    } else if constexpr (I == 1U) {
+    }
+    else if constexpr (I == 1U) {
       return m_uv2;
-    } else if constexpr (I == 2U) {
+    }
+    else if constexpr (I == 2U) {
       return m_uv3;
     }
   }
@@ -76,9 +78,11 @@ public:
   {
     if constexpr (I == 0U) {
       return m_face_indice_a;
-    } else if constexpr (I == 1U) {
+    }
+    else if constexpr (I == 1U) {
       return m_face_indice_b;
-    } else if constexpr (I == 2U) {
+    }
+    else if constexpr (I == 2U) {
       return m_face_indice_c;
     }
   }

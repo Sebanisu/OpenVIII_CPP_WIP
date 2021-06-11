@@ -108,12 +108,11 @@ public:
    * @param compression_type compressed or not. And which compression it's
    * using.
    */
-  constexpr FI(
-    const unsigned int &    uncompressed_size,
-    const unsigned int &    offset,
-    const CompressionTypeT &compression_type = CompressionTypeT::none) noexcept
-    : m_uncompressed_size{ uncompressed_size },
-      m_offset{ offset },
+  constexpr FI(const unsigned int &    uncompressed_size,
+               const unsigned int &    offset,
+               const CompressionTypeT &compression_type
+               = CompressionTypeT::none) noexcept
+    : m_uncompressed_size{ uncompressed_size }, m_offset{ offset },
       m_compression_type{ compression_type }
   {}
   /**
@@ -186,9 +185,11 @@ public:
     static_assert(I < 3);
     if constexpr (I == 0) {
       return m_uncompressed_size;
-    } else if constexpr (I == 1) {
+    }
+    else if constexpr (I == 1) {
       return m_offset;
-    } else if constexpr (I == 2) {
+    }
+    else if constexpr (I == 2) {
       return m_compression_type;
     }
   }
@@ -245,7 +246,8 @@ struct [[maybe_unused]] tuple_size<open_viii::archive::FI>
  * type of 1st argument
  * @note required to structured binding support
  */
-template<> struct [[maybe_unused]] tuple_element<0, open_viii::archive::FI>
+template<>
+struct [[maybe_unused]] tuple_element<0, open_viii::archive::FI>
 {
   using type = std::uint32_t;
 };
@@ -253,7 +255,8 @@ template<> struct [[maybe_unused]] tuple_element<0, open_viii::archive::FI>
  * type of 2nd argument
  * @note required to structured binding support
  */
-template<> struct [[maybe_unused]] tuple_element<1, open_viii::archive::FI>
+template<>
+struct [[maybe_unused]] tuple_element<1, open_viii::archive::FI>
 {
   using type = std::uint32_t;
 };
@@ -261,7 +264,8 @@ template<> struct [[maybe_unused]] tuple_element<1, open_viii::archive::FI>
  * type of 3rd argument
  * @note required to structured binding support
  */
-template<> struct [[maybe_unused]] tuple_element<2, open_viii::archive::FI>
+template<>
+struct [[maybe_unused]] tuple_element<2, open_viii::archive::FI>
 {
   using type = open_viii::CompressionTypeT;
 };

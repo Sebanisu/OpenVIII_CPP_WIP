@@ -42,13 +42,14 @@ protected:
   static constexpr auto m_blend_mode      = BlendModeT::none;
   static constexpr auto m_layer_id        = LayerID{};
   impl_Tile2()                            = default;
-  static constexpr auto FORCE_TYPE_VALUES =
-    std::array{ std::string_view("test10"),
-                std::string_view("test11"),
-                std::string_view("test12") };
+  static constexpr auto FORCE_TYPE_VALUES
+    = std::array{ std::string_view("test10"),
+                  std::string_view("test11"),
+                  std::string_view("test12") };
 
 public:
-  constexpr auto operator<=>(const impl_Tile2 &) const = default;
+  constexpr auto
+    operator<=>(const impl_Tile2 &) const = default;
 };
 using Tile2 = TileCommon<impl_Tile2>;
 static_assert(sizeof(Tile2) == Tile2::EXPECTED_SIZE);

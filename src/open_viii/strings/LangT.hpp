@@ -16,7 +16,8 @@
 #include <cstdint>
 #include <string_view>
 namespace open_viii {
-enum class LangT : std::uint8_t {
+enum class LangT : std::uint8_t
+{
   en,
   fr,
   de,

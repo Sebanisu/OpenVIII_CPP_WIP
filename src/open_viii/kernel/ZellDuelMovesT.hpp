@@ -29,7 +29,8 @@ namespace open_viii::kernel {
  * 0x08	    Different Beat
  * 0x09     My Final Heaven
  */
-enum struct ZellDuelMoveT : std::uint8_t {
+enum struct ZellDuelMoveT : std::uint8_t
+{
   punch_rush,
   booya,
   heel_drop,

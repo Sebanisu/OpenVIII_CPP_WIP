@@ -18,7 +18,8 @@ namespace open_viii::kernel {
  * Type ID for each Section in Kernel.bin
  * @see https://github.com/alexfilth/doomtrain/wiki/Header
  */
-enum class SectionTypesT : std::int8_t {
+enum class SectionTypesT : std::int8_t
+{
   battle_commands,
   magic,
   junctionable_g_fs,

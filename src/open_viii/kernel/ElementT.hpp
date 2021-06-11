@@ -14,7 +14,8 @@
 #define VIIIARCHIVE_ELEMENTT_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class ElementT : std::uint8_t {
+enum class ElementT : std::uint8_t
+{
   non_elemental = 0x00,
   fire          = 0x01,
   ice           = 0x02,
@@ -25,5 +26,5 @@ enum class ElementT : std::uint8_t {
   water         = 0x40,
   holy          = 0x80,
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ELEMENTT_HPP

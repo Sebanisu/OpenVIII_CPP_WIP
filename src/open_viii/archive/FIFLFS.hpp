@@ -28,19 +28,26 @@
 #include <utility>
 namespace open_viii::archive {
 template<typename lambdaT>
-concept executable_buffer_path =
-  std::invocable<lambdaT, std::vector<char>, std::string>;
+concept executable_buffer_path
+  = std::invocable<lambdaT, std::vector<char>, std::string>;
 template<typename lambdaT>
-concept executable_buffer_path_fi =
-  std::invocable<lambdaT, std::vector<char>, std::string, FI>;
-enum class fiflfsT {
+concept executable_buffer_path_fi
+  = std::invocable<lambdaT, std::vector<char>, std::string, FI>;
+enum class fiflfsT
+{
   none,
   fl,
   fs,
   fi,
 };
-enum class TryAddT { not_part_of_archive, added_to_archive, archive_full };
-template<bool HasNested = false> struct FIFLFS
+enum class TryAddT
+{
+  not_part_of_archive,
+  added_to_archive,
+  archive_full
+};
+template<bool HasNested = false>
+struct FIFLFS
 {
 private:
   Grouping<std::vector<char>> m_fi{};
@@ -198,7 +205,8 @@ public:
   {
     if (!std::ranges::empty(m_fs.data())) {
       return FS::get_entry<dstT>(m_fs.data(), fi, m_fs.offset());
-    } else {
+    }
+    else {
       return FS::get_entry<dstT>(m_fs.path(), fi, m_fs.offset());
     }
   }
@@ -226,21 +234,24 @@ public:
         // m_fs = {};
         exit(EXIT_FAILURE);
       }
-    } else if (m_fi.base() != m_fl.base()) {
+    }
+    else if (m_fi.base() != m_fl.base()) {
       if (m_fl.base() == m_fs.base()) {
         std::cerr << "base name mismatch FL Data: " << m_fl.path() << "\n";
         std::cerr << "not matching:" << m_fl.base() << ", " << m_fs.base()
                   << '\n';
         // m_fi = {};
         exit(EXIT_FAILURE);
-      } else if (m_fi.base() == m_fs.base()) {
+      }
+      else if (m_fi.base() == m_fs.base()) {
         std::cerr << "base name mismatch FI Data: " << m_fi.path() << "\n";
         std::cerr << "not matching:" << m_fi.path() << ", " << m_fs.path()
                   << '\n';
         // m_fl = {};
         exit(EXIT_FAILURE);
       }
-    } else {
+    }
+    else {
       std::cerr << "No basename matched!\n";
       exit(EXIT_FAILURE);
     }
@@ -261,11 +272,13 @@ public:
   {
     return [this, &fi]() {
       if (std::ranges::empty(m_fs.data())) {
-        return open_viii::archive::FS::get_entry<outT>(
-          m_fs.path(), fi, m_fs.offset());
+        return open_viii::archive::FS::get_entry<outT>(m_fs.path(),
+                                                       fi,
+                                                       m_fs.offset());
       }
-      return open_viii::archive::FS::get_entry<outT>(
-        m_fs.data(), fi, m_fs.offset());
+      return open_viii::archive::FS::get_entry<outT>(m_fs.data(),
+                                                     fi,
+                                                     m_fs.offset());
     }();
   }
   [[nodiscard]] std::string
@@ -277,8 +290,11 @@ public:
     get_entry_id_and_path(const std::string_view &filename) const
   {
     if (std::ranges::empty(m_fl.data())) {
-      return open_viii::archive::fl::get_entry(
-        m_fl.path(), { filename }, m_fl.offset(), m_fl.size(), m_count);
+      return open_viii::archive::fl::get_entry(m_fl.path(),
+                                               { filename },
+                                               m_fl.offset(),
+                                               m_fl.size(),
+                                               m_count);
     }
     return open_viii::archive::fl::get_entry(m_fl.path(),
                                              m_fl.data(),
@@ -298,8 +314,12 @@ public:
     get_vector_of_indexes_and_files(
       const std::initializer_list<std::string_view> &filename) const
   {
-    return archive::fl::get_all_entries(
-      m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
+    return archive::fl::get_all_entries(m_fl.path(),
+                                        m_fl.data(),
+                                        m_fl.offset(),
+                                        m_fl.size(),
+                                        m_count,
+                                        filename);
   }
   template<typename lambdaT>
   requires(executable_buffer_path<lambdaT> || executable_buffer_path_fi<lambdaT>) void execute_on(
@@ -307,15 +327,16 @@ public:
     const lambdaT &                                lambda) const
   {
     const auto results = get_vector_of_indexes_and_files(filename);
-    const auto process =
-      [this, &lambda](const std::pair<unsigned int, std::string> &pair) {
-        auto fi = get_entry_by_index(pair.first);
-        if constexpr (executable_buffer_path<lambdaT>) {
-          lambda(get_entry_buffer(fi), pair.second);
-        } else if constexpr (executable_buffer_path_fi<lambdaT>) {
-          lambda(get_entry_buffer(fi), pair.second, fi);
-        }
-      };
+    const auto process
+      = [this, &lambda](const std::pair<unsigned int, std::string> &pair) {
+          auto fi = get_entry_by_index(pair.first);
+          if constexpr (executable_buffer_path<lambdaT>) {
+            lambda(get_entry_buffer(fi), pair.second);
+          }
+          else if constexpr (executable_buffer_path_fi<lambdaT>) {
+            lambda(get_entry_buffer(fi), pair.second, fi);
+          }
+        };
     if constexpr (HasNested) {
       std::ranges::for_each(
         results
@@ -326,7 +347,8 @@ public:
                                    // We have another function for those.
             }),
         process);
-    } else {
+    }
+    else {
       std::ranges::for_each(results, process);
     }
   }
@@ -340,8 +362,12 @@ public:
       return;
     }
     FIFLFS<false> archive{};
-    const auto    items = archive::fl::get_all_entries(
-      m_fl.path(), m_fl.data(), m_fl.offset(), m_fl.size(), m_count, filename);
+    const auto    items = archive::fl::get_all_entries(m_fl.path(),
+                                                    m_fl.data(),
+                                                    m_fl.offset(),
+                                                    m_fl.size(),
+                                                    m_count,
+                                                    filename);
     std::for_each(
       std::execution::seq,
       items.cbegin(),
@@ -357,8 +383,10 @@ public:
               m_fs.path(),
               virtualPath);
           }
-          return archive.try_add_nested(
-            m_fs.path(), m_fs.offset(), virtualPath, fi);
+          return archive.try_add_nested(m_fs.path(),
+                                        m_fs.offset(),
+                                        virtualPath,
+                                        fi);
         }();
         if (retVal == TryAddT::added_to_archive) {
           std::cout << "Added:\t" << virtualPath << '\n';
@@ -371,7 +399,8 @@ public:
           if constexpr (std::
                           invocable<lambdaT, std::vector<char>, std::string>) {
             archive.execute_on(nested_filename, lambda);
-          } else if constexpr (std::invocable<lambdaT, FIFLFS<false>>) {
+          }
+          else if constexpr (std::invocable<lambdaT, FIFLFS<false>>) {
             lambda(archive);
           }
           archive = {};
@@ -412,8 +441,10 @@ public:
   return [&source, &archive, &fi, &str_virtual_path]() {
     std::filesystem::path virtualPath(str_virtual_path);
     if (!std::ranges::empty(source.fs().data())) {
-      return archive.try_add_nested(
-        source.fs().data(), source.fs().offset(), virtualPath, fi);
+      return archive.try_add_nested(source.fs().data(),
+                                    source.fs().offset(),
+                                    virtualPath,
+                                    fi);
     }
     if (fi.compression_type() == CompressionTypeT::none) {
       auto localRetVal = archive.try_add(
@@ -464,8 +495,8 @@ public:
                                                   source.count(),
                                                   filename);
   for (const auto &[id, strVirtualPath] : items) {
-    const TryAddT t =
-      get_fiflfs(source, out.emplace_back(), id, strVirtualPath);
+    const TryAddT t
+      = get_fiflfs(source, out.emplace_back(), id, strVirtualPath);
     if (t != TryAddT::archive_full) {
       out.pop_back();
     }

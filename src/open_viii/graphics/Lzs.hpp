@@ -71,8 +71,9 @@ public:
       }
       m_colors.resize(min_size);
       std::cout << std::ranges::size(m_colors) << ", " << area << '\n';
-      std::memcpy(
-        std::ranges::data(m_colors), std::ranges::data(adj), min_size);
+      std::memcpy(std::ranges::data(m_colors),
+                  std::ranges::data(adj),
+                  min_size);
     }
   }
   [[maybe_unused]] void

@@ -207,8 +207,12 @@ void
   std::vector<std::pair<std::uint32_t, std::string>> vector{};
   tl::read::from_file(
     [&](std::istream &istream) {
-      vector = get_all_entries(
-        tl::read::input(&istream, true), offset, size, count, needle, limit);
+      vector = get_all_entries(tl::read::input(&istream, true),
+                               offset,
+                               size,
+                               count,
+                               needle,
+                               limit);
     },
     path);
   return vector;
@@ -223,8 +227,12 @@ void
                   const std::initializer_list<std::string_view> &needle,
                   const size_t &                                 limit)
 {
-  return get_all_entries(
-    tl::read::input(data, true), offset, size, count, needle, limit);
+  return get_all_entries(tl::read::input(data, true),
+                         offset,
+                         size,
+                         count,
+                         needle,
+                         limit);
 }
 
 /**
@@ -252,7 +260,8 @@ void
 
   if (!std::empty(data) && data.front() != '\0') {
     return get_all_entries(data, offset, size, count, needle, limit);
-  } else {
+  }
+  else {
   }
   return get_all_entries(path, offset, size, count, needle, limit);
 }

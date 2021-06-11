@@ -14,7 +14,8 @@
 #define VIIIARCHIVE_ATTACKFLAGST_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class AttackFlagsT : std::uint8_t {
+enum class AttackFlagsT : std::uint8_t
+{
   none                                = 0x0,
   shelled [[maybe_unused]]            = 0x1,
   unk_x2 [[maybe_unused]]             = 0x2,
@@ -25,5 +26,5 @@ enum class AttackFlagsT : std::uint8_t {
   unk_x40 [[maybe_unused]]            = 0x40,
   revive                              = 0x80
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ATTACKFLAGST_HPP

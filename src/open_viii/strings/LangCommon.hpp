@@ -38,17 +38,23 @@ public:
   {
     if constexpr (langVal == LangT::en) {
       return EN;
-    } else if constexpr (langVal == LangT::fr) {
+    }
+    else if constexpr (langVal == LangT::fr) {
       return FR;
-    } else if constexpr (langVal == LangT::de) {
+    }
+    else if constexpr (langVal == LangT::de) {
       return DE;
-    } else if constexpr (langVal == LangT::it) {
+    }
+    else if constexpr (langVal == LangT::it) {
       return IT;
-    } else if constexpr (langVal == LangT::es) {
+    }
+    else if constexpr (langVal == LangT::es) {
       return ES;
-    } else if constexpr (langVal == LangT::jp) {
+    }
+    else if constexpr (langVal == LangT::jp) {
       return JP;
-    } else {
+    }
+    else {
       return EMPTY;
     }
   }

@@ -67,8 +67,9 @@ private:
   std::uint8_t          m_none4{};
 
 public:
-  constexpr TimHeader()                               = default;
-  constexpr auto operator<=>(const TimHeader &) const = default;
+  constexpr TimHeader() = default;
+  constexpr auto
+    operator<=>(const TimHeader &) const = default;
   /**
    * @return bits per pixel flags and CLP flag
    */

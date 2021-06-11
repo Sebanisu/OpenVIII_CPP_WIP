@@ -136,7 +136,8 @@ private:
   CrisisLevelT<std::uint8_t>     m_shot_timers{};
 
 public:
-  constexpr auto operator<=>(const Misc &right) const noexcept = default;
+  constexpr auto
+    operator<=>(const Misc &right) const noexcept = default;
   [[maybe_unused]] [[nodiscard]] constexpr auto
     sleep_timer() const noexcept
   {

@@ -72,15 +72,16 @@ public:
        << "\n\t\t\t SET OFFSETS: " << '[';
     {
       bool first = true;
-      std::ranges::for_each(
-        in.m_set_offsets, [&os, &first](const std::uint16_t &c) {
-          if (!first) {
-            os << ',';
-          }
-          first = false;
-          os << "0x" << std::hex << std::uppercase
-             << static_cast<std::uint16_t>(c) << std::dec << std::nouppercase;
-        });
+      std::ranges::for_each(in.m_set_offsets,
+                            [&os, &first](const std::uint16_t &c) {
+                              if (!first) {
+                                os << ',';
+                              }
+                              first = false;
+                              os << "0x" << std::hex << std::uppercase
+                                 << static_cast<std::uint16_t>(c) << std::dec
+                                 << std::nouppercase;
+                            });
     }
     os << ']' << "\n\t\t\t END: " << in.m_camera_end
        << "\n\t\t\t SETS: " << '[';

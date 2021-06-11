@@ -5,7 +5,8 @@
 #define VIIIARCHIVE_OPCODET_HPP
 #include <cstdint>
 namespace open_viii::field::scripts {
-enum class opcodeT : std::uint16_t {
+enum class opcodeT : std::uint16_t
+{
   NOP,
   CAL,
   JMP,

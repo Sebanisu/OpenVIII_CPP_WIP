@@ -42,7 +42,8 @@ static auto
     const auto ret = get_type_int();
     is.seekg(-static_cast<signed>(sz), std::ios::cur);
     return ret;
-  } else {
+  }
+  else {
     return get_type_int();
   }
 }
@@ -60,10 +61,12 @@ constexpr static bool
 {
   if constexpr (sizeof...(haystack) == 0) {
     return valid_type(needle, CAM, BIK, KB2);
-  } else if constexpr (std::ranges::range<
-                         needleT> && (std::ranges::range<haystackT> && ...)) {
+  }
+  else if constexpr (std::ranges::range<
+                       needleT> && (std::ranges::range<haystackT> && ...)) {
     return (std::ranges::equal(needle, haystack) || ...);
-  } else {
+  }
+  else {
     return ((needle == haystack) || ...);
   }
 }
@@ -88,7 +91,8 @@ constexpr static auto
   }
   if constexpr (sizeof...(haystack) != 0) {
     return find_type(needle, haystack...);
-  } else {
+  }
+  else {
     return decltype(first_haystack){};
   }
 }

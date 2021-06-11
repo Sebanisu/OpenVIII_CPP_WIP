@@ -40,11 +40,12 @@ protected:
   static constexpr auto m_blend_mode      = BlendModeT::none;
   static constexpr auto m_layer_id        = LayerID{};
   impl_Tile3()                            = default;
-  static constexpr auto FORCE_TYPE_VALUES =
-    std::array{ std::string_view("logo") };
+  static constexpr auto FORCE_TYPE_VALUES
+    = std::array{ std::string_view("logo") };
 
 public:
-  constexpr auto operator<=>(const impl_Tile3 &) const = default;
+  constexpr auto
+    operator<=>(const impl_Tile3 &) const = default;
 };
 using Tile3 = TileCommon<impl_Tile3>;
 static_assert(sizeof(Tile3) == Tile3::EXPECTED_SIZE);

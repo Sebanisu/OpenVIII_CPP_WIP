@@ -14,7 +14,8 @@
 #define VIIIARCHIVE_ABILITIEST_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-enum class AbilitiesT : std::uint16_t {
+enum class AbilitiesT : std::uint16_t
+{
   // https://github.com/alexfilth/doomtrain/wiki/Junction-abilities
   none,
   hpj [[maybe_unused]],      // Enables HP junction
@@ -143,5 +144,5 @@ enum class AbilitiesT : std::uint16_t {
   med_lv_up [[maybe_unused]],
   card_mod [[maybe_unused]],
 };
-}
+}// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ABILITIEST_HPP

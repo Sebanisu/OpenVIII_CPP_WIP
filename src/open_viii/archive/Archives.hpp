@@ -113,8 +113,8 @@ private:
     static constexpr auto data      = "data";
     static constexpr auto langStart = "lang-";
     const auto langStartingFilter   = std::filesystem::path(data) / langStart;
-    const auto langStarting =
-      std::filesystem::path(langStartingFilter.string() + m_lang);
+    const auto langStarting
+      = std::filesystem::path(langStartingFilter.string() + m_lang);
     return tools::i_starts_with(pathString, langStartingFilter.string())
         && !tools::i_starts_with(pathString, langStarting.string());
   }
@@ -205,8 +205,8 @@ private:
    * @tparam lambdaT
    */
   template<typename lambdaT>
-  static constexpr bool valid_static_for_lambda_type =
-    (std::is_invocable_r_v<bool, lambdaT, ArchiveTypeT, std::string_view>);
+  static constexpr bool valid_static_for_lambda_type
+    = (std::is_invocable_r_v<bool, lambdaT, ArchiveTypeT, std::string_view>);
   /**
    * Populate all archives from path
    */
@@ -240,18 +240,18 @@ private:
    * @tparam lambdaT
    */
   template<typename lambdaT>
-  static constexpr bool takes_valid_archive_type =
-    (std::is_invocable_r_v<bool, lambdaT, decltype(m_battle)>)
-    || (std::is_invocable_r_v<bool, lambdaT, decltype(m_field)>)
-    || std::is_invocable_r_v<bool, lambdaT, decltype(*m_zzz_main)>;
+  static constexpr bool takes_valid_archive_type
+    = (std::is_invocable_r_v<bool, lambdaT, decltype(m_battle)>)
+   || (std::is_invocable_r_v<bool, lambdaT, decltype(m_field)>)
+   || std::is_invocable_r_v<bool, lambdaT, decltype(*m_zzz_main)>;
   /**
    * does lambda take a vector or a string
    * @tparam lambdaT
    */
   template<typename lambdaT>
-  [[maybe_unused]] static constexpr bool valid_execute_on_lambda =
-    (std::invocable<lambdaT, std::vector<char>, std::string>)
-    || (std::invocable<lambdaT, std::string, std::string>);
+  [[maybe_unused]] static constexpr bool valid_execute_on_lambda
+    = (std::invocable<lambdaT, std::vector<char>, std::string>)
+   || (std::invocable<lambdaT, std::string, std::string>);
   auto
     test_valid_lambda() const
   {
@@ -294,19 +294,26 @@ public:
   {
     if constexpr (archiveType_ == ArchiveTypeT::battle) {
       return m_battle;
-    } else if constexpr (archiveType_ == ArchiveTypeT::field) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::field) {
       return m_field;
-    } else if constexpr (archiveType_ == ArchiveTypeT::magic) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::magic) {
       return m_magic;
-    } else if constexpr (archiveType_ == ArchiveTypeT::main) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::main) {
       return m_main;
-    } else if constexpr (archiveType_ == ArchiveTypeT::menu) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::menu) {
       return m_menu;
-    } else if constexpr (archiveType_ == ArchiveTypeT::world) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::world) {
       return m_world;
-    } else if constexpr (archiveType_ == ArchiveTypeT::zzz_main) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::zzz_main) {
       return m_zzz_main;
-    } else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
       return m_zzz_other;
     }
   }
@@ -345,7 +352,8 @@ public:
         std::cout << " -- nested -- " << name << '\n';
         return std::monostate{};
       }
-    } else {
+    }
+    else {
       if (get_string<ArchiveTypeT::zzz_main>() == name) {
         return get<ArchiveTypeT::zzz_main>();
       }
@@ -395,25 +403,32 @@ public:
     if constexpr (archiveType_ == ArchiveTypeT::battle) {
       constexpr auto battle = "BATTLE"sv;
       return battle;
-    } else if constexpr (archiveType_ == ArchiveTypeT::field) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::field) {
       constexpr auto field = "FIELD"sv;
       return field;
-    } else if constexpr (archiveType_ == ArchiveTypeT::magic) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::magic) {
       constexpr auto magic = "MAGIC"sv;
       return magic;
-    } else if constexpr (archiveType_ == ArchiveTypeT::main) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::main) {
       constexpr auto main = "MAIN"sv;
       return main;
-    } else if constexpr (archiveType_ == ArchiveTypeT::menu) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::menu) {
       constexpr auto menu = "MENU"sv;
       return menu;
-    } else if constexpr (archiveType_ == ArchiveTypeT::world) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::world) {
       constexpr auto world = "WORLD"sv;
       return world;
-    } else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
       constexpr auto other = "OTHER"sv;
       return other;
-    } else if constexpr (archiveType_ == ArchiveTypeT::zzz_main) {
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::zzz_main) {
       constexpr auto main = "MAIN"sv;
       return main;
     }
@@ -467,24 +482,28 @@ public:
         return ret;
     }
     if constexpr (test_valid_archive_type_t(maxT)) {
-      constexpr auto archiveType_ =
-        std::integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(maxT)>{};
+      constexpr auto archiveType_
+        = std::integral_constant<ArchiveTypeT,
+                                 static_cast<ArchiveTypeT>(maxT)>{};
       if constexpr (valid_static_for_lambda_type<lambdaT>) {
         ret = lambda(archiveType_, get_string<archiveType_>());
         return ret;
-      } else if (takes_valid_archive_type<lambdaT>) {
+      }
+      else if (takes_valid_archive_type<lambdaT>) {
         const auto &archive = get<archiveType_>();
         std::cout << "Loop On: " << get_string<archiveType_>() << '\n';
         if constexpr (does_have_has_value<decltype(archive)>) {
           if (archive.has_value()) {
             ret = lambda(*archive);
           }
-        } else {
+        }
+        else {
           ret = lambda(archive);
         }
         return ret;
       }
-    } else {
+    }
+    else {
       return ret;
     }
   }

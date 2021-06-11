@@ -110,8 +110,9 @@ private:
   uint16_t            m_unknown3{};
 
 public:
-  constexpr Magic()                                             = default;
-  constexpr auto operator<=>(const Magic &right) const noexcept = default;
+  constexpr Magic() = default;
+  constexpr auto
+    operator<=>(const Magic &right) const noexcept = default;
   [[nodiscard]] constexpr auto
     name_offset() const noexcept
   {

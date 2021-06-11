@@ -28,8 +28,9 @@ private:
   std::uint8_t        m_attack_param{};
 
 public:
-  constexpr auto operator<=>(
-    const QuistisBlueMagicLimitBreakParam &right) const noexcept = default;
+  constexpr auto
+    operator<=>(
+      const QuistisBlueMagicLimitBreakParam &right) const noexcept = default;
   [[nodiscard]] constexpr auto
     battle_only_statuses() const noexcept
   {

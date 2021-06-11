@@ -51,7 +51,8 @@ public:
   {
     if constexpr (I == 0U) {
       return count();
-    } else if constexpr (I == 1U) {
+    }
+    else if constexpr (I == 1U) {
       return label();
     }
   }

@@ -44,11 +44,8 @@ public:
               const std::int64_t &    in_offset,
               const std::uint32_t &   in_size,
               const std::string_view &in_type)
-    : m_file_name(std::move(in_file_name)),
-      m_frames(in_frames),
-      m_offset(in_offset),
-      m_size(in_size),
-      m_type(in_type)
+    : m_file_name(std::move(in_file_name)), m_frames(in_frames),
+      m_offset(in_offset), m_size(in_size), m_type(in_type)
   {}
   /**
    * Get Output FileName

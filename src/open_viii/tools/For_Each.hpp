@@ -26,7 +26,8 @@ static constexpr void
         if (lambda(x, y)) {
           return;// short circuit
         }
-      } else {
+      }
+      else {
         lambda(x, y);
       }
     }
@@ -87,14 +88,14 @@ static void
   execute_on_directory(
     const std::filesystem::path &directory,
     UnaryOperationT              unary_function,
-    BinaryOperationT             binary_function =
-      true) requires((std::is_same_v<std::decay<BinaryOperationT>, bool>)
+    BinaryOperationT             binary_function
+    = true) requires((std::is_same_v<std::decay<BinaryOperationT>, bool>)
                      || (std::is_invocable_r_v<bool,
                                                BinaryOperationT,
                                                std::filesystem::path>))
 {
-  const std::filesystem::directory_options options =
-    std::filesystem::directory_options::skip_permission_denied;
+  const std::filesystem::directory_options options
+    = std::filesystem::directory_options::skip_permission_denied;
   std::ranges::for_each(
     std::filesystem::directory_iterator(directory, options),
     [&unary_function, &binary_function](const auto &item) {
@@ -103,9 +104,10 @@ static void
         if (!binary_function) {
           return;
         }
-      } else if constexpr (std::is_invocable_r_v<bool,
-                                                 BinaryOperationT,
-                                                 std::filesystem::path>) {
+      }
+      else if constexpr (std::is_invocable_r_v<bool,
+                                               BinaryOperationT,
+                                               std::filesystem::path>) {
         if (!binary_function(path)) {
           return;
         }
@@ -131,7 +133,9 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
     const lambdaT &                         lambda)
 {
   execute_on_directory(
-    dir, lambda, [&filenames, &extensions](const std::filesystem::path &path) {
+    dir,
+    lambda,
+    [&filenames, &extensions](const std::filesystem::path &path) {
       return std::filesystem::is_regular_file(path)
           && (std::ranges::empty(extensions)
               || (path.has_extension()
@@ -156,11 +160,12 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
     std::initializer_list<std::string_view> path_contains,
     const lambdaT &                         lambda)
 {
-  execute_on_directory(
-    dir, lambda, [&path_contains](const std::filesystem::path &path) {
-      return std::filesystem::is_directory(path)
-          && tools::i_find_any(path.string(), path_contains);
-    });
+  execute_on_directory(dir,
+                       lambda,
+                       [&path_contains](const std::filesystem::path &path) {
+                         return std::filesystem::is_directory(path)
+                             && tools::i_find_any(path.string(), path_contains);
+                       });
 }
 }// namespace open_viii::tools
 #endif// VIIIARCHIVE_FOR_EACH_HPP

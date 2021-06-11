@@ -192,8 +192,9 @@ public:
     const auto count         = std::ranges::size(buffer) / sizeof(map_type);
     const auto size_in_bytes = count * sizeof(map_type);
     m_tiles.resize(count);
-    std::memcpy(
-      std::ranges::data(m_tiles), std::ranges::data(buffer), size_in_bytes);
+    std::memcpy(std::ranges::data(m_tiles),
+                std::ranges::data(buffer),
+                size_in_bytes);
     if (sort_remove) {
       remove_invalid();
       sort_remove_duplicates();
@@ -207,13 +208,15 @@ public:
                bool                         shift       = true)
     : Map(tools::read_entire_file(path), sort_remove, shift)
   {}
-  template<std::invocable tile_funcT> explicit Map(tile_funcT tile_func)
+  template<std::invocable tile_funcT>
+  explicit Map(tile_funcT tile_func)
   {
     bool       on   = true;
     const auto push = [this, &on](auto item) {
       if constexpr (std::is_same_v<decltype(item), map_type>) {
         m_tiles.push_back(item);
-      } else {
+      }
+      else {
         on = false;
       }
     };
