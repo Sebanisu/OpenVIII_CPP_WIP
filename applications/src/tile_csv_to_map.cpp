@@ -18,14 +18,14 @@ template<typename T>
 void
   get_number(std::string_view num, T &result, int base = 10)
 {
-  [[maybe_unused]] auto data =
-    std::from_chars(num.data(), num.data() + num.size(), result, base);
+  [[maybe_unused]] auto data
+    = std::from_chars(num.data(), num.data() + num.size(), result, base);
 }
 template<typename T = std::int32_t, typename K>
-T
+auto
   out_num(K re_result)
 {
-  T index;
+  std::decay_t<T> index;
   get_number(re_result.to_view(), index);
   std::cout << +index << '\n';
   return index;
@@ -59,8 +59,8 @@ int
   auto       csv_path       = std::string_view(argv[1]);
 
   const auto tile_type_view = [&csv_path]() -> std::optional<std::string_view> {
-    if (auto [whole, tile_type_match] =
-          ctre::search<R"(\.([1-3])\.[cC][sS][vV])">(csv_path);
+    if (auto [whole, tile_type_match]
+        = ctre::search<R"(\.([1-3])\.[cC][sS][vV])">(csv_path);
         whole) {
       std::cout << tile_type_match.to_string()
                 << '\n';// using to_string here to force ctre to execute
@@ -77,8 +77,8 @@ int
     puts("Path doesn't exist");
     return EXIT_FAILURE;
   }
-  auto is =
-    std::fstream(std::string{ csv_path }, std::ios::in | std::ios::binary);
+  auto is
+    = std::fstream(std::string{ csv_path }, std::ios::in | std::ios::binary);
   [[maybe_unused]] std::string headers{};
   std::getline(is, headers);
   puts(headers.c_str());
@@ -184,11 +184,11 @@ int
                                         re_index,
                                         re_raw_hex,
                                         re_draw,
-                                        re_bpp,
+                                        re_depth,
                                         re_blend_mode,
-                                        re_blend_other,
-                                        re_layer,
-                                        re_texture_page,
+                                        re_blend,
+                                        re_layer_id,
+                                        re_texture_id,
                                         re_palette,
                                         re_animation,
                                         re_frame,
@@ -196,21 +196,34 @@ int
                                         re_source_y,
                                         re_x,
                                         re_y,
-                                        re_z] = results;
+                                        re_z]
+            = results;
+
+          tile = tile.with_palette_id(
+            out_num<decltype(tile.texture_id())>(re_palette_id));
+          tile = tile.with_texture_id(
+            out_num<decltype(tile.texture_id())>(re_texture_id));
+          if constexpr (open_viii::graphics::background::has_with_layer_id<
+                          decltype(tile)>) {
+            tile = tile.with_layer_id(
+              out_num<decltype(tile.layer_id())>(re_layer_id));
+          }
           tile = tile.with_draw(re_draw.to_view().at(0) == '1');
-          tile =
-            tile.with_blend(out_num<decltype(tile.blend())>(re_blend_other));
-          tile = tile.with_blend_mode([](const std::string_view sv) {
-            if (open_viii::tools::i_equals(sv, "Half Add"))
-              return open_viii::graphics::background::BlendModeT::half_add;
-            if (open_viii::tools::i_equals(sv, "Add"))
-              return open_viii::graphics::background::BlendModeT::add;
-            if (open_viii::tools::i_equals(sv, "Subtract"))
-              return open_viii::graphics::background::BlendModeT::subtract;
-            if (open_viii::tools::i_equals(sv, "Quarter Add"))
-              return open_viii::graphics::background::BlendModeT::quarter_add;
-            return open_viii::graphics::background::BlendModeT::none;
-          }(re_blend_mode.to_view()));
+          tile = tile.with_blend(out_num<decltype(tile.blend())>(re_blend));
+          if constexpr (open_viii::graphics::background::has_with_blend_mode<
+                          decltype(tile)>) {
+            tile = tile.with_blend_mode([](const std::string_view sv) {
+              if (open_viii::tools::i_equals(sv, "Half Add"))
+                return open_viii::graphics::background::BlendModeT::half_add;
+              if (open_viii::tools::i_equals(sv, "Add"))
+                return open_viii::graphics::background::BlendModeT::add;
+              if (open_viii::tools::i_equals(sv, "Subtract"))
+                return open_viii::graphics::background::BlendModeT::subtract;
+              if (open_viii::tools::i_equals(sv, "Quarter Add"))
+                return open_viii::graphics::background::BlendModeT::quarter_add;
+              return open_viii::graphics::background::BlendModeT::none;
+            }(re_blend_mode.to_view()));
+          }
           tile = tile.with_depth(
             [](const std::string_view sv) -> open_viii::graphics::BPPT {
               using namespace open_viii::graphics::literals;
@@ -232,7 +245,7 @@ int
                 return 4_bpp;
                 break;
               }
-            }(re_bpp.to_view()));
+            }(re_depth.to_view()));
 
           std::cout << tile.output_rectangle() << ' ' << tile.source_rectangle()
                     << ' ' << tile.z() << ' ' << tile.depth() << '\n';

@@ -53,5 +53,9 @@ public:
 };
 using Tile2 = TileCommon<impl_Tile2>;
 static_assert(sizeof(Tile2) == Tile2::EXPECTED_SIZE);
+static_assert(has_with_animation_state<Tile2>);
+static_assert(has_with_animation_id<Tile2>);
+static_assert(not has_with_blend_mode<Tile2>);
+static_assert(not has_with_layer_id<Tile2>);
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_impl_Tile2_HPP

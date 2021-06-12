@@ -64,12 +64,20 @@ int
                    .with_blend(1U)
                    .with_depth(8_bpp)
                    .with_draw(true)
-                   .with_layer_id(1U)
-                   .with_blend_mode(
-                     open_viii::graphics::background::BlendModeT::quarter_add)
-                   .with_animation_id(1U)
-                   .with_animation_state(1U);
-
+                   .with_palette_id(1U);
+          {
+            using T = decltype(tile);
+            using namespace open_viii::graphics::background;
+            if constexpr (has_with_layer_id<T>)
+              tile = tile.with_layer_id(1U);
+            if constexpr (has_with_blend_mode<T>)
+              tile = tile.with_blend_mode(
+                open_viii::graphics::background::BlendModeT::quarter_add);
+            if constexpr (has_with_animation_id<T>)
+              tile = tile.with_animation_id(1U);
+            if constexpr (has_with_animation_state<T>)
+              tile = tile.with_animation_state(1U);
+          }
           expect(eq(tile.source_x(), 1U));
           expect(eq(tile.source_y(), 2U));
           expect(eq(tile.x(), 3));

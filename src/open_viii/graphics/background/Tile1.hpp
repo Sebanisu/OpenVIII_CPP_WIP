@@ -48,6 +48,10 @@ public:
     operator<=>(const impl_Tile1 &) const = default;
 };
 using Tile1 = TileCommon<impl_Tile1>;
+static_assert(has_with_animation_state<Tile1>);
+static_assert(has_with_animation_id<Tile1>);
+static_assert(has_with_blend_mode<Tile1>);
+static_assert(has_with_layer_id<Tile1>);
 static_assert(sizeof(Tile1) == Tile1::EXPECTED_SIZE);
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_impl_Tile1_HPP

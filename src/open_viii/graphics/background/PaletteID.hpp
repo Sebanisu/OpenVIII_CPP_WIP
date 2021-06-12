@@ -24,32 +24,62 @@ namespace open_viii::graphics::background {
 struct PaletteID
 {
 private:
-  static constexpr std::uint16_t THIRTY_MASK{ 0b0000'0000'0011'1111U };
-  static constexpr std::uint16_t ID_MASK{ 0b0000'0011'1100'0000U };
-  static constexpr std::uint16_t ID_SHIFT{ 6U };
-  static constexpr std::uint16_t ZERO_MASK{ 0b1111'1100'0000'0000U };
-  static constexpr std::uint16_t ZERO_SHIFT{ 12U };
-  std::uint16_t                  m_data{};
+  enum : std::uint16_t
+  {
+    THIRTY_MASK         = 0b0000'0000'0011'1111U,
+    THIRTY_INVERSE_MASK = 0b1111'1111'1100'0000U,
+    ID_MASK             = 0b0000'0011'1100'0000U,
+    ID_INVERSE_MASK     = 0b1111'1100'0011'1111U,
+    ID_SHIFT            = 6U,
+    ZERO_MASK           = 0b1111'1100'0000'0000U,
+    ZERO_INVERSE_MASK   = 0b0000'0011'1111'1111U,
+    ZERO_SHIFT          = 12U,
+  };
+  std::uint16_t m_data{};
 
 public:
-  PaletteID()                                         = default;
-  constexpr auto operator<=>(const PaletteID &) const = default;
+  PaletteID() = default;
+  constexpr auto
+    operator<=>(const PaletteID &) const = default;
+  [[nodiscard]] auto
+    with_thirty(std::uint16_t in_thirty) const noexcept
+  {
+    auto t   = *this;
+    t.m_data = static_cast<std::uint16_t>((m_data & THIRTY_INVERSE_MASK)
+                                          | (in_thirty & THIRTY_MASK));
+    return t;
+  }
   [[nodiscard]] std::uint8_t
     thirty() const noexcept
   {
     return static_cast<std::uint8_t>(m_data & THIRTY_MASK);
   }
+
+  [[nodiscard]] auto
+    with_id(std::uint16_t in_id) const noexcept
+  {
+    auto t   = *this;
+    t.m_data = static_cast<std::uint16_t>((m_data & ID_INVERSE_MASK)
+                                          | ((in_id << ID_SHIFT) & ID_MASK));
+    return t;
+  }
   [[nodiscard]] std::uint8_t
     id() const noexcept
   {
-    return static_cast<std::uint8_t>(
-      static_cast<std::uint16_t>(m_data & ID_MASK) >> ID_SHIFT);
+    return static_cast<std::uint8_t>(m_data & ID_MASK >> ID_SHIFT);
+  }
+  [[nodiscard]] auto
+    with_zero(std::uint16_t in_zero) const noexcept
+  {
+    auto t   = *this;
+    t.m_data = static_cast<std::uint16_t>(
+      (m_data & ZERO_INVERSE_MASK) | ((in_zero << ZERO_SHIFT) & ZERO_MASK));
+    return t;
   }
   [[nodiscard]] std::uint8_t
     zero() const noexcept
   {
-    return static_cast<std::uint8_t>(
-      static_cast<std::uint16_t>(m_data & ZERO_MASK) >> ZERO_SHIFT);
+    return static_cast<std::uint8_t>(m_data & ZERO_MASK >> ZERO_SHIFT);
   }
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 2U };
 };

@@ -9,14 +9,16 @@
 #include <compare>
 #include <cstring>
 namespace open_viii::graphics::background {
-enum class TileCommonConstants : std::uint16_t {
+enum class TileCommonConstants : std::uint16_t
+{
 
   height             = 16U,
   width              = height,
   texture_page_width = 128U,
   area               = height * width,
 };
-template<typename tileT> struct TileCommon : tileT
+template<typename tileT>
+struct TileCommon : tileT
 {
 private:
   using tileT::m_animation_id;
@@ -37,8 +39,9 @@ private:
     copy_tile(const std::vector<char> &buffer)
   {
     auto tile = this_type{};
-    std::memcpy(
-      &tile, std::data(buffer), std::min(sizeof(tileT), std::size(buffer)));
+    std::memcpy(&tile,
+                std::data(buffer),
+                std::min(sizeof(tileT), std::size(buffer)));
     return tile;
   }
 
@@ -49,7 +52,8 @@ public:
   {}
   using tileT::EXPECTED_SIZE;
   using tileT::FORCE_TYPE_VALUES;
-  auto operator<=>(const this_type &) const = default;
+  auto
+    operator<=>(const this_type &) const = default;
   template<typename return_type = constants_type>
   [[nodiscard]] static constexpr return_type
     height() noexcept
@@ -199,6 +203,13 @@ public:
   {
     return m_tex_id_buffer.draw();
   }
+  [[nodiscard]] constexpr this_type
+    with_palette_id(decltype(m_palette_id.id()) in_palette_id) const noexcept
+  {
+    auto out       = *this;
+    out.palette_id = m_palette_id.with_id(in_palette_id);
+    return out;
+  }
   [[nodiscard]] constexpr auto
     palette_id() const noexcept
   {
@@ -230,11 +241,10 @@ public:
   }
   [[nodiscard]] constexpr this_type
     with_layer_id(decltype(m_layer_id.id()) in_layer_id) const noexcept
+    requires(!std::is_const_v<decltype(tileT::m_layer_id)>)
   {
-    auto out = *this;
-    if constexpr (!std::is_const_v<decltype(out.m_layer_id)>) {
-      out.m_layer_id = m_layer_id.with_id(in_layer_id);
-    }
+    auto out       = *this;
+    out.m_layer_id = m_layer_id.with_id(in_layer_id);
     return out;
   }
   [[nodiscard]] constexpr auto
@@ -244,11 +254,10 @@ public:
   }
   [[nodiscard]] constexpr this_type
     with_blend_mode(decltype(m_blend_mode) in_blend_mode) const noexcept
+    requires(!std::is_const_v<decltype(tileT::m_blend_mode)>)
   {
-    auto out = *this;
-    if constexpr (!std::is_const_v<decltype(out.m_blend_mode)>) {
-      out.m_blend_mode = in_blend_mode;
-    }
+    auto out         = *this;
+    out.m_blend_mode = in_blend_mode;
     return out;
   }
   [[nodiscard]] constexpr auto
@@ -258,11 +267,10 @@ public:
   }
   [[nodiscard]] constexpr this_type
     with_animation_id(decltype(m_animation_id) in_animation_id) const noexcept
+    requires(!std::is_const_v<decltype(tileT::m_animation_id)>)
   {
-    auto out = *this;
-    if constexpr (!std::is_const_v<decltype(out.m_animation_id)>) {
-      out.m_animation_id = in_animation_id;
-    }
+    auto out           = *this;
+    out.m_animation_id = in_animation_id;
     return out;
   }
   [[nodiscard]] constexpr auto
@@ -273,11 +281,10 @@ public:
   [[nodiscard]] constexpr this_type
     with_animation_state(
       decltype(m_animation_state) in_animation_state) const noexcept
+    requires(!std::is_const_v<decltype(tileT::m_animation_state)>)
   {
-    auto out = *this;
-    if constexpr (!std::is_const_v<decltype(out.m_animation_state)>) {
-      out.m_animation_state = in_animation_state;
-    }
+    auto out              = *this;
+    out.m_animation_state = in_animation_state;
     return out;
   }
   [[nodiscard]] constexpr auto
@@ -296,10 +303,35 @@ public:
   [[nodiscard]] constexpr auto
     output_rectangle() const noexcept
   {
-    return Rectangle<output_type>{
-      m_xy.x(), m_xy.y(), width<output_type>(), height<output_type>()
-    };
+    return Rectangle<output_type>{ m_xy.x(),
+                                   m_xy.y(),
+                                   width<output_type>(),
+                                   height<output_type>() };
   }
+};
+template<typename T>
+concept has_with_layer_id = requires(std::decay_t<T> t)
+{
+  t = t.with_layer_id(1U);
+};
+
+template<typename T>
+concept has_with_blend_mode = requires(std::decay_t<T> t)
+{
+  t = t.with_blend_mode(
+    open_viii::graphics::background::BlendModeT::quarter_add);
+};
+
+template<typename T>
+concept has_with_animation_id = requires(std::decay_t<T> t)
+{
+  t = t.with_animation_id(1U);
+};
+
+template<typename T>
+concept has_with_animation_state = requires(std::decay_t<T> t)
+{
+  t = t.with_animation_state(1U);
 };
 }// namespace open_viii::graphics::background
 #endif// OPENVIII_CPP_WIP_TILECOMMON_HPP
