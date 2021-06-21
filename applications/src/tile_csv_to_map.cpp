@@ -133,6 +133,9 @@ int
     puts(line.c_str());
     static constexpr auto csv_pattern = ctll::fixed_string{
       R"vv((\d+),"0x([0-9A-F]+)",(\d+),(\d+),"([A-Za-z ]+)",(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(-?\d+),(-?\d+),(\d+))vv"
+      //(?:(?<number>-?\d+),|"0x(?<hex>[0-9A-F]+)",|"(?<string>[A-Za-z ]+)",)
+      //-?\d+(?=,)|(?!"0x)[0-9A-F]+(?=",)|(?!")[^"]+(?=",)
+      //"0x([0-9A-Fa-f]+)",|"([^"]+)",|-?(\d+),
     };
     const auto results = ctre::search<csv_pattern>(line);
 
@@ -140,58 +143,23 @@ int
       puts("line didn't match pattern");
       exit(EXIT_FAILURE);
     }
-    //                [re_whole,
-    //                re_index,
-    //                re_raw_hex,
-    //                re_draw,
-    //                re_bpp,
-    //                re_blend,
-    //                re_blend2,
-    //                re_layer,
-    //                re_texture_page,
-    //                re_palette,
-    //                re_animation,
-    //                re_frame,
-    //                re_source_x,
-    //                re_source_y,
-    //                re_x,
-    //                re_y,
-    //                re_z]
-    out_num<std::int32_t>(results.get<1>());
-    //              << raw_hex.to_view() << '\n'
-    //              << draw.to_view() << '\n'
-    //              << bpp.to_view() << '\n'
-    //              << blend.to_view() << '\n'
-    //              << blend2.to_view() << '\n'
-    //              << layer.to_view() << '\n'
-    //              << texture_page.to_view() << '\n'
-    //              << palette.to_view() << '\n'
-    //              << animation.to_view() << '\n'
-    //              << frame.to_view() << '\n'
-    //              << source_x.to_view() << '\n'
-    //              << source_y.to_view() << '\n'
-    //              << x.to_view() << '\n'
-    //              << y.to_view() << '\n'
-    //              << z.to_view() << '\n';
-
     const auto raw_bytes = out_hex_to_vector(results.get<2>());
-    auto       vtile     = get_tile(raw_bytes);
+    auto       variant_tile = get_tile(raw_bytes);
     std::visit(
       [&](auto &tile) {
-        if constexpr (!std::is_same_v<std::decay_t<decltype(tile)>,
-                                      std::monostate>) {
-          [[maybe_unused]] const auto &[re_whole,
-                                        re_index,
-                                        re_raw_hex,
+        if constexpr (!open_viii::is_monostate<decltype(tile)>) {
+          [[maybe_unused]] const auto &[re_whole_line,
+                                        re_index, //index where it would be stored.
+                                        re_raw_hex, //original tile in hex
                                         re_draw,
                                         re_depth,
                                         re_blend_mode,
                                         re_blend,
                                         re_layer_id,
                                         re_texture_id,
-                                        re_palette,
-                                        re_animation,
-                                        re_frame,
+                                        re_palette_id,
+                                        re_animation_id,
+                                        re_animation_state,
                                         re_source_x,
                                         re_source_y,
                                         re_x,
@@ -199,8 +167,25 @@ int
                                         re_z]
             = results;
 
+          tile = tile.with_z(out_num<decltype(tile.z())>(re_z));
+          tile = tile.with_y(out_num<decltype(tile.y())>(re_y));
+          tile = tile.with_x(out_num<decltype(tile.x())>(re_x));
+          tile = tile.with_source_y(
+            out_num<decltype(tile.source_y())>(re_source_y));
+          tile = tile.with_source_x(
+            out_num<decltype(tile.source_x())>(re_source_x));
+          if constexpr (open_viii::graphics::background::
+                          has_with_animation_state<decltype(tile)>) {
+            tile = tile.with_animation_state(
+              out_num<decltype(tile.animation_state())>(re_animation_state));
+          }
+          if constexpr (open_viii::graphics::background::has_with_animation_id<
+                          decltype(tile)>) {
+            tile = tile.with_animation_id(
+              out_num<decltype(tile.animation_id())>(re_animation_id));
+          }
           tile = tile.with_palette_id(
-            out_num<decltype(tile.texture_id())>(re_palette_id));
+            out_num<decltype(tile.palette_id())>(re_palette_id));
           tile = tile.with_texture_id(
             out_num<decltype(tile.texture_id())>(re_texture_id));
           if constexpr (open_viii::graphics::background::has_with_layer_id<
@@ -251,9 +236,9 @@ int
                     << ' ' << tile.z() << ' ' << tile.depth() << '\n';
         }
       },
-      vtile);
+      variant_tile);
 
-    return vtile;
+    return variant_tile;
     // return std::monostate{};
   });
   return EXIT_SUCCESS;
