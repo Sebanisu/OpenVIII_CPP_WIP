@@ -15,20 +15,34 @@
 #include <variant>
 #include <vector>
 template<typename T>
-void
-  get_number(std::string_view num, T &result, int base = 10)
+requires(std::integral<std::decay_t<T>>)
+  std::optional<std::decay_t<T>> get_number(const std::string_view num,
+                                            const int              base = 10)
+noexcept
 {
-  [[maybe_unused]] auto data
-    = std::from_chars(num.data(), num.data() + num.size(), result, base);
+  std::decay_t<T>        return_value{};
+  std::from_chars_result data
+    = std::from_chars(num.data(), num.data() + num.size(), return_value, base);
+  if (data.ec == std::errc{})
+    return return_value;
+  // todo maybe log error here.
+  return std::nullopt;
 }
-template<typename T = std::int32_t, typename K>
-auto
-  out_num(K re_result)
+
+template<typename T>
+requires(std::floating_point<std::decay_t<T>>)
+  std::optional<std::decay_t<T>> get_number(const std::string_view  num,
+                                            const std::chars_format fmt
+                                            = std::chars_format::general)
+noexcept
 {
-  std::decay_t<T> index;
-  get_number(re_result.to_view(), index);
-  std::cout << +index << '\n';
-  return index;
+  std::decay_t<T>        return_value{};
+  std::from_chars_result data
+    = std::from_chars(num.data(), num.data() + num.size(), return_value, fmt);
+  if (data.ec == std::errc{})
+    return return_value;
+  // todo maybe log error here.
+  return std::nullopt;
 }
 template<typename K>
 std::vector<char>
@@ -39,11 +53,14 @@ std::vector<char>
   vector.reserve(view.size() / 2U);
   std::cout << view << '\n';
   for (std::size_t i = 0; i != view.size(); i += 2) {
-    std::uint8_t value{};
-    auto         sv_num = view.substr(i, 2U);
-    get_number(sv_num, value, 16);
-    std::cout << sv_num << " >> " << static_cast<int>(value) << std::endl;
-    vector.push_back(static_cast<char>(value));
+    auto       sv_num = view.substr(i, 2U);
+    const auto value  = get_number<std::uint8_t>(sv_num, 16);
+    if (value.has_value()) {
+      std::cout << sv_num << " >> " << static_cast<int>(*value) << std::endl;
+      vector.push_back(static_cast<char>(*value));
+    }
+    else
+      break;
   }
   return vector;
 }
@@ -123,6 +140,13 @@ int
     }
     return std::monostate{};
   };
+  enum class type
+  {
+    unknown,
+    hex,
+    string,
+    integer
+  };
   const auto map = get_map([&get_tile, &is]() -> variant_tiles {
     // read line and update data.
     // if(vtile.index() == 4) return vtile;
@@ -143,58 +167,80 @@ int
       puts("line didn't match pattern");
       exit(EXIT_FAILURE);
     }
-    const auto raw_bytes = out_hex_to_vector(results.get<2>());
+    const auto raw_bytes    = out_hex_to_vector(results.get<2>());
     auto       variant_tile = get_tile(raw_bytes);
     std::visit(
       [&](auto &tile) {
         if constexpr (!open_viii::is_monostate<decltype(tile)>) {
-          [[maybe_unused]] const auto &[re_whole_line,
-                                        re_index, //index where it would be stored.
-                                        re_raw_hex, //original tile in hex
-                                        re_draw,
-                                        re_depth,
-                                        re_blend_mode,
-                                        re_blend,
-                                        re_layer_id,
-                                        re_texture_id,
-                                        re_palette_id,
-                                        re_animation_id,
-                                        re_animation_state,
-                                        re_source_x,
-                                        re_source_y,
-                                        re_x,
-                                        re_y,
-                                        re_z]
+          [[maybe_unused]] const auto
+            &[re_whole_line,
+              re_index,  // index where it would be stored.
+              re_raw_hex,// original tile in hex
+              re_draw,
+              re_depth,
+              re_blend_mode,
+              re_blend,
+              re_layer_id,
+              re_texture_id,
+              re_palette_id,
+              re_animation_id,
+              re_animation_state,
+              re_source_x,
+              re_source_y,
+              re_x,
+              re_y,
+              re_z]
             = results;
-
-          tile = tile.with_z(out_num<decltype(tile.z())>(re_z));
-          tile = tile.with_y(out_num<decltype(tile.y())>(re_y));
-          tile = tile.with_x(out_num<decltype(tile.x())>(re_x));
-          tile = tile.with_source_y(
-            out_num<decltype(tile.source_y())>(re_source_y));
-          tile = tile.with_source_x(
-            out_num<decltype(tile.source_x())>(re_source_x));
+          if (const auto num = get_number<decltype(tile.z())>(re_z);
+              num.has_value())
+            tile = tile.with_z(*num);
+          if (const auto num = get_number<decltype(tile.y())>(re_y);
+              num.has_value())
+            tile = tile.with_y(*num);
+          if (const auto num = get_number<decltype(tile.x())>(re_x);
+              num.has_value())
+            tile = tile.with_x(*num);
+          if (const auto num
+              = get_number<decltype(tile.source_y())>(re_source_y);
+              num.has_value())
+            tile = tile.with_source_y(*num);
+          if (const auto num
+              = get_number<decltype(tile.source_x())>(re_source_x);
+              num.has_value())
+            tile = tile.with_source_x(*num);
           if constexpr (open_viii::graphics::background::
                           has_with_animation_state<decltype(tile)>) {
-            tile = tile.with_animation_state(
-              out_num<decltype(tile.animation_state())>(re_animation_state));
+            if (const auto num = get_number<decltype(tile.animation_state())>(
+                  re_animation_state);
+                num.has_value())
+              tile = tile.with_animation_state(*num);
           }
           if constexpr (open_viii::graphics::background::has_with_animation_id<
                           decltype(tile)>) {
-            tile = tile.with_animation_id(
-              out_num<decltype(tile.animation_id())>(re_animation_id));
+            if (const auto num
+                = get_number<decltype(tile.animation_id())>(re_animation_id);
+                num.has_value())
+              tile = tile.with_animation_id(*num);
           }
-          tile = tile.with_palette_id(
-            out_num<decltype(tile.palette_id())>(re_palette_id));
-          tile = tile.with_texture_id(
-            out_num<decltype(tile.texture_id())>(re_texture_id));
+          if (const auto num
+              = get_number<decltype(tile.palette_id())>(re_palette_id);
+              num.has_value())
+            tile = tile.with_palette_id(*num);
+          if (const auto num
+              = get_number<decltype(tile.texture_id())>(re_texture_id);
+              num.has_value())
+            tile = tile.with_texture_id(*num);
           if constexpr (open_viii::graphics::background::has_with_layer_id<
                           decltype(tile)>) {
-            tile = tile.with_layer_id(
-              out_num<decltype(tile.layer_id())>(re_layer_id));
+            if (const auto num
+                = get_number<decltype(tile.layer_id())>(re_layer_id);
+                num.has_value())
+              tile = tile.with_layer_id(*num);
           }
           tile = tile.with_draw(re_draw.to_view().at(0) == '1');
-          tile = tile.with_blend(out_num<decltype(tile.blend())>(re_blend));
+          if (const auto num = get_number<decltype(tile.blend())>(re_blend);
+              num.has_value())
+            tile = tile.with_blend(*num);
           if constexpr (open_viii::graphics::background::has_with_blend_mode<
                           decltype(tile)>) {
             tile = tile.with_blend_mode([](const std::string_view sv) {
@@ -232,8 +278,10 @@ int
               }
             }(re_depth.to_view()));
 
-          std::cout << tile.output_rectangle() << ' ' << tile.source_rectangle()
-                    << ' ' << tile.z() << ' ' << tile.depth() << '\n';
+          std::cout << "Source: " << tile.source_rectangle()
+                    << ", Output: " << tile.output_rectangle()
+                    << ", Z: " << tile.z() << ", Depth: " << tile.depth()
+                    << '\n';
         }
       },
       variant_tile);
