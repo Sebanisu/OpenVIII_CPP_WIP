@@ -19,6 +19,7 @@
 #include <string_view>
 #include <type_traits>
 #include <vector>
+#include <variant>
 namespace open_viii {
 template<typename T>
 concept Number = std::floating_point<T> || std::integral<T>;
@@ -183,6 +184,7 @@ concept Foreach_Archive_Lambda =
 template<typename T>
 concept is_insertable_or_ostream = tl::concepts::is_contiguous_with_insert<
   T> || std::is_base_of_v<std::ostream, std::decay_t<T>>;
-
+template<typename T>
+concept is_monostate = std::same_as<std::decay_t<T>,std::monostate>;
 }// namespace open_viii
 #endif// VIIIARCHIVE_CONCEPTS_HPP
