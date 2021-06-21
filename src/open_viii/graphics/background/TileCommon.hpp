@@ -207,7 +207,7 @@ public:
     with_palette_id(decltype(m_palette_id.id()) in_palette_id) const noexcept
   {
     auto out       = *this;
-    out.palette_id = m_palette_id.with_id(in_palette_id);
+    out.m_palette_id = m_palette_id.with_id(in_palette_id);
     return out;
   }
   [[nodiscard]] constexpr auto
@@ -241,7 +241,7 @@ public:
   }
   [[nodiscard]] constexpr this_type
     with_layer_id(decltype(m_layer_id.id()) in_layer_id) const noexcept
-    requires(!std::is_const_v<decltype(tileT::m_layer_id)>)
+    requires(!std::is_const_v<decltype(this_type::m_layer_id)>)
   {
     auto out       = *this;
     out.m_layer_id = m_layer_id.with_id(in_layer_id);
@@ -254,7 +254,7 @@ public:
   }
   [[nodiscard]] constexpr this_type
     with_blend_mode(decltype(m_blend_mode) in_blend_mode) const noexcept
-    requires(!std::is_const_v<decltype(tileT::m_blend_mode)>)
+    requires(!std::is_const_v<decltype(this_type::m_blend_mode)>)
   {
     auto out         = *this;
     out.m_blend_mode = in_blend_mode;
@@ -267,7 +267,7 @@ public:
   }
   [[nodiscard]] constexpr this_type
     with_animation_id(decltype(m_animation_id) in_animation_id) const noexcept
-    requires(!std::is_const_v<decltype(tileT::m_animation_id)>)
+    requires(!std::is_const_v<decltype(this_type::m_animation_id)>)
   {
     auto out           = *this;
     out.m_animation_id = in_animation_id;
@@ -281,7 +281,7 @@ public:
   [[nodiscard]] constexpr this_type
     with_animation_state(
       decltype(m_animation_state) in_animation_state) const noexcept
-    requires(!std::is_const_v<decltype(tileT::m_animation_state)>)
+    requires(!std::is_const_v<decltype(this_type::m_animation_state)>)
   {
     auto out              = *this;
     out.m_animation_state = in_animation_state;
