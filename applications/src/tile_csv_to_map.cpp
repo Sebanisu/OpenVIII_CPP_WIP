@@ -329,5 +329,10 @@ int
 
     return variant_tile;
   });
+  std::visit(
+    [&csv_path](const auto &m) {
+      m.save_map(csv_path);
+    },
+    map);
   return EXIT_SUCCESS;
 }
