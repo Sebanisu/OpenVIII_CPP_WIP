@@ -56,17 +56,18 @@ public:
   }
 
   [[nodiscard]] auto
-    with_id(std::uint16_t in_id) const noexcept
+    with_id(std::uint8_t in_id) const noexcept
   {
+
     auto t   = *this;
-    t.m_data = static_cast<std::uint16_t>((m_data & ID_INVERSE_MASK)
-                                          | ((in_id << ID_SHIFT) & ID_MASK));
+    t.m_data = static_cast<std::uint16_t>(
+      (m_data & ID_INVERSE_MASK) | ((in_id << ID_SHIFT) & ID_MASK));
     return t;
   }
   [[nodiscard]] std::uint8_t
     id() const noexcept
   {
-    return static_cast<std::uint8_t>(m_data & ID_MASK >> ID_SHIFT);
+    return static_cast<std::uint8_t>((m_data & ID_MASK) >> ID_SHIFT);
   }
   [[nodiscard]] auto
     with_zero(std::uint16_t in_zero) const noexcept
@@ -79,7 +80,11 @@ public:
   [[nodiscard]] std::uint8_t
     zero() const noexcept
   {
-    return static_cast<std::uint8_t>(m_data & ZERO_MASK >> ZERO_SHIFT);
+    return static_cast<std::uint8_t>((m_data & ZERO_MASK) >> ZERO_SHIFT);
+  }
+  [[nodiscard]] operator std::uint16_t() const noexcept
+  {
+    return m_data;
   }
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 2U };
 };
