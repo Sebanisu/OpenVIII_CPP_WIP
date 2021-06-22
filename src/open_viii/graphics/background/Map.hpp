@@ -23,6 +23,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <variant>
+#include "tl/write.hpp"
 namespace open_viii::graphics::background {
 template<typename map_type = Tile1>
 requires(
@@ -334,6 +335,17 @@ public:
           });
       },
       (path.parent_path() / path.stem()).string() + ".csv");
+  }
+  void
+    save_map(const std::string_view &in_path) const
+  {
+    auto path = std::filesystem::path(in_path);
+    tools::write_buffer(
+      [this](std::ostream &os) {
+        for(const auto & tile : m_tiles)
+        tl::write::append(os,tile);
+      },
+      (path.parent_path() / path.stem()).string() + ".map");
   }
   //  [[nodiscard]] auto used_depth_and_palette() const
   //  {
