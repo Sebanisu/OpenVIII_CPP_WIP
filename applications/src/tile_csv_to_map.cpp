@@ -51,12 +51,10 @@ std::vector<char>
   std::string_view  view = re_result.to_view();
   std::vector<char> vector;
   vector.reserve(view.size() / 2U);
-  std::cout << view << '\n';
   for (std::size_t i = 0; i != view.size(); i += 2) {
     auto       sv_num = view.substr(i, 2U);
     const auto value  = get_number<std::uint8_t>(sv_num, 16);
     if (value.has_value()) {
-      std::cout << sv_num << " >> " << static_cast<int>(*value) << std::endl;
       vector.push_back(static_cast<char>(*value));
     }
     else
@@ -64,6 +62,35 @@ std::vector<char>
   }
   return vector;
 }
+
+// enum class lex_type
+//{
+//   unknown,
+//   hex,
+//   string,
+//   number,
+// };
+// template<typename lambdaT>
+// constexpr void
+//   parse_csv_row(const std::string_view input, lambdaT lambda)
+//{
+//   using lex_pair = std::pair<lex_type, std::string_view>;
+//   constexpr auto csv_pattern2
+//     = ctll::fixed_string{ R"vv("0x([0-9A-Fa-f]+)",|"([^"]+)",|-?(\d+),)vv" };
+//   for (const auto &match : ctre::range<csv_pattern2>(input)) {
+//     const auto &[m, hex, string, number] = match;
+//     if (!m)
+//       continue;
+//     if (hex)
+//       lambda(lex_pair{ lex_type::hex, hex });
+//     else if (string)
+//       lambda(lex_pair{ lex_type::string, string });
+//     else if (number)
+//       lambda(lex_pair{ lex_type::number, number });
+//     else
+//       lambda(lex_pair{});
+//   }
+// }
 int
   main([[maybe_unused]] const int         argc,
        [[maybe_unused]] const char *const argv[])
@@ -140,13 +167,7 @@ int
     }
     return std::monostate{};
   };
-  enum class type
-  {
-    unknown,
-    hex,
-    string,
-    integer
-  };
+
   const auto map = get_map([&get_tile, &is]() -> variant_tiles {
     // read line and update data.
     // if(vtile.index() == 4) return vtile;
@@ -154,6 +175,29 @@ int
     std::getline(is, line);
     if (std::empty(line))
       return std::monostate();
+    //    parse_csv_row(
+    //      line,
+    //      [x = size_t{ 0 }](
+    //        const std::pair<lex_type, std::string_view> &value) mutable {
+    //        std::cout << x << "\t";
+    //        switch (value.first) {
+    //        case lex_type::hex:
+    //          std::cout << "hex\t";
+    //          break;
+    //        case lex_type::string:
+    //          std::cout << "string\t";
+    //          break;
+    //        case lex_type::number:
+    //          std::cout << "number\t";
+    //          break;
+    //        case lex_type::unknown:
+    //          ++x;
+    //          return;
+    //          break;
+    //        }
+    //        std::cout << value.second << '\n';
+    //        ++x;
+    //      });
     puts(line.c_str());
     static constexpr auto csv_pattern = ctll::fixed_string{
       R"vv((\d+),"0x([0-9A-F]+)",(\d+),(\d+),"([A-Za-z ]+)",(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(-?\d+),(-?\d+),(\d+))vv"
@@ -191,6 +235,7 @@ int
               re_y,
               re_z]
             = results;
+
           if (const auto num = get_number<decltype(tile.z())>(re_z);
               num.has_value())
             tile = tile.with_z(*num);
@@ -208,6 +253,18 @@ int
               = get_number<decltype(tile.source_x())>(re_source_x);
               num.has_value())
             tile = tile.with_source_x(*num);
+          if (const auto num
+              = get_number<decltype(tile.palette_id())>(re_palette_id);
+              num.has_value())
+            tile = tile.with_palette_id(*num);
+          if (const auto num
+              = get_number<decltype(tile.texture_id())>(re_texture_id);
+              num.has_value())
+            tile = tile.with_texture_id(*num);
+          tile = tile.with_draw(re_draw.to_view().at(0) == '1');
+          if (const auto num = get_number<decltype(tile.blend())>(re_blend);
+              num.has_value())
+            tile = tile.with_blend(*num);
           if constexpr (open_viii::graphics::background::
                           has_with_animation_state<decltype(tile)>) {
             if (const auto num = get_number<decltype(tile.animation_state())>(
@@ -222,14 +279,6 @@ int
                 num.has_value())
               tile = tile.with_animation_id(*num);
           }
-          if (const auto num
-              = get_number<decltype(tile.palette_id())>(re_palette_id);
-              num.has_value())
-            tile = tile.with_palette_id(*num);
-          if (const auto num
-              = get_number<decltype(tile.texture_id())>(re_texture_id);
-              num.has_value())
-            tile = tile.with_texture_id(*num);
           if constexpr (open_viii::graphics::background::has_with_layer_id<
                           decltype(tile)>) {
             if (const auto num
@@ -237,10 +286,7 @@ int
                 num.has_value())
               tile = tile.with_layer_id(*num);
           }
-          tile = tile.with_draw(re_draw.to_view().at(0) == '1');
-          if (const auto num = get_number<decltype(tile.blend())>(re_blend);
-              num.has_value())
-            tile = tile.with_blend(*num);
+
           if constexpr (open_viii::graphics::background::has_with_blend_mode<
                           decltype(tile)>) {
             tile = tile.with_blend_mode([](const std::string_view sv) {
@@ -258,24 +304,19 @@ int
           tile = tile.with_depth(
             [](const std::string_view sv) -> open_viii::graphics::BPPT {
               using namespace open_viii::graphics::literals;
-              switch (sv.at(0)) {
-              case '4':
-              default:
-                return 4_bpp;
-              case '8':
-                return 8_bpp;
-                break;
-              case '1':
-                if (sv.at(1) == '6')
+              if (const auto num = get_number<int>(sv); num.has_value()) {
+                switch (*num) {
+                case 4:
+                  break;
+                case 8:
+                  return 8_bpp;
+                case 16:
                   return 16_bpp;
-                return 4_bpp;
-                break;
-              case '2':
-                if (sv.at(1) == '4')
+                case 24:
                   return 24_bpp;
-                return 4_bpp;
-                break;
+                }
               }
+              return 4_bpp;
             }(re_depth.to_view()));
 
           std::cout << "Source: " << tile.source_rectangle()
@@ -287,7 +328,6 @@ int
       variant_tile);
 
     return variant_tile;
-    // return std::monostate{};
   });
   return EXIT_SUCCESS;
 }
