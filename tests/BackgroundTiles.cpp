@@ -123,6 +123,28 @@ int
         };
       },
       tile_var);
+    {
+      using namespace boost::ut;
+      auto tile1 = open_viii::graphics::background::Tile1{};
+      memcpy(&tile1,
+             "\x08\x00\x68\x00\x04\x00\x34\x00\x40\x3E\xD0\xC0\x00\x01\xFF\x00",
+             sizeof(tile1));
+      using namespace open_viii::graphics::literals;
+      auto tile1_gamma
+        = tile1.with_source_xy({ 208, 192 })
+            .with_xy({ 8, 104 })
+            .with_z(4)
+            .with_depth(4_bpp)
+            .with_palette_id(9)
+            .with_texture_id(4)
+            .with_layer_id(0)
+            .with_blend_mode(open_viii::graphics::background::BlendModeT::add)
+            .with_blend(1)
+            .with_animation_id(255)
+            .with_animation_state(0)
+            .with_draw(1);
+      expect(eq(tile1, tile1_gamma));
+    }
   };
   std::apply(
     [](auto... values) {

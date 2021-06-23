@@ -8,12 +8,21 @@
 #include <ctre.hpp>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <variant>
 #include <vector>
+void
+  save_map(const std::variant<open_viii::graphics::background::Map<
+                                open_viii::graphics::background::Tile1>,
+                              open_viii::graphics::background::Map<
+                                open_viii::graphics::background::Tile2>,
+                              open_viii::graphics::background::Map<
+                                open_viii::graphics::background::Tile3>> &map,
+           const std::basic_string_view<char> &csv_path);
 template<typename T>
 requires(std::integral<std::decay_t<T>>)
   std::optional<std::decay_t<T>> get_number(const std::string_view num,
@@ -26,6 +35,15 @@ noexcept
   if (data.ec == std::errc{})
     return return_value;
   // todo maybe log error here.
+  return std::nullopt;
+}
+template<>
+std::optional<bool>
+  get_number<bool>(const std::string_view num, const int base) noexcept
+{
+  if(auto i = get_number<std::uint8_t>(num, base);i.has_value())
+    return *i != 0;
+  else
   return std::nullopt;
 }
 
@@ -62,7 +80,13 @@ std::vector<char>
   }
   return vector;
 }
-
+template<typename T, typename retT>
+void
+  if_num_assign(retT &tile, std::string_view re, std::function<retT(T)> with)
+{
+  if (const auto num = get_number<T>(re); num.has_value())
+    tile = with(*num);
+}
 // enum class lex_type
 //{
 //   unknown,
@@ -200,7 +224,7 @@ int
     //      });
     puts(line.c_str());
     static constexpr auto csv_pattern = ctll::fixed_string{
-      R"vv((\d+),"0x([0-9A-F]+)",(\d+),(\d+),"([A-Za-z ]+)",(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(-?\d+),(-?\d+),(\d+))vv"
+      R"vv((\d+),"?0x([0-9A-F]+)"?,(\d+),(\d+),"?([A-Za-z ]+)"?,(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(-?\d+),(-?\d+),(\d+))vv"
       //(?:(?<number>-?\d+),|"0x(?<hex>[0-9A-F]+)",|"(?<string>[A-Za-z ]+)",)
       //-?\d+(?=,)|(?!"0x)[0-9A-F]+(?=",)|(?!")[^"]+(?=",)
       //"0x([0-9A-Fa-f]+)",|"([^"]+)",|-?(\d+),
@@ -235,58 +259,28 @@ int
               re_y,
               re_z]
             = results;
-
-          if (const auto num = get_number<decltype(tile.z())>(re_z);
-              num.has_value())
-            tile = tile.with_z(*num);
-          if (const auto num = get_number<decltype(tile.y())>(re_y);
-              num.has_value())
-            tile = tile.with_y(*num);
-          if (const auto num = get_number<decltype(tile.x())>(re_x);
-              num.has_value())
-            tile = tile.with_x(*num);
-          if (const auto num
-              = get_number<decltype(tile.source_y())>(re_source_y);
-              num.has_value())
-            tile = tile.with_source_y(*num);
-          if (const auto num
-              = get_number<decltype(tile.source_x())>(re_source_x);
-              num.has_value())
-            tile = tile.with_source_x(*num);
-          if (const auto num
-              = get_number<decltype(tile.palette_id())>(re_palette_id);
-              num.has_value())
-            tile = tile.with_palette_id(*num);
-          if (const auto num
-              = get_number<decltype(tile.texture_id())>(re_texture_id);
-              num.has_value())
-            tile = tile.with_texture_id(*num);
-          tile = tile.with_draw(re_draw.to_view().at(0) == '1');
-          if (const auto num = get_number<decltype(tile.blend())>(re_blend);
-              num.has_value())
-            tile = tile.with_blend(*num);
-          if constexpr (open_viii::graphics::background::
-                          has_with_animation_state<decltype(tile)>) {
-            if (const auto num = get_number<decltype(tile.animation_state())>(
-                  re_animation_state);
-                num.has_value())
-              tile = tile.with_animation_state(*num);
-          }
-          if constexpr (open_viii::graphics::background::has_with_animation_id<
-                          decltype(tile)>) {
-            if (const auto num
-                = get_number<decltype(tile.animation_id())>(re_animation_id);
-                num.has_value())
-              tile = tile.with_animation_id(*num);
-          }
-          if constexpr (open_viii::graphics::background::has_with_layer_id<
-                          decltype(tile)>) {
-            if (const auto num
-                = get_number<decltype(tile.layer_id())>(re_layer_id);
-                num.has_value())
-              tile = tile.with_layer_id(*num);
-          }
-
+#define common_code(arg)                                                       \
+  if (const auto num = get_number<decltype(tile.arg())>(re_##arg);             \
+      num.has_value())                                                         \
+  tile = tile.with_##arg(*num)
+#define concept_common_code(arg)                                               \
+  if constexpr (open_viii::graphics::background::has_with_##arg<               \
+                  decltype(tile)>)                                             \
+  common_code(arg)
+          common_code(z);
+          common_code(y);
+          common_code(x);
+          common_code(source_y);
+          common_code(source_x);
+          common_code(palette_id);
+          common_code(texture_id);
+          common_code(draw);
+          common_code(blend);
+          concept_common_code(animation_state);
+          concept_common_code(animation_id);
+          concept_common_code(layer_id);
+#undef concept_common_code
+#undef common_code
           if constexpr (open_viii::graphics::background::has_with_blend_mode<
                           decltype(tile)>) {
             tile = tile.with_blend_mode([](const std::string_view sv) {
@@ -301,6 +295,7 @@ int
               return open_viii::graphics::background::BlendModeT::none;
             }(re_blend_mode.to_view()));
           }
+
           tile = tile.with_depth(
             [](const std::string_view sv) -> open_viii::graphics::BPPT {
               using namespace open_viii::graphics::literals;
@@ -318,21 +313,28 @@ int
               }
               return 4_bpp;
             }(re_depth.to_view()));
-
-          std::cout << "Source: " << tile.source_rectangle()
-                    << ", Output: " << tile.output_rectangle()
-                    << ", Z: " << tile.z() << ", Depth: " << tile.depth()
-                    << '\n';
+          std::cout << tile << '\n';
         }
       },
       variant_tile);
 
     return variant_tile;
   });
+  save_map(map, csv_path);
+  return EXIT_SUCCESS;
+}
+void
+  save_map(const std::variant<open_viii::graphics::background::Map<
+                                open_viii::graphics::background::Tile1>,
+                              open_viii::graphics::background::Map<
+                                open_viii::graphics::background::Tile2>,
+                              open_viii::graphics::background::Map<
+                                open_viii::graphics::background::Tile3>> &map,
+           const std::basic_string_view<char> &csv_path)
+{
   std::visit(
     [&csv_path](const auto &m) {
       m.save_map(csv_path);
     },
     map);
-  return EXIT_SUCCESS;
 }

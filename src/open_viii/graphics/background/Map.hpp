@@ -296,14 +296,9 @@ public:
           std::ranges::cbegin(m_tiles),
           std::ranges::cend(m_tiles),
           [&os, &i](const auto &t) {
-            std::array<char, sizeof(t)> raw{};
-            std::memcpy(raw.data(), &t, sizeof(t));
-            os << i++ << ',' << '"' << "0x";
-            for (char c : raw)
-              os << std::hex << std::setfill('0') << std::setw(2)
-                 << std::uppercase << (static_cast<unsigned short>(c) & 0xFFU);
-            os << std::dec << std::setfill(' ') << std::setw(1)
-               << std::nouppercase << "\"," << t.draw() << ','
+            os << i++ << ',' << '"';
+            t.to_hex(os);
+            os <<"\"," << t.draw() << ','
                << int{ t.depth() } << ",\"" <<
               [&t]() {
                 switch (t.blend_mode()) {

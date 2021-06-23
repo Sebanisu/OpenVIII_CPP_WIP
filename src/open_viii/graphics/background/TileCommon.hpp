@@ -8,6 +8,8 @@
 #include "open_viii/graphics/Rectangle.hpp"
 #include <compare>
 #include <cstring>
+#include <iomanip>
+#include <iostream>
 namespace open_viii::graphics::background {
 enum class TileCommonConstants : std::uint16_t
 {
@@ -206,8 +208,13 @@ public:
   [[nodiscard]] constexpr this_type
     with_palette_id(decltype(m_palette_id.id()) in_palette_id) const noexcept
   {
-    auto out       = *this;
-    out.m_palette_id = m_palette_id.with_id(in_palette_id);
+    auto       out    = *this;
+    const auto old_id = palette_id();
+    out.m_palette_id  = m_palette_id.with_id(in_palette_id);
+    const auto new_id = out.palette_id();
+    if (old_id != new_id) {
+      std::cout << +old_id << +new_id << std::endl;
+    }
     return out;
   }
   [[nodiscard]] constexpr auto
@@ -307,6 +314,35 @@ public:
                                    m_xy.y(),
                                    width<output_type>(),
                                    height<output_type>() };
+  }
+  void
+    to_hex(std::ostream &os) const
+  {
+    std::array<char, sizeof(this_type)> raw{};
+    std::memcpy(raw.data(), this, sizeof(this_type));
+    os << "0x";
+    for (char c : raw)
+      os << std::hex << std::setfill('0') << std::setw(2) << std::uppercase
+         << (static_cast<unsigned short>(c) & 0xFFU);
+    os << std::dec << std::setfill(' ') << std::setw(1) << std::nouppercase;
+  }
+  friend std::ostream &
+    operator<<(std::ostream &os, const this_type &tile)
+  {
+    os << "\t  ";
+    tile.to_hex(os);
+    os << ",\n\tSource: " << tile.source_rectangle()
+       << ",\n\tOutput: " << tile.output_rectangle() << ", Z: " << tile.z()
+       << ",\n\tDepth: " << tile.depth()
+       << ", Palette ID: " << +tile.palette_id()
+       << ", Texture ID: " << +tile.texture_id()
+       << ", Layer ID: " << +tile.layer_id()
+       << ",\n\tBlend Mode: " << static_cast<std::uint16_t>(tile.blend_mode())
+       << ", Blend Other: " << +tile.blend()
+       << ", Animation ID: " << +tile.animation_id()
+       << ", Animation State: " << +tile.animation_state()
+       << ", Draw: " << +tile.draw();
+    return os;
   }
 };
 template<typename T>
