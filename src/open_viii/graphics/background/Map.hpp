@@ -18,12 +18,12 @@
 #include "Tile2.hpp"
 #include "Tile3.hpp"
 #include "open_viii/tools/Tools.hpp"
+#include "tl/write.hpp"
 #include <bit>
 #include <bitset>
 #include <cstdint>
 #include <filesystem>
 #include <variant>
-#include "tl/write.hpp"
 namespace open_viii::graphics::background {
 template<typename map_type = Tile1>
 requires(
@@ -298,19 +298,18 @@ public:
           [&os, &i](const auto &t) {
             os << i++ << ',' << '"';
             t.to_hex(os);
-            os <<"\"," << t.draw() << ','
-               << int{ t.depth() } << ",\"" <<
+            os << "\"," << t.draw() << ',' << int{ t.depth() } << ",\"" <<
               [&t]() {
                 switch (t.blend_mode()) {
-                case open_viii::graphics::background::BlendModeT::half_add:
+                case BlendModeT::half_add:
                   return "Half Add";
-                case open_viii::graphics::background::BlendModeT::add:
+                case BlendModeT::add:
                   return "Add";
-                case open_viii::graphics::background::BlendModeT::subtract:
+                case BlendModeT::subtract:
                   return "Subtract";
-                case open_viii::graphics::background::BlendModeT::quarter_add:
+                case BlendModeT::quarter_add:
                   return "Quarter Add";
-                case open_viii::graphics::background::BlendModeT::none:
+                case BlendModeT::none:
                 default:
                   return "None";
                 }
@@ -337,8 +336,8 @@ public:
     auto path = std::filesystem::path(in_path);
     tools::write_buffer(
       [this](std::ostream &os) {
-        for(const auto & tile : m_tiles)
-        tl::write::append(os,tile);
+        for (const auto &tile : m_tiles)
+          tl::write::append(os, tile);
       },
       (path.parent_path() / path.stem()).string() + ".map");
   }
@@ -440,6 +439,57 @@ public:
   //      in_mim.get_colors(in_path, depth, palette, ppm_save, false);
   //    }
   //  }
+};
+template<typename T>
+void
+  save_map(const T &map, const std::string_view &path)
+{
+  std::visit(
+    [&path](const auto &m) {
+      if constexpr (!is_monostate<decltype(m)>)
+        m.save_map(path);
+    },
+    map);
+}
+auto
+  get_map(char tile_type, auto &&...data)
+    -> std::variant<Map<Tile1>, Map<Tile2>, Map<Tile3>, std::monostate>
+{
+  switch (tile_type) {
+  case 1:
+  case '1':
+    return Map<Tile1>(std::forward<decltype(data)>(data)...);
+    break;
+  case 2:
+  case '2':
+    return Map<Tile2>(std::forward<decltype(data)>(data)...);
+    break;
+  case 3:
+  case '3':
+    return Map<Tile3>(std::forward<decltype(data)>(data)...);
+    break;
+  }
+  return std::monostate{};
+};
+auto
+  get_tile(char tile_type, auto &&...data)
+    -> std::variant<Tile1, Tile2, Tile3, std::monostate>
+{
+  switch (tile_type) {
+  case 1:
+  case '1':
+    return Tile1(std::forward<decltype(data)>(data)...);
+    break;
+  case 2:
+  case '2':
+    return Tile2(std::forward<decltype(data)>(data)...);
+    break;
+  case 3:
+  case '3':
+    return Tile3(std::forward<decltype(data)>(data)...);
+    break;
+  }
+  return std::monostate{};
 };
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_MAP_HPP
