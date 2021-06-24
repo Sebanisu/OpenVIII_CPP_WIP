@@ -244,3 +244,13 @@ target_link_libraries(${PROJECT_NAME}_tile_csv_to_map
         PRIVATE ToolsLibrary_tl
         PRIVATE ctre
         )
+if (CMAKE_BUILD_TYPE EQUAL "Debug" OR CMAKE_BUILD_TYPE EQUAL "RelWithDebInfo")
+    if (NOT MSVC)
+        target_compile_options(${PROJECT_NAME}_tile_csv_to_map
+                PRIVATE -fno-inline)
+    endif ()
+endif ()
+if (MSVC)
+    target_compile_options(${PROJECT_NAME}_tile_csv_to_map
+            PRIVATE /Ob0) #https://docs.microsoft.com/en-us/cpp/build/reference/ob-inline-function-expansion?view=msvc-160
+endif ()

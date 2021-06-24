@@ -8,11 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) ## the value of the CXX_STANDARD target prop
 set(CMAKE_CXX_EXTENSIONS OFF) ## on g++ this ensures: -std=c++11 and not -std=gnu++11
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) ## automatically create a module definition (.def) file with all global
 ## symbols found in the input .obj files for a SHARED library on Windows.
-if (CMAKE_BUILD_TYPE EQUAL "Debug" OR CMAKE_BUILD_TYPE EQUAL "RelWithDebInfo")
-    if (NOT MSVC)
-        add_compile_options(-fno-inline)
-    endif ()
-endif ()
+
 # Link this 'library' to use the warnings specified in CompilerWarnings.cmake
 add_library(${PROJECT_NAME}_project_warnings INTERFACE)
 
