@@ -470,7 +470,7 @@ auto
     break;
   }
   return std::monostate{};
-};
+}
 auto
   get_tile(char tile_type, auto &&...data)
     -> std::variant<Tile1, Tile2, Tile3, std::monostate>
@@ -490,6 +490,6 @@ auto
     break;
   }
   return std::monostate{};
-};
+}
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_MAP_HPP
