@@ -3,7 +3,8 @@ include(FetchContent)
 #options for FetchContent are at https://cmake.org/cmake/help/latest/module/ExternalProject.html
 FetchContent_Declare(
         ut_fetch
-        GIT_REPOSITORY https://github.com/boost-ext/ut.git
+        #GIT_REPOSITORY https://github.com/boost-ext/ut.git
+        GIT_REPOSITORY https://github.com/Sebanisu/ut.git
         GIT_TAG origin/master
         GIT_REMOTE_UPDATE_STRATEGY CHECKOUT
 )
