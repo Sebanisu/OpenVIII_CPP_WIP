@@ -17,3 +17,5 @@ raw_docs/html
 raw_docs/latex
 raw_docs/_*/
 docs/.doctrees/environment.pickle
+bin/
+lib/
