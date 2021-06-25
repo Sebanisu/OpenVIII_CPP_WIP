@@ -11,8 +11,8 @@ target_link_libraries(${PROJECT_NAME}_TestExtractALLSearch
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestExtractALLSearch)
 
-#
 ##Test Archives loading struct
 add_executable(${PROJECT_NAME}_TestArchives
         TestArchives.hpp TestArchives.cpp)
@@ -23,7 +23,8 @@ target_link_libraries(${PROJECT_NAME}_TestArchives
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
-#
+SET_TARGET_PATHS(${PROJECT_NAME}_TestArchives)
+
 ##test searching threw zzz contents and nested fi fl fs files.
 add_executable(${PROJECT_NAME}_TestSearchZZZ
         TestSearchZZZ.hpp TestSearchZZZ.cpp)
@@ -33,20 +34,21 @@ target_link_libraries(${PROJECT_NAME}_TestSearchZZZ
         PRIVATE ${PROJECT_NAME}_VIIIPaths
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl)
-if (NOT MSVC)
-    ##test kernel.bin
-    add_executable(${PROJECT_NAME}_TestKernel
-            TestKernel.cpp TestKernel.hpp)
-    set_target_properties(${PROJECT_NAME}_TestKernel PROPERTIES LINKER_LANGUAGE CXX)
-    target_link_libraries(${PROJECT_NAME}_TestKernel
-            PRIVATE ${PROJECT_NAME}_VIIIStrings
-            PRIVATE ${PROJECT_NAME}_VIIIKernel
-            PRIVATE ${PROJECT_NAME}_VIIIPaths
-            PRIVATE ${PROJECT_NAME}_VIIIArchive
-            PRIVATE ${PROJECT_NAME}_project_warnings
-            PRIVATE ToolsLibrary_tl
-            )
-endif ()
+SET_TARGET_PATHS(${PROJECT_NAME}_TestSearchZZZ)
+
+##test kernel.bin
+add_executable(${PROJECT_NAME}_TestKernel
+        TestKernel.cpp TestKernel.hpp)
+set_target_properties(${PROJECT_NAME}_TestKernel PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(${PROJECT_NAME}_TestKernel
+        PRIVATE ${PROJECT_NAME}_VIIIStrings
+        PRIVATE ${PROJECT_NAME}_VIIIKernel
+        PRIVATE ${PROJECT_NAME}_VIIIPaths
+        PRIVATE ${PROJECT_NAME}_VIIIArchive
+        PRIVATE ${PROJECT_NAME}_project_warnings
+        PRIVATE ToolsLibrary_tl
+        )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestKernel)
 
 ##test mngrphd.bin and mngrp.bin
 add_executable(${PROJECT_NAME}_TestMenuGroup
@@ -61,6 +63,8 @@ target_link_libraries(${PROJECT_NAME}_TestMenuGroup
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestMenuGroup)
+
 ##test image texture libraries
 add_executable(${PROJECT_NAME}_TestExtractImages
         TestExtractImages.cpp TestExtractImages.hpp)
@@ -73,6 +77,7 @@ target_link_libraries(${PROJECT_NAME}_TestExtractImages
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestExtractImages)
 
 ##test image Deswizzle of fields like pupu
 add_executable(${PROJECT_NAME}_TestDeswizzleFields
@@ -86,6 +91,7 @@ target_link_libraries(${PROJECT_NAME}_TestDeswizzleFields
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestDeswizzleFields)
 
 ##test image Reswizzle of fields like pupu
 add_executable(${PROJECT_NAME}_TestReswizzleFields
@@ -99,6 +105,8 @@ target_link_libraries(${PROJECT_NAME}_TestReswizzleFields
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestReswizzleFields)
+
 ##test image ReDeswizzle of fields like pupu
 add_executable(${PROJECT_NAME}_TestReDeswizzleFields
         TestReDeswizzleFields.cpp TestReDeswizzleFields.hpp)
@@ -111,6 +119,7 @@ target_link_libraries(${PROJECT_NAME}_TestReDeswizzleFields
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestReDeswizzleFields)
 
 
 ##test extract all, uses new code to extract files instead of old versions.
@@ -124,6 +133,7 @@ target_link_libraries(${PROJECT_NAME}_TestExtractALL
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestExtractALL)
 
 
 ##test extract all, uses new code to extract files instead of old versions.
@@ -135,6 +145,7 @@ target_link_libraries(${PROJECT_NAME}_TestExtractPAK
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestExtractPAK)
 
 
 ##test battle, uses new code to extract files instead of old versions.
@@ -149,6 +160,7 @@ target_link_libraries(${PROJECT_NAME}_TestBattle
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestBattle)
 
 ##test battle, uses new code to extract files instead of old versions.
 add_executable(${PROJECT_NAME}_TestJSM
@@ -162,6 +174,7 @@ target_link_libraries(${PROJECT_NAME}_TestJSM
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_TestJSM)
 
 #compress file with lz4 like ff8 would. or uncompress
 add_executable(${PROJECT_NAME}_lz4_ff8
@@ -187,6 +200,7 @@ target_link_libraries(${PROJECT_NAME}_lzss_ff8
         PRIVATE Threads::Threads
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_lzss_ff8)
 
 #fiflfs files extract not nested
 add_executable(${PROJECT_NAME}_fiflfs_extract
@@ -201,6 +215,7 @@ target_link_libraries(${PROJECT_NAME}_fiflfs_extract
         PRIVATE Threads::Threads
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_fiflfs_extract)
 
 #fiflfs files create not nested
 add_executable(${PROJECT_NAME}_fiflfs_create
@@ -215,6 +230,7 @@ target_link_libraries(${PROJECT_NAME}_fiflfs_create
         PRIVATE Threads::Threads
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_fiflfs_create)
 
 #convert tile map to csv
 add_executable(${PROJECT_NAME}_tile_map_to_csv
@@ -229,6 +245,7 @@ target_link_libraries(${PROJECT_NAME}_tile_map_to_csv
         PRIVATE Threads::Threads
         PRIVATE ToolsLibrary_tl
         )
+SET_TARGET_PATHS(${PROJECT_NAME}_tile_map_to_csv)
 
 #convert back from csv to tile map
 add_executable(${PROJECT_NAME}_tile_csv_to_map
@@ -254,3 +271,4 @@ if (MSVC)
     target_compile_options(${PROJECT_NAME}_tile_csv_to_map
             PRIVATE /Ob0) #https://docs.microsoft.com/en-us/cpp/build/reference/ob-inline-function-expansion?view=msvc-160
 endif ()
+SET_TARGET_PATHS(${PROJECT_NAME}_tile_csv_to_map)
