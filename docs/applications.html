@@ -144,19 +144,41 @@
 <li><p>Extract files and create index of the file compression used.</p></li>
 </ul>
 </li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>fiflfs_extract <span class="o">[</span>Source <span class="k">fi</span>/fl/fs file<span class="o">]</span> <span class="o">[</span>Destination path<span class="o">]</span>
+</pre></div>
+</div>
+<ul class="simple">
 <li><p>fiflfs_create</p>
 <ul>
 <li><p>Use the index to recreate the archive.</p></li>
 </ul>
 </li>
 </ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>fiflfs_create <span class="o">[</span>Source path<span class="o">]</span> <span class="o">[</span>Destination path<span class="o">]</span> <span class="o">[</span>Archive name<span class="o">]</span>
+</pre></div>
+</div>
 <div class="section" id="compression">
 <h3>Compression<a class="headerlink" href="#compression" title="Permalink to this headline">¶</a></h3>
 <p>These compress or uncompress a file. This is then formatted as it would be in the <strong>FS</strong> files.</p>
 <ul class="simple">
-<li><p>lz4_ff8</p></li>
+<li><p>lz4_ff8</p>
+<ul>
+<li><p>Remaster uses this.</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>lz4_ff8 <span class="o">[</span>input uncompressed<span class="o">]</span> <span class="o">[</span>output compressed<span class="o">]</span>
+lz4_ff8 -d <span class="o">[</span>input compressed<span class="o">]</span> <span class="o">[</span>output uncompressed<span class="o">]</span>
+</pre></div>
+</div>
+<ul class="simple">
 <li><p>lzss_ff8</p></li>
 </ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>lzss_ff8 <span class="o">[</span>input uncompressed<span class="o">]</span> <span class="o">[</span>output compressed<span class="o">]</span>
+lzss_ff8 -d <span class="o">[</span>input compressed<span class="o">]</span> <span class="o">[</span>output uncompressed<span class="o">]</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="tile-map">
@@ -165,14 +187,24 @@
 <li><p>tile_map_to_csv</p>
 <ul>
 <li><p>dump the map entries to a csv file. Also has a hex of the original entry. The hex loads first then the other fields.</p></li>
+<li><p>mim is used to tell which type of map this is.</p></li>
 </ul>
 </li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tile_map_to_csv <span class="o">[</span>input mim<span class="o">]</span> <span class="o">[</span>input map<span class="o">]</span>
+</pre></div>
+</div>
+<ul class="simple">
 <li><p>tile_csv_to_map</p>
 <ul>
 <li><p>Take a csv file and convert it to a map.</p></li>
+<li><p>The number in the filename .1 .2 or .3 tell what type of map this is.</p></li>
 </ul>
 </li>
 </ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tile_csv_to_map <span class="o">[</span>input csv<span class="o">]</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="tests">
