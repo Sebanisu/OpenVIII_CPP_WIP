@@ -36,19 +36,21 @@ target_link_libraries(${PROJECT_NAME}_TestSearchZZZ
         PRIVATE ToolsLibrary_tl)
 SET_TARGET_PATHS(${PROJECT_NAME}_TestSearchZZZ)
 
-##test kernel.bin
-add_executable(${PROJECT_NAME}_TestKernel
-        TestKernel.cpp TestKernel.hpp)
-set_target_properties(${PROJECT_NAME}_TestKernel PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestKernel
-        PRIVATE ${PROJECT_NAME}_VIIIStrings
-        PRIVATE ${PROJECT_NAME}_VIIIKernel
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestKernel)
+if (NOT MSVC) #uses requires expressions out of concepts not supported by MSVC
+    ##test kernel.bin
+    add_executable(${PROJECT_NAME}_TestKernel
+            TestKernel.cpp TestKernel.hpp)
+    set_target_properties(${PROJECT_NAME}_TestKernel PROPERTIES LINKER_LANGUAGE CXX)
+    target_link_libraries(${PROJECT_NAME}_TestKernel
+            PRIVATE ${PROJECT_NAME}_VIIIStrings
+            PRIVATE ${PROJECT_NAME}_VIIIKernel
+            PRIVATE ${PROJECT_NAME}_VIIIPaths
+            PRIVATE ${PROJECT_NAME}_VIIIArchive
+            PRIVATE ${PROJECT_NAME}_project_warnings
+            PRIVATE ToolsLibrary_tl
+            )
+    SET_TARGET_PATHS(${PROJECT_NAME}_TestKernel)
+endif ()
 
 ##test mngrphd.bin and mngrp.bin
 add_executable(${PROJECT_NAME}_TestMenuGroup
