@@ -14,6 +14,7 @@ getting_started
 archive
 graphics
 versions
+applications
 ```
 
 [comment]: <> (compression)

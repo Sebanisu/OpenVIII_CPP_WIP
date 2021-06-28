@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="TIM file" href="tim.html" /><link rel="prev" title="Archive Library" href="archive.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Supported Versions" href="versions.html" />
 
     <meta name="generator" content="sphinx-3.5.1, furo 2021.04.11.beta34"/>
-        <title>Graphics Library - OpenVIII_CPP_WIP documentation</title>
+        <title>Applications - OpenVIII_CPP_WIP documentation</title>
       <link rel="stylesheet" href="_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="_static/pygments_dark.css">
@@ -111,15 +111,15 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="archive.html">Archive Library</a></li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Graphics Library</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="graphics.html">Graphics Library</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="tim.html">TIM file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tex.html">TEX file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="png.html">PNG file</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="versions.html">Supported Versions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="applications.html#tests">Tests</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#tests">Tests</a></li>
 </ul>
 
 </div>
@@ -134,71 +134,65 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="graphics-library">
-<h1>Graphics Library<a class="headerlink" href="#graphics-library" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="images">
-<h2>Images<a class="headerlink" href="#images" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
+        <div class="section" id="applications">
+<h1>Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="fiflfs">
+<h2>FIFLFS<a class="headerlink" href="#fiflfs" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>fiflfs_extract</p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tim.html">TIM file</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tim.html#bit">16-bit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tim.html#stp">STP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tim.html#blend-modes">Blend Modes</a></li>
+<li><p>Extract files and create index of the file compression used.</p></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="tim.html#bit-to-8-bit">5 bit to 8 bit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tim.html#header">Header</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tim.html#sub-header">Sub Header</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tim.html#clut">CLUT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tim.html#image-data">Image Data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tim.html#bpp">4 bpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tim.html#id1">8 bpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tim.html#id2">16 bpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tim.html#id3">24 bpp</a></li>
+<li><p>fiflfs_create</p>
+<ul>
+<li><p>Use the index to recreate the archive.</p></li>
 </ul>
 </li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tex.html">TEX file</a></li>
-<li class="toctree-l1"><a class="reference internal" href="png.html">PNG file</a></li>
+<div class="section" id="compression">
+<h3>Compression<a class="headerlink" href="#compression" title="Permalink to this headline">¶</a></h3>
+<p>These compress or uncompress a file. This is then formatted as it would be in the <strong>FS</strong> files.</p>
+<ul class="simple">
+<li><p>lz4_ff8</p></li>
+<li><p>lzss_ff8</p></li>
 </ul>
 </div>
-<div class="tab-set docutils container">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">TIM</label><div class="tab-content docutils container">
 </div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">TEX</label><div class="tab-content docutils container">
-<p><a class="reference external" href="http://wiki.ffrtt.ru/index.php?title=FF7/TEX_format">TEX</a></p>
-<p>Used in only the PC games for 2x resolution fonts and UI elements.</p>
+<div class="section" id="tile-map">
+<h2>Tile Map<a class="headerlink" href="#tile-map" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>tile_map_to_csv</p>
+<ul>
+<li><p>dump the map entries to a csv file. Also has a hex of the original entry. The hex loads first then the other fields.</p></li>
+</ul>
+</li>
+<li><p>tile_csv_to_map</p>
+<ul>
+<li><p>Take a csv file and convert it to a map.</p></li>
+</ul>
+</li>
+</ul>
 </div>
-<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--3">PNG</label><div class="tab-content docutils container">
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a></p>
-<p>Used in remaster for high-res textures.</p>
 </div>
-</div>
-</div>
+<div class="section" id="tests">
+<h1>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h1>
+<p>These functions have hard coded paths forcing code to run on each version of <strong>FF8</strong> I have installed.</p>
 </div>
 
       </article>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="tim.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">TIM file</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="archive.html">
+          
+          <a class="prev-page" href="versions.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Archive Library</div>
+                <div class="title">Supported Versions</div>
                 
               </div>
             </a>
@@ -212,7 +206,7 @@
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
             |
-            <a class="muted-link" href="_sources/graphics.md.txt"
+            <a class="muted-link" href="_sources/applications.md.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -232,10 +226,15 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Graphics Library</a><ul>
-<li><a class="reference internal" href="#images">Images</a></li>
+<li><a class="reference internal" href="#">Applications</a><ul>
+<li><a class="reference internal" href="#fiflfs">FIFLFS</a><ul>
+<li><a class="reference internal" href="#compression">Compression</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#tile-map">Tile Map</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
 </ul>
 
           </div>
