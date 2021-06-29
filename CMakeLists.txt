@@ -26,6 +26,7 @@ set_project_warnings(${PROJECT_NAME}_project_warnings ON)
 # get external dependencies.
 include(cmake/lz4.cmake)
 #include(cmake/googletest.cmake)
+include(cmake/libpng.cmake)
 include(cmake/ut.cmake)
 include(cmake/tools_library.cmake)
 include(cmake/ctre.cmake)
