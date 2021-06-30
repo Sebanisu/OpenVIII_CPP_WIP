@@ -19,19 +19,19 @@ struct Triangle
 {
 private:
   using point = graphics::Point<std::uint8_t>;
-  std::uint16_t                 m_face_indice_a{};
-  std::uint16_t                 m_face_indice_b{};
-  std::uint16_t                 m_face_indice_c{};
-  point                         m_uv1{};
-  point                         m_uv2{};
-  std::uint16_t                 m_raw_clut{};
-  point                         m_uv3{};
-  graphics::Bit4Values          m_raw_texture_page{};
-  std::uint8_t                  m_raw_hide{};
-  graphics::Color24<0, 1, 2>    m_color{};
-  GpuFlags                      m_raw_gpu{};
-  static constexpr std::uint8_t MASK_4_BIT  = 0xFU;
-  static constexpr int          SHIFT_2_BIT = 2;
+  std::uint16_t                                  m_face_indice_a{};
+  std::uint16_t                                  m_face_indice_b{};
+  std::uint16_t                                  m_face_indice_c{};
+  point                                          m_uv1{};
+  point                                          m_uv2{};
+  std::uint16_t                                  m_raw_clut{};
+  point                                          m_uv3{};
+  graphics::Bit4Values                           m_raw_texture_page{};
+  std::uint8_t                                   m_raw_hide{};
+  graphics::Color24<graphics::ColorLayoutT::RGB> m_color{};
+  GpuFlags                                       m_raw_gpu{};
+  static constexpr std::uint8_t                  MASK_4_BIT  = 0xFU;
+  static constexpr int                           SHIFT_2_BIT = 2;
 
 public:
   static constexpr std::size_t COUNT = 3U;

@@ -259,7 +259,7 @@ public:
     const auto temp_path = std::filesystem::path(path_input);
     auto path = temp_path.parent_path() / (temp_path.stem().string() + "_tim");
     static_for_tim<0U, TIM_VALUE_ARRAY.size()>(
-      [&, this](const auto &                          section_id,
+      [&](const auto &                          section_id,
                 [[maybe_unused]] const graphics::Tim &tim) {
         std::stringstream
           so{};// TODO have these save in the folder with the mngrp files.
@@ -269,7 +269,7 @@ public:
         std::cout << tim.check();
         so << path.string() << static_cast<std::size_t>(section_id);
         const auto colors_dump =
-          [&tim, &so](const std::vector<graphics::Color32<0, 1, 2, 3>> &colors,
+          [&tim, &so](const std::vector<graphics::Color32<graphics::ColorLayoutT::RGBA>> &colors,
                       std::uint16_t num = 0) {
             std::cout << '\n';
             std::stringstream fn{};
@@ -279,10 +279,10 @@ public:
           };
         if (tim.clut_rows() > 0) {
           for (std::uint16_t i = 0; i < tim.clut_rows(); i++) {
-            colors_dump(tim.get_colors<graphics::Color32<0, 1, 2, 3>>(i), i);
+            colors_dump(tim.get_colors<graphics::Color32<graphics::ColorLayoutT::RGBA>>(i), i);
           }
         } else {
-          colors_dump(tim.get_colors<graphics::Color32<0, 1, 2, 3>>());
+          colors_dump(tim.get_colors<graphics::Color32<graphics::ColorLayoutT::RGBA>>());
         }
       });
   }

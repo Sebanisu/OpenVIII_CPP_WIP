@@ -15,8 +15,8 @@
 namespace open_viii::graphics::background {
 struct PupuPath
 {
-  open_viii::graphics::background::Pupu pupu{};
-  std::filesystem::path                 path{};
+  open_viii::graphics::background::Pupu pupu = {};
+  std::filesystem::path                 path = {};
   //  auto read_entire_file() const
   //  {
   //    return open_viii::tools::read_entire_file<std::string>(path);
@@ -30,23 +30,26 @@ requires(
   Reswizzle
 {
 private:
-  const Map<map_type>              m_map{};
-  const std::filesystem::path &    m_dir_path{};
-  const std::string_view           m_dir_name{};
-  const std::string &              m_output_prefix{};
+  const Map<map_type>              m_map                = {};
+  const std::filesystem::path &    m_dir_path           = {};
+  const std::string_view           m_dir_name           = {};
+  const std::string &              m_output_prefix      = {};
   static constexpr std::size_t     PUPUPATH_GROUP_COUNT = 3U;
-  const std::vector<PupuPath>      m_pupu_paths{};
-  const std::vector<std::uint16_t> m_valid_texture_ids{};
-  mutable std::uint8_t  m_scale{};// when I can detect the scale this will
-                                  // probably be mutable or I can detect on init
-  const Point<uint16_t> m_map_width_height{};
-  mutable std::uint32_t m_width{};
-  mutable std::uint32_t m_height{};
-  mutable std::uint32_t m_area{};
-  static constexpr std::size_t                             PALETTE_COUNT = 16U;
-  mutable std::array<std::vector<map_type>, PALETTE_COUNT> m_skip{};
-  mutable std::vector<open_viii::graphics::Color24<0, 1, 2>> m_out{};
-  mutable bool                                               m_drawn{ false };
+  const std::vector<PupuPath>      m_pupu_paths         = {};
+  const std::vector<std::uint16_t> m_valid_texture_ids  = {};
+  mutable std::uint8_t             m_scale
+    = {};// when I can detect the scale this will
+         // probably be mutable or I can detect on init
+  const Point<uint16_t>        m_map_width_height                 = {};
+  mutable std::uint32_t        m_width                            = {};
+  mutable std::uint32_t        m_height                           = {};
+  mutable std::uint32_t        m_area                             = {};
+  static constexpr std::size_t PALETTE_COUNT                      = 16U;
+  mutable std::array<std::vector<map_type>, PALETTE_COUNT> m_skip = {};
+  mutable std::vector<
+    open_viii::graphics::Color24<open_viii::graphics::ColorLayoutT::RGB>>
+               m_out   = {};
+  mutable bool m_drawn = { false };
   uint32_t
     get_area() const noexcept
   {
@@ -111,10 +114,12 @@ private:
         constexpr static auto hex_begin_offset          = 23;
         constexpr static auto hex_length                = 16;
         constexpr static auto hex_begin_offset_and_dash = hex_begin_offset + 1;
-        auto                  hex = std::string_view(basename).substr(
-          std::ranges::size(basename) - hex_begin_offset, hex_length);
+        auto hex = std::string_view(basename).substr(std::ranges::size(basename)
+                                                       - hex_begin_offset,
+                                                     hex_length);
         auto prefix = std::string_view(basename).substr(
-          0, std::ranges::size(basename) - hex_begin_offset_and_dash);
+          0,
+          std::ranges::size(basename) - hex_begin_offset_and_dash);
         if (open_viii::tools::i_equals(prefix, m_dir_name)) {
           // std::cout << prefix << '\n';
           pupu_paths.emplace_back(
@@ -164,11 +169,12 @@ private:
     save_and_clear_out_buffer(const std::uint16_t &texture_id) const
   {
     if (m_drawn) {
-      std::string output_name =
-        m_output_prefix + "(" + std::to_string(texture_id) + ")";
+      std::string output_name
+        = m_output_prefix + "(" + std::to_string(texture_id) + ")";
       Ppm::save(m_out, m_width, m_height, output_name, true);
-      std::fill(
-        std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
+      std::fill(std::ranges::begin(m_out),
+                std::ranges::end(m_out),
+                Color24<open_viii::graphics::ColorLayoutT::RGB>{});
       m_drawn = false;
     }
   }
@@ -181,8 +187,9 @@ private:
                               + std::to_string(texture_id) + "_"
                               + std::to_string(palette) + ")";
       Ppm::save(m_out, m_width, m_height, output_name, true);
-      std::fill(
-        std::ranges::begin(m_out), std::ranges::end(m_out), Color24<0, 1, 2>{});
+      std::fill(std::ranges::begin(m_out),
+                std::ranges::end(m_out),
+                Color24<open_viii::graphics::ColorLayoutT::RGB>{});
       m_drawn = false;
     }
   }
@@ -190,7 +197,8 @@ private:
     process_main_tiles(const uint16_t &texture_id) const
   {
     std::ranges::for_each(
-      m_pupu_paths, [this, &texture_id](const PupuPath &pupu_path) {
+      m_pupu_paths,
+      [this, &texture_id](const PupuPath &pupu_path) {
         const auto ppm = get_ppm(pupu_path);
         update_dims(ppm);
         for_each_tile(
@@ -211,7 +219,8 @@ private:
     std::array<std::uint8_t, PALETTE_COUNT> indexes{};
     std::iota(indexes.begin(), indexes.end(), std::uint8_t(0U));
     std::ranges::for_each(
-      indexes, [this, &texture_id](const uint8_t &palette_id) {
+      indexes,
+      [this, &texture_id](const uint8_t &palette_id) {
         if (std::ranges::empty(m_skip.at(palette_id))) {
           return;
         }
@@ -225,7 +234,8 @@ private:
               [this, &ppm](const map_type &tile) {
                 static constexpr auto tile_size = 16U;
                 open_viii::tools::for_each_xy(
-                  tile_size * m_scale, get_set_color_lambda(ppm, tile, true));
+                  tile_size * m_scale,
+                  get_set_color_lambda(ppm, tile, true));
               },
               [&pupu_path, &texture_id, &palette_id](const map_type &tile) {
                 return pupu_path.pupu == tile && tile.texture_id() == texture_id
@@ -239,20 +249,19 @@ private:
     get_clear_color_lambda(const Ppm &ppm, const map_type &tile) const
   {
     return [this, &tile, &ppm](const auto &x, const auto &y) -> bool {
-      const auto scaled_tile_y =
-        static_cast<std::size_t>(tile.y()) * this->m_scale;
-      const auto scaled_tile_x =
-        static_cast<std::size_t>(tile.x()) * this->m_scale;
+      const auto scaled_tile_y
+        = static_cast<std::size_t>(tile.y()) * this->m_scale;
+      const auto scaled_tile_x
+        = static_cast<std::size_t>(tile.x()) * this->m_scale;
       auto color = ppm.color(x + scaled_tile_x, y + scaled_tile_y);
       if (!color.is_black()) {
-        const std::size_t scaled_tile_source_x =
-          tile.source_x() * this->m_scale;
-        const std::size_t scaled_tile_source_y =
-          tile.source_y() * this->m_scale;
-        this->m_out.at(
-          x + scaled_tile_source_x
-          + ((y + scaled_tile_source_y)
-             * this->m_width)) = {};// put the values back to black.
+        const std::size_t scaled_tile_source_x
+          = tile.source_x() * this->m_scale;
+        const std::size_t scaled_tile_source_y
+          = tile.source_y() * this->m_scale;
+        this->m_out.at(x + scaled_tile_source_x
+                       + ((y + scaled_tile_source_y) * this->m_width))
+          = {};// put the values back to black.
       }
       return false;
     };
@@ -269,8 +278,8 @@ private:
       if (!color.is_black()) {
         const auto scaled_tile_source_x = scale_dim(tile.source_x());
         const auto scaled_tile_source_y = scale_dim(tile.source_y());
-        const auto dst_index =
-          x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width);
+        const auto dst_index
+          = x + scaled_tile_source_x + ((y + scaled_tile_source_y) * m_width);
         const auto &current = m_out.at(dst_index);
         if (!skipped && !current.is_black()) {
           tools::for_each_xy(x + 1, y + 1, get_clear_color_lambda(ppm, tile));
@@ -292,10 +301,10 @@ private:
   [[nodiscard]] std::size_t
     skipped_size() const
   {
-    const auto array =
-      m_skip | std::views::transform([](const std::vector<map_type> &vector) {
-        return std::ranges::size(vector);
-      });
+    const auto array
+      = m_skip | std::views::transform([](const std::vector<map_type> &vector) {
+          return std::ranges::size(vector);
+        });
     return std::reduce(
       std::ranges::begin(array),
       std::ranges::end(array),
@@ -318,17 +327,12 @@ public:
             const std::string_view &     dir_name,
             const std::string &          output_prefix,
             const uint8_t                scale = 1U)
-    : m_map(buffer),
-      m_dir_path(dir_path),
-      m_dir_name(dir_name),
+    : m_map(buffer), m_dir_path(dir_path), m_dir_name(dir_name),
       m_output_prefix(output_prefix),
       m_pupu_paths(find_pupu_image_file_paths()),
-      m_valid_texture_ids(get_valid_texture_ids()),
-      m_scale(scale),
+      m_valid_texture_ids(get_valid_texture_ids()), m_scale(scale),
       m_map_width_height(m_map.canvas().width_height()),
-      m_width(get_scaled_dim()),
-      m_height(get_scaled_dim()),
-      m_area(get_area()),
+      m_width(get_scaled_dim()), m_height(get_scaled_dim()), m_area(get_area()),
       m_out(static_cast<std::size_t>(m_area))
   {}
   [[nodiscard]] std::size_t

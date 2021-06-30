@@ -33,14 +33,62 @@ namespace open_viii::graphics {
  * @tparam b_ blue index
  * @tparam a_ alpha index
  */
-template<size_t r_ = 0U, size_t g_ = 1U, size_t b_ = 2U, size_t a_ = 3U>
-requires(r_ < 4U && g_ < 4U && b_ < 4U && r_ != g_ && r_ != b_ && g_ != b_
-         && a_ != g_ && a_ != b_ && a_ != r_) struct Color32
+// template<size_t r_ = 0U, size_t g_ = 1U, size_t b_ = 2U, size_t a_ = 3U>
+// requires(r_ < 4U && g_ < 4U && b_ < 4U && r_ != g_ && r_ != b_ && g_ != b_
+//          && a_ != g_ && a_ != b_ && a_ != r_)
+template<ColorLayoutT layoutT>
+requires(layoutT == ColorLayoutT::ABGR || layoutT == ColorLayoutT::RGBA || layoutT == ColorLayoutT::BGRA)
+struct Color32
 {
 public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 4U };
 
 private:
+  using this_type          = Color32<layoutT>;
+  constexpr static auto r_ = []() -> std::size_t {
+    if constexpr (layoutT == ColorLayoutT::ABGR) {
+      return 3U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::RGBA) {
+      return 0U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::BGRA) {
+      return 2U;
+    }
+  }();
+  constexpr static auto g_ = []() -> std::size_t {
+    if constexpr (layoutT == ColorLayoutT::ABGR) {
+      return 2U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::RGBA) {
+      return 1U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::BGRA) {
+      return 1U;
+    }
+  }();
+  constexpr static auto b_ = []() -> std::size_t {
+    if constexpr (layoutT == ColorLayoutT::ABGR) {
+      return 1U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::RGBA) {
+      return 2U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::BGRA) {
+      return 0U;
+    }
+  }();
+  constexpr static auto a_ = []() -> std::size_t {
+    if constexpr (layoutT == ColorLayoutT::ABGR) {
+      return 0U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::RGBA) {
+      return 3U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::BGRA) {
+      return 3U;
+    }
+  }();
   mutable std::array<std::uint8_t, EXPLICIT_SIZE> m_parts{};
   template<size_t index, std::floating_point T>
   std::uint8_t
@@ -116,7 +164,7 @@ public:
     return set<a_, T>(value);
   }
   friend std::ostream &
-    operator<<(std::ostream &os, const Color32<r_, g_, b_, a_> &color)
+    operator<<(std::ostream &os, const this_type &color)
   {
     return os << std::uppercase << std::hex << '{'
               << static_cast<std::size_t>(color.R()) << ", "
@@ -126,16 +174,16 @@ public:
               << std::nouppercase;
   }
   friend auto
-    operator<=>(const Color32<r_, g_, b_, a_> &left,
-                const Color32<r_, g_, b_, a_> &right) noexcept = default;
+    operator<=>(const this_type &left,
+                const this_type &right) noexcept = default;
   auto
-    operator<=>(const Color32<r_, g_, b_, a_> &right) const noexcept = default;
+    operator<=>(const this_type &right) const noexcept = default;
   constexpr bool
     is_black() const noexcept
   {
     return r() == 0 && g() == 0 && b() == 0;
   }
 };
-static_assert(sizeof(Color32<>) == Color32<>::EXPLICIT_SIZE);
+static_assert(sizeof(Color32<ColorLayoutT::RGBA>) == Color32<ColorLayoutT::RGBA>::EXPLICIT_SIZE);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR32_HPP

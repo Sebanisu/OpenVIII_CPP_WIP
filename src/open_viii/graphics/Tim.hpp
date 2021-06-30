@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_TIM_HPP
 #include "BPPT.hpp"
 #include "Bit4Values.hpp"
+#include "Png.hpp"
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Ppm.hpp"
 #include "open_viii/graphics/tim/TimClutHeader.hpp"
@@ -45,7 +46,7 @@ private:
   std::variant<std::vector<Bit4Values>,
                std::vector<std::uint8_t>,
                std::vector<Color16>,
-               std::vector<Color24<2U, 1U, 0U>>>
+               std::vector<Color24<ColorLayoutT::BGR>>>
     m_tim_image_data{};
   [[nodiscard]] std::size_t
     size_of_image_data() const noexcept
@@ -57,11 +58,12 @@ private:
       m_tim_image_data);
   }
   [[nodiscard]] Color16
-    get_color([[maybe_unused]] std::uint16_t row,
-              [[maybe_unused]] std::uint8_t  color_key) const
+    get_color([[maybe_unused]] const std::uint16_t row,
+              [[maybe_unused]] const std::uint8_t  color_key) const
   {
     if (m_tim_clut_header.rectangle().width() == 0
-        || m_tim_clut_header.rectangle().height() == 0) {
+        || m_tim_clut_header.rectangle().height() == 0
+        || std::empty(m_tim_clut_data)) {
       return {};
     }
     const std::size_t offset = row * m_tim_clut_header.rectangle().width();
@@ -69,7 +71,7 @@ private:
   }
   template<typename dstT>
   auto
-    get_4bpp_colors(uint16_t row) const
+    get_4bpp_colors(const uint16_t row) const
   {
     std::vector<dstT> output{};
     output.reserve(size_of_image_data() * 2U);
@@ -84,7 +86,7 @@ private:
   }
   template<typename dstT>
   auto
-    get_8bbp_colors(uint16_t row) const
+    get_8bbp_colors(const uint16_t row) const
   {
     std::vector<dstT> output{};
     output.reserve(size_of_image_data());
@@ -117,7 +119,7 @@ private:
     output.reserve(size_of_image_data());
     std::ranges::transform(std::get<3>(m_tim_image_data),
                            std::back_inserter(output),
-                           [](const Color24<2, 1, 0> &color) {
+                           [](const Color24<ColorLayoutT::BGR> &color) {
                              return static_cast<dstT>(color);
                            });
     return output;
@@ -132,14 +134,15 @@ public:
       m_tim_image_header(get_tim_image_header(buffer)),
       m_tim_image_data(get_tim_image_data(buffer))
   {}
-  explicit Tim(TimHeader            in_tim_header,
-               TimClutHeader        in_tim_clut_header,
-               std::vector<Color16> in_tim_clut_data,
-               TimImageHeader       in_tim_image_header,
-               std::variant<std::vector<Bit4Values>,
-                            std::vector<std::uint8_t>,
-                            std::vector<Color16>,
-                            std::vector<Color24<2U, 1U, 0U>>> in_tim_image_data)
+  explicit Tim(
+    TimHeader                                             in_tim_header,
+    TimClutHeader                                         in_tim_clut_header,
+    std::vector<Color16>                                  in_tim_clut_data,
+    TimImageHeader                                        in_tim_image_header,
+    std::variant<std::vector<Bit4Values>,
+                 std::vector<std::uint8_t>,
+                 std::vector<Color16>,
+                 std::vector<Color24<ColorLayoutT::BGR>>> in_tim_image_data)
     : m_tim_header(in_tim_header), m_tim_clut_header(in_tim_clut_header),
       m_tim_clut_data(std::move(in_tim_clut_data)),
       m_tim_image_header(in_tim_image_header),
@@ -201,7 +204,8 @@ public:
         m_tim_image_header.data_size());
     }
     case 24: {
-      return tools::read_val_safe_mutate<std::vector<Color24<2, 1, 0>>>(
+      return tools::read_val_safe_mutate<
+        std::vector<Color24<ColorLayoutT::BGR>>>(
         buffer,
         m_tim_image_header.data_size());
     }
@@ -218,27 +222,24 @@ public:
         && (a == sizeOfImageData || a / 2 == sizeOfImageData
             || a * 2 == sizeOfImageData);
   }
-  [[nodiscard]] std::size_t
+  [[nodiscard]] std::uint32_t
     width() const
   {
     static constexpr auto bpp4_step{ 4 };
     static constexpr auto bpp8_step{ 2 };
     static constexpr auto bpp24_step{ 1.5 };
     if (m_tim_header.bpp().bpp4()) {
-      return static_cast<std::size_t>(m_tim_image_header.rectangle().width()
-                                      * bpp4_step);// 4pp
+      return m_tim_image_header.rectangle().width() * bpp4_step;// 4pp
     }
     if (m_tim_header.bpp().bpp8()) {
-      return static_cast<std::size_t>(m_tim_image_header.rectangle().width()
-                                      * bpp8_step);// 8pp
+      return m_tim_image_header.rectangle().width() * bpp8_step;// 8pp
     }
     if (m_tim_header.bpp().bpp16()) {
-      return static_cast<std::size_t>(
-        m_tim_image_header.rectangle().width());// 16bpp
+      return m_tim_image_header.rectangle().width();// 16bpp
     }
     if (m_tim_header.bpp().bpp24()) {
-      return static_cast<std::size_t>(m_tim_image_header.rectangle().width()
-                                      / bpp24_step);// 24 bpp
+      return static_cast<uint32_t>(m_tim_image_header.rectangle().width()
+                                   / bpp24_step);// 24 bpp
     }
     return {};// invalid value
   }
@@ -302,7 +303,7 @@ public:
   }
   template<Color dstT = Tim>
   [[nodiscard]] std::vector<dstT>
-    get_colors([[maybe_unused]] std::uint16_t row = 0U) const
+    get_colors([[maybe_unused]] const std::uint16_t row = 0U) const
   {
     enum
     {
@@ -377,15 +378,39 @@ public:
     save(std::string_view filename) const
   {
     if (clut_rows() == 0) {
-      Ppm::save(get_colors<Color24<0, 1, 2>>(), width(), height(), filename);
+      Ppm::save(get_colors<Color16>(), width(), height(), filename);
+      Png::save(get_colors<Color16>(),
+                width(),
+                height(),
+                filename,
+                std::filesystem::path(filename).string());
     }
     else {
       auto path = std::filesystem::path(filename);
-      for (std::uint16_t i = 0; i < clut_rows(); i++) {
+      for (std::uint16_t i{}; i != clut_rows(); ++i) {
         const auto out_path = (path.parent_path() / path.stem()).string() + '_'
                             + std::to_string(i) + path.extension().string();
-        Ppm::save(get_colors<Color24<0, 1, 2>>(i), width(), height(), out_path);
+        Ppm::save(get_colors<Color16>(i), width(), height(), out_path);
+        Png::save(get_colors<Color16>(i),
+                  width(),
+                  height(),
+                  out_path,
+                  out_path);
       }
+    }
+    if (clut_rows() != 0) {
+      auto       path     = std::filesystem::path(filename);
+      const auto out_path = (path.parent_path() / path.stem()).string()
+                          + "_clut" + path.extension().string();
+      Ppm::save(m_tim_clut_data,
+                m_tim_clut_header.rectangle().width(),
+                m_tim_clut_header.rectangle().height(),
+                out_path);
+      Png::save(m_tim_clut_data,
+                m_tim_clut_header.rectangle().width(),
+                m_tim_clut_header.rectangle().height(),
+                out_path,
+                std::filesystem::path(filename).string());
     }
   }
 };
@@ -397,7 +422,7 @@ auto
 }
 template<>
 auto
-  Tim::get_24bpp_colors<Color24<2, 1, 0>>() const
+  Tim::get_24bpp_colors<Color24<ColorLayoutT::BGR>>() const
 {
   return std::get<3>(m_tim_image_data);
 }

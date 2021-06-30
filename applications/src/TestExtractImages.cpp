@@ -19,6 +19,7 @@
 #include "open_viii/graphics/Sp2.hpp"
 #include "open_viii/graphics/Tdw.hpp"
 #include "open_viii/graphics/Tex.hpp"
+#include "open_viii/graphics/Png.hpp"
 #include "open_viii/graphics/background/Map.hpp"
 #include "open_viii/menu_group/MenuGroupFile.hpp"
 #include "open_viii/paths/Paths.hpp"
@@ -88,10 +89,10 @@ void
 {
   archives.execute_on<false>(
     {
-      //".tex",
+      ".tex",
       //".lzs",
       //".tim",
-      //".tdw",
+      //".tdw", //broken?
       //".sp1",
       //".sp2",
       //".mch",
@@ -112,26 +113,26 @@ void
 int
   main()
 {
-  //  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
-  //    extract_images_from_path(path);
-  //    std::cout << path << std::endl;
-  //    static constexpr auto coo      = open_viii::LangT::en;
-  //    const auto            archives = open_viii::archive::Archives(
-  //      path, open_viii::LangCommon::to_string<coo>());
-  //    if (!static_cast<bool>(archives)) {
-  //      std::cerr << "Failed to load path: " << path.string() << '\n';
-  //      return;
-  //    }
-  //    extract_per_extension_in_archives(archives);
-  //    //    const open_viii::archive::FIFLFS<true> &field =
-  //    //      archives.get<open_viii::archive::ArchiveTypeT::field>();
-  //    // field.execute_with_nested({"main_chr"},dump_image,{});
-  //    //    const auto main_chr = field.get_fiflfs({ "main_chr" });
-  //    //    main_chr.execute_on({}, dump_image);
-  //    // field.execute_with_nested({}, dump_image, { ".one" });
-  //    // dump images from menu group.
-  //    extract_menu_group_images(archives);
-  //  });
-  extract_images_from_path(
-    R"(D:\dev\OpenVIII_CPP_WIP\cmake-build-release\applications\src\Release\tmp\ff8\data\eng\World\esk)");
+    open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
+      extract_images_from_path(path);
+      std::cout << path << std::endl;
+      static constexpr auto coo      = open_viii::LangT::en;
+      const auto            archives = open_viii::archive::Archives(
+        path, open_viii::LangCommon::to_string<coo>());
+      if (!static_cast<bool>(archives)) {
+        std::cerr << "Failed to load path: " << path.string() << '\n';
+        return;
+      }
+      extract_per_extension_in_archives(archives);
+      //    const open_viii::archive::FIFLFS<true> &field =
+      //      archives.get<open_viii::archive::ArchiveTypeT::field>();
+      // field.execute_with_nested({"main_chr"},dump_image,{});
+      //    const auto main_chr = field.get_fiflfs({ "main_chr" });
+      //    main_chr.execute_on({}, dump_image);
+      // field.execute_with_nested({}, dump_image, { ".one" });
+      // dump images from menu group.
+      extract_menu_group_images(archives);
+    });
+//  extract_images_from_path(
+//    R"(D:\dev\OpenVIII_CPP_WIP\cmake-build-release\applications\src\Release\tmp\ff8\data\eng\World\esk)");
 }

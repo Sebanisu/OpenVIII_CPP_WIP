@@ -18,7 +18,7 @@
 #include "open_viii/graphics/background/SwizzleTree.hpp"
 #include "open_viii/paths/Paths.hpp"
 static void
-  save_and_clear(std::vector<open_viii::graphics::Color24<0, 1, 2>> &out,
+  save_and_clear(std::vector<open_viii::graphics::Color24<open_viii::graphics::ColorLayoutT::RGB>> &out,
                  const std::unsigned_integral auto &                 width,
                  const std::unsigned_integral auto &                 height,
                  const std::unsigned_integral auto &                 tex_id,
@@ -30,7 +30,7 @@ static void
   open_viii::graphics::Ppm::save(out, width, height, output_name);
   std::fill(std::ranges::begin(out),
             std::ranges::end(out),
-            open_viii::graphics::Color24<0, 1, 2>{});
+            open_viii::graphics::Color24<open_viii::graphics::ColorLayoutT::RGB>{});
 }
 int
   main()

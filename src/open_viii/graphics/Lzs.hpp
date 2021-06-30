@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_LZS_HPP
 #define VIIIARCHIVE_LZS_HPP
+#include "Png.hpp"
 #include "Ppm.hpp"
 #include "Rectangle.hpp"
 #include "open_viii/compression/LZSS.hpp"
@@ -80,6 +81,7 @@ public:
     save(const std::string_view &filename) const
   {
     Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
+    Png::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename,std::string(filename));
   }
   friend std::ostream &
     operator<<(std::ostream &os, const Lzs &l)

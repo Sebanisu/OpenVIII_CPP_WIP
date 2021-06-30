@@ -28,7 +28,7 @@ struct Ppm
 private:
   std::filesystem::path         m_path{};
   Point<std::uint16_t>          m_width_height{};
-  std::vector<Color24<0, 1, 2>> m_colors{};
+  std::vector<Color24<ColorLayoutT::RGB>> m_colors{};
   Point<std::uint16_t>
     get_width_height(const std::string &buffer)
   {
@@ -61,7 +61,7 @@ private:
         bytesize = line;
         continue;
       }
-      if ([&line, &point, &w_h, &bytesize]() -> bool {
+      if ([&line, &point, &bytesize]() -> bool {
             const auto    count = std::ranges::count(line, ' ');
             std::uint16_t width{};
             std::uint16_t height{};
@@ -88,7 +88,7 @@ private:
     ss.seekg(0, std::ios::end);
     const auto end = ss.tellg();
     const auto sz
-      = static_cast<std::size_t>(end - start) / sizeof(Color24<0, 1, 2>);
+      = static_cast<std::size_t>(end - start) / sizeof(Color24<ColorLayoutT::RGB>);
     if (sz != point.area()) {
       std::cerr << m_path << "\n\t" << sz << " != area of " << point
                 << std::endl;
@@ -100,9 +100,9 @@ private:
   auto
     get_colors(std::span<const char> buffer_span)
   {
-    std::vector<Color24<0, 1, 2>> colors{};
+    std::vector<Color24<ColorLayoutT::RGB>> colors{};
     const auto                    area          = m_width_height.area();
-    static constexpr auto         color_size    = sizeof(Color24<0, 1, 2>);
+    static constexpr auto         color_size    = sizeof(Color24<ColorLayoutT::RGB>);
     const auto                    size_of_bytes = area * color_size;
     if (area > 0 && std::ranges::size(buffer_span) > size_of_bytes) {
       buffer_span
@@ -183,7 +183,7 @@ public:
                                  && color.r() == 0U);
                        });
   }
-  [[nodiscard]] const std::vector<Color24<0, 1, 2>> &
+  [[nodiscard]] const std::vector<Color24<ColorLayoutT::RGB>> &
     colors() const noexcept
   {
     return m_colors;
@@ -203,15 +203,15 @@ public:
   {
     return m_width_height;
   }
-  [[nodiscard]] const Color24<0, 1, 2> &
+  [[nodiscard]] const Color24<ColorLayoutT::RGB> &
     color(const std::size_t &x, const std::size_t &y) const noexcept
   {
     return at(x + (y * static_cast<std::size_t>(m_width_height.x())));
   }
-  const Color24<0, 1, 2> &
+  const Color24<ColorLayoutT::RGB> &
     at(const size_t i) const noexcept
   {
-    static constexpr Color24<0, 1, 2> black{};
+    static constexpr Color24<ColorLayoutT::RGB> black{};
     if (i < std::ranges::size(m_colors)) {
       return m_colors[i];
     }

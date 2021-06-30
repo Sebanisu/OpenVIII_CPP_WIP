@@ -97,5 +97,8 @@ function(set_project_warnings project_name)
 
     target_compile_options(${project_name} INTERFACE ${PROJECT_WARNINGS})
     target_link_options(${project_name} INTERFACE ${PROJECT_SANITIZER})
+    if (MSVC)
+        target_compile_definitions(${project_name} INTERFACE _CRT_SECURE_NO_DEPRECATE)
+    endif ()
 
 endfunction()

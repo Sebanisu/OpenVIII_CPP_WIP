@@ -15,5 +15,4 @@
 #    FetchContent_Populate(libpng_fetch)
 #    add_subdirectory(${libpng_fetch_SOURCE_DIR} ${libpng_fetch_BINARY_DIR} EXCLUDE_FROM_ALL)
 #endif ()
-
 find_package(PNG REQUIRED)

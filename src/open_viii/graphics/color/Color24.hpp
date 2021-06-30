@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_COLOR24_HPP
 #define VIIIARCHIVE_COLOR24_HPP
 #include "open_viii/Concepts.hpp"
+#include "open_viii/graphics/ColorLayoutT.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include <bitset>
 #include <compare>
@@ -26,14 +27,43 @@ namespace open_viii::graphics {
  * @tparam g_ green index
  * @tparam b_ blue index
  */
-template<size_t r_ = 2U, size_t g_ = 1U, size_t b_ = 0U>
-requires(r_ < 3U && g_ < 3U && b_ < 3U && r_ != g_ && r_ != b_
-         && g_ != b_) struct Color24
+
+// template<size_t r_ = 2U, size_t g_ = 1U, size_t b_ = 0U>
+// requires(r_ < 3U && g_ < 3U && b_ < 3U && r_ != g_ && r_ != b_
+//          && g_ != b_) struct Color24
+template<ColorLayoutT layoutT>
+requires(layoutT == ColorLayoutT::BGR || layoutT == ColorLayoutT::RGB)
+struct Color24
 {
 public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 3U };
 
 private:
+  using this_type = Color24<layoutT>;
+  constexpr static auto r_ = []() -> std::size_t {
+    if constexpr (layoutT == ColorLayoutT::BGR) {
+      return 2U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::RGB) {
+      return 0U;
+    }
+  }();
+  constexpr static auto g_ = []() -> std::size_t {
+    if constexpr (layoutT == ColorLayoutT::BGR) {
+      return 1U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::RGB) {
+      return 1U;
+    }
+  }();
+  constexpr static auto b_ = []() -> std::size_t {
+    if constexpr (layoutT == ColorLayoutT::BGR) {
+      return 0U;
+    }
+    else if constexpr (layoutT == ColorLayoutT::RGB) {
+      return 2U;
+    }
+  }();
   mutable std::array<std::uint8_t, EXPLICIT_SIZE> m_parts{};
   template<size_t index, typename T>
   requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) std::uint8_t
@@ -107,18 +137,18 @@ public:
     b(color.b());
   }
   friend auto
-    operator<=>(const Color24<r_, g_, b_> &left,
-                const Color24<r_, g_, b_> &right) noexcept = default;
+    operator<=>(const this_type &left,
+                const this_type &right) noexcept = default;
   auto
-    operator<=>(const Color24<r_, g_, b_> &right) const noexcept = default;
+    operator<=>(const this_type &right) const noexcept = default;
   friend std::ostream &
-    operator<<(std::ostream &os, const Color24<r_, g_, b_> &color)
+    operator<<(std::ostream &os, const this_type &color)
   {
     return os << std::uppercase << std::hex << '{'
-              << static_cast<std::size_t>(color.R()) << ", "
-              << static_cast<std::size_t>(color.G()) << ", "
-              << static_cast<std::size_t>(color.B()) << ", "
-              << static_cast<std::size_t>(color.A()) << '}' << std::dec
+              << +color.R() << ", "
+              << +color.G() << ", "
+              << +color.B() << ", "
+              << +color.A() << '}' << std::dec
               << std::nouppercase;
   }
   bool
@@ -129,6 +159,6 @@ public:
     });
   }
 };
-static_assert(sizeof(Color24<>) == Color24<>::EXPLICIT_SIZE);
+static_assert(sizeof(Color24<ColorLayoutT::RGB>) == Color24<ColorLayoutT::RGB>::EXPLICIT_SIZE);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR24_HPP

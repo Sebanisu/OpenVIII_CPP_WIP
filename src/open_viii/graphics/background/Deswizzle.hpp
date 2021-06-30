@@ -30,13 +30,13 @@ requires(
   Deswizzle
 {
 private:
-  using outColorT = Color24<0, 1, 2>;
-  const mim_type &          m_mim{};
-  map_type                  m_map{};
-  std::string               m_path{};
-  std::vector<std::uint8_t> m_unique_palettes{};
-  Rectangle<std::int32_t>   m_canvas{};
-  std::vector<Pupu>         m_unique_pupus{};
+  using outColorT                             = Color24<ColorLayoutT::RGB>;
+  const mim_type &          m_mim             = {};
+  map_type                  m_map             = {};
+  std::string               m_path            = {};
+  std::vector<std::uint8_t> m_unique_palettes = {};
+  Rectangle<std::int32_t>   m_canvas          = {};
+  std::vector<Pupu>         m_unique_pupus    = {};
   auto
     find_unique_palettes() const
   {
@@ -107,7 +107,8 @@ private:
       // pixels behind cannot be seen in game anyway?
       if constexpr (std::is_same_v<cT, outColorT>) {
         out.at(index_out) = color;
-      } else {
+      }
+      else {
         out.at(index_out) = static_cast<outColorT>(color);
       }
       return true;
@@ -127,11 +128,8 @@ private:
 
 public:
   Deswizzle(const mim_type &in_mim, const map_type &in_map, std::string in_path)
-    : m_mim(in_mim),
-      m_map(in_map),
-      m_path(std::move(in_path)),
-      m_unique_palettes(find_unique_palettes()),
-      m_canvas(in_map.canvas()),
+    : m_mim(in_mim), m_map(in_map), m_path(std::move(in_path)),
+      m_unique_palettes(find_unique_palettes()), m_canvas(in_map.canvas()),
       m_unique_pupus(find_unique_pupu())
   {}
   void
@@ -145,8 +143,8 @@ public:
 
       for_each_palette([this, &pupu, &tiles, &drawn, &raw_width, &out](
                          const std::uint8_t &palette) {
-        auto filtered_tiles =
-          tiles
+        auto filtered_tiles
+          = tiles
           | std::views::filter([&pupu, &palette](const auto &local_t) -> bool {
               return local_t.draw() && palette == local_t.palette_id()
                   && pupu == local_t;
@@ -157,7 +155,8 @@ public:
             open_viii::tools::for_each_xy(
               t.height(),
               [this, &pupu, &raw_width, &out, &drawn, &t, &palette](
-                const auto &x, const auto &y) {
+                const auto &x,
+                const auto &y) {
                 const auto pixel_in = m_mim.get_color(
                   static_cast<std::uint32_t>((x + t.source_x())),
                   static_cast<std::uint32_t>((y + t.source_y())),
