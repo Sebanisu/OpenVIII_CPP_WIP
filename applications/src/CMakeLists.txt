@@ -157,6 +157,7 @@ set_target_properties(${PROJECT_NAME}_TestBattle PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(${PROJECT_NAME}_TestBattle
         PRIVATE ${PROJECT_NAME}_VIIIPaths
         PRIVATE ${PROJECT_NAME}_VIIIBattle
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
         PRIVATE ${PROJECT_NAME}_VIIIArchive
         PRIVATE Threads::Threads
         PRIVATE ${PROJECT_NAME}_project_warnings
