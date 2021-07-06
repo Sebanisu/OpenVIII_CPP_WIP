@@ -58,7 +58,7 @@ private:
   TexHeader2Version2                       m_tex_header2_version2{};
   std::vector<Color32<ColorLayoutT::BGRA>> m_palette_data{};
   std::variant<std::vector<char>,
-               std::vector<Color16>,
+               std::vector<Color16<ColorLayoutT::ABGR>>,
                std::vector<Color32<ColorLayoutT::BGRA>>>
     m_image_data{};
   [[nodiscard]] auto
@@ -169,8 +169,8 @@ public:
       break;
     }
     case 16: {
-      m_image_data = [&image_span]() -> std::vector<Color16> {
-        std::vector<Color16> image(image_span.size() / sizeof(Color16));
+      m_image_data = [&image_span]() -> std::vector<Color16<ColorLayoutT::ABGR>> {
+        std::vector<Color16<ColorLayoutT::ABGR>> image(image_span.size() / sizeof(Color16<ColorLayoutT::ABGR>));
         std::memcpy(image.data(), image_span.data(), image_span.size());
         return image;
       }();

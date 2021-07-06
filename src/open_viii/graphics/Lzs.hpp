@@ -29,7 +29,7 @@ struct [[maybe_unused]] Lzs
 {
 private:
   Rectangle<std::uint16_t> m_rectangle{};
-  std::vector<Color16>     m_colors{};
+  std::vector<Color16<ColorLayoutT::ABGR>>     m_colors{};
 
 public:
   [[maybe_unused]] explicit Lzs(std::span<const char> buffer)
@@ -61,7 +61,7 @@ public:
       adj = adj.subspan(szrec);
       std::cout << std::ranges::size(adj) << '\n';
       std::cout << m_rectangle << '\n';
-      static constexpr size_t sz16 = sizeof(Color16);
+      static constexpr size_t sz16 = sizeof(Color16<ColorLayoutT::ABGR>);
       std::cout << sz16 << '\n';
       const size_t max_bytes = std::ranges::size(adj) / sz16;
       const size_t area      = m_rectangle.area();

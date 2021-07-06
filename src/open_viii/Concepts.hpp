@@ -22,35 +22,32 @@
 #include <variant>
 namespace open_viii {
 template<typename T>
-concept Number = std::floating_point<T> || std::integral<T>;
-template<typename T>
 concept Color_R = requires(T a)
 {
   {
-    a.r()
-    } -> std::integral;
+  a.r()
+  } -> std::integral;
 };
 template<typename T>
 concept Color_G = requires(T a)
 {
   {
-    a.g()
-    } -> std::integral;
+  a.g()
+  } -> std::integral;
 };
 template<typename T>
 concept Color_B = requires(T a)
 {
-
   {
-    a.b()
-    } -> std::integral;
+  a.b()
+  } -> std::integral;
 };
 template<typename T>
 concept Color_A = requires(T a)
 {
   {
-    a.a()
-    } -> std::integral;
+  a.a()
+  } -> std::integral;
 };
 template<typename T>
 concept is_bool = std::is_same_v<T, bool>;
@@ -58,12 +55,14 @@ template<typename T>
 concept Color_is_black = requires(T a)
 {
   {
-    a.is_black()
-    } -> is_bool;
+  a.is_black()
+  } -> is_bool;
 };
 template<typename T>
-concept Color =
-  Color_A<T> && Color_B<T> && Color_G<T> && Color_R<T> && Color_is_black<T>;
+concept Color
+= Color_A<T> && Color_B<T> && Color_G<T> && Color_R<T> && Color_is_black<T>;
+template<typename T>
+concept Number = std::floating_point<T> || std::integral<T>;
 template<typename T>
 concept FIFLFS_Has_get_entry_data = requires(T a)
 {

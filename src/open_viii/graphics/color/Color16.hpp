@@ -12,217 +12,94 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_COLOR16_HPP
 #define VIIIARCHIVE_COLOR16_HPP
-#include "open_viii/Concepts.hpp"
-#include <compare>
-#include <cstdint>
-#include <iostream>
-#include <limits>
+#include "CommonColor.hpp"
 namespace open_viii::graphics {
-/**
- *
- * @see https://github.com/myst6re/deling/blob/master/FF8Image.cpp#L30
- */
-struct Color16
+
+struct Color16_index_value
 {
 private:
-  [[maybe_unused]] static constexpr auto              BITS = 16U;
-  mutable std::uint16_t                               m_value{};
-  static constexpr std::uint16_t                      BLUE_MASK{ 0x7C00 };
-  static constexpr std::uint16_t                      GREEN_MASK{ 0x3E0 };
-  static constexpr std::uint16_t                      RED_MASK{ 0x1F };
-  [[maybe_unused]] static constexpr std::uint16_t     STP_MASK{ 0x8000U };
-  static constexpr std::uint16_t                      ALL_COLOR_MASK{ 0x7FFF };
-  static constexpr std::uint_fast8_t                  BLUE_SHIFT{ 10U };
-  static constexpr std::uint_fast8_t                  GREEN_SHIFT{ 5U };
-  static constexpr std::uint_fast8_t                  RED_SHIFT     = { 0U };
-  [[maybe_unused]] static constexpr std::uint_fast8_t STP_SHIFT     = { 15U };
-  static constexpr std::uint_fast8_t                  CONVERT_SHIFT = { 3U };
-  static constexpr std::uint_fast8_t GET_HIGH_BIT_SHIFT             = { 2U };
-  static constexpr std::uint_fast8_t LARGEST_5_BIT_VALUE{ 0b0001'1111 };
-  [[nodiscard]] std::uint8_t
-    convert(const std::uint16_t &mask, const std::uint_fast8_t &shift) const
-  {
-    auto temp = static_cast<std::uint16_t>(
-      static_cast<std::uint16_t>(m_value & mask) >> shift);
-    return static_cast<std::uint8_t>(
-      (static_cast<std::uint16_t>(temp << CONVERT_SHIFT)
-       | static_cast<std::uint16_t>(temp >> GET_HIGH_BIT_SHIFT)));
-  }
-  template<std::unsigned_integral T>
-  static constexpr T
-    flip(const T input)
-  {
-    return std::numeric_limits<T>::max() - input;
-  }
-  template<std::floating_point T>
-  void
-    set(T input, std::uint16_t mask, const std::uint_fast8_t &shift) const
-  {
-    std::uint16_t val{ static_cast<std::uint_fast8_t>(
-      std::clamp(input, static_cast<T>(0.0F), static_cast<T>(1.0F))
-      * LARGEST_5_BIT_VALUE) };
-    val <<= shift;
-    m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
-  }
-  template<typename T>
-  requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) void set(
-    T                        input,
-    std::uint16_t            mask,
-    const std::uint_fast8_t &shift) const
-  {
-    std::uint16_t val{ static_cast<std::uint_fast8_t>(
-      std::clamp(input,
-                 static_cast<T>(0),
-                 static_cast<T>(std::numeric_limits<std::uint8_t>::max()))) };
-    val >>= CONVERT_SHIFT;
-    val     = static_cast<decltype(val)>(val << shift);
-    m_value = (static_cast<std::uint16_t>(m_value & flip(mask)) | val);
-  }
+  std::uint16_t CONVERT_SHIFT      = {};
+  std::uint16_t GET_HIGH_BIT_SHIFT = {};
+  std::uint16_t mask               = {};
+  std::uint16_t shift              = {};
+  std::uint16_t inverse_mask       = {};
 
 public:
-  Color16() = default;
-  explicit Color16(std::uint16_t raw_color) : m_value(raw_color) {}
-  friend auto
-    operator<=>(const Color16 &left, const Color16 &right) noexcept = default;
-  auto
-    operator<=>(const Color16 &right) const noexcept = default;
-  template<Color cT>
-  requires(!std::is_same_v<Color16, cT>) explicit Color16(cT color)
+  constexpr Color16_index_value(std::uint16_t maskT, std::uint16_t shiftT)
+    : CONVERT_SHIFT{ static_cast<std::uint16_t>(8 - std::popcount(maskT)) },
+      GET_HIGH_BIT_SHIFT{ static_cast<std::uint16_t>(std::popcount(maskT)
+                                                     - CONVERT_SHIFT) },
+      mask{ maskT }, shift{ shiftT }, inverse_mask{ static_cast<std::uint16_t>(
+                                        ~maskT) }
   {
-    r(color.r());
-    g(color.g());
-    b(color.b());
-    // pass stp bit? assuming alpha is 100% *shrugs*
-    if (m_value == 0) {
-      stp(true);
-    }
-    else {
-      stp(false);
-    }
+    assert(std::popcount(maskT) < 8 && shiftT < 16U);
   }
-  /**
-   * Color Blue stored as 5 bit.
-   * @return 8 bit color value.
-   */
-  [[nodiscard]] std::uint8_t
-    b() const
+  [[nodiscard]] constexpr std::uint8_t
+    convert(const std::uint16_t value) const noexcept
   {
-    return convert(BLUE_MASK, BLUE_SHIFT);
+    const std::uint16_t temp = (value & mask) >> shift;
+    return static_cast<std::uint8_t>((temp << CONVERT_SHIFT)
+                                     | (temp >> GET_HIGH_BIT_SHIFT));
   }
-  /**
-   * Color Green stored as 5 bit.
-   * @return 8 bit color value.
-   */
-  [[nodiscard]] std::uint8_t
-    g() const
+  [[nodiscard]] constexpr std::uint16_t
+    with(const std::uint16_t value, const std::uint8_t change) const noexcept
   {
-    return convert(GREEN_MASK, GREEN_SHIFT);
+    return (value & inverse_mask)
+         | static_cast<std::uint16_t>(((change >> CONVERT_SHIFT) << shift) & mask);
   }
-  /**
-   * Color Red stored as 5 bit.
-   * @return 8 bit color value.
-   */
-  [[nodiscard]] std::uint8_t
-    r() const
-  {
-    return convert(RED_MASK, RED_SHIFT);
-  }
-  /**
-   * Color Blue stored as 5 bit.
-   * @return 8 bit color value.
-   * @tparam T is an integral value. Clamped to 0-255.
-   * @param b is a new blue value.
-   */
-  template<Number T>
-  [[maybe_unused]] std::uint8_t
-    b(const T &b_in) const
-  {
-    set(b_in, BLUE_MASK, BLUE_SHIFT);
-    return b();
-  }
-  /**
-   * Color Green stored as 5 bit.
-   * @return 8 bit color value.
-   * @tparam T is an integral value. Clamped to 0-255.
-   * @param g is a new blue value.
-   */
-  template<Number T>
-  [[maybe_unused]] std::uint8_t
-    g(const T &g_in) const
-  {
-    set(g_in, GREEN_MASK, GREEN_SHIFT);
-    return g();
-  }
-  /**
-   * Color Red stored as 5 bit.
-   * @return 8 bit color value.
-   * @tparam T is an integral value. Clamped to 0-255.
-   * @param r is a new blue value.
-   */
-  template<Number T>
-  [[maybe_unused]] std::uint8_t
-    r(const T &r_in) const
-  {
-    set(r_in, RED_MASK, RED_SHIFT);
-    return r();
-  }
-  /**
-   * Special transparency bit
-   * @return true or false
-   */
-  [[maybe_unused]] [[nodiscard]] bool
-    stp() const
-  {
-    return (m_value & STP_MASK) != 0;
-  }
-  /**
-   * Special transparency bit
-   * @return true or false
-   */
-  [[maybe_unused]] bool
-    stp(bool enabled) const
-  {
-    if (enabled) {
-      m_value |= STP_MASK;
-    }
-    else {
-      m_value |= ALL_COLOR_MASK;
-    }
-    return enabled;
-  }
-  /**
-   * @return true if color is black. at least all the color bits are 0.
-   */
-  [[nodiscard]] bool
-    is_black() const
-  {
-    return (m_value & ALL_COLOR_MASK) == 0;
-  }
-  /**
-   * @return true if color is transparent Black. all bits are 0.
-   */
-  [[nodiscard]] [[maybe_unused]] bool
-    is_transparent_black() const
-  {
-    return m_value == 0;
-  }
-  [[nodiscard]] std::uint8_t
-    a() const
-  {
-    return is_black() ? 0U : std::numeric_limits<std::uint8_t>::max();
-  }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Color16 &color)
-  {
-    return os << std::uppercase << std::hex << '{'
-              << static_cast<std::size_t>(color.r()) << ", "
-              << static_cast<std::size_t>(color.g()) << ", "
-              << static_cast<std::size_t>(color.b()) << ", "
-              << static_cast<std::size_t>(color.a()) << '}' << std::dec
-              << std::nouppercase;
-  }
-  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 2U };
 };
-static_assert(sizeof(Color16) == Color16::EXPLICIT_SIZE);
+template<ColorLayoutT layoutT>
+requires((has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
+           && has_one_flag<layoutT, ColorLayoutT::PREA, ColorLayoutT::POSTA>())
+         || has_one_flag<layoutT,
+                         ColorLayoutT::BGR,
+                         ColorLayoutT::RGB>()) struct Color16_impl
+{
+  constexpr static auto current_layout = layoutT;
+  static constexpr auto indexes        = get_index<layoutT>(
+    std::array{ Color16_index_value{ 0b1000'0000'0000'0000U, 15U },
+                Color16_index_value{ 0b0111'1100'0000'0000U, 10U },
+                Color16_index_value{ 0b0000'0011'1110'0000U, 5U },
+                Color16_index_value{ 0b0000'0000'0001'1111U, 0U } },
+    std::array{ Color16_index_value{ 0b1111'1000'0000'0000U, 11U },
+                Color16_index_value{ 0b0000'0111'1100'0000U, 6U },
+                Color16_index_value{ 0b0000'0000'0011'1110U, 1U },
+                Color16_index_value{ 0b0000'0000'0000'0001U, 0U } },
+    std::array{ Color16_index_value{ 0b1111'1000'0000'0000U, 11U },
+                Color16_index_value{ 0b0000'0111'1110'0000U, 5U },
+                Color16_index_value{ 0b0000'0000'0001'1111U, 0U } });
+
+  std::uint16_t value{};
+  constexpr Color16_impl() = default;
+  template<typename... Ts>
+  requires(sizeof...(Ts) == indexes.size()) constexpr Color16_impl(Ts &&...ts)
+    : value([&]() {
+        auto          i = indexes.begin();
+        std::uint16_t v = {};
+        ((void)(v = i++->with(v, std::forward<Ts>(ts))), ...);
+        return v;
+      }())
+  {}
+  template<typename T>
+  constexpr std::uint8_t
+    operator[](T &&index) const
+  {
+    return indexes[std::forward<T>(index)].convert(value);
+  }
+  template<typename T, typename U>
+  constexpr auto
+    with(T &&index, U &&change) const
+  {
+    return indexes[std::forward<T>(index)].with(value, std::forward<U>(change));
+  }
+  static constexpr bool has_alpha
+    = has_one_flag<layoutT, ColorLayoutT::PREA, ColorLayoutT::POSTA>();
+  static constexpr std::uint8_t alpha_size    = 1U;
+  static constexpr std::size_t  EXPECTED_SIZE = 2U;
+};
+template<ColorLayoutT layoutT>
+using Color16 = CommonColor<Color16_impl<layoutT>>;
+static_assert(sizeof(Color16<ColorLayoutT::ABGR>)
+              == Color16<ColorLayoutT::ABGR>::EXPECTED_SIZE);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR16_HPP

@@ -22,6 +22,10 @@
 #include <iostream>
 #include <string_view>
 #include <utility>
+#include <filesystem>
+#include <span>
+#include "open_viii/tools/Tools.hpp"
+
 namespace open_viii::graphics {
 struct Ppm
 {

@@ -12,178 +12,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_COLOR32_HPP
 #define VIIIARCHIVE_COLOR32_HPP
-#include "open_viii/Concepts.hpp"
-#include <algorithm>
-#include <bitset>
-#include <compare>
-#include <cstdint>
-#include <limits>
+#include "CommonColor.hpp"
+#include "ColorByteArray.hpp"
 namespace open_viii::graphics {
-// template <size_t valueT>
-// requires (valueT >=0U && valueT <=3U)
-// static constexpr bool color32_valid_offset()
-//{
-//  return true;
-//}
-/**
- * 32 bit colors, Each color is 8 bits, or 1 bytes. You may choose the order of
- * the colors. The indexes must be unique.
- * @tparam r_ red index
- * @tparam g_ green index
- * @tparam b_ blue index
- * @tparam a_ alpha index
- */
-// template<size_t r_ = 0U, size_t g_ = 1U, size_t b_ = 2U, size_t a_ = 3U>
-// requires(r_ < 4U && g_ < 4U && b_ < 4U && r_ != g_ && r_ != b_ && g_ != b_
-//          && a_ != g_ && a_ != b_ && a_ != r_)
 template<ColorLayoutT layoutT>
-requires(layoutT == ColorLayoutT::ABGR || layoutT == ColorLayoutT::RGBA || layoutT == ColorLayoutT::BGRA)
-struct Color32
+requires(has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>(),
+         has_one_flag<layoutT,
+           ColorLayoutT::PREA,
+           ColorLayoutT::POSTA>()) struct Color32_impl
+  : ColorByteArray<4U>
 {
-public:
-  [[maybe_unused]] constexpr static auto EXPLICIT_SIZE{ 4U };
-
-private:
-  using this_type          = Color32<layoutT>;
-  constexpr static auto r_ = []() -> std::size_t {
-    if constexpr (layoutT == ColorLayoutT::ABGR) {
-      return 3U;
-    }
-    else if constexpr (layoutT == ColorLayoutT::RGBA) {
-      return 0U;
-    }
-    else if constexpr (layoutT == ColorLayoutT::BGRA) {
-      return 2U;
-    }
-  }();
-  constexpr static auto g_ = []() -> std::size_t {
-    if constexpr (layoutT == ColorLayoutT::ABGR) {
-      return 2U;
-    }
-    else if constexpr (layoutT == ColorLayoutT::RGBA) {
-      return 1U;
-    }
-    else if constexpr (layoutT == ColorLayoutT::BGRA) {
-      return 1U;
-    }
-  }();
-  constexpr static auto b_ = []() -> std::size_t {
-    if constexpr (layoutT == ColorLayoutT::ABGR) {
-      return 1U;
-    }
-    else if constexpr (layoutT == ColorLayoutT::RGBA) {
-      return 2U;
-    }
-    else if constexpr (layoutT == ColorLayoutT::BGRA) {
-      return 0U;
-    }
-  }();
-  constexpr static auto a_ = []() -> std::size_t {
-    if constexpr (layoutT == ColorLayoutT::ABGR) {
-      return 0U;
-    }
-    else if constexpr (layoutT == ColorLayoutT::RGBA) {
-      return 3U;
-    }
-    else if constexpr (layoutT == ColorLayoutT::BGRA) {
-      return 3U;
-    }
-  }();
-  mutable std::array<std::uint8_t, EXPLICIT_SIZE> m_parts{};
-  template<size_t index, std::floating_point T>
-  std::uint8_t
-    set(T value) const
-  {
-    return m_parts[index] = static_cast<std::uint8_t>(
-             std::clamp(value, static_cast<T>(0.0F), static_cast<T>(1.0F))
-             * std::numeric_limits<std::uint8_t>::max());
-  }
-  template<size_t index, typename T>
-  requires(std::integral<T> && !std::is_same_v<T, std::int8_t>) std::uint8_t
-    set(T value)
-  const
-  {
-    return m_parts[index] = static_cast<std::uint8_t>(std::clamp(
-             value,
-             static_cast<T>(0U),
-             static_cast<T>(std::numeric_limits<std::uint8_t>::max())));
-  }
-
-public:
-  Color32() = default;
-  template<Color c_t>
-  explicit Color32(c_t input_color)
-  {
-    r(input_color.r());
-    g(input_color.g());
-    b(input_color.b());
-    a(input_color.a());
-  }
-  [[nodiscard]] constexpr std::uint8_t
-    r() const
-  {
-    return m_parts.at(r_);
-  }
-  [[nodiscard]] constexpr std::uint8_t
-    g() const
-  {
-    return m_parts.at(g_);
-  }
-  [[nodiscard]] constexpr std::uint8_t
-    b() const
-  {
-    return m_parts.at(b_);
-  }
-  [[nodiscard]] constexpr std::uint8_t
-    a() const
-  {
-    return m_parts.at(a_);
-  }
-  template<Number T>
-  std::uint8_t
-    r(const T &value) const
-  {
-    return set<r_, T>(value);
-  }
-  template<Number T>
-  std::uint8_t
-    g(const T &value) const
-  {
-    return set<g_, T>(value);
-  }
-  template<Number T>
-  std::uint8_t
-    b(const T &value) const
-  {
-    return set<b_, T>(value);
-  }
-  template<Number T>
-  std::uint8_t
-    a(const T &value) const
-  {
-    return set<a_, T>(value);
-  }
-  friend std::ostream &
-    operator<<(std::ostream &os, const this_type &color)
-  {
-    return os << std::uppercase << std::hex << '{'
-              << static_cast<std::size_t>(color.R()) << ", "
-              << static_cast<std::size_t>(color.G()) << ", "
-              << static_cast<std::size_t>(color.B()) << ", "
-              << static_cast<std::size_t>(color.A()) << '}' << std::dec
-              << std::nouppercase;
-  }
-  friend auto
-    operator<=>(const this_type &left,
-                const this_type &right) noexcept = default;
-  auto
-    operator<=>(const this_type &right) const noexcept = default;
-  constexpr bool
-    is_black() const noexcept
-  {
-    return r() == 0 && g() == 0 && b() == 0;
-  }
+  constexpr static auto current_layout = layoutT;
+  using ColorByteArray<4U>::ColorByteArray;
 };
-static_assert(sizeof(Color32<ColorLayoutT::RGBA>) == Color32<ColorLayoutT::RGBA>::EXPLICIT_SIZE);
+template<ColorLayoutT layoutT>
+using Color32 = CommonColor<Color32_impl<layoutT>>;
+static_assert(sizeof(Color32<ColorLayoutT::RGBA>)
+              == Color32<ColorLayoutT::RGBA>::EXPECTED_SIZE);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR32_HPP

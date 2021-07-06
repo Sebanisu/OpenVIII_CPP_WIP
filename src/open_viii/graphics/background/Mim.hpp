@@ -30,12 +30,12 @@ namespace open_viii::graphics::background {
 struct Mim
 {
 private:
-  const std::vector<char>           m_buffer{};
-  const MimType                     m_mim_type{};
-  const std::span<const char>       m_image_buffer{};
-  const std::span<const Color16>    m_palette_buffer{};
-  const std::span<const Bit4Values> m_image_buffer_bbp4{};
-  const std::span<const Color16>    m_image_buffer_bbp16{};
+  const std::vector<char>                            m_buffer{};
+  const MimType                                      m_mim_type{};
+  const std::span<const char>                        m_image_buffer{};
+  const std::span<const Color16<ColorLayoutT::ABGR>> m_palette_buffer{};
+  const std::span<const Bit4Values>                  m_image_buffer_bbp4{};
+  const std::span<const Color16<ColorLayoutT::ABGR>> m_image_buffer_bbp16{};
   [[nodiscard]] static const auto &
     clut_width() noexcept
   {
@@ -46,7 +46,7 @@ private:
   {
     return ((m_mim_type.palette_section_size()
              - m_mim_type.bytes_skipped_palettes())
-            / sizeof(Color16))
+            / sizeof(Color16<ColorLayoutT::ABGR>))
          / clut_width();
   }
   std::span<const char>
@@ -55,15 +55,16 @@ private:
     return std::span<const char>(m_buffer).subspan(
       m_mim_type.palette_section_size());
   }
-  std::span<const Color16>
+  std::span<const Color16<ColorLayoutT::ABGR>>
     set_palette_span() const
   {
     const auto palette_buffer_tmp = std::span<const char>(m_buffer).subspan(
       m_mim_type.bytes_skipped_palettes(),
       m_mim_type.palette_section_size() - m_mim_type.bytes_skipped_palettes());
-    return { reinterpret_cast<const Color16 *>(
+    return { reinterpret_cast<const Color16<ColorLayoutT::ABGR> *>(
                std::ranges::data(palette_buffer_tmp)),
-             std::ranges::size(palette_buffer_tmp) / sizeof(Color16) };
+             std::ranges::size(palette_buffer_tmp)
+               / sizeof(Color16<ColorLayoutT::ABGR>) };
   }
   std::span<const Bit4Values>
     set_image_span_bpp4() const
@@ -72,14 +73,15 @@ private:
                std::ranges::data(m_image_buffer)),
              std::ranges::size(m_image_buffer) / sizeof(Bit4Values) };
   }
-  std::span<const Color16>
+  std::span<const Color16<ColorLayoutT::ABGR>>
     set_image_span_bpp16() const
   {
-    return { reinterpret_cast<const Color16 *>(
+    return { reinterpret_cast<const Color16<ColorLayoutT::ABGR> *>(
                std::ranges::data(m_image_buffer)),
-             std::ranges::size(m_image_buffer) / sizeof(Color16) };
+             std::ranges::size(m_image_buffer)
+               / sizeof(Color16<ColorLayoutT::ABGR>) };
   }
-  [[nodiscard]] Color16
+  [[nodiscard]] Color16<ColorLayoutT::ABGR>
     safe_get_color_from_palette(size_t key) const
   {
     auto size1 = std::ranges::size(m_palette_buffer);
@@ -93,24 +95,24 @@ private:
   {
     return key + (palette * static_cast<std::size_t>(clut_width()));
   }
-  [[nodiscard]] std::vector<Color16>
+  [[nodiscard]] std::vector<Color16<ColorLayoutT::ABGR>>
     get_image_bpp8(const uint8_t &palette) const
   {
-    std::vector<Color16> out{};
+    std::vector<Color16<ColorLayoutT::ABGR>> out{};
     out.reserve(std::ranges::size(m_image_buffer));
     std::ranges::transform(
       m_image_buffer,
       std::back_inserter(out),
-      [&palette, this](const char &c) -> Color16 {
+      [&palette, this](const char &c) -> Color16<ColorLayoutT::ABGR> {
         return safe_get_color_from_palette(
           get_palette_key(static_cast<uint8_t>(c), palette));
       });
     return out;
   }
-  [[nodiscard]] std::vector<Color16>
+  [[nodiscard]] std::vector<Color16<ColorLayoutT::ABGR>>
     get_image_bpp4(const uint8_t &palette) const
   {
-    std::vector<Color16> out{};
+    std::vector<Color16<ColorLayoutT::ABGR>> out{};
     out.reserve(std::ranges::size(m_image_buffer_bbp4) * 2);
     std::ranges::for_each(m_image_buffer_bbp4,
                           [&palette, this, &out](const Bit4Values &key) {
@@ -188,11 +190,11 @@ public:
   requires(
     std::invocable<
       lambdaT,
-      std::span<const Color16>,
+      std::span<const Color16<ColorLayoutT::ABGR>>,
       std::size_t,
       std::size_t,
       std::
-        string> || std::invocable<lambdaT, std::span<const Color16>, std::size_t>)
+        string> || std::invocable<lambdaT, std::span<const Color16<ColorLayoutT::ABGR>>, std::size_t>)
     [[maybe_unused]] void get_colors(const std::string_view &filename,
                                      const BPPT &            bpp,
                                      const uint8_t &         palette,
@@ -203,7 +205,7 @@ public:
     const auto path = std::filesystem::path(filename);
     if (dump_palette) {
       if constexpr (std::invocable<lambdaT,
-                                   std::span<const Color16>,
+                                   std::span<const Color16<ColorLayoutT::ABGR>>,
                                    std::size_t,
                                    std::size_t,
                                    std::string>) {
@@ -213,7 +215,7 @@ public:
                ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
       }
       else if constexpr (std::invocable<lambdaT,
-                                        std::span<const Color16>,
+                                        std::span<const Color16<ColorLayoutT::ABGR>>,
                                         std::size_t>) {
         lambda(m_palette_buffer, static_cast<std::size_t>(clut_width()));
       }
@@ -230,7 +232,7 @@ public:
     if (bpp.bpp8()) {
       auto out = get_image_bpp8(palette);
       if constexpr (std::invocable<lambdaT,
-                                   std::span<const Color16>,
+                                   std::span<const Color16<ColorLayoutT::ABGR>>,
                                    std::size_t,
                                    std::size_t,
                                    std::string>) {
@@ -239,15 +241,15 @@ public:
                std::ranges::size(out) / width,
                out_path(BPPT::BPP8));
       }
-      else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+      else if (std::invocable<lambdaT, std::span<const Color16<ColorLayoutT::ABGR>>, std::size_t>) {
         lambda(out, width);
       }
     }
     else if (bpp.bpp4()) {
-      std::vector<Color16> out = get_image_bpp4(palette);
+      std::vector<Color16<ColorLayoutT::ABGR>> out = get_image_bpp4(palette);
       width *= 2U;
       if constexpr (std::invocable<lambdaT,
-                                   std::span<const Color16>,
+                                   std::span<const Color16<ColorLayoutT::ABGR>>,
                                    std::size_t,
                                    std::size_t,
                                    std::string>) {
@@ -256,14 +258,16 @@ public:
                std::ranges::size(out) / width,
                out_path(BPPT::BPP4));
       }
-      else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+      else if (std::invocable<lambdaT,
+                              std::span<const Color16<ColorLayoutT::ABGR>>,
+                              std::size_t>) {
         lambda(out, width);
       }
     }
     else if (bpp.bpp16()) {
       width /= 2U;
       if constexpr (std::invocable<lambdaT,
-                                   std::span<const Color16>,
+                                   std::span<const Color16<ColorLayoutT::ABGR>>,
                                    std::size_t,
                                    std::size_t,
                                    std::string>) {
@@ -272,7 +276,9 @@ public:
                std::ranges::size(m_image_buffer_bbp16) / width,
                out_path(BPPT::BPP16, false));
       }
-      else if (std::invocable<lambdaT, std::span<const Color16>, std::size_t>) {
+      else if (std::invocable<lambdaT,
+                              std::span<const Color16<ColorLayoutT::ABGR>>,
+                              std::size_t>) {
         lambda(m_image_buffer_bbp16, width);
       }
     }
@@ -293,7 +299,7 @@ public:
     }
     return width;
   }
-  [[nodiscard]] Color16
+  [[nodiscard]] Color16<ColorLayoutT::ABGR>
     get_color(const std::uint32_t x,
               const std::uint32_t y,
               const BPPT          depth,
@@ -333,12 +339,13 @@ public:
   [[maybe_unused]] void
     save([[maybe_unused]] std::string_view filename) const
   {
-    static constexpr auto ppm_save = [](const std::span<const Color16> &data,
-                                        const std::size_t &             width,
-                                        const std::size_t &             height,
-                                        const std::string &local_filename) {
-      Ppm::save(data, width, height, local_filename);
-    };
+    static constexpr auto ppm_save
+      = [](const std::span<const Color16<ColorLayoutT::ABGR>> &data,
+           const std::size_t &                                 width,
+           const std::size_t &                                 height,
+           const std::string &                                 local_filename) {
+          Ppm::save(data, width, height, local_filename);
+        };
     get_colors(filename, {}, {}, ppm_save, true);
     BPPT bpp{};
     {

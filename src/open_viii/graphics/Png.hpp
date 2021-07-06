@@ -11,11 +11,11 @@
 namespace open_viii::graphics {
 struct Png
 {
-  template<Color cT>
+  template<Color cT, std::unsigned_integral iT>
   static void
     save(const std::vector<cT> &data,
-         png_uint_32            width,
-         png_uint_32            height,
+         iT                     width,
+         iT                     height,
          std::filesystem::path  filename,
          std::string            title  = "",
          std::string            prefix = "tmp") noexcept
