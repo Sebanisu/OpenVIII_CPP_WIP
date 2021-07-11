@@ -40,3 +40,15 @@ for:
       #- cmd: "mkdir build\ncmake -G \"Visual Studio 16 2019\" -B build\nMSBuild build\\ALL_BUILD.vcxproj"
     test_script:
       - cmd: "cd build\nctest -C debug --extra-verbose\ncd .."
+    artifacts:
+      - path: 'bin/*.exe'
+        name: Canary
+    deploy:
+      - provider: GitHub
+        release: Canary
+        description: Automatic Test build.
+        auth_token:
+          secure: 5giEwDYEP975x3C+JYDNGukTupBCPcmez7GbulvUX40/2C5cgs5ta8Gyq6IYpFmW
+        artifact: Canary
+        prerelease: true
+        force_update: true
