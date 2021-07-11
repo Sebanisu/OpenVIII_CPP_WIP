@@ -86,7 +86,7 @@ jobs:
         export CC=gcc
         export CXX=g++
         cmake -G "Ninja Multi-Config" -B build -DDOCS:STRING=YES
-        ninja -C build"
+        ninja -C build
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
