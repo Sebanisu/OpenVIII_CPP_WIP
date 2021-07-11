@@ -12,51 +12,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_COLOR16_HPP
 #define VIIIARCHIVE_COLOR16_HPP
+#include "Color16_index_value.hpp"
 #include "CommonColor.hpp"
 namespace open_viii::graphics {
-
-struct Color16_index_value
-{
-private:
-  std::uint16_t CONVERT_SHIFT      = {};
-  std::uint16_t GET_HIGH_BIT_SHIFT = {};
-  std::uint16_t mask               = {};
-  std::uint16_t shift              = {};
-  std::uint16_t inverse_mask       = {};
-
-public:
-  constexpr Color16_index_value(std::uint16_t maskT, std::uint16_t shiftT)
-    : CONVERT_SHIFT{ static_cast<std::uint16_t>(8 - std::popcount(maskT)) },
-      GET_HIGH_BIT_SHIFT{ static_cast<std::uint16_t>(std::popcount(maskT)
-                                                     - CONVERT_SHIFT) },
-      mask{ maskT }, shift{ shiftT }, inverse_mask{ static_cast<std::uint16_t>(
-                                        ~maskT) }
-  {
-    assert(std::popcount(maskT) < 8 && shiftT < 16U);
-  }
-  [[nodiscard]] constexpr std::uint8_t
-    convert(const std::uint16_t value) const noexcept
-  {
-    const std::uint16_t temp = (value & mask) >> shift;
-    return static_cast<std::uint8_t>((temp << CONVERT_SHIFT)
-                                     | (temp >> GET_HIGH_BIT_SHIFT));
-  }
-  [[nodiscard]] constexpr std::uint16_t
-    with(const std::uint16_t value, const std::uint8_t change) const noexcept
-  {
-    return (value & inverse_mask)
-         | static_cast<std::uint16_t>(((change >> CONVERT_SHIFT) << shift) & mask);
-  }
-};
 template<ColorLayoutT layoutT>
 requires((has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
-           && has_one_flag<layoutT, ColorLayoutT::PREA, ColorLayoutT::POSTA>())
+          && has_one_flag<layoutT, ColorLayoutT::PREA, ColorLayoutT::POSTA>())
          || has_one_flag<layoutT,
                          ColorLayoutT::BGR,
                          ColorLayoutT::RGB>()) struct Color16_impl
 {
-  constexpr static auto current_layout = layoutT;
-  static constexpr auto indexes        = get_index<layoutT>(
+
+private:
+  static constexpr auto indexes = get_index<layoutT>(
     std::array{ Color16_index_value{ 0b1000'0000'0000'0000U, 15U },
                 Color16_index_value{ 0b0111'1100'0000'0000U, 10U },
                 Color16_index_value{ 0b0000'0011'1110'0000U, 5U },
@@ -69,10 +37,14 @@ requires((has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
                 Color16_index_value{ 0b0000'0111'1110'0000U, 5U },
                 Color16_index_value{ 0b0000'0000'0001'1111U, 0U } });
 
-  std::uint16_t value{};
+protected:
+  constexpr static auto current_layout = layoutT;
+  std::uint16_t         value{};
   constexpr Color16_impl() = default;
   template<typename... Ts>
-  requires(sizeof...(Ts) == indexes.size()) constexpr Color16_impl(Ts &&...ts)
+  requires(sizeof...(Ts) == indexes.size()
+           && (std::integral<
+                 std::decay_t<Ts>> && ...)) constexpr Color16_impl(Ts &&...ts)
     : value([&]() {
         auto          i = indexes.begin();
         std::uint16_t v = {};
@@ -98,7 +70,19 @@ requires((has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
   static constexpr std::size_t  EXPECTED_SIZE = 2U;
 };
 template<ColorLayoutT layoutT>
-using Color16 = CommonColor<Color16_impl<layoutT>>;
+using Color16     = CommonColor<Color16_impl<layoutT>>;
+using Color16ABGR = Color16<ColorLayoutT::ABGR>;
+using Color16ARGB = Color16<ColorLayoutT::ARGB>;
+using Color16BGRA = Color16<ColorLayoutT::BGRA>;
+using Color16RGBA = Color16<ColorLayoutT::RGBA>;
+using Color16BGR  = Color16<ColorLayoutT::BGR>;
+using Color16RGB  = Color16<ColorLayoutT::RGB>;
+static_assert(Color<Color16ABGR>);
+static_assert(Color<Color16ARGB>);
+static_assert(Color<Color16BGRA>);
+static_assert(Color<Color16RGBA>);
+static_assert(Color<Color16BGR>);
+static_assert(Color<Color16RGB>);
 static_assert(sizeof(Color16<ColorLayoutT::ABGR>)
               == Color16<ColorLayoutT::ABGR>::EXPECTED_SIZE);
 }// namespace open_viii::graphics

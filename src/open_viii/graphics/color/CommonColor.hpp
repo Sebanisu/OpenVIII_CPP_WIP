@@ -4,20 +4,13 @@
 
 #ifndef OPENVIII_CPP_WIP_COMMONCOLOR_HPP
 #define OPENVIII_CPP_WIP_COMMONCOLOR_HPP
-#include "open_viii/Concepts.hpp"
 #include "ColorLayoutT.hpp"
+#include "open_viii/Concepts.hpp"
 namespace open_viii::graphics {
 template<typename T>
 struct CommonColor : T
 {
-  using T::alpha_size;
-  using T::current_layout;
-  using T::has_alpha;
-  using T::value;
-  using T::with;
-  using T::EXPECTED_SIZE;
-  using this_type = CommonColor<T>;
-  using T::operator[];
+private:
   template<std::size_t index, Color cT>
   constexpr std::uint8_t
     swap_index(const cT &color) const noexcept
@@ -36,9 +29,29 @@ struct CommonColor : T
       return color.a();
     }
   }
+  using T::operator[];
+  using T::alpha_size;
+  using T::value;
+  using T::with;
+
+public:
+  using T::current_layout;
+
+private:
+  static constexpr auto red_index   = get_index<current_layout, 2U, 0U, 1U>();
+  static constexpr auto green_index = get_index<current_layout, 1U, 1U, 1U>();
+  static constexpr auto blue_index  = get_index<current_layout, 0U, 2U, 1U>();
+  static constexpr auto alpha_index = get_index<current_layout>(0U, 3U);
+
+public:
+  using T::EXPECTED_SIZE;
+  using T::has_alpha;
+  using this_type         = CommonColor<T>;
   constexpr CommonColor() = default;
-  template<std::integral... Ts>
-  constexpr explicit CommonColor(Ts &&...ts) : T{ std::forward<Ts>(ts)... }
+  template<typename... Ts>
+  requires(std::integral<std::decay_t<Ts>>
+             &&...) constexpr explicit CommonColor(Ts &&...ts)
+    : T{ std::forward<Ts>(ts)... }
   {}
   template<Color cT>
   requires(
@@ -59,10 +72,6 @@ struct CommonColor : T
                    swap_index<1>(color),
                    swap_index<2>(color) }
   {}
-  static constexpr auto red_index   = get_index<current_layout, 2U, 0U, 1U>();
-  static constexpr auto green_index = get_index<current_layout, 1U, 1U, 1U>();
-  static constexpr auto blue_index  = get_index<current_layout, 0U, 2U, 1U>();
-  static constexpr auto alpha_index = get_index<current_layout>(0U, 3U);
   constexpr std::uint8_t
     r() const noexcept
   {
@@ -172,6 +181,18 @@ struct CommonColor : T
   {
     return operator<=>(rhs) == 0;
   }
+
+  constexpr auto
+    operator!=(const this_type &rhs) const noexcept
+  {
+    return value != rhs.value;
+  }
+  template<Color cT>
+  constexpr auto
+    operator!=(const cT &rhs) const noexcept
+  {
+    return operator<=>(rhs) != 0;
+  }
 };
-}
+}// namespace open_viii::graphics
 #endif// OPENVIII_CPP_WIP_COMMONCOLOR_HPP

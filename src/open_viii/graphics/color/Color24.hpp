@@ -20,11 +20,16 @@ requires(layoutT == ColorLayoutT::BGR
          || layoutT == ColorLayoutT::RGB) struct Color24_impl
   : ColorByteArray<3U>
 {
+protected:
   constexpr static auto current_layout = layoutT;
   using ColorByteArray<3U>::ColorByteArray;
 };
 template<ColorLayoutT layoutT>
 using Color24 = CommonColor<Color24_impl<layoutT>>;
-static_assert(sizeof(Color24<ColorLayoutT::RGB>) == Color24<ColorLayoutT::RGB>::EXPECTED_SIZE);
+using Color24BGR = Color24<ColorLayoutT::BGR>;
+using Color24RGB = Color24<ColorLayoutT::RGB>;
+static_assert(Color<Color24BGR>);
+static_assert(Color<Color24RGB>);
+static_assert(sizeof(Color24RGB) == Color24RGB::EXPECTED_SIZE);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR24_HPP
