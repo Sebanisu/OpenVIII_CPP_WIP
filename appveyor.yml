@@ -33,7 +33,7 @@ for:
     build_script:
       - sh: "mkdir build\ncmake -G \"Ninja Multi-Config\" -B build -DDOCS:STRING=YES\nninja -C build"
     after_build:
-      - sh: "cd docs && git add -all && git commit -m 'UPDATE_DOCS' && cd .."
+      - sh: "cd docs && git add --all && git commit -m 'UPDATE_DOCS' && cd .."
     test_script:
       - sh: "cd build && ctest -C debug --verbose && cd .."
   - matrix:
