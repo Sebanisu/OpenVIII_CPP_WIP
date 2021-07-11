@@ -46,7 +46,7 @@ for:
     deploy:
       - provider: GitHub
         release: Canary
-        description: Automatic Test build.
+        description: Automatic Test build version($(APPVEYOR_BUILD_VERSION)). [Documentation](https://sebanisu.github.io/OpenVIII_CPP_WIP/applications.html#)
         auth_token:
           secure: 5giEwDYEP975x3C+JYDNGukTupBCPcmez7GbulvUX40/2C5cgs5ta8Gyq6IYpFmW
         artifact: Canary
