@@ -4,6 +4,10 @@
 
 #ifndef OPENVIII_CPP_WIP_COLOR16_INDEX_VALUE_HPP
 #define OPENVIII_CPP_WIP_COLOR16_INDEX_VALUE_HPP
+#include <cstdint>
+#include <bit>
+#include <cassert>
+#include <array>
 namespace open_viii::graphics {
 struct Color16_index_value
 {

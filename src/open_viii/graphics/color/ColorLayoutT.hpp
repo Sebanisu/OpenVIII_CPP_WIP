@@ -67,7 +67,7 @@ template<ColorLayoutT layoutT,
   std::size_t  bgr,
   std::size_t  rgb,
   std::size_t  pre_alpha_offset>
-constexpr std::size_t
+consteval std::size_t
 get_index()
 {
   if constexpr (has_flag<layoutT, ColorLayoutT::RGB>()) {
