@@ -53,8 +53,8 @@ jobs:
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+    #- name: Autobuild
+    #  uses: github/codeql-action/autobuild@v1
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
@@ -63,9 +63,30 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    #- run: |
-    #   make bootstrap
-    #   make release
+    - run: |
+        sudo apt-get update
+        sudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common wget
+        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
+        sudo apt-get -y update
+        sudo apt-get -y install libpng-dev gcc-10 g++-10 ninja-build cmake doxygen graphviz python3-dev python3-pip
+        pip3 install sphinx
+        pip3 install sphinx-inline-tabs
+        pip3 install furo
+        pip3 install breathe
+        pip3 install myst_parser
+        pip3 install linkify-it-py
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 90
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 90
+        sudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 30
+        sudo update-alternatives --set cc /usr/bin/gcc
+        sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 30
+        sudo update-alternatives --set c++ /usr/bin/g++
+        export CC=gcc
+        export CXX=g++
+        cmake -G "Ninja Multi-Config" -B build -DDOCS:STRING=YES
+        ninja -C build"
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
