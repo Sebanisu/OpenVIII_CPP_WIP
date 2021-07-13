@@ -15,14 +15,19 @@ namespace open_viii::graphics {
 struct Png
 {
 private:
-  std::filesystem::path m_filename{};
-  ::libpng::png_uint_32 m_width{};
-  ::libpng::png_uint_32 m_height{};
-  int                   m_bit_depth{};
-  int                   m_color_type{};
+  std::filesystem::path                    m_filename{};
+  ::libpng::png_uint_32                    m_width{};
+  ::libpng::png_uint_32                    m_height{};
+  int                                      m_bit_depth{};
+  int                                      m_color_type{};
+  std::size_t                              m_row_bytes{};
+  ::libpng::png_byte                       m_channels{};
+  double                                   m_gamma{};
+  std::vector<Color32<ColorLayoutT::RGBA>> m_color{};
+  Color32<ColorLayoutT::RGBA>              m_background_color{};
+  static constexpr ::libpng::png_uint_32   bytes_per_pixel = 4;
 
   using safe_fp = std::unique_ptr<FILE, decltype(&fclose)>;
-  safe_fp               m_fp{ nullptr, fclose };
 
   static constexpr auto safe_png_read_struct_deleter
     = [](::libpng::png_struct *png_s) {
@@ -61,16 +66,65 @@ private:
     return info_ptr;
   }
 
-public:
+  static constexpr double
+    get_display_exponent() noexcept
+  {
+    const double CRT_exponent = { 2.2 };
+    const double LUT_exponent = []() {
+#if defined(NeXT)
+      return 1.0 / 2.2;
+      /*
+      if (some_next_function_that_returns_gamma(&next_gamma))
+      return 1.0 / next_gamma;
+      */
+#elif defined(sgi)
+      /* there doesn't seem to be any documented function to
+       * get the "gamma" value, so we do it the hard way */
+      auto infile = safe_fp = {fopen("/etc/config/system.glGammaVal", "r"),fclose);
+      if (infile) {
+        double sgi_gamma;
+
+        fgets(fooline, 80, infile.get());
+        sgi_gamma = atof(fooline);
+        if (sgi_gamma > 0.0)
+          return 1.0 / sgi_gamma;
+      }
+      return 1.0 / 1.7;
+#elif defined(Macintosh)
+      return 1.8 / 2.61;
+      /*
+      if (some_mac_function_that_returns_gamma(&mac_gamma))
+      return mac_gamma / 2.61;
+      */
+#else
+      return 1.0; /* assume no LUT: most PCs */
+#endif
+    }();
+    return LUT_exponent * CRT_exponent;
+  }
+
   template<typename deleter>
-  auto
+  [[nodiscard]] double
+    get_gamma(const safe_png_read_struct &                        png_ptr,
+              const std::unique_ptr<::libpng::png_info, deleter> &info_ptr)
+      const noexcept
+  {
+    static constexpr auto display_exponent = Png::get_display_exponent();
+    double                g{};
+    if (::libpng::png_get_gAMA(png_ptr.get(), info_ptr.get(), &g))
+      ::libpng::png_set_gamma(png_ptr.get(), display_exponent, g);
+    return g;
+  }
+  template<typename deleter>
+  [[nodiscard]] auto
     get_background_color(
-      const safe_png_read_struct &                  png_ptr,
+      const safe_png_read_struct &                        png_ptr,
       const std::unique_ptr<::libpng::png_info, deleter> &info_ptr) const
   {
     libpng::png_color_16 *pBackground{};
     png_get_bKGD(png_ptr.get(), info_ptr.get(), &pBackground);
-
+    if (pBackground == nullptr)
+      return Color32<ColorLayoutT::RGBA>{};
     uint8_t red{}, green{}, blue{};
     if (m_bit_depth == 16) {
       red   = static_cast<std::uint8_t>(pBackground->red >> 8);
@@ -81,26 +135,47 @@ public:
       if (m_bit_depth == 1)
         red = green = blue = pBackground->gray ? 255 : 0;
       else if (m_bit_depth == 2) /* i.e., max value is 3 */
-        red = green = blue = static_cast<std::uint8_t>((255 / 3) * pBackground->gray);
+        red = green = blue
+          = static_cast<std::uint8_t>((255 / 3) * pBackground->gray);
       else /* bit_depth == 4 */ /* i.e., max value is 15 */
-        red = green = blue = static_cast<std::uint8_t>((255 / 15) * pBackground->gray);
+        red = green = blue
+          = static_cast<std::uint8_t>((255 / 15) * pBackground->gray);
     }
     else {
       red   = static_cast<std::uint8_t>(pBackground->red);
       green = static_cast<std::uint8_t>(pBackground->green);
       blue  = static_cast<std::uint8_t>(pBackground->blue);
     }
-    return Color24<ColorLayoutT::RGB>{ red, green, blue };
+    return Color32<ColorLayoutT::RGBA>{ red, green, blue, 0xFFU };
   }
-  Png(std::filesystem::path filename)
+
+public:
+  Png(const std::filesystem::path &filename)
   {
-    m_fp = safe_fp{ fopen(filename.string().c_str(), "wb"),
-                    fclose };// todo do I need fopen?
-    uint8_t sig[8]{};
-    if (m_fp) {
-      fread(sig, 1, sizeof(sig), m_fp.get());
-      if (::libpng::png_sig_cmp(sig, 0, sizeof(sig)) != 0)
-        return; /* bad signature */
+    auto fp = safe_fp{ fopen(filename.string().c_str(), "rb"),
+                       fclose };// todo do I need fopen?
+
+    if (fp) {
+      uint8_t sig[8] = {};
+      fread(sig, 1, 8, fp.get());
+      if (::libpng::png_sig_cmp(sig, 0, 8) != 0) {
+
+        fprintf(stderr,
+                "Bad signature\n%s\n",
+                filename.string().c_str());// todo modernize error message
+        std::cerr << +sig[0] << ',' << +sig[1] << ',' << +sig[2] << ','
+                  << +sig[3] << ',' << +sig[4] << ',' << +sig[5] << ','
+                  << +sig[6] << ',' << +sig[7] << '\n';
+
+        return;
+      }
+    }
+    else {
+      fprintf(stderr,
+              "Could not open file %s for reading\n",
+              filename.string().c_str());// todo modernize error message
+
+      return;
     }
 
     // Initialize read structure
@@ -122,8 +197,8 @@ public:
     if (!info_ptr) {
       return;
     }
-    png_init_io(png_ptr.get(), m_fp.get());
-    png_set_sig_bytes(png_ptr.get(), sizeof(sig));
+    png_init_io(png_ptr.get(), fp.get());
+    png_set_sig_bytes(png_ptr.get(), 8);
     png_read_info(png_ptr.get(), info_ptr.get());
     png_get_IHDR(png_ptr.get(),
                  info_ptr.get(),
@@ -134,12 +209,42 @@ public:
                  nullptr,
                  nullptr,
                  nullptr);
-    [[maybe_unused]] const auto bg_color = get_background_color(png_ptr, info_ptr);
-    //http://www.libpng.org/pub/png/book/chapter13.html
+    m_background_color = get_background_color(png_ptr, info_ptr);
+    // http://www.libpng.org/pub/png/book/chapter13.html
+    // begin readpng_get_image
+    if (m_color_type == PNG_COLOR_TYPE_PALETTE)
+      ::libpng::png_set_expand(png_ptr.get());
+    if (m_color_type == PNG_COLOR_TYPE_GRAY && m_bit_depth < 8)
+      ::libpng::png_set_expand(png_ptr.get());
+    if (::libpng::png_get_valid(png_ptr.get(), info_ptr.get(), PNG_INFO_tRNS))
+      ::libpng::png_set_expand(png_ptr.get());
+
+    if (m_bit_depth == 16)
+      ::libpng::png_set_strip_16(png_ptr.get());
+    if (m_color_type == PNG_COLOR_TYPE_GRAY
+        || m_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+      ::libpng::png_set_gray_to_rgb(png_ptr.get());
+
+    m_gamma           = get_gamma(png_ptr, info_ptr);
+
+    auto row_pointers = std::vector<::libpng::png_byte *>{};
+    row_pointers.reserve(m_height);
+    ::libpng::png_read_update_info(png_ptr.get(), info_ptr.get());
+
+    m_row_bytes = ::libpng::png_get_rowbytes(png_ptr.get(), info_ptr.get());
+    m_channels  = ::libpng::png_get_channels(png_ptr.get(), info_ptr.get());
+    m_color.resize(m_width * m_height);
+    assert(m_width * bytes_per_pixel == m_row_bytes);
+    for (std::size_t i = 0; i != m_height; ++i)
+      row_pointers.emplace_back(
+        reinterpret_cast<::libpng::png_byte *>(&m_color[i * m_width]));
+    // the underlying type of color32 are bytes. So all we're doing is pointing
+    // at them.
+    ::libpng::png_read_image(png_ptr.get(), row_pointers.data());
   }
 
   template<Color cT>
-  static void
+  static std::optional<std::filesystem::path>
     save(const std::vector<cT> &data,
          ::libpng::png_uint_32  width,
          ::libpng::png_uint_32  height,
@@ -148,9 +253,22 @@ public:
          std::string            prefix = "tmp") noexcept
   {
     if (width == 0U || height == 0U)
-      return;
-    filename = (prefix / filename.parent_path() / filename.stem()).string()
-             + "_" + filename.extension().string() + ".png";
+      return std::nullopt;
+    if (data.size() < width * height) {
+      fprintf(stderr,
+              "Size is wrong! %lu != %u x %u\n",
+              data.size(),
+              width,
+              height);// todo modernize error message
+      return std::nullopt;
+    }
+    filename = (!filename.string().starts_with(prefix)
+                  ? (prefix / filename.parent_path() / filename.stem()).string()
+                  : (filename.parent_path() / filename.stem()).string())
+             + (filename.has_extension()
+                  ? "_" + filename.extension().string().substr(1)
+                  : "")
+             + ".png";
     auto fp = safe_fp{ fopen(filename.string().c_str(), "wb"),
                        fclose };// todo do I need fopen?
 
@@ -158,7 +276,7 @@ public:
       fprintf(stderr,
               "Could not open file %s for writing\n",
               filename.string().c_str());// todo modernize error message
-      return;
+      return std::nullopt;
     }
     // Initialize write structure
     auto png_ptr = safe_png_write_struct{ ::libpng::png_create_write_struct(
@@ -171,12 +289,12 @@ public:
       fprintf(
         stderr,
         "Could not allocate write struct\n");// todo modernize error message
-      return;
+      return std::nullopt;
     }
     // Initialize info structure
     auto info_ptr = create_info_struct(png_ptr);
     if (!info_ptr) {
-      return;
+      return std::nullopt;
     }
     //    // Setup Exception handling
     //    if (setjmp(png_jmpbuf(png_ptr.get()))) {
@@ -208,25 +326,46 @@ public:
     }
 
     png_write_info(png_ptr.get(), info_ptr.get());
-    const auto setRBGA = [](::libpng::png_byte *const out, const cT &in) {
-      out[0] = in.r();
-      out[1] = in.g();
-      out[2] = in.b();
-      out[3] = in.a();
-    };
-    using safe_row = std::unique_ptr<::libpng::png_byte[]>;
-    static constexpr ::libpng::png_uint_32 bytes_per_pixel = 4;
-    auto row = safe_row{ new ::libpng::png_byte[bytes_per_pixel * width
-                                                * sizeof(::libpng::png_byte)] };
+    static constexpr auto setRBGA
+      = [](::libpng::png_byte *const out, const cT &in) {
+          out[0] = in.r();
+          out[1] = in.g();
+          out[2] = in.b();
+          out[3] = in.a();
+        };
+    auto row = std::vector<::libpng::png_byte>(bytes_per_pixel * width
+                                               * sizeof(::libpng::png_byte));
     for (const auto y :
          std::ranges::iota_view(::libpng::png_uint_32{ 0U }, height)) {
       for (const auto x :
            std::ranges::iota_view(::libpng::png_uint_32{ 0U }, width)) {
-        setRBGA(&row.get()[x * bytes_per_pixel], data[y * width + x]);
+        setRBGA(&row[x * bytes_per_pixel], data[y * width + x]);
       }
-      png_write_row(png_ptr.get(), row.get());
+      png_write_row(png_ptr.get(), row.data());
     }
     png_write_end(png_ptr.get(), nullptr);
+    return filename;
+  }
+  template<class... T>
+  static std::optional<std::filesystem::path>
+    save(const Png &data, const T &...t) noexcept
+  {
+    return save(data.m_color, t...);
+  }
+  inline auto
+    begin() const noexcept
+  {
+    return m_color.begin();
+  }
+  inline auto
+    end() const noexcept
+  {
+    return m_color.end();
+  }
+  inline auto
+    size() const noexcept
+  {
+    return m_color.size();
   }
 };
 }// namespace open_viii::graphics
