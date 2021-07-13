@@ -95,10 +95,13 @@ public:
     }
     return os << '\n' << t.m_tim;
   }
+  template<class... Ts>
   void
-    save(const std::string_view &path)
+    save(Ts &&...ts)
   {
-    m_tim.save(path);
+    if (m_tim.area() != 0U) {
+      m_tim.save(std::forward<Ts>(ts)...);
+    }
   }
 };
 }// namespace open_viii::graphics

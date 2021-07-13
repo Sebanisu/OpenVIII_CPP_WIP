@@ -52,8 +52,9 @@
       std::cout << p << '\n' << t << '\n';
       t.save(p);
     } else if (open_viii::tools::i_ends_with(p, ".tdw")) {
+      open_viii::tools::write_buffer(buffer, p);
       auto t = open_viii::graphics::Tdw(buffer);
-      std::cout << p << '\n' << t << '\n';
+      std::cout << p << '\n' << t << std::endl;
       t.save(p);
     } else if (open_viii::tools::i_ends_with(p, ".sp1")) {
       auto t = open_viii::graphics::Sp1(buffer);
@@ -94,12 +95,12 @@ void
   extract_per_extension_in_archives(
     const open_viii::archive::Archives &archives)
 {
-  archives.execute_on<false>(
+  archives.execute_on<true>(
     {
-      ".tex",
+      //".tex",
       //".lzs",
       //".tim",
-      //".tdw", //broken?
+      ".tdw", //broken?
       //".sp1",
       //".sp2",
       //".mch",
