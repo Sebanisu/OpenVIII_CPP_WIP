@@ -35,7 +35,14 @@
       if (t.width() == 0 || t.height() == 0) {
         open_viii::tools::write_buffer(buffer, p);
       } else {
-        t.save(p);
+        if(std::filesystem::path(p).stem().string().starts_with("cards"))
+        {
+          t.save(p,{128,110});
+          t.save(p,{},55);
+        }
+        else {
+          t.save(p);
+        }
         auto os = std::fstream(
           p + ".dat", std::ios::binary | std::ios::trunc | std::ios::out);
         os << t;
@@ -66,7 +73,7 @@
                  p, open_viii::graphics::background::Mim::EXT)) {
       auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
       std::cout << p << '\n' << t << '\n';
-      t.save(p);
+      //t.save(p);
     }
   };
 void

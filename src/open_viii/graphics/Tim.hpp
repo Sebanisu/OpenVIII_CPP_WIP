@@ -59,42 +59,51 @@ private:
   }
   [[nodiscard]] Color16<ColorLayoutT::ABGR>
     get_color([[maybe_unused]] const std::uint16_t row,
-              [[maybe_unused]] const std::uint8_t  color_key) const
+              [[maybe_unused]] const std::uint8_t  color_key,
+              const decltype(m_tim_clut_header.rectangle()
+                               .width_height())    clut_dims) const
   {
-    if (m_tim_clut_header.rectangle().width() == 0
-        || m_tim_clut_header.rectangle().height() == 0
+    if (clut_dims.x() == 0 || clut_dims.y() == 0
         || std::empty(m_tim_clut_data)) {
       return {};
     }
-    const std::size_t offset = row * m_tim_clut_header.rectangle().width();
-    return m_tim_clut_data.at(offset + color_key);
+    const std::size_t offset = row * clut_dims.x();
+    const auto        i      = offset + color_key;
+    if (m_tim_clut_data.size() > i) {
+      return m_tim_clut_data[i];
+    }
+    return {};
   }
   template<typename dstT>
   auto
-    get_4bpp_colors(const uint16_t row) const
+    get_4bpp_colors(const uint16_t                    row,
+                    const decltype(m_tim_clut_header.rectangle()
+                                     .width_height()) clut_dims) const
   {
     std::vector<dstT> output{};
     output.reserve(size_of_image_data() * 2U);
     std::ranges::for_each(
       std::get<0>(m_tim_image_data),
-      [this, &output, &row](const Bit4Values &color_indexes) {
+      [this, &output, &row, &clut_dims](const Bit4Values &color_indexes) {
         const auto &[color1, color2] = color_indexes;
-        output.emplace_back(get_color(row, color1));
-        output.emplace_back(get_color(row, color2));
+        output.emplace_back(get_color(row, color1, clut_dims));
+        output.emplace_back(get_color(row, color2, clut_dims));
       });
     return output;
   }
   template<typename dstT>
   auto
-    get_8bbp_colors(const uint16_t row) const
+    get_8bbp_colors(const uint16_t                    row,
+                    const decltype(m_tim_clut_header.rectangle()
+                                     .width_height()) clut_dims) const
   {
     std::vector<dstT> output{};
     output.reserve(size_of_image_data());
     std::ranges::transform(std::get<1>(m_tim_image_data),
                            std::back_inserter(output),
-                           [this, &row](const uint8_t color_index) {
+                           [this, &row, &clut_dims](const uint8_t color_index) {
                              return static_cast<dstT>(
-                               get_color(row, color_index));
+                               get_color(row, color_index, clut_dims));
                            });
     return output;
   }
@@ -304,8 +313,13 @@ public:
   }
   template<Color dstT = Tim>
   [[nodiscard]] std::vector<dstT>
-    get_colors([[maybe_unused]] const std::uint16_t row = 0U) const
+    get_colors([[maybe_unused]] const std::uint16_t                   row = 0U,
+               decltype(m_tim_clut_header.rectangle().width_height()) clut_dims
+               = {}) const
   {
+    if (clut_dims == decltype(clut_dims){}) {
+      clut_dims = m_tim_clut_header.rectangle().width_height();
+    }
     enum
     {
       bpp4,
@@ -313,16 +327,16 @@ public:
       bpp16,
       bpp24,
     };
-    [[maybe_unused]]const size_t tim_image_data_size = size_of_image_data();
+    [[maybe_unused]] const size_t tim_image_data_size = size_of_image_data();
     assert(tim_image_data_size > 0U && area() != 0);
     switch (m_tim_image_data.index()) {
     case bpp4: {
       assert(area() / 2U == tim_image_data_size);
-      return get_4bpp_colors<dstT>(row);
+      return get_4bpp_colors<dstT>(row, clut_dims);
     }
     case bpp8: {
       assert(area() == tim_image_data_size);
-      return get_8bbp_colors<dstT>(row);
+      return get_8bbp_colors<dstT>(row, clut_dims);
     }
     case bpp16: {
       assert(area() * 2U == tim_image_data_size);
@@ -376,33 +390,38 @@ public:
    * @param filename
    */
   [[maybe_unused]] void
-    save(std::string_view filename) const
+    save(std::string_view                                       filename,
+         decltype(m_tim_clut_header.rectangle().width_height()) clut_dims = {},
+         const int                                              clut = -1) const
   {
     if (clut_rows() == 0) {
-      Ppm::save(get_colors<Color16<ColorLayoutT::ABGR>>(),
-                width(),
-                height(),
-                filename);
-      Png::save(get_colors<Color16<ColorLayoutT::ABGR>>(),
+      const auto &data = get_colors<Color16<ColorLayoutT::ABGR>>();
+      Ppm::save(data, width(), height(), filename);
+      Png::save(data,
                 width(),
                 height(),
                 filename,
                 std::filesystem::path(filename).string());
     }
     else {
+      if (clut_dims == decltype(clut_dims){})
+        clut_dims = m_tim_clut_header.rectangle().width_height();
       auto path = std::filesystem::path(filename);
-      for (std::uint16_t i{}; i != clut_rows(); ++i) {
+      for (std::uint16_t i{}; i != clut_dims.y(); ++i) {
+        std::string prefix = "";
+        if (clut >= 0) {
+          i      = static_cast<uint16_t>(clut);
+          prefix = "F";
+        }
         const auto out_path = (path.parent_path() / path.stem()).string() + '_'
-                            + std::to_string(i) + path.extension().string();
-        Ppm::save(get_colors<Color16<ColorLayoutT::ABGR>>(i),
-                  width(),
-                  height(),
-                  out_path);
-        Png::save(get_colors<Color16<ColorLayoutT::ABGR>>(i),
-                  width(),
-                  height(),
-                  out_path,
-                  out_path);
+                            + prefix + std::to_string(i)
+                            + path.extension().string();
+        const auto &data
+          = get_colors<Color16<ColorLayoutT::ABGR>>(i, clut_dims);
+        Ppm::save(data, width(), height(), out_path);
+        Png::save(data, width(), height(), out_path, out_path);
+        if (clut >= 0)
+          return;
       }
     }
     if (clut_rows() != 0) {

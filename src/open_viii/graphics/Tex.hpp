@@ -169,8 +169,10 @@ public:
       break;
     }
     case 16: {
-      m_image_data = [&image_span]() -> std::vector<Color16<ColorLayoutT::ABGR>> {
-        std::vector<Color16<ColorLayoutT::ABGR>> image(image_span.size() / sizeof(Color16<ColorLayoutT::ABGR>));
+      m_image_data
+        = [&image_span]() -> std::vector<Color16<ColorLayoutT::ABGR>> {
+        std::vector<Color16<ColorLayoutT::ABGR>> image(
+          image_span.size() / sizeof(Color16<ColorLayoutT::ABGR>));
         std::memcpy(image.data(), image_span.data(), image_span.size());
         return image;
       }();
@@ -225,27 +227,29 @@ public:
     save(std::string_view filename) const
   {
     if (m_tex_header.num_palettes() == 0) {
-      Ppm::save(get_colors(),
+      const auto data = get_colors();
+      Ppm::save(data,
                 m_tex_header.image_width(),
                 m_tex_header.image_height(),
                 filename);
-      Png::save(get_colors(),
+      Png::save(data,
                 m_tex_header.image_width(),
                 m_tex_header.image_height(),
                 filename,
-                std::string{filename});
+                std::string{ filename });
     }
     else {
       auto path = std::filesystem::path(filename);
       for (std::uint16_t i = 0; i != m_tex_header.num_palettes(); ++i) {
         auto ss = std::stringstream{};
-        ss << (path.parent_path() / path.stem()).string() << '_' << +i
-           << path.extension().string();
-        Ppm::save(get_colors(i),
+        ss << (path.parent_path() / path.stem()).string() << '_' << +i << '_'
+           << path.extension().string().substr(1);
+        const auto data = get_colors(i);
+        Ppm::save(data,
                   m_tex_header.image_width(),
                   m_tex_header.image_height(),
                   ss.str());
-        Png::save(get_colors(i),
+        Png::save(data,
                   m_tex_header.image_width(),
                   m_tex_header.image_height(),
                   ss.str(),
@@ -257,11 +261,29 @@ public:
                 m_tex_header.num_colors_per_palette(),
                 m_tex_header.num_palettes(),
                 out_path);
-      Png::save(m_palette_data,
-                m_tex_header.num_colors_per_palette(),
-                m_tex_header.num_palettes(),
-                out_path,
-                path.string());
+      if (const auto saved_path
+          = Png::save(m_palette_data,
+                      m_tex_header.num_colors_per_palette(),
+                      m_tex_header.num_palettes(),
+                      out_path,
+                      path.string());
+          saved_path) {
+        const Png    read_image = { *saved_path };
+        const size_t size       = read_image.size();
+        assert(size == m_palette_data.size());
+        auto       b1 = read_image.begin();
+        const auto e1 = read_image.end();
+        auto       b2 = m_palette_data.begin();
+        const auto e2 = m_palette_data.end();
+        for (; b1 != e1 && b2 != e2; (void)++b1, ++b2) {
+          assert(*b1 == *b2);
+        }
+                Png::save(read_image,
+                          m_tex_header.num_colors_per_palette(),
+                          m_tex_header.num_palettes(),
+                          *saved_path,
+                          path.string());
+      }
     }
   }
   friend std::ostream &
