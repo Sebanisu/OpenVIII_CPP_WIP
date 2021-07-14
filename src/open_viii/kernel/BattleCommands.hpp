@@ -30,14 +30,13 @@ struct BattleCommands_impl
    * 	1 byte	Unknown / Unused
    */
 protected:
-  EncodedStringOffset m_name_offset          = {};
-  EncodedStringOffset m_description_offset   = {};
-  std::uint8_t        m_ability_data_id      = {};
-  std::uint8_t        m_unknown_flags        = {};
-  TargetT             m_target               = {};
-  std::uint8_t        m_unknown              = {};
-  BattleCommands_impl()                      = default;
-  static constexpr std::size_t EXPECTED_SIZE = 8U;
+  EncodedStringOffset          m_name_offset        = {};
+  EncodedStringOffset          m_description_offset = {};
+  std::uint8_t                 m_ability_data_id    = {};
+  std::uint8_t                 m_unknown_flags      = {};
+  TargetT                      m_target             = {};
+  std::uint8_t                 m_unknown            = {};
+  static constexpr std::size_t EXPECTED_SIZE        = 8U;
 
 public:
   constexpr auto
