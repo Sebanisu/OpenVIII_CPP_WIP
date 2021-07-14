@@ -146,6 +146,41 @@ public:
   {
     return T::character_ability_flags_impl();
   }
+  [[nodiscard]] constexpr auto
+    crisis_level_hp_multiplier() const noexcept
+    requires(requires(this_type t) { t.m_crisis_level_hp_multiplier; })
+  {
+    return T::m_crisis_level_hp_multiplier;
+  }
+  [[nodiscard]] constexpr auto
+    gender() const noexcept requires(requires(this_type t) { t.m_gender; })
+  {
+    return T::m_gender;
+  }
+  [[nodiscard]] constexpr auto
+    limit_break_id() const noexcept
+    requires(requires(this_type t) { t.m_limit_break_id; })
+  {
+    return T::m_limit_break_id;
+  }
+  [[nodiscard]] constexpr auto
+    limit_break_param() const noexcept
+    requires(requires(this_type t) { t.m_limit_break_param; })
+  {
+    return T::m_limit_break_param;
+  }
+  [[nodiscard]] constexpr auto
+    exp() const noexcept requires(
+      requires(this_type t) { t.m_exp; })
+  {
+    return T::m_exp;
+  }
+  [[nodiscard]] constexpr auto
+    stats() const noexcept requires(
+      requires(this_type t) { t.m_stats; })
+  {
+    return T::m_stats;
+  }
 };
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_COMMONKERNEL_HPP

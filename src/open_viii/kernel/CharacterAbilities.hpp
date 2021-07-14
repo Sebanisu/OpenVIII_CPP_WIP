@@ -13,9 +13,9 @@
 #ifndef VIIIARCHIVE_CHARACTERABILITIES_HPP
 #define VIIIARCHIVE_CHARACTERABILITIES_HPP
 #include "CharacterAbilityFlagsT.hpp"
+#include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
-#include "CommonKernel.hpp"
 namespace open_viii::kernel {
 struct CharacterAbilities_impl
 {
@@ -30,9 +30,6 @@ protected:
   EncodedStringOffset m_name_offset                       = {};
   EncodedStringOffset m_description_offset                = {};
   std::uint8_t        m_ability_points_required_to_unlock = {};
-  // uint32_t characterAbilityFlags_ : 3;// cpp20 allows default member
-  // initializers for bitfields add {} in cpp20.
-  // std::array<std::uint8_t, 3> m_character_ability_flags{};
 
 private:
   std::uint8_t m_character_ability_flags0 = {};
@@ -41,13 +38,15 @@ private:
 
 protected:
   constexpr static auto EXPECTED_SIZE = 8U;
+  CharacterAbilities_impl()           = default;
   [[nodiscard]] constexpr CharacterAbilityFlagsT
-  character_ability_flags_impl() const
+    character_ability_flags_impl() const
   {
     return static_cast<CharacterAbilityFlagsT>(
       m_character_ability_flags0 << 16U | m_character_ability_flags1 << 8U
       | m_character_ability_flags2);
   }
+
 public:
   constexpr auto
     operator<=>(const CharacterAbilities_impl &right) const noexcept = default;

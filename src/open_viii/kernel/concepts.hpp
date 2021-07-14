@@ -116,5 +116,35 @@ concept has_character_ability_flags = requires(T t)
 {
   t.character_ability_flags();
 };
+template<typename T>
+concept has_crisis_level_hp_multiplier = requires(T t)
+{
+  t.crisis_level_hp_multiplier();
+};
+template<typename T>
+concept has_gender = requires(T t)
+{
+  t.gender();
+};
+template<typename T>
+concept has_limit_break_id = requires(T t)
+{
+  t.limit_break_id();
+};
+template<typename T>
+concept has_limit_break_param = requires(T t)
+{
+  t.limit_break_param();
+};
+template<typename T>
+concept has_exp = requires(T t)
+{
+  t.exp();
+};
+template<typename T>
+concept has_stats = requires(T t)
+{
+  t.stats();
+};
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP
