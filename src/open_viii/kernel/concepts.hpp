@@ -146,5 +146,10 @@ concept has_stats = requires(T t)
 {
   t.stats();
 };
+template<typename T>
+concept has_index_to_battle_command = requires(T t)
+{
+  t.index_to_battle_command();
+};
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP

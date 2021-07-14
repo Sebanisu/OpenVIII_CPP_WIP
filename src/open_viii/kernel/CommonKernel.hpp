@@ -170,16 +170,20 @@ public:
     return T::m_limit_break_param;
   }
   [[nodiscard]] constexpr auto
-    exp() const noexcept requires(
-      requires(this_type t) { t.m_exp; })
+    exp() const noexcept requires(requires(this_type t) { t.m_exp; })
   {
     return T::m_exp;
   }
   [[nodiscard]] constexpr auto
-    stats() const noexcept requires(
-      requires(this_type t) { t.m_stats; })
+    stats() const noexcept requires(requires(this_type t) { t.m_stats; })
   {
     return T::m_stats;
+  }
+  [[nodiscard]] constexpr auto
+    index_to_battle_command() const noexcept
+    requires(requires(this_type t) { t.m_index_to_battle_command; })
+  {
+    return T::m_index_to_battle_command;
   }
 };
 }// namespace open_viii::kernel
