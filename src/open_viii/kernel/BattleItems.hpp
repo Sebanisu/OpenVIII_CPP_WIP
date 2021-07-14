@@ -64,6 +64,7 @@ protected:
   std::uint8_t                 m_hit_count             = {};
   ElementT                     m_element               = {};
   static constexpr std::size_t EXPECTED_SIZE           = 24U;
+  BattleItems_impl()                                   = default;
 
 public:
   constexpr auto
