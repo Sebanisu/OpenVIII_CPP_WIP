@@ -106,5 +106,15 @@ concept has_element = requires(T t)
 {
   t.element();
 };
+template<typename T>
+concept has_ability_points_required_to_unlock = requires(T t)
+{
+  t.ability_points_required_to_unlock();
+};
+template<typename T>
+concept has_character_ability_flags = requires(T t)
+{
+  t.character_ability_flags();
+};
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP

@@ -4,14 +4,14 @@
 
 #ifndef OPENVIII_CPP_WIP_COMMONKERNEL_HPP
 #define OPENVIII_CPP_WIP_COMMONKERNEL_HPP
-#include <compare>
 #include "concepts.hpp"
+#include <compare>
 namespace open_viii::kernel {
 template<typename T>
 struct CommonKernel : T
 {
 public:
-  using this_type = CommonKernel<T>;
+  using this_type          = CommonKernel<T>;
   constexpr CommonKernel() = default;
   using T::EXPECTED_SIZE;
   constexpr auto
@@ -127,6 +127,24 @@ public:
     element() const noexcept requires(requires(this_type t) { t.m_element; })
   {
     return T::m_element;
+  }
+
+  /**
+   * Ability points required to unlock
+   * @see
+   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
+   */
+  [[nodiscard]] constexpr auto
+    ability_points_required_to_unlock() const noexcept
+    requires(requires(this_type t) { t.m_ability_points_required_to_unlock; })
+  {
+    return T::m_ability_points_required_to_unlock;
+  }
+  [[nodiscard]] constexpr auto
+    character_ability_flags() const noexcept
+    requires(requires(this_type t) { t.character_ability_flags_impl(); })
+  {
+    return T::character_ability_flags_impl();
   }
 };
 }// namespace open_viii::kernel
