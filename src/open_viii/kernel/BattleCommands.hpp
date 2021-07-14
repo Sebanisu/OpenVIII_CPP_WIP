@@ -50,5 +50,6 @@ static_assert(has_ability_data_id<BattleCommands>);
 static_assert(has_unknown_flags<BattleCommands>);
 static_assert(has_target<BattleCommands>);
 static_assert(has_unknown<BattleCommands>);
+static_assert(BattleCommands().target() == TargetT::none);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_BATTLECOMMANDS_HPP

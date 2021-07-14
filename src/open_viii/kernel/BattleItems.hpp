@@ -88,5 +88,6 @@ static_assert(has_attack_param<BattleItems>);
 static_assert(has_unknown3<BattleItems>);
 static_assert(has_hit_count<BattleItems>);
 static_assert(has_element<BattleItems>);
+static_assert(BattleItems().target() == TargetT::none);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_BATTLEITEMS_HPP
