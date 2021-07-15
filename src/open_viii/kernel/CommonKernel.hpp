@@ -239,6 +239,24 @@ public:
   {
     return T::m_increase_value;
   }
+  [[nodiscard]] constexpr auto
+    element_attack_percent() const noexcept
+    requires(requires(this_type t) { t.m_element_attack_percent; })
+  {
+    return T::m_element_attack_percent;
+  }
+  [[nodiscard]] constexpr auto
+    used_item_index() const noexcept
+    requires(requires(this_type t) { t.m_used_item_index; })
+  {
+    return T::m_used_item_index;
+  }
+  [[nodiscard]] constexpr auto
+    critical_increase() const noexcept
+    requires(requires(this_type t) { t.m_critical_increase; })
+  {
+    return T::m_critical_increase;
+  }
 };
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_COMMONKERNEL_HPP

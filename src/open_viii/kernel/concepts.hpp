@@ -196,5 +196,20 @@ concept has_increase_value = requires(T t)
 {
   t.increase_value();
 };
+template<typename T>
+concept has_element_attack_percent = requires(T t)
+{
+  t.element_attack_percent();
+};
+template<typename T>
+concept has_used_item_index = requires(T t)
+{
+  t.used_item_index();
+};
+template<typename T>
+concept has_critical_increase = requires(T t)
+{
+  t.critical_increase();
+};
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP
