@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_GFABILITIES_HPP
 #define VIIIARCHIVE_GFABILITIES_HPP
+#include "CommonKernel.hpp"
 #include "StatT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
@@ -26,64 +27,29 @@ namespace open_viii::kernel {
  * 0x0007	1 byte	Increase value
  * @see https://github.com/DarkShinryu/doomtrain/wiki/GF-abilities
  */
-struct GFAbilities
+struct GFAbilities_impl
 {
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  uint8_t             m_ability_points_required_to_unlock{};
-  uint8_t             m_enable_boost{};
-  StatT               m_stat_to_increase{};
-  uint8_t             m_increase_value{};
+protected:
+  EncodedStringOffset m_name_offset                       = {};
+  EncodedStringOffset m_description_offset                = {};
+  uint8_t             m_ability_points_required_to_unlock = {};
+  uint8_t             m_enable_boost                      = {};
+  StatT               m_stat_to_increase                  = {};
+  uint8_t             m_increase_value                    = {};
+  GFAbilities_impl()                                      = default;
+  static constexpr std::size_t EXPECTED_SIZE              = 8U;
 
 public:
   constexpr auto
-    operator<=>(const GFAbilities &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  /**
-   * Ability points required to unlock
-   * @see
-   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
-   */
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    ability_points_required_to_unlock() const noexcept
-  {
-    return m_ability_points_required_to_unlock;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    enable_boost() const noexcept
-  {
-    return m_enable_boost != 0;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    stat_to_increase() const noexcept
-  {
-    return m_stat_to_increase;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    increase_value() const noexcept
-  {
-    return m_increase_value;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    os << ", " << static_cast<int>(m_ability_points_required_to_unlock);
-    os << ", " << static_cast<int>(m_enable_boost);
-    os << ", " << static_cast<int>(m_stat_to_increase);
-    os << ", " << static_cast<int>(m_increase_value);
-    return os;
-  }
+    operator<=>(const GFAbilities_impl &right) const noexcept = default;
 };
+using GFAbilities = CommonKernel<GFAbilities_impl>;
+static_assert(GFAbilities::EXPECTED_SIZE == sizeof(GFAbilities));
+static_assert(has_name_offset<GFAbilities>);
+static_assert(has_description_offset<GFAbilities>);
+static_assert(has_ability_points_required_to_unlock<GFAbilities>);
+static_assert(has_enable_boost<GFAbilities>);
+static_assert(has_stat_to_increase<GFAbilities>);
+static_assert(has_increase_value<GFAbilities>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_GFABILITIES_HPP

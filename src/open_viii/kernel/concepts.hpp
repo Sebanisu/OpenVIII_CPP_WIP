@@ -181,5 +181,20 @@ concept has_attack_parameter = requires(T t)
 {
   t.attack_parameter();
 };
+template<typename T>
+concept has_enable_boost = requires(T t)
+{
+  t.enable_boost();
+};
+template<typename T>
+concept has_stat_to_increase = requires(T t)
+{
+  t.stat_to_increase();
+};
+template<typename T>
+concept has_increase_value = requires(T t)
+{
+  t.increase_value();
+};
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP

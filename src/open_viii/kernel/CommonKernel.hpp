@@ -221,6 +221,24 @@ public:
   {
     return T::m_attack_parameter;
   }
+  [[nodiscard]] constexpr auto
+    enable_boost() const noexcept
+    requires(requires(this_type t) { t.m_enable_boost; })
+  {
+    return T::m_enable_boost;
+  }
+  [[nodiscard]] constexpr auto
+    stat_to_increase() const noexcept
+    requires(requires(this_type t) { t.m_stat_to_increase; })
+  {
+    return T::m_stat_to_increase;
+  }
+  [[nodiscard]] constexpr auto
+    increase_value() const noexcept
+    requires(requires(this_type t) { t.m_increase_value; })
+  {
+    return T::m_increase_value;
+  }
 };
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_COMMONKERNEL_HPP
