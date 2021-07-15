@@ -18,6 +18,7 @@
 #include "PersistentStatusesT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
+#include <ratio>
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description
@@ -45,44 +46,36 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Devour
  * */
-struct Devour
+struct Devour_impl
 {
 private:
-  EncodedStringOffset m_description_offset{};
-  /**
-   * HP and Status; If last on right bit is set heal, and if not dmg. Rest looks
-   * like 0b‭00011110‬.
-   */
-  std::uint8_t        m_damage_or_heal{};
-  PercentQuantityT    m_percent_quantity{};
-  BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
-  PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
-  DevourStatFlagT     m_devour_stat_flag{};
-  std::uint8_t        m_raised_stat_hp_quantity{};
-
-public:
   static constexpr auto full      = 1.0F;
   static constexpr auto half      = 1.0F / 2.0F;
   static constexpr auto quarter   = 1.0F / 4.0F;
   static constexpr auto eighth    = 1.0F / 8.0F;
   static constexpr auto sixteenth = 1.0F / 16.0F;
-  constexpr auto
-    operator<=>(const Devour &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
+
+protected:
+  EncodedStringOffset          m_description_offset      = {};
   /**
-   * HP and Status //false is damage, true is heal.
+   * HP and Status; If last on right bit is set heal, and if not dmg. Rest looks
+   * like 0b‭00011110‬.
    */
+  std::uint8_t                 m_damage_or_heal          = {};
+  PercentQuantityT             m_percent_quantity        = {};
+  BattleOnlyStatusesT          m_battle_only_statuses    = {};// statuses 8-39
+  PersistentStatusesT          m_persistent_statuses     = {};// statuses 0-7
+  DevourStatFlagT              m_devour_stat_flag        = {};
+  std::uint8_t                 m_raised_stat_hp_quantity = {};
+  static constexpr std::size_t EXPECTED_SIZE             = 10U;
+  Devour_impl()                                          = default;
   [[nodiscard]] constexpr auto
-    damage_or_heal() const noexcept
+    damage_or_heal_impl() const noexcept
   {
     return (m_damage_or_heal & 0x1U) == 0;
   }
   [[nodiscard]] constexpr auto
-    percent_quantity() const noexcept
+    percent_quantity_impl() const noexcept
   {
     const auto flag_set = [this](const PercentQuantityT &flag) {
       return (static_cast<uint8_t>(m_percent_quantity)
@@ -107,43 +100,18 @@ public:
     }
     return out;
   }
-  /**
-   * statuses 8-39
-   */
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-  {
-    return m_battle_only_statuses;
-  }
-  /**
-   * statuses 0-7
-   */
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-  {
-    return m_persistent_statuses;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    devour_stat_flag() const noexcept
-  {
-    return m_devour_stat_flag;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    raised_stat_hp_quantity() const noexcept
-  {
-    return m_raised_stat_hp_quantity;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << ", " << static_cast<std::uint32_t>(damage_or_heal()) << ", "
-              << percent_quantity() << ", "
-              << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
-              << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
-              << static_cast<std::uint32_t>(m_devour_stat_flag) << ", "
-              << static_cast<std::uint32_t>(m_raised_stat_hp_quantity);
-  }
+
+public:
+  constexpr auto
+    operator<=>(const Devour_impl &right) const noexcept = default;
 };
+using Devour = CommonKernel<Devour_impl>;
+static_assert(has_description_offset<Devour>);
+static_assert(has_damage_or_heal<Devour>);
+static_assert(has_percent_quantity<Devour>);
+static_assert(has_battle_only_statuses<Devour>);
+static_assert(has_persistent_statuses<Devour>);
+static_assert(has_devour_stat_flag<Devour>);
+static_assert(has_raised_stat_hp_quantity<Devour>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_DEVOUR_HPP

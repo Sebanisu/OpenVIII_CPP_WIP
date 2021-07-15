@@ -151,5 +151,25 @@ concept has_index_to_battle_command = requires(T t)
 {
   t.index_to_battle_command();
 };
+template<typename T>
+concept has_damage_or_heal = requires(T t)
+{
+  t.damage_or_heal();
+};
+template<typename T>
+concept has_percent_quantity = requires(T t)
+{
+  t.percent_quantity();
+};
+template<typename T>
+concept has_devour_stat_flag = requires(T t)
+{
+  t.devour_stat_flag();
+};
+template<typename T>
+concept has_raised_stat_hp_quantity = requires(T t)
+{
+  t.raised_stat_hp_quantity();
+};
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP

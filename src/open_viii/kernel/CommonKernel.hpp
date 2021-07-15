@@ -185,6 +185,30 @@ public:
   {
     return T::m_index_to_battle_command;
   }
+  [[nodiscard]] constexpr auto
+    damage_or_heal() const noexcept
+    requires(requires(this_type t) { t.damage_or_heal_impl(); })
+  {
+    return T::damage_or_heal_impl();
+  }
+  [[nodiscard]] constexpr auto
+    percent_quantity() const noexcept
+    requires(requires(this_type t) { t.percent_quantity_impl(); })
+  {
+    return T::percent_quantity_impl();
+  }
+  [[nodiscard]] constexpr auto
+    devour_stat_flag() const noexcept
+    requires(requires(this_type t) { t.m_devour_stat_flag; })
+  {
+    return T::m_devour_stat_flag;
+  }
+  [[nodiscard]] constexpr auto
+    raised_stat_hp_quantity() const noexcept
+    requires(requires(this_type t) { t.m_raised_stat_hp_quantity; })
+  {
+    return T::m_raised_stat_hp_quantity;
+  }
 };
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_COMMONKERNEL_HPP
