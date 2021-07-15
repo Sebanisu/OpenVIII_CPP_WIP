@@ -107,6 +107,11 @@ concept has_element = requires(T t)
   t.element();
 };
 template<typename T>
+/**
+ * Ability points required to unlock
+ * @see
+ * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
+ */
 concept has_ability_points_required_to_unlock = requires(T t)
 {
   t.ability_points_required_to_unlock();
@@ -210,6 +215,11 @@ template<typename T>
 concept has_critical_increase = requires(T t)
 {
   t.critical_increase();
+};
+template<typename T>
+concept has_junction_flags = requires(T t)
+{
+  t.junction_flags();
 };
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP

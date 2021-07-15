@@ -257,6 +257,12 @@ public:
   {
     return T::m_critical_increase;
   }
+  [[nodiscard]] constexpr auto
+    junction_flags() const noexcept
+    requires(requires(this_type t) { t.junction_flags_impl(); })
+  {
+    return T::junction_flags_impl();
+  }
 };
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_COMMONKERNEL_HPP
