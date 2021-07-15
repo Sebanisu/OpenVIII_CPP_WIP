@@ -39,7 +39,7 @@ protected:
   std::uint8_t        m_ability_points_required_to_unlock = {};
 
 private:
-  std::uint32_t m_character_ability_flags : 3 = {};
+  std::uint32_t m_character_ability_flags : 24 = {};
 
 public:
   constexpr auto
