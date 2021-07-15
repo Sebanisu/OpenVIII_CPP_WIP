@@ -57,7 +57,7 @@ protected:
   uint8_t             m_attack_parameter      = {};
   PersistentStatusesT m_persistent_statuses   = {};// statuses 0-7
   BattleOnlyStatusesT m_battle_only_statuses  = {};// statuses 8-31
-  EnemyAttacks_impl()                         = default;
+  constexpr EnemyAttacks_impl()               = default;
   static constexpr std::size_t EXPECTED_SIZE  = 20U;
 
 public:

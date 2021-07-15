@@ -48,7 +48,7 @@ protected:
   std::uint8_t        m_status_attack_enabler = {};
   PersistentStatusesT m_persistent_statuses   = {};
   BattleOnlyStatusesT m_battle_only_statuses  = {};
-  CommandAbilitiesData_impl()                 = default;
+  constexpr CommandAbilitiesData_impl()       = default;
   static constexpr std::size_t EXPECTED_SIZE  = 16U;
 
 public:

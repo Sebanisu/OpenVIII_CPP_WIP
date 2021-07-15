@@ -37,7 +37,7 @@ protected:
   TargetT                      m_target             = {};
   std::uint8_t                 m_unknown            = {};
   static constexpr std::size_t EXPECTED_SIZE        = 8U;
-  BattleCommands_impl()                             = default;
+  constexpr BattleCommands_impl()                   = default;
 
 public:
   constexpr auto

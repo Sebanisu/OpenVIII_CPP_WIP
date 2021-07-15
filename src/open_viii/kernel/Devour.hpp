@@ -68,7 +68,7 @@ protected:
   DevourStatFlagT              m_devour_stat_flag        = {};
   std::uint8_t                 m_raised_stat_hp_quantity = {};
   static constexpr std::size_t EXPECTED_SIZE             = 12U;
-  Devour_impl()                                          = default;
+  constexpr Devour_impl()                                = default;
   [[nodiscard]] constexpr auto
     damage_or_heal_impl() const noexcept
   {

@@ -12,10 +12,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_COMMANDABILITIES_HPP
 #define VIIIARCHIVE_COMMANDABILITIES_HPP
+#include "CommonKernel.hpp"
 #include "open_viii/Concepts.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
-#include "CommonKernel.hpp"
 namespace open_viii::kernel {
 /**
  * 0x0000	2 bytes	Offset to ability name
@@ -34,7 +34,7 @@ protected:
   std::uint8_t        m_index_to_battle_command           = {};
   std::uint8_t        m_unknown0                          = {};
   std::uint8_t        m_unknown1                          = {};
-  CommandAbilities_impl()                                 = default;
+  constexpr CommandAbilities_impl()                       = default;
   static constexpr std::size_t EXPECTED_SIZE              = 8U;
 
 public:

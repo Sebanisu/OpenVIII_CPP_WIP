@@ -48,12 +48,12 @@ protected:
   std::uint8_t                m_limit_break_param          = {};
   std::array<std::uint8_t, 2> m_exp                        = {};
   StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> m_stats = {};
-  Characters_impl()                                        = default;
+  constexpr Characters_impl()                              = default;
+  static constexpr std::size_t EXPECTED_SIZE               = 36U;
 
 public:
   constexpr auto
     operator<=>(const Characters_impl &right) const noexcept = default;
-  static constexpr std::size_t EXPECTED_SIZE                 = 36U;
 };
 using Characters = CommonKernel<Characters_impl>;
 static_assert(sizeof(Characters) == Characters::EXPECTED_SIZE);

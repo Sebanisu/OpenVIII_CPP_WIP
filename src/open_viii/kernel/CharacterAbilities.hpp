@@ -27,6 +27,15 @@ struct CharacterAbilities_impl
    * @see https://github.com/DarkShinryu/doomtrain/wiki/Character-abilities
    */
 protected:
+  [[nodiscard]] constexpr CharacterAbilityFlagsT
+    character_ability_flags_impl() const
+  {
+    return static_cast<CharacterAbilityFlagsT>(
+      m_character_ability_flags0 << 16U | m_character_ability_flags1 << 8U
+      | m_character_ability_flags2);
+  }
+  constexpr static auto EXPECTED_SIZE                     = 8U;
+  constexpr CharacterAbilities_impl()                     = default;
   EncodedStringOffset m_name_offset                       = {};
   EncodedStringOffset m_description_offset                = {};
   std::uint8_t        m_ability_points_required_to_unlock = {};
@@ -35,17 +44,6 @@ private:
   std::uint8_t m_character_ability_flags0 = {};
   std::uint8_t m_character_ability_flags1 = {};
   std::uint8_t m_character_ability_flags2 = {};
-
-protected:
-  constexpr static auto EXPECTED_SIZE = 8U;
-  CharacterAbilities_impl()           = default;
-  [[nodiscard]] constexpr CharacterAbilityFlagsT
-    character_ability_flags_impl() const
-  {
-    return static_cast<CharacterAbilityFlagsT>(
-      m_character_ability_flags0 << 16U | m_character_ability_flags1 << 8U
-      | m_character_ability_flags2);
-  }
 
 public:
   constexpr auto
