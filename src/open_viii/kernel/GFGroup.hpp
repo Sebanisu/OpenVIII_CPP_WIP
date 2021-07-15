@@ -21,23 +21,26 @@ requires(
   std::unsigned_integral<T> || std::ranges::contiguous_range<T>) struct GFGroup
 {
 public:
-  static constexpr auto MAX_G_FS = 16U;
-  static constexpr auto QUETZALCOATL{ 0U };
-  static constexpr auto SHIVA{ 1U };
-  static constexpr auto IFRIT{ 2U };
-  static constexpr auto SIREN{ 3U };
-  static constexpr auto BROTHERS{ 4U };
-  static constexpr auto DIABLOS{ 5U };
-  static constexpr auto CARBUNCLE{ 6U };
-  static constexpr auto LEVIATHAN{ 7U };
-  static constexpr auto PANDEMONA{ 8U };
-  static constexpr auto CERBERUS{ 9U };
-  static constexpr auto ALEXANDER{ 10U };
-  static constexpr auto DOOMTRAIN{ 11U };
-  static constexpr auto BAHAMUT{ 12U };
-  static constexpr auto CACTUAR{ 13U };
-  static constexpr auto TONBERRY{ 14U };
-  static constexpr auto EDEN{ 15U };
+  enum
+  {
+    QUETZALCOATL,
+    SHIVA,
+    IFRIT,
+    SIREN,
+    BROTHERS,
+    DIABLOS,
+    CARBUNCLE,
+    LEVIATHAN,
+    PANDEMONA,
+    CERBERUS,
+    ALEXANDER,
+    DOOMTRAIN,
+    BAHAMUT,
+    CACTUAR,
+    TONBERRY,
+    EDEN,
+    MAX_GFS
+  };
   constexpr auto
     operator<=>(const GFGroup<T> &right) const noexcept = default;
   [[nodiscard]] constexpr T
@@ -143,7 +146,7 @@ public:
   }
 
 private:
-  std::array<T, MAX_G_FS> m_gfs{};
+  std::array<T, MAX_GFS> m_gfs{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_GFGROUP_HPP
