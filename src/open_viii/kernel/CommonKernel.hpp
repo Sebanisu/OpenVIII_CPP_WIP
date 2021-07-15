@@ -209,6 +209,18 @@ public:
   {
     return T::m_raised_stat_hp_quantity;
   }
+  [[nodiscard]] constexpr auto
+    camera_change() const noexcept
+    requires(requires(this_type t) { t.m_camera_change; })
+  {
+    return T::m_camera_change;
+  }
+  [[nodiscard]] constexpr auto
+    attack_parameter() const noexcept
+    requires(requires(this_type t) { t.m_attack_parameter; })
+  {
+    return T::m_attack_parameter;
+  }
 };
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_COMMONKERNEL_HPP

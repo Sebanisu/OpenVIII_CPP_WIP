@@ -16,12 +16,13 @@
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
 #include "CameraChange.hpp"
+#include "CommonKernel.hpp"
 #include "ElementT.hpp"
 #include "PersistentStatusesT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-struct EnemyAttacks
+struct EnemyAttacks_impl
 {
   /**
    * Offset	Length	Description
@@ -41,114 +42,43 @@ struct EnemyAttacks
    * 0x10	4 bytes	status_1; //statuses 8-31
    * @see https://github.com/DarkShinryu/doomtrain/wiki/Enemy-attacks
    */
-private:
-  EncodedStringOffset m_name_offset{};
-  uint16_t            m_magic_id{};
-  CameraChange        m_camera_change{};
-  uint8_t             m_unknown0{};
-  AttackTypeT         m_attack_type{};
-  uint8_t             m_attack_power{};
-  AttackFlagsT        m_attack_flags{};
-  uint8_t             m_unknown1{};
-  ElementT            m_element{};
-  uint8_t             m_unknown2{};
-  uint8_t             m_status_attack_enabler{};
-  uint8_t             m_attack_parameter{};
-  PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
-  BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-31
+protected:
+  EncodedStringOffset m_name_offset           = {};
+  uint16_t            m_magic_id              = {};
+  CameraChange        m_camera_change         = {};
+  uint8_t             m_unknown0              = {};
+  AttackTypeT         m_attack_type           = {};
+  uint8_t             m_attack_power          = {};
+  AttackFlagsT        m_attack_flags          = {};
+  uint8_t             m_unknown1              = {};
+  ElementT            m_element               = {};
+  uint8_t             m_unknown2              = {};
+  uint8_t             m_status_attack_enabler = {};
+  uint8_t             m_attack_parameter      = {};
+  PersistentStatusesT m_persistent_statuses   = {};// statuses 0-7
+  BattleOnlyStatusesT m_battle_only_statuses  = {};// statuses 8-31
+  EnemyAttacks_impl()                         = default;
+  static constexpr std::size_t EXPECTED_SIZE  = 20U;
+
 public:
   constexpr auto
-    operator<=>(const EnemyAttacks &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    camera_change() const noexcept
-  {
-    return m_camera_change;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-  {
-    return m_attack_type;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    attack_power() const noexcept
-  {
-    return m_attack_power;
-  }
-  [[nodiscard]] constexpr auto
-    attack_flags() const noexcept
-  {
-    return m_attack_flags;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  [[nodiscard]] constexpr auto
-    element() const noexcept
-  {
-    return m_element;
-  }
-  [[nodiscard]] constexpr auto
-    unknown2() const noexcept
-  {
-    return m_unknown2;
-  }
-  [[nodiscard]] constexpr auto
-    status_attack_enabler() const noexcept
-  {
-    return m_status_attack_enabler;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    attack_parameter() const noexcept
-  {
-    return m_attack_parameter;
-  }
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-  {
-    return m_persistent_statuses;
-  }// statuses 0-7
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-  {
-    return m_battle_only_statuses;
-  }// statuses 8-31
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os
-        << static_cast<std::uint32_t>(m_magic_id) << ", " << m_camera_change
-        << ", " << static_cast<std::uint32_t>(m_unknown0) << ", "
-        << static_cast<std::uint32_t>(m_attack_type) << ", "
-        << static_cast<std::uint32_t>(m_attack_power) << ", "
-        << static_cast<std::uint32_t>(m_attack_flags) << ", "
-        << static_cast<std::uint32_t>(m_unknown1) << ", "
-        << static_cast<std::uint32_t>(m_element) << ", "
-        << static_cast<std::uint32_t>(m_unknown2) << ", "
-        << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-        << static_cast<std::uint32_t>(m_attack_parameter) << ", "
-        << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
-        << ", "
-        << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-31
-      ;
-  }
+    operator<=>(const EnemyAttacks_impl &right) const noexcept = default;
 };
+using EnemyAttacks = CommonKernel<EnemyAttacks_impl>;
+static_assert(sizeof(EnemyAttacks) == EnemyAttacks::EXPECTED_SIZE);
+static_assert(has_name_offset<EnemyAttacks>);
+static_assert(has_magic_id<EnemyAttacks>);
+static_assert(has_camera_change<EnemyAttacks>);
+static_assert(has_unknown0<EnemyAttacks>);
+static_assert(has_attack_type<EnemyAttacks>);
+static_assert(has_attack_power<EnemyAttacks>);
+static_assert(has_attack_flags<EnemyAttacks>);
+static_assert(has_unknown1<EnemyAttacks>);
+static_assert(has_element<EnemyAttacks>);
+static_assert(has_unknown2<EnemyAttacks>);
+static_assert(has_status_attack_enabler<EnemyAttacks>);
+static_assert(has_attack_parameter<EnemyAttacks>);
+static_assert(has_persistent_statuses<EnemyAttacks>);
+static_assert(has_battle_only_statuses<EnemyAttacks>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ENEMYATTACKS_HPP

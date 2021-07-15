@@ -171,5 +171,15 @@ concept has_raised_stat_hp_quantity = requires(T t)
 {
   t.raised_stat_hp_quantity();
 };
+template<typename T>
+concept has_camera_change = requires(T t)
+{
+  t.camera_change();
+};
+template<typename T>
+concept has_attack_parameter = requires(T t)
+{
+  t.attack_parameter();
+};
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP
