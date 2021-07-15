@@ -13,12 +13,12 @@
 #ifndef VIIIARCHIVE_DEVOUR_HPP
 #define VIIIARCHIVE_DEVOUR_HPP
 #include "BattleOnlyStatusesT.hpp"
+#include "CommonKernel.hpp"
 #include "DevourStatFlagT.hpp"
 #include "PercentQuantityT.hpp"
 #include "PersistentStatusesT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
-#include <ratio>
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description
