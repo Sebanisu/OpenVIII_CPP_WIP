@@ -67,7 +67,7 @@ protected:
   PersistentStatusesT          m_persistent_statuses     = {};// statuses 0-7
   DevourStatFlagT              m_devour_stat_flag        = {};
   std::uint8_t                 m_raised_stat_hp_quantity = {};
-  static constexpr std::size_t EXPECTED_SIZE             = 10U;
+  static constexpr std::size_t EXPECTED_SIZE             = 12U;
   Devour_impl()                                          = default;
   [[nodiscard]] constexpr auto
     damage_or_heal_impl() const noexcept
@@ -106,6 +106,7 @@ public:
     operator<=>(const Devour_impl &right) const noexcept = default;
 };
 using Devour = CommonKernel<Devour_impl>;
+static_assert(Devour::EXPECTED_SIZE == sizeof(Devour));
 static_assert(has_description_offset<Devour>);
 static_assert(has_damage_or_heal<Devour>);
 static_assert(has_percent_quantity<Devour>);
