@@ -221,5 +221,70 @@ concept has_junction_flags = requires(T t)
 {
   t.junction_flags();
 };
+template<typename T>
+concept has_gf_power = requires(T t)
+{
+  t.gf_power();
+};
+template<typename T>
+concept has_gf_hp_modifier = requires(T t)
+{
+  t.gf_hp_modifier();
+};
+template<typename T>
+concept has_unknown4 = requires(T t)
+{
+  t.unknown4();
+};
+template<typename T>
+concept has_unknown5 = requires(T t)
+{
+  t.unknown5();
+};
+template<typename T>
+concept has_unknown6 = requires(T t)
+{
+  t.unknown6();
+};
+template<typename T>
+concept has_unknown7 = requires(T t)
+{
+  t.unknown7();
+};
+template<typename T>
+concept has_unknown8 = requires(T t)
+{
+  t.unknown8();
+};
+template<typename T>
+concept has_unknown9 = requires(T t)
+{
+  t.unknown9();
+};
+template<typename T>
+concept has_unknown10 = requires(T t)
+{
+  t.unknown10();
+};
+template<typename T>
+concept has_unlockable_abilities = requires(T t)
+{
+  t.unlockable_abilities();
+};
+template<typename T>
+concept has_compatibility = requires(T t)
+{
+  t.compatibility();
+};
+template<typename T>
+concept has_power_mod = requires(T t)
+{
+  t.power_mod();
+};
+template<typename T>
+concept has_level_mod = requires(T t)
+{
+  t.level_mod();
+};
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP

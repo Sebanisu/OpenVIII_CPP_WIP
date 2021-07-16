@@ -10,7 +10,7 @@
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-struct JunctionableGFs
+struct JunctionableGFs_impl
 {
   /**
    * Offset	Length	Description
@@ -133,213 +133,69 @@ struct JunctionableGFs
    * 0x0083	1 byte	Level Mod (used in damage formula)
    * @see https://github.com/DarkShinryu/doomtrain/wiki/Junctionable-GFs
    */
-public:
-  static constexpr auto MAX_ABILITIES = 21U;
-  constexpr auto
-    operator<=>(const JunctionableGFs &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-  {
-    return m_attack_type;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    gf_power() const noexcept
-  {
-    return m_gf_power;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    attack_flags() const noexcept
-  {
-    return m_attack_flags;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  [[nodiscard]] constexpr auto
-    unknown2() const noexcept
-  {
-    return m_unknown2;
-  }
-  [[nodiscard]] constexpr auto
-    element() const noexcept
-  {
-    return m_element;
-  }
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-  {
-    return m_persistent_statuses;
-  }
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-  {
-    return m_battle_only_statuses;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    gfhp_modifier() const noexcept
-  {
-    return m_gf_hp_modifier;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown3() const noexcept
-  {
-    return m_unknown3;
-  }
-  [[nodiscard]] constexpr auto
-    unknown4() const noexcept
-  {
-    return m_unknown4;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown5() const noexcept
-  {
-    return m_unknown5;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown6() const noexcept
-  {
-    return m_unknown6;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown7() const noexcept
-  {
-    return m_unknown7;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown8() const noexcept
-  {
-    return m_unknown8;
-  }
-  [[nodiscard]] constexpr auto
-    status_attack_enabler() const noexcept
-  {
-    return m_status_attack_enabler;
-  }
-  template<size_t i>
-  [[nodiscard]] constexpr auto
-    unlockable_abilities() const noexcept
-  {
-    static_assert(i < MAX_ABILITIES);
-    return m_unlockable_abilities.at(i);
-  }
-  [[nodiscard]] constexpr auto
-    unlockable_abilities() const noexcept
-  {
-    return m_unlockable_abilities;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    compatibility() const noexcept
-  {
-    return m_compatibility;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown9() const noexcept
-  {
-    return m_unknown9;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown10() const noexcept
-  {
-    return m_unknown10;
-  }
-  [[nodiscard]] constexpr auto
-    power_mod() const noexcept
-  {
-    return m_power_mod;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    level_mod() const noexcept
-  {
-    return m_level_mod;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-       << static_cast<std::uint32_t>(m_attack_type) << ", "
-       << static_cast<std::uint32_t>(m_gf_power) << ", "
-       << static_cast<std::uint32_t>(m_unknown0) << ", "
-       << static_cast<std::uint32_t>(m_attack_flags) << ", "
-       << static_cast<std::uint32_t>(m_unknown1) << ", "
-       << static_cast<std::uint32_t>(m_unknown2) << ", "
-       << static_cast<std::uint32_t>(m_element) << ", "
-       << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
-       << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
-       << static_cast<std::uint32_t>(m_gf_hp_modifier) << ", "
-       << static_cast<std::uint32_t>(m_unknown3) << ", "
-       << static_cast<std::uint32_t>(m_unknown4) << ", "
-       << static_cast<std::uint32_t>(m_unknown5) << ", "
-       << static_cast<std::uint32_t>(m_unknown6) << ", "
-       << static_cast<std::uint32_t>(m_unknown7) << ", "
-       << static_cast<std::uint32_t>(m_unknown8) << ", "
-       << static_cast<std::uint32_t>(m_status_attack_enabler) << ", ";
-    bool first = true;
-    for (const auto &item : m_unlockable_abilities) {
-      if (!first) {
-        os << ", ";
-      }
-      else {
-        first = false;
-      }
-      os << item;
-    }
-    return os << ", " << m_compatibility << ", "
-              << static_cast<std::uint32_t>(m_unknown9) << ", "
-              << static_cast<std::uint32_t>(m_unknown10) << ", "
-              << static_cast<std::uint32_t>(m_power_mod) << ", "
-              << static_cast<std::uint32_t>(m_level_mod);
-  }
 
-private:
-  EncodedStringOffset                          m_name_offset{};
-  EncodedStringOffset                          m_description_offset{};
-  std::uint16_t                                m_magic_id{};
-  AttackTypeT                                  m_attack_type{};
-  std::uint8_t                                 m_gf_power{};
-  std::uint16_t                                m_unknown0{};
-  AttackFlagsT                                 m_attack_flags{};
-  std::uint8_t                                 m_unknown1{};
-  std::uint8_t                                 m_unknown2{};
-  ElementT                                     m_element{};
-  PersistentStatusesT                          m_persistent_statuses{};
-  BattleOnlyStatusesT                          m_battle_only_statuses{};
-  std::uint8_t                                 m_gf_hp_modifier{};
-  std::uint8_t                                 m_unknown3{};
-  std::uint8_t                                 m_unknown4{};
-  std::uint8_t                                 m_unknown5{};
-  std::uint8_t                                 m_unknown6{};
-  std::uint8_t                                 m_unknown7{};
-  std::uint8_t                                 m_unknown8{};
-  std::uint8_t                                 m_status_attack_enabler{};
-  std::array<UnlockableAbility, MAX_ABILITIES> m_unlockable_abilities{};
-  GFGroup<std::uint8_t>                        m_compatibility{};
-  std::uint8_t                                 m_unknown9{};
-  std::uint8_t                                 m_unknown10{};
-  std::uint8_t                                 m_power_mod{};
-  std::uint8_t                                 m_level_mod{};
+protected:
+  static constexpr std::size_t                 MAX_ABILITIES           = 21U;
+  static constexpr std::size_t                 EXPECTED_SIZE           = 132U;
+  EncodedStringOffset                          m_name_offset           = {};
+  EncodedStringOffset                          m_description_offset    = {};
+  std::uint16_t                                m_magic_id              = {};
+  AttackTypeT                                  m_attack_type           = {};
+  std::uint8_t                                 m_gf_power              = {};
+  std::uint16_t                                m_unknown0              = {};
+  AttackFlagsT                                 m_attack_flags          = {};
+  std::uint8_t                                 m_unknown1              = {};
+  std::uint8_t                                 m_unknown2              = {};
+  ElementT                                     m_element               = {};
+  PersistentStatusesT                          m_persistent_statuses   = {};
+  BattleOnlyStatusesT                          m_battle_only_statuses  = {};
+  std::uint8_t                                 m_gf_hp_modifier        = {};
+  std::uint8_t                                 m_unknown3              = {};
+  std::uint8_t                                 m_unknown4              = {};
+  std::uint8_t                                 m_unknown5              = {};
+  std::uint8_t                                 m_unknown6              = {};
+  std::uint8_t                                 m_unknown7              = {};
+  std::uint8_t                                 m_unknown8              = {};
+  std::uint8_t                                 m_status_attack_enabler = {};
+  std::array<UnlockableAbility, MAX_ABILITIES> m_unlockable_abilities  = {};
+  GFGroup<std::uint8_t>                        m_compatibility         = {};
+  std::uint8_t                                 m_unknown9              = {};
+  std::uint8_t                                 m_unknown10             = {};
+  std::uint8_t                                 m_power_mod             = {};
+  std::uint8_t                                 m_level_mod             = {};
+  constexpr JunctionableGFs_impl() = default;
+
+public:
+  constexpr auto
+    operator<=>(const JunctionableGFs_impl &right) const noexcept = default;
 };
+using JunctionableGFs = CommonKernel<JunctionableGFs_impl>;
+static_assert(JunctionableGFs::EXPECTED_SIZE == sizeof(JunctionableGFs));
+static_assert(has_name_offset<JunctionableGFs>);
+static_assert(has_description_offset<JunctionableGFs>);
+static_assert(has_magic_id<JunctionableGFs>);
+static_assert(has_attack_type<JunctionableGFs>);
+static_assert(has_gf_power<JunctionableGFs>);
+static_assert(has_unknown0<JunctionableGFs>);
+static_assert(has_attack_flags<JunctionableGFs>);
+static_assert(has_unknown1<JunctionableGFs>);
+static_assert(has_unknown2<JunctionableGFs>);
+static_assert(has_element<JunctionableGFs>);
+static_assert(has_persistent_statuses<JunctionableGFs>);
+static_assert(has_battle_only_statuses<JunctionableGFs>);
+static_assert(has_gf_hp_modifier<JunctionableGFs>);
+static_assert(has_unknown3<JunctionableGFs>);
+static_assert(has_unknown4<JunctionableGFs>);
+static_assert(has_unknown5<JunctionableGFs>);
+static_assert(has_unknown6<JunctionableGFs>);
+static_assert(has_unknown7<JunctionableGFs>);
+static_assert(has_unknown8<JunctionableGFs>);
+static_assert(has_status_attack_enabler<JunctionableGFs>);
+static_assert(has_unlockable_abilities<JunctionableGFs>);
+static_assert(has_compatibility<JunctionableGFs>);
+static_assert(has_unknown9<JunctionableGFs>);
+static_assert(has_unknown10<JunctionableGFs>);
+static_assert(has_power_mod<JunctionableGFs>);
+static_assert(has_level_mod<JunctionableGFs>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_JUNCTIONABLEGFS_HPP

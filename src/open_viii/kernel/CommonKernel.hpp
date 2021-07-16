@@ -263,6 +263,79 @@ public:
   {
     return T::junction_flags_impl();
   }
+
+  [[nodiscard]] constexpr auto
+    gf_power() const noexcept requires(requires(this_type t) { t.m_gf_power; })
+  {
+    return T::m_gf_power;
+  }
+  [[nodiscard]] constexpr auto
+    gf_hp_modifier() const noexcept
+    requires(requires(this_type t) { t.m_gf_hp_modifier; })
+  {
+    return T::m_gf_hp_modifier;
+  }
+  [[nodiscard]] constexpr auto
+    unlockable_abilities() const noexcept
+    requires(requires(this_type t) { t.m_unlockable_abilities; })
+  {
+    return T::m_unlockable_abilities;
+  }
+  [[nodiscard]] constexpr auto
+    power_mod() const noexcept
+    requires(requires(this_type t) { t.m_power_mod; })
+  {
+    return T::m_power_mod;
+  }
+  [[nodiscard]] constexpr auto
+    compatibility() const noexcept
+    requires(requires(this_type t) { t.m_compatibility; })
+  {
+    return T::m_compatibility;
+  }
+  [[nodiscard]] constexpr auto
+    level_mod() const noexcept
+    requires(requires(this_type t) { t.m_level_mod; })
+  {
+    return T::m_level_mod;
+  }
+  [[nodiscard]] constexpr auto
+    unknown4() const noexcept requires(requires(this_type t) { t.m_unknown4; })
+  {
+    return T::m_unknown4;
+  }
+
+  [[nodiscard]] constexpr auto
+    unknown5() const noexcept requires(requires(this_type t) { t.m_unknown5; })
+  {
+    return T::m_unknown5;
+  }
+  [[nodiscard]] constexpr auto
+    unknown6() const noexcept requires(requires(this_type t) { t.m_unknown6; })
+  {
+    return T::m_unknown6;
+  }
+  [[nodiscard]] constexpr auto
+    unknown7() const noexcept requires(requires(this_type t) { t.m_unknown7; })
+  {
+    return T::m_unknown7;
+  }
+  [[nodiscard]] constexpr auto
+    unknown8() const noexcept requires(requires(this_type t) { t.m_unknown8; })
+  {
+    return T::m_unknown8;
+  }
+  [[nodiscard]] constexpr auto
+    unknown9() const noexcept requires(requires(this_type t) { t.m_unknown9; })
+  {
+    return T::m_unknown9;
+  }
+  [[nodiscard]] constexpr auto
+    unknown10() const noexcept
+    requires(requires(this_type t) { t.m_unknown10; })
+  {
+    return T::m_unknown10;
+  }
 };
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_COMMONKERNEL_HPP
