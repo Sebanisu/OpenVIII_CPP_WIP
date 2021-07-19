@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_MISC_HPP
 #define VIIIARCHIVE_MISC_HPP
+#include "CommonKernel.hpp"
 #include "CrisisLevelT.hpp"
 #include "SequenceAndTimer.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
@@ -81,368 +82,117 @@ namespace open_viii::kernel {
  * 0x003B	1 byte	Shot Timer Crisis Level 4
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Misc-section
  */
-struct Misc
+struct Misc_impl
 {
-private:
-  std::uint8_t                   m_sleep_timer{};
-  std::uint8_t                   m_haste_timer{};
-  std::uint8_t                   m_slow_timer{};
-  std::uint8_t                   m_stop_timer{};
-  std::uint8_t                   m_regen_timer{};
-  std::uint8_t                   m_protect_timer{};
-  std::uint8_t                   m_shell_timer{};
-  std::uint8_t                   m_reflect_timer{};
-  std::uint8_t                   m_aura_timer{};
-  std::uint8_t                   m_curse_timer{};
-  std::uint8_t                   m_doom_timer{};
-  std::uint8_t                   m_invincible_timer{};
-  std::uint8_t                   m_petrifying_timer{};
-  std::uint8_t                   m_float_timer{};
-  std::uint8_t                   m_atb_speed_multiplier{};
-  std::uint8_t                   m_dead_timer{};
-  std::uint8_t                   m_death_limit_effect{};
-  std::uint8_t                   m_poison_limit_effect{};
-  std::uint8_t                   m_petrify_limit_effect{};
-  std::uint8_t                   m_darkness_limit_effect{};
-  std::uint8_t                   m_silence_limit_effect{};
-  std::uint8_t                   m_berserk_limit_effect{};
-  std::uint8_t                   m_zombie_limit_effect{};
-  std::uint8_t                   m_unknown_status_limit_effect{};
-  std::uint8_t                   m_sleep_limit_effect{};
-  std::uint8_t                   m_haste_limit_effect{};
-  std::uint8_t                   m_slow_limit_effect{};
-  std::uint8_t                   m_stop_limit_effect{};
-  std::uint8_t                   m_regen_limit_effect{};
-  std::uint8_t                   m_protect_limit_effect{};
-  std::uint8_t                   m_shell_limit_effect{};
-  std::uint8_t                   m_reflect_limit_effect{};
-  std::uint8_t                   m_aura_limit_effect{};
-  std::uint8_t                   m_curse_limit_effect{};
-  std::uint8_t                   m_doom_limit_effect{};
-  std::uint8_t                   m_invincible_limit_effect{};
-  std::uint8_t                   m_petrifying_limit_effect{};
-  std::uint8_t                   m_float_limit_effect{};
-  std::uint8_t                   m_confusion_limit_effect{};
-  std::uint8_t                   m_drain_limit_effect{};
-  std::uint8_t                   m_eject_limit_effect{};
-  std::uint8_t                   m_double_limit_effect{};
-  std::uint8_t                   m_triple_limit_effect{};
-  std::uint8_t                   m_defend_limit_effect{};
-  std::uint8_t                   m_unknown_status_limit_effect0{};
-  std::uint8_t                   m_unknown_status_limit_effect1{};
-  std::uint8_t                   m_charged_limit_effect{};
-  std::uint8_t                   m_back_attack_limit_effect{};
-  CrisisLevelT<SequenceAndTimer> m_duel_timers{};
-  CrisisLevelT<std::uint8_t>     m_shot_timers{};
+protected:
+  std::uint8_t                   m_sleep_timer                  = {};
+  std::uint8_t                   m_haste_timer                  = {};
+  std::uint8_t                   m_slow_timer                   = {};
+  std::uint8_t                   m_stop_timer                   = {};
+  std::uint8_t                   m_regen_timer                  = {};
+  std::uint8_t                   m_protect_timer                = {};
+  std::uint8_t                   m_shell_timer                  = {};
+  std::uint8_t                   m_reflect_timer                = {};
+  std::uint8_t                   m_aura_timer                   = {};
+  std::uint8_t                   m_curse_timer                  = {};
+  std::uint8_t                   m_doom_timer                   = {};
+  std::uint8_t                   m_invincible_timer             = {};
+  std::uint8_t                   m_petrifying_timer             = {};
+  std::uint8_t                   m_float_timer                  = {};
+  std::uint8_t                   m_atb_speed_multiplier         = {};
+  std::uint8_t                   m_dead_timer                   = {};
+  std::uint8_t                   m_death_limit_effect           = {};
+  std::uint8_t                   m_poison_limit_effect          = {};
+  std::uint8_t                   m_petrify_limit_effect         = {};
+  std::uint8_t                   m_darkness_limit_effect        = {};
+  std::uint8_t                   m_silence_limit_effect         = {};
+  std::uint8_t                   m_berserk_limit_effect         = {};
+  std::uint8_t                   m_zombie_limit_effect          = {};
+  std::uint8_t                   m_unknown_status_limit_effect  = {};
+  std::uint8_t                   m_sleep_limit_effect           = {};
+  std::uint8_t                   m_haste_limit_effect           = {};
+  std::uint8_t                   m_slow_limit_effect            = {};
+  std::uint8_t                   m_stop_limit_effect            = {};
+  std::uint8_t                   m_regen_limit_effect           = {};
+  std::uint8_t                   m_protect_limit_effect         = {};
+  std::uint8_t                   m_shell_limit_effect           = {};
+  std::uint8_t                   m_reflect_limit_effect         = {};
+  std::uint8_t                   m_aura_limit_effect            = {};
+  std::uint8_t                   m_curse_limit_effect           = {};
+  std::uint8_t                   m_doom_limit_effect            = {};
+  std::uint8_t                   m_invincible_limit_effect      = {};
+  std::uint8_t                   m_petrifying_limit_effect      = {};
+  std::uint8_t                   m_float_limit_effect           = {};
+  std::uint8_t                   m_confusion_limit_effect       = {};
+  std::uint8_t                   m_drain_limit_effect           = {};
+  std::uint8_t                   m_eject_limit_effect           = {};
+  std::uint8_t                   m_double_limit_effect          = {};
+  std::uint8_t                   m_triple_limit_effect          = {};
+  std::uint8_t                   m_defend_limit_effect          = {};
+  std::uint8_t                   m_unknown_status_limit_effect0 = {};
+  std::uint8_t                   m_unknown_status_limit_effect1 = {};
+  std::uint8_t                   m_charged_limit_effect         = {};
+  std::uint8_t                   m_back_attack_limit_effect     = {};
+  CrisisLevelT<SequenceAndTimer> m_duel_timers                  = {};
+  CrisisLevelT<std::uint8_t>     m_shot_timers                  = {};
+  constexpr Misc_impl()                                         = default;
+  static constexpr std::size_t EXPECTED_SIZE                    = 60U;
 
 public:
   constexpr auto
-    operator<=>(const Misc &right) const noexcept = default;
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    sleep_timer() const noexcept
-  {
-    return m_sleep_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    haste_timer() const noexcept
-  {
-    return m_haste_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    slow_timer() const noexcept
-  {
-    return m_slow_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    stop_timer() const noexcept
-  {
-    return m_stop_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    regen_timer() const noexcept
-  {
-    return m_regen_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    protect_timer() const noexcept
-  {
-    return m_protect_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    shell_timer() const noexcept
-  {
-    return m_shell_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    reflect_timer() const noexcept
-  {
-    return m_reflect_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    aura_timer() const noexcept
-  {
-    return m_aura_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    curse_timer() const noexcept
-  {
-    return m_curse_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    doom_timer() const noexcept
-  {
-    return m_doom_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    invincible_timer() const noexcept
-  {
-    return m_invincible_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    petrifying_timer() const noexcept
-  {
-    return m_petrifying_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    float_timer() const noexcept
-  {
-    return m_float_timer;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    atb_speed_multiplier() const noexcept
-  {
-    return m_atb_speed_multiplier;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    dead_timer() const noexcept
-  {
-    return m_dead_timer;
-  }
-  [[nodiscard]] constexpr auto
-    death_limit_effect() const noexcept
-  {
-    return m_death_limit_effect;
-  }
-  [[nodiscard]] constexpr auto
-    poison_limit_effect() const noexcept
-  {
-    return m_poison_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    petrify_limit_effect() const noexcept
-  {
-    return m_petrify_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    darkness_limit_effect() const noexcept
-  {
-    return m_darkness_limit_effect;
-  }
-  [[nodiscard]] constexpr auto
-    silence_limit_effect() const noexcept
-  {
-    return m_silence_limit_effect;
-  }
-  [[nodiscard]] constexpr auto
-    berserk_limit_effect() const noexcept
-  {
-    return m_berserk_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    zombie_limit_effect() const noexcept
-  {
-    return m_zombie_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown_status_limit_effect() const noexcept
-  {
-    return m_unknown_status_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    sleep_limit_effect() const noexcept
-  {
-    return m_sleep_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    haste_limit_effect() const noexcept
-  {
-    return m_haste_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    slow_limit_effect() const noexcept
-  {
-    return m_slow_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    stop_limit_effect() const noexcept
-  {
-    return m_stop_limit_effect;
-  }
-  [[nodiscard]] constexpr auto
-    regen_limit_effect() const noexcept
-  {
-    return m_regen_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    protect_limit_effect() const noexcept
-  {
-    return m_protect_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    shell_limit_effect() const noexcept
-  {
-    return m_shell_limit_effect;
-  }
-  [[nodiscard]] constexpr auto
-    reflect_limit_effect() const noexcept
-  {
-    return m_reflect_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    aura_limit_effect() const noexcept
-  {
-    return m_aura_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    curse_limit_effect() const noexcept
-  {
-    return m_curse_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    doom_limit_effect() const noexcept
-  {
-    return m_doom_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    invincible_limit_effect() const noexcept
-  {
-    return m_invincible_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    petrifying_limit_effect() const noexcept
-  {
-    return m_petrifying_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    float_limit_effect() const noexcept
-  {
-    return m_float_limit_effect;
-  }
-  [[nodiscard]] constexpr auto
-    confusion_limit_effect() const noexcept
-  {
-    return m_confusion_limit_effect;
-  }
-  [[nodiscard]] constexpr auto
-    drain_limit_effect() const noexcept
-  {
-    return m_drain_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    eject_limit_effect() const noexcept
-  {
-    return m_eject_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    double_limit_effect() const noexcept
-  {
-    return m_double_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    triple_limit_effect() const noexcept
-  {
-    return m_triple_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    defend_limit_effect() const noexcept
-  {
-    return m_defend_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown_status_limit_effect0() const noexcept
-  {
-    return m_unknown_status_limit_effect0;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown_status_limit_effect1() const noexcept
-  {
-    return m_unknown_status_limit_effect1;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    charged_limit_effect() const noexcept
-  {
-    return m_charged_limit_effect;
-  }
-  [[nodiscard]] constexpr auto
-    back_attack_limit_effect() const noexcept
-  {
-    return m_back_attack_limit_effect;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    duel_timers() const noexcept
-  {
-    return m_duel_timers;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    shot_timers() const noexcept
-  {
-    return m_shot_timers;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << static_cast<std::uint32_t>(m_sleep_timer) << ", "
-              << static_cast<std::uint32_t>(m_haste_timer) << ", "
-              << static_cast<std::uint32_t>(m_slow_timer) << ", "
-              << static_cast<std::uint32_t>(m_stop_timer) << ", "
-              << static_cast<std::uint32_t>(m_regen_timer) << ", "
-              << static_cast<std::uint32_t>(m_protect_timer) << ", "
-              << static_cast<std::uint32_t>(m_shell_timer) << ", "
-              << static_cast<std::uint32_t>(m_reflect_timer) << ", "
-              << static_cast<std::uint32_t>(m_aura_timer) << ", "
-              << static_cast<std::uint32_t>(m_curse_timer) << ", "
-              << static_cast<std::uint32_t>(m_doom_timer) << ", "
-              << static_cast<std::uint32_t>(m_invincible_timer) << ", "
-              << static_cast<std::uint32_t>(m_petrifying_timer) << ", "
-              << static_cast<std::uint32_t>(m_float_timer) << ", "
-              << static_cast<std::uint32_t>(m_atb_speed_multiplier) << ", "
-              << static_cast<std::uint32_t>(m_dead_timer) << ", "
-              << static_cast<std::uint32_t>(m_death_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_poison_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_petrify_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_darkness_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_silence_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_berserk_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_zombie_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_unknown_status_limit_effect)
-              << ", " << static_cast<std::uint32_t>(m_sleep_limit_effect)
-              << ", " << static_cast<std::uint32_t>(m_haste_limit_effect)
-              << ", " << static_cast<std::uint32_t>(m_slow_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_stop_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_regen_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_protect_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_shell_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_reflect_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_aura_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_curse_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_doom_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_invincible_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_petrifying_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_float_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_confusion_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_drain_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_eject_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_double_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_triple_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_defend_limit_effect) << ", "
-              << static_cast<std::uint32_t>(m_unknown_status_limit_effect0)
-              << ", "
-              << static_cast<std::uint32_t>(m_unknown_status_limit_effect1)
-              << ", " << static_cast<std::uint32_t>(m_charged_limit_effect)
-              << ", " << static_cast<std::uint32_t>(m_back_attack_limit_effect)
-              << ", " << m_duel_timers << ", " << m_shot_timers;
-  }
+    operator<=>(const Misc_impl &right) const noexcept = default;
 };
+using Misc = CommonKernel<Misc_impl>;
+static_assert(Misc::EXPECTED_SIZE == sizeof(Misc));
+static_assert(has_sleep_timer<Misc>);
+static_assert(has_haste_timer<Misc>);
+static_assert(has_slow_timer<Misc>);
+static_assert(has_stop_timer<Misc>);
+static_assert(has_regen_timer<Misc>);
+static_assert(has_protect_timer<Misc>);
+static_assert(has_shell_timer<Misc>);
+static_assert(has_reflect_timer<Misc>);
+static_assert(has_aura_timer<Misc>);
+static_assert(has_curse_timer<Misc>);
+static_assert(has_doom_timer<Misc>);
+static_assert(has_invincible_timer<Misc>);
+static_assert(has_petrifying_timer<Misc>);
+static_assert(has_float_timer<Misc>);
+static_assert(has_atb_speed_multiplier<Misc>);
+static_assert(has_dead_timer<Misc>);
+static_assert(has_death_limit_effect<Misc>);
+static_assert(has_poison_limit_effect<Misc>);
+static_assert(has_petrify_limit_effect<Misc>);
+static_assert(has_darkness_limit_effect<Misc>);
+static_assert(has_silence_limit_effect<Misc>);
+static_assert(has_berserk_limit_effect<Misc>);
+static_assert(has_zombie_limit_effect<Misc>);
+static_assert(has_unknown_status_limit_effect<Misc>);
+static_assert(has_sleep_limit_effect<Misc>);
+static_assert(has_haste_limit_effect<Misc>);
+static_assert(has_slow_limit_effect<Misc>);
+static_assert(has_stop_limit_effect<Misc>);
+static_assert(has_regen_limit_effect<Misc>);
+static_assert(has_protect_limit_effect<Misc>);
+static_assert(has_shell_limit_effect<Misc>);
+static_assert(has_reflect_limit_effect<Misc>);
+static_assert(has_aura_limit_effect<Misc>);
+static_assert(has_curse_limit_effect<Misc>);
+static_assert(has_doom_limit_effect<Misc>);
+static_assert(has_invincible_limit_effect<Misc>);
+static_assert(has_petrifying_limit_effect<Misc>);
+static_assert(has_float_limit_effect<Misc>);
+static_assert(has_confusion_limit_effect<Misc>);
+static_assert(has_drain_limit_effect<Misc>);
+static_assert(has_eject_limit_effect<Misc>);
+static_assert(has_double_limit_effect<Misc>);
+static_assert(has_triple_limit_effect<Misc>);
+static_assert(has_defend_limit_effect<Misc>);
+static_assert(has_unknown_status_limit_effect0<Misc>);
+static_assert(has_unknown_status_limit_effect1<Misc>);
+static_assert(has_charged_limit_effect<Misc>);
+static_assert(has_back_attack_limit_effect<Misc>);
+static_assert(has_duel_timers<Misc>);
+static_assert(has_shot_timers<Misc>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_MISC_HPP
