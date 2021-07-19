@@ -15,6 +15,7 @@
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "CommonKernel.hpp"
 #include "ElementT.hpp"
 #include "GFGroup.hpp"
 #include "JunctionStatusesT.hpp"
@@ -81,35 +82,35 @@ struct Magic_impl
    * 	@see https://github.com/DarkShinryu/doomtrain/wiki/Magic-data
    */
 protected:
-  EncodedStringOffset m_name_offset            = {};
-  EncodedStringOffset m_description_offset     = {};
-  uint16_t            m_magic_id               = {};
-  uint8_t             m_unknown0               = {};
-  AttackTypeT         m_attack_type            = {};
-  uint8_t             m_spell_power            = {};
-  uint8_t             m_unknown1               = {};
-  TargetT             m_target                 = {};
-  AttackFlagsT        m_attack_flags           = {};
-  uint8_t             m_draw_resist            = {};
-  uint8_t             m_hit_count              = {};
-  ElementT            m_element                = {};
-  uint8_t             m_unknown2               = {};
-  BattleOnlyStatusesT m_battle_only_statuses   = {};
-  PersistentStatusesT m_persistent_statuses    = {};
-  uint8_t             m_status_attack          = {};
-  StatGroup<uint8_t>  m_junction_stats         = {};
-  ElementT            m_j_elem_attack_flag     = {};
-  uint8_t             m_j_elem_attack_value    = {};
-  ElementT            m_j_elem_defense_flag    = {};
-  uint8_t             m_j_elem_defense_value   = {};
-  uint8_t             m_j_status_attack_value  = {};
-  uint8_t             m_j_status_defense_value = {};
-  JunctionStatusesT   m_j_statuses_attack_flag = {};
-  JunctionStatusesT   m_j_statuses_defend_flag = {};
-  GFGroup<uint8_t>    m_compatibility          = {};
-  uint16_t            m_unknown3               = {};
-  constexpr Magic_impl()                       = default;
-  static constexpr std::size_t EXPECTED_SIZE   = 60U;
+  EncodedStringOffset     m_name_offset            = {};
+  EncodedStringOffset     m_description_offset     = {};
+  std::uint16_t           m_magic_id               = {};
+  std::uint8_t            m_unknown0               = {};
+  AttackTypeT             m_attack_type            = {};
+  std::uint8_t            m_spell_power            = {};
+  std::uint8_t            m_unknown1               = {};
+  TargetT                 m_target                 = {};
+  AttackFlagsT            m_attack_flags           = {};
+  std::uint8_t            m_draw_resist            = {};
+  std::uint8_t            m_hit_count              = {};
+  ElementT                m_element                = {};
+  std::uint8_t            m_unknown2               = {};
+  BattleOnlyStatusesT     m_battle_only_statuses   = {};
+  PersistentStatusesT     m_persistent_statuses    = {};
+  std::uint8_t            m_status_attack          = {};
+  StatGroup<std::uint8_t> m_junction_stats         = {};
+  ElementT                m_j_elem_attack_flag     = {};
+  std::uint8_t            m_j_elem_attack_value    = {};
+  ElementT                m_j_elem_defense_flag    = {};
+  std::uint8_t            m_j_elem_defense_value   = {};
+  std::uint8_t            m_j_status_attack_value  = {};
+  std::uint8_t            m_j_status_defense_value = {};
+  JunctionStatusesT       m_j_statuses_attack_flag = {};
+  JunctionStatusesT       m_j_statuses_defend_flag = {};
+  GFGroup<std::uint8_t>   m_compatibility          = {};
+  std::uint16_t           m_unknown3               = {};
+  constexpr Magic_impl()                           = default;
+  static constexpr std::size_t EXPECTED_SIZE       = 60U;
 
 public:
   constexpr auto
