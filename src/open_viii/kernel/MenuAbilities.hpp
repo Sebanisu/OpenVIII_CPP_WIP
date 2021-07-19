@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_MENUABILITIES_HPP
 #define VIIIARCHIVE_MENUABILITIES_HPP
+#include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
@@ -25,64 +26,29 @@ namespace open_viii::kernel {
  * 0x0007	1 byte	End offset
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Menu-abilities
  */
-struct MenuAbilities
+struct MenuAbilities_impl
 {
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  std::uint8_t        m_ability_points_required_to_unlock{};
-  std::uint8_t        m_menu_file_index{};
-  std::uint8_t        m_start_offset{};
-  std::uint8_t        m_end_offset{};
+protected:
+  EncodedStringOffset m_name_offset                       = {};
+  EncodedStringOffset m_description_offset                = {};
+  std::uint8_t        m_ability_points_required_to_unlock = {};
+  std::uint8_t        m_menu_file_index                   = {};
+  std::uint8_t        m_start_offset                      = {};
+  std::uint8_t        m_end_offset                        = {};
+  constexpr MenuAbilities_impl()                          = default;
+  static constexpr std::size_t EXPECTED_SIZE              = 8U;
 
 public:
   constexpr auto
-    operator<=>(const MenuAbilities &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  /**
-   * Ability points required to unlock
-   * @see
-   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
-   */
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    ability_points_required_to_unlock() const noexcept
-  {
-    return m_ability_points_required_to_unlock;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    menu_file_index() const noexcept
-  {
-    return m_menu_file_index;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    start_offset() const noexcept
-  {
-    return m_start_offset;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    end_offset() const noexcept
-  {
-    return m_end_offset;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << ", "
-              << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
-              << ", " << static_cast<std::uint32_t>(m_menu_file_index) << ", "
-              << static_cast<std::uint32_t>(m_start_offset) << ", "
-              << static_cast<std::uint32_t>(m_end_offset);
-  }
+    operator<=>(const MenuAbilities_impl &right) const noexcept = default;
 };
+using MenuAbilities = CommonKernel<MenuAbilities_impl>;
+static_assert(MenuAbilities::EXPECTED_SIZE == sizeof(MenuAbilities));
+static_assert(has_name_offset<MenuAbilities>);
+static_assert(has_description_offset<MenuAbilities>);
+static_assert(has_ability_points_required_to_unlock<MenuAbilities>);
+static_assert(has_menu_file_index<MenuAbilities>);
+static_assert(has_start_offset<MenuAbilities>);
+static_assert(has_end_offset<MenuAbilities>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_MENUABILITIES_HPP

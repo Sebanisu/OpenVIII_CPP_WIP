@@ -120,6 +120,9 @@ public:
   BOTH(j_status_defense_value)
   BOTH(j_statuses_attack_flag)
   BOTH(j_statuses_defend_flag)
+  BOTH(menu_file_index)
+  BOTH(start_offset)
+  BOTH(end_offset)
 
   GET_impl(character_ability_flags) GET_impl(junction_flags)
     GET_impl(percent_quantity) GET_impl(damage_or_heal)
