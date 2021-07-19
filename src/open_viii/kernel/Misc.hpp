@@ -135,8 +135,8 @@ protected:
   std::uint8_t                   m_back_attack_limit_effect     = {};
   CrisisLevelT<SequenceAndTimer> m_duel_timers                  = {};
   CrisisLevelT<std::uint8_t>     m_shot_timers                  = {};
+  static constexpr std::size_t   EXPECTED_SIZE                  = 60U;
   constexpr Misc_impl()                                         = default;
-  static constexpr std::size_t EXPECTED_SIZE                    = 60U;
 
 public:
   constexpr auto

@@ -29,14 +29,14 @@ namespace open_viii::kernel {
 struct MenuAbilities_impl
 {
 protected:
-  EncodedStringOffset m_name_offset                       = {};
-  EncodedStringOffset m_description_offset                = {};
-  std::uint8_t        m_ability_points_required_to_unlock = {};
-  std::uint8_t        m_menu_file_index                   = {};
-  std::uint8_t        m_start_offset                      = {};
-  std::uint8_t        m_end_offset                        = {};
-  constexpr MenuAbilities_impl()                          = default;
-  static constexpr std::size_t EXPECTED_SIZE              = 8U;
+  EncodedStringOffset          m_name_offset                       = {};
+  EncodedStringOffset          m_description_offset                = {};
+  std::uint8_t                 m_ability_points_required_to_unlock = {};
+  std::uint8_t                 m_menu_file_index                   = {};
+  std::uint8_t                 m_start_offset                      = {};
+  std::uint8_t                 m_end_offset                        = {};
+  static constexpr std::size_t EXPECTED_SIZE                       = 8U;
+  constexpr MenuAbilities_impl()                                   = default;
 
 public:
   constexpr auto
