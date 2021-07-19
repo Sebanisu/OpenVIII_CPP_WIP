@@ -8,7 +8,7 @@
 #include <compare>
 namespace open_viii::kernel {
 template<typename T>
-struct CommonKernel : T
+struct CommonKernel : public T
 {
 public:
   using this_type          = CommonKernel<T>;
@@ -16,326 +16,117 @@ public:
   using T::EXPECTED_SIZE;
   constexpr auto
     operator<=>(const this_type &right) const noexcept = default;
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-    requires(requires(this_type t) { t.m_name_offset; })
-  {
-    return T::m_name_offset;
+#define GET(value_name)                                                        \
+  [[nodiscard]] constexpr auto value_name()                                    \
+    const noexcept requires(requires(this_type t) { t.m_##value_name; })       \
+  {                                                                            \
+    return T::m_##value_name;                                                  \
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-    requires(requires(this_type t) { t.m_description_offset; })
-  {
-    return T::m_description_offset;
+#define GET_impl(value_name)                                                   \
+  [[nodiscard]] constexpr auto value_name() const noexcept requires(           \
+    requires(this_type t) { t.value_name##_impl(); })                      \
+  {                                                                            \
+    return T::value_name##_impl();                                         \
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    ability_data_id() const noexcept
-    requires(requires(this_type t) { t.m_ability_data_id; })
-  {
-    return T::m_ability_data_id;
+#define WITH(value_name)                                                       \
+  [[nodiscard]] constexpr auto with_##value_name(                              \
+    const auto &new_val) &&noexcept requires(requires(this_type t) {           \
+    t.m_##value_name;                                                          \
+  })                                                                           \
+  {                                                                            \
+    T::m_##value_name = new_val;                                               \
+    return *this;                                                              \
+  }                                                                            \
+  [[nodiscard]] constexpr auto with_##value_name(const auto &new_val)          \
+    const &noexcept requires(requires(this_type t) { t.m_##value_name; })      \
+  {                                                                            \
+    return this_type{*this}.with_##value_name(new_val);                        \
+  }                                                                            \
+  [[nodiscard]] constexpr auto with_##value_name(const auto &new_val)          \
+    const &&noexcept requires(requires(this_type t) { t.m_##value_name; })     \
+  {                                                                            \
+    return this_type{*this}.with_##value_name(new_val);                        \
   }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown_flags() const noexcept
-    requires(requires(this_type t) { t.m_unknown_flags; })
-  {
-    return T::m_unknown_flags;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    target() const noexcept requires(requires(this_type t) { t.m_target; })
-  {
-    return T::m_target;
-  }
-  [[nodiscard]] constexpr auto
-    unknown() const noexcept requires(requires(this_type t) { t.m_unknown; })
-  {
-    return T::m_unknown;
-  }
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept requires(requires(this_type t) { t.m_magic_id; })
-  {
-    return T::m_magic_id;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-    requires(requires(this_type t) { t.m_attack_type; })
-  {
-    return T::m_attack_type;
-  }
-  [[nodiscard]] constexpr auto
-    attack_power() const noexcept
-    requires(requires(this_type t) { t.m_attack_power; })
-  {
-    return T::m_attack_power;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept requires(requires(this_type t) { t.m_unknown0; })
-  {
-    return T::m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept requires(requires(this_type t) { t.m_unknown1; })
-  {
-    return T::m_unknown1;
-  }
-  [[nodiscard]] constexpr auto
-    attack_flags() const noexcept
-    requires(requires(this_type t) { t.m_attack_flags; })
-  {
-    return T::m_attack_flags;
-  }
-  [[nodiscard]] constexpr auto
-    unknown2() const noexcept requires(requires(this_type t) { t.m_unknown2; })
-  {
-    return T::m_unknown2;
-  }
-  [[nodiscard]] constexpr auto
-    status_attack_enabler() const noexcept
-    requires(requires(this_type t) { t.m_status_attack_enabler; })
-  {
-    return T::m_status_attack_enabler;
-  }
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-    requires(requires(this_type t) { t.m_persistent_statuses; })
-  {
-    return T::m_persistent_statuses;
-  }// statuses 0-7
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-    requires(requires(this_type t) { t.m_battle_only_statuses; })
-  {
-    return T::m_battle_only_statuses;
-  }// statuses 8-39
-  [[nodiscard]] constexpr auto
-    attack_param() const noexcept
-    requires(requires(this_type t) { t.m_attack_param; })
-  {
-    return T::m_attack_param;
-  }
-  [[nodiscard]] constexpr auto
-    unknown3() const noexcept requires(requires(this_type t) { t.m_unknown3; })
-  {
-    return T::m_unknown3;
-  }
-  [[nodiscard]] constexpr auto
-    hit_count() const noexcept
-    requires(requires(this_type t) { t.m_hit_count; })
-  {
-    return T::m_hit_count;
-  }
-  [[nodiscard]] constexpr auto
-    element() const noexcept requires(requires(this_type t) { t.m_element; })
-  {
-    return T::m_element;
-  }
-
+#define BOTH(value_name)                                                       \
+  GET(value_name)                                                              \
+  WITH(value_name)
+  BOTH(name_offset)
+  BOTH(description_offset)
+  BOTH(ability_data_id)
+  BOTH(unknown_flags)
+  BOTH(target)
+  BOTH(unknown)
+  BOTH(magic_id)
+  BOTH(attack_type)
+  BOTH(attack_power)
+  BOTH(unknown0)
+  BOTH(unknown1)
+  BOTH(attack_flags)
+  BOTH(unknown2)
+  BOTH(status_attack_enabler)
+  // statuses 0-7
+  BOTH(persistent_statuses)
+  // statuses 8-39
+  BOTH(battle_only_statuses)
+  BOTH(attack_param)
+  BOTH(unknown3)
+  BOTH(hit_count)
+  BOTH(element)
   /**
    * Ability points required to unlock
    * @see
    * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
    */
-  [[nodiscard]] constexpr auto
-    ability_points_required_to_unlock() const noexcept
-    requires(requires(this_type t) { t.m_ability_points_required_to_unlock; })
-  {
-    return T::m_ability_points_required_to_unlock;
-  }
-  [[nodiscard]] constexpr auto
-    character_ability_flags() const noexcept
-    requires(requires(this_type t) { t.character_ability_flags_impl(); })
-  {
-    return T::character_ability_flags_impl();
-  }
-  [[nodiscard]] constexpr auto
-    crisis_level_hp_multiplier() const noexcept
-    requires(requires(this_type t) { t.m_crisis_level_hp_multiplier; })
-  {
-    return T::m_crisis_level_hp_multiplier;
-  }
-  [[nodiscard]] constexpr auto
-    gender() const noexcept requires(requires(this_type t) { t.m_gender; })
-  {
-    return T::m_gender;
-  }
-  [[nodiscard]] constexpr auto
-    limit_break_id() const noexcept
-    requires(requires(this_type t) { t.m_limit_break_id; })
-  {
-    return T::m_limit_break_id;
-  }
-  [[nodiscard]] constexpr auto
-    limit_break_param() const noexcept
-    requires(requires(this_type t) { t.m_limit_break_param; })
-  {
-    return T::m_limit_break_param;
-  }
-  [[nodiscard]] constexpr auto
-    exp() const noexcept requires(requires(this_type t) { t.m_exp; })
-  {
-    return T::m_exp;
-  }
-  [[nodiscard]] constexpr auto
-    stats() const noexcept requires(requires(this_type t) { t.m_stats; })
-  {
-    return T::m_stats;
-  }
-  [[nodiscard]] constexpr auto
-    index_to_battle_command() const noexcept
-    requires(requires(this_type t) { t.m_index_to_battle_command; })
-  {
-    return T::m_index_to_battle_command;
-  }
-  [[nodiscard]] constexpr auto
-    damage_or_heal() const noexcept
-    requires(requires(this_type t) { t.damage_or_heal_impl(); })
-  {
-    return T::damage_or_heal_impl();
-  }
-  [[nodiscard]] constexpr auto
-    percent_quantity() const noexcept
-    requires(requires(this_type t) { t.percent_quantity_impl(); })
-  {
-    return T::percent_quantity_impl();
-  }
-  [[nodiscard]] constexpr auto
-    devour_stat_flag() const noexcept
-    requires(requires(this_type t) { t.m_devour_stat_flag; })
-  {
-    return T::m_devour_stat_flag;
-  }
-  [[nodiscard]] constexpr auto
-    raised_stat_hp_quantity() const noexcept
-    requires(requires(this_type t) { t.m_raised_stat_hp_quantity; })
-  {
-    return T::m_raised_stat_hp_quantity;
-  }
-  [[nodiscard]] constexpr auto
-    camera_change() const noexcept
-    requires(requires(this_type t) { t.m_camera_change; })
-  {
-    return T::m_camera_change;
-  }
-  [[nodiscard]] constexpr auto
-    attack_parameter() const noexcept
-    requires(requires(this_type t) { t.m_attack_parameter; })
-  {
-    return T::m_attack_parameter;
-  }
-  [[nodiscard]] constexpr auto
-    enable_boost() const noexcept
-    requires(requires(this_type t) { t.m_enable_boost; })
-  {
-    return T::m_enable_boost;
-  }
-  [[nodiscard]] constexpr auto
-    stat_to_increase() const noexcept
-    requires(requires(this_type t) { t.m_stat_to_increase; })
-  {
-    return T::m_stat_to_increase;
-  }
-  [[nodiscard]] constexpr auto
-    increase_value() const noexcept
-    requires(requires(this_type t) { t.m_increase_value; })
-  {
-    return T::m_increase_value;
-  }
-  [[nodiscard]] constexpr auto
-    element_attack_percent() const noexcept
-    requires(requires(this_type t) { t.m_element_attack_percent; })
-  {
-    return T::m_element_attack_percent;
-  }
-  [[nodiscard]] constexpr auto
-    used_item_index() const noexcept
-    requires(requires(this_type t) { t.m_used_item_index; })
-  {
-    return T::m_used_item_index;
-  }
-  [[nodiscard]] constexpr auto
-    critical_increase() const noexcept
-    requires(requires(this_type t) { t.m_critical_increase; })
-  {
-    return T::m_critical_increase;
-  }
-  [[nodiscard]] constexpr auto
-    junction_flags() const noexcept
-    requires(requires(this_type t) { t.junction_flags_impl(); })
-  {
-    return T::junction_flags_impl();
-  }
+  BOTH(ability_points_required_to_unlock)
+  BOTH(crisis_level_hp_multiplier)
+  BOTH(gender)
+  BOTH(limit_break_id)
+  BOTH(limit_break_param)
+  BOTH(exp)
+  BOTH(stats)
+  BOTH(index_to_battle_command)
+  BOTH(devour_stat_flag)
+  BOTH(raised_stat_hp_quantity)
+  BOTH(camera_change)
+  BOTH(attack_parameter)
+  BOTH(enable_boost)
+  BOTH(stat_to_increase)
+  BOTH(increase_value)
+  BOTH(element_attack_percent)
+  BOTH(used_item_index)
+  BOTH(critical_increase)
+  BOTH(gf_power)
+  BOTH(gf_hp_modifier)
+  BOTH(unlockable_abilities)
+  BOTH(power_mod)
+  BOTH(compatibility)
+  BOTH(level_mod)
+  BOTH(unknown4)
+  BOTH(unknown5)
+  BOTH(unknown6)
+  BOTH(unknown7)
+  BOTH(unknown8)
+  BOTH(unknown9)
+  BOTH(unknown10)
+  BOTH(spell_power)
+  BOTH(draw_resist)
+  BOTH(status_attack)
+  BOTH(junction_stats)
+  BOTH(j_elem_attack_flag)
+  BOTH(j_elem_attack_value)
+  BOTH(j_elem_defense_flag)
+  BOTH(j_elem_defense_value)
+  BOTH(j_status_attack_value)
+  BOTH(j_status_defense_value)
+  BOTH(j_statuses_attack_flag)
+  BOTH(j_statuses_defend_flag)
 
-  [[nodiscard]] constexpr auto
-    gf_power() const noexcept requires(requires(this_type t) { t.m_gf_power; })
-  {
-    return T::m_gf_power;
-  }
-  [[nodiscard]] constexpr auto
-    gf_hp_modifier() const noexcept
-    requires(requires(this_type t) { t.m_gf_hp_modifier; })
-  {
-    return T::m_gf_hp_modifier;
-  }
-  [[nodiscard]] constexpr auto
-    unlockable_abilities() const noexcept
-    requires(requires(this_type t) { t.m_unlockable_abilities; })
-  {
-    return T::m_unlockable_abilities;
-  }
-  [[nodiscard]] constexpr auto
-    power_mod() const noexcept
-    requires(requires(this_type t) { t.m_power_mod; })
-  {
-    return T::m_power_mod;
-  }
-  [[nodiscard]] constexpr auto
-    compatibility() const noexcept
-    requires(requires(this_type t) { t.m_compatibility; })
-  {
-    return T::m_compatibility;
-  }
-  [[nodiscard]] constexpr auto
-    level_mod() const noexcept
-    requires(requires(this_type t) { t.m_level_mod; })
-  {
-    return T::m_level_mod;
-  }
-  [[nodiscard]] constexpr auto
-    unknown4() const noexcept requires(requires(this_type t) { t.m_unknown4; })
-  {
-    return T::m_unknown4;
-  }
-
-  [[nodiscard]] constexpr auto
-    unknown5() const noexcept requires(requires(this_type t) { t.m_unknown5; })
-  {
-    return T::m_unknown5;
-  }
-  [[nodiscard]] constexpr auto
-    unknown6() const noexcept requires(requires(this_type t) { t.m_unknown6; })
-  {
-    return T::m_unknown6;
-  }
-  [[nodiscard]] constexpr auto
-    unknown7() const noexcept requires(requires(this_type t) { t.m_unknown7; })
-  {
-    return T::m_unknown7;
-  }
-  [[nodiscard]] constexpr auto
-    unknown8() const noexcept requires(requires(this_type t) { t.m_unknown8; })
-  {
-    return T::m_unknown8;
-  }
-  [[nodiscard]] constexpr auto
-    unknown9() const noexcept requires(requires(this_type t) { t.m_unknown9; })
-  {
-    return T::m_unknown9;
-  }
-  [[nodiscard]] constexpr auto
-    unknown10() const noexcept
-    requires(requires(this_type t) { t.m_unknown10; })
-  {
-    return T::m_unknown10;
-  }
+  GET_impl(character_ability_flags) GET_impl(junction_flags)
+    GET_impl(percent_quantity) GET_impl(damage_or_heal)
+#undef GET_impl
+#undef BOTH
+#undef GET
+#undef WITH
 };
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_COMMONKERNEL_HPP

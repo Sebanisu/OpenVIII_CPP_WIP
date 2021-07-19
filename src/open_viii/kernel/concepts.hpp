@@ -77,6 +77,18 @@ HAS(unlockable_abilities);
 HAS(compatibility);
 HAS(power_mod);
 HAS(level_mod);
+HAS(spell_power);
+HAS(draw_resist);
+HAS(status_attack);
+HAS(junction_stats);
+HAS(j_elem_attack_flag);
+HAS(j_elem_attack_value);
+HAS(j_elem_defense_flag);
+HAS(j_elem_defense_value);
+HAS(j_status_attack_value);
+HAS(j_status_defense_value);
+HAS(j_statuses_attack_flag);
+HAS(j_statuses_defend_flag);
 #undef HAS
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP
