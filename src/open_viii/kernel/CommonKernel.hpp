@@ -175,6 +175,7 @@ public:
   BOTH(shot_timers)
   BOTH(status_flags)
   BOTH(flag)
+  BOTH(critical_bonus)
 
   GET_impl(character_ability_flags) GET_impl(junction_flags)
     GET_impl(percent_quantity) GET_impl(damage_or_heal)
