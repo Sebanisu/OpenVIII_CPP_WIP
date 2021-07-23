@@ -173,6 +173,7 @@ public:
   BOTH(back_attack_limit_effect)
   BOTH(duel_timers)
   BOTH(shot_timers)
+  BOTH(status_flags)
 
   GET_impl(character_ability_flags) GET_impl(junction_flags)
     GET_impl(percent_quantity) GET_impl(damage_or_heal)

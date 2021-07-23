@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_NONJUNCTIONABLEGFS_HPP
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "CommonKernel.hpp"
 #include "ElementT.hpp"
 #include "PersistentStatusesT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
@@ -95,120 +96,50 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Non-junctionable-GF-attacks
  */
-struct NonJunctionableGFs
+struct NonJunctionableGFs_impl
 {
-private:
-  EncodedStringOffset m_name_offset{};
-  std::uint16_t       m_magic_id{};
-  AttackTypeT         m_attack_type{};
-  std::uint8_t        m_gf_power{};// (used in damage formula)
-  std::uint8_t        m_status_attack_enabler{};
-  std::uint8_t        m_unknown0{};
-  std::uint8_t        m_status_flags{};
-  std::uint8_t        m_unknown1{};
-  std::uint8_t        m_unknown2{};
-  ElementT            m_element{};
-  BattleOnlyStatusesT m_battle_only_statuses{};
-  PersistentStatusesT m_persistent_statuses{};
-  // std::uint8_t Unknown3_{}; // assuming this is part of persistent statuses.
-  std::uint8_t        m_power_mod{};// (used in damage formula)
-  std::uint8_t        m_level_mod{};// (used in damage formula)
+protected:
+  EncodedStringOffset          m_name_offset           = {};
+  std::uint16_t                m_magic_id              = {};
+  AttackTypeT                  m_attack_type           = {};
+  /** Used in damage formula */
+  std::uint8_t                 m_gf_power              = {};
+  std::uint8_t                 m_status_attack_enabler = {};
+  std::uint8_t                 m_unknown0              = {};
+  std::uint8_t                 m_status_flags          = {};
+  std::uint8_t                 m_unknown1              = {};
+  std::uint8_t                 m_unknown2              = {};
+  ElementT                     m_element               = {};
+  BattleOnlyStatusesT          m_battle_only_statuses  = {};
+  PersistentStatusesT          m_persistent_statuses   = {};
+  // std::uint8_t Unknown3_={}; // assuming this is part of persistent statuses.
+  /** Used in damage formula */
+  std::uint8_t                 m_power_mod             = {};
+  /** Used in damage formula */
+  std::uint8_t                 m_level_mod             = {};
+  static constexpr std::size_t EXPECTED_SIZE           = 20U;
+  constexpr NonJunctionableGFs_impl()                  = default;
+
 public:
   constexpr auto
-    operator<=>(const NonJunctionableGFs &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-  {
-    return m_attack_type;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    gf_power() const noexcept
-  {
-    return m_gf_power;
-  }// (used in damage formula)
-  [[nodiscard]] constexpr auto
-    status_attack_enabler() const noexcept
-  {
-    return m_status_attack_enabler;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    status_flags() const noexcept
-  {
-    return m_status_flags;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  [[nodiscard]] constexpr auto
-    unknown2() const noexcept
-  {
-    return m_unknown2;
-  }
-  [[nodiscard]] constexpr auto
-    element() const noexcept
-  {
-    return m_element;
-  }
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-  {
-    return m_battle_only_statuses;
-  }
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-  {
-    return m_persistent_statuses;
-  }
-  // [[nodiscard]] constexpr auto  Unknown3() const noexcept { return Unknown3_;
-  // } // assuming this is part of persistent statuses.
-  [[nodiscard]] constexpr auto
-    power_mod() const noexcept
-  {
-    return m_power_mod;
-  }// (used in damage formula)
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    level_mod() const noexcept
-  {
-    return m_level_mod;
-  }// (used in damage formula)
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os
-        << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-        << static_cast<std::uint32_t>(m_attack_type) << ", "
-        << static_cast<std::uint32_t>(m_gf_power)// (used in damage formula)
-        << ", " << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-        << static_cast<std::uint32_t>(m_unknown0) << ", "
-        << static_cast<std::uint32_t>(m_status_flags) << ", "
-        << static_cast<std::uint32_t>(m_unknown1) << ", "
-        << static_cast<std::uint32_t>(m_unknown2) << ", "
-        << static_cast<std::uint32_t>(m_element) << ", "
-        << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
-        << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
-        << static_cast<std::uint32_t>(m_power_mod)// (used in damage formula)
-        << ", "
-        << static_cast<std::uint32_t>(m_level_mod)// (used in damage formula)
-      ;
-  }
+    operator<=>(const NonJunctionableGFs_impl &right) const noexcept = default;
 };
+using NonJunctionableGFs = CommonKernel<NonJunctionableGFs_impl>;
+static_assert(sizeof(NonJunctionableGFs) == NonJunctionableGFs::EXPECTED_SIZE);
+static_assert(has_name_offset<NonJunctionableGFs>);
+static_assert(has_magic_id<NonJunctionableGFs>);
+static_assert(has_attack_type<NonJunctionableGFs>);
+static_assert(has_gf_power<NonJunctionableGFs>);
+static_assert(has_status_attack_enabler<NonJunctionableGFs>);
+static_assert(has_unknown0<NonJunctionableGFs>);
+static_assert(has_status_flags<NonJunctionableGFs>);
+static_assert(has_unknown1<NonJunctionableGFs>);
+static_assert(has_unknown2<NonJunctionableGFs>);
+static_assert(has_element<NonJunctionableGFs>);
+static_assert(has_battle_only_statuses<NonJunctionableGFs>);
+static_assert(has_persistent_statuses<NonJunctionableGFs>);
+static_assert(has_power_mod<NonJunctionableGFs>);
+static_assert(has_level_mod<NonJunctionableGFs>);
+
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_NONJUNCTIONABLEGFS_HPP
