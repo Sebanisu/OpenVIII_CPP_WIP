@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_PARTYABILITIES_HPP
 #define VIIIARCHIVE_PARTYABILITIES_HPP
+#include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
@@ -24,64 +25,29 @@ namespace open_viii::kernel {
  * 0x0006	2 byte	Unknown/Unused
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Party-abilities
  */
-struct PartyAbilities
+struct PartyAbilities_impl
 {
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  std::uint8_t        m_ability_points_required_to_unlock{};
-  std::uint8_t        m_flag{};
-  std::uint8_t        m_unknown0{};
-  std::uint8_t        m_unknown1{};
+protected:
+  EncodedStringOffset          m_name_offset                       = {};
+  EncodedStringOffset          m_description_offset                = {};
+  std::uint8_t                 m_ability_points_required_to_unlock = {};
+  std::uint8_t                 m_flag                              = {};
+  std::uint8_t                 m_unknown0                          = {};
+  std::uint8_t                 m_unknown1                          = {};
+  static constexpr std::size_t EXPECTED_SIZE                       = 8U;
+  constexpr PartyAbilities_impl()                                  = default;
 
 public:
   constexpr auto
-    operator<=>(const PartyAbilities &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  /**
-   * Ability points required to unlock
-   * @see
-   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
-   */
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    ability_points_required_to_unlock() const noexcept
-  {
-    return m_ability_points_required_to_unlock;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    flag() const noexcept
-  {
-    return m_flag;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << ", "
-              << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
-              << ", " << static_cast<std::uint32_t>(m_flag) << ", "
-              << static_cast<std::uint32_t>(m_unknown0) << ", "
-              << static_cast<std::uint32_t>(m_unknown1);
-  }
+    operator<=>(const PartyAbilities_impl &right) const noexcept = default;
 };
+using PartyAbilities = CommonKernel<PartyAbilities_impl>;
+static_assert(sizeof(PartyAbilities) == PartyAbilities::EXPECTED_SIZE);
+static_assert(has_name_offset<PartyAbilities>);
+static_assert(has_description_offset<PartyAbilities>);
+static_assert(has_ability_points_required_to_unlock<PartyAbilities>);
+static_assert(has_flag<PartyAbilities>);
+static_assert(has_unknown0<PartyAbilities>);
+static_assert(has_unknown1<PartyAbilities>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_PARTYABILITIES_HPP

@@ -143,6 +143,7 @@ HAS(back_attack_limit_effect);
 HAS(duel_timers);
 HAS(shot_timers);
 HAS(status_flags);
+HAS(flag);
 #undef HAS
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP

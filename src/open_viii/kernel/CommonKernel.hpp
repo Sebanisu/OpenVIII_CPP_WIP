@@ -23,10 +23,10 @@ public:
     return T::m_##value_name;                                                  \
   }
 #define GET_impl(value_name)                                                   \
-  [[nodiscard]] constexpr auto value_name() const noexcept requires(           \
-    requires(this_type t) { t.value_name##_impl(); })                      \
+  [[nodiscard]] constexpr auto value_name()                                    \
+    const noexcept requires(requires(this_type t) { t.value_name##_impl(); })  \
   {                                                                            \
-    return T::value_name##_impl();                                         \
+    return T::value_name##_impl();                                             \
   }
 #define WITH(value_name)                                                       \
   [[nodiscard]] constexpr auto with_##value_name(                              \
@@ -40,12 +40,12 @@ public:
   [[nodiscard]] constexpr auto with_##value_name(const auto &new_val)          \
     const &noexcept requires(requires(this_type t) { t.m_##value_name; })      \
   {                                                                            \
-    return this_type{*this}.with_##value_name(new_val);                        \
+    return this_type{ *this }.with_##value_name(new_val);                      \
   }                                                                            \
   [[nodiscard]] constexpr auto with_##value_name(const auto &new_val)          \
     const &&noexcept requires(requires(this_type t) { t.m_##value_name; })     \
   {                                                                            \
-    return this_type{*this}.with_##value_name(new_val);                        \
+    return this_type{ *this }.with_##value_name(new_val);                      \
   }
 #define BOTH(value_name)                                                       \
   GET(value_name)                                                              \
@@ -174,6 +174,7 @@ public:
   BOTH(duel_timers)
   BOTH(shot_timers)
   BOTH(status_flags)
+  BOTH(flag)
 
   GET_impl(character_ability_flags) GET_impl(junction_flags)
     GET_impl(percent_quantity) GET_impl(damage_or_heal)
