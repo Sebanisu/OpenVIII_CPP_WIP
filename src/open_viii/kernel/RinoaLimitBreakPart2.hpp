@@ -67,7 +67,8 @@ public:
       const RinoaLimitBreakPart2_impl &right) const noexcept = default;
 };
 using RinoaLimitBreakPart2 = CommonKernel<RinoaLimitBreakPart2_impl>;
-static_assert(RinoaLimitBreakPart2::EXPECTED_SIZE == sizeof(RinoaLimitBreakPart2));
+static_assert(RinoaLimitBreakPart2::EXPECTED_SIZE
+              == sizeof(RinoaLimitBreakPart2));
 static_assert(has_name_offset<RinoaLimitBreakPart2>);
 static_assert(has_magic_id<RinoaLimitBreakPart2>);
 static_assert(has_attack_type<RinoaLimitBreakPart2>);
@@ -80,7 +81,7 @@ static_assert(has_hit_count<RinoaLimitBreakPart2>);
 static_assert(has_element<RinoaLimitBreakPart2>);
 static_assert(has_element_attack_percent<RinoaLimitBreakPart2>);
 static_assert(has_status_attack_enabler<RinoaLimitBreakPart2>);
-static_assert(has_persistent_statuses<RinoaLimitBreakPart2>);// statuses 0-7
+static_assert(has_persistent_statuses<RinoaLimitBreakPart2>); // statuses 0-7
 static_assert(has_battle_only_statuses<RinoaLimitBreakPart2>);// statuses 8-39
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_RINOALIMITBREAKPART2_HPP
