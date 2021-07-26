@@ -14,6 +14,9 @@
 #define VIIIARCHIVE_RENZOKUKENFINISHERST_HPP
 #include <cstdint>
 namespace open_viii::kernel {
+/**
+ * Each of 4 bits is one of the Renzokuken Finishers
+ */
 enum class RenzokukenFinishersT : std::uint8_t
 {
   none          = 0x00,
