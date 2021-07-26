@@ -15,6 +15,7 @@
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "CommonKernel.hpp"
 #include "ElementT.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
