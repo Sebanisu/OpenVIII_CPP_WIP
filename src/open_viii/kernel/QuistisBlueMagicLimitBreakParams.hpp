@@ -28,7 +28,7 @@ namespace open_viii::kernel {
 struct QuistisBlueMagicLimitBreakParams_impl
 {
 protected:
-  CrisisLevelT<QuistisBlueMagicLimitBreakParam> m_blue_magic_data{};
+  CrisisLevelT<QuistisBlueMagicLimitBreakParam> m_blue_magic_data = {};
   static constexpr std::size_t EXPECTED_SIZE        = sizeof(m_blue_magic_data);
   constexpr QuistisBlueMagicLimitBreakParams_impl() = default;
 
