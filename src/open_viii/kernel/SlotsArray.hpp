@@ -16,34 +16,11 @@
 #include <compare>
 #include <cstdint>
 namespace open_viii::kernel {
-struct SlotsArray
-{
-  /**
-   * @see https://github.com/DarkShinryu/doomtrain/wiki/Slot-array
-   * Offset	Length	Description
-   * 0x0000	1 byte	Slot Set ID
-   */
-private:
-  std::uint8_t m_slot_set_id{};
-
-public:
-  constexpr auto
-    operator<=>(const SlotsArray &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    slot_set_id() const noexcept
-  {
-    return m_slot_set_id;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << static_cast<uint16_t>(slot_set_id());
-  }
-  [[nodiscard]] explicit operator std::uint8_t() const
-  {
-    return m_slot_set_id;
-  }
-};
+/**
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Slot-array
+ * Offset	Length	Description
+ * 0x0000	1 byte	Slot Set ID
+ */
+using SlotsArray = std::uint8_t;
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SLOTSARRAY_HPP
