@@ -15,10 +15,11 @@
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "CommonKernel.hpp"
 #include "ElementT.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
-#include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
 /**
@@ -41,136 +42,53 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Temporary-character-limit-breaks
  */
-struct TeamLagunaLimitBreaks
+struct TeamLagunaLimitBreaks_impl
 {
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  std::uint16_t       m_magic_id{};
-  AttackTypeT         m_attack_type{};
-  std::uint8_t        m_attack_power{};
-  std::uint8_t        m_unknown0{};
-  std::uint8_t        m_unknown1{};
-  TargetT             m_target{};
-  AttackFlagsT        m_attack_flags{};
-  std::uint8_t        m_hit_count{};
-  ElementT            m_element{};
-  std::uint8_t        m_element_attack_percent{};
-  std::uint8_t        m_status_attack_enabler{};
-  PersistentStatusesT m_persistent_statuses{};// statuses 0-7
-  std::uint8_t        m_unknown2{};
-  std::uint8_t        m_unknown3{};
-  BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
+protected:
+  EncodedStringOffset m_name_offset            = {};
+  EncodedStringOffset m_description_offset     = {};
+  std::uint16_t       m_magic_id               = {};
+  AttackTypeT         m_attack_type            = {};
+  std::uint8_t        m_attack_power           = {};
+  std::uint8_t        m_unknown0               = {};
+  std::uint8_t        m_unknown1               = {};
+  TargetT             m_target                 = {};
+  AttackFlagsT        m_attack_flags           = {};
+  std::uint8_t        m_hit_count              = {};
+  ElementT            m_element                = {};
+  std::uint8_t        m_element_attack_percent = {};
+  std::uint8_t        m_status_attack_enabler  = {};
+  PersistentStatusesT m_persistent_statuses    = {};// statuses 0-7
+  std::uint8_t        m_unknown2               = {};
+  std::uint8_t        m_unknown3               = {};
+  BattleOnlyStatusesT m_battle_only_statuses   = {};// statuses 8-39
+  constexpr TeamLagunaLimitBreaks_impl()       = default;
+  static constexpr std::size_t EXPECTED_SIZE   = 24U;
+
 public:
   constexpr auto
-    operator<=>(const TeamLagunaLimitBreaks &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-  {
-    return m_attack_type;
-  }
-  [[nodiscard]] constexpr auto
-    attack_power() const noexcept
-  {
-    return m_attack_power;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  [[nodiscard]] constexpr auto
-    target() const noexcept
-  {
-    return m_target;
-  }
-  [[nodiscard]] constexpr auto
-    attack_flags() const noexcept
-  {
-    return m_attack_flags;
-  }
-  [[nodiscard]] constexpr auto
-    hit_count() const noexcept
-  {
-    return m_hit_count;
-  }
-  [[nodiscard]] constexpr auto
-    element() const noexcept
-  {
-    return m_element;
-  }
-  [[nodiscard]] constexpr auto
-    element_attack_percent() const noexcept
-  {
-    return m_element_attack_percent;
-  }
-  [[nodiscard]] constexpr auto
-    status_attack_enabler() const noexcept
-  {
-    return m_status_attack_enabler;
-  }
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-  {
-    return m_persistent_statuses;
-  }// statuses 0-7
-  [[nodiscard]] constexpr auto
-    unknown2() const noexcept
-  {
-    return m_unknown2;
-  }
-  [[nodiscard]] constexpr auto
-    unknown3() const noexcept
-  {
-    return m_unknown3;
-  }
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-  {
-    return m_battle_only_statuses;
-  }// statuses 8-39
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os
-        << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-        << static_cast<std::uint32_t>(m_attack_type) << ", "
-        << static_cast<std::uint32_t>(m_attack_power) << ", "
-        << static_cast<std::uint32_t>(m_unknown0) << ", "
-        << static_cast<std::uint32_t>(m_unknown1) << ", "
-        << static_cast<std::uint32_t>(m_target) << ", "
-        << static_cast<std::uint32_t>(m_attack_flags) << ", "
-        << static_cast<std::uint32_t>(m_hit_count) << ", "
-        << static_cast<std::uint32_t>(m_element) << ", "
-        << static_cast<std::uint32_t>(m_element_attack_percent) << ", "
-        << static_cast<std::uint32_t>(m_status_attack_enabler) << ", "
-        << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
-        << ", " << static_cast<std::uint32_t>(m_unknown2) << ", "
-        << static_cast<std::uint32_t>(m_unknown3) << ", "
-        << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
-      ;
-  }
+    operator<=>(
+      const TeamLagunaLimitBreaks_impl &right) const noexcept = default;
 };
+using TeamLagunaLimitBreaks = CommonKernel<TeamLagunaLimitBreaks_impl>;
+static_assert(TeamLagunaLimitBreaks::EXPECTED_SIZE
+              == sizeof(TeamLagunaLimitBreaks));
+static_assert(has_name_offset<TeamLagunaLimitBreaks>);
+static_assert(has_description_offset<TeamLagunaLimitBreaks>);
+static_assert(has_magic_id<TeamLagunaLimitBreaks>);
+static_assert(has_attack_type<TeamLagunaLimitBreaks>);
+static_assert(has_attack_power<TeamLagunaLimitBreaks>);
+static_assert(has_unknown0<TeamLagunaLimitBreaks>);
+static_assert(has_unknown1<TeamLagunaLimitBreaks>);
+static_assert(has_target<TeamLagunaLimitBreaks>);
+static_assert(has_attack_flags<TeamLagunaLimitBreaks>);
+static_assert(has_hit_count<TeamLagunaLimitBreaks>);
+static_assert(has_element<TeamLagunaLimitBreaks>);
+static_assert(has_element_attack_percent<TeamLagunaLimitBreaks>);
+static_assert(has_status_attack_enabler<TeamLagunaLimitBreaks>);
+static_assert(has_persistent_statuses<TeamLagunaLimitBreaks>);// statuses 0-7
+static_assert(has_unknown2<TeamLagunaLimitBreaks>);
+static_assert(has_unknown3<TeamLagunaLimitBreaks>);
+static_assert(has_battle_only_statuses<TeamLagunaLimitBreaks>);// statuses 8-39
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_TEAMLAGUNALIMITBREAKS_HPP
