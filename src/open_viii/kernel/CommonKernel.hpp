@@ -179,7 +179,7 @@ public:
   BOTH(blue_magic_data)
   BOTH(sequence)
   BOTH(timer)
-
+  BOTH(count)
   GET_impl(character_ability_flags) GET_impl(junction_flags)
     GET_impl(percent_quantity) GET_impl(damage_or_heal)
 #undef GET_impl
