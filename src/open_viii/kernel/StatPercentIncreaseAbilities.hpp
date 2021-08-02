@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_STATPERCENTINCREASEABILITIES_HPP
 #define VIIIARCHIVE_STATPERCENTINCREASEABILITIES_HPP
+#include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 /**
