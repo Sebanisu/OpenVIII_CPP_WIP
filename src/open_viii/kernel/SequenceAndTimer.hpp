@@ -17,6 +17,9 @@
 #include <cstdint>
 #include <iostream>
 namespace open_viii::kernel {
+/**
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Misc-section
+ */
 struct SequenceAndTimer_impl
 {
 protected:

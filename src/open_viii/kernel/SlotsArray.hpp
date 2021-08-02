@@ -18,8 +18,8 @@
 namespace open_viii::kernel {
 struct SlotsArray
 {
-  /*
-   * https://github.com/DarkShinryu/doomtrain/wiki/Slot-array
+  /**
+   * @see https://github.com/DarkShinryu/doomtrain/wiki/Slot-array
    * Offset	Length	Description
    * 0x0000	1 byte	Slot Set ID
    */
