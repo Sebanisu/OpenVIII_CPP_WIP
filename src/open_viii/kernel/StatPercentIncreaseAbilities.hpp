@@ -24,65 +24,33 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Stat-percentage-increasing-abilities
  */
-struct StatPercentIncreaseAbilities
+struct StatPercentIncreaseAbilities_impl
 {
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  std::uint8_t        m_ability_points_required_to_unlock{};
-  std::uint8_t        m_stat_to_increase{};
-  std::uint8_t        m_increased_value{};
-  std::uint8_t        m_unknown0{};
+protected:
+  EncodedStringOffset m_name_offset                       = {};
+  EncodedStringOffset m_description_offset                = {};
+  std::uint8_t        m_ability_points_required_to_unlock = {};
+  std::uint8_t        m_stat_to_increase                  = {};
+  std::uint8_t        m_increased_value                   = {};
+  std::uint8_t        m_unknown                           = {};
+  constexpr StatPercentIncreaseAbilities_impl()           = default;
+  static constexpr std::size_t EXPECTED_SIZE              = 8U;
 
 public:
   constexpr auto
     operator<=>(
-      const StatPercentIncreaseAbilities &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  /**
-   * Ability points required to unlock
-   * @see
-   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
-   */
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    ability_points_required_to_unlock() const noexcept
-  {
-    return m_ability_points_required_to_unlock;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    stat_to_increase() const noexcept
-  {
-    return m_stat_to_increase;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    increased_value() const noexcept
-  {
-    return m_increased_value;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << ", "
-              << static_cast<std::uint32_t>(m_ability_points_required_to_unlock)
-              << ", " << static_cast<std::uint32_t>(m_stat_to_increase) << ", "
-              << static_cast<std::uint32_t>(m_increased_value) << ", "
-              << static_cast<std::uint32_t>(m_unknown0);
-  }
+      const StatPercentIncreaseAbilities_impl &right) const noexcept = default;
 };
+using StatPercentIncreaseAbilities
+  = CommonKernel<StatPercentIncreaseAbilities_impl>;
+static_assert(StatPercentIncreaseAbilities::EXPECTED_SIZE
+              == sizeof(StatPercentIncreaseAbilities));
+static_assert(has_name_offset<StatPercentIncreaseAbilities>);
+static_assert(has_description_offset<StatPercentIncreaseAbilities>);
+static_assert(
+  has_ability_points_required_to_unlock<StatPercentIncreaseAbilities>);
+static_assert(has_stat_to_increase<StatPercentIncreaseAbilities>);
+static_assert(has_increased_value<StatPercentIncreaseAbilities>);
+static_assert(has_unknown<StatPercentIncreaseAbilities>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_STATPERCENTINCREASEABILITIES_HPP

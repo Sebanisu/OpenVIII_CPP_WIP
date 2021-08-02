@@ -149,6 +149,7 @@ HAS(blue_magic_data);
 HAS(sequence);
 HAS(timer);
 HAS(count);
+HAS(increased_value);
 #undef HAS
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP
