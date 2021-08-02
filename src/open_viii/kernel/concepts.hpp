@@ -146,6 +146,8 @@ HAS(status_flags);
 HAS(flag);
 HAS(critical_bonus);
 HAS(blue_magic_data);
+HAS(sequence);
+HAS(timer);
 #undef HAS
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP
