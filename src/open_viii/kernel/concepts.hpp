@@ -150,6 +150,8 @@ HAS(sequence);
 HAS(timer);
 HAS(count);
 HAS(increased_value);
+HAS(unlocker);
+HAS(ability);
 #undef HAS
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP

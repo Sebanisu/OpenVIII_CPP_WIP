@@ -29,7 +29,7 @@ protected:
   std::uint8_t m_unknown{};
   AbilitiesT   m_ability{};
   constexpr UnlockableAbility_impl()         = default;
-  static constexpr std::size_t EXPECTED_SIZE = 3U;
+  static constexpr std::size_t EXPECTED_SIZE = 4U;
 
 public:
   constexpr auto
@@ -37,5 +37,8 @@ public:
 };
 using UnlockableAbility = CommonKernel<UnlockableAbility_impl>;
 static_assert(UnlockableAbility::EXPECTED_SIZE == sizeof(UnlockableAbility));
+static_assert(has_unlocker<UnlockableAbility>);
+static_assert(has_unknown<UnlockableAbility>);
+static_assert(has_ability<UnlockableAbility>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_UNLOCKABLEABILITY_HPP
