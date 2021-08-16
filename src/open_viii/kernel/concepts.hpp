@@ -152,6 +152,11 @@ HAS(count);
 HAS(increased_value);
 HAS(unlocker);
 HAS(ability);
+HAS(renzokuken_finishers);
+HAS(character_id);
+HAS(str_bonus);
+HAS(weapon_tier);
+HAS(melee_weapon);
 #undef HAS
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP
