@@ -25,9 +25,9 @@ namespace open_viii::kernel {
 struct UnlockableAbility_impl
 {
 protected:
-  UnlockerT    m_unlocker{};
-  std::uint8_t m_unknown{};
-  AbilitiesT   m_ability{};
+  UnlockerT    m_unlocker                    = {};
+  std::uint8_t m_unknown                     = {};
+  AbilitiesT   m_ability                     = {};
   constexpr UnlockableAbility_impl()         = default;
   static constexpr std::size_t EXPECTED_SIZE = 4U;
 
