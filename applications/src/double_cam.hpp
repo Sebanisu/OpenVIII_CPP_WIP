@@ -27,13 +27,13 @@ template<std::ranges::range        R1,
          std::ranges::range        R2,
          std::weakly_incrementable O>
 void
-  double_input(R1 r1, R2 r2, O o)
+  double_input(R1 &&r1, R2 &&r2, O o)
 {
   double_input(r1.begin(), r1.end(), r2.begin(), r2.end(), o);
 }
 template<std::ranges::range R, std::weakly_incrementable O>
 void
-  double_input(R r, O o)
+  double_input(R &&r, O o)
 {
   double_input(r, r, o);
 }
@@ -65,7 +65,7 @@ template<std::ranges::range        R1,
          std::weakly_incrementable O,
          std::copy_constructible   F>
 void
-  double_input_transform(R1 r1, R2 r2, O o, F f)
+  double_input_transform(R1 &&r1, R2 &&r2, O o, F f)
 {
   double_input_transform(r1.begin(), r1.end(), r2.begin(), r2.end(), o, f);
 }
@@ -73,7 +73,7 @@ template<std::ranges::range        R,
          std::weakly_incrementable O,
          std::copy_constructible   F>
 void
-  double_input_transform(R r, O o, F f)
+  double_input_transform(R &&r, O o, F f)
 {
   double_input_transform(r, r | std::views::drop(1), o, f);
 }

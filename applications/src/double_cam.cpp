@@ -6,7 +6,7 @@ int
   main(const int argc, const char *const argv[])
 {
   const auto span_argv
-    = std::span(argv, argc)
+    = std::span(argv, static_cast<std::size_t>(argc))
     | std::views::transform([](const char *const local_argv) {
         return std::filesystem::path(local_argv);
       });
