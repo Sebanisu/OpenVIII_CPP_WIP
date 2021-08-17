@@ -66,7 +66,7 @@ protected:
   std::uint8_t         m_critical_bonus       = {};
   std::uint8_t         m_melee_weapon         = {};
   constexpr Weapons_impl()                    = default;
-  static constexpr std::size_t EXPECTED_SIZE  = 33U;
+  static constexpr std::size_t EXPECTED_SIZE  = 12U;
 
 public:
   constexpr auto
@@ -74,16 +74,16 @@ public:
 };
 using Weapons = CommonKernel<Weapons_impl>;
 static_assert(Weapons::EXPECTED_SIZE == sizeof(Weapons));
-static_assert(has_name_offset<UnlockableAbility>);
-static_assert(has_renzokuken_finishers<UnlockableAbility>);
-static_assert(has_unknown<UnlockableAbility>);
-static_assert(has_character_id<UnlockableAbility>);
-static_assert(has_attack_type<UnlockableAbility>);
-static_assert(has_attack_power<UnlockableAbility>);
-static_assert(has_attack_parameter<UnlockableAbility>);
-static_assert(has_str_bonus<UnlockableAbility>);
-static_assert(has_weapon_tier<UnlockableAbility>);
-static_assert(has_critical_bonus<UnlockableAbility>);
-static_assert(has_melee_weapon<UnlockableAbility>);
+static_assert(has_name_offset<Weapons>);
+static_assert(has_renzokuken_finishers<Weapons>);
+static_assert(has_unknown<Weapons>);
+static_assert(has_character_id<Weapons>);
+static_assert(has_attack_type<Weapons>);
+static_assert(has_attack_power<Weapons>);
+static_assert(has_attack_parameter<Weapons>);
+static_assert(has_str_bonus<Weapons>);
+static_assert(has_weapon_tier<Weapons>);
+static_assert(has_critical_bonus<Weapons>);
+static_assert(has_melee_weapon<Weapons>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_WEAPONS_HPP
