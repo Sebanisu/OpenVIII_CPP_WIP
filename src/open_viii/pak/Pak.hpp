@@ -13,7 +13,7 @@
 #include <ranges>
 #include <utility>
 #include <vector>
-namespace open_viii {
+namespace open_viii::pak {
 /**
  * PAK reading struct, Gathers all the sections
  * @remark Original class wrote by Maki for the ToolKit

@@ -6,7 +6,7 @@
 #include "open_viii/graphics/Point.hpp"
 #include "open_viii/graphics/Vertice.hpp"
 #include <array>
-namespace open_viii {
+namespace open_viii::pak {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK#CAM_files
  */
@@ -147,82 +147,102 @@ public:
   /**
    * Camera Vector X axis
    */
-  void
-    x(graphics::Vertice<std::int16_t> in_x) noexcept
+  constexpr auto
+    with_x(graphics::Vertice<std::int16_t> in_x) const noexcept
   {
-    m_x = in_x;
+    auto ret = *this;
+    ret.m_x  = in_x;
+    return ret;
   }
   /**
    * Camera Vector Y axis
    */
-  void
-    y(graphics::Vertice<std::int16_t> in_y) noexcept
+  constexpr auto
+    with_y(graphics::Vertice<std::int16_t> in_y) const noexcept
   {
-    m_y = in_y;
+    auto ret = *this;
+    ret.m_y  = in_y;
+    return ret;
   }
   /**
    * Camera Vector Z axis
    */
-  void
-    z(graphics::Vertice<std::int16_t> in_z) noexcept
+  constexpr auto
+    with_z(graphics::Vertice<std::int16_t> in_z) const noexcept
   {
-    m_z = in_z;
+    auto ret = *this;
+    ret.m_z  = in_z;
+    return ret;
   }
   /**
    * Camera Vector Z.z (copy)
    */
-  void
-    z_z(std::int16_t in_z_z) noexcept
+  constexpr auto
+    with_z_z(std::int16_t in_z_z) const noexcept
   {
-    m_z_z = in_z_z;
+    auto ret  = *this;
+    ret.m_z_z = in_z_z;
+    return ret;
   }
   /**
    * Camera Space Vector
    */
-  void
-    z(graphics::Vertice<std::int32_t> in_space) noexcept
+  constexpr auto
+    with_space(graphics::Vertice<std::int32_t> in_space) const noexcept
   {
-    m_space = in_space;
+    auto ret    = *this;
+    ret.m_space = in_space;
+    return ret;
   }
   /**
    * Camera Pan
    */
-  void
-    pan(graphics::Point<std::int16_t> in_pan) noexcept
+  constexpr auto
+    with_pan(graphics::Point<std::int16_t> in_pan) const noexcept
   {
-    m_pan = in_pan;
+    auto ret  = *this;
+    ret.m_pan = in_pan;
+    return ret;
   }
   /**
    * Zoom
    */
-  void
-    zoom(std::int16_t in_zoom) noexcept
+  constexpr auto
+    with_zoom(std::int16_t in_zoom) const noexcept
   {
-    m_zoom = in_zoom;
+    auto ret   = *this;
+    ret.m_zoom = in_zoom;
+    return ret;
   }
   /**
    * Zoom (Repeated)
    */
-  void
-    zoom2(std::int16_t in_zoom2) noexcept
+  constexpr auto
+    with_zoom2(std::int16_t in_zoom2) const noexcept
   {
-    m_zoom2 = in_zoom2;
+    auto ret    = *this;
+    ret.m_zoom2 = in_zoom2;
+    return ret;
   }
   /**
    * Render Mode ('0x08','0x10','0x11' or '0x50')
    */
-  void
-    render_mode(std::uint8_t in_render_mode) noexcept
+  constexpr auto
+    with_render_mode(std::uint8_t in_render_mode) const noexcept
   {
-    m_render_mode = in_render_mode;
+    auto ret          = *this;
+    ret.m_render_mode = in_render_mode;
+    return ret;
   }
   /**
    * "END" marker 3 bytes
    */
-  void
-    end(std::array<char, 3U> in_end) noexcept
+  constexpr auto
+    end(std::array<char, 3U> in_end) const noexcept
   {
-    m_end = in_end;
+    auto ret  = *this;
+    ret.m_end = in_end;
+    return ret;
   }
   /**
    * verify end() == "END"
@@ -246,8 +266,21 @@ public:
                                   cam_frame.m_end.end())
               << '}';
   }
+  constexpr auto
+    midpoint(const CamFrame other) const noexcept
+  {
+    return with_x(m_x.midpoint(other.x()))
+      .with_y(m_y.midpoint(other.y()))
+      .with_z(m_z.midpoint(other.z()))
+      .with_z_z(std::midpoint(m_z_z, other.z_z()))
+      .with_space(m_space.midpoint(other.space()))
+      .with_pan(m_pan.midpoint(other.pan()))
+      .with_zoom(std::midpoint(m_zoom, other.zoom()))
+      .with_zoom2(std::midpoint(m_zoom2, other.zoom2()));
+    // m_render_mode has set values. We may want to choose based on min or max.
+  }
 };
 static_assert(sizeof(CamFrame) == CamFrame::EXPECTED_SIZE);
 static_assert(CamFrame().valid_end());
-}// namespace open_viii
+}// namespace open_viii::pak
 #endif// VIIIARCHIVE_CAMFRAME_HPP

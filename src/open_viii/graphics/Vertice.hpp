@@ -5,9 +5,11 @@
 #define VIIIARCHIVE_VERTICE_HPP
 #include "open_viii/Concepts.hpp"
 #include <cstdint>
+#include <numeric>
 #include <ostream>
 namespace open_viii::graphics {
-template<Number mainNumberT = std::int16_t> struct Vertice
+template<Number mainNumberT = std::int16_t>
+struct Vertice
 {
 private:
   mainNumberT m_x{};
@@ -15,12 +17,12 @@ private:
   mainNumberT m_z{};
 
 public:
-  Vertice() = default;
-  Vertice(mainNumberT in_x, mainNumberT in_y, mainNumberT in_z)
+  constexpr Vertice() = default;
+  constexpr Vertice(mainNumberT in_x, mainNumberT in_y, mainNumberT in_z)
     : m_x(in_x), m_y(in_y), m_z(in_z)
   {}
   template<Number numberT>
-  explicit Vertice(Vertice<numberT> lhs)
+  constexpr explicit Vertice(Vertice<numberT> lhs)
     : m_x(static_cast<mainNumberT>(lhs.x())),
       m_y(static_cast<mainNumberT>(lhs.y())),
       m_z(static_cast<mainNumberT>(lhs.z()))
@@ -57,40 +59,54 @@ public:
                              static_cast<numberT>(m_y) + lhs,
                              static_cast<numberT>(m_z) + lhs };
   }
-  [[nodiscard]] auto
+  [[nodiscard]] constexpr auto
     x() const noexcept
   {
     return m_x;
   }
-  [[nodiscard]] auto
+  [[nodiscard]] constexpr auto
     y() const noexcept
   {
     return m_y;
   }
-  [[nodiscard]] auto
+  [[nodiscard]] constexpr auto
     z() const noexcept
   {
     return m_z;
   }
-  void
-    x(mainNumberT in_x) noexcept
+  [[nodiscard]] constexpr auto
+    with_x(mainNumberT in_x) const noexcept
   {
-    m_x = in_x;
+    auto ret = *this;
+    ret.m_x  = in_x;
+    return ret;
   }
-  void
-    y(mainNumberT in_y) noexcept
+  [[nodiscard]] constexpr auto
+    with_y(mainNumberT in_y) const noexcept
   {
-    m_y = in_y;
+    auto ret = *this;
+    ret.m_y  = in_y;
+    return ret;
   }
-  void
-    z(mainNumberT in_z) noexcept
+  [[nodiscard]] constexpr auto
+    with_z(mainNumberT in_z) const noexcept
   {
-    m_z = in_z;
+    auto ret = *this;
+    ret.m_z  = in_z;
+    return ret;
   }
   friend std::ostream &
     operator<<(std::ostream &os, const Vertice<mainNumberT> &lhs)
   {
     return os << '(' << lhs.x() << ", " << lhs.y() << ", " << lhs.z() << ')';
+  }
+  template<typename T>
+  [[nodiscard]] constexpr auto
+    midpoint(const Vertice<T> other) const noexcept
+  {
+    return Vertice(std::midpoint(m_x, other.x()),
+                   std::midpoint(m_y, other.y()),
+                   std::midpoint(m_z, other.z()));
   }
 };
 }// namespace open_viii::graphics

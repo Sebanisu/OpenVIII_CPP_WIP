@@ -7,11 +7,12 @@
 #include "CamHeader.hpp"
 #include "FileSection.hpp"
 #include "open_viii/tools/Tools.hpp"
+#include "tl/write.hpp"
 #include <istream>
 #include <ostream>
 #include <ranges>
 #include <vector>
-namespace open_viii {
+namespace open_viii::pak {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK#CAM_files
  */
@@ -62,6 +63,36 @@ public:
     os << '}';
     return os;
   }
+  auto
+    begin() const noexcept
+  {
+    return m_frames.begin();
+  }
+  auto
+    end() const noexcept
+  {
+    return m_frames.end();
+  }
+  auto
+    size() const noexcept
+  {
+    return m_frames.size();
+  }
+  auto
+    with_frames(std::vector<CamFrame> &&in_frames) const noexcept
+  {
+    Cam ret      = {};
+    ret.m_header = m_header.with_count(static_cast<uint16_t>(in_frames.size()));
+    ret.m_frames = std::move(in_frames);
+    return ret;
+  }
+  void
+    save(const std::filesystem::path &path) const
+  {
+    std::ofstream fp(path, std::ios::out | std::ios::trunc | std::ios::binary);
+    tl::write::append(fp, m_header);
+    tl::write::append(fp, m_frames);
+  }
 };
-}// namespace open_viii
+}// namespace open_viii::pak
 #endif// VIIIARCHIVE_CAM_HPP

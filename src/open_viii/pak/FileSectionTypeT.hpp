@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <ranges>
 #include <string_view>
-namespace open_viii::FileSectionTypeT {
+namespace open_viii::pak::FileSectionTypeT {
 /**
  * None; no type defined.
  */

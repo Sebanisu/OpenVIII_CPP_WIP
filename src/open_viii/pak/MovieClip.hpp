@@ -6,7 +6,7 @@
 #include "Cam.hpp"
 #include "FileSection.hpp"
 #include <iostream>
-namespace open_viii {
+namespace open_viii::pak {
 struct MovieClip
 {
 private:

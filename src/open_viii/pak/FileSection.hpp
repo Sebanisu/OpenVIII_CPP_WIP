@@ -9,7 +9,7 @@
 #include <istream>
 #include <string>
 #include <utility>
-namespace open_viii {
+namespace open_viii::pak {
 /**
  * Collection of data related to a file section of a pak file.
  */

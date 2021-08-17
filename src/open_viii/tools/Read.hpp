@@ -189,7 +189,7 @@ template<has_data_and_size trivialType>
 requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType>
 static void
   read_val(const std::span<const char> &span,
-           trivialType &                item,
+           trivialType                 &item,
            std::size_t                  size)
 {
   const auto  element_size = sizeof(decltype(*std::ranges::data(item)));
@@ -374,7 +374,7 @@ template<std::ranges::contiguous_range dstT = std::vector<char>>
 template<is_trivially_copyable_and_default_constructible valueT>
 [[nodiscard]] static valueT
   read_value_from_file(const std::filesystem::path &path,
-                       const std::size_t &          offset)
+                       const std::size_t           &offset)
 {
   valueT item{};
   if (!read_from_file(

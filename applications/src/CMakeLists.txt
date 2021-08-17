@@ -149,7 +149,6 @@ target_link_libraries(${PROJECT_NAME}_TestExtractPAK
         )
 SET_TARGET_PATHS(${PROJECT_NAME}_TestExtractPAK)
 
-
 ##test battle, uses new code to extract files instead of old versions.
 add_executable(${PROJECT_NAME}_TestBattle
         TestBattle.cpp TestBattle.hpp)
@@ -275,3 +274,15 @@ if (MSVC)
             PRIVATE /Ob0) #https://docs.microsoft.com/en-us/cpp/build/reference/ob-inline-function-expansion?view=msvc-160
 endif ()
 SET_TARGET_PATHS(${PROJECT_NAME}_tile_csv_to_map)
+
+##test extract all, uses new code to extract files instead of old versions.
+add_executable(${PROJECT_NAME}_double_cam
+        double_cam.cpp double_cam.hpp)
+set_target_properties(${PROJECT_NAME}_double_cam PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${PROJECT_NAME}_double_cam PROPERTIES OUTPUT_NAME "double_cam")
+target_link_libraries(${PROJECT_NAME}_double_cam
+        PRIVATE ${PROJECT_NAME}_VIIIPaths
+        PRIVATE ${PROJECT_NAME}_project_warnings
+        PRIVATE ToolsLibrary_tl
+        )
+SET_TARGET_PATHS(${PROJECT_NAME}_double_cam)

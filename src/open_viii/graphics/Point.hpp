@@ -17,6 +17,7 @@
 #include <compare>
 #include <concepts>
 #include <iostream>
+#include <numeric>
 namespace open_viii::graphics {
 template<Number dimT>
 struct Point
@@ -147,6 +148,13 @@ public:
     with_y(dimT in_y) const noexcept
   {
     return { m_x, in_y };
+  }
+
+  template<typename T>
+  [[nodiscard]] constexpr auto
+    midpoint(const Point<T> other) const noexcept
+  {
+    return Point(std::midpoint(m_x, other.x()), std::midpoint(m_y, other.y()));
   }
 };
 /**
