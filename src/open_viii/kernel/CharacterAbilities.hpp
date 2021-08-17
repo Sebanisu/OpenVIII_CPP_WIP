@@ -30,7 +30,9 @@ protected:
   [[nodiscard]] constexpr CharacterAbilityFlagsT
     character_ability_flags_impl() const
   {
-    return static_cast<CharacterAbilityFlagsT>(m_character_ability_flags);
+    return static_cast<CharacterAbilityFlagsT>(
+      (m_character_ability_flags0 << 16U) | (m_character_ability_flags1 << 8U)
+      | m_character_ability_flags2);
   }
   constexpr static auto EXPECTED_SIZE                     = 8U;
   constexpr CharacterAbilities_impl()                     = default;
@@ -39,7 +41,9 @@ protected:
   std::uint8_t        m_ability_points_required_to_unlock = {};
 
 private:
-  std::uint32_t m_character_ability_flags : 24 = {};
+  std::uint8_t m_character_ability_flags0{};
+  std::uint8_t m_character_ability_flags1{};
+  std::uint8_t m_character_ability_flags2{};
 
 public:
   constexpr auto

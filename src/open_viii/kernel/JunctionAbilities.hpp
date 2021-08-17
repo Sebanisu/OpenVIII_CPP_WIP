@@ -34,13 +34,17 @@ protected:
   constexpr JunctionAbilities_impl()                      = default;
   static constexpr std::size_t EXPECTED_SIZE              = 8U;
   [[nodiscard]] constexpr JunctionFlagsT
-    junction_flags_impl() const
+  junction_flags_impl() const
   {
-    return static_cast<JunctionFlagsT>(m_junction_flags);
+    return static_cast<JunctionFlagsT>(
+      (m_junction_flags0 << 16U) | (m_junction_flags1 << 8U)
+      | m_junction_flags2);
   }
 
 private:
-  std::uint32_t m_junction_flags : 24U = {};
+  std::uint8_t m_junction_flags0 = {};
+  std::uint8_t m_junction_flags1 = {};
+  std::uint8_t m_junction_flags2 = {};
 
 public:
   constexpr auto
