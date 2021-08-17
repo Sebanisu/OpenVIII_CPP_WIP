@@ -157,6 +157,7 @@ HAS(character_id);
 HAS(str_bonus);
 HAS(weapon_tier);
 HAS(melee_weapon);
+HAS(button_sequence);
 #undef HAS
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_KERNEL_CONCEPTS_HPP
