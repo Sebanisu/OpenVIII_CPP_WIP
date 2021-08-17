@@ -122,51 +122,6 @@ namespace open_viii::kernel {
    * @see
   https://github.com/DarkShinryu/doomtrain/wiki/Zell-limit-break-parameters
    */
-struct ZellDuelLimitBreakParams
-{
-private:
-  std::array<std::uint8_t, 4> m_data{};
-
-public:
-  constexpr auto
-    operator<=>(const ZellDuelLimitBreakParams &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    at(const size_t &index) const
-  {
-    return m_data.at(index);
-  }
-  [[nodiscard]] constexpr auto
-    size()
-  {
-    return m_data.size();
-  }
-  //[[nodiscard]] constexpr auto operator[](const size_t &index) { return
-  // data_[index]; }
-  [[nodiscard]] constexpr auto
-    begin()
-  {
-    return m_data.begin();
-  }
-  [[nodiscard]] constexpr auto
-    end()
-  {
-    return m_data.end();
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &textSpan)
-  {
-    os << '{';
-    bool first = true;
-    for (const auto &item : m_data) {
-      if (!first) {
-        os << ", ";
-      }
-      first = false;
-      os << static_cast<size_t>(item);
-    }
-    return os << "};";
-  }
-};
+using ZellDuelLimitBreakParams = std::array<std::uint8_t, 4>;
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ZELLDUELLIMITBREAKPARAMS_HPP
