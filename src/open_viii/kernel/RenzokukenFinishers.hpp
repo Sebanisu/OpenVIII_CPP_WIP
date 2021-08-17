@@ -15,12 +15,13 @@
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "CommonKernel.hpp"
 #include "ElementT.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
-struct RenzokukenFinishers
+struct RenzokukenFinishers_impl
 {
   /* https://github.com/DarkShinryu/doomtrain/wiki/Renzokuken-finishers
    * 0x0000	2 bytes	Offset to limit name
@@ -40,106 +41,48 @@ struct RenzokukenFinishers
    * 0x0012	2 bytes	status_0; //statuses 0-7
    * 0x0014	4 bytes	status_1; //statuses 8-39
    */
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  std::uint16_t       m_magic_id{};
-  AttackTypeT         m_attack_type{};
-  std::uint8_t        m_unknown0{};
-  std::uint8_t        m_attack_power{};
-  std::uint8_t        m_unknown1{};
-  std::uint8_t        m_target{};
-  AttackFlagsT        m_attack_flags{};
-  std::uint8_t        m_hit_count{};
-  ElementT            m_element{};
-  std::uint8_t        m_element_attack_percent{};
-  std::uint8_t        m_status_attack_enabler{};
-  std::uint16_t       m_unknown2{};
-  PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
-  BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
+protected:
+  EncodedStringOffset m_name_offset            = {};
+  EncodedStringOffset m_description_offset     = {};
+  std::uint16_t       m_magic_id               = {};
+  AttackTypeT         m_attack_type            = {};
+  std::uint8_t        m_unknown0               = {};
+  std::uint8_t        m_attack_power           = {};
+  std::uint8_t        m_unknown1               = {};
+  std::uint8_t        m_target                 = {};
+  AttackFlagsT        m_attack_flags           = {};
+  std::uint8_t        m_hit_count              = {};
+  ElementT            m_element                = {};
+  std::uint8_t        m_element_attack_percent = {};
+  std::uint8_t        m_status_attack_enabler  = {};
+  std::uint16_t       m_unknown2               = {};
+  PersistentStatusesT m_persistent_statuses    = {};// statuses 0-7
+  BattleOnlyStatusesT m_battle_only_statuses   = {};// statuses 8-39
+  constexpr RenzokukenFinishers_impl()         = default;
+  static constexpr std::size_t EXPECTED_SIZE   = 24U;
+
 public:
   constexpr auto
-    operator<=>(const RenzokukenFinishers &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-  {
-    return m_attack_type;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    attack_power() const noexcept
-  {
-    return m_attack_power;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  [[nodiscard]] constexpr auto
-    target() const noexcept
-  {
-    return m_target;
-  }
-  [[nodiscard]] constexpr auto
-    attack_flags() const noexcept
-  {
-    return m_attack_flags;
-  }
-  [[nodiscard]] constexpr auto
-    hit_count() const noexcept
-  {
-    return m_hit_count;
-  }
-  [[nodiscard]] constexpr auto
-    element() const noexcept
-  {
-    return m_element;
-  }
-  [[nodiscard]] constexpr auto
-    element_attack_percent() const noexcept
-  {
-    return m_element_attack_percent;
-  }
-  [[nodiscard]] constexpr auto
-    atatus_attack_enabler() const noexcept
-  {
-    return m_status_attack_enabler;
-  }
-  [[nodiscard]] constexpr auto
-    unknown2() const noexcept
-  {
-    return m_unknown2;
-  }
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-  {
-    return m_persistent_statuses;
-  }// statuses 0-7
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-  {
-    return m_battle_only_statuses;
-  }// statuses 8-39
+    operator<=>(const RenzokukenFinishers_impl &right) const noexcept = default;
 };
+using RenzokukenFinishers = CommonKernel<RenzokukenFinishers_impl>;
+static_assert(RenzokukenFinishers::EXPECTED_SIZE
+              == sizeof(RenzokukenFinishers));
+static_assert(has_name_offset<RenzokukenFinishers>);
+static_assert(has_description_offset<RenzokukenFinishers>);
+static_assert(has_magic_id<RenzokukenFinishers>);
+static_assert(has_attack_type<RenzokukenFinishers>);
+static_assert(has_unknown0<RenzokukenFinishers>);
+static_assert(has_attack_power<RenzokukenFinishers>);
+static_assert(has_unknown1<RenzokukenFinishers>);
+static_assert(has_target<RenzokukenFinishers>);
+static_assert(has_attack_flags<RenzokukenFinishers>);
+static_assert(has_hit_count<RenzokukenFinishers>);
+static_assert(has_element<RenzokukenFinishers>);
+static_assert(has_element_attack_percent<RenzokukenFinishers>);
+static_assert(has_status_attack_enabler<RenzokukenFinishers>);
+static_assert(has_unknown2<RenzokukenFinishers>);
+static_assert(has_persistent_statuses<RenzokukenFinishers>);
+static_assert(has_battle_only_statuses<RenzokukenFinishers>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_RENZOKUKENFINISHERS_HPP

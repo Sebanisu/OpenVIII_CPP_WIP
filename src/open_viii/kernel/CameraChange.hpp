@@ -39,8 +39,8 @@ public:
   friend std::ostream &
     operator<<(std::ostream &os, const CameraChange &camera_change)
   {
-    os << camera_change.checked() << '/'
-       << static_cast<uint16_t>(camera_change.value());
+    os << +camera_change.checked() << '/'
+       << +camera_change.value();
     return os;
   }
 };

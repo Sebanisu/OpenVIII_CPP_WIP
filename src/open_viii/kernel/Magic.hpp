@@ -15,6 +15,7 @@
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "CommonKernel.hpp"
 #include "ElementT.hpp"
 #include "GFGroup.hpp"
 #include "JunctionStatusesT.hpp"
@@ -24,9 +25,9 @@
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-struct Magic
+struct Magic_impl
 {
-  /*
+  /**
    * Offset	Length	Description
    * 	2 bytes	Offset to spell name
    * 	2 bytes	Offset to spell description
@@ -80,204 +81,69 @@ struct Magic
    * 	2 bytes	Unknown
    * 	@see https://github.com/DarkShinryu/doomtrain/wiki/Magic-data
    */
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  uint16_t            m_magic_id{};
-  uint8_t             m_unknown0{};
-  AttackTypeT         m_attack_type{};
-  uint8_t             m_spell_power{};
-  uint8_t             m_unknown1{};
-  TargetT             m_target{};
-  AttackFlagsT        m_attack_flags{};
-  uint8_t             m_draw_resist{};
-  uint8_t             m_hit_count{};
-  ElementT            m_element{};
-  uint8_t             m_unknown2{};
-  BattleOnlyStatusesT m_battle_only_statuses{};
-  PersistentStatusesT m_persistent_statuses{};
-  uint8_t             m_status_attack{};
-  StatGroup<uint8_t>  m_junction_stats{};
-  ElementT            m_j_elem_attack_flag{};
-  uint8_t             m_j_elem_attack_value{};
-  ElementT            m_j_elem_defense_flag{};
-  uint8_t             m_j_elem_defense_value{};
-  uint8_t             m_j_status_attack_value{};
-  uint8_t             m_j_status_defense_value{};
-  JunctionStatusesT   m_j_statuses_attack_flag{};
-  JunctionStatusesT   m_j_statuses_defend_flag{};
-  GFGroup<uint8_t>    m_compatibility{};
-  uint16_t            m_unknown3{};
+protected:
+  EncodedStringOffset     m_name_offset            = {};
+  EncodedStringOffset     m_description_offset     = {};
+  std::uint16_t           m_magic_id               = {};
+  std::uint8_t            m_unknown0               = {};
+  AttackTypeT             m_attack_type            = {};
+  std::uint8_t            m_spell_power            = {};
+  std::uint8_t            m_unknown1               = {};
+  TargetT                 m_target                 = {};
+  AttackFlagsT            m_attack_flags           = {};
+  std::uint8_t            m_draw_resist            = {};
+  std::uint8_t            m_hit_count              = {};
+  ElementT                m_element                = {};
+  std::uint8_t            m_unknown2               = {};
+  BattleOnlyStatusesT     m_battle_only_statuses   = {};
+  PersistentStatusesT     m_persistent_statuses    = {};
+  std::uint8_t            m_status_attack          = {};
+  StatGroup<std::uint8_t> m_junction_stats         = {};
+  ElementT                m_j_elem_attack_flag     = {};
+  std::uint8_t            m_j_elem_attack_value    = {};
+  ElementT                m_j_elem_defense_flag    = {};
+  std::uint8_t            m_j_elem_defense_value   = {};
+  std::uint8_t            m_j_status_attack_value  = {};
+  std::uint8_t            m_j_status_defense_value = {};
+  JunctionStatusesT       m_j_statuses_attack_flag = {};
+  JunctionStatusesT       m_j_statuses_defend_flag = {};
+  GFGroup<std::uint8_t>   m_compatibility          = {};
+  std::uint16_t           m_unknown3               = {};
+  constexpr Magic_impl()                           = default;
+  static constexpr std::size_t EXPECTED_SIZE       = 60U;
 
 public:
-  constexpr Magic() = default;
   constexpr auto
-    operator<=>(const Magic &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-  {
-    return m_attack_type;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    spell_power() const noexcept
-  {
-    return m_spell_power;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  [[nodiscard]] constexpr auto
-    target() const noexcept
-  {
-    return m_target;
-  }
-  [[nodiscard]] constexpr auto
-    attack_flags() const noexcept
-  {
-    return m_attack_flags;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    draw_resist() const noexcept
-  {
-    return m_draw_resist;
-  }
-  [[nodiscard]] constexpr auto
-    hit_count() const noexcept
-  {
-    return m_hit_count;
-  }
-  [[nodiscard]] constexpr auto
-    element() const noexcept
-  {
-    return m_element;
-  }
-  [[nodiscard]] constexpr auto
-    unknown2() const noexcept
-  {
-    return m_unknown2;
-  }
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-  {
-    return m_battle_only_statuses;
-  }
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-  {
-    return m_persistent_statuses;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    status_attack() const noexcept
-  {
-    return m_status_attack;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    junction_stats() const noexcept
-  {
-    return m_junction_stats;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    j_elem_attack_flag() const noexcept
-  {
-    return m_j_elem_attack_flag;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    j_elem_attack_value() const noexcept
-  {
-    return m_j_elem_attack_value;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    j_elem_defense_flag() const noexcept
-  {
-    return m_j_elem_defense_flag;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    j_elem_defense_value() const noexcept
-  {
-    return m_j_elem_defense_value;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    j_status_attack_value() const noexcept
-  {
-    return m_j_status_attack_value;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    j_status_defense_value() const noexcept
-  {
-    return m_j_status_defense_value;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    j_statuses_attack_flag() const noexcept
-  {
-    return m_j_statuses_attack_flag;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    j_statuses_defend_flag() const noexcept
-  {
-    return m_j_statuses_defend_flag;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    compatibility() const noexcept
-  {
-    return m_compatibility;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown3() const noexcept
-  {
-    return m_unknown3;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-              << static_cast<std::uint32_t>(m_unknown0) << ", "
-              << static_cast<std::uint32_t>(m_attack_type) << ", "
-              << static_cast<std::uint32_t>(m_spell_power) << ", "
-              << static_cast<std::uint32_t>(m_unknown1) << ", "
-              << static_cast<std::uint32_t>(m_target) << ", "
-              << static_cast<std::uint32_t>(m_attack_flags) << ", "
-              << static_cast<std::uint32_t>(m_draw_resist) << ", "
-              << static_cast<std::uint32_t>(m_hit_count) << ", "
-              << static_cast<std::uint32_t>(m_element) << ", "
-              << static_cast<std::uint32_t>(m_unknown2) << ", "
-              << static_cast<std::uint32_t>(m_battle_only_statuses) << ", "
-              << static_cast<std::uint32_t>(m_persistent_statuses) << ", "
-              << static_cast<std::uint32_t>(m_status_attack) << ", "
-              << m_junction_stats << ", "
-              << static_cast<std::uint32_t>(m_j_elem_attack_flag) << ", "
-              << static_cast<std::uint32_t>(m_j_elem_attack_value) << ", "
-              << static_cast<std::uint32_t>(m_j_elem_defense_flag) << ", "
-              << static_cast<std::uint32_t>(m_j_elem_defense_value) << ", "
-              << static_cast<std::uint32_t>(m_j_status_attack_value) << ", "
-              << static_cast<std::uint32_t>(m_j_status_defense_value) << ", "
-              << static_cast<std::uint32_t>(m_j_statuses_attack_flag) << ", "
-              << static_cast<std::uint32_t>(m_j_statuses_defend_flag) << ", "
-              << m_compatibility << ", "
-              << static_cast<std::uint32_t>(m_unknown3);
-  }
+    operator<=>(const Magic_impl &right) const noexcept = default;
 };
+using Magic = CommonKernel<Magic_impl>;
+static_assert(Magic::EXPECTED_SIZE == sizeof(Magic));
+static_assert(has_name_offset<Magic>);
+static_assert(has_description_offset<Magic>);
+static_assert(has_magic_id<Magic>);
+static_assert(has_unknown0<Magic>);
+static_assert(has_attack_type<Magic>);
+static_assert(has_spell_power<Magic>);
+static_assert(has_unknown1<Magic>);
+static_assert(has_target<Magic>);
+static_assert(has_attack_flags<Magic>);
+static_assert(has_draw_resist<Magic>);
+static_assert(has_hit_count<Magic>);
+static_assert(has_element<Magic>);
+static_assert(has_unknown2<Magic>);
+static_assert(has_battle_only_statuses<Magic>);
+static_assert(has_persistent_statuses<Magic>);
+static_assert(has_status_attack<Magic>);
+static_assert(has_junction_stats<Magic>);
+static_assert(has_j_elem_attack_flag<Magic>);
+static_assert(has_j_elem_attack_value<Magic>);
+static_assert(has_j_elem_defense_flag<Magic>);
+static_assert(has_j_elem_defense_value<Magic>);
+static_assert(has_j_status_attack_value<Magic>);
+static_assert(has_j_status_defense_value<Magic>);
+static_assert(has_j_statuses_attack_flag<Magic>);
+static_assert(has_j_statuses_defend_flag<Magic>);
+static_assert(has_compatibility<Magic>);
+static_assert(has_unknown3<Magic>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_MAGIC_HPP

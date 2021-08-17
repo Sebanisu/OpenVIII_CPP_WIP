@@ -14,7 +14,10 @@
 #define VIIIARCHIVE_UNLOCKERT_HPP
 #include <cstdint>
 namespace open_viii::kernel {
-//"https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/MainForm.Designer.cs"
+/**
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Junctionable-Abilities-Unlocker
+ * @see https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/MainForm.Designer.cs
+ */
 enum class UnlockerT : std::uint8_t
 {
   none,

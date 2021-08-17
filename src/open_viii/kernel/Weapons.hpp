@@ -14,12 +14,13 @@
 #define VIIIARCHIVE_WEAPONS_HPP
 #include "AttackTypeT.hpp"
 #include "CharactersT.hpp"
-#include "RenzokukenFinishersT.hpp"
+#include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include "RenzokukenFinishersT.hpp"
 #include <compare>
 #include <cstdint>
 namespace open_viii::kernel {
-struct Weapons
+struct Weapons_impl
 {
   /**
    * Section Structure
@@ -52,92 +53,37 @@ struct Weapons
    * 0x000B	1 byte	Melee Weapon?
    * @see https://github.com/DarkShinryu/doomtrain/wiki/Weapons
    */
-private:
-  EncodedStringOffset  m_name_offset{};
-  RenzokukenFinishersT m_renzokuken_finishers{};
-  std::uint8_t         m_unknown{};
-  CharactersT          m_character_id{};
-  AttackTypeT          m_attack_type{};
-  std::uint8_t         m_attack_power{};
-  std::uint8_t         m_attack_parameter{};
-  std::uint8_t         m_str_bonus{};
-  std::uint8_t         m_weapon_tier{};
-  std::uint8_t         m_critical_bonus{};
-  std::uint8_t         m_melee_weapon{};
+protected:
+  EncodedStringOffset  m_name_offset          = {};
+  RenzokukenFinishersT m_renzokuken_finishers = {};
+  std::uint8_t         m_unknown              = {};
+  CharactersT          m_character_id         = {};
+  AttackTypeT          m_attack_type          = {};
+  std::uint8_t         m_attack_power         = {};
+  std::uint8_t         m_attack_parameter     = {};
+  std::uint8_t         m_str_bonus            = {};
+  std::uint8_t         m_weapon_tier          = {};
+  std::uint8_t         m_critical_bonus       = {};
+  std::uint8_t         m_melee_weapon         = {};
+  constexpr Weapons_impl()                    = default;
+  static constexpr std::size_t EXPECTED_SIZE  = 12U;
 
 public:
   constexpr auto
-    operator<=>(const Weapons &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    renzokuken_finishers() const noexcept
-  {
-    return m_renzokuken_finishers;
-  }
-  [[nodiscard]] constexpr auto
-    unknown() const noexcept
-  {
-    return m_unknown;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    character_id() const noexcept
-  {
-    return m_character_id;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-  {
-    return m_attack_type;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    attack_power() const noexcept
-  {
-    return m_attack_power;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    attack_parameter() const noexcept
-  {
-    return m_attack_parameter;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    str_bonus() const noexcept
-  {
-    return m_str_bonus;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    weapon_tier() const noexcept
-  {
-    return m_weapon_tier;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    critical_bonus() const noexcept
-  {
-    return m_critical_bonus;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    melee_weapon() const noexcept
-  {
-    return m_melee_weapon != 0;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << ", " << static_cast<std::uint32_t>(m_renzokuken_finishers)
-              << ", " << static_cast<std::uint32_t>(m_unknown) << ", "
-              << static_cast<std::uint32_t>(m_character_id) << ", "
-              << static_cast<std::uint32_t>(m_attack_type) << ", "
-              << static_cast<std::uint32_t>(m_attack_power) << ", "
-              << static_cast<std::uint32_t>(m_attack_parameter) << ", "
-              << static_cast<std::uint32_t>(m_str_bonus) << ", "
-              << static_cast<std::uint32_t>(m_weapon_tier) << ", "
-              << static_cast<std::uint32_t>(m_critical_bonus) << ", "
-              << static_cast<std::uint32_t>(m_melee_weapon);
-  }
+    operator<=>(const Weapons_impl &right) const noexcept = default;
 };
+using Weapons = CommonKernel<Weapons_impl>;
+static_assert(Weapons::EXPECTED_SIZE == sizeof(Weapons));
+static_assert(has_name_offset<Weapons>);
+static_assert(has_renzokuken_finishers<Weapons>);
+static_assert(has_unknown<Weapons>);
+static_assert(has_character_id<Weapons>);
+static_assert(has_attack_type<Weapons>);
+static_assert(has_attack_power<Weapons>);
+static_assert(has_attack_parameter<Weapons>);
+static_assert(has_str_bonus<Weapons>);
+static_assert(has_weapon_tier<Weapons>);
+static_assert(has_critical_bonus<Weapons>);
+static_assert(has_melee_weapon<Weapons>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_WEAPONS_HPP

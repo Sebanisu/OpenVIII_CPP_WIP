@@ -90,8 +90,8 @@ public:
       else {
         first = false;
       }
-      if constexpr (std::is_integral_v<T>) {
-        os << static_cast<size_t>(item);
+      if constexpr (std::is_integral_v<std::decay_t<T>>) {
+        os << +item;
       }
       else {
         os << '{';
@@ -103,8 +103,8 @@ public:
           else {
             subFirst = false;
           }
-          if (std::is_integral_v<decltype(subItem)>) {
-            os << static_cast<size_t>(subItem);
+          if (std::is_integral_v<std::decay_t<decltype(subItem)>>) {
+            os << +subItem;
           }
           else {
             os << subItem;

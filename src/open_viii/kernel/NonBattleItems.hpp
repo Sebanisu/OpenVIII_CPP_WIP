@@ -12,33 +12,30 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_NONBATTLEITEMS_HPP
 #define VIIIARCHIVE_NONBATTLEITEMS_HPP
+#include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-struct NonBattleItems
+struct NonBattleItems_impl
 {
   /*
    * https://github.com/DarkShinryu/doomtrain/wiki/Non-battle-item-name-and-description-offsets
    * 0x0000	2 bytes	Offset to item name
    * 0x0002	2 bytes	Offset to item description
    */
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
+protected:
+  EncodedStringOffset          m_name_offset        = {};
+  EncodedStringOffset          m_description_offset = {};
+  static constexpr std::size_t EXPECTED_SIZE        = 4U;
+  constexpr NonBattleItems_impl()                   = default;
 
 public:
   constexpr auto
-    operator<=>(const NonBattleItems &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
+    operator<=>(const NonBattleItems_impl &right) const noexcept = default;
 };
+using NonBattleItems = CommonKernel<NonBattleItems_impl>;
+static_assert(NonBattleItems::EXPECTED_SIZE == sizeof(NonBattleItems));
+static_assert(has_name_offset<NonBattleItems>);
+static_assert(has_description_offset<NonBattleItems>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_NONBATTLEITEMS_HPP

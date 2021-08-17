@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAK_HPP
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
+#include "CommonKernel.hpp"
 #include "ElementT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
@@ -33,108 +34,44 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Blue-magic-(Quistis-limit-break)
  */
-struct QuistisBlueMagicLimitBreak
+struct QuistisBlueMagicLimitBreak_impl
 {
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  std::uint16_t       m_magic_id{};
-  std::uint8_t        m_unknown0{};
-  AttackTypeT         m_attack_type{};
-  std::uint8_t        m_unknown1{};
-  std::uint8_t        m_unknown2{};
-  AttackFlagsT        m_attack_flags{};
-  std::uint8_t        m_unknown3{};
-  ElementT            m_element{};
-  std::uint8_t        m_status_attack{};
-  std::uint8_t        m_critical_bonus{};
-  std::uint8_t        m_unknown4{};
+protected:
+  EncodedStringOffset          m_name_offset        = {};
+  EncodedStringOffset          m_description_offset = {};
+  std::uint16_t                m_magic_id           = {};
+  std::uint8_t                 m_unknown0           = {};
+  AttackTypeT                  m_attack_type        = {};
+  std::uint8_t                 m_unknown1           = {};
+  std::uint8_t                 m_unknown2           = {};
+  AttackFlagsT                 m_attack_flags       = {};
+  std::uint8_t                 m_unknown3           = {};
+  ElementT                     m_element            = {};
+  std::uint8_t                 m_status_attack      = {};
+  std::uint8_t                 m_critical_bonus     = {};
+  std::uint8_t                 m_unknown4           = {};
+  static constexpr std::size_t EXPECTED_SIZE        = 16U;
+  constexpr QuistisBlueMagicLimitBreak_impl()       = default;
 
 public:
   constexpr auto
     operator<=>(
-      const QuistisBlueMagicLimitBreak &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-  {
-    return m_attack_type;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  [[nodiscard]] constexpr auto
-    unknown2() const noexcept
-  {
-    return m_unknown2;
-  }
-  [[nodiscard]] constexpr auto
-    attack_flags() const noexcept
-  {
-    return m_attack_flags;
-  }
-  [[nodiscard]] constexpr auto
-    unknown3() const noexcept
-  {
-    return m_unknown3;
-  }
-  [[nodiscard]] constexpr auto
-    element() const noexcept
-  {
-    return m_element;
-  }
-  [[nodiscard]] constexpr auto
-    status_attack() const noexcept
-  {
-    return m_status_attack;
-  }
-  [[nodiscard]] constexpr auto
-    critical_bonus() const noexcept
-  {
-    return m_critical_bonus;
-  }
-  [[nodiscard]] constexpr auto
-    unknown4() const noexcept
-  {
-    return m_unknown4;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-              << static_cast<std::uint32_t>(m_unknown0) << ", "
-              << static_cast<std::uint32_t>(m_attack_type) << ", "
-              << static_cast<std::uint32_t>(m_unknown1) << ", "
-              << static_cast<std::uint32_t>(m_unknown2) << ", "
-              << static_cast<std::uint32_t>(m_attack_flags) << ", "
-              << static_cast<std::uint32_t>(m_unknown3) << ", "
-              << static_cast<std::uint32_t>(m_element) << ", "
-              << static_cast<std::uint32_t>(m_status_attack) << ", "
-              << static_cast<std::uint32_t>(m_critical_bonus) << ", "
-              << static_cast<std::uint32_t>(m_unknown4);
-  }
+      const QuistisBlueMagicLimitBreak_impl &right) const noexcept = default;
 };
+using QuistisBlueMagicLimitBreak
+  = CommonKernel<QuistisBlueMagicLimitBreak_impl>;
+static_assert(has_name_offset<QuistisBlueMagicLimitBreak>);
+static_assert(has_description_offset<QuistisBlueMagicLimitBreak>);
+static_assert(has_magic_id<QuistisBlueMagicLimitBreak>);
+static_assert(has_unknown0<QuistisBlueMagicLimitBreak>);
+static_assert(has_attack_type<QuistisBlueMagicLimitBreak>);
+static_assert(has_unknown1<QuistisBlueMagicLimitBreak>);
+static_assert(has_unknown2<QuistisBlueMagicLimitBreak>);
+static_assert(has_attack_flags<QuistisBlueMagicLimitBreak>);
+static_assert(has_unknown3<QuistisBlueMagicLimitBreak>);
+static_assert(has_element<QuistisBlueMagicLimitBreak>);
+static_assert(has_status_attack<QuistisBlueMagicLimitBreak>);
+static_assert(has_critical_bonus<QuistisBlueMagicLimitBreak>);
+static_assert(has_unknown4<QuistisBlueMagicLimitBreak>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAK_HPP

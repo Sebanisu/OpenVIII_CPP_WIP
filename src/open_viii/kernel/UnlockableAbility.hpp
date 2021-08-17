@@ -13,43 +13,32 @@
 #ifndef VIIIARCHIVE_UNLOCKABLEABILITY_HPP
 #define VIIIARCHIVE_UNLOCKABLEABILITY_HPP
 #include "AbilitiesT.hpp"
+#include "CommonKernel.hpp"
 #include "UnlockerT.hpp"
 #include <compare>
 #include <cstdint>
 #include <iostream>
 namespace open_viii::kernel {
-struct UnlockableAbility
+/**
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Junctionable-GFs
+ */
+struct UnlockableAbility_impl
 {
-private:
-  UnlockerT    m_unlocker{};
-  std::uint8_t m_unknown{};
-  AbilitiesT   m_ability{};
+protected:
+  UnlockerT    m_unlocker                    = {};
+  std::uint8_t m_unknown                     = {};
+  AbilitiesT   m_ability                     = {};
+  constexpr UnlockableAbility_impl()         = default;
+  static constexpr std::size_t EXPECTED_SIZE = 4U;
 
 public:
   constexpr auto
-    operator<=>(const UnlockableAbility &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    unlocker() const noexcept
-  {
-    return m_unlocker;
-  }
-  [[nodiscard]] constexpr auto
-    unknown() const noexcept
-  {
-    return m_unknown;
-  }
-  [[nodiscard]] constexpr auto
-    ability() const noexcept
-  {
-    return m_ability;
-  }
-  friend auto &
-    operator<<(std::ostream &os, const UnlockableAbility &ua)
-  {
-    return os << '{' << static_cast<std::uint32_t>(ua.unlocker()) << ", "
-              << static_cast<std::uint32_t>(ua.unknown()) << ", "
-              << static_cast<std::uint32_t>(ua.ability()) << '}';
-  }
+    operator<=>(const UnlockableAbility_impl &right) const noexcept = default;
 };
+using UnlockableAbility = CommonKernel<UnlockableAbility_impl>;
+static_assert(UnlockableAbility::EXPECTED_SIZE == sizeof(UnlockableAbility));
+static_assert(has_unlocker<UnlockableAbility>);
+static_assert(has_unknown<UnlockableAbility>);
+static_assert(has_ability<UnlockableAbility>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_UNLOCKABLEABILITY_HPP

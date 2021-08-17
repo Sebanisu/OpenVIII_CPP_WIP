@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAKPARAMS_HPP
 #define VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAKPARAMS_HPP
+#include "CommonKernel.hpp"
 #include "QuistisBlueMagicLimitBreakParam.hpp"
 #include <compare>
 namespace open_viii::kernel {
@@ -24,26 +25,29 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Quistis-limit-break-parameters
  */
-struct QuistisBlueMagicLimitBreakParams
+struct QuistisBlueMagicLimitBreakParams_impl
 {
-private:
-  CrisisLevelT<QuistisBlueMagicLimitBreakParam> m_blue_magic_data{};
+protected:
+  CrisisLevelT<QuistisBlueMagicLimitBreakParam> m_blue_magic_data = {};
+  static constexpr std::size_t EXPECTED_SIZE        = sizeof(m_blue_magic_data);
+  constexpr QuistisBlueMagicLimitBreakParams_impl() = default;
 
 public:
   constexpr auto
-    operator<=>(
-      const QuistisBlueMagicLimitBreakParams &right) const noexcept = default;
+    operator<=>(const QuistisBlueMagicLimitBreakParams_impl &right)
+      const noexcept = default;
   [[nodiscard]] const auto *
     operator->() const noexcept
   {
     return &m_blue_magic_data;
   }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << m_blue_magic_data;
-  }
 };
+using QuistisBlueMagicLimitBreakParams
+  = CommonKernel<QuistisBlueMagicLimitBreakParams_impl>;
+// using QuistisBlueMagicLimitBreakParams =
+// CrisisLevelT<QuistisBlueMagicLimitBreakParam>;
+static_assert(has_blue_magic_data<QuistisBlueMagicLimitBreakParams>);
+static_assert(sizeof(QuistisBlueMagicLimitBreakParams)
+              == QuistisBlueMagicLimitBreakParams::EXPECTED_SIZE);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAKPARAMS_HPP

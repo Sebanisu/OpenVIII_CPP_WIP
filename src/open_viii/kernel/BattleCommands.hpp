@@ -12,11 +12,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_BATTLECOMMANDS_HPP
 #define VIIIARCHIVE_BATTLECOMMANDS_HPP
+#include "CommonKernel.hpp"
 #include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
 namespace open_viii::kernel {
-struct BattleCommands
+struct BattleCommands_impl
 {
   /*
    * https://github.com/alexfilth/doomtrain/wiki/Battle-commands
@@ -28,67 +29,28 @@ struct BattleCommands
    * 	1 byte	Target
    * 	1 byte	Unknown / Unused
    */
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  std::uint8_t        m_ability_data_id{};
-  std::uint8_t        m_unknown_flags{};
-  TargetT             m_target{};
-  std::uint8_t        m_unknown{};
+protected:
+  EncodedStringOffset          m_name_offset        = {};
+  EncodedStringOffset          m_description_offset = {};
+  std::uint8_t                 m_ability_data_id    = {};
+  std::uint8_t                 m_unknown_flags      = {};
+  TargetT                      m_target             = {};
+  std::uint8_t                 m_unknown            = {};
+  static constexpr std::size_t EXPECTED_SIZE        = 8U;
+  constexpr BattleCommands_impl()                   = default;
 
 public:
   constexpr auto
-    operator<=>(const BattleCommands &right) const noexcept = default;
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    ability_data_id() const noexcept
-  {
-    return m_ability_data_id;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    unknown_flags() const noexcept
-  {
-    return m_unknown_flags;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    get_target() const noexcept
-  {
-    return m_target;
-  }
-  [[nodiscard]] auto
-    unknown() const noexcept
-  {
-    return m_unknown;
-  }
-  //  std::ostream &out(std::ostream &os, const std::span<const char> &buffer)
-  //  const
-  //  {
-  //    auto name = m_name_offset.decoded_string<langVal>(buffer);
-  //    auto description = m_description_offset.decoded_string<langVal>(buffer);
-  //    if (!std::empty(name)) {
-  //      os << tools::u8_to_sv(name);
-  //    }
-  //    if (!std::empty(description)) {
-  //      os << ", " << tools::u8_to_sv(description);
-  //    }
-  //    return os
-  //
-  //           << ", " << static_cast<std::uint32_t>(m_ability_data_id) << ", "
-  //           << static_cast<std::uint32_t>(m_unknown_flags) << ", "
-  //           << static_cast<std::uint32_t>(m_target) << ", "
-  //           << static_cast<std::uint32_t>(m_unknown)
-  //
-  //      ;
-  //  }
+    operator<=>(const BattleCommands_impl &right) const noexcept = default;
 };
+using BattleCommands = CommonKernel<BattleCommands_impl>;
+static_assert(sizeof(BattleCommands) == BattleCommands::EXPECTED_SIZE);
+static_assert(has_name_offset<BattleCommands>);
+static_assert(has_description_offset<BattleCommands>);
+static_assert(has_ability_data_id<BattleCommands>);
+static_assert(has_unknown_flags<BattleCommands>);
+static_assert(has_target<BattleCommands>);
+static_assert(has_unknown<BattleCommands>);
+static_assert(BattleCommands().target() == TargetT::none);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_BATTLECOMMANDS_HPP

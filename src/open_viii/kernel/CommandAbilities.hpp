@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_COMMANDABILITIES_HPP
 #define VIIIARCHIVE_COMMANDABILITIES_HPP
+#include "CommonKernel.hpp"
 #include "open_viii/Concepts.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include <compare>
@@ -24,67 +25,30 @@ namespace open_viii::kernel {
  * 0x0006	2 bytes	Unknown/Unused
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Command-abilities
  */
-struct CommandAbilities
+struct CommandAbilities_impl
 {
-private:
-  EncodedStringOffset m_name_offset{};
-  EncodedStringOffset m_description_offset{};
-  std::uint8_t        m_ability_points_required_to_unlock{};
-  std::uint8_t        m_index_to_battle_command{};
-  std::uint8_t        m_unknown0{};
-  std::uint8_t        m_unknown1{};
+protected:
+  EncodedStringOffset m_name_offset                       = {};
+  EncodedStringOffset m_description_offset                = {};
+  std::uint8_t        m_ability_points_required_to_unlock = {};
+  std::uint8_t        m_index_to_battle_command           = {};
+  std::uint8_t        m_unknown0                          = {};
+  std::uint8_t        m_unknown1                          = {};
+  constexpr CommandAbilities_impl()                       = default;
+  static constexpr std::size_t EXPECTED_SIZE              = 8U;
 
 public:
   constexpr auto
-    operator<=>(const CommandAbilities &right) const noexcept = default;
-  /**
-   * Offset to encoded name
-   * @return EncodedStringOffset
-   */
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  /**
-   * Offset to encoded description
-   */
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  /**
-   * Ability points required to unlock
-   * @see
-   * https://www.gamerguides.com/final-fantasy-viii/guide/guardian-forces/overview/ap-and-learning-abilities#learning-and-forgetting-abilities
-   */
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    ability_points_required_to_unlock() const noexcept
-  {
-    return m_ability_points_required_to_unlock;
-  }
-  /**
-   * Index to battle command. The related commands have different offsets as the
-   * have a different quantity.
-   */
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    index_to_battle_command() const noexcept
-  {
-    return m_index_to_battle_command;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  static constexpr std::size_t EXPECTED_SIZE = 8U;
+    operator<=>(const CommandAbilities_impl &right) const noexcept = default;
 };
+using CommandAbilities = CommonKernel<CommandAbilities_impl>;
 static_assert(sizeof(CommandAbilities) == CommandAbilities::EXPECTED_SIZE);
+static_assert(has_name_offset<CommandAbilities>);
+static_assert(has_description_offset<CommandAbilities>);
+static_assert(has_ability_points_required_to_unlock<CommandAbilities>);
+static_assert(has_index_to_battle_command<CommandAbilities>);
+static_assert(has_unknown0<CommandAbilities>);
+static_assert(has_unknown1<CommandAbilities>);
+static_assert(is_kernel_object(CommandAbilities()));
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_COMMANDABILITIES_HPP

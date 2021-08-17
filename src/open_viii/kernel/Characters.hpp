@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_CHARACTERS_HPP
 #define VIIIARCHIVE_CHARACTERS_HPP
+#include "CommonKernel.hpp"
 #include "GenderT.hpp"
 #include "StatGroupNoEVANoHIT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
@@ -37,105 +38,32 @@ namespace open_viii::kernel {
  * 0x0020	4 bytes	LUCK
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Characters
  * */
-struct Characters
+struct Characters_impl
 {
-private:
-  EncodedStringOffset         m_name_offset{};
-  std::uint8_t                m_crisis_level_hp_multiplier{};
-  GenderT                     m_gender{};
-  std::uint8_t                m_limit_break_id{};
-  std::uint8_t                m_limit_break_param{};
-  //  std::uint8_t EXP0;
-  //  std::uint8_t EXP1;
-  //  std::uint8_t EXP[2];
-  std::array<std::uint8_t, 2> m_exp{};
-  //  std::uint8_t HP0;
-  //  std::uint8_t HP1;
-  //  std::uint8_t HP2;
-  //  std::uint8_t HP3;
-  //  std::uint8_t STR0;
-  //  std::uint8_t STR1;
-  //  std::uint8_t STR2;
-  //  std::uint8_t STR3;
-  //  std::uint8_t VIT0;
-  //  std::uint8_t VIT1;
-  //  std::uint8_t VIT2;
-  //  std::uint8_t VIT3;
-  //  std::uint8_t MAG0;
-  //  std::uint8_t MAG1;
-  //  std::uint8_t MAG2;
-  //  std::uint8_t MAG3;
-  //  std::uint8_t SPR0;
-  //  std::uint8_t SPR1;
-  //  std::uint8_t SPR2;
-  //  std::uint8_t SPR3;
-  //  std::uint8_t SPD0;
-  //  std::uint8_t SPD1;
-  //  std::uint8_t SPD2;
-  //  std::uint8_t SPD3;
-  //  std::uint8_t LUCK0;
-  //  std::uint8_t LUCK1;
-  //  std::uint8_t LUCK2;
-  //  std::uint8_t LUCK3;
-  StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> m_stats{};
+protected:
+  EncodedStringOffset         m_name_offset                = {};
+  std::uint8_t                m_crisis_level_hp_multiplier = {};
+  GenderT                     m_gender                     = {};
+  std::uint8_t                m_limit_break_id             = {};
+  std::uint8_t                m_limit_break_param          = {};
+  std::array<std::uint8_t, 2> m_exp                        = {};
+  StatGroupNoEVANoHIT<std::array<std::uint8_t, 4>> m_stats = {};
+  constexpr Characters_impl()                              = default;
+  static constexpr std::size_t EXPECTED_SIZE               = 36U;
 
 public:
   constexpr auto
-    operator<=>(const Characters &right) const noexcept = default;
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    crisis_level_hp_multiplier() const noexcept
-  {
-    return m_crisis_level_hp_multiplier;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    gender() const noexcept
-  {
-    return m_gender;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    limit_break_id() const noexcept
-  {
-    return m_limit_break_id;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    limit_break_param() const noexcept
-  {
-    return m_limit_break_param;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    exp() const noexcept
-  {
-    return m_exp;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    stats() const noexcept
-  {
-    return m_stats;
-  }
-  [[nodiscard]] auto
-    operator->() const noexcept
-  {
-    return &m_stats;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << ", "
-              << static_cast<std::uint32_t>(m_crisis_level_hp_multiplier)
-              << ", " << static_cast<std::uint32_t>(m_gender) << ", "
-              << static_cast<std::uint32_t>(m_limit_break_id) << ", "
-              << static_cast<std::uint32_t>(m_limit_break_param) << ", {"
-              << static_cast<std::uint32_t>(m_exp[0]) << ", "
-              << static_cast<std::uint32_t>(m_exp[1]) << "}, " << m_stats;
-  }
-  static constexpr std::size_t EXPECTED_SIZE = 36U;
+    operator<=>(const Characters_impl &right) const noexcept = default;
 };
+using Characters = CommonKernel<Characters_impl>;
 static_assert(sizeof(Characters) == Characters::EXPECTED_SIZE);
+static_assert(has_name_offset<Characters>);
+static_assert(has_crisis_level_hp_multiplier<Characters>);
+static_assert(has_gender<Characters>);
+static_assert(has_limit_break_id<Characters>);
+static_assert(has_limit_break_param<Characters>);
+static_assert(has_exp<Characters>);
+static_assert(has_stats<Characters>);
+static_assert(Characters().gender() == GenderT::male);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_CHARACTERS_HPP

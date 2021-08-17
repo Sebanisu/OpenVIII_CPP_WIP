@@ -19,52 +19,28 @@ namespace open_viii::kernel {
  * @see
  * https://github.com/DarkShinryu/doomtrain/wiki/Quistis-limit-break-parameters
  */
-struct QuistisBlueMagicLimitBreakParam
+struct QuistisBlueMagicLimitBreakParam_impl
 {
-private:
-  BattleOnlyStatusesT m_battle_only_statuses{};
-  PersistentStatusesT m_persistent_statuses{};
-  std::uint8_t        m_attack_power{};
-  std::uint8_t        m_attack_param{};
+protected:
+  BattleOnlyStatusesT          m_battle_only_statuses = {};
+  PersistentStatusesT          m_persistent_statuses  = {};
+  std::uint8_t                 m_attack_power         = {};
+  std::uint8_t                 m_attack_param         = {};
+  static constexpr std::size_t EXPECTED_SIZE          = 8U;
+  constexpr QuistisBlueMagicLimitBreakParam_impl()    = default;
 
 public:
   constexpr auto
-    operator<=>(
-      const QuistisBlueMagicLimitBreakParam &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-  {
-    return m_battle_only_statuses;
-  }
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-  {
-    return m_persistent_statuses;
-  }
-  [[nodiscard]] constexpr auto
-    attack_power() const noexcept
-  {
-    return m_attack_power;
-  }
-  [[nodiscard]] constexpr auto
-    attack_param() const noexcept
-  {
-    return m_attack_param;
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    return os << '{' << static_cast<std::uint32_t>(battle_only_statuses())
-              << ", " << static_cast<std::uint32_t>(persistent_statuses())
-              << ", " << static_cast<std::uint32_t>(attack_power()) << ", "
-              << static_cast<std::uint32_t>(attack_param()) << '}';
-  }
-  friend std::ostream &
-    operator<<(std::ostream &os, const QuistisBlueMagicLimitBreakParam &input)
-  {
-    return input.out(os, "");
-  }
+    operator<=>(const QuistisBlueMagicLimitBreakParam_impl &right)
+      const noexcept = default;
 };
+using QuistisBlueMagicLimitBreakParam
+  = CommonKernel<QuistisBlueMagicLimitBreakParam_impl>;
+static_assert(QuistisBlueMagicLimitBreakParam::EXPECTED_SIZE
+              == sizeof(QuistisBlueMagicLimitBreakParam));
+static_assert(has_battle_only_statuses<QuistisBlueMagicLimitBreakParam>);
+static_assert(has_persistent_statuses<QuistisBlueMagicLimitBreakParam>);
+static_assert(has_attack_power<QuistisBlueMagicLimitBreakParam>);
+static_assert(has_attack_param<QuistisBlueMagicLimitBreakParam>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAKPARAM_HPP

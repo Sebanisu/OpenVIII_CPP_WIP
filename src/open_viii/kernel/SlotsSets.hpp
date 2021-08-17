@@ -12,8 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_SLOTSSETS_HPP
 #define VIIIARCHIVE_SLOTSSETS_HPP
-#include "Slot.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include "Slot.hpp"
 #include <array>
 #include <cstdint>
 namespace open_viii::kernel {
@@ -21,42 +21,6 @@ namespace open_viii::kernel {
  * array of 16 bytes 8 total 2 bytes per Magic Slot { Magic ID and Count }
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Selphie-limit-break-sets
  */
-struct SlotsSets
-{
-public:
-  static constexpr auto TOTAL = 8U;
-  constexpr auto
-    operator<=>(const SlotsSets &right) const noexcept = default;
-  [[nodiscard]] const auto &
-    slots() const noexcept
-  {
-    return m_slots;
-  }
-  friend std::ostream &
-    operator<<(std::ostream &os, const SlotsSets &set)
-  {
-    return set.out(os, {});
-  }
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    os << '{';
-    bool first = true;
-    for (const auto &item : slots()) {
-      if (!first) {
-        os << ", ";
-      }
-      else {
-        first = false;
-      }
-      os << item;
-    }
-    return os << '}';
-  }
-
-private:
-  std::array<Slot, TOTAL> m_slots{};
-};
+using SlotsSets = std::array<Slot, 8U>;
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SLOTSSETS_HPP

@@ -14,29 +14,50 @@
 #define VIIIARCHIVE_ABILITIEST_HPP
 #include <cstdint>
 namespace open_viii::kernel {
+/**
+ * @see https://github.com/alexfilth/doomtrain/wiki/Junction-abilities
+ */
 enum class AbilitiesT : std::uint16_t
 {
-  // https://github.com/alexfilth/doomtrain/wiki/Junction-abilities
   none,
-  hpj [[maybe_unused]],      // Enables HP junction
-  str_j [[maybe_unused]],    // Enables Strength junction
-  vit_j [[maybe_unused]],    // Enables Vitality junction
-  mag_j [[maybe_unused]],    // Enables Magic junction
-  spr_j [[maybe_unused]],    // Enables Spirit junction
-  spd_j [[maybe_unused]],    // Enables Speed junction
-  eva_j [[maybe_unused]],    // Enables Evasion junction
-  hit_j [[maybe_unused]],    // Enables Hit junction
-  luck_j [[maybe_unused]],   // Enables Luck junction
-  el_atk_j [[maybe_unused]], // Increased elemental attack slot Count to 1
-  st_atk_j [[maybe_unused]], // Increased status attack slot Count to 1
-  el_def_j [[maybe_unused]], // Increased elemental defense slot Count to 1
-  st_def_j [[maybe_unused]], // Increased status defense slot Count to 1
-  el_def_j2 [[maybe_unused]],// Increased elemental defense slot Count to 2
-  el_def_j4 [[maybe_unused]],// Increased elemental defense slot Count to 4
-  st_def_j2 [[maybe_unused]],// Increased status defense slot Count to 2
-  st_def_j4,                 // Increased status defense slot Count to 4
-  ability3 [[maybe_unused]], // Increases ability slot Count to 3
-  ability4 [[maybe_unused]], // Increases ability slot Count to 4
+  /** Enables HP junction */
+  hpj [[maybe_unused]],
+  /** Enables Strength junction */
+  str_j [[maybe_unused]],
+  /** Enables Vitality junction */
+  vit_j [[maybe_unused]],
+  /** Enables Magic junction */
+  mag_j [[maybe_unused]],
+  /** Enables Spirit junction */
+  spr_j [[maybe_unused]],
+  /** Enables Speed junction */
+  spd_j [[maybe_unused]],
+  /** Enables Evasion junction */
+  eva_j [[maybe_unused]],
+  /** Enables Hit junction */
+  hit_j [[maybe_unused]],
+  /** Enables Luck junction */
+  luck_j [[maybe_unused]],
+  /** Increased elemental attack slot Count to 1 */
+  el_atk_j [[maybe_unused]],
+  /** Increased status attack slot Count to 1 */
+  st_atk_j [[maybe_unused]],
+  /** Increased elemental defense slot Count to 1 */
+  el_def_j [[maybe_unused]],
+  /** Increased status defense slot Count to 1 */
+  st_def_j [[maybe_unused]],
+  /** Increased elemental defense slot Count to 2 */
+  el_def_j2 [[maybe_unused]],
+  /** Increased elemental defense slot Count to 4 */
+  el_def_j4 [[maybe_unused]],
+  /** Increased status defense slot Count to 2 */
+  st_def_j2 [[maybe_unused]],
+  /** Increased status defense slot Count to 4 */
+  st_def_j4,
+  /** Increases ability slot Count to 3 */
+  ability3 [[maybe_unused]],
+  /** Increases ability slot Count to 4 */
+  ability4 [[maybe_unused]],
   // Equippable commands start here
   // https://github.com/alexfilth/doomtrain/wiki/Command-abilities
   magic,

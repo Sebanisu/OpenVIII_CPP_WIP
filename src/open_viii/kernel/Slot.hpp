@@ -3,34 +3,29 @@
 //
 #ifndef VIIIARCHIVE_SLOT_HPP
 #define VIIIARCHIVE_SLOT_HPP
+#include "CommonKernel.hpp"
 #include <compare>
 #include <cstdint>
 namespace open_viii::kernel {
-struct Slot
+/**
+ * 8 total - magic id and count
+ * @see https://github.com/DarkShinryu/doomtrain/wiki/Selphie-limit-break-sets
+ */
+struct Slot_impl
 {
-private:
-  std::uint8_t m_magic_id{};
-  std::uint8_t m_count{};
+protected:
+  std::uint8_t m_magic_id                    = {};
+  std::uint8_t m_count                       = {};
+  constexpr Slot_impl()                      = default;
+  static constexpr std::size_t EXPECTED_SIZE = 2U;
 
 public:
   constexpr auto
-    operator<=>(const Slot &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[nodiscard]] constexpr auto
-    count() const noexcept
-  {
-    return m_count;
-  }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Slot &slot)
-  {
-    return os << '{' << static_cast<uint16_t>(slot.magic_id()) << ", "
-              << static_cast<uint16_t>(slot.count()) << '}';
-  }
+    operator<=>(const Slot_impl &right) const noexcept = default;
 };
+using Slot = CommonKernel<Slot_impl>;
+static_assert(Slot::EXPECTED_SIZE == sizeof(Slot));
+static_assert(has_magic_id<Slot>);
+static_assert(has_count<Slot>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_SLOT_HPP

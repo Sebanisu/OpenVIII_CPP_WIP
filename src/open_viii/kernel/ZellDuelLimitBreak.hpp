@@ -15,11 +15,12 @@
 #include "AttackFlagsT.hpp"
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
+#include "CommonKernel.hpp"
 #include "ElementT.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
 #include "ZellDuelButtonT.hpp"
-#include "open_viii/strings/EncodedStringOffset.hpp"
 #include <array>
 namespace open_viii::kernel {
 /**
@@ -61,141 +62,50 @@ namespace open_viii::kernel {
  * None = 0xFFFF
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Duel-(Zell-limit-break)
  */
-struct ZellDuelLimitBreak
+struct ZellDuelLimitBreak_impl
 {
-private:
-  static constexpr uint8_t MAX_NUMBER_OF_BUTTONS{ 5U };
-  EncodedStringOffset      m_name_offset{};
-  EncodedStringOffset      m_description_offset{};
-  std::uint16_t            m_magic_id{};
-  AttackTypeT              m_attack_type{};
-  std::uint8_t             m_attack_power{};
-  AttackFlagsT             m_attack_flags{};
-  std::uint8_t             m_unknown0{};
-  TargetT                  m_target{};
-  std::uint8_t             m_unknown1{};
-  std::uint8_t             m_hit_count{};
-  ElementT                 m_element{};
-  uint8_t                  m_element_attack_percent{};
-  std::uint8_t             m_status_attack_enabler{};
-  std::array<ZellDuelButtonT, MAX_NUMBER_OF_BUTTONS> m_button_sequence{};
-  PersistentStatusesT m_persistent_statuses{}; // statuses 0-7
-  BattleOnlyStatusesT m_battle_only_statuses{};// statuses 8-39
+protected:
+  static constexpr std::size_t MAX_NUMBER_OF_BUTTONS = { 5U };
+  static constexpr std::size_t EXPECTED_SIZE         = { 32U };
+  constexpr ZellDuelLimitBreak_impl()                = default;
+  EncodedStringOffset m_name_offset                  = {};
+  EncodedStringOffset m_description_offset           = {};
+  std::uint16_t       m_magic_id                     = {};
+  AttackTypeT         m_attack_type                  = {};
+  std::uint8_t        m_attack_power                 = {};
+  AttackFlagsT        m_attack_flags                 = {};
+  std::uint8_t        m_unknown0                     = {};
+  TargetT             m_target                       = {};
+  std::uint8_t        m_unknown1                     = {};
+  std::uint8_t        m_hit_count                    = {};
+  ElementT            m_element                      = {};
+  uint8_t             m_element_attack_percent       = {};
+  std::uint8_t        m_status_attack_enabler        = {};
+  std::array<ZellDuelButtonT, MAX_NUMBER_OF_BUTTONS> m_button_sequence     = {};
+  PersistentStatusesT                                m_persistent_statuses = {};
+  BattleOnlyStatusesT m_battle_only_statuses                               = {};
+
 public:
   constexpr auto
-    operator<=>(const ZellDuelLimitBreak &right) const noexcept = default;
-  [[nodiscard]] constexpr auto
-    name_offset() const noexcept
-  {
-    return m_name_offset;
-  }
-  [[nodiscard]] constexpr auto
-    description_offset() const noexcept
-  {
-    return m_description_offset;
-  }
-  [[nodiscard]] constexpr auto
-    magic_id() const noexcept
-  {
-    return m_magic_id;
-  }
-  [[nodiscard]] constexpr auto
-    attack_type() const noexcept
-  {
-    return m_attack_type;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    attack_power() const noexcept
-  {
-    return m_attack_power;
-  }
-  [[nodiscard]] constexpr auto
-    attack_flags() const noexcept
-  {
-    return m_attack_flags;
-  }
-  [[nodiscard]] constexpr auto
-    unknown0() const noexcept
-  {
-    return m_unknown0;
-  }
-  [[nodiscard]] constexpr auto
-    target() const noexcept
-  {
-    return m_target;
-  }
-  [[nodiscard]] constexpr auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  [[nodiscard]] constexpr auto
-    hit_count() const noexcept
-  {
-    return m_hit_count;
-  }
-  [[nodiscard]] constexpr auto
-    element() const noexcept
-  {
-    return m_element;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    element_attack_percent() const noexcept
-  {
-    return m_element_attack_percent;
-  }
-  [[nodiscard]] constexpr auto
-    status_attack_enabler() const noexcept
-  {
-    return m_status_attack_enabler;
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    button_sequence() const noexcept
-  {
-    return m_button_sequence;
-  }
-  [[nodiscard]] constexpr auto
-    persistent_statuses() const noexcept
-  {
-    return m_persistent_statuses;
-  }// statuses 0-7
-  [[nodiscard]] constexpr auto
-    battle_only_statuses() const noexcept
-  {
-    return m_battle_only_statuses;
-  }// statuses 8-39
-  std::ostream &
-    out(std::ostream &                                os,
-        [[maybe_unused]] const std::span<const char> &buffer) const
-  {
-    os << ", " << static_cast<std::uint32_t>(m_magic_id) << ", "
-       << static_cast<std::uint32_t>(m_attack_type) << ", "
-       << static_cast<std::uint32_t>(m_attack_power) << ", "
-       << static_cast<std::uint32_t>(m_attack_flags) << ", "
-       << static_cast<std::uint32_t>(m_unknown0) << ", "
-       << static_cast<std::uint32_t>(m_target) << ", "
-       << static_cast<std::uint32_t>(m_unknown1) << ", "
-       << static_cast<std::uint32_t>(m_hit_count) << ", "
-       << static_cast<std::uint32_t>(m_element) << ", "
-       << static_cast<std::uint32_t>(m_element_attack_percent) << ", "
-       << static_cast<std::uint32_t>(m_status_attack_enabler) << ", {";
-    auto first = true;
-    for (const auto &button : m_button_sequence) {
-      if (!first) {
-        os << ", ";
-      }
-      else {
-        first = false;
-      }
-      os << static_cast<std::uint32_t>(button);
-    }
-    return os
-        << "}, "
-        << static_cast<std::uint32_t>(m_persistent_statuses)// statuses 0-7
-        << ", "
-        << static_cast<std::uint32_t>(m_battle_only_statuses)// statuses 8-39
-      ;
-  }
+    operator<=>(const ZellDuelLimitBreak_impl &right) const noexcept = default;
 };
+using ZellDuelLimitBreak = CommonKernel<ZellDuelLimitBreak_impl>;
+static_assert(ZellDuelLimitBreak::EXPECTED_SIZE == sizeof(ZellDuelLimitBreak));
+static_assert(has_name_offset<ZellDuelLimitBreak>);
+static_assert(has_description_offset<ZellDuelLimitBreak>);
+static_assert(has_magic_id<ZellDuelLimitBreak>);
+static_assert(has_attack_type<ZellDuelLimitBreak>);
+static_assert(has_attack_power<ZellDuelLimitBreak>);
+static_assert(has_attack_flags<ZellDuelLimitBreak>);
+static_assert(has_unknown0<ZellDuelLimitBreak>);
+static_assert(has_target<ZellDuelLimitBreak>);
+static_assert(has_unknown1<ZellDuelLimitBreak>);
+static_assert(has_hit_count<ZellDuelLimitBreak>);
+static_assert(has_element<ZellDuelLimitBreak>);
+static_assert(has_element_attack_percent<ZellDuelLimitBreak>);
+static_assert(has_status_attack_enabler<ZellDuelLimitBreak>);
+static_assert(has_button_sequence<ZellDuelLimitBreak>);
+static_assert(has_persistent_statuses<ZellDuelLimitBreak>);
+static_assert(has_battle_only_statuses<ZellDuelLimitBreak>);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_ZELLDUELLIMITBREAK_HPP
