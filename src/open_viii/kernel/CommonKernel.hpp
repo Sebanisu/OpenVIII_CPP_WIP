@@ -188,7 +188,7 @@ public:
   BOTH(str_bonus)
   BOTH(weapon_tier)
   BOTH(melee_weapon)
-  BOTH(button_sequence);
+  BOTH(button_sequence)
   GET_impl(character_ability_flags) GET_impl(junction_flags)
     GET_impl(percent_quantity) GET_impl(damage_or_heal)
 #undef GET_impl
@@ -196,5 +196,17 @@ public:
 #undef GET
 #undef WITH
 };
+template<typename T>
+constexpr bool is_kernel_object(const CommonKernel<T> &)
+{
+  return true;
+}
+constexpr bool is_kernel_object(...)
+{
+  return false;
+}
+
+static_assert(!is_kernel_object(1));
+static_assert(!is_kernel_object());
 }// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_COMMONKERNEL_HPP

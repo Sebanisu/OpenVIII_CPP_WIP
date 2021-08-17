@@ -49,5 +49,6 @@ static_assert(has_ability_points_required_to_unlock<CommandAbilities>);
 static_assert(has_index_to_battle_command<CommandAbilities>);
 static_assert(has_unknown0<CommandAbilities>);
 static_assert(has_unknown1<CommandAbilities>);
+static_assert(is_kernel_object(CommandAbilities()));
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_COMMANDABILITIES_HPP

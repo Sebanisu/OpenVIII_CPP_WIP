@@ -135,8 +135,8 @@ public:
       else {
         first = false;
       }
-      if (std::is_integral_v<decltype(item)>) {
-        os << static_cast<std::size_t>(item);
+      if (std::is_integral_v<std::decay_t<decltype(item)>>) {
+        os << +item;
       }
       else {
         os << item;
