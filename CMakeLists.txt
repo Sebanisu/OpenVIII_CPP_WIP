@@ -15,7 +15,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) ## the value of the CXX_STANDARD target prop
 set(CMAKE_CXX_EXTENSIONS OFF) ## on g++ this ensures: -std=c++11 and not -std=gnu++11
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) ## automatically create a module definition (.def) file with all global
 ## symbols found in the input .obj files for a SHARED library on Windows.
-
+option(ENABLE_CONAN "Use Conan for dependency management" ON)
+if(ENABLE_CONAN)
+    include(cmake/Conan.cmake)
+    run_conan()
+endif()
 # Link this 'library' to use the warnings specified in CompilerWarnings.cmake
 add_library(${PROJECT_NAME}_project_warnings INTERFACE)
 
