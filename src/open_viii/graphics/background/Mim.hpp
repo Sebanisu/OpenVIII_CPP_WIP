@@ -204,17 +204,15 @@ public:
     if (dump_palette) {
       return clut_width();
     }
-    else {
-      auto width = m_mim_type.width();
-      if (bpp.bpp4()) {
-        return width *= 2U;
-      }
-      else if (bpp.bpp8()) {
-        return width;
-      }
-      else if (bpp.bpp16()) {
-        return width /= 2U;
-      }
+    auto width = m_mim_type.width();
+    if (bpp.bpp4()) {
+      return width *= 2U;
+    }
+    if (bpp.bpp8()) {
+      return width;
+    }
+    if (bpp.bpp16()) {
+      return width /= 2U;
     }
   }
 
