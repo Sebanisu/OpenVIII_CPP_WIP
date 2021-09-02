@@ -13,12 +13,12 @@
 #ifndef VIIIARCHIVE_MIM_HPP
 #define VIIIARCHIVE_MIM_HPP
 #include "MimType.hpp"
-#include "Tile2.hpp"
-#include "Tile3.hpp"
-#include "TileCommon.hpp"
 #include "open_viii/graphics/Bit4Values.hpp"
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Ppm.hpp"
+#include "Tile2.hpp"
+#include "Tile3.hpp"
+#include "TileCommon.hpp"
 #include <span>
 #include <vector>
 namespace open_viii::graphics::background {
@@ -186,6 +186,35 @@ public:
   {
     return os << m.m_mim_type;
   }
+  template<Color T>
+  std::vector<T>
+    get_colors(const BPPT    &bpp,
+               const uint8_t &palette,
+               bool           dump_palette = false)
+  {
+    std::vector<T> colors{};
+    const auto     convert_color = [&colors](const auto &raw_color) {
+      colors.reserve(raw_color.size());
+      std::ranges::transform(raw_color,
+                                 std::back_inserter(colors),
+                                 [](const auto &color) {
+                               return static_cast<T>(color);
+                                 });
+    };
+    if (dump_palette) {
+      convert_color(m_palette_buffer);
+    }
+    else if (bpp.bpp4()) {
+      convert_color(get_image_bpp4(palette));
+    }
+    else if (bpp.bpp8()) {
+      convert_color(get_image_bpp8(palette));
+    }
+    else if (bpp.bpp16()) {
+      convert_color(m_image_buffer_bbp16);
+    }
+    return colors;
+  }
   template<typename lambdaT>
   requires(
     std::invocable<
@@ -195,11 +224,12 @@ public:
       std::size_t,
       std::
         string> || std::invocable<lambdaT, std::span<const Color16<ColorLayoutT::ABGR>>, std::size_t>)
-    [[maybe_unused]] void get_colors(const std::string_view &filename,
-                                     const BPPT &            bpp,
-                                     const uint8_t &         palette,
-                                     const lambdaT           lambda,
-                                     bool dump_palette = false) const
+    [[maybe_unused]] void get_colors_for_saving(
+      const std::string_view &filename,
+      const BPPT             &bpp,
+      const uint8_t          &palette,
+      const lambdaT           lambda,
+      bool                    dump_palette = false) const
   {// going to get all the colors for image and run the supplied lambda passing
    // the colors.
     const auto path = std::filesystem::path(filename);
@@ -214,9 +244,10 @@ public:
                clut_height(),
                ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
       }
-      else if constexpr (std::invocable<lambdaT,
-                                        std::span<const Color16<ColorLayoutT::ABGR>>,
-                                        std::size_t>) {
+      else if constexpr (std::invocable<
+                           lambdaT,
+                           std::span<const Color16<ColorLayoutT::ABGR>>,
+                           std::size_t>) {
         lambda(m_palette_buffer, static_cast<std::size_t>(clut_width()));
       }
       return;
@@ -241,7 +272,9 @@ public:
                std::ranges::size(out) / width,
                out_path(BPPT::BPP8));
       }
-      else if (std::invocable<lambdaT, std::span<const Color16<ColorLayoutT::ABGR>>, std::size_t>) {
+      else if (std::invocable<lambdaT,
+                              std::span<const Color16<ColorLayoutT::ABGR>>,
+                              std::size_t>) {
         lambda(out, width);
       }
     }
@@ -341,29 +374,29 @@ public:
   {
     static constexpr auto ppm_save
       = [](const std::span<const Color16<ColorLayoutT::ABGR>> &data,
-           const std::size_t &                                 width,
-           const std::size_t &                                 height,
-           const std::string &                                 local_filename) {
+           const std::size_t                                  &width,
+           const std::size_t                                  &height,
+           const std::string                                  &local_filename) {
           Ppm::save(data, width, height, local_filename);
         };
-    get_colors(filename, {}, {}, ppm_save, true);
+    get_colors_for_saving(filename, {}, {}, ppm_save, true);
     BPPT bpp{};
     {
       bpp.bpp4(true);
       for (std::uint8_t i{}; i < static_cast<std::uint8_t>(clut_height());
            i++) {
-        get_colors(filename, bpp, i, ppm_save, false);
+        get_colors_for_saving(filename, bpp, i, ppm_save, false);
       }
     }
     {
       bpp.bpp8(true);
       for (std::uint8_t i{}; i < static_cast<std::uint8_t>(clut_height());
            i++) {
-        get_colors(filename, bpp, i, ppm_save, false);
+        get_colors_for_saving(filename, bpp, i, ppm_save, false);
       }
     }
     bpp.bpp16(true);
-    get_colors(filename, bpp, {}, ppm_save, false);
+    get_colors_for_saving(filename, bpp, {}, ppm_save, false);
   }
 };
 }// namespace open_viii::graphics::background
