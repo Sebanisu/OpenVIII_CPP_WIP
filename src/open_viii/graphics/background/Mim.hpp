@@ -190,7 +190,7 @@ public:
   std::vector<T>
     get_colors(const BPPT    &bpp,
                const uint8_t &palette,
-               bool           dump_palette = false)
+               bool           dump_palette = false) const
   {
     std::vector<T> colors{};
     const auto     convert_color = [&colors](const auto &raw_color) {
