@@ -186,6 +186,38 @@ public:
   {
     return os << m.m_mim_type;
   }
+  unsigned long
+    get_height(bool dump_palette = false) const
+  {
+
+    if (dump_palette) {
+      return clut_height();
+    }
+    else {
+      return m_mim_type.height();
+    }
+  }
+  unsigned long
+    get_width(const BPPT &bpp, bool dump_palette = false) const
+  {
+
+    if (dump_palette) {
+      return clut_width();
+    }
+    else {
+      auto width = m_mim_type.width();
+      if (bpp.bpp4()) {
+        return width *= 2U;
+      }
+      else if (bpp.bpp8()) {
+        return width;
+      }
+      else if (bpp.bpp16()) {
+        return width /= 2U;
+      }
+    }
+  }
+
   template<Color T>
   std::vector<T>
     get_colors(const BPPT    &bpp,
@@ -215,6 +247,7 @@ public:
     }
     return colors;
   }
+
   template<typename lambdaT>
   requires(
     std::invocable<
