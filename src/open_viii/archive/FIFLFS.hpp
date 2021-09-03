@@ -391,7 +391,7 @@ public:
     else {
       std::vector<std::string> list{};
       FIFLFS<false>            archive = {};
-      const auto               items   = get_all_items_from_fl({"mapdata"});
+      const auto               items   = get_all_items_from_fl({ "mapdata" });
       std::any_of(std::execution::seq,
                   items.cbegin(),
                   items.cend(),
@@ -399,7 +399,7 @@ public:
                     if (fill_archive_lambda("", archive)()) {
                       const auto raw_list
                         = archive.template get_entry_data<std::string>(
-                          "maplist");
+                          { "maplist" });
                       // archive::fl::get_all_entries(raw_list,0,0,0)
                       std::stringstream ss{ raw_list };
                       std::string       tmp{};
