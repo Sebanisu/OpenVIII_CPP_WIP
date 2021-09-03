@@ -392,29 +392,29 @@ public:
       std::vector<std::string> list{};
       FIFLFS<false>            archive = {};
       const auto               items   = get_all_items_from_fl({ "mapdata" });
-      std::any_of(std::execution::seq,
-                  items.cbegin(),
-                  items.cend(),
-                  [&archive, this, &list](const auto & item) {
-                    if (fill_archive_lambda(archive)(item)) {
-                      const auto raw_list
-                        = archive.template get_entry_data<std::string>(
-                          "maplist");
-                      // archive::fl::get_all_entries(raw_list,0,0,0)
-                      std::stringstream ss{ raw_list };
-                      std::string       tmp{};
-                      while (std::getline(ss, tmp)) {
-                        while (!tmp.empty() && tmp.back() == '\r') {
-                          tmp.pop_back();
-                        }
-                        if (!tmp.empty()) {
-                          list.emplace_back(std::move(tmp));
-                        }
-                      }
-                      return true;
-                    }
-                    return false;
-                  });
+      (void)std::any_of(std::execution::seq,
+                        items.cbegin(),
+                        items.cend(),
+                        [&archive, this, &list](const auto &item) {
+                          if (fill_archive_lambda(archive)(item)) {
+                            const auto raw_list
+                              = archive.template get_entry_data<std::string>(
+                                "maplist");
+                            // archive::fl::get_all_entries(raw_list,0,0,0)
+                            std::stringstream ss{ raw_list };
+                            std::string       tmp{};
+                            while (std::getline(ss, tmp)) {
+                              while (!tmp.empty() && tmp.back() == '\r') {
+                                tmp.pop_back();
+                              }
+                              if (!tmp.empty()) {
+                                list.emplace_back(std::move(tmp));
+                              }
+                            }
+                            return true;
+                          }
+                          return false;
+                        });
       return list;
     }
   }
@@ -467,7 +467,8 @@ public:
     execute_with_nested(
       const std::initializer_list<std::string_view> &filename,
       const lambdaT                                  lambda,
-      const std::initializer_list<std::string_view> &nested_filename = {}) const
+      const std::initializer_list<std::string_view> &nested_filename = {},
+      bool                                           limit_once = false) const
   {
     if constexpr (!HasNested) {
       return;
@@ -475,22 +476,31 @@ public:
     else {
       FIFLFS<false> archive = {};
       const auto    items   = get_all_items_from_fl(filename);
-      std::for_each(
-        std::execution::seq,
-        items.cbegin(),
-        items.cend(),
-        [&lambda, &nested_filename, &archive, this](const auto &item) {
-          if (fill_archive_lambda(archive)(item)) {
-            if constexpr (executable_buffer_path<
-                            lambdaT> || executable_buffer_path_fi<lambdaT>) {
-              archive.execute_on(nested_filename, lambda);
-            }
-            else if constexpr (executable_fiflfs_sans_nested<lambdaT>) {
-              lambda(archive);
-            }
-            archive = {};
+      const auto    pFunction =
+        [&lambda, &nested_filename, &archive, this](const auto &item) -> bool {
+        if (fill_archive_lambda(archive)(item)) {
+          if constexpr (executable_common_sans_nested<lambdaT>) {
+            archive.execute_on(nested_filename, lambda);
           }
-        });
+          else if constexpr (executable_fiflfs_sans_nested<lambdaT>) {
+            lambda(std::move(archive));
+          }
+          archive = {};
+          return true;
+        }
+        return false;
+      };
+      if (!limit_once)
+        std::for_each(std::execution::seq,
+                      items.cbegin(),
+                      items.cend(),
+                      pFunction);
+      else {
+        (void)std::any_of(std::execution::seq,
+                          items.cbegin(),
+                          items.cend(),
+                          pFunction);
+      }
     }
   }
   template<FI_Like fiT>
