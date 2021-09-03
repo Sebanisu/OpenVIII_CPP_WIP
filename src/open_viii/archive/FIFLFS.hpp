@@ -395,11 +395,11 @@ public:
       std::any_of(std::execution::seq,
                   items.cbegin(),
                   items.cend(),
-                  [&archive, this, &list]() {
-                    if (fill_archive_lambda(archive)()) {
+                  [&archive, this, &list](const auto & item) {
+                    if (fill_archive_lambda(archive)(item)) {
                       const auto raw_list
                         = archive.template get_entry_data<std::string>(
-                          { "maplist" });
+                          "maplist");
                       // archive::fl::get_all_entries(raw_list,0,0,0)
                       std::stringstream ss{ raw_list };
                       std::string       tmp{};
