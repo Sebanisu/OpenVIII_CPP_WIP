@@ -214,6 +214,7 @@ public:
     if (bpp.bpp16()) {
       return width /= 2U;
     }
+    return 0U;
   }
 
   template<Color T>
