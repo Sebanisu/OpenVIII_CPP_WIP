@@ -383,7 +383,7 @@ public:
     for_each_sans_nested(results, process);
   }
   std::vector<std::string>
-    map_data()
+    map_data() const
   {
     if constexpr (!HasNested) {
       return {};
