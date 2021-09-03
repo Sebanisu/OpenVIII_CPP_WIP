@@ -382,7 +382,7 @@ public:
         };
     for_each_sans_nested(results, process);
   }
-  std::vector<std::string>
+  [[nodiscard]] std::vector<std::string>
     map_data() const
   {
     if constexpr (!HasNested) {
@@ -396,7 +396,7 @@ public:
                   items.cbegin(),
                   items.cend(),
                   [&archive, this, &list]() {
-                    if (fill_archive_lambda("", archive)()) {
+                    if (fill_archive_lambda(archive)()) {
                       const auto raw_list
                         = archive.template get_entry_data<std::string>(
                           { "maplist" });
@@ -420,11 +420,9 @@ public:
   }
 
   auto
-    fill_archive_lambda(
-      const std::initializer_list<std::string_view> &nested_filename,
-      FIFLFS<false>                                 &archive) const
+    fill_archive_lambda(FIFLFS<false> &archive) const
   {
-    return [this, &archive, &nested_filename](const auto &item) -> bool {
+    return [this, &archive](const auto &item) -> bool {
       const auto &[id, strVirtualPath] = item;
       const FI_Like auto    fi         = get_entry_by_index(id);
       std::filesystem::path virtualPath(strVirtualPath);
@@ -482,7 +480,7 @@ public:
         items.cbegin(),
         items.cend(),
         [&lambda, &nested_filename, &archive, this](const auto &item) {
-          if (fill_archive_lambda(nested_filename, archive)(item)) {
+          if (fill_archive_lambda(archive)(item)) {
             if constexpr (executable_buffer_path<
                             lambdaT> || executable_buffer_path_fi<lambdaT>) {
               archive.execute_on(nested_filename, lambda);
