@@ -28,7 +28,7 @@
 #include <utility>
 namespace open_viii::archive {
 
-template<bool>
+template<bool HasNested = false>
 struct FIFLFS;// forward declare for concepts.
 template<typename lambdaT>
 concept executable_buffer_path
@@ -52,6 +52,10 @@ concept path_or_range
   = std::convertible_to<srcT, std::filesystem::path> || std::ranges::
     contiguous_range<srcT>;
 
+template<typename lambdaT>
+concept executable_on_pair_of_int_string
+  = std::invocable<lambdaT, std::pair<unsigned int, std::string>>;
+
 enum class fiflfsT
 {
   none,
@@ -65,7 +69,7 @@ enum class TryAddT
   added_to_archive,
   archive_full
 };
-template<bool HasNested = false>
+template<bool HasNested>
 struct FIFLFS
 {
 private:
@@ -338,7 +342,7 @@ public:
                                         m_count,
                                         filename);
   }
-  template<executable_common_sans_nested lambdaT>
+  template<executable_on_pair_of_int_string lambdaT>
   void
     for_each_sans_nested(
       const std::vector<std::pair<unsigned int, std::string>> &results,
@@ -477,8 +481,8 @@ public:
         std::execution::seq,
         items.cbegin(),
         items.cend(),
-        [&lambda, &nested_filename, &archive, this]() {
-          if (fill_archive_lambda(nested_filename, archive)()) {
+        [&lambda, &nested_filename, &archive, this](const auto &item) {
+          if (fill_archive_lambda(nested_filename, archive)(item)) {
             if constexpr (executable_buffer_path<
                             lambdaT> || executable_buffer_path_fi<lambdaT>) {
               archive.execute_on(nested_filename, lambda);
