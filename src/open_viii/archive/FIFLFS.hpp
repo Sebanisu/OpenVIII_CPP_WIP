@@ -391,7 +391,7 @@ public:
     else {
       std::vector<std::string> list{};
       FIFLFS<false>            archive = {};
-      const auto               items   = get_all_items_from_fl("mapdata");
+      const auto               items   = get_all_items_from_fl({"mapdata"});
       std::any_of(std::execution::seq,
                   items.cbegin(),
                   items.cend(),
