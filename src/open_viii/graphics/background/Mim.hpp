@@ -184,7 +184,7 @@ public:
       m_image_buffer_bbp4(set_image_span_bpp4()),
       m_image_buffer_bbp16(set_image_span_bpp16())
   {}
-  Mim(const std::filesystem::path &path)
+  explicit Mim(const std::filesystem::path &path)
     : Mim(open_viii::tools::read_entire_file(path), path.string())
   {}
   [[nodiscard]] const auto &
