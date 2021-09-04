@@ -142,10 +142,23 @@ public:
       m_image_buffer_bbp4(set_image_span_bpp4()),
       m_image_buffer_bbp16(set_image_span_bpp16())
   {}
-  Mim(const Mim &) = delete;
+  Mim(const Mim &in_mim)
+    : m_buffer(in_mim.m_buffer), m_mim_type(in_mim.m_mim_type),
+      m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
+      m_image_buffer_bbp4(set_image_span_bpp4()),
+      m_image_buffer_bbp16(set_image_span_bpp16())
+  {}
   Mim &
-    operator=(const Mim &)
-    = delete;
+    operator=(const Mim &in_mim)
+  {
+    m_buffer             = in_mim.m_buffer;
+    m_mim_type           = in_mim.m_mim_type;
+    m_image_buffer       = set_image_span();
+    m_palette_buffer     = set_palette_span();
+    m_image_buffer_bbp4  = set_image_span_bpp4();
+    m_image_buffer_bbp16 = set_image_span_bpp16();
+    return *this;
+  }
   Mim &
     operator=(Mim &&in_mim)
   {
@@ -164,14 +177,14 @@ public:
    * @param buffer is the raw bytes. std::move into object.
    * @param name logo has a unique map type.
    */
-  explicit Mim(std::vector<char> &&buffer, std::string_view name = {})
+  Mim(std::vector<char> &&buffer, std::string_view name = {})
     : m_buffer(std::move(buffer)),
       m_mim_type(get_texture_type(std::ranges::size(m_buffer), name)),
       m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
       m_image_buffer_bbp4(set_image_span_bpp4()),
       m_image_buffer_bbp16(set_image_span_bpp16())
   {}
-  explicit Mim(const std::filesystem::path &path)
+  Mim(const std::filesystem::path &path)
     : Mim(open_viii::tools::read_entire_file(path), path.string())
   {}
   [[nodiscard]] const auto &
