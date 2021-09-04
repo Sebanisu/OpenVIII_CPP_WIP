@@ -79,4 +79,22 @@ void
 }
 void
   process_cam(const std::filesystem::path &);
+
+constexpr void interleave(std::weakly_incrementable auto o,
+             std::ranges::range auto &&...r) {
+  constexpr auto advance_all = [](std::copy_constructible auto &&...lambdas) {
+    while (std::ranges::any_of(std::array{lambdas()...}, std::identity())) {
+    }
+  };
+  advance_all([b = r.begin(), e = r.end(), &o]() mutable -> bool {
+    if (b != e) {
+      *o = *b;
+      (void)++o, ++b;
+      return true;
+    }
+    return false;
+  }...);
+}
+
 #endif// OPENVIII_CPP_WIP_DOUBLE_CAM_HPP
+
