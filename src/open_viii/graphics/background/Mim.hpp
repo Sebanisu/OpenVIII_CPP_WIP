@@ -30,12 +30,12 @@ namespace open_viii::graphics::background {
 struct Mim
 {
 private:
-  const std::vector<char>                            m_buffer{};
-  const MimType                                      m_mim_type{};
-  const std::span<const char>                        m_image_buffer{};
-  const std::span<const Color16<ColorLayoutT::ABGR>> m_palette_buffer{};
-  const std::span<const Bit4Values>                  m_image_buffer_bbp4{};
-  const std::span<const Color16<ColorLayoutT::ABGR>> m_image_buffer_bbp16{};
+  std::vector<char>                            m_buffer{};
+  MimType                                      m_mim_type{};
+  std::span<const char>                        m_image_buffer{};
+  std::span<const Color16<ColorLayoutT::ABGR>> m_palette_buffer{};
+  std::span<const Bit4Values>                  m_image_buffer_bbp4{};
+  std::span<const Color16<ColorLayoutT::ABGR>> m_image_buffer_bbp16{};
   [[nodiscard]] static const auto &
     clut_width() noexcept
   {
@@ -135,14 +135,28 @@ public:
   constexpr static auto EXT = std::string_view{ ".mim" };
   Mim()                     = default;
   ~Mim()                    = default;
-  Mim(Mim &&)               = delete;
-  Mim(const Mim &)          = delete;
+  Mim(Mim &&in_mim)
+    : m_buffer(std::move(in_mim.m_buffer)),
+      m_mim_type(std::move(in_mim.m_mim_type)),
+      m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
+      m_image_buffer_bbp4(set_image_span_bpp4()),
+      m_image_buffer_bbp16(set_image_span_bpp16())
+  {}
+  Mim(const Mim &) = delete;
   Mim &
     operator=(const Mim &)
     = delete;
   Mim &
-    operator=(Mim &&)
-    = delete;
+    operator=(Mim &&in_mim)
+  {
+    m_buffer             = std::move(in_mim.m_buffer);
+    m_mim_type           = std::move(in_mim.m_mim_type);
+    m_image_buffer       = set_image_span();
+    m_palette_buffer     = set_palette_span();
+    m_image_buffer_bbp4  = set_image_span_bpp4();
+    m_image_buffer_bbp16 = set_image_span_bpp16();
+    return *this;
+  }
   /**
    * Load up the raw pixel data, 4bpp, 8bpp or 16bpp Needs at least basename to
    * check or it'll use size of buffer to find type 1 or 2. Type is used to know
