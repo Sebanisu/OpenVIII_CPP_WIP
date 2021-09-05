@@ -13,6 +13,8 @@
 #ifndef VIIIARCHIVE_LANGCOMMON_HPP
 #define VIIIARCHIVE_LANGCOMMON_HPP
 #include "LangT.hpp"
+#include <ranges>
+#include <string_view>
 namespace open_viii {
 /**
  * Lang Common for conversion from enum to 2 letter language code
@@ -27,7 +29,7 @@ namespace LangCommon {
       lambda(static_cast<LangT>(i));
     }
   }
-  static consteval auto
+  [[nodiscard]] consteval auto
     to_array()
   {
     using u = std::underlying_type_t<LangT>;
@@ -50,7 +52,7 @@ namespace LangCommon {
    * @tparam langVal
    * @return
    */
-  constexpr std::string_view
+  [[nodiscard]] constexpr std::string_view
     to_string(LangT langVal)
   {
     if (langVal == LangT::en) {
@@ -74,12 +76,38 @@ namespace LangCommon {
     return EMPTY;
   }
   /**
+   * Get an array of string views
+   */
+  [[nodiscard]] consteval auto
+    to_string_array()
+  {
+    auto                                          coos = to_array();
+    std::array<std::string_view, std::size(coos)> coos_c_str{};
+    std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
+      return to_string(coo);// I hope these are null terminated.
+    });
+    return coos_c_str;
+  }
+  /**
+   * Get an array of const char *
+   */
+  [[nodiscard]] consteval auto
+    to_c_str_array()
+  {
+    auto                                      coos = to_array();
+    std::array<const char *, std::size(coos)> coos_c_str{};
+    std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
+      return to_string(coo).data();// I hope these are null terminated.
+    });
+    return coos_c_str;
+  }
+  /**
    * from langT to string
    * @tparam langVal
    * @return
    */
   template<LangT langVal>
-  [[maybe_unused]] [[nodiscard]] static consteval std::string_view
+  [[nodiscard]] static consteval std::string_view
     to_string() noexcept
   {
     if constexpr (langVal == LangT::en) {
@@ -109,7 +137,7 @@ namespace LangCommon {
    * @param str_val
    * @return
    */
-  [[maybe_unused]] [[nodiscard]] constexpr LangT
+  [[nodiscard]] constexpr LangT
     from_string(std::string_view str_val) noexcept
   {
     if (str_val.size() == 2) {
