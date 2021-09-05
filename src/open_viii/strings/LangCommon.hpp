@@ -20,6 +20,16 @@ namespace open_viii {
 struct LangCommon
 {
 public:
+  static constexpr void
+    for_each_langT(auto &&lambda)
+  {
+    for (auto i = LangT::begin; i != LangT::end; [&i]() {
+           using u = std::underlying_type_t<LangT>;
+           i       = static_cast<LangT>(static_cast<u>(i) + 1);
+         }) {
+      lambda(i);
+    }
+  }
   static constexpr std::string_view EN{ "en" };
   static constexpr std::string_view FR{ "fr" };
   static constexpr std::string_view DE{ "de" };
