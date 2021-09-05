@@ -30,12 +30,8 @@ namespace open_viii::graphics::background {
 struct Mim
 {
 private:
-  std::vector<char>                            m_buffer{};
-  MimType                                      m_mim_type{};
-  std::span<const char>                        m_image_buffer{};
-  std::span<const Color16<ColorLayoutT::ABGR>> m_palette_buffer{};
-  std::span<const Bit4Values>                  m_image_buffer_bbp4{};
-  std::span<const Color16<ColorLayoutT::ABGR>> m_image_buffer_bbp16{};
+  std::vector<char> m_buffer{};
+  MimType           m_mim_type{};
   [[nodiscard]] static const auto &
     clut_width() noexcept
   {
@@ -69,6 +65,7 @@ private:
   std::span<const Bit4Values>
     set_image_span_bpp4() const
   {
+    const auto m_image_buffer = set_image_span();
     return { reinterpret_cast<const Bit4Values *>(
                std::ranges::data(m_image_buffer)),
              std::ranges::size(m_image_buffer) / sizeof(Bit4Values) };
@@ -76,6 +73,7 @@ private:
   std::span<const Color16<ColorLayoutT::ABGR>>
     set_image_span_bpp16() const
   {
+    const auto m_image_buffer = set_image_span();
     return { reinterpret_cast<const Color16<ColorLayoutT::ABGR> *>(
                std::ranges::data(m_image_buffer)),
              std::ranges::size(m_image_buffer)
@@ -84,7 +82,8 @@ private:
   [[nodiscard]] Color16<ColorLayoutT::ABGR>
     safe_get_color_from_palette(size_t key) const
   {
-    auto size1 = std::ranges::size(m_palette_buffer);
+    const auto m_palette_buffer = set_palette_span();
+    auto       size1            = std::ranges::size(m_palette_buffer);
     if (key < size1) {
       return m_palette_buffer[key];
     }
@@ -98,6 +97,7 @@ private:
   [[nodiscard]] std::vector<Color16<ColorLayoutT::ABGR>>
     get_image_bpp8(const uint8_t &palette) const
   {
+    const auto                               m_image_buffer = set_image_span();
     std::vector<Color16<ColorLayoutT::ABGR>> out{};
     out.reserve(std::ranges::size(m_image_buffer));
     std::ranges::transform(
@@ -112,6 +112,7 @@ private:
   [[nodiscard]] std::vector<Color16<ColorLayoutT::ABGR>>
     get_image_bpp4(const uint8_t &palette) const
   {
+    const auto m_image_buffer_bbp4 = set_image_span_bpp4();
     std::vector<Color16<ColorLayoutT::ABGR>> out{};
     out.reserve(std::ranges::size(m_image_buffer_bbp4) * 2);
     std::ranges::for_each(m_image_buffer_bbp4,
@@ -135,41 +136,6 @@ public:
   constexpr static auto EXT = std::string_view{ ".mim" };
   Mim()                     = default;
   ~Mim()                    = default;
-  Mim(Mim &&in_mim)
-    : m_buffer(std::move(in_mim.m_buffer)),
-      m_mim_type(std::move(in_mim.m_mim_type)),
-      m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
-      m_image_buffer_bbp4(set_image_span_bpp4()),
-      m_image_buffer_bbp16(set_image_span_bpp16())
-  {}
-  Mim(const Mim &in_mim)
-    : m_buffer(in_mim.m_buffer), m_mim_type(in_mim.m_mim_type),
-      m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
-      m_image_buffer_bbp4(set_image_span_bpp4()),
-      m_image_buffer_bbp16(set_image_span_bpp16())
-  {}
-  Mim &
-    operator=(const Mim &in_mim)
-  {
-    m_buffer             = in_mim.m_buffer;
-    m_mim_type           = in_mim.m_mim_type;
-    m_image_buffer       = set_image_span();
-    m_palette_buffer     = set_palette_span();
-    m_image_buffer_bbp4  = set_image_span_bpp4();
-    m_image_buffer_bbp16 = set_image_span_bpp16();
-    return *this;
-  }
-  Mim &
-    operator=(Mim &&in_mim)
-  {
-    m_buffer             = std::move(in_mim.m_buffer);
-    m_mim_type           = std::move(in_mim.m_mim_type);
-    m_image_buffer       = set_image_span();
-    m_palette_buffer     = set_palette_span();
-    m_image_buffer_bbp4  = set_image_span_bpp4();
-    m_image_buffer_bbp16 = set_image_span_bpp16();
-    return *this;
-  }
   /**
    * Load up the raw pixel data, 4bpp, 8bpp or 16bpp Needs at least basename to
    * check or it'll use size of buffer to find type 1 or 2. Type is used to know
@@ -179,10 +145,7 @@ public:
    */
   Mim(std::vector<char> &&buffer, std::string_view name = {})
     : m_buffer(std::move(buffer)),
-      m_mim_type(get_texture_type(std::ranges::size(m_buffer), name)),
-      m_image_buffer(set_image_span()), m_palette_buffer(set_palette_span()),
-      m_image_buffer_bbp4(set_image_span_bpp4()),
-      m_image_buffer_bbp16(set_image_span_bpp16())
+      m_mim_type(get_texture_type(std::ranges::size(m_buffer), name))
   {}
   explicit Mim(const std::filesystem::path &path)
     : Mim(open_viii::tools::read_entire_file(path), path.string())
@@ -260,6 +223,7 @@ public:
                                  });
     };
     if (dump_palette) {
+      const auto m_palette_buffer = set_palette_span();
       convert_color(m_palette_buffer);
     }
     else if (bpp.bpp4()) {
@@ -269,6 +233,7 @@ public:
       convert_color(get_image_bpp8(palette));
     }
     else if (bpp.bpp16()) {
+      const auto m_image_buffer_bbp16 = set_image_span_bpp16();
       convert_color(m_image_buffer_bbp16);
     }
     return colors;
@@ -293,6 +258,7 @@ public:
    // the colors.
     const auto path = std::filesystem::path(filename);
     if (dump_palette) {
+      const auto m_palette_buffer = set_palette_span();
       if constexpr (std::invocable<lambdaT,
                                    std::span<const Color16<ColorLayoutT::ABGR>>,
                                    std::size_t,
@@ -363,6 +329,7 @@ public:
                                    std::size_t,
                                    std::size_t,
                                    std::string>) {
+        const auto m_image_buffer_bbp16 = set_image_span_bpp16();
         lambda(m_image_buffer_bbp16,
                (width),
                std::ranges::size(m_image_buffer_bbp16) / width,
@@ -371,6 +338,7 @@ public:
       else if (std::invocable<lambdaT,
                               std::span<const Color16<ColorLayoutT::ABGR>>,
                               std::size_t>) {
+        const auto m_image_buffer_bbp16 = set_image_span_bpp16();
         lambda(m_image_buffer_bbp16, width);
       }
     }
@@ -404,6 +372,7 @@ public:
     auto texture_page_offset = static_cast<std::uint32_t>(offset_interval);
     if (depth.bpp8()) {
       texture_page_offset *= texture_id;
+      const auto m_image_buffer = set_image_span();
       return safe_get_color_from_palette(get_palette_key(
         static_cast<std::uint8_t>(
           m_image_buffer[x + texture_page_offset + (y * width)]),
@@ -411,6 +380,7 @@ public:
     }
     if (depth.bpp4()) {
       texture_page_offset *= 2U * texture_id;
+      const auto       m_image_buffer_bbp4 = set_image_span_bpp4();
       const Bit4Values pair
         = m_image_buffer_bbp4[(x + texture_page_offset) / 2U + (y * width)];
       if (x % 2U == 0) {
@@ -424,6 +394,7 @@ public:
       width /= 2U;
       texture_page_offset /= 2U;
       texture_page_offset *= texture_id;
+      const auto m_image_buffer_bbp16 = set_image_span_bpp16();
       return m_image_buffer_bbp16[x + texture_page_offset + (y * width)];
     }
     return {};
