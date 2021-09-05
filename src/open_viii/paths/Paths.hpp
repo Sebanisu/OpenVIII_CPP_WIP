@@ -55,12 +55,18 @@ public:
     std::ranges::for_each(get(), [&lambda](const std::string &path) {
       const auto      fs_path = std::filesystem::path(path);
       std::error_code ec{};
-      if (std::filesystem::exists(fs_path, ec)) {
-        lambda(fs_path);
-      }
+      const bool      found = std::filesystem::exists(fs_path, ec);
       if (ec) {
         std::cerr << ec.message() << std::endl;
         ec.clear();
+      }
+      const bool is_dir = std::filesystem::is_directory(fs_path, ec);
+      if (ec) {
+        std::cerr << ec.message() << std::endl;
+        ec.clear();
+      }
+      if (found && is_dir) {
+        lambda(fs_path);
       }
     });
   }
