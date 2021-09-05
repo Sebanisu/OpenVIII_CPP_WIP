@@ -331,6 +331,24 @@ public:
     const auto &[id, path] = get_entry_id_and_path(filename);
     return get_entry_data<outT>(get_entry_by_index(id));
   }
+
+  template<std::ranges::contiguous_range outT = std::vector<char>>
+  [[nodiscard]] outT
+    get_entry_data(const std::initializer_list<std::string_view> &filenames)
+  {
+    using pair = decltype(get_entry_id_and_path(""));
+    pair tmp{};
+    bool found = std::ranges::any_of(filenames, [&tmp, this](std::string_view str) {
+      tmp = get_entry_id_and_path(str);
+      return tmp != pair{};
+    });
+    if (found) {
+      const auto &[id, path] = tmp;
+      return get_entry_data<outT>(get_entry_by_index(id));
+    }
+    return {};
+  }
+
   [[nodiscard]] std::vector<std::pair<unsigned int, std::string>>
     get_vector_of_indexes_and_files(
       const std::initializer_list<std::string_view> &filename) const
