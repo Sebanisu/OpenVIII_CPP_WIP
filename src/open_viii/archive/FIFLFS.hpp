@@ -334,7 +334,7 @@ public:
 
   template<std::ranges::contiguous_range outT = std::vector<char>>
   [[nodiscard]] outT
-    get_entry_data(const std::initializer_list<std::string_view> &filenames)
+    get_entry_data(const std::initializer_list<std::string_view> &filenames) const
   {
     using pair = decltype(get_entry_id_and_path(""));
     pair tmp{};
