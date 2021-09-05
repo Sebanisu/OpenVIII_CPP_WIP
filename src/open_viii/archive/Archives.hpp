@@ -14,8 +14,8 @@
 #define VIIIARCHIVE_ARCHIVES_HPP
 #include "ArchivesTypesT.hpp"
 #include "FIFLFS.hpp"
-#include "ZZZ.hpp"
 #include "open_viii/strings/LangCommon.hpp"
+#include "ZZZ.hpp"
 #include <string_view>
 #include <type_traits>
 #include <variant>
@@ -130,7 +130,7 @@ private:
    */
   template<FI_Like fiT>
   bool
-    try_add(const ArchiveTypeT &         archive_type,
+    try_add(const ArchiveTypeT          &archive_type,
             fiT                          fi,
             const std::filesystem::path &path,
             const std::filesystem::path &nested_path)
@@ -270,7 +270,7 @@ private:
   template<bool nested = true, typename lambdaT>
   requires(valid_execute_on_lambda<lambdaT>) auto get_execute_on_lambda(
     const std::initializer_list<std::string_view> &filename,
-    const lambdaT &                                lambda) const
+    const lambdaT                                 &lambda) const
   {
     return [&filename, &lambda](const auto &archive) -> bool {
       archive.execute_on(filename, lambda);
@@ -446,6 +446,11 @@ public:
     return get_fiflfs_entries(m_field, nested_archive);
   }
   /**
+   * This will be in an invalid state but it's so I can default construct and
+   * move in valid values later.
+   */
+  Archives() = default;
+  /**
    * Preloads all archives in the path.
    * @param path that contains FIFLFS files or ZZZ files.
    */
@@ -548,7 +553,7 @@ public:
   template<bool nested = true, typename lambdaT>
   requires(valid_execute_on_lambda<lambdaT>) bool execute_on(
     const std::initializer_list<std::string_view> &filename,
-    const lambdaT &                                lambda) const
+    const lambdaT                                 &lambda) const
   {
     return loop(get_execute_on_lambda<nested>(filename, lambda));
   }
@@ -564,7 +569,7 @@ public:
   template<bool nested = true, ArchiveTypeT... aT, typename lambdaT>
   requires((valid_execute_on_lambda<lambdaT>)&&sizeof...(aT)
            > 0) bool execute_on(const std::initializer_list<std::string_view>
-                                  &            filename,
+                                              &filename,
                                 const lambdaT &lambda) const
   {
     return specify<aT...>(get_execute_on_lambda<nested>(filename, lambda));
