@@ -195,7 +195,7 @@ static void
   const auto  element_size = sizeof(decltype(*std::ranges::data(item)));
   // std::ranges::size(span) / element_size
   std::size_t size_of_span = std::ranges::size(span);
-  item.resize(std::min(size, element_size * size_of_span));
+  item.resize((std::min)(size, element_size * size_of_span));
   if (size != 0) {
     memcpy(std::ranges::data(item),
            std::ranges::data(span),

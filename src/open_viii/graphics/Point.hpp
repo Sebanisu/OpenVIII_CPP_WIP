@@ -164,9 +164,9 @@ public:
  */
 template<Number dimT>
 [[nodiscard]] constexpr static Point<dimT>
-  max(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
+  (max)(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
 {
-  return { std::max(rhs.x(), lhs.x()), std::max(rhs.y(), lhs.y()) };
+  return { (std::max)(rhs.x(), lhs.x()), (std::max)(rhs.y(), lhs.y()) };
 }
 /**
  * compares two points for min.
@@ -175,9 +175,9 @@ template<Number dimT>
  */
 template<Number dimT>
 [[nodiscard]] constexpr static Point<dimT>
-  min(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
+  (min)(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
 {
-  return { std::min(rhs.x(), lhs.x()), std::min(rhs.y(), lhs.y()) };
+  return { (std::min)(rhs.x(), lhs.x()), (std::min)(rhs.y(), lhs.y()) };
 }
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_POINT_HPP

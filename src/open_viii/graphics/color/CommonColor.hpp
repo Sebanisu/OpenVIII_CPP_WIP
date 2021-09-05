@@ -99,13 +99,13 @@ public:
             &&                            operator[](blue_index) == 0)
           return 0U;
         else
-          return std::numeric_limits<std::uint8_t>::max();
+          return (std::numeric_limits<std::uint8_t>::max)();
       }
       else
         return operator[](alpha_index);
     }
     else {
-      return std::numeric_limits<std::uint8_t>::max();
+      return (std::numeric_limits<std::uint8_t>::max)();
     }
   }
   friend std::ostream &

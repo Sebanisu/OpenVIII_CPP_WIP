@@ -54,7 +54,7 @@ static consteval retT
     return static_cast<retT>(flip_bits<unsigned_retT>(i));
   }
   else {
-    constexpr auto max = std::numeric_limits<retT>::max();
+    constexpr auto max = (std::numeric_limits<retT>::max)();
     return static_cast<retT>(max - i);
   }
 }

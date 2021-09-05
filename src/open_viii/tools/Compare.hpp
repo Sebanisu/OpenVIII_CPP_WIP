@@ -103,7 +103,7 @@ static_assert(!i_starts_with(std::string_view("12345"), std::string_view("5")));
 static constexpr auto i_ends_with
   = [](const std::string_view haystack, const std::string_view ending) -> bool {
   return i_starts_with(haystack.substr(std::ranges::size(haystack)
-                                       - std::min(std::ranges::size(haystack),
+                                       - (std::min)(std::ranges::size(haystack),
                                                   std::ranges::size(ending))),
                        ending);
 };

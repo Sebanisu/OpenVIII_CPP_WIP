@@ -101,7 +101,7 @@ static constexpr auto EXT = std::string_view(".fl");
  * @return 0 or count or limit;
  */
 [[nodiscard]] [[maybe_unused]] constexpr std::size_t
-  get_max(const std::size_t &count, const std::size_t &limit)
+  (get_max)(const std::size_t &count, const std::size_t &limit)
 {
   std::array<std::size_t, 2U> args = { count, limit };
   std::ranges::sort(args);
@@ -168,7 +168,7 @@ void
 {
   std::vector<std::pair<std::uint32_t, std::string>> vector{};
   cont.seek(static_cast<std::intmax_t>(offset), std::ios::beg);
-  std::size_t max = get_max(count, limit);
+  std::size_t max = (get_max)(count, limit);
   if (max != 0U) {
     vector.reserve(max);
   }

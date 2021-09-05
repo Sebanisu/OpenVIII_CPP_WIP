@@ -65,7 +65,7 @@ public:
       std::cout << sz16 << '\n';
       const size_t max_bytes = std::ranges::size(adj) / sz16;
       const size_t area      = m_rectangle.area();
-      size_t       min_size  = std::min(max_bytes, area) * sz16;
+      size_t       min_size  = (std::min)(max_bytes, area) * sz16;
       if (min_size == 0) {
         m_rectangle = {};
         return;

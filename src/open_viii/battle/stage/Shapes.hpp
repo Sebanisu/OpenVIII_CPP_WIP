@@ -40,7 +40,7 @@ template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
   max_uv(const shapeT &shape)
 {
   return for_each_uv(shape, [](const pointT &a, const pointT &b) {
-    return graphics::max(a, b);
+    return (graphics::max)(a, b);
   });
 }
 /**
@@ -53,7 +53,7 @@ template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
   min_uv(const shapeT &shape)
 {
   return for_each_uv(shape, [](const pointT &a, const pointT &b) {
-    return graphics::min(a, b);
+    return (graphics::min)(a, b);
   });
 }
 /**

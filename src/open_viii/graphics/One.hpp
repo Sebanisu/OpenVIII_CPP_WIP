@@ -50,7 +50,7 @@ private:
     // because these tim can be in any order.
     // todo. maybe have a way to pop items from the TIM_STARTS that don't
     // have at least 1 match.
-    return std::ranges::min(
+    return (std::ranges::min)(
       TIM_STARTS | std::ranges::views::transform([&buffer](const auto &start) {
         return tools::search(buffer, start);
       }));

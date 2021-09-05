@@ -31,7 +31,7 @@ public:
       }
       auto val = tools::read_val<uint32_t>(buffer);
       if (val > std::ranges::size(buffer)
-          || val == std::numeric_limits<uint32_t>::max()) {
+          || val == (std::numeric_limits<uint32_t>::max)()) {
         break;
       }
       buffer = buffer.subspan(sizeof(uint32_t));

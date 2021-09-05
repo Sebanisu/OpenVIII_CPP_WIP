@@ -43,7 +43,7 @@ private:
     auto tile = this_type{};
     std::memcpy(&tile,
                 std::data(buffer),
-                std::min(sizeof(tileT), std::size(buffer)));
+                (std::min)(sizeof(tileT), std::size(buffer)));
     return tile;
   }
 

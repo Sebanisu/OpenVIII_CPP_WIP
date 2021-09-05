@@ -236,7 +236,7 @@ public:
    * Red Max
    */
   [[maybe_unused]] [[nodiscard]] auto
-    red_max() const noexcept
+    (red_max)() const noexcept
   {
     return m_red_max;
   }
@@ -244,7 +244,7 @@ public:
    * Green Max
    */
   [[maybe_unused]] [[nodiscard]] auto
-    green_max() const noexcept
+    (green_max)() const noexcept
   {
     return m_green_max;
   }
@@ -252,7 +252,7 @@ public:
    * Blue Max
    */
   [[maybe_unused]] [[nodiscard]] auto
-    blue_max() const noexcept
+    (blue_max)() const noexcept
   {
     return m_blue_max;
   }
@@ -260,7 +260,7 @@ public:
    * Alpha Max
    */
   [[maybe_unused]] [[nodiscard]] auto
-    alpha_max() const noexcept
+    (alpha_max)() const noexcept
   {
     return m_alpha_max;
   }
