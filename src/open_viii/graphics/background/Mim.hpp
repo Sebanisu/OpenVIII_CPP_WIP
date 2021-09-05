@@ -143,7 +143,8 @@ public:
    * @param buffer is the raw bytes. std::move into object.
    * @param name logo has a unique map type.
    */
-  Mim(std::vector<char> &&buffer, std::string_view name = {})
+  template<typename T>
+  Mim(T &&buffer, std::string_view name)
     : m_buffer(std::move(buffer)),
       m_mim_type(get_texture_type(std::ranges::size(m_buffer), name))
   {}
