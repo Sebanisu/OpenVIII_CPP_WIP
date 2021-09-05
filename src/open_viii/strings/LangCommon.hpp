@@ -32,8 +32,36 @@ public:
    * @tparam langVal
    * @return
    */
+  static constexpr std::string_view
+    to_string(LangT langVal)
+  {
+    if (langVal == LangT::en) {
+      return EN;
+    }
+    if (langVal == LangT::fr) {
+      return FR;
+    }
+    if (langVal == LangT::de) {
+      return DE;
+    }
+    if (langVal == LangT::it) {
+      return IT;
+    }
+    if (langVal == LangT::es) {
+      return ES;
+    }
+    if (langVal == LangT::jp) {
+      return JP;
+    }
+    return EMPTY;
+  }
+  /**
+   * from langT to string
+   * @tparam langVal
+   * @return
+   */
   template<LangT langVal>
-  [[maybe_unused]] [[nodiscard]] static constexpr std::string_view
+  [[maybe_unused]] [[nodiscard]] static consteval std::string_view
     to_string() noexcept
   {
     if constexpr (langVal == LangT::en) {
