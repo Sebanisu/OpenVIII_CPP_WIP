@@ -17,17 +17,14 @@ namespace open_viii {
 /**
  * Lang Common for conversion from enum to 2 letter language code
  */
-struct LangCommon
-{
-public:
-  static constexpr void
+namespace LangCommon {
+  constexpr void
     for_each_langT(auto &&lambda)
   {
-    for (auto i = LangT::begin; i != LangT::end; [&i]() {
-           using u = std::underlying_type_t<LangT>;
-           i       = static_cast<LangT>(static_cast<u>(i) + 1);
-         }) {
-      lambda(i);
+    using u = std::underlying_type_t<LangT>;
+    for (auto i = static_cast<u>(LangT::begin); i != static_cast<u>(LangT::end);
+         ++i) {
+      lambda(static_cast<LangT>(i));
     }
   }
   static consteval auto
@@ -35,11 +32,10 @@ public:
   {
     using u = std::underlying_type_t<LangT>;
     std::array<LangT, static_cast<u>(LangT::end)> arr = {};
-    for_each_langT([i = arr.begin()](auto coo)mutable
-                   {
-                     *i = coo;
-                     ++i;
-                   });
+    for_each_langT([i = arr.begin()](auto coo) mutable {
+      *i = coo;
+      ++i;
+    });
     return arr;
   }
   static constexpr std::string_view EN{ "en" };
@@ -48,13 +44,13 @@ public:
   static constexpr std::string_view IT{ "it" };
   static constexpr std::string_view JP{ "jp" };
   static constexpr std::string_view ES{ "es" };
-  static constexpr std::string_view EMPTY{ "" };
+  static constexpr std::string_view EMPTY{};
   /**
    * from langT to string
    * @tparam langVal
    * @return
    */
-  static constexpr std::string_view
+  constexpr std::string_view
     to_string(LangT langVal)
   {
     if (langVal == LangT::en) {
@@ -113,7 +109,7 @@ public:
    * @param str_val
    * @return
    */
-  [[maybe_unused]] [[nodiscard]] static constexpr LangT
+  [[maybe_unused]] [[nodiscard]] constexpr LangT
     from_string(std::string_view str_val) noexcept
   {
     if (str_val.size() == 2) {
@@ -136,8 +132,9 @@ public:
         return LangT::jp;
       }
     }
-    exit(1);
+    return LangT::end;
   }
-};
+}// namespace LangCommon
+static_assert(!LangCommon::to_array().empty());
 }// namespace open_viii
 #endif// VIIIARCHIVE_LANGCOMMON_HPP
