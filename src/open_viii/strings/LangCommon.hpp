@@ -30,6 +30,18 @@ public:
       lambda(i);
     }
   }
+  static consteval auto
+    to_array()
+  {
+    using u = std::underlying_type_t<LangT>;
+    std::array<LangT, static_cast<u>(LangT::end)> arr = {};
+    for_each_langT([i = arr.begin()](auto coo)mutable
+                   {
+                     *i = coo;
+                     ++i;
+                   });
+    return arr;
+  }
   static constexpr std::string_view EN{ "en" };
   static constexpr std::string_view FR{ "fr" };
   static constexpr std::string_view DE{ "de" };
