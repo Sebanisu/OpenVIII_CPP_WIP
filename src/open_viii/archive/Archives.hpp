@@ -445,7 +445,6 @@ public:
   {
     return get_fiflfs_entries(m_field, nested_archive);
   }
-  Archives() = delete;
   /**
    * Preloads all archives in the path.
    * @param path that contains FIFLFS files or ZZZ files.
