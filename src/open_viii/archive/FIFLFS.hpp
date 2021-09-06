@@ -334,14 +334,16 @@ public:
 
   template<std::ranges::contiguous_range outT = std::vector<char>>
   [[nodiscard]] outT
-    get_entry_data(const std::initializer_list<std::string_view> &filenames) const
+    get_entry_data(
+      const std::initializer_list<std::string_view> &filenames) const
   {
     using pair = decltype(get_entry_id_and_path(""));
     pair tmp{};
-    bool found = std::ranges::any_of(filenames, [&tmp, this](std::string_view str) {
-      tmp = get_entry_id_and_path(str);
-      return tmp != pair{};
-    });
+    bool found
+      = std::ranges::any_of(filenames, [&tmp, this](std::string_view str) {
+          tmp = get_entry_id_and_path(str);
+          return tmp != pair{};
+        });
     if (found) {
       const auto &[id, path] = tmp;
       return get_entry_data<outT>(get_entry_by_index(id));
@@ -447,7 +449,8 @@ public:
       const TryAddT         retVal = [&]() {
         if (fi.compression_type() == CompressionTypeT::none) {
           return archive.try_add(
-                    FileData(m_fs.offset() + fi.offset(), fi.uncompressed_size()),
+                    FileData(static_cast<unsigned long>(m_fs.offset() + fi.offset()),
+                             fi.uncompressed_size()),
                     m_fs.path(),
                     virtualPath);
         }
@@ -562,7 +565,8 @@ public:
     }
     if (fi.compression_type() == CompressionTypeT::none) {
       auto localRetVal = archive.try_add(
-        FileData(source.fs().offset() + fi.offset(), fi.uncompressed_size()),
+        FileData(static_cast<unsigned long>(source.fs().offset() + fi.offset()),
+                 static_cast<unsigned int>(fi.uncompressed_size())),
         source.fs().path(),
         virtualPath);
       //        if (localRetVal != TryAddT::not_part_of_archive) {
