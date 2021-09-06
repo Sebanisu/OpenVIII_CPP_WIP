@@ -565,8 +565,8 @@ public:
     }
     if (fi.compression_type() == CompressionTypeT::none) {
       auto localRetVal = archive.try_add(
-        FileData(static_cast<unsigned long>(source.fs().offset() + fi.offset()),
-                 static_cast<unsigned int>(fi.uncompressed_size())),
+        FileData(source.fs().offset() + fi.offset(),
+                 fi.uncompressed_size()),
         source.fs().path(),
         virtualPath);
       //        if (localRetVal != TryAddT::not_part_of_archive) {

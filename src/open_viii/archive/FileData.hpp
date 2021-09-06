@@ -47,15 +47,17 @@ public:
    * @param offset path to
    * @param size
    */
-  [[maybe_unused]] FileData(std::string         filename,
-                            const unsigned long offset,
-                            unsigned int        size)
+  [[maybe_unused]] FileData(decltype(m_filename)              filename,
+                            const std::unsigned_integral auto offset,
+                            const std::unsigned_integral auto size)
     : m_filename(tl::string::replace_slashes(std::move(filename))),
-      m_offset(offset), m_size(size)
+      m_offset(static_cast<decltype(m_offset)>(offset)),
+      m_size(static_cast<decltype(m_size)>(size))
   {
     tl::string::replace_slashes(m_filename);
   }
-  [[maybe_unused]] FileData(const unsigned long offset, unsigned int size)
+  [[maybe_unused]] FileData(const std::unsigned_integral auto offset,
+                            const std::unsigned_integral auto size)
     : FileData(std::string(), offset, size)
   {}
   [[nodiscard]] bool
@@ -63,7 +65,8 @@ public:
   {
     return m_size == 0 || m_filename.empty();
   }
-  explicit FileData(tl::read::input input, const std::uint32_t &string_length)
+  explicit FileData(tl::read::input                   input,
+                    const std::unsigned_integral auto string_length)
     : m_filename(tl::string::replace_slashes(
       input.output<decltype(m_filename)>(std::string(string_length, '\0')))),
       m_offset(input.output<decltype(m_offset)>()),
@@ -95,7 +98,7 @@ public:
   template<FI_Like fiT>
   requires(!std::is_same_v<fiT, FileData>) explicit FileData(
     std::string filename,
-    const fiT & fi)
+    const fiT  &fi)
     : m_filename(tl::string::replace_slashes(std::move(filename))),
       m_offset{ static_cast<decltype(m_offset)>(fi.offset()) }, m_size{
         static_cast<decltype(m_size)>(fi.uncompressed_size())
