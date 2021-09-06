@@ -61,7 +61,7 @@ C\test5\test6\)"s);
     "get_max"_test = [] {
       static const auto check =
         [](std::size_t count, std::size_t limit, std::size_t expected) {
-          expect(eq(open_viii::archive::fl::get_max(count, limit), expected));
+          expect(eq((open_viii::archive::fl::get_max)(count, limit), expected));
         };
       check(0U, 0U, 0U);
       check(0U, 1U, 1U);

@@ -101,7 +101,7 @@ static constexpr auto EXT = std::string_view(".fl");
  * @return 0 or count or limit;
  */
 [[nodiscard]] [[maybe_unused]] constexpr std::size_t
-  (get_max)(const std::size_t &count, const std::size_t &limit)
+  get_max(const std::size_t &count, const std::size_t &limit)
 {
   std::array<std::size_t, 2U> args = { count, limit };
   std::ranges::sort(args);
@@ -159,12 +159,12 @@ void
  */
 [[nodiscard]] [[maybe_unused]] std::vector<
   std::pair<std::uint32_t, std::string>>
-  get_all_entries(const tl::read::input &                        cont,
-                  const size_t &                                 offset,
-                  const size_t &                                 size   = 0U,
-                  const size_t &                                 count  = 0U,
+  get_all_entries(const tl::read::input                         &cont,
+                  const size_t                                  &offset,
+                  const size_t                                  &size   = 0U,
+                  const size_t                                  &count  = 0U,
                   const std::initializer_list<std::string_view> &needle = {},
-                  const size_t &                                 limit  = 0U)
+                  const size_t                                  &limit  = 0U)
 {
   std::vector<std::pair<std::uint32_t, std::string>> vector{};
   cont.seek(static_cast<std::intmax_t>(offset), std::ios::beg);
@@ -196,12 +196,12 @@ void
 }
 // Get all entries from the FL file sorted and cleaned.
 [[nodiscard]] [[maybe_unused]] auto
-  get_all_entries(const std::filesystem::path &                  path,
-                  const size_t &                                 offset,
-                  const size_t &                                 size   = 0U,
-                  const size_t &                                 count  = 0U,
+  get_all_entries(const std::filesystem::path                   &path,
+                  const size_t                                  &offset,
+                  const size_t                                  &size   = 0U,
+                  const size_t                                  &count  = 0U,
                   const std::initializer_list<std::string_view> &needle = {},
-                  const size_t &                                 limit  = 0U)
+                  const size_t                                  &limit  = 0U)
 {
 
   std::vector<std::pair<std::uint32_t, std::string>> vector{};
@@ -220,12 +220,12 @@ void
 
 [[nodiscard]] [[maybe_unused]] std::vector<
   std::pair<std::uint32_t, std::string>>
-  get_all_entries(const std::string &                            data,
-                  const size_t &                                 offset,
-                  const size_t &                                 size,
-                  const size_t &                                 count,
+  get_all_entries(const std::string                             &data,
+                  const size_t                                  &offset,
+                  const size_t                                  &size,
+                  const size_t                                  &count,
                   const std::initializer_list<std::string_view> &needle,
-                  const size_t &                                 limit)
+                  const size_t                                  &limit)
 {
   return get_all_entries(tl::read::input(data, true),
                          offset,
@@ -249,13 +249,13 @@ void
  */
 [[nodiscard]] [[maybe_unused]] std::vector<
   std::pair<std::uint32_t, std::string>>
-  get_all_entries(const std::filesystem::path &                  path,
-                  const std::string &                            data,
-                  const size_t &                                 offset,
-                  const size_t &                                 size   = 0U,
-                  const size_t &                                 count  = 0U,
+  get_all_entries(const std::filesystem::path                   &path,
+                  const std::string                             &data,
+                  const size_t                                  &offset,
+                  const size_t                                  &size   = 0U,
+                  const size_t                                  &count  = 0U,
                   const std::initializer_list<std::string_view> &needle = {},
-                  const size_t &                                 limit  = 0U)
+                  const size_t                                  &limit  = 0U)
 {
 
   if (!std::empty(data) && data.front() != '\0') {
@@ -276,11 +276,11 @@ void
  */
 template<typename T>
 [[nodiscard]] [[maybe_unused]] auto
-  get_entry(const T &                                      data,
+  get_entry(const T                                       &data,
             const std::initializer_list<std::string_view> &needle,
-            const size_t &                                 offset = 0U,
-            const size_t &                                 size   = 0U,
-            const size_t &                                 count  = 0U)
+            const size_t                                  &offset = 0U,
+            const size_t                                  &size   = 0U,
+            const size_t                                  &count  = 0U)
 {
   auto vector  = get_all_entries(data, offset, size, count, needle, 1U);
   using valueT = typename decltype(vector)::value_type;
@@ -300,12 +300,12 @@ template<typename T>
  * @param count is max results returned. 0 is unlimited.
  */
 [[nodiscard]] [[maybe_unused]] auto
-  get_entry(const std::filesystem::path &                  path,
-            const std::string &                            data,
+  get_entry(const std::filesystem::path                   &path,
+            const std::string                             &data,
             const std::initializer_list<std::string_view> &needle,
-            const size_t &                                 offset = 0U,
-            const size_t &                                 size   = 0U,
-            const size_t &                                 count  = 0U)
+            const size_t                                  &offset = 0U,
+            const size_t                                  &size   = 0U,
+            const size_t                                  &count  = 0U)
 {
   if (std::ranges::empty(data)) {
     return get_entry(path, needle, offset, size, count);
