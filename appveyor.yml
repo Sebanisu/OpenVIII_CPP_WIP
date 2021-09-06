@@ -42,7 +42,7 @@ for:
     init:
       - cmd: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"'
     build_script:
-      - cmd: "git clone https://github.com/microsoft/vcpkg\n.\\vcpkg\\bootstrap-vcpkg.bat\n.\\vcpkg\\vcpkg install libpng\nmkdir build\ncmake --debug-output -G \"CodeBlocks - NMake Makefiles\" -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=.\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\ncmake --build build --target all"
+      - cmd: "git clone https://github.com/microsoft/vcpkg\n.\\vcpkg\\bootstrap-vcpkg.bat\n.\\vcpkg\\vcpkg install libpng\nmkdir build\ncmake --version\ncmake --debug-output -G \"CodeBlocks - NMake Makefiles\" -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=.\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\ncmake --build build --target all"
       #- cmd: "mkdir build\ncmake -G \"Visual Studio 16 2019\" -B build\nMSBuild build\\ALL_BUILD.vcxproj"
     test_script:
       - cmd: "cd build\nctest -C debug --extra-verbose\ncd .."
