@@ -18,7 +18,7 @@ namespace open_viii::tools {
  * @return char string_view.
  * @todo needs tests?
  */
-[[maybe_unused]] static std::string_view
+[[maybe_unused]] [[nodiscard]] inline std::string_view
   u8_to_sv(const std::u8string_view &s8)
 {
   return { reinterpret_cast<const char *>(s8.data()), s8.size() };
@@ -30,7 +30,7 @@ namespace open_viii::tools {
  * @return char string
  * @todo needs tests?
  */
-[[maybe_unused]] std::string
+[[maybe_unused]] [[nodiscard]] inline std::string
   u8_to_s(const std::u8string_view &s8)
 {
   auto sv = u8_to_sv(s8);
@@ -65,8 +65,8 @@ static_assert(upper('a') != 'Z');
  * @todo add tests
  */
 template<std::integral intT>
-std::string
-  to_string_with_padding(const intT &      value,
+[[nodiscard]] inline std::string
+  to_string_with_padding(const intT       &value,
                          const std::size_t total_length  = {},
                          const char        pad_character = '0')
 {
@@ -77,7 +77,7 @@ std::string
                pad_character);
   return str;
 }
-[[maybe_unused]] [[nodiscard]] std::string
+[[maybe_unused]] [[nodiscard]] inline std::string
   get_base_name(const std::filesystem::path &path)
 {
   if (path.string().empty()) {

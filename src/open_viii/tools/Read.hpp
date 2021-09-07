@@ -31,7 +31,7 @@ template<is_trivially_copyable_and_default_constructible fixed_size_rangeT,
 requires(sizeOfType > 0
          && (has_data_and_size<fixed_size_rangeT>)&&(
            !has_reserve<fixed_size_rangeT>)&&(!has_resize<fixed_size_rangeT>))
-  [[nodiscard]] static fixed_size_rangeT read_val2(std::istream &fp)
+  [[nodiscard]] inline fixed_size_rangeT read_val2(std::istream &fp)
 {
   fixed_size_rangeT            item{};
   std::array<char, sizeOfType> tmp{};
@@ -54,7 +54,7 @@ requires(sizeOfType > 0
  * @todo test?
  */
 template<is_trivially_copyable trivialType>
-static void
+inline void
   read_val(std::istream &fp, trivialType &item)
 {
   std::array<char, sizeof(item)> tmp{};
@@ -69,7 +69,7 @@ static void
  * @todo test?
  */
 template<has_data_and_size trivialType>
-static void
+inline void
   read_val(std::istream &fp, trivialType &item)
 {
   //  if constexpr( requires(trivialType
@@ -90,7 +90,7 @@ static void
  * @todo test?
  */
 template<is_trivially_copyable trivialType>
-static void
+inline void
   read_val(const std::span<const char> &span, trivialType &item)
 {
   memcpy(&item, std::ranges::data(span), sizeof(trivialType));
@@ -103,7 +103,7 @@ static void
  * @todo test?
  */
 template<is_trivially_copyable_and_default_constructible trivialType>
-[[nodiscard]] static trivialType
+[[nodiscard]] inline trivialType
   read_val(const std::span<const char> &span)
 {
   trivialType item{};
@@ -120,7 +120,7 @@ template<is_trivially_copyable_and_default_constructible trivialType>
  */
 template<is_trivially_copyable_and_default_constructible trivialT,
          std::integral auto                              sizeOfType>
-requires(sizeOfType > 0) [[nodiscard]] static trivialT
+requires(sizeOfType > 0) [[nodiscard]] inline trivialT
   read_val(std::istream &fp)
 {
   std::array<char, sizeOfType> tmp{};
@@ -135,7 +135,7 @@ requires(sizeOfType > 0) [[nodiscard]] static trivialT
  * @todo test?
  */
 template<is_trivially_copyable_and_default_constructible trivialType>
-[[nodiscard]] static trivialType
+[[nodiscard]] inline trivialType
   read_val(std::istream &fp)
 {
   return read_val<trivialType, sizeof(trivialType)>(fp);
@@ -150,7 +150,7 @@ template<is_trivially_copyable_and_default_constructible trivialType>
  */
 template<is_trivially_copyable_and_default_constructible trivialT_or_rangeT,
          std::integral auto                              sizeOfType>
-requires(sizeOfType > 0) [[nodiscard]] static trivialT_or_rangeT
+requires(sizeOfType > 0) [[nodiscard]] inline trivialT_or_rangeT
   safe_read_val(std::istream &fp)
 {
   const auto current_pos = fp.tellg();
@@ -172,7 +172,7 @@ requires(sizeOfType > 0) [[nodiscard]] static trivialT_or_rangeT
  * @todo test?
  */
 template<is_trivially_copyable_and_default_constructible trivialType>
-[[nodiscard]] static trivialType
+[[nodiscard]] inline trivialType
   read_val(const std::span<const char> &span, std::size_t offset)
 {
   return read_val<trivialType>(span.subspan(offset));
@@ -187,7 +187,7 @@ template<is_trivially_copyable_and_default_constructible trivialType>
  */
 template<has_data_and_size trivialType>
 requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType>
-static void
+inline void
   read_val(const std::span<const char> &span,
            trivialType                 &item,
            std::size_t                  size)
@@ -211,7 +211,7 @@ static void
  * @todo test?
  */
 template<is_default_constructible_has_data_and_size trivialType>
-[[nodiscard]] static trivialType
+[[nodiscard]] inline trivialType
   read_val(const std::span<const char> &span, std::size_t size)
 {
   trivialType item{};
@@ -226,7 +226,7 @@ template<is_default_constructible_has_data_and_size trivialType>
  * @todo test?
  */
 template<is_default_constructible_has_data_and_size rangeT>
-[[nodiscard]] static rangeT
+[[nodiscard]] inline rangeT
   read_val(const std::span<const char> &span)
 {
   rangeT         item{};
@@ -244,7 +244,7 @@ template<is_default_constructible_has_data_and_size rangeT>
  * @todo test?
  */
 template<is_default_constructible_has_data_and_size rangeT>
-[[nodiscard]] static rangeT
+[[nodiscard]] inline rangeT
   safe_read_val(const std::span<const char> &span)
 {
   if (std::ranges::size(span)
@@ -263,7 +263,7 @@ template<is_default_constructible_has_data_and_size rangeT>
 template<std::ranges::contiguous_range dstT = std::vector<char>,
          std::integral                 sizeT>
 requires has_resize<dstT>
-[[maybe_unused]] static auto
+[[maybe_unused]] inline auto
   read_val(std::istream &fp, const sizeT &s)
 {
   dstT buf{};
@@ -282,7 +282,7 @@ requires has_resize<dstT>
  * @todo test?
  */
 template<typename dstT = std::vector<char>>
-[[maybe_unused]] static auto
+[[maybe_unused]] inline auto
   read_entire_stream(std::istream &fp)
 {
   fp.seekg(0, std::ios::end);          // seek to end;
@@ -296,7 +296,7 @@ template<typename dstT = std::vector<char>>
  * @return
  * @todo test?
  */
-[[maybe_unused]] std::optional<std::ifstream>
+[[maybe_unused]] inline std::optional<std::ifstream>
   open_file(const std::filesystem::path &path)
 {
   std::optional<std::ifstream> ofp{};
@@ -334,7 +334,7 @@ template<typename dstT = std::vector<char>>
  */
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::istream &>)
-  [[maybe_unused]] static bool read_from_file(const lambdaT &lambda,
+  [[maybe_unused]] inline bool read_from_file(const lambdaT &lambda,
                                               const std::filesystem::path &path)
 {
   auto ofp = open_file(path);
@@ -352,7 +352,7 @@ requires(std::invocable<lambdaT, std::istream &>)
  * @todo test?
  */
 template<std::ranges::contiguous_range dstT = std::vector<char>>
-[[maybe_unused]] static dstT
+[[maybe_unused]] inline dstT
   read_entire_file(const std::filesystem::path &path)
 {
   dstT buffer{};
@@ -372,7 +372,7 @@ template<std::ranges::contiguous_range dstT = std::vector<char>>
  * @todo test?
  */
 template<is_trivially_copyable_and_default_constructible valueT>
-[[nodiscard]] static valueT
+[[nodiscard]] inline valueT
   read_value_from_file(const std::filesystem::path &path,
                        const std::size_t           &offset)
 {
@@ -388,7 +388,7 @@ template<is_trivially_copyable_and_default_constructible valueT>
   return item;
 }
 template<is_trivially_copyable_and_default_constructible trivialT>
-[[nodiscard]] static auto
+[[nodiscard]] inline auto
   read_val_safe_mutate(std::span<const char> &buffer)
 {
   if (std::ranges::size(buffer) < sizeof(trivialT)) {
@@ -399,7 +399,7 @@ template<is_trivially_copyable_and_default_constructible trivialT>
   return header;
 }
 template<is_default_constructible_has_data_and_size rangeT>
-[[nodiscard]] static auto
+[[nodiscard]] inline auto
   read_val_safe_mutate(std::span<const char> &buffer, const std::size_t bytes)
 {
   if (std::ranges::size(buffer) < bytes) {
