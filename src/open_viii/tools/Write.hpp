@@ -9,9 +9,10 @@
 namespace open_viii::tools {
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::ostream &>)
-  [[maybe_unused]] bool write_buffer(const lambdaT &         lambda,
-                                     const std::string_view &path,
-                                     const std::string_view &root = "tmp")
+  [[maybe_unused]] inline bool write_buffer(const lambdaT          &lambda,
+                                            const std::string_view &path,
+                                            const std::string_view &root
+                                            = "tmp")
 {
   auto dir      = std::filesystem::path(root);
   auto filename = dir / path;
@@ -31,10 +32,10 @@ requires(std::invocable<lambdaT, std::ostream &>)
   fp.close();
   return true;
 }
-[[maybe_unused]] bool
+[[maybe_unused]] inline bool
   write_buffer([[maybe_unused]] const std::span<const char> &buffer,
-               const std::string_view &                      path,
-               const std::string_view &                      root = "tmp")
+               const std::string_view                       &path,
+               const std::string_view                       &root = "tmp")
 {
   if (std::ranges::empty(buffer)) {
     // std::cout << (std::string("Buffer is empty: \"")+ std::string(path) +
