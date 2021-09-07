@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.20)
 project(OpenVIII_CPP_WIP
         DESCRIPTION "Port of OpenVIII core library to C++20"
         LANGUAGES C CXX)
@@ -10,7 +10,17 @@ function(SET_TARGET_PATHS target)
             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
             )
 endfunction()
-set(CMAKE_CXX_STANDARD 20) ## Supported values are 98, 11, 14, 17, and 20.
+if (MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.29.30129)
+    set(CMAKE_CXX_STANDARD 23)
+else () #if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.12.25835)
+    set(CMAKE_CXX_STANDARD 20)
+endif ()
+#set(CMAKE_CXX_STANDARD 23) ## Supported values are 98, 11, 14, 17, 20, 23.
+#To use all of c++20 on MVSC you must set cmake to 23
+#https://github.com/microsoft/STL/issues/1814#issuecomment-845572895
+#https://gitlab.kitware.com/cmake/cmake/-/issues/22606
+
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON) ## the value of the CXX_STANDARD target property is treated as a requirement
 set(CMAKE_CXX_EXTENSIONS OFF) ## on g++ this ensures: -std=c++11 and not -std=gnu++11
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) ## automatically create a module definition (.def) file with all global
