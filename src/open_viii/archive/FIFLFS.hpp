@@ -536,7 +536,7 @@ public:
   }
 };
 
-[[nodiscard]] TryAddT
+[[nodiscard]] inline TryAddT
   get_fiflfs(const FIFLFS<true>    &source,
              FIFLFS<false>         &archive,
              const std::uint32_t    id,
@@ -553,8 +553,7 @@ public:
     }
     if (fi.compression_type() == CompressionTypeT::none) {
       auto localRetVal = archive.try_add(
-        FileData(source.fs().offset() + fi.offset(),
-                 fi.uncompressed_size()),
+        FileData(source.fs().offset() + fi.offset(), fi.uncompressed_size()),
         source.fs().path(),
         virtualPath);
       //        if (localRetVal != TryAddT::not_part_of_archive) {
@@ -570,7 +569,7 @@ public:
       fi);// when path is sent a different function is used later.
   }();
 }
-[[nodiscard]] FIFLFS<false>
+[[nodiscard]] inline FIFLFS<false>
   get_fiflfs(const FIFLFS<true>                            &source,
              const std::initializer_list<std::string_view> &filename)
 {
