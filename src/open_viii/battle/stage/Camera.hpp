@@ -44,14 +44,13 @@ public:
   {
     return m_camera_animation_collection;
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Camera &in)
-  {
-    return os << "{\n\t\t HEADER: " << in.m_camera_header
-              << "\n\t\t SETTINGS: " << in.m_camera_settings
-              << "\n\t\t COLLECTION: " << in.m_camera_animation_collection
-              << "}";
-  }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const Camera &in)
+{
+  return os << "{\n\t\t HEADER: " << in.camera_header()
+            << "\n\t\t SETTINGS: " << in.camera_settings()
+            << "\n\t\t COLLECTION: " << in.camera_animation_collection() << "}";
+}
 }// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERA_HPP

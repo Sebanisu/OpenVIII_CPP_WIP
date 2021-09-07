@@ -65,40 +65,64 @@ public:
     // TODO rework this. It does not work
     //    }
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const CameraAnimationCollection &in)
+  [[nodiscard]] std::uint16_t
+    set_count() const noexcept
   {
-    os << "{\n\t\t\t SET COUNT: " << in.m_set_count
-       << "\n\t\t\t SET OFFSETS: " << '[';
-    {
-      bool first = true;
-      std::ranges::for_each(in.m_set_offsets,
-                            [&os, &first](const std::uint16_t &c) {
-                              if (!first) {
-                                os << ',';
-                              }
-                              first = false;
-                              os << "0x" << std::hex << std::uppercase
-                                 << static_cast<std::uint16_t>(c) << std::dec
-                                 << std::nouppercase;
-                            });
-    }
-    os << ']' << "\n\t\t\t END: " << in.m_camera_end
-       << "\n\t\t\t SETS: " << '[';
-    {
-      bool first = true;
-      std::ranges::for_each(in.m_camera_animation_set,
-                            [&os, &first](const CameraAnimationSet &c) {
-                              if (!first) {
-                                os << ",";
-                              }
-                              os << "\n\t\t\t\t";
-                              first = false;
-                              os << c;
-                            });
-    }
-    return os << "]";
+    return m_set_count;
+  }
+  [[nodiscard]] const std::vector<std::uint16_t> &
+    set_offsets() const noexcept
+  {
+    return m_set_offsets;
+  }
+  [[nodiscard]] std::uint16_t
+    camera_end() const noexcept
+  {
+    return m_camera_end;
+  }
+  [[nodiscard]] const std::vector<CameraAnimationSet> &
+    camera_animation_set() const noexcept
+  {
+    return m_camera_animation_set;
+  }
+  [[nodiscard]] const std::vector<std::vector<CameraAnimation>> &
+    camera_animation() const noexcept
+  {
+    return m_camera_animation;
   }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const CameraAnimationCollection &in)
+{
+  os << "{\n\t\t\t SET COUNT: " << in.set_count()
+     << "\n\t\t\t SET OFFSETS: " << '[';
+  {
+    bool first = true;
+    std::ranges::for_each(in.set_offsets(),
+                          [&os, &first](const std::uint16_t &c) {
+                            if (!first) {
+                              os << ',';
+                            }
+                            first = false;
+                            os << "0x" << std::hex << std::uppercase
+                               << static_cast<std::uint16_t>(c) << std::dec
+                               << std::nouppercase;
+                          });
+  }
+  os << ']' << "\n\t\t\t END: " << in.camera_end() << "\n\t\t\t SETS: " << '[';
+  {
+    bool first = true;
+    std::ranges::for_each(in.camera_animation_set(),
+                          [&os, &first](const CameraAnimationSet &c) {
+                            if (!first) {
+                              os << ",";
+                            }
+                            os << "\n\t\t\t\t";
+                            first = false;
+                            os << c;
+                          });
+  }
+  return os << "]";
+}
 }// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERAANIMATIONCOLLECTION_HPP

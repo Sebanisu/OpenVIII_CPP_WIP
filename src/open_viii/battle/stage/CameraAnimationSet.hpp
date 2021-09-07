@@ -36,25 +36,32 @@ public:
   {
     return &m_animation_offsets;
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const CameraAnimationSet &in)
+
+  [[nodiscard]] const std::array<std::uint16_t, COUNT> &
+    animation_offsets() const noexcept
   {
-    os << '[';
-    {
-      bool first = true;
-      std::ranges::for_each(in.m_animation_offsets,
-                            [&os, &first](const std::uint16_t &c) {
-                              if (!first) {
-                                os << ',';
-                              }
-                              first = false;
-                              os << "0x" << std::hex << std::uppercase
-                                 << static_cast<std::uint16_t>(c)
-                                 << std::nouppercase << std::dec;
-                            });
-    }
-    return os << "]";
+    return m_animation_offsets;
   }
 };
+
+inline std::ostream &
+  operator<<(std::ostream &os, const CameraAnimationSet &in)
+{
+  os << '[';
+  {
+    bool first = true;
+    std::ranges::for_each(in.animation_offsets(),
+                          [&os, &first](const std::uint16_t &c) {
+                            if (!first) {
+                              os << ',';
+                            }
+                            first = false;
+                            os << "0x" << std::hex << std::uppercase
+                               << static_cast<std::uint16_t>(c)
+                               << std::nouppercase << std::dec;
+                          });
+  }
+  return os << "]";
+}
 }// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERAANIMATIONSET_HPP

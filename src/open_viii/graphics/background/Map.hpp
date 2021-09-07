@@ -275,13 +275,6 @@ public:
   {
     shift(point.x(), point.y());
   }
-  [[nodiscard]] friend std::ostream &
-    operator<<(std::ostream &os, const Map &m)
-  {
-    return os << std::ranges::size(m.m_tiles) << ", "
-              << std::ranges::size(m.m_t2) << ", " << std::ranges::size(m.m_t3)
-              << '\n';
-  }
   void
     save_csv(const std::string_view &in_path) const
   {
@@ -490,6 +483,14 @@ auto
     break;
   }
   return std::monostate{};
+}
+template<typename map_type = Tile1>
+inline std::ostream &
+  operator<<(std::ostream &os, const Map<map_type> &m)
+{
+  return os << std::ranges::size(m.tiles()) << ", "
+            << std::ranges::size(m.t2()) << ", " << std::ranges::size(m.t3())
+            << '\n';
 }
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_MAP_HPP

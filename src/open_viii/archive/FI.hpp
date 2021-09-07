@@ -213,7 +213,7 @@ static_assert(sizeof(FI) == FI::SIZE);
  * @param output buffer to write to.
  * @param in_fi incoming FI it's just grabbing the compression type from it.
  */
-template<is_insertable_or_ostream T>
+template<is_insertable_or_ostream T> inline
 void
   append_entry(T &output, const FI in_fi)
 {
@@ -224,7 +224,7 @@ void
  * @param os out stream value
  * @param data FI entry
  */
-[[nodiscard]] std::ostream &
+inline std::ostream &
   operator<<(std::ostream &os, const FI &data)
 {
   os << '{' << data.uncompressed_size() << ", " << data.offset() << ", "

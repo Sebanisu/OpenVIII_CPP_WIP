@@ -141,18 +141,6 @@ public:
         }
       });
   }
-  [[nodiscard]] friend std::ostream &
-    operator<<(std::ostream &os, const FIFLFS &data)
-  {
-    const auto str = [](auto fiflfs) {
-      return std::ranges::empty(fiflfs.nested_path())
-             ? fiflfs.path()
-             : fiflfs.path() / fiflfs.nested_path();
-    };
-    return os << '{' << data.get_base_name() << " {" << data.m_count
-              << " File Entries from : " << str(data.m_fi) << ", "
-              << str(data.m_fl) << ", " << str(data.m_fs) << "}}";
-  }
   template<std::unsigned_integral T>
   [[nodiscard]] archive::FI
     get_entry_by_index(const T id) const
@@ -601,7 +589,7 @@ public:
   }
   return archive;
 }
-[[nodiscard]] auto
+inline auto
   get_fiflfs_entries(const FIFLFS<true>                            &source,
                      const std::initializer_list<std::string_view> &filename)
 {
@@ -620,6 +608,19 @@ public:
     }
   }
   return out;
+}
+template<bool has_nested>
+inline std::ostream &
+  operator<<(std::ostream &os, const FIFLFS<has_nested> &data)
+{
+  const auto str = [](auto fiflfs) {
+    return std::ranges::empty(fiflfs.nested_path())
+           ? fiflfs.path()
+           : fiflfs.path() / fiflfs.nested_path();
+  };
+  return os << '{' << data.get_base_name() << " {" << data.count()
+            << " File Entries from : " << str(data.fi()) << ", "
+            << str(data.fl()) << ", " << str(data.fs()) << "}}";
 }
 }// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FIFLm_fsH

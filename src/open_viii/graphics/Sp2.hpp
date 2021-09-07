@@ -49,15 +49,20 @@ public:
   {
     return std::ranges::size(m_entries);
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Sp2 &s)
+  [[nodiscard]] const std::vector<Sp2Entry> &
+    entries() const noexcept
   {
-    os << "{ Entry Count: " << s.size() << " {";
-    for (const auto &e : s.m_entries) {
-      os << e;
-    }
-    return os << "}\n";
+    return m_entries;
   }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const Sp2 &s)
+{
+  os << "{ Entry Count: " << s.size() << " {";
+  for (const auto &e : s.entries()) {
+    os << e;
+  }
+  return os << "}\n";
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP2_HPP

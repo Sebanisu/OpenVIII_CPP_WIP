@@ -95,11 +95,6 @@ public:
     ret.m_z  = in_z;
     return ret;
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Vertice<mainNumberT> &lhs)
-  {
-    return os << '(' << lhs.x() << ", " << lhs.y() << ", " << lhs.z() << ')';
-  }
   template<typename T>
   [[nodiscard]] constexpr auto
     midpoint(const Vertice<T> other) const noexcept
@@ -109,5 +104,11 @@ public:
                    std::midpoint(m_z, other.z()));
   }
 };
+template<typename mainNumberT>
+inline std::ostream &
+  operator<<(std::ostream &os, const Vertice<mainNumberT> &lhs)
+{
+  return os << '(' << lhs.x() << ", " << lhs.y() << ", " << lhs.z() << ')';
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_VERTICE_HPP

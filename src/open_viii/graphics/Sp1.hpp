@@ -57,20 +57,25 @@ public:
   {
     return std::ranges::size(m_entries);
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Sp1 &s)
+  [[nodiscard]] const std::vector<std::vector<Sp1Entry>> &
+    entries() const noexcept
   {
-    os << "{ Entry Groups Count: " << s.size() << " {";
-    for (const auto &eg : s.m_entries) {
-      if (std::ranges::size(eg) > 1) {
-        os << " Entry Count: " << std::ranges::size(eg) << ", ";
-      }
-      for (const auto &e : eg) {
-        os << e;
-      }
-    }
-    return os << "}\n";
+    return m_entries;
   }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const Sp1 &s)
+{
+  os << "{ Entry Groups Count: " << s.size() << " {";
+  for (const auto &eg : s.entries()) {
+    if (std::ranges::size(eg) > 1) {
+      os << " Entry Count: " << std::ranges::size(eg) << ", ";
+    }
+    for (const auto &e : eg) {
+      os << e;
+    }
+  }
+  return os << "}\n";
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP1_HPP

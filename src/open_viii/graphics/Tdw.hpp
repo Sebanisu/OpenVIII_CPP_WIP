@@ -85,16 +85,6 @@ public:
   {
     return m_tim;
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Tdw &t)
-  {
-    os << t.size() << " char widths: ";
-    for (const Bit4Values &w : t.m_widths) {
-      os << static_cast<std::uint32_t>(w.first()) << ", "
-         << static_cast<std::uint32_t>(w.second()) << ", ";
-    }
-    return os << '\n' << t.m_tim;
-  }
   template<class... Ts>
   void
     save(Ts &&...ts)
@@ -103,6 +93,20 @@ public:
       m_tim.save(std::forward<Ts>(ts)...);
     }
   }
+  [[nodiscard]] const std::vector<Bit4Values> &
+    widths() const noexcept
+  {
+    return m_widths;
+  }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const Tdw &t)
+{
+  os << t.size() << " char widths: ";
+  for (const auto &[first, second] : t.widths()) {
+    os << +first << ", " << +second << ", ";
+  }
+  return os << '\n' << t.tim();
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TDW_HPP

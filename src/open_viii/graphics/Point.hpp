@@ -134,11 +134,6 @@ public:
     return { static_cast<dimT>(m_x + input.m_x),
              static_cast<dimT>(m_y + input.m_y) };
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Point<dimT> &input)
-  {
-    return os << '{' << +input.m_x << ", " << +input.m_y << '}';
-  }
   [[nodiscard]] constexpr Point<dimT>
     with_x(dimT in_x) const noexcept
   {
@@ -163,8 +158,8 @@ public:
  * @return the max
  */
 template<Number dimT>
-[[nodiscard]] constexpr static Point<dimT>
-  (max)(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
+[[nodiscard]] constexpr inline Point<dimT>(max)(const Point<dimT> &rhs,
+                                                const Point<dimT> &lhs) noexcept
 {
   return { (std::max)(rhs.x(), lhs.x()), (std::max)(rhs.y(), lhs.y()) };
 }
@@ -174,10 +169,16 @@ template<Number dimT>
  * @return the min
  */
 template<Number dimT>
-[[nodiscard]] constexpr static Point<dimT>
-  (min)(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
+[[nodiscard]] constexpr inline Point<dimT>(min)(const Point<dimT> &rhs,
+                                                const Point<dimT> &lhs) noexcept
 {
   return { (std::min)(rhs.x(), lhs.x()), (std::min)(rhs.y(), lhs.y()) };
+}
+template<typename dimT>
+inline std::ostream &
+  operator<<(std::ostream &os, const Point<dimT> &input)
+{
+  return os << '{' << +input.x() << ", " << +input.y() << '}';
 }
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_POINT_HPP

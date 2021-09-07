@@ -13,25 +13,25 @@
 #ifndef VIIIARCHIVE_PPM_HPP
 #define VIIIARCHIVE_PPM_HPP
 #include "Color.hpp"
-#include "Point.hpp"
 #include "open_viii/Concepts.hpp"
+#include "open_viii/tools/Tools.hpp"
+#include "Point.hpp"
 #include <cctype>
 #include <cstdint>
 #include <execution>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <span>
 #include <string_view>
 #include <utility>
-#include <filesystem>
-#include <span>
-#include "open_viii/tools/Tools.hpp"
 
 namespace open_viii::graphics {
 struct Ppm
 {
 private:
-  std::filesystem::path         m_path{};
-  Point<std::uint16_t>          m_width_height{};
+  std::filesystem::path                   m_path{};
+  Point<std::uint16_t>                    m_width_height{};
   std::vector<Color24<ColorLayoutT::RGB>> m_colors{};
   Point<std::uint16_t>
     get_width_height(const std::string &buffer)
@@ -91,8 +91,8 @@ private:
     const auto start = ss.tellg();
     ss.seekg(0, std::ios::end);
     const auto end = ss.tellg();
-    const auto sz
-      = static_cast<std::size_t>(end - start) / sizeof(Color24<ColorLayoutT::RGB>);
+    const auto sz  = static_cast<std::size_t>(end - start)
+                  / sizeof(Color24<ColorLayoutT::RGB>);
     if (sz != point.area()) {
       std::cerr << m_path << "\n\t" << sz << " != area of " << point
                 << std::endl;
@@ -105,9 +105,9 @@ private:
     get_colors(std::span<const char> buffer_span)
   {
     std::vector<Color24<ColorLayoutT::RGB>> colors{};
-    const auto                    area          = m_width_height.area();
-    static constexpr auto         color_size    = sizeof(Color24<ColorLayoutT::RGB>);
-    const auto                    size_of_bytes = area * color_size;
+    const auto                              area = m_width_height.area();
+    static constexpr auto color_size    = sizeof(Color24<ColorLayoutT::RGB>);
+    const auto            size_of_bytes = area * color_size;
     if (area > 0 && std::ranges::size(buffer_span) > size_of_bytes) {
       buffer_span
         = buffer_span.subspan(std::ranges::size(buffer_span) - size_of_bytes,
@@ -137,7 +137,7 @@ public:
   }
   template<std::ranges::contiguous_range cT>
   static void
-    save(const cT &              data,
+    save(const cT               &data,
          std::size_t             width,
          std::size_t             height,
          const std::string_view &input,
@@ -221,12 +221,17 @@ public:
     }
     return black;
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Ppm &ppm)
+  [[nodiscard]] const std::filesystem::path &
+    path() const noexcept
   {
-    return os << "(Width, Height): " << ppm.m_width_height << "\t" << ppm.m_path
-              << '\n';
+    return m_path;
   }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const Ppm &ppm)
+{
+  return os << "(Width, Height): " << ppm.width_height() << "\t" << ppm.path()
+            << '\n';
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_PPM_HPP

@@ -12,13 +12,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TIM_HPP
 #define VIIIARCHIVE_TIM_HPP
-#include "BPPT.hpp"
 #include "Bit4Values.hpp"
-#include "Png.hpp"
+#include "BPPT.hpp"
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Ppm.hpp"
 #include "open_viii/graphics/tim/TimClutHeader.hpp"
 #include "open_viii/graphics/tim/TimHeader.hpp"
+#include "Png.hpp"
 #include <sstream>
 namespace open_viii::graphics {
 /**
@@ -304,13 +304,6 @@ public:
   {
     return check();
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Tim &input)
-  {
-    return os << '{' << input.m_tim_header << ", " << input.m_tim_clut_header
-              << ", " << input.m_tim_image_header
-              << ", Corrected Width: " << input.width() << '}';
-  }
   template<Color dstT = Tim>
   [[nodiscard]] std::vector<dstT>
     get_colors([[maybe_unused]] const std::uint16_t                   row = 0U,
@@ -439,6 +432,34 @@ public:
                 std::filesystem::path(filename).string());
     }
   }
+  [[nodiscard]] TimHeader
+    tim_header() const noexcept
+  {
+    return m_tim_header;
+  }
+  [[nodiscard]] TimClutHeader
+    tim_clut_header() const noexcept
+  {
+    return m_tim_clut_header;
+  }
+  [[nodiscard]] std::vector<Color16<ColorLayoutT::ABGR>>
+    tim_clut_data() const noexcept
+  {
+    return m_tim_clut_data;
+  }
+  [[nodiscard]] TimImageHeader
+    tim_image_header() const noexcept
+  {
+    return m_tim_image_header;
+  }
+  [[nodiscard]] const std::variant<std::vector<Bit4Values>,
+                             std::vector<std::uint8_t>,
+                             std::vector<Color16<ColorLayoutT::ABGR>>,
+                             std::vector<Color24<ColorLayoutT::BGR>>>&
+    tim_image_data() const noexcept
+  {
+    return m_tim_image_data;
+  }
 };
 template<>
 auto
@@ -451,6 +472,13 @@ auto
   Tim::get_24bpp_colors<Color24<ColorLayoutT::BGR>>() const
 {
   return std::get<3>(m_tim_image_data);
+}
+inline std::ostream &
+  operator<<(std::ostream &os, const Tim &input)
+{
+  return os << '{' << input.tim_header() << ", " << input.tim_clut_header()
+            << ", " << input.tim_image_header()
+            << ", Corrected Width: " << input.width() << '}';
 }
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TIM_HPP

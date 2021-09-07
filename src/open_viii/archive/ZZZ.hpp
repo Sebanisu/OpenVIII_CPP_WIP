@@ -117,21 +117,7 @@ public:
     tmp.shrink_to_fit();
     return tmp;
   }
-  [[nodiscard]] friend std::ostream &
-    operator<<(std::ostream &os, const ZZZ &data)
-  {
-    return os << '{' << data.path().stem().string() << " zzz {"
-              << std::ranges::size(data.data())
-              << " File Entries from : " << data.path() << "}}";
-  }
-  [[nodiscard]] friend std::ostream &
-    operator<<(std::ostream &os, const std::optional<ZZZ> &data)
-  {
-    if (data.has_value()) {
-      return os << data.value();
-    }
-    return os;
-  }
+
   //  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>>
   //    get_vector_of_indexes_and_files(
   //      const std::initializer_list<std::string_view> &filename) const
@@ -178,5 +164,20 @@ public:
     return !std::ranges::empty(m_data);
   }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const ZZZ &data)
+{
+  return os << '{' << data.path().stem().string() << " zzz {"
+            << std::ranges::size(data.data())
+            << " File Entries from : " << data.path() << "}}";
+}
+inline std::ostream &
+  operator<<(std::ostream &os, const std::optional<ZZZ> &data)
+{
+  if (data.has_value()) {
+    return os << data.value();
+  }
+  return os;
+}
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ZZZ_HPP

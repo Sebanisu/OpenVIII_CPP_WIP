@@ -51,17 +51,17 @@ public:
   {
     return m_camera_data_size;
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const CameraHeader &in)
-  {
-    return os << "{\n\t\t\tOFFSET COUNT: " << in.m_offset_count
-              << "\n\t\t\tSETTINGS OFFSET: 0x" << std::hex << std::uppercase
-              << in.m_offset_camera_settings << std::dec << std::nouppercase
-              << "\n\t\t\tCOLLECTION OFFSET: 0x" << std::hex << std::uppercase
-              << in.m_offset_camera_animation_collection << std::dec
-              << std::nouppercase
-              << "\n\t\t\tDATA SIZE: " << in.m_camera_data_size << "}";
-  }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const CameraHeader &in)
+{
+  return os << "{\n\t\t\tOFFSET COUNT: " << in.offset_count()
+            << "\n\t\t\tSETTINGS OFFSET: 0x" << std::hex << std::uppercase
+            << in.offset_camera_settings() << std::dec << std::nouppercase
+            << "\n\t\t\tCOLLECTION OFFSET: 0x" << std::hex << std::uppercase
+            << in.offset_camera_animation_collection() << std::dec
+            << std::nouppercase
+            << "\n\t\t\tDATA SIZE: " << in.camera_data_size() << "}";
+}
 }// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERAHEADER_HPP

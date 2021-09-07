@@ -22,7 +22,8 @@ namespace open_viii::graphics {
  * @tparam dimT Number type.
  * @brief 2D Container that holds top left height and width.
  */
-template<Number dimT> struct Rectangle
+template<Number dimT>
+struct Rectangle
 {
 private:
   Point<dimT> m_top_left{};
@@ -199,12 +200,6 @@ public:
   {
     return m_width_height.area();
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Rectangle<dimT> &input)
-  {
-    return os << "{(X, Y) = " << input.m_top_left
-              << ", (Width, Height) = " << input.m_width_height << '}';
-  }
   Rectangle<dimT> constexpr
     operator/(const Rectangle<dimT> &input) const noexcept
   {
@@ -228,5 +223,12 @@ public:
     return m_width_height;
   }
 };
+template<typename dimT>
+inline std::ostream &
+  operator<<(std::ostream &os, const Rectangle<dimT> &input)
+{
+  return os << "{(X, Y) = " << input.top_left()
+            << ", (Width, Height) = " << input.width_height() << '}';
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_RECTANGLE_HPP

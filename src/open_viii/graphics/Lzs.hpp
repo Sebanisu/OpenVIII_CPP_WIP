@@ -12,11 +12,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_LZS_HPP
 #define VIIIARCHIVE_LZS_HPP
+#include "open_viii/compression/LZSS.hpp"
+#include "open_viii/graphics/color/Color16.hpp"
 #include "Png.hpp"
 #include "Ppm.hpp"
 #include "Rectangle.hpp"
-#include "open_viii/compression/LZSS.hpp"
-#include "open_viii/graphics/color/Color16.hpp"
 #include <cstring>
 #include <span>
 #include <vector>
@@ -28,8 +28,8 @@ namespace open_viii::graphics {
 struct [[maybe_unused]] Lzs
 {
 private:
-  Rectangle<std::uint16_t> m_rectangle{};
-  std::vector<Color16<ColorLayoutT::ABGR>>     m_colors{};
+  Rectangle<std::uint16_t>                 m_rectangle{};
+  std::vector<Color16<ColorLayoutT::ABGR>> m_colors{};
 
 public:
   [[maybe_unused]] explicit Lzs(std::span<const char> buffer)
@@ -81,13 +81,28 @@ public:
     save(const std::string_view &filename) const
   {
     Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
-    Png::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename,std::string(filename));
+    Png::save(m_colors,
+              m_rectangle.width(),
+              m_rectangle.height(),
+              filename,
+              std::string(filename));
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Lzs &l)
+
+  [[nodiscard]] Rectangle<std::uint16_t>
+    rectangle() const noexcept
   {
-    return os << '{' << l.m_rectangle << "}\n";
+    return m_rectangle;
+  }
+  [[nodiscard]] const std::vector<Color16<ColorLayoutT::ABGR>> &
+    colors() const noexcept
+  {
+    return m_colors;
   }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const Lzs &l)
+{
+  return os << '{' << l.rectangle() << "}\n";
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_LZS_HPP

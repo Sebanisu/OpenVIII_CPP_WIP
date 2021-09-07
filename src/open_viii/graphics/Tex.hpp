@@ -13,12 +13,12 @@
 #ifndef VIIIARCHIVE_TEX_HPP
 #define VIIIARCHIVE_TEX_HPP
 #include "Color.hpp"
-#include "Png.hpp"
-#include "Ppm.hpp"
 #include "open_viii/graphics/tex/TexHeader.hpp"
 #include "open_viii/graphics/tex/TexHeader2.hpp"
 #include "open_viii/graphics/tex/TexHeader2_Version2.hpp"
 #include "open_viii/graphics/tex/TexPixelFormatHeader.hpp"
+#include "Png.hpp"
+#include "Ppm.hpp"
 #include <cstdint>
 #include <cstring>
 #include <ranges>
@@ -278,25 +278,30 @@ public:
         for (; b1 != e1 && b2 != e2; (void)++b1, ++b2) {
           assert(*b1 == *b2);
         }
-                Png::save(read_image,
-                          m_tex_header.num_colors_per_palette(),
-                          m_tex_header.num_palettes(),
-                          *saved_path,
-                          path.string());
+        Png::save(read_image,
+                  m_tex_header.num_colors_per_palette(),
+                  m_tex_header.num_palettes(),
+                  *saved_path,
+                  path.string());
       }
     }
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Tex &t)
+  [[nodiscard]] TexHeader
+    tex_header() const noexcept
   {
-    return os << "{Version: " << t.m_tex_header.version()
-              << ", Bits Per Pixel: " << t.m_tex_header.bits_per_pixel()
-              << ", Bits Per Index: " << t.m_tex_header.bits_per_index()
-              << ", Bytes Per Pixel: " << t.m_tex_header.bytes_per_pixel()
-              << ", Palette Count: " << t.m_tex_header.num_palettes()
-              << ", Width: " << t.m_tex_header.image_width()
-              << ", Height: " << t.m_tex_header.image_height() << "}\n";
+    return m_tex_header;
   }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const Tex &t)
+{
+  return os << "{Version: " << t.tex_header().version()
+            << ", Bits Per Pixel: " << t.tex_header().bits_per_pixel()
+            << ", Bits Per Index: " << t.tex_header().bits_per_index()
+            << ", Bytes Per Pixel: " << t.tex_header().bytes_per_pixel()
+            << ", Palette Count: " << t.tex_header().num_palettes()
+            << ", Width: " << t.tex_header().image_width()
+            << ", Height: " << t.tex_header().image_height() << "}\n";
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TEX_HPP

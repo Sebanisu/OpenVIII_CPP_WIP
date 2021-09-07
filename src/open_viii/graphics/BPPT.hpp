@@ -206,13 +206,13 @@ public:
       (m_bpp8 ? RAW8_VALUE : 0U) + (m_bpp16 ? RAW16_VALUE : 0U)
       + (m_color_lookup_table_present ? CLP_VALUE : 0U));
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, [[maybe_unused]] const BPPT &input)
-  {
-    return os << "{BPP: " << static_cast<int>(input)
-              << ", CLP: " << input.m_color_lookup_table_present << '}';
-  }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, [[maybe_unused]] const BPPT &input)
+{
+  return os << "{BPP: " << static_cast<int>(input)
+            << ", CLP: " << input.color_lookup_table_present() << '}';
+}
 namespace literals {
   constexpr BPPT operator""_bpp(unsigned long long int value)
   {

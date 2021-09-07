@@ -68,11 +68,11 @@ public:
   {
     return check();
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const TimImageHeader &input)
-  {
-    return os << '{' << input.size() << " bytes, " << input.m_rectangle << '}';
-  }
 };
+inline std::ostream &
+  operator<<(std::ostream &os, const TimImageHeader &input)
+{
+  return os << '{' << input.size() << " bytes, " << input.rectangle() << '}';
+}
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TIMIMAGEHEADER_HPP
