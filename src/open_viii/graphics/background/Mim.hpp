@@ -127,10 +127,7 @@ private:
                           });
     return out;
   }
-  static constexpr std::array<MimType, 2> TEXTURE_TYPES{
-    MimType(24, 13),
-    MimType(16, 12, 0, 2)
-  };
+
 
 public:
   constexpr static auto EXT = std::string_view{ ".mim" };
@@ -159,7 +156,7 @@ public:
   [[maybe_unused]] [[nodiscard]] static MimType
     get_texture_type(std::size_t mim_filesize, std::string_view name = {})
   {
-    for (auto m : TEXTURE_TYPES) {
+    for (auto m : MimType::TEXTURE_TYPES()) {
       if (m.file_size() == mim_filesize) {
         if (tools::i_find_any(name, Tile3::FORCE_TYPE_VALUES)) {
           m.type(3);

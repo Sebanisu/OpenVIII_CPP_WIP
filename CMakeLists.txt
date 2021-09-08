@@ -11,14 +11,15 @@ function(SET_TARGET_PATHS target)
             )
 endfunction()
 if (MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.29.30129)
-    set(CMAKE_CXX_STANDARD 23)
+    set(CMAKE_CXX_STANDARD 23) # /std:c++latest - unlocks the non stable cpp20 features. For new 16.11 versions
 else ()
-    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD 20) # /std:c++latest for msvc and -std=c++20 for everyone else.
 endif ()
 ## Supported values are 98, 11, 14, 17, 20, 23.
 #To use all of c++20 on MVSC you must set cmake to 23
 #https://github.com/microsoft/STL/issues/1814#issuecomment-845572895
 #https://gitlab.kitware.com/cmake/cmake/-/issues/22606
+#https://github.com/Kitware/CMake/blob/71bf838cf35fabc27ff009f2901eeffc786fa753/Modules/Compiler/MSVC-CXX.cmake#L32
 
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON) ## the value of the CXX_STANDARD target property is treated as a requirement

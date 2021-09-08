@@ -81,9 +81,8 @@ void
                                      open_viii::graphics::background::Tile3,
                                      std::monostate>;
 
-  const auto map      = open_viii::graphics::background::get_map(
-    tile_type_view[0],
-    [&is, &tile_type_view]() -> variant_tiles {
+  const auto map      = open_viii::graphics::background::Map(
+         [&is, &tile_type_view]() -> variant_tiles {
       std::string line{};
       std::getline(is, line);
       if (std::empty(line))
@@ -100,9 +99,9 @@ void
       const auto raw_bytes = out_hex_to_vector(results.get<2>());
       auto       variant_tile
         = open_viii::graphics::background::get_tile(tile_type_view[0],
-                                                    raw_bytes);
+                                                         raw_bytes);
       std::visit(
-        [&](auto &tile) {
+             [&](auto &tile) {
           if constexpr (!open_viii::is_monostate<decltype(tile)>) {
             [[maybe_unused]] const auto
               &[re_whole_line,
@@ -185,7 +184,7 @@ void
 
       return variant_tile;
     });
-  open_viii::graphics::background::save_map(map, csv_path);
+  map.save_map(csv_path);
 }
 
 int
@@ -217,7 +216,7 @@ int
     puts(argv[1]);
     const auto csv_path       = std::string_view(argv[1]);
     const auto tile_type_view = get_tile_type(csv_path);
-    if(!tile_type_view.has_value())
+    if (!tile_type_view.has_value())
       exit(EXIT_FAILURE);
     common_code(csv_path, *tile_type_view);
     return EXIT_SUCCESS;
@@ -228,13 +227,13 @@ int
                "\nPress control+c to exit.\n\n";
 
   std::optional<std::string_view> tile_type_view{};
-  std::string csv_path{};
+  std::string                     csv_path{};
   do {
     std::cout << "Path to .csv file:\n";
     std::cin >> csv_path;
     tile_type_view = get_tile_type(csv_path);
   }
-  while(!tile_type_view.has_value());
+  while (!tile_type_view.has_value());
   common_code(csv_path, *tile_type_view);
   return EXIT_SUCCESS;
 }

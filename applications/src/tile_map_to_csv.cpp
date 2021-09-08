@@ -62,39 +62,25 @@ void
   map_to_csv(const std::filesystem::path &mim_path,
              const std::filesystem::path &map_path)
 {
-  const auto mim = open_viii::graphics::background::Mim{ mim_path };
-  const auto process
-    = [&map_path](std::variant<open_viii::graphics::background::Map<
-                                 open_viii::graphics::background::Tile1>,
-                               open_viii::graphics::background::Map<
-                                 open_viii::graphics::background::Tile2>,
-                               open_viii::graphics::background::Map<
-                                 open_viii::graphics::background::Tile3>> map) {
-        switch (map.index()) {
-        case 0: {
-          const auto out_path = map_path.string() + ".1" + std::string(".csv");
-          std::get<0>(map).save_csv(out_path);
-        } break;
-        case 1: {
-          const auto out_path = map_path.string() + ".2" + std::string(".csv");
-          std::get<1>(map).save_csv(out_path);
-        } break;
-        case 2: {
-          const auto out_path = map_path.string() + ".3" + std::string(".csv");
-          std::get<2>(map).save_csv(out_path);
-        } break;
-        }
-      };
-  if (mim.mim_type().type() == 1) {
-    process(open_viii::graphics::background::Map<
-            open_viii::graphics::background::Tile1>{ map_path, false, false });
-  }
-  else if (mim.mim_type().type() == 2) {
-    process(open_viii::graphics::background::Map<
-            open_viii::graphics::background::Tile2>{ map_path, false, false });
-  }
-  else if (mim.mim_type().type() == 3) {
-    process(open_viii::graphics::background::Map<
-            open_viii::graphics::background::Tile3>{ map_path, false, false });
-  }
+  const auto mim     = open_viii::graphics::background::Mim{ mim_path };
+  const auto process = [&map_path](open_viii::graphics::background::Map map) {
+    std::string out_path = map_path.string();
+    switch (map.get_type()) {
+    case 0: {
+      out_path += ".1";
+    } break;
+    case 1: {
+      out_path += ".2";
+    } break;
+    case 2: {
+      out_path += ".3";
+    } break;
+    }
+    out_path += std::string(".csv");
+    map.save_csv(out_path);
+  };
+  process(open_viii::graphics::background::Map{ mim.mim_type(),
+                                                map_path,
+                                                false,
+                                                false });
 }

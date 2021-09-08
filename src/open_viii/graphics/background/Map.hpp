@@ -13,31 +13,59 @@
 #ifndef VIIIARCHIVE_MAP_HPP
 #define VIIIARCHIVE_MAP_HPP
 #include "Mim.hpp"
+#include "open_viii/tools/Tools.hpp"
 #include "Pupu.hpp"
 #include "Tile1.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
-#include "open_viii/tools/Tools.hpp"
 #include "tl/write.hpp"
 #include <bit>
 #include <bitset>
 #include <cstdint>
 #include <filesystem>
+#include <utility>
 #include <variant>
 namespace open_viii::graphics::background {
-template<typename map_type = Tile1>
-requires(
-  std::is_same_v<
-    map_type,
-    Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) struct
-  Map
+struct Map
 {
 private:
-  mutable std::vector<map_type> m_tiles{};
+  mutable std::variant<std::monostate,
+                       std::vector<Tile1>,
+                       std::vector<Tile2>,
+                       std::vector<Tile3>>
+    m_tiles{};
+
+public:
+  void
+    visit_tiles(auto &&lambda) const
+  {
+    std::visit(
+      [&lambda](auto &&tiles) {
+        using tiles_type = std::decay_t<decltype(tiles)>;
+        if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
+          lambda(std::forward<decltype(tiles)>(tiles));
+        }
+      },
+      m_tiles);
+  }
+
+private:
+  void
+    visit_not_tiles(auto &&lambda) const
+  {
+    std::visit(
+      [&lambda](auto &&tiles) {
+        using tiles_type = std::decay_t<decltype(tiles)>;
+        if constexpr (std::is_same_v<tiles_type, std::monostate>) {
+          lambda();
+        }
+      },
+      m_tiles);
+  }
   /**
    * offset holds the original position of canvas.
    */
-  mutable Point<std::int16_t>   m_offset{};
+  mutable Point<std::int16_t> m_offset{};
   /**
    * remove invalid tiles from buffer.
    */
@@ -51,8 +79,11 @@ private:
                             // limit; //|| x.source_x() >limit || x.source_y()
                             // >limit; //|| !x.draw();
     };
-    std::erase_if(m_tiles, cmp);
+    visit_tiles([](auto &&tiles) {
+      std::erase_if(tiles, cmp);
+    });
   }
+
   /**
    * Sort the data and then remove duplicates.
    */
@@ -61,8 +92,10 @@ private:
   {
     // unique requires sorted data to work.
     sort();
-    auto last = std::unique(m_tiles.begin(), m_tiles.end());
-    m_tiles.erase(last, m_tiles.end());
+    visit_tiles([](auto &&tiles) {
+      auto last = std::unique(tiles.begin(), tiles.end());
+      tiles.erase(last, tiles.end());
+    });
   }
   /**
    * Sort in draw order.
@@ -106,8 +139,149 @@ private:
       }
       return false;
     };
-    std::ranges::sort(m_tiles, cmp);
+    visit_tiles([](auto &&tiles) {
+      std::ranges::sort(tiles, cmp);
+    });
   }
+  [[nodiscard]] constexpr auto
+    minmax_generic(auto compare, auto get, auto fail) const noexcept
+  {
+    return std::visit(
+      [&compare, &get, &fail](auto &&tiles) {
+        using tiles_type = std::decay_t<decltype(tiles)>;
+        if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
+          auto tmp = std::minmax_element(tiles.cbegin(), tiles.cend(), compare);
+          return get(tmp);
+        }
+        else {
+          return fail();
+        }
+      },
+      m_tiles);
+  }
+  [[nodiscard]] constexpr auto
+    min_generic(auto compare, auto get, auto fail) const noexcept
+  {
+    return std::visit(
+      [&compare, &get, &fail](auto &&tiles) {
+        using tiles_type = std::decay_t<decltype(tiles)>;
+        if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
+          auto tmp = std::min_element(tiles.cbegin(), tiles.cend(), compare);
+          return get(tmp);
+        }
+        else {
+          return fail();
+        }
+      },
+      m_tiles);
+  }
+  [[nodiscard]] constexpr auto
+    max_generic(auto compare, auto get, auto fail) const noexcept
+  {
+    return std::visit(
+      [&compare, &get, &fail](auto &&tiles) {
+        using tiles_type = std::decay_t<decltype(tiles)>;
+        if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
+          auto tmp = std::max_element(tiles.cbegin(), tiles.cend(), compare);
+          return get(tmp);
+        }
+        else {
+          return fail();
+        }
+      },
+      m_tiles);
+  }
+  [[nodiscard]] constexpr auto
+    minmax_x() const noexcept
+  {
+    return minmax_generic(
+      [](const auto &a, const auto &b) -> bool {
+        return a.x() < b.x();
+      },
+      [](auto &&tmp) {
+        return std::pair<const std::int16_t, const std::int16_t>{
+          tmp.first->x(),
+          tmp.second->x()
+        };
+      },
+      []() {
+        return std::pair<const std::int16_t, const std::int16_t>{};
+      });
+  }
+  [[nodiscard]] constexpr auto
+    min_x() const noexcept
+  {
+    return min_generic(
+      [](const auto &a, const auto &b) -> bool {
+        return a.x() < b.x();
+      },
+      [](auto &&tmp) {
+        return tmp->x();
+      },
+      []() {
+        return std::int16_t{};
+      });
+  }
+  [[nodiscard]] constexpr auto
+    max_x() const noexcept
+  {
+    return max_generic(
+      [](const auto &a, const auto &b) -> bool {
+        return a.x() < b.x();
+      },
+      [](auto &&tmp) {
+        return tmp->x();
+      },
+      []() {
+        return std::int16_t{};
+      });
+  }
+  [[nodiscard]] constexpr auto
+    minmax_y() const noexcept
+  {
+    return minmax_generic(
+      [](const auto &a, const auto &b) -> bool {
+        return a.y() < b.y();
+      },
+      [](auto &&tmp) {
+        return std::pair<const std::int16_t, const std::int16_t>{
+          tmp.first->y(),
+          tmp.second->y()
+        };
+      },
+      []() {
+        return std::pair<const std::int16_t, const std::int16_t>{};
+      });
+  }
+  [[nodiscard]] constexpr auto
+    min_y() const noexcept
+  {
+    return min_generic(
+      [](const auto &a, const auto &b) -> bool {
+        return a.y() < b.y();
+      },
+      [](auto &&tmp) {
+        return tmp->y();
+      },
+      []() {
+        return std::int16_t{};
+      });
+  }
+  [[nodiscard]] constexpr auto
+    max_y() const noexcept
+  {
+    return max_generic(
+      [](const auto &a, const auto &b) -> bool {
+        return a.y() < b.y();
+      },
+      [](auto &&tmp) {
+        return tmp->y();
+      },
+      []() {
+        return std::int16_t{};
+      });
+  }
+
   /**
    * Some tiles are drawn off screen to create a texture we are going to shift
    * everything to at least (0,0)
@@ -120,63 +294,37 @@ private:
       shift(m_offset.abs());
     }
   }
-  [[nodiscard]] constexpr auto
-    min_x() const noexcept
+  static auto
+    init_tiles(const MimType &mim_type, const std::vector<char> &buffer)
   {
-    return (std::min_element(m_tiles.cbegin(),
-                             m_tiles.cend(),
-                             [](const auto &a, const auto &b) -> bool {
-                               return a.x() < b.x();
-                             }))
-      ->x();
-  }
-  [[nodiscard]] auto
-    minmax_x() const noexcept
-  {
-    return std::minmax_element(m_tiles.cbegin(),
-                               m_tiles.cend(),
-                               [](const auto &a, const auto &b) -> bool {
-                                 return a.x() < b.x();
-                               });
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    max_x() const noexcept
-  {
-    return (std::max_element(m_tiles.cbegin(),
-                             m_tiles.cend(),
-                             [](const auto &a, const auto &b) -> bool {
-                               return a.x() < b.x();
-                             }))
-      ->x();
-  }
-  [[nodiscard]] auto
-    minmax_y() const noexcept
-  {
-    return std::minmax_element(m_tiles.cbegin(),
-                               m_tiles.cend(),
-                               [](const auto &a, const auto &b) -> bool {
-                                 return a.y() < b.y();
-                               });
-  }
-  [[nodiscard]] constexpr auto
-    min_y() const noexcept
-  {
-    return (std::min_element(m_tiles.cbegin(),
-                             m_tiles.cend(),
-                             [](const auto &a, const auto &b) -> bool {
-                               return a.y() < b.y();
-                             }))
-      ->y();
-  }
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    max_y() const noexcept
-  {
-    return (std::max_element(m_tiles.cbegin(),
-                             m_tiles.cend(),
-                             [](const auto &a, const auto &b) -> bool {
-                               return a.y() < b.y();
-                             }))
-      ->y();
+    decltype(m_tiles) tiles{};
+    if (mim_type.type() == 1) {
+      tiles = std::vector<Tile1>{};
+    }
+    else if (mim_type.type() == 2) {
+      tiles = std::vector<Tile2>{};
+    }
+    else if (mim_type.type() == 3) {
+      tiles = std::vector<Tile3>{};
+    }
+    else {
+      tiles = std::monostate{};
+    }
+    std::visit(
+      [&buffer](auto &&local_tiles) {
+        using tiles_type = std::decay_t<decltype(local_tiles)>;
+        if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
+          using map_type   = typename tiles_type::value_type;
+          const auto count = std::ranges::size(buffer) / sizeof(map_type);
+          const auto size_in_bytes = count * sizeof(map_type);
+          local_tiles.resize(count);
+          std::memcpy(std::ranges::data(local_tiles),
+                      std::ranges::data(buffer),
+                      size_in_bytes);
+        }
+      },
+      tiles);
+    return tiles;
   }
 
 public:
@@ -186,16 +334,12 @@ public:
    * Import tiles from a raw buffer.
    * @param buffer is a raw char buffer.
    */
-  explicit Map(const std::vector<char> &buffer,
+  explicit Map(const MimType           &mim_type,
+               const std::vector<char> &buffer,
                bool                     sort_remove = true,
                bool                     shift       = true)
+    : m_tiles(init_tiles(mim_type, buffer))
   {
-    const auto count         = std::ranges::size(buffer) / sizeof(map_type);
-    const auto size_in_bytes = count * sizeof(map_type);
-    m_tiles.resize(count);
-    std::memcpy(std::ranges::data(m_tiles),
-                std::ranges::data(buffer),
-                size_in_bytes);
     if (sort_remove) {
       remove_invalid();
       sort_remove_duplicates();
@@ -204,27 +348,76 @@ public:
       shift_to_origin();
     }
   }
-  explicit Map(const std::filesystem::path &path,
-               bool                         sort_remove = true,
-               bool                         shift       = true)
-    : Map(tools::read_entire_file(path), sort_remove, shift)
+  Map(const MimType               &mim_type,
+      const std::filesystem::path &path,
+      bool                         sort_remove = true,
+      bool                         shift       = true)
+    : Map(mim_type, tools::read_entire_file(path), sort_remove, shift)
   {}
-  template<std::invocable tile_funcT>
-  explicit Map(tile_funcT tile_func)
+  Map(std::integral auto &&mim_type,
+      auto               &&buffer,
+      bool                 sort_remove = true,
+      bool                 shift       = true)
+    : Map(static_cast<MimType>(mim_type),
+          std::forward<decltype(buffer)>(buffer),
+          sort_remove,
+          shift)
+  {}
+  template<typename tile_funcT>
+  requires(
+    std::is_invocable_r_v<std::variant<open_viii::graphics::background::Tile1,
+                                       open_viii::graphics::background::Tile2,
+                                       open_viii::graphics::background::Tile3,
+                                       std::monostate>,
+                          tile_funcT>) explicit Map(tile_funcT tile_func)
+    : m_tiles(std::monostate())
   {
+
     bool       on   = true;
-    const auto push = [this, &on](auto item) {
-      if constexpr (std::is_same_v<decltype(item), map_type>) {
-        m_tiles.push_back(item);
+    const auto push = [this, &on](const auto &item) {
+      using map_type = std::decay_t<decltype(item)>;
+      if constexpr (std::is_same_v<map_type, std::monostate>) {
+        on = false;
       }
       else {
-        on = false;
+        visit_not_tiles([this]() {
+          m_tiles = std::vector<map_type>{};
+        });
+        visit_tiles([&on, &item](auto &&tiles) {
+          using tiles_type     = std::decay_t<decltype(tiles)>;
+          using local_map_type = typename tiles_type::value_type;
+          if constexpr (std::is_same_v<map_type, local_map_type>) {
+            tiles.push_back(item);
+          }
+          else {
+            on = false;
+          }
+        });
       }
     };
     while (on) {
       std::visit(push, tile_func());
     }
   }
+  std::uint8_t
+    get_type() const noexcept
+  {
+    //    std::uint8_t ret = {};
+    //    visit_tiles([&on, &item](auto &&tiles) {
+    //      using tiles_type     = std::decay_t<decltype(tiles)>;
+    //      using local_map_type = typename tiles_type::value_type;
+    //      if constexpr ()
+    //    });
+    if (m_tiles.index() == 3U) {
+      return static_cast<std::uint8_t>(0U);
+    }
+    return static_cast<std::uint8_t>(m_tiles.index() + 1U);
+  }
+  //  template<std::invocable tile_funcT, typename map_type =
+  //  decltype(tile_func())> requires(std::is_same_v<map_type, std::monostate>)
+  //  explicit Map(
+  //    tile_funcT tile_func) : m_tiles(std::monostate)
+  //  {}
   [[nodiscard]] const auto &
     tiles() const noexcept
   {
@@ -248,11 +441,11 @@ public:
     const auto &[l_min_y, l_max_y]                         = l_minmax_y;
     constexpr static auto                        tile_size = 16;
     open_viii::graphics::Rectangle<std::int32_t> l_canvas{
-      l_min_x->x(),
-      l_min_y->y(),
-      static_cast<std::int32_t>(std::abs(l_max_x->x()) + std::abs(l_min_x->x())
+      l_min_x,
+      l_min_y,
+      static_cast<std::int32_t>(std::abs(l_max_x) + std::abs(l_min_x)
                                 + tile_size),
-      static_cast<std::int32_t>(std::abs(l_max_y->y()) + std::abs(l_min_y->y())
+      static_cast<std::int32_t>(std::abs(l_max_y) + std::abs(l_min_y)
                                 + tile_size)
     };
     return l_canvas;
@@ -266,8 +459,10 @@ public:
     shift(const std::int16_t &x, const std::int16_t &y) const noexcept
   {
     const auto xy = Point(x, y);
-    std::ranges::transform(m_tiles, std::ranges::begin(m_tiles), [&xy](auto t) {
-      return t.with_xy(t.xy() + xy);
+    visit_tiles([&xy](auto &&tiles) {
+      std::ranges::transform(tiles, std::ranges::begin(tiles), [&xy](auto t) {
+        return t.with_xy(t.xy() + xy);
+      });
     });
   }
   void
@@ -285,41 +480,43 @@ public:
           << R"("Index","Raw bytes","Draw","BPP","Blend Mode","Blend Other","Layer","Texture Page","Palette","Animation","Animation Frame","Source X","Source Y","X","Y","Z")"
           << '\n';
         std::size_t i{};
-        std::for_each(
-          std::ranges::cbegin(m_tiles),
-          std::ranges::cend(m_tiles),
-          [&os, &i](const auto &t) {
-            os << i++ << ',' << '"';
-            t.to_hex(os);
-            os << "\"," << t.draw() << ',' << int{ t.depth() } << ",\"" <<
-              [&t]() {
-                switch (t.blend_mode()) {
-                case BlendModeT::half_add:
-                  return "Half Add";
-                case BlendModeT::add:
-                  return "Add";
-                case BlendModeT::subtract:
-                  return "Subtract";
-                case BlendModeT::quarter_add:
-                  return "Quarter Add";
-                case BlendModeT::none:
-                default:
-                  return "None";
-                }
-              }()
-               << "\"," << static_cast<uint16_t>(t.blend()) << ','
-               << static_cast<uint16_t>(t.layer_id()) << ','
-               << static_cast<uint16_t>(t.texture_id()) << ','
-               << static_cast<uint16_t>(t.palette_id()) << ','
-               << static_cast<uint16_t>(t.animation_id()) << ','
-               << static_cast<uint16_t>(t.animation_state()) << ','
-               << static_cast<uint16_t>(t.source_x()) << ','
-               << static_cast<uint16_t>(t.source_y()) << ','
-               << static_cast<int16_t>(t.x()) << ','
-               << static_cast<int16_t>(t.y()) << ','
-               << static_cast<int16_t>(t.z()) << ','//<< Pupu(t)
-               << '\n';// std::nouppercase << std::dec << std::setw(0U)
-          });
+        visit_tiles([&i, &os](auto &&tiles) {
+          std::for_each(
+            std::ranges::cbegin(tiles),
+            std::ranges::cend(tiles),
+            [&os, &i](const auto &t) {
+              os << i++ << ',' << '"';
+              t.to_hex(os);
+              os << "\"," << t.draw() << ',' << int{ t.depth() } << ",\"" <<
+                [&t]() {
+                  switch (t.blend_mode()) {
+                  case BlendModeT::half_add:
+                    return "Half Add";
+                  case BlendModeT::add:
+                    return "Add";
+                  case BlendModeT::subtract:
+                    return "Subtract";
+                  case BlendModeT::quarter_add:
+                    return "Quarter Add";
+                  case BlendModeT::none:
+                  default:
+                    return "None";
+                  }
+                }()
+                 << "\"," << static_cast<uint16_t>(t.blend()) << ','
+                 << static_cast<uint16_t>(t.layer_id()) << ','
+                 << static_cast<uint16_t>(t.texture_id()) << ','
+                 << static_cast<uint16_t>(t.palette_id()) << ','
+                 << static_cast<uint16_t>(t.animation_id()) << ','
+                 << static_cast<uint16_t>(t.animation_state()) << ','
+                 << static_cast<uint16_t>(t.source_x()) << ','
+                 << static_cast<uint16_t>(t.source_y()) << ','
+                 << static_cast<int16_t>(t.x()) << ','
+                 << static_cast<int16_t>(t.y()) << ','
+                 << static_cast<int16_t>(t.z()) << ','//<< Pupu(t)
+                 << '\n';// std::nouppercase << std::dec << std::setw(0U)
+            });
+        });
       },
       (path.parent_path() / path.stem()).string() + ".csv");
   }
@@ -329,8 +526,11 @@ public:
     auto path = std::filesystem::path(in_path);
     tools::write_buffer(
       [this](std::ostream &os) {
-        for (const auto &tile : m_tiles)
-          tl::write::append(os, tile);
+        visit_tiles([&os](auto &&tiles) {
+          std::ranges::for_each(tiles, [&os](auto &&tile) {
+            tl::write::append(os, tile);
+          });
+        });
       },
       (path.parent_path() / path.stem()).string() + ".map");
   }
@@ -389,7 +589,8 @@ public:
   //          // auto x = t.x();
   //          // auto y = t.y();
   //
-  //          if (depth != t.depth() || palette != t.palette_id() || !t.draw())
+  //          if (depth != t.depth() || palette != t.palette_id() ||
+  //          !t.draw())
   //          {
   //            continue;
   //          }
@@ -398,9 +599,10 @@ public:
   //              if (t.source_y() < 0 || t.source_x() < 0) {
   //                continue;
   //              }
-  //              auto pixel_in = (static_cast<std::uint32_t>(t.source_x()) + x)
-  //                              + ((static_cast<std::uint32_t>(t.source_y()) +
-  //                              y) * width);
+  //              auto pixel_in = (static_cast<std::uint32_t>(t.source_x()) +
+  //              x)
+  //                              + ((static_cast<std::uint32_t>(t.source_y())
+  //                              + y) * width);
   //              if (t.depth().bpp4()) {
   //                pixel_in += t.TEXTURE_PAGE_WIDTH * t.texture_id() * 2U;
   //              } else if (t.depth().bpp8()) {
@@ -411,7 +613,8 @@ public:
   //                pixel_in += (t.TEXTURE_PAGE_WIDTH * t.texture_id()) / 2U;
   //              }
   //              auto pixel_out = (static_cast<std::uint32_t>(t.x()) + x)
-  //                               + ((static_cast<std::uint32_t>(t.y()) + y) *
+  //                               + ((static_cast<std::uint32_t>(t.y()) + y)
+  //                               *
   //                               static_cast<std::uint32_t>(rect.width()));
   //              Color16 color = data[pixel_in];
   //              if (!color.is_black()) {
@@ -433,64 +636,47 @@ public:
   //    }
   //  }
 };
-template<typename T>
-void
-  save_map(const T &map, const std::string_view &path)
-{
-  std::visit(
-    [&path](const auto &m) {
-      if constexpr (!is_monostate<decltype(m)>)
-        m.save_map(path);
-    },
-    map);
-}
+// template<typename T>
+// void
+//   save_map(const T &map, const std::string_view &path)
+//{
+//   std::visit(
+//     [&path](const auto &m) {
+//       if constexpr (!is_monostate<decltype(m)>)
+//         m.save_map(path);
+//     },
+//     map);
+// }
 auto
-  get_map(char tile_type, auto &&...data)
-    -> std::variant<Map<Tile1>, Map<Tile2>, Map<Tile3>, std::monostate>
-{
-  switch (tile_type) {
-  case 1:
-  case '1':
-    return Map<Tile1>(std::forward<decltype(data)>(data)...);
-    break;
-  case 2:
-  case '2':
-    return Map<Tile2>(std::forward<decltype(data)>(data)...);
-    break;
-  case 3:
-  case '3':
-    return Map<Tile3>(std::forward<decltype(data)>(data)...);
-    break;
-  }
-  return std::monostate{};
-}
-auto
-  get_tile(char tile_type, auto &&...data)
+  get_tile(char tile_type, std::ranges::range auto &&data, auto &&...misc)
     -> std::variant<Tile1, Tile2, Tile3, std::monostate>
 {
   switch (tile_type) {
   case 1:
   case '1':
-    return Tile1(std::forward<decltype(data)>(data)...);
+    return Tile1(std::forward<decltype(data)>(data),
+                 std::forward<decltype(misc)>(misc)...);
     break;
   case 2:
   case '2':
-    return Tile2(std::forward<decltype(data)>(data)...);
+    return Tile2(std::forward<decltype(data)>(data),
+                 std::forward<decltype(misc)>(misc)...);
     break;
   case 3:
   case '3':
-    return Tile3(std::forward<decltype(data)>(data)...);
+    return Tile3(std::forward<decltype(data)>(data),
+                 std::forward<decltype(misc)>(misc)...);
     break;
   }
   return std::monostate{};
 }
-template<typename map_type = Tile1>
 inline std::ostream &
-  operator<<(std::ostream &os, const Map<map_type> &m)
+  operator<<(std::ostream &os, const Map &m)
 {
-  return os << std::ranges::size(m.tiles()) << ", "
-            << std::ranges::size(m.t2()) << ", " << std::ranges::size(m.t3())
-            << '\n';
+  m.visit_tiles([&os](auto &&tiles) {
+    os << "map contains " << tiles.size() << " tile entries. \n";
+  });
+  return os;
 }
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_MAP_HPP

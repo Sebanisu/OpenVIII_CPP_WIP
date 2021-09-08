@@ -37,15 +37,20 @@ public:
   static constexpr std::uint16_t OUT_WIDTH{ 128U };
   static constexpr std::uint16_t COLORS_PER_PALETTE{ 256U };
   static constexpr std::uint16_t BYTES_PER_PALETTE{ 2U * COLORS_PER_PALETTE };
+  // I'm not sure without checking file size if we can pick a type this way.
+  // really only useful forcing a type.
+  explicit constexpr MimType(std::integral auto type)
+    : MimType(TEXTURE_TYPES().front())
+  {
+    m_type = static_cast<std::uint8_t>(type);
+  }
   constexpr MimType() = default;
   constexpr MimType(std::uint8_t palettes,
                     std::uint8_t texture_pages,
                     std::uint8_t skipped_palettes = DEFAULT_SKIPPED_PALETTES,
                     std::uint8_t type             = DEFAULT_TYPE)
-    : m_palettes(palettes),
-      m_texture_pages(texture_pages),
-      m_skipped_palettes(skipped_palettes),
-      m_type(type)
+    : m_palettes(palettes), m_texture_pages(texture_pages),
+      m_skipped_palettes(skipped_palettes), m_type(type)
   {}
   [[nodiscard]] const auto &
     type() const noexcept
@@ -96,6 +101,12 @@ public:
     canvas(int bpp = DEFAULT_BPP, std::uint8_t scale = 1)
   {
     return Rectangle<std::size_t>(0, 0, width(bpp) * scale, height() * scale);
+  }
+  static constexpr std::array<MimType, 2>
+    TEXTURE_TYPES()
+  {
+    return { MimType{ 24, 13, DEFAULT_SKIPPED_PALETTES, DEFAULT_TYPE },
+             MimType{ 16, 12, 0, 2 } };
   }
   friend std::ostream &
     operator<<(std::ostream &os, const MimType &m)

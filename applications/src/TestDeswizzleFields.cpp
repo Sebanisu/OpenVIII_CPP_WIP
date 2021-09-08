@@ -21,47 +21,41 @@ int
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    static constexpr auto coo      = open_viii::LangT::en;
-    const auto            archives = open_viii::archive::Archives(
-      path, open_viii::LangCommon::to_string<coo>());
+    static constexpr auto coo = open_viii::LangT::en;
+    const auto            archives
+      = open_viii::archive::Archives(path,
+                                     open_viii::LangCommon::to_string<coo>());
     if (!static_cast<bool>(archives)) {
       std::cerr << "Failed to load path: " << path.string() << '\n';
       return;
     }
     {
-      const auto &field =
-        archives.get<open_viii::archive::ArchiveTypeT::field>();
+      const auto &field
+        = archives.get<open_viii::archive::ArchiveTypeT::field>();
       field.execute_with_nested(
-        {}, [](const open_viii::archive::FIFLFS<false> &e) {
+        {},
+        [](const open_viii::archive::FIFLFS<false> &e) {
           const std::string &basename = e.get_base_name();
-          const std::string  mim_name =
-            basename + open_viii::graphics::background::Mim::EXT.data();
-          const std::string map_name =
-            basename + open_viii::graphics::background::Map<>::EXT.data();
-          auto mim =
-            open_viii::graphics::background::Mim{ e.get_entry_data(mim_name),
-                                                  basename };
-          const auto process =
-            [&mim, &e, &mim_name, &map_name, &basename](auto map) {
-              std::cout << "  " << basename << '\n';
-              map.save_csv(e.get_full_path(map_name));
-              open_viii::graphics::background::Deswizzle(
-                mim, map, e.get_full_path(mim_name))
-                .save();
-            };
-          if (mim.mim_type().type() == 1) {
-            process(open_viii::graphics::background::Map<
-                    open_viii::graphics::background::Tile1>{
-              e.get_entry_data(map_name) });
-          } else if (mim.mim_type().type() == 2) {
-            process(open_viii::graphics::background::Map<
-                    open_viii::graphics::background::Tile2>{
-              e.get_entry_data(map_name) });
-          } else if (mim.mim_type().type() == 3) {
-            process(open_viii::graphics::background::Map<
-                    open_viii::graphics::background::Tile3>{
-              e.get_entry_data(map_name) });
-          }
+          const std::string  mim_name
+            = basename + open_viii::graphics::background::Mim::EXT.data();
+          const std::string map_name
+            = basename + open_viii::graphics::background::Map::EXT.data();
+          auto mim
+            = open_viii::graphics::background::Mim{ e.get_entry_data(mim_name),
+                                                    basename };
+          const auto process
+            = [&mim, &e, &mim_name, &map_name, &basename](auto map) {
+                std::cout << "  " << basename << '\n';
+                map.save_csv(e.get_full_path(map_name));
+                open_viii::graphics::background::Deswizzle(
+                  mim,
+                  map,
+                  e.get_full_path(mim_name))
+                  .save();
+              };
+          process(
+            open_viii::graphics::background::Map{ mim.mim_type(),
+                                                  e.get_entry_data(map_name) });
         });
     }
   });

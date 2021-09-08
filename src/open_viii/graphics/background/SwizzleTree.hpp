@@ -6,8 +6,8 @@
 #include "Deswizzle.hpp"
 #include "Map.hpp"
 #include "Mim.hpp"
-#include "Reswizzle.hpp"
 #include "open_viii/archive/FIFLFS.hpp"
+#include "Reswizzle.hpp"
 #include <utility>
 namespace open_viii::graphics::background {
 /**
@@ -38,16 +38,16 @@ private:
     get_mim_type() const
   {
     if (static_cast<bool>(m_archive)) {
-      std::vector<std::pair<unsigned int, std::string>> mims =
-        m_archive.get_vector_of_indexes_and_files({ m_mim_filename });
+      std::vector<std::pair<unsigned int, std::string>> mims
+        = m_archive.get_vector_of_indexes_and_files({ m_mim_filename });
       for (const std::pair<unsigned int, std::string> &pair : mims) {
         std::cout << '\t' << pair.first << '\t' << pair.second << std::endl;
       }
       if (std::ranges::empty(mims)) {
         return {};// no mim file.
       }
-      open_viii::FI_Like auto mim_fi =
-        m_archive.get_entry_by_index(mims[0].first);
+      open_viii::FI_Like auto mim_fi
+        = m_archive.get_entry_by_index(mims[0].first);
       return Mim::get_texture_type(mim_fi.uncompressed_size(), m_dir_name);
     }
     return {};
@@ -80,8 +80,11 @@ private:
       Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void reswizzle_with_type()
     const
   {
-    const auto r = Reswizzle<map_type>(
-      get_map_buffer(), m_dir_path, m_dir_name, m_output_prefix);
+    const auto r = Reswizzle(m_mim_type,
+                             get_map_buffer(),
+                             m_dir_path,
+                             m_dir_name,
+                             m_output_prefix);
     r.process();
   }
   template<typename map_type>
@@ -92,9 +95,9 @@ private:
     const
   {
     // const auto mim = Mim(get_mim_buffer(),m_mim_filename);
-    const auto mim =
-      MimFromPath{ m_mim_type, m_dir_path, m_dir_name, m_output_prefix };
-    const auto map = Map<map_type>{ get_map_buffer() };
+    const auto mim
+      = MimFromPath{ m_mim_type, m_dir_path, m_dir_name, m_output_prefix };
+    const auto map = Map{ m_mim_type, get_map_buffer() };
     const auto r   = Deswizzle(mim, map, m_output_prefix);
     r.save();
     // const auto r = Deswizzle<map_type>(get_map_buffer(), m_dir_path,
@@ -103,14 +106,13 @@ private:
 
 public:
   SwizzleTree(const open_viii::archive::FIFLFS<true> &field,
-              const std::filesystem::path &           dir_path)
-    : m_dir_path(dir_path),
-      m_dir_name(dir_path.filename().string()),
+              const std::filesystem::path            &dir_path)
+    : m_dir_path(dir_path), m_dir_name(dir_path.filename().string()),
       m_fi_filename(get_path_with_ext(archive::FI::EXT)),
       m_fl_filename(get_path_with_ext(open_viii::archive::fl::EXT)),
       m_fs_filename(get_path_with_ext(open_viii::archive::FS::EXT)),
       m_map_filename(
-        get_path_with_ext(open_viii::graphics::background::Map<>::EXT)
+        get_path_with_ext(open_viii::graphics::background::Map::EXT)
           .substr(1)),
       m_mim_filename(
         get_path_with_ext(open_viii::graphics::background::Mim::EXT).substr(1)),
@@ -154,9 +156,11 @@ public:
   {
     if (m_mim_type.type() == 1) {
       reswizzle_with_type<Tile1>();
-    } else if (m_mim_type.type() == 2) {
+    }
+    else if (m_mim_type.type() == 2) {
       reswizzle_with_type<Tile2>();
-    } else if (m_mim_type.type() == 3) {
+    }
+    else if (m_mim_type.type() == 3) {
       reswizzle_with_type<Tile3>();
     }
   }
@@ -169,9 +173,11 @@ public:
   {
     if (m_mim_type.type() == 1) {
       deswizzle_with_type<Tile1>();
-    } else if (m_mim_type.type() == 2) {
+    }
+    else if (m_mim_type.type() == 2) {
       deswizzle_with_type<Tile2>();
-    } else if (m_mim_type.type() == 3) {
+    }
+    else if (m_mim_type.type() == 3) {
       deswizzle_with_type<Tile3>();
     }
   }
