@@ -105,7 +105,7 @@ private:
 
   template<typename deleter>
   [[nodiscard]] double
-    get_gamma(const safe_png_read_struct &                        png_ptr,
+    get_gamma(const safe_png_read_struct                         &png_ptr,
               const std::unique_ptr<::libpng::png_info, deleter> &info_ptr)
       const noexcept
   {
@@ -118,7 +118,7 @@ private:
   template<typename deleter>
   [[nodiscard]] auto
     get_background_color(
-      const safe_png_read_struct &                        png_ptr,
+      const safe_png_read_struct                         &png_ptr,
       const std::unique_ptr<::libpng::png_info, deleter> &info_ptr) const
   {
     libpng::png_color_16 *pBackground{};
@@ -262,13 +262,16 @@ public:
               height);// todo modernize error message
       return std::nullopt;
     }
-    filename = (!filename.string().starts_with(prefix)
-                  ? (prefix / filename.parent_path() / filename.stem()).string()
-                  : (filename.parent_path() / filename.stem()).string())
-             + (filename.has_extension()
-                  ? "_" + filename.extension().string().substr(1)
-                  : "")
-             + ".png";
+    if (!open_viii::tools::i_ends_with(filename.string(), ".png")) {
+      filename
+        = (!filename.string().starts_with(prefix)
+             ? (prefix / filename.parent_path() / filename.stem()).string()
+             : (filename.parent_path() / filename.stem()).string())
+        + (filename.has_extension()
+             ? "_" + filename.extension().string().substr(1)
+             : "")
+        + ".png";
+    }
     auto fp = safe_fp{ fopen(filename.string().c_str(), "wb"),
                        fclose };// todo do I need fopen?
 

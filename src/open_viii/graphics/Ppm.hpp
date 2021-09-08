@@ -151,12 +151,18 @@ public:
         return;
       }
     }
-    auto        tmp = std::filesystem::path(input);
-    std::string filename{ (tmp.parent_path() / tmp.stem()).string() };
-    if (tmp.has_extension()) {
-      filename += "_" + tmp.extension().string().substr(1);
-    }
-    filename += ".ppm";
+    const std::string filename = [&]() {
+      if (!open_viii::tools::i_ends_with(input, ".ppm")) {
+        auto        tmp = std::filesystem::path(input);
+        std::string local_filename{ (tmp.parent_path() / tmp.stem()).string() };
+        if (tmp.has_extension()) {
+          local_filename += "_" + tmp.extension().string().substr(1);
+        }
+        local_filename += ".ppm";
+        return local_filename;
+      }
+      return std::string {input};
+    }();
     if (std::ranges::size(data) < width * height) {
       std::cout << std::ranges::size(data) << ", " << width << '*' << height
                 << '=' << width * height << '\n';
@@ -212,7 +218,7 @@ public:
   {
     return at(x + (y * static_cast<std::size_t>(m_width_height.x())));
   }
-  const Color24<ColorLayoutT::RGB> &
+  [[nodiscard]] const Color24<ColorLayoutT::RGB> &
     at(const size_t i) const noexcept
   {
     static constexpr Color24<ColorLayoutT::RGB> black{};
