@@ -72,7 +72,7 @@ private:
   void
     remove_invalid()
   {
-    static constexpr auto cmp = [](const auto &x) {
+    [[maybe_unused]] static constexpr auto cmp = [](const auto &x) {
       static constexpr auto end_x{ 0x7FFFU };
       // static constexpr auto limit = 1000U;
       return x.x() == end_x;// || std::abs(x.y()) > limit || std::abs(x.x()) >
@@ -103,7 +103,8 @@ private:
   void
     sort()
   {
-    static constexpr auto cmp = [](const auto &l, const auto &r) -> bool {
+    [[maybe_unused]] static constexpr auto cmp
+      = [](const auto &l, const auto &r) -> bool {
       if (l.z() > r.z()) {
         return true;
       }
@@ -443,10 +444,8 @@ public:
     open_viii::graphics::Rectangle<std::int32_t> l_canvas{
       l_min_x,
       l_min_y,
-      static_cast<std::int32_t>(std::abs(l_max_x) + std::abs(l_min_x)
-                                + tile_size),
-      static_cast<std::int32_t>(std::abs(l_max_y) + std::abs(l_min_y)
-                                + tile_size)
+      std::abs(l_max_x) + std::abs(l_min_x) + tile_size,
+      std::abs(l_max_y) + std::abs(l_min_y) + tile_size
     };
     return l_canvas;
   }

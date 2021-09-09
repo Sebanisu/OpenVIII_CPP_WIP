@@ -40,13 +40,13 @@ private:
   mutable std::uint32_t        m_height           = {};
   mutable std::uint32_t        m_area             = {};
   static constexpr std::size_t PALETTE_COUNT      = 16U;
+  mutable bool                     m_drawn = { false };
+  mutable std::vector<Color32RGBA> m_out   = {};
   mutable std::variant<std::array<std::vector<Tile1>, PALETTE_COUNT>,
                        std::array<std::vector<Tile2>, PALETTE_COUNT>,
                        std::array<std::vector<Tile3>, PALETTE_COUNT>,
                        std::monostate>
                                    m_skip  = {};
-  mutable std::vector<Color32RGBA> m_out   = {};
-  mutable bool                     m_drawn = { false };
   uint32_t
     get_area() const noexcept
   {
