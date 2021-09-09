@@ -70,9 +70,15 @@ public:
   }
   template<typename return_type = constants_type>
   [[nodiscard]] static constexpr return_type
-    texture_page_width() noexcept
+    texture_page_width(BPPT bpp = {}) noexcept
   {
-    return static_cast<return_type>(TileCommonConstants::texture_page_width);
+    auto temp = static_cast<int>(TileCommonConstants::texture_page_width);
+    if (bpp.bpp8())
+      return static_cast<return_type>(temp);
+    if (bpp.bpp16())
+      return static_cast<return_type>(temp / 2);
+    // bpp4 or default
+    return static_cast<return_type>(temp * 2);
   }
   template<typename return_type = constants_type>
   [[nodiscard]] static constexpr return_type
