@@ -426,6 +426,52 @@ public:
     bpp.bpp16(true);
     get_colors_for_saving(filename, bpp, {}, ppm_save, false);
   }
+  /**
+   * bpp selections
+   */
+  static constexpr std::array<open_viii::graphics::BPPT, 3U>
+    bpp_selections() noexcept
+  {
+    using namespace open_viii::graphics::literals;
+    return { 4_bpp, 8_bpp, 16_bpp };
+  }
+  /**
+   * bpp selections strings
+   */
+  static constexpr std::array<const char *, 3U> bpp_selections_c_str() noexcept
+  {
+    return { "4", "8", "16" };
+  }
+  /**
+   * palettes selections
+   */
+  static constexpr std::array<int, 16U> palette_selections() noexcept
+  {
+    return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+  }
+  /**
+   * palettes selections strings
+   */
+  static constexpr std::array<const char *, 16U>
+    palette_selections_c_str() noexcept
+  {
+    return { "0",
+             "1",
+             "2",
+             "3",
+             "4",
+             "5",
+             "6",
+             "7",
+             "8",
+             "9",
+             "10",
+             "11",
+             "12",
+             "13",
+             "14",
+             "15" };
+  }
 };
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_MIM_HPP
