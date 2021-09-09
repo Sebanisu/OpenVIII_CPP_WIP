@@ -677,5 +677,9 @@ inline std::ostream &
   });
   return os;
 }
+
+template<typename T>
+concept is_tile = std::is_same_v<Tile1, std::decay_t<T>> || std::
+  is_same_v<Tile2, std::decay_t<T>> || std::is_same_v<Tile3, std::decay_t<T>>;
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_MAP_HPP
