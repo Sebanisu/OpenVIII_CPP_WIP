@@ -224,10 +224,10 @@ public:
       convert_color(m_palette_buffer);
     }
     else if (bpp.bpp4()) {
-      convert_color(get_image_bpp4(palette));
+      colors = get_image_bpp4<T>(palette);
     }
     else if (bpp.bpp8()) {
-      convert_color(get_image_bpp8(palette));
+      colors = get_image_bpp8<T>(palette);
     }
     else if (bpp.bpp16()) {
       const auto m_image_buffer_bbp16 = set_image_span_bpp16();
