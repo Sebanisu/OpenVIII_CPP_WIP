@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.18)
 project(OpenVIII_CPP_WIP
         DESCRIPTION "Port of OpenVIII core library to C++20"
         LANGUAGES C CXX)
@@ -10,7 +10,8 @@ function(SET_TARGET_PATHS target)
             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
             )
 endfunction()
-if (MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.29.30129)
+if (MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.29.30129 AND CMAKE_VERSION VERSION_GREATER 3.20.3)
+    # this change happened in CMake 3.20.4
     set(CMAKE_CXX_STANDARD 23) # /std:c++latest - unlocks the non stable cpp20 features. For new 16.11 versions
 else ()
     set(CMAKE_CXX_STANDARD 20) # /std:c++latest for msvc and -std=c++20 for everyone else.
