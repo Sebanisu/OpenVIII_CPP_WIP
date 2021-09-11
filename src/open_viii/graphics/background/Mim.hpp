@@ -37,7 +37,7 @@ private:
   {
     return open_viii::graphics::background::MimType::COLORS_PER_PALETTE;
   }
-  [[nodiscard]] std::size_t
+  [[nodiscard]] std::uint32_t
     clut_height() const noexcept
   {
     return ((m_mim_type.palette_section_size()
@@ -174,7 +174,7 @@ public:
   {
     return os << m.m_mim_type;
   }
-  unsigned long
+  std::uint32_t
     get_height(bool dump_palette = false) const
   {
 
@@ -185,7 +185,7 @@ public:
       return m_mim_type.height();
     }
   }
-  unsigned long
+  std::uint32_t
     get_width(const BPPT &bpp, bool dump_palette = false) const
   {
 
