@@ -75,7 +75,7 @@ private:
     [[maybe_unused]] static constexpr auto cmp = [](const auto &x) {
       static constexpr auto end_x{ 0x7FFFU };
       // static constexpr auto limit = 1000U;
-      return x.x() == end_x;// || std::abs(x.y()) > limit || std::abs(x.x()) >
+      return x.x() == end_x || !x.draw();// || std::abs(x.y()) > limit || std::abs(x.x()) >
                             // limit; //|| x.source_x() >limit || x.source_y()
                             // >limit; //|| !x.draw();
     };
