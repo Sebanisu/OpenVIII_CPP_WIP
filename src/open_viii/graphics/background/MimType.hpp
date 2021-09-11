@@ -63,34 +63,34 @@ public:
   {
     m_type = new_type;
   }
-  [[nodiscard]] std::size_t
+  [[nodiscard]] std::uint32_t
     bytes_skipped_palettes() const noexcept
   {
-    return static_cast<std::size_t>(BYTES_PER_PALETTE)
-         * static_cast<std::size_t>(m_skipped_palettes);
+    return static_cast<std::uint32_t>(BYTES_PER_PALETTE)
+         * static_cast<std::uint32_t>(m_skipped_palettes);
   }
-  [[nodiscard]] std::size_t
+  [[nodiscard]] std::uint32_t
     palette_section_size() const noexcept
   {
-    return static_cast<std::size_t>(BYTES_PER_PALETTE)
-         * static_cast<std::size_t>(m_palettes);
+    return static_cast<std::uint32_t>(BYTES_PER_PALETTE)
+         * static_cast<std::uint32_t>(m_palettes);
   }
-  [[nodiscard]] constexpr std::size_t
+  [[nodiscard]] constexpr std::uint32_t
     width() const noexcept
   {
-    return static_cast<std::size_t>(OUT_WIDTH)
-         * static_cast<std::size_t>(m_texture_pages);
+    return static_cast<std::uint32_t>(OUT_WIDTH)
+         * static_cast<std::uint32_t>(m_texture_pages);
   }
-  [[nodiscard]] constexpr std::size_t
+  [[nodiscard]] constexpr std::uint32_t
     width(const int &bbp) const noexcept
   {
-    return (width() * DEFAULT_BPP) / static_cast<std::size_t>(bbp);
+    return (width() * DEFAULT_BPP) / static_cast<std::uint32_t>(bbp);
   }
-  [[nodiscard]] std::size_t
+  [[nodiscard]] std::uint32_t
     file_size() const noexcept
   {
     return palette_section_size()
-         + (width() * static_cast<std::size_t>(OUT_HEIGHT));
+         + (width() * static_cast<std::uint32_t>(OUT_HEIGHT));
   }
   [[nodiscard]] constexpr static auto
     height() noexcept
@@ -100,7 +100,7 @@ public:
   [[nodiscard]] constexpr auto
     canvas(int bpp = DEFAULT_BPP, std::uint8_t scale = 1)
   {
-    return Rectangle<std::size_t>(0, 0, width(bpp) * scale, height() * scale);
+    return Rectangle<std::uint32_t>(0, 0, width(bpp) * scale, height() * scale);
   }
   static constexpr std::array<MimType, 2>
     TEXTURE_TYPES()
