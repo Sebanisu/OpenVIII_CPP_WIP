@@ -40,10 +40,10 @@ private:
   [[nodiscard]] std::uint32_t
     clut_height() const noexcept
   {
-    return ((m_mim_type.palette_section_size()
-             - m_mim_type.bytes_skipped_palettes())
-            / sizeof(Color16<ColorLayoutT::ABGR>))
-         / clut_width();
+    return static_cast<std::uint32_t>(
+      ((m_mim_type.palette_section_size() - m_mim_type.bytes_skipped_palettes())
+       / sizeof(Color16<ColorLayoutT::ABGR>))
+      / clut_width());
   }
   std::span<const char>
     set_image_span() const
@@ -127,7 +127,6 @@ private:
                           });
     return out;
   }
-
 
 public:
   constexpr static auto EXT = std::string_view{ ".mim" };
@@ -438,14 +437,16 @@ public:
   /**
    * bpp selections strings
    */
-  static constexpr std::array<const char *, 3U> bpp_selections_c_str() noexcept
+  static constexpr std::array<const char *, 3U>
+    bpp_selections_c_str() noexcept
   {
     return { "4", "8", "16" };
   }
   /**
    * palettes selections
    */
-  static constexpr std::array<int, 16U> palette_selections() noexcept
+  static constexpr std::array<int, 16U>
+    palette_selections() noexcept
   {
     return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
   }
@@ -455,22 +456,8 @@ public:
   static constexpr std::array<const char *, 16U>
     palette_selections_c_str() noexcept
   {
-    return { "0",
-             "1",
-             "2",
-             "3",
-             "4",
-             "5",
-             "6",
-             "7",
-             "8",
-             "9",
-             "10",
-             "11",
-             "12",
-             "13",
-             "14",
-             "15" };
+    return { "0", "1", "2",  "3",  "4",  "5",  "6",  "7",
+             "8", "9", "10", "11", "12", "13", "14", "15" };
   }
 };
 }// namespace open_viii::graphics::background
