@@ -39,8 +39,8 @@ public:
   template<Number T>
   requires(!std::is_same_v<T, dimT>) constexpr explicit Rectangle(
     const Rectangle<T> &r)
-    : Rectangle(static_cast<Point<dimT>>(r.m_top_left),
-                static_cast<Point<dimT>>(r.m_width_height))
+    : Rectangle(static_cast<Point<dimT>>(r.top_left()),
+                static_cast<Point<dimT>>(r.width_height()))
   {}
   constexpr Rectangle(const dimT &in_x,
                       const dimT &in_y,
