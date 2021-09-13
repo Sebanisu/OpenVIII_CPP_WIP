@@ -141,7 +141,7 @@ private:
       return false;
     };
     visit_tiles([](auto &&tiles) {
-      std::ranges::sort(tiles, cmp);
+      std::ranges::stable_sort(tiles, cmp);
     });
   }
   [[nodiscard]] constexpr auto
