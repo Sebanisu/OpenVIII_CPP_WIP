@@ -108,36 +108,36 @@ private:
       if (l.z() > r.z()) {
         return true;
       }
-      if (l.z() < r.z()) {
-        return false;
-      }
-      if (l.layer_id() > r.layer_id()) {
-        return true;
-      }
-      if (l.layer_id() < r.layer_id()) {
-        return false;
-      }
-      if (l.animation_id() < r.animation_id()) {
-        return true;
-      }
-      if (l.animation_id() > r.animation_id()) {
-        return false;
-      }
-      if (l.animation_state() < r.animation_state()) {
-        return true;
-      }
-      if (l.animation_state() > r.animation_state()) {
-        return false;
-      }
-      if (l.x() < r.x()) {
-        return true;
-      }
-      if (l.x() > r.x()) {
-        return false;
-      }
-      if (l.y() < r.y()) {
-        return true;
-      }
+//      if (l.z() < r.z()) {
+//        return false;
+//      }
+//      if (l.layer_id() > r.layer_id()) {
+//        return true;
+//      }
+//      if (l.layer_id() < r.layer_id()) {
+//        return false;
+//      }
+//      if (l.animation_id() < r.animation_id()) {
+//        return true;
+//      }
+//      if (l.animation_id() > r.animation_id()) {
+//        return false;
+//      }
+//      if (l.animation_state() < r.animation_state()) {
+//        return true;
+//      }
+//      if (l.animation_state() > r.animation_state()) {
+//        return false;
+//      }
+//      if (l.x() < r.x()) {
+//        return true;
+//      }
+//      if (l.x() > r.x()) {
+//        return false;
+//      }
+//      if (l.y() < r.y()) {
+//        return true;
+//      }
       return false;
     };
     visit_tiles([](auto &&tiles) {
