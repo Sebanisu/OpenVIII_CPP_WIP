@@ -111,10 +111,10 @@ private:
       if (l.z() < r.z()) {
         return false;
       }
-      if (l.layer_id() < r.layer_id()) {
+      if (l.layer_id() > r.layer_id()) {
         return true;
       }
-      if (l.layer_id() > r.layer_id()) {
+      if (l.layer_id() < r.layer_id()) {
         return false;
       }
       if (l.animation_id() < r.animation_id()) {
