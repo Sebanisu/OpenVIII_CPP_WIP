@@ -28,43 +28,24 @@ for:
         - job_name: Linux GCC build and docs
     init:
       - sh: "sudo update-alternatives --remove-all gcc\nsudo update-alternatives --remove-all g++\nsudo apt-get update\nsudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common wget\nwget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null\nsudo add-apt-repository ppa:ubuntu-toolchain-r/test\nsudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'\nsudo apt-get -y update\nsudo apt-get -y install libpng-dev gcc-10 g++-10 ninja-build cmake doxygen graphviz python3-dev python3-pip\npip3 install sphinx\npip3 install sphinx-inline-tabs\npip3 install furo\npip3 install breathe\npip3 install myst_parser\npip3 install linkify-it-py\nsudo update-alternatives --remove-all gcc\nsudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 90\nsudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 90\nsudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 30\nsudo update-alternatives --set cc /usr/bin/gcc\nsudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 30\nsudo update-alternatives --set c++ /usr/bin/g++\n#sudo apt -y autoremove\nexport CC=gcc\nexport CXX=g++"
-    #    before_build:
-    #      - sh: "cd docs && rm *.* && cd .."
+#    before_build:
+#      - sh: "cd docs && rm *.* && cd .."
     build_script:
       - sh: "mkdir build\ncmake -G \"Ninja Multi-Config\" -B build -DDOCS:STRING=YES\nninja -C build"
-    #    after_build:
-    #      - sh: "cd docs && git add --all && git commit -m 'UPDATE_DOCS' && cd .." # cannot commit?
+#    after_build:
+#      - sh: "cd docs && git add --all && git commit -m 'UPDATE_DOCS' && cd .." # cannot commit?
     test_script:
       - sh: "cd build && ctest -C debug --verbose && cd .."
   - matrix:
       only:
         - job_name: Windows MSVC build
     init:
-      - cmd: >-
-
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\VsDevCmd.bat"
-
+      - cmd: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"'
     build_script:
-      - cmd: >-
-
-        git clone https://github.com/microsoft/vcpkg
-
-        .\\vcpkg\\bootstrap-vcpkg.bat
-
-        .\\vcpkg\\vcpkg install libpng
-
-        mkdir build
-
-        cmake --version
-
-        cmake --debug-output -G "CodeBlocks - NMake Makefiles" -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=.\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\\ncmake --build build --target all
-
+      - cmd: "git clone https://github.com/microsoft/vcpkg\n.\\vcpkg\\bootstrap-vcpkg.bat\n.\\vcpkg\\vcpkg install libpng\nmkdir build\ncmake --version\ncmake --debug-output -G \"CodeBlocks - NMake Makefiles\" -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=.\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\ncmake --build build --target all"
+      #- cmd: "mkdir build\ncmake -G \"Visual Studio 16 2019\" -B build\nMSBuild build\\ALL_BUILD.vcxproj"
     test_script:
-      - cmd: >-
-
-        cd build\\nctest -C debug --extra-verbose
-
-        cd ..
+      - cmd: "cd build\nctest -C debug --extra-verbose\ncd .."
     artifacts:
       - path: 'bin/*.exe'
         name: Canary
