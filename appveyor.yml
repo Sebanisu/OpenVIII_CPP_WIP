@@ -48,19 +48,19 @@ for:
 
         git clone https://github.com/microsoft/vcpkg
 
-        .\vcpkg\bootstrap-vcpkg.bat
+        .\\vcpkg\\bootstrap-vcpkg.bat
 
-        .\vcpkg\vcpkg install libpng
+        .\\vcpkg\\vcpkg install libpng
 
         mkdir build
 
         cmake --version
 
-        cmake --debug-output -G "CodeBlocks - NMake Makefiles" -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=.\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\ncmake --build build --target all
+        cmake --debug-output -G "CodeBlocks - NMake Makefiles" -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=.\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\\ncmake --build build --target all
     test_script:
       - cmd: >-
 
-        cd build\nctest -C debug --extra-verbose
+        cd build\\nctest -C debug --extra-verbose
 
         cd ..
     artifacts:
