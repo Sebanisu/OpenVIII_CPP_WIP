@@ -59,9 +59,7 @@ private:
     auto info_ptr = safe_png_info{ png_create_info_struct(png_ptr.get()),
                                    safe_png_info_deleter };
     if (!info_ptr) {
-      fprintf(
-        stderr,
-        "Could not allocate info struct\n");// todo modernize error message
+      std::cerr << "Could not allocate info struct\n";
     }
     return info_ptr;
   }
@@ -160,9 +158,7 @@ public:
       fread(sig, 1, 8, fp.get());
       if (::libpng::png_sig_cmp(sig, 0, 8) != 0) {
 
-        fprintf(stderr,
-                "Bad signature\n%s\n",
-                filename.string().c_str());// todo modernize error message
+        std::cerr << "Bad signature \n" << filename.string() << '\n';
         std::cerr << +sig[0] << ',' << +sig[1] << ',' << +sig[2] << ','
                   << +sig[3] << ',' << +sig[4] << ',' << +sig[5] << ','
                   << +sig[6] << ',' << +sig[7] << '\n';
@@ -171,9 +167,8 @@ public:
       }
     }
     else {
-      fprintf(stderr,
-              "Could not open file %s for reading\n",
-              filename.string().c_str());// todo modernize error message
+      std::cerr << "Could not open file " << filename.string()
+                << " for reading\n";
 
       return;
     }
@@ -186,9 +181,7 @@ public:
                                            nullptr),
                                          safe_png_read_struct_deleter };
     if (!png_ptr) {
-      fprintf(
-        stderr,
-        "Could not allocate read struct\n");// todo modernize error message
+      std::cerr << "Could not allocate read struct\n";
       return;
     }
 
@@ -255,11 +248,8 @@ public:
     if (width == 0U || height == 0U)
       return std::nullopt;
     if (data.size() < width * height) {
-      fprintf(stderr,
-              "Size is wrong! %lu != %u x %u\n",
-              data.size(),
-              width,
-              height);// todo modernize error message
+      std::cerr << "Size is wrong! " << data.size() << " != " << width << " x "
+                << height << '\n';
       return std::nullopt;
     }
     if (!open_viii::tools::i_ends_with(filename.string(), ".png")) {
@@ -276,9 +266,8 @@ public:
                        fclose };// todo do I need fopen?
 
     if (!fp) {
-      fprintf(stderr,
-              "Could not open file %s for writing\n",
-              filename.string().c_str());// todo modernize error message
+      std::cerr << "Could not open file " << filename.string()
+                << " for writing\n";
       return std::nullopt;
     }
     // Initialize write structure
@@ -289,9 +278,7 @@ public:
                                             nullptr),
                                           safe_png_write_struct_deleter };
     if (!png_ptr) {
-      fprintf(
-        stderr,
-        "Could not allocate write struct\n");// todo modernize error message
+      std::cerr << "Could not allocate write struct\n";
       return std::nullopt;
     }
     // Initialize info structure
@@ -301,7 +288,7 @@ public:
     }
     //    // Setup Exception handling
     //    if (setjmp(png_jmpbuf(png_ptr.get()))) {
-    //      fprintf(stderr,
+    //      std::cerr <<
     //              "Error during png creation\n");// todo modernize error
     //              message
     //      return;
