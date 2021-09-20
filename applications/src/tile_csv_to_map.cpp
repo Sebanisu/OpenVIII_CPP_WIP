@@ -235,5 +235,4 @@ int
   }
   while (!tile_type_view.has_value());
   common_code(csv_path, *tile_type_view);
-  return EXIT_SUCCESS;
 }
