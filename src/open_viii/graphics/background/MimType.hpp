@@ -21,10 +21,10 @@ namespace open_viii::graphics::background {
 struct MimType
 {
 private:
-  std::uint8_t         m_palettes{};
-  std::uint8_t         m_texture_pages{};
-  std::uint8_t         m_skipped_palettes{};
-  mutable std::uint8_t m_type{};
+  std::uint8_t m_palettes{};
+  std::uint8_t m_texture_pages{};
+  std::uint8_t m_skipped_palettes{};
+  std::uint8_t m_type{};
 
 public:
   /**
@@ -40,10 +40,9 @@ public:
   // I'm not sure without checking file size if we can pick a type this way.
   // really only useful forcing a type.
   explicit constexpr MimType(std::integral auto type)
-    : MimType(TEXTURE_TYPES().front())
-  {
-    m_type = static_cast<std::uint8_t>(type);
-  }
+    : MimType(
+      TEXTURE_TYPES().front().with_type(static_cast<std::uint8_t>(type)))
+  {}
   constexpr MimType() = default;
   constexpr MimType(std::uint8_t palettes,
                     std::uint8_t texture_pages,
@@ -58,10 +57,16 @@ public:
     assert(m_type == 0 || m_type == 1 || m_type == 2 || m_type == 3);
     return m_type;
   }
-  void
-    type(std::uint8_t new_type) const noexcept
+  [[nodiscard]] constexpr MimType
+    with_type(std::uint8_t new_type) &&noexcept
   {
     m_type = new_type;
+    return *this;
+  }
+  [[nodiscard]] constexpr MimType
+    with_type(std::uint8_t new_type) const &noexcept
+  {
+    return MimType(*this).with_type(new_type);
   }
   [[nodiscard]] std::uint32_t
     bytes_skipped_palettes() const noexcept
@@ -98,15 +103,15 @@ public:
     return OUT_HEIGHT;
   }
   [[nodiscard]] constexpr auto
-    canvas(int bpp = DEFAULT_BPP, std::uint8_t scale = 1)
+    canvas(int bpp = DEFAULT_BPP, std::uint8_t scale = 1) const noexcept
   {
     return Rectangle<std::uint32_t>(0, 0, width(bpp) * scale, height() * scale);
   }
-  static constexpr std::array<MimType, 2>
+  static constexpr std::array<MimType, 2U>
     TEXTURE_TYPES()
   {
-    return { MimType{ 24, 13, DEFAULT_SKIPPED_PALETTES, DEFAULT_TYPE },
-             MimType{ 16, 12, 0, 2 } };
+    return { MimType{ 24U, 13U, DEFAULT_SKIPPED_PALETTES, DEFAULT_TYPE },
+             MimType{ 16U, 12U, 0U, 2U } };
   }
   friend std::ostream &
     operator<<(std::ostream &os, const MimType &m)

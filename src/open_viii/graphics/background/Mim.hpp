@@ -159,10 +159,10 @@ public:
     for (auto m : MimType::TEXTURE_TYPES()) {
       if (m.file_size() == mim_filesize) {
         if (tools::i_find_any(name, Tile3::FORCE_TYPE_VALUES)) {
-          m.type(3);
+          return m.with_type(3);
         }
-        else if (tools::i_find_any(name, Tile2::FORCE_TYPE_VALUES)) {
-          m.type(2);
+        if (tools::i_find_any(name, Tile2::FORCE_TYPE_VALUES)) {
+          return m.with_type(2);
         }
         return m;
       }
