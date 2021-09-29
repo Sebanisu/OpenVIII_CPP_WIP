@@ -32,6 +32,11 @@ struct Mim
 private:
   std::vector<char> m_buffer{};
   MimType           m_mim_type{};
+  [[nodiscard]] const std::vector<char> &
+    buffer() const
+  {
+    return m_buffer;
+  }
   [[nodiscard]] static const auto &
     clut_width() noexcept
   {
