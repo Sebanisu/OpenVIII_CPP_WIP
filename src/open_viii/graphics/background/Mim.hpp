@@ -32,11 +32,6 @@ struct Mim
 private:
   std::vector<char> m_buffer{};
   MimType           m_mim_type{};
-  [[nodiscard]] const std::vector<char> &
-    buffer() const
-  {
-    return m_buffer;
-  }
   [[nodiscard]] static const auto &
     clut_width() noexcept
   {
@@ -153,6 +148,11 @@ public:
   explicit Mim(const std::filesystem::path &path)
     : Mim(open_viii::tools::read_entire_file(path), path.string())
   {}
+  [[nodiscard]] const std::vector<char> &
+    buffer() const
+  {
+    return m_buffer;
+  }
   [[nodiscard]] const auto &
     mim_type() const noexcept
   {
