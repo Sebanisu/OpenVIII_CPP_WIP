@@ -46,6 +46,13 @@ namespace LangCommon {
   static constexpr std::string_view IT{ "it" };
   static constexpr std::string_view JP{ "jp" };
   static constexpr std::string_view ES{ "es" };
+  static constexpr std::string_view EN3{ "eng" };
+  static constexpr std::string_view FR3{ "fra" };
+  static constexpr std::string_view DE3{ "ger" };
+  static constexpr std::string_view IT3{ "ita" };
+  static constexpr std::string_view JP3{ "jpn" };
+  static constexpr std::string_view ES3{ "esp" };
+  static constexpr std::string_view MISC{ "x" };
   static constexpr std::string_view EMPTY{};
   /**
    * from langT to string
@@ -76,6 +83,34 @@ namespace LangCommon {
     return EMPTY;
   }
   /**
+   * from langT to string
+   * @tparam langVal
+   * @return
+   */
+  [[nodiscard]] constexpr std::string_view
+    to_string_3_char(LangT langVal)
+  {
+    if (langVal == LangT::en) {
+      return EN3;
+    }
+    if (langVal == LangT::fr) {
+      return FR3;
+    }
+    if (langVal == LangT::de) {
+      return DE3;
+    }
+    if (langVal == LangT::it) {
+      return IT3;
+    }
+    if (langVal == LangT::es) {
+      return ES3;
+    }
+    if (langVal == LangT::jp) {
+      return JP3;
+    }
+    return EMPTY;
+  }
+  /**
    * Get an array of string views
    */
   [[nodiscard]] consteval auto
@@ -86,6 +121,21 @@ namespace LangCommon {
     std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
       return to_string(coo);// I hope these are null terminated.
     });
+    return coos_c_str;
+  }
+  
+  /**
+   * Get an array of string views
+   */
+  [[nodiscard]] consteval auto
+    to_string_array_3_char()
+  {
+    auto                                          coos = to_array();
+    std::array<std::string_view, std::size(coos)+1> coos_c_str{};
+    std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
+      return to_string_3_char(coo);// I hope these are null terminated.
+    });
+    coos_c_str.back() = MISC;
     return coos_c_str;
   }
   /**
