@@ -47,6 +47,9 @@ template<typename lambdaT>
 concept executable_common_nested = executable_common_sans_nested<
   lambdaT> || executable_fiflfs_sans_nested<lambdaT>;
 
+template<typename lambdaT>
+concept filter_paths = std::is_invocable_r_v<bool, lambdaT, std::string>;
+
 template<typename srcT>
 concept path_or_range
   = std::convertible_to<srcT, std::filesystem::path> || std::ranges::
@@ -357,7 +360,7 @@ public:
   void
     for_each_sans_nested(
       const std::vector<std::pair<unsigned int, std::string>> &results,
-      const lambdaT                                           &process) const
+      lambdaT                                                &&process) const
   {
     if constexpr (HasNested) {
       std::ranges::for_each(
@@ -375,7 +378,7 @@ public:
     }
   }
 
-  template<executable_common_sans_nested lambdaT, typename filterT>
+  template<executable_common_sans_nested lambdaT, filter_paths filterT>
   void
     execute_on(const std::initializer_list<std::string_view> &filename,
                lambdaT                                      &&lambda,
@@ -478,7 +481,7 @@ public:
                                         m_count,
                                         filename);
   }
-  template<executable_common_nested lambdaT, typename filterT>
+  template<executable_common_nested lambdaT, filter_paths filterT>
   void
     execute_with_nested(
       const std::initializer_list<std::string_view> &filename,
@@ -496,9 +499,10 @@ public:
     else {
       FIFLFS<false> archive = {};
       const auto    items   = get_all_items_from_fl(filename);
-      const auto    pFunction =
-        [&lambda, &nested_filename, &archive, this, &filter_lambda](const auto &item) -> bool {
-        if (fill_archive_lambda(archive)(item)) {
+      const auto    pFunction
+        = [&lambda, &nested_filename, &archive, this, &filter_lambda](
+            const auto &item) -> bool {
+        if (filter_lambda(item.second) && fill_archive_lambda(archive)(item)) {
           if constexpr (executable_common_sans_nested<lambdaT>) {
             archive.execute_on(nested_filename, lambda, filter_lambda);
           }
