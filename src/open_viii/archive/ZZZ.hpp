@@ -135,30 +135,38 @@ public:
   //    }
   //    return vector;
   //  }
-  template<std::invocable<std::vector<char>, std::string> UnaryFunctionT>
+  template<std::invocable<std::vector<char>, std::string> BinaryFunctionT,
+           typename FilterT>
   void
     execute_on(const std::initializer_list<std::string_view> &filename,
-               const UnaryFunctionT &unary_function) const
+               BinaryFunctionT                              &&binary_function,
+               FilterT &&filter_lambda) const
   {
     std::ranges::for_each(
       data(),
-      [&unary_function, &filename, this](
+      [&binary_function, &filename, this, &filter_lambda](
         const open_viii::archive::FileData &dataItem) {
         auto pathString = dataItem.get_path_string();
         if (open_viii::tools::i_find_any(pathString, filename)) {
-          unary_function(FS::get_entry(m_path, dataItem),
-                         std::string(pathString));
+          if (filter_lambda(pathString)) {
+            binary_function(FS::get_entry(m_path, dataItem),
+                            std::string(pathString));
+          }
         }
       });
   }
-  template<typename lambdaT>
+  template<typename lambdaT, typename FilterT>
   requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)) void execute_with_nested(
-    [[maybe_unused]] const std::initializer_list<std::string_view> &filename,
-    [[maybe_unused]] const lambdaT                                  lambda,
-    [[maybe_unused]] const std::initializer_list<std::string_view>
-      &nested_filename
-    = {}) const
-  {}
+    [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
+    [[maybe_unused]] lambdaT && = [](auto &&, auto &&) {},
+    [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
+    FilterT && =
+      [](auto &&) {
+        return true;
+      }) const
+  {
+    // only nested archives are handled in the other functions.
+  }
   explicit operator bool() const
   {
     return !std::ranges::empty(m_data);

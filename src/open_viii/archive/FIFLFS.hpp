@@ -375,22 +375,26 @@ public:
     }
   }
 
-  template<executable_common_sans_nested lambdaT>
+  template<executable_common_sans_nested lambdaT, typename filterT>
   void
     execute_on(const std::initializer_list<std::string_view> &filename,
-               const lambdaT                                 &lambda) const
+               lambdaT                                      &&lambda,
+               filterT &&filter_lambda) const
   {
     const auto results = get_vector_of_indexes_and_files(filename);
-    const auto process
-      = [this, &lambda](const std::pair<unsigned int, std::string> &pair) {
-          auto fi = get_entry_by_index(pair.first);
-          if constexpr (executable_buffer_path<lambdaT>) {
-            lambda(get_entry_buffer(fi), pair.second);
-          }
-          else if constexpr (executable_buffer_path_fi<lambdaT>) {
-            lambda(get_entry_buffer(fi), pair.second, fi);
-          }
-        };
+    const auto process = [this, &lambda, &filter_lambda](
+                           const std::pair<unsigned int, std::string> &pair) {
+      if (filter_lambda(pair.second)) {
+        auto fi = get_entry_by_index(pair.first);
+        if constexpr (executable_buffer_path<lambdaT>) {
+
+          lambda(get_entry_buffer(fi), pair.second);
+        }
+        else if constexpr (executable_buffer_path_fi<lambdaT>) {
+          lambda(get_entry_buffer(fi), pair.second, fi);
+        }
+      }
+    };
     for_each_sans_nested(results, process);
   }
   [[nodiscard]] std::vector<std::string>
@@ -474,13 +478,17 @@ public:
                                         m_count,
                                         filename);
   }
-  template<executable_common_nested lambdaT>
+  template<executable_common_nested lambdaT, typename filterT>
   void
     execute_with_nested(
       const std::initializer_list<std::string_view> &filename,
-      const lambdaT                                  lambda,
+      lambdaT                                      &&lambda,
       const std::initializer_list<std::string_view> &nested_filename = {},
-      bool                                           limit_once = false) const
+      filterT                                      &&filter_lambda =
+        [](auto &&) {
+          return true;
+        },
+      bool limit_once = false) const
   {
     if constexpr (!HasNested) {
       return;
@@ -489,10 +497,10 @@ public:
       FIFLFS<false> archive = {};
       const auto    items   = get_all_items_from_fl(filename);
       const auto    pFunction =
-        [&lambda, &nested_filename, &archive, this](const auto &item) -> bool {
+        [&lambda, &nested_filename, &archive, this, &filter_lambda](const auto &item) -> bool {
         if (fill_archive_lambda(archive)(item)) {
           if constexpr (executable_common_sans_nested<lambdaT>) {
-            archive.execute_on(nested_filename, lambda);
+            archive.execute_on(nested_filename, lambda, filter_lambda);
           }
           else if constexpr (executable_fiflfs_sans_nested<lambdaT>) {
             lambda(std::move(archive));

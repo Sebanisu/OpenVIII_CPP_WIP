@@ -25,10 +25,10 @@ concept does_have_has_value = requires(T a)
 {
   a.has_value();
 };
-template<typename T, typename lambdaT>
-concept does_have_execute_with_nested = requires(T a, lambdaT l)
+template<typename T, typename lambdaT, typename filterT>
+concept does_have_execute_with_nested = requires(T a, lambdaT l, filterT f)
 {
-  a.execute_with_nested({}, l, {});
+  a.execute_with_nested({}, l, {}, f);
 };
 /**
  * Reads a path looking for ZZZ or FIFLFS archives. It remembers the locations
@@ -252,6 +252,21 @@ private:
   [[maybe_unused]] static constexpr bool valid_execute_on_lambda
     = (std::invocable<lambdaT, std::vector<char>, std::string>)
    || (std::invocable<lambdaT, std::string, std::string>);
+
+  /**
+   * does lambda take a string and returns bool
+   * @tparam lambdaT
+   */
+  template<typename lambdaT>
+  [[maybe_unused]] static constexpr bool valid_filter_lambda
+    = (std::is_invocable_r_v<bool, lambdaT, std::string>);
+
+  static constexpr auto default_filter_lambda = [](auto &&) {
+    return true;
+  };
+
+  static_assert(valid_filter_lambda<decltype(default_filter_lambda)>);
+
   auto
     test_valid_lambda() const
   {
@@ -267,17 +282,22 @@ private:
    * @param lambda
    * @return
    */
-  template<bool nested = true, typename lambdaT>
-  requires(valid_execute_on_lambda<lambdaT>) auto get_execute_on_lambda(
-    const std::initializer_list<std::string_view> &filename,
-    const lambdaT                                 &lambda) const
+  template<bool nested = true, typename lambdaT, typename filterT>
+  requires(
+    valid_execute_on_lambda<lambdaT> &&valid_filter_lambda<
+      filterT>) auto get_execute_on_lambda(const std::
+                                             initializer_list<std::string_view>
+                                                    &filename,
+                                           lambdaT &&lambda,
+                                           filterT &&filter_lambda) const
   {
-    return [&filename, &lambda](const auto &archive) -> bool {
-      archive.execute_on(filename, lambda);
+    return [&filename, &lambda, &filter_lambda](const auto &archive) -> bool {
+      archive.execute_on(filename, lambda, filter_lambda);
       if constexpr (nested
                     && does_have_execute_with_nested<decltype(archive),
-                                                     lambdaT>) {
-        archive.execute_with_nested({}, lambda, filename);
+                                                     lambdaT,
+                                                     filterT>) {
+        archive.execute_with_nested({}, lambda, filename, filter_lambda);
       }
       return true;
     };
@@ -550,12 +570,16 @@ public:
    * @param lambda
    * @return
    */
-  template<bool nested = true, typename lambdaT>
-  requires(valid_execute_on_lambda<lambdaT>) bool execute_on(
-    const std::initializer_list<std::string_view> &filename,
-    const lambdaT                                 &lambda) const
+  template<bool nested = true, typename lambdaT, typename filterT>
+  requires(
+    valid_execute_on_lambda<lambdaT> &&valid_filter_lambda<
+      filterT>) bool execute_on(const std::initializer_list<std::string_view>
+                                         &filename,
+                                lambdaT &&lambda,
+                                filterT &&filter_lambda
+                                = default_filter_lambda) const
   {
-    return loop(get_execute_on_lambda<nested>(filename, lambda));
+    return loop(get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
   }
   /**
    * execute on all listed archives the following lambda.
@@ -566,13 +590,20 @@ public:
    * @param lambda
    * @return
    */
-  template<bool nested = true, ArchiveTypeT... aT, typename lambdaT>
-  requires((valid_execute_on_lambda<lambdaT>)&&sizeof...(aT)
+  template<bool nested = true,
+           ArchiveTypeT... aT,
+           typename lambdaT,
+           typename filterT>
+  requires((valid_execute_on_lambda<
+              lambdaT> && valid_filter_lambda<filterT>)&&sizeof...(aT)
            > 0) bool execute_on(const std::initializer_list<std::string_view>
-                                              &filename,
-                                const lambdaT &lambda) const
+                                         &filename,
+                                lambdaT &&lambda,
+                                filterT &&filter_lambda
+                                = default_filter_lambda) const
   {
-    return specify<aT...>(get_execute_on_lambda<nested>(filename, lambda));
+    return specify<aT...>(
+      get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
   }
 };
 }// namespace open_viii::archive
