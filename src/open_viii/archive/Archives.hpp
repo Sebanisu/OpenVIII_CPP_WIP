@@ -78,7 +78,9 @@ private:
    * @param path location of FF8.
    */
   static std::filesystem::path
-    set_path(std::filesystem::path path, const std::string &lang)
+    set_path(std::filesystem::path path,
+             std::string          &lang,
+             std::string_view      in_lang = {})
   {
     using namespace std::string_literals;
     using namespace std::string_view_literals;
@@ -88,12 +90,20 @@ private:
     if (std::filesystem::exists(dataPath)) {
       path = dataPath;
       {
-        static constexpr auto langStart      = "lang-"sv;
-        std::filesystem::path langFolderPath = path / langStart;
-        langFolderPath                       = langFolderPath.string() + lang;
-        if (std::filesystem::exists(langFolderPath)) {
-          path = langFolderPath;
-        }
+        auto get_path = [&path, &lang](std::string coo) -> bool {
+          if (std::empty(coo))
+            return false;
+          static constexpr auto langStart      = "lang-"sv;
+          std::filesystem::path langFolderPath = path / langStart;
+          langFolderPath                       = langFolderPath.string() + coo;
+          if (std::filesystem::exists(langFolderPath)) {
+            path = langFolderPath;
+            lang = coo;
+            return true;
+          }
+          return false;
+        };
+        if (get_path(std::string(in_lang)) || get_path(lang)) {}
       }
     }
     return path;
@@ -475,7 +485,7 @@ public:
    * @param path that contains FIFLFS files or ZZZ files.
    */
   explicit Archives(const std::filesystem::path &path, std::string_view lang)
-    : m_lang(set_lang(path, lang)), m_path(set_path(path, m_lang))
+    : m_lang(set_lang(path, lang)), m_path(set_path(path, m_lang, lang))
   {
     populate_archives_from_path();
   }
