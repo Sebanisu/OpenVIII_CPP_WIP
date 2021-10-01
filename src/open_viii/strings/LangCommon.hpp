@@ -46,12 +46,11 @@ namespace LangCommon {
   static constexpr std::string_view IT{ "it" };
   static constexpr std::string_view JP{ "jp" };
   static constexpr std::string_view ES{ "es" };
-  static constexpr std::string_view EN3{ "eng" };
-  static constexpr std::string_view FR3{ "fra" };
-  static constexpr std::string_view DE3{ "ger" };
-  static constexpr std::string_view IT3{ "ita" };
-  static constexpr std::string_view JP3{ "jpn" };
-  static constexpr std::string_view ES3{ "esp" };
+  static constexpr std::string_view ENG{ "eng" };
+  static constexpr std::string_view FRE{ "fre" };
+  static constexpr std::string_view GER{ "ger" };
+  static constexpr std::string_view ITA{ "ita" };
+  static constexpr std::string_view SPA{ "spa" };
   static constexpr std::string_view MISC{ "x" };
   static constexpr std::string_view EMPTY{};
   /**
@@ -91,22 +90,22 @@ namespace LangCommon {
     to_string_3_char(LangT langVal)
   {
     if (langVal == LangT::en) {
-      return EN3;
+      return ENG;
     }
     if (langVal == LangT::fr) {
-      return FR3;
+      return FRE;
     }
     if (langVal == LangT::de) {
-      return DE3;
+      return GER;
     }
     if (langVal == LangT::it) {
-      return IT3;
+      return ITA;
     }
     if (langVal == LangT::es) {
-      return ES3;
+      return SPA;
     }
     if (langVal == LangT::jp) {
-      return JP3;
+      return JP;
     }
     return EMPTY;
   }
