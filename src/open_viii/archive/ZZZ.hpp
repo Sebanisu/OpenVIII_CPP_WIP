@@ -135,12 +135,15 @@ public:
   //    }
   //    return vector;
   //  }
+  using default_filter_lambda = decltype([](auto &&) {
+    return true;
+  });
   template<std::invocable<std::vector<char>, std::string> BinaryFunctionT,
-           typename FilterT>
+           typename FilterT = default_filter_lambda>
   void
     execute_on(const std::initializer_list<std::string_view> &filename,
                BinaryFunctionT                              &&binary_function,
-               FilterT &&filter_lambda) const
+               FilterT &&filter_lambda = {}) const
   {
     std::ranges::for_each(
       data(),
@@ -155,17 +158,16 @@ public:
         }
       });
   }
-  template<typename lambdaT, typename FilterT>
+  using default_lambda = decltype([](auto &&, auto &&) {});
+  template<typename lambdaT = default_lambda,
+           typename FilterT = default_filter_lambda>
   requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)) void execute_with_nested(
     [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
-    [[maybe_unused]] lambdaT && = [](auto &&, auto &&) {},
+    [[maybe_unused]] lambdaT                                      && = {},
     [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
-    FilterT && =
-      [](auto &&) {
-        return true;
-      }) const
+    FilterT                                                       && = {}) const
   {
-    // only nested archives are handled in the other functions.
+    // only nested archives are handled in the other functions. maybe delete this.
   }
   explicit operator bool() const
   {

@@ -292,14 +292,14 @@ private:
    * @param lambda
    * @return
    */
-  template<bool nested = true, typename lambdaT, typename filterT>
+  template<bool nested = true, typename lambdaT, typename filterT = decltype(default_filter_lambda)>
   requires(
     valid_execute_on_lambda<lambdaT> &&valid_filter_lambda<
       filterT>) auto get_execute_on_lambda(const std::
                                              initializer_list<std::string_view>
                                                     &filename,
                                            lambdaT &&lambda,
-                                           filterT &&filter_lambda) const
+                                           filterT &&filter_lambda = {}) const
   {
     return [&filename, &lambda, &filter_lambda](const auto &archive) -> bool {
       archive.execute_on(filename, lambda, filter_lambda);
@@ -580,14 +580,15 @@ public:
    * @param lambda
    * @return
    */
-  template<bool nested = true, typename lambdaT, typename filterT>
+  template<bool nested = true,
+           typename lambdaT,
+           typename filterT = decltype(default_filter_lambda)>
   requires(
     valid_execute_on_lambda<lambdaT> &&valid_filter_lambda<
       filterT>) bool execute_on(const std::initializer_list<std::string_view>
                                          &filename,
                                 lambdaT &&lambda,
-                                filterT &&filter_lambda
-                                = default_filter_lambda) const
+                                filterT &&filter_lambda = {}) const
   {
     return loop(get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
   }
@@ -603,14 +604,13 @@ public:
   template<bool nested = true,
            ArchiveTypeT... aT,
            typename lambdaT,
-           typename filterT>
+           typename filterT = decltype(default_filter_lambda)>
   requires((valid_execute_on_lambda<
               lambdaT> && valid_filter_lambda<filterT>)&&sizeof...(aT)
            > 0) bool execute_on(const std::initializer_list<std::string_view>
                                          &filename,
                                 lambdaT &&lambda,
-                                filterT &&filter_lambda
-                                = default_filter_lambda) const
+                                filterT &&filter_lambda = {}) const
   {
     return specify<aT...>(
       get_execute_on_lambda<nested>(filename, lambda, filter_lambda));

@@ -377,12 +377,15 @@ public:
       std::ranges::for_each(results, process);
     }
   }
-
-  template<executable_common_sans_nested lambdaT, filter_paths filterT>
+  static constexpr auto default_filter_lambda = [](auto &&) {
+    return true;
+  };
+  template<executable_common_sans_nested lambdaT,
+           filter_paths filterT = decltype(default_filter_lambda)>
   void
     execute_on(const std::initializer_list<std::string_view> &filename,
                lambdaT                                      &&lambda,
-               filterT &&filter_lambda) const
+               filterT &&filter_lambda = {}) const
   {
     const auto results = get_vector_of_indexes_and_files(filename);
     const auto process = [this, &lambda, &filter_lambda](
@@ -481,17 +484,15 @@ public:
                                         m_count,
                                         filename);
   }
-  template<executable_common_nested lambdaT, filter_paths filterT>
+  template<executable_common_nested lambdaT,
+           filter_paths             filterT = decltype(default_filter_lambda)>
   void
     execute_with_nested(
       const std::initializer_list<std::string_view> &filename,
       lambdaT                                      &&lambda,
       const std::initializer_list<std::string_view> &nested_filename = {},
-      filterT                                      &&filter_lambda =
-        [](auto &&) {
-          return true;
-        },
-      bool limit_once = false) const
+      filterT                                      &&filter_lambda   = {},
+      bool                                           limit_once = false) const
   {
     if constexpr (!HasNested) {
       return;

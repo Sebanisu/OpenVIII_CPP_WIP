@@ -29,7 +29,7 @@ private:
   /**
    * The size of the string is defined before the raw char array.
    */
-  std::basic_string<char> m_filename{};
+  std::string m_filename{};
   /**
    * offset to file
    */
