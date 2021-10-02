@@ -152,8 +152,148 @@ followed by <a class="reference external" href="#filedata">FileData</a> entries.
 <h2>Archives<a class="headerlink" href="#archives" title="Permalink to this headline">¶</a></h2>
 <dl class="cpp struct">
 <dt id="_CPPv4N9open_viii7archive8ArchivesE">
-<span id="_CPPv3N9open_viii7archive8ArchivesE"></span><span id="_CPPv2N9open_viii7archive8ArchivesE"></span><span id="open_viii::archive::Archives"></span><span class="target" id="structopen__viii_1_1archive_1_1Archives"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">Archives</span></code><a class="headerlink" href="#_CPPv4N9open_viii7archive8ArchivesE" title="Permalink to this definition">¶</a><br/></dt>
+<span id="_CPPv3N9open_viii7archive8ArchivesE"></span><span id="_CPPv2N9open_viii7archive8ArchivesE"></span><span id="open_viii::archive::Archives"></span><span class="target" id="structopen__viii_1_1archive_1_1Archives"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-prename descclassname"><span class="pre">open_viii</span><span class="pre">::</span><span class="pre">archive</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">Archives</span></code><a class="headerlink" href="#_CPPv4N9open_viii7archive8ArchivesE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Reads a path looking for ZZZ or FIFLFS archives. It remembers the locations of the archives, and serves serves as a front end to access them. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt>
+<span class="target" id="structopen__viii_1_1archive_1_1Archives_1a2a01402042c378e135cfd1bd8ef108ac"></span><code class="sig-name descname"><span class="pre">template&lt;ArchiveTypeT</span> <span class="pre">archiveType_&gt;</span> <span class="pre">inline</span>  <span class="pre">requires</span> <span class="pre">(valid_archive_type_t&lt;</span> <span class="pre">archiveType_</span> <span class="pre">&gt;)</span> <span class="pre">const</span> <span class="pre">auto</span> <span class="pre">&amp;get()</span> <span class="pre">const</span> <span class="pre">noexcept</span></code></dt>
+<dd><p>Get archive via ArchiveTypeT <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p></p>
+</dd>
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">archiveType_</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4NK9open_viii7archive8ArchivescvbEv">
+<span id="_CPPv3NK9open_viii7archive8ArchivescvbEv"></span><span id="_CPPv2NK9open_viii7archive8ArchivescvbEv"></span><span id="open_viii::archive::Archives::castto-b-operatorC"></span><span class="target" id="structopen__viii_1_1archive_1_1Archives_1a9ad0f1ff1a214b1bb04903b62eb3a6e9"></span><em class="property"><span class="pre">inline</span></em> <em class="property"><span class="pre">explicit</span></em> <code class="sig-name descname"><span class="pre">operator</span> <span class="pre">bool</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">noexcept</span></em><a class="headerlink" href="#_CPPv4NK9open_viii7archive8ArchivescvbEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>convert to bool <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="structopen__viii_1_1archive_1_1Archives_1a871974fe153ec1c8ab7254aeed0029a4"></span><code class="sig-name descname"><span class="pre">template&lt;ArchiveTypeT</span> <span class="pre">archiveType_&gt;</span> <span class="pre">inline</span> <span class="pre">explicit</span> <span class="pre">requires(valid_archive_type_t&lt;</span> <span class="pre">archiveType_</span> <span class="pre">&gt;)</span> <span class="pre">const</span> <span class="pre">expr</span> <span class="pre">std</span> <span class="pre">Archives</span> <span class="pre">(const</span> <span class="pre">std::filesystem::path</span> <span class="pre">&amp;path,</span> <span class="pre">std::string_view</span> <span class="pre">lang)</span></code></dt>
+<dd><p>Gets the nested FIFLFS files from Field archive. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>all results. This will be in an invalid state but it’s so I can default construct and move in valid values later. Preloads all archives in the path. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nestedArchive</span></code>: string to filter results. {} will get all nested archives. </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code>: that contains FIFLFS files or ZZZ files. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="structopen__viii_1_1archive_1_1Archives_1a3feeeb4a08f3c1047b7b816027fd7398"></span><code class="sig-name descname"><span class="pre">template&lt;std::intmax_t</span> <span class="pre">minT</span> <span class="pre">=</span> <span class="pre">static_cast&lt;std::intmax_t&gt;(ArchiveTypeT::begin),</span> <span class="pre">std::intmax_t</span> <span class="pre">maxT</span> <span class="pre">=</span> <span class="pre">static_cast&lt;std::intmax_t&gt;(ArchiveTypeT::end),</span> <span class="pre">typename</span> <span class="pre">lambdaT&gt;</span> <span class="pre">inline</span>  <span class="pre">requires</span> <span class="pre">(valid_archive_type_t&lt;</span> <span class="pre">minT</span> <span class="pre">&gt;</span> <span class="pre">&amp;&amp;valid_archive_type_t&lt;</span> <span class="pre">maxT,</span> <span class="pre">true</span> <span class="pre">&gt;</span> <span class="pre">&amp;&amp;((takes_valid_archive_type&lt;</span> <span class="pre">lambdaT</span> <span class="pre">&gt;)||(valid_static_for_lambda_type&lt;</span> <span class="pre">lambdaT</span> <span class="pre">&gt;)))</span> <span class="pre">bool</span> <span class="pre">loop(const</span> <span class="pre">lambdaT</span> <span class="pre">&amp;lambda)</span> <span class="pre">const</span></code></dt>
+<dd><p>Loop through each of the archives. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>true if ran to completion </p>
+</dd>
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">minT</span></code>: min archive </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxT</span></code>: max archive </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lambdaT</span></code>: type of lambda function that returns bool and takes archive types. The bool returned short circuits the loop. </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lambda</span></code>: lambda of type lambdaT </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="structopen__viii_1_1archive_1_1Archives_1a1a6429cb14dfc1c01553547f36e7f538"></span><code class="sig-name descname"><span class="pre">template&lt;ArchiveTypeT...</span> <span class="pre">aT,</span> <span class="pre">typename</span> <span class="pre">lambdaT&gt;</span> <span class="pre">inline</span>  <span class="pre">requires</span> <span class="pre">(valid_archive_type_t&lt;</span> <span class="pre">aT</span> <span class="pre">&gt;</span> <span class="pre">&amp;&amp;...)</span> <span class="pre">bool</span> <span class="pre">specify(const</span> <span class="pre">lambdaT</span> <span class="pre">&amp;lambda)</span></code></dt>
+<dd><p>run lambda on listed types. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p></p>
+</dd>
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">aT</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lambdaT</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lambda</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4NK9open_viii7archive8Archives8test_setEv">
+<span id="_CPPv3NK9open_viii7archive8Archives8test_setEv"></span><span id="_CPPv2NK9open_viii7archive8Archives8test_setEv"></span><span id="open_viii::archive::Archives::test_setC"></span><span class="target" id="structopen__viii_1_1archive_1_1Archives_1a90937ca68929c18e1d31d425329a15b9"></span><em class="property"><span class="pre">inline</span></em> <span class="pre">bool</span> <code class="sig-name descname"><span class="pre">test_set</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property"><span class="pre">const</span></em><a class="headerlink" href="#_CPPv4NK9open_viii7archive8Archives8test_setEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>if true all archives are valid. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="structopen__viii_1_1archive_1_1Archives_1aaf378a53b876d6b31aac2c8bcc671a5f"></span><code class="sig-name descname"><span class="pre">template&lt;ArchiveTypeT...</span> <span class="pre">aT&gt;</span> <span class="pre">inline</span>  <span class="pre">requires</span> <span class="pre">(sizeof...(aT)</span> <span class="pre">&gt;</span> <span class="pre">0)</span> <span class="pre">bool</span> <span class="pre">test_set()</span></code></dt>
+<dd><p>if true listed archives are valid <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p></p>
+</dd>
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">aT</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="structopen__viii_1_1archive_1_1Archives_1a2f7fdb892b0ea10dca8860b308076507"></span><code class="sig-name descname"><span class="pre">template&lt;bool</span> <span class="pre">nested</span> <span class="pre">=</span> <span class="pre">true,</span> <span class="pre">typename</span> <span class="pre">lambdaT,</span> <span class="pre">typename</span> <span class="pre">filterT</span> <span class="pre">=</span> <span class="pre">decltype(default_filter_lambda)&gt;</span> <span class="pre">inline</span>  <span class="pre">requires</span> <span class="pre">(valid_execute_on_lambda&lt;</span> <span class="pre">lambdaT</span> <span class="pre">&gt;</span> <span class="pre">&amp;&amp;valid_filter_lambda&lt;</span> <span class="pre">filterT</span> <span class="pre">&gt;)</span> <span class="pre">bool</span> <span class="pre">execute_on(const</span> <span class="pre">std</span></code></dt>
+<dd><p>execute on all archives the following lambda. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p></p>
+</dd>
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nested</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lambdaT</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">filename</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lambda</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="structopen__viii_1_1archive_1_1Archives_1a48d114b470cf5d4e8e0659929600f6d0"></span><code class="sig-name descname"><span class="pre">template&lt;bool</span> <span class="pre">nested</span> <span class="pre">=</span> <span class="pre">true,</span> <span class="pre">ArchiveTypeT...</span> <span class="pre">aT,</span> <span class="pre">typename</span> <span class="pre">lambdaT,</span> <span class="pre">typename</span> <span class="pre">filterT</span> <span class="pre">=</span> <span class="pre">decltype(default_filter_lambda)&gt;</span> <span class="pre">inline</span> <span class="pre">const</span> <span class="pre">requires</span> <span class="pre">((valid_execute_on_lambda&lt;</span> <span class="pre">lambdaT</span> <span class="pre">&gt;</span> <span class="pre">&amp;&amp;valid_filter_lambda&lt;</span> <span class="pre">filterT</span> <span class="pre">&gt;)&amp;&amp;sizeof...(aT)</span> <span class="pre">&gt;</span> <span class="pre">0)</span> <span class="pre">bool</span> <span class="pre">execute_on(const</span> <span class="pre">std</span></code></dt>
+<dd><p>execute on all listed archives the following lambda. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p></p>
+</dd>
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nested</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">aT</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lambdaT</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">filename</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lambda</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+</div>
 </dd></dl>
 <div class="section" id="archivetypet">
 <h3>ArchiveTypeT<a class="headerlink" href="#archivetypet" title="Permalink to this headline">¶</a></h3>
