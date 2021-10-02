@@ -269,15 +269,14 @@ public:
                       path.string());
           saved_path) {
         const Png    read_image = { *saved_path };
-        const size_t size       = read_image.size();
-        assert(size == m_palette_data.size());
-        auto       b1 = read_image.begin();
-        const auto e1 = read_image.end();
-        auto       b2 = m_palette_data.begin();
-        const auto e2 = m_palette_data.end();
-        for (; b1 != e1 && b2 != e2; (void)++b1, ++b2) {
-          assert(*b1 == *b2);
-        }
+        assert(read_image.size() == m_palette_data.size());
+//        auto       b1 = read_image.begin();
+//        const auto e1 = read_image.end();
+//        auto       b2 = m_palette_data.begin();
+//        const auto e2 = m_palette_data.end();
+//        for (; b1 != e1 && b2 != e2; (void)++b1, ++b2) {
+//          assert(*b1 == *b2);
+//        }
         Png::save(read_image,
                   m_tex_header.num_colors_per_palette(),
                   m_tex_header.num_palettes(),
