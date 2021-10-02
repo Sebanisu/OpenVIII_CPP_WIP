@@ -155,8 +155,8 @@ public:
 
     if (fp) {
       uint8_t sig[8] = {};
-      fread(sig, 1, 8, fp.get());
-      if (::libpng::png_sig_cmp(sig, 0, 8) != 0) {
+      std::size_t bytes_read = fread(sig, 1, 8, fp.get());
+      if (bytes_read!=8U || ::libpng::png_sig_cmp(sig, 0, 8) != 0) {
 
         std::cerr << "Bad signature \n" << filename.string() << '\n';
         std::cerr << +sig[0] << ',' << +sig[1] << ',' << +sig[2] << ','
