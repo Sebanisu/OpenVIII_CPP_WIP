@@ -47,8 +47,9 @@ public:
         }
         else
         {
-          using return_type = decltype(lambda(std::vector<Tile1>{}));
-          return return_type(); //returns default value if mono state.
+//          using return_type = decltype(lambda(std::vector<Tile1>{}));
+//          return return_type(); //returns default value if mono state.
+            return lambda(std::vector<Tile1>{}); //what if default is bad.
         }
       },
       m_tiles);
