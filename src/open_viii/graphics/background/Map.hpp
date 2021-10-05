@@ -45,6 +45,11 @@ public:
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
           return lambda(std::forward<decltype(tiles)>(tiles));
         }
+        else
+        {
+          using return_type = decltype(lambda(std::vector<Tile1>{}));
+          return return_type(); //returns default value if mono state.
+        }
       },
       m_tiles);
   }
