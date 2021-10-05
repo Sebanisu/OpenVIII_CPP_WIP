@@ -36,14 +36,14 @@ private:
     m_tiles{};
 
 public:
-  void
+  auto
     visit_tiles(auto &&lambda) const
   {
-    std::visit(
+    return std::visit(
       [&lambda](auto &&tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
-          lambda(std::forward<decltype(tiles)>(tiles));
+          return lambda(std::forward<decltype(tiles)>(tiles));
         }
       },
       m_tiles);
@@ -75,9 +75,10 @@ private:
     [[maybe_unused]] static constexpr auto cmp = [](const auto &x) {
       static constexpr auto end_x{ 0x7FFFU };
       // static constexpr auto limit = 1000U;
-      return x.x() == end_x || !x.draw();// || std::abs(x.y()) > limit || std::abs(x.x()) >
-                            // limit; //|| x.source_x() >limit || x.source_y()
-                            // >limit; //|| !x.draw();
+      return x.x() == end_x
+          || !x.draw();// || std::abs(x.y()) > limit || std::abs(x.x()) >
+                       // limit; //|| x.source_x() >limit || x.source_y()
+                       // >limit; //|| !x.draw();
     };
     visit_tiles([](auto &&tiles) {
       std::erase_if(tiles, cmp);
@@ -108,36 +109,36 @@ private:
       if (l.z() > r.z()) {
         return true;
       }
-//      if (l.z() < r.z()) {
-//        return false;
-//      }
-//      if (l.layer_id() > r.layer_id()) {
-//        return true;
-//      }
-//      if (l.layer_id() < r.layer_id()) {
-//        return false;
-//      }
-//      if (l.animation_id() < r.animation_id()) {
-//        return true;
-//      }
-//      if (l.animation_id() > r.animation_id()) {
-//        return false;
-//      }
-//      if (l.animation_state() < r.animation_state()) {
-//        return true;
-//      }
-//      if (l.animation_state() > r.animation_state()) {
-//        return false;
-//      }
-//      if (l.x() < r.x()) {
-//        return true;
-//      }
-//      if (l.x() > r.x()) {
-//        return false;
-//      }
-//      if (l.y() < r.y()) {
-//        return true;
-//      }
+      //      if (l.z() < r.z()) {
+      //        return false;
+      //      }
+      //      if (l.layer_id() > r.layer_id()) {
+      //        return true;
+      //      }
+      //      if (l.layer_id() < r.layer_id()) {
+      //        return false;
+      //      }
+      //      if (l.animation_id() < r.animation_id()) {
+      //        return true;
+      //      }
+      //      if (l.animation_id() > r.animation_id()) {
+      //        return false;
+      //      }
+      //      if (l.animation_state() < r.animation_state()) {
+      //        return true;
+      //      }
+      //      if (l.animation_state() > r.animation_state()) {
+      //        return false;
+      //      }
+      //      if (l.x() < r.x()) {
+      //        return true;
+      //      }
+      //      if (l.x() > r.x()) {
+      //        return false;
+      //      }
+      //      if (l.y() < r.y()) {
+      //        return true;
+      //      }
       return false;
     };
     visit_tiles([](auto &&tiles) {
