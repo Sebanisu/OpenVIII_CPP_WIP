@@ -90,6 +90,14 @@ private:
       },
       m_tiles);
   }
+  auto
+    filter_invalid() const noexcept
+  {
+    return [](const is_tile auto &tile) {
+      static constexpr auto end_x{ 0x7FFFU };
+      return tile.x() == end_x || !tile.draw();
+    };
+  }
   /**
    * offset holds the original position of canvas.
    */
@@ -177,10 +185,11 @@ private:
     minmax_generic(auto compare, auto get, auto fail) const noexcept
   {
     return std::visit(
-      [&compare, &get, &fail](auto &&tiles) {
+      [&compare, &get, &fail, this](auto &&tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
-          auto tmp = std::minmax_element(tiles.cbegin(), tiles.cend(), compare);
+          auto filtered = tiles | std::views::filter(filter_invalid());
+          auto tmp      = std::ranges::minmax_element(filtered, compare);
           return get(tmp);
         }
         else {
@@ -193,10 +202,11 @@ private:
     min_generic(auto compare, auto get, auto fail) const noexcept
   {
     return std::visit(
-      [&compare, &get, &fail](auto &&tiles) {
+      [&compare, &get, &fail, this](auto &&tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
-          auto tmp = std::min_element(tiles.cbegin(), tiles.cend(), compare);
+          auto filtered = tiles | std::views::filter(filter_invalid());
+          auto tmp      = std::ranges::min_element(filtered, compare);
           return get(tmp);
         }
         else {
@@ -209,10 +219,11 @@ private:
     max_generic(auto compare, auto get, auto fail) const noexcept
   {
     return std::visit(
-      [&compare, &get, &fail](auto &&tiles) {
+      [&compare, &get, &fail, this](auto &&tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
-          auto tmp = std::max_element(tiles.cbegin(), tiles.cend(), compare);
+          auto filtered = tiles | std::views::filter(filter_invalid());
+          auto tmp      = std::ranges::max_element(filtered, compare);
           return get(tmp);
         }
         else {
@@ -230,8 +241,8 @@ private:
       },
       [](auto &&tmp) {
         return std::pair<const std::int16_t, const std::int16_t>{
-          tmp.first->x(),
-          tmp.second->x()
+          tmp.min->x(),
+          tmp.max->x()
         };
       },
       []() {
@@ -275,8 +286,8 @@ private:
       },
       [](auto &&tmp) {
         return std::pair<const std::int16_t, const std::int16_t>{
-          tmp.first->y(),
-          tmp.second->y()
+          tmp.min->y(),
+          tmp.max->y()
         };
       },
       []() {
@@ -487,10 +498,13 @@ public:
     shift(const std::int16_t &x, const std::int16_t &y) noexcept
   {
     const auto xy = Point(x, y);
-    visit_tiles([&xy](auto &tiles) {
-      std::ranges::transform(tiles, std::ranges::begin(tiles), [&xy](auto t) {
-        return t.with_xy(t.xy() + xy);
-      });
+    visit_tiles([&xy, this](auto &tiles) {
+      auto filtered = tiles | std::views::filter(filter_invalid());
+      std::ranges::transform(filtered,
+                             std::ranges::begin(tiles),
+                             [&xy](const auto &t) {
+                               return t.with_xy(t.xy() + xy);
+                             });
     });
   }
   void
