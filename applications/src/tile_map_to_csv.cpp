@@ -81,6 +81,5 @@ void
   };
   process(open_viii::graphics::background::Map{ mim.mim_type(),
                                                 map_path,
-                                                false,
                                                 false });
 }

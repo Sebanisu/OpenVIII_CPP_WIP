@@ -26,13 +26,20 @@
 #include <utility>
 #include <variant>
 namespace open_viii::graphics::background {
+template<typename T>
+concept is_tile = std::is_same_v<Tile1, std::decay_t<T>> || std::
+  is_same_v<Tile2, std::decay_t<T>> || std::is_same_v<Tile3, std::decay_t<T>>;
+
+template<typename T>
+concept is_tiles = is_tile<typename T::value_type>;
+
 struct Map
 {
 private:
-  mutable std::variant<std::monostate,
-                       std::vector<Tile1>,
-                       std::vector<Tile2>,
-                       std::vector<Tile3>>
+  std::variant<std::monostate,
+               std::vector<Tile1>,
+               std::vector<Tile2>,
+               std::vector<Tile3>>
     m_tiles{};
 
 public:
@@ -40,16 +47,31 @@ public:
     visit_tiles(auto &&lambda) const
   {
     return std::visit(
-      [&lambda](auto &&tiles) {
+      [&lambda](const auto &tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
           return lambda(std::forward<decltype(tiles)>(tiles));
         }
-        else
-        {
-//          using return_type = decltype(lambda(std::vector<Tile1>{}));
-//          return return_type(); //returns default value if mono state.
-            return lambda(std::vector<Tile1>{}); //what if default is bad.
+        else {
+          static const std::vector<Tile1> empty{};
+          return lambda(empty);// what if default is bad.
+        }
+      },
+      m_tiles);
+  }
+
+  auto
+    visit_tiles(auto &&lambda)
+  {
+    return std::visit(
+      [&lambda](auto &tiles) {
+        using tiles_type = std::decay_t<decltype(tiles)>;
+        if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
+          return lambda(std::forward<decltype(tiles)>(tiles));
+        }
+        else {
+          std::vector<Tile1> empty{};
+          return lambda(empty);// what if default is bad.
         }
       },
       m_tiles);
@@ -71,86 +93,86 @@ private:
   /**
    * offset holds the original position of canvas.
    */
-  mutable Point<std::int16_t> m_offset{};
-  /**
-   * remove invalid tiles from buffer.
-   */
-  void
-    remove_invalid()
-  {
-    [[maybe_unused]] static constexpr auto cmp = [](const auto &x) {
-      static constexpr auto end_x{ 0x7FFFU };
-      // static constexpr auto limit = 1000U;
-      return x.x() == end_x
-          || !x.draw();// || std::abs(x.y()) > limit || std::abs(x.x()) >
-                       // limit; //|| x.source_x() >limit || x.source_y()
-                       // >limit; //|| !x.draw();
-    };
-    visit_tiles([](auto &&tiles) {
-      std::erase_if(tiles, cmp);
-    });
-  }
+  Point<std::int16_t> m_offset{};
+  //  /**
+  //   * remove invalid tiles from buffer.
+  //   */
+  //  void
+  //    remove_invalid()
+  //  {
+  //    [[maybe_unused]] static constexpr auto cmp = [](const auto &x) {
+  //      static constexpr auto end_x{ 0x7FFFU };
+  //      // static constexpr auto limit = 1000U;
+  //      return x.x() == end_x
+  //          || !x.draw();// || std::abs(x.y()) > limit || std::abs(x.x()) >
+  //                       // limit; //|| x.source_x() >limit || x.source_y()
+  //                       // >limit; //|| !x.draw();
+  //    };
+  //    visit_tiles([](auto &&tiles) {
+  //      std::erase_if(tiles, cmp);
+  //    });
+  //  }
 
-  /**
-   * Sort the data and then remove duplicates.
-   */
-  void
-    sort_remove_duplicates()
-  {
-    // unique requires sorted data to work.
-    sort();
-    visit_tiles([](auto &&tiles) {
-      auto last = std::unique(tiles.begin(), tiles.end());
-      tiles.erase(last, tiles.end());
-    });
-  }
-  /**
-   * Sort in draw order.
-   */
-  void
-    sort()
-  {
-    [[maybe_unused]] static constexpr auto cmp
-      = [](const auto &l, const auto &r) -> bool {
-      if (l.z() > r.z()) {
-        return true;
-      }
-      //      if (l.z() < r.z()) {
-      //        return false;
-      //      }
-      //      if (l.layer_id() > r.layer_id()) {
-      //        return true;
-      //      }
-      //      if (l.layer_id() < r.layer_id()) {
-      //        return false;
-      //      }
-      //      if (l.animation_id() < r.animation_id()) {
-      //        return true;
-      //      }
-      //      if (l.animation_id() > r.animation_id()) {
-      //        return false;
-      //      }
-      //      if (l.animation_state() < r.animation_state()) {
-      //        return true;
-      //      }
-      //      if (l.animation_state() > r.animation_state()) {
-      //        return false;
-      //      }
-      //      if (l.x() < r.x()) {
-      //        return true;
-      //      }
-      //      if (l.x() > r.x()) {
-      //        return false;
-      //      }
-      //      if (l.y() < r.y()) {
-      //        return true;
-      //      }
-      return false;
-    };
-    visit_tiles([](auto &&tiles) {
-      std::ranges::stable_sort(tiles, cmp);
-    });
-  }
+  //  /**
+  //   * Sort the data and then remove duplicates.
+  //   */
+  //  void
+  //    sort_remove_duplicates()
+  //  {
+  //    // unique requires sorted data to work.
+  //    sort();
+  //    visit_tiles([](auto &&tiles) {
+  //      auto last = std::unique(tiles.begin(), tiles.end());
+  //      tiles.erase(last, tiles.end());
+  //    });
+  //  }
+  //  /**
+  //   * Sort in draw order.
+  //   */
+  //  void
+  //    sort()
+  //  {
+  //    [[maybe_unused]] static constexpr auto cmp
+  //      = [](const auto &l, const auto &r) -> bool {
+  //      if (l.z() > r.z()) {
+  //        return true;
+  //      }
+  //      //      if (l.z() < r.z()) {
+  //      //        return false;
+  //      //      }
+  //      //      if (l.layer_id() > r.layer_id()) {
+  //      //        return true;
+  //      //      }
+  //      //      if (l.layer_id() < r.layer_id()) {
+  //      //        return false;
+  //      //      }
+  //      //      if (l.animation_id() < r.animation_id()) {
+  //      //        return true;
+  //      //      }
+  //      //      if (l.animation_id() > r.animation_id()) {
+  //      //        return false;
+  //      //      }
+  //      //      if (l.animation_state() < r.animation_state()) {
+  //      //        return true;
+  //      //      }
+  //      //      if (l.animation_state() > r.animation_state()) {
+  //      //        return false;
+  //      //      }
+  //      //      if (l.x() < r.x()) {
+  //      //        return true;
+  //      //      }
+  //      //      if (l.x() > r.x()) {
+  //      //        return false;
+  //      //      }
+  //      //      if (l.y() < r.y()) {
+  //      //        return true;
+  //      //      }
+  //      return false;
+  //    };
+  //    visit_tiles([](auto &&tiles) {
+  //      std::ranges::stable_sort(tiles, cmp);
+  //    });
+  //  }
   [[nodiscard]] constexpr auto
     minmax_generic(auto compare, auto get, auto fail) const noexcept
   {
@@ -295,7 +317,7 @@ private:
    * everything to at least (0,0)
    */
   void
-    shift_to_origin() const noexcept
+    shift_to_origin() noexcept
   {
     m_offset = Point(min_x(), min_y());
     if (m_offset.x() < 0 || m_offset.y() < 0) {
@@ -344,23 +366,23 @@ public:
    */
   explicit Map(const MimType           &mim_type,
                const std::vector<char> &buffer,
-               bool                     sort_remove = true,
-               bool                     shift       = true)
+               // bool                     sort_remove = true,
+               bool                     shift = true)
     : m_tiles(init_tiles(mim_type, buffer))
   {
-    if (sort_remove) {
-      remove_invalid();
-      sort_remove_duplicates();
-    }
+    //    if (sort_remove) {
+    //      remove_invalid();
+    //      // sort_remove_duplicates();
+    //    }
     if (shift) {
       shift_to_origin();
     }
   }
   Map(const MimType               &mim_type,
       const std::filesystem::path &path,
-      bool                         sort_remove = true,
-      bool                         shift       = true)
-    : Map(mim_type, tools::read_entire_file(path), sort_remove, shift)
+      // bool                         sort_remove = true,
+      bool                         shift = true)
+    : Map(mim_type, tools::read_entire_file(path), shift)
   {}
   Map(std::integral auto &&mim_type,
       auto               &&buffer,
@@ -462,17 +484,17 @@ public:
    * @param y vertical shift
    */
   void
-    shift(const std::int16_t &x, const std::int16_t &y) const noexcept
+    shift(const std::int16_t &x, const std::int16_t &y) noexcept
   {
     const auto xy = Point(x, y);
-    visit_tiles([&xy](auto &&tiles) {
+    visit_tiles([&xy](auto &tiles) {
       std::ranges::transform(tiles, std::ranges::begin(tiles), [&xy](auto t) {
         return t.with_xy(t.xy() + xy);
       });
     });
   }
   void
-    shift(const Point<std::int16_t> &point) const noexcept
+    shift(const Point<std::int16_t> &point) noexcept
   {
     shift(point.x(), point.y());
   }
@@ -685,8 +707,5 @@ inline std::ostream &
   return os;
 }
 
-template<typename T>
-concept is_tile = std::is_same_v<Tile1, std::decay_t<T>> || std::
-  is_same_v<Tile2, std::decay_t<T>> || std::is_same_v<Tile3, std::decay_t<T>>;
 }// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_MAP_HPP
