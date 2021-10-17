@@ -76,6 +76,14 @@ public:
       },
       m_tiles);
   }
+  static auto
+    filter_invalid() noexcept
+  {
+    return [](const is_tile auto &tile) {
+      static constexpr auto end_x{ 0x7FFFU };
+      return (tile.x() != end_x) && tile.draw();
+    };
+  }
 
 private:
   void
@@ -89,14 +97,6 @@ private:
         }
       },
       m_tiles);
-  }
-  static auto
-    filter_invalid() noexcept
-  {
-    return [](const is_tile auto &tile) {
-      static constexpr auto end_x{ 0x7FFFU };
-      return (tile.x() != end_x) && tile.draw();
-    };
   }
   /**
    * offset holds the original position of canvas.
