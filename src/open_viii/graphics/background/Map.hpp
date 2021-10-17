@@ -90,8 +90,8 @@ private:
       },
       m_tiles);
   }
-  auto
-    filter_invalid() const noexcept
+  static auto
+    filter_invalid() noexcept
   {
     return [](const is_tile auto &tile) {
       static constexpr auto end_x{ 0x7FFFU };
