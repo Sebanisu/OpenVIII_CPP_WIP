@@ -76,7 +76,7 @@ public:
       },
       m_tiles);
   }
-  static auto
+  static constexpr auto
     filter_invalid() noexcept
   {
     return [](const is_tile auto &tile) {
