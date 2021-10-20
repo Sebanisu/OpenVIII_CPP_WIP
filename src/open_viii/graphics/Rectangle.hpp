@@ -213,66 +213,66 @@ public:
   constexpr auto
     operator*(const dimT &scaler) const
   {
-    auto              r = *this;
-    r.m_top_left     *scaler;
-    r.m_width_height *scaler;
+    auto r = *this;
+    r.m_top_left *= scaler;
+    r.m_width_height *= scaler;
     return r;
   }
   constexpr auto
     operator+(const dimT &scaler) const
   {
     auto r = *this;
-    r.m_top_left + scaler;
-    r.m_width_height + scaler;
+    r.m_top_left += scaler;
+    r.m_width_height += scaler;
     return r;
   }
   constexpr auto
     operator-(const dimT &scaler) const
   {
     auto r = *this;
-    r.m_top_left - scaler;
-    r.m_width_height - scaler;
+    r.m_top_left -= scaler;
+    r.m_width_height -= scaler;
     return r;
   }
   constexpr auto
     operator/(const dimT &scaler) const
   {
     auto r = *this;
-    r.m_top_left / scaler;
-    r.m_width_height / scaler;
+    r.m_top_left /= scaler;
+    r.m_width_height /= scaler;
     return r;
   }
 
   constexpr auto
     operator*(const Rectangle<dimT> &scaler) const
   {
-    auto              r = *this;
-    r.m_top_left     *scaler.m_top_left;
-    r.m_width_height *scaler.m_width_height;
+    auto r = *this;
+    r.m_top_left *= scaler.m_top_left;
+    r.m_width_height *= scaler.m_width_height;
     return r;
   }
   constexpr auto
     operator+(const Rectangle<dimT> &scaler) const
   {
     auto r = *this;
-    r.m_top_left + scaler.m_top_left;
-    r.m_width_height + scaler.m_width_height;
+    r.m_top_left += scaler.m_top_left;
+    r.m_width_height += scaler.m_width_height;
     return r;
   }
   constexpr auto
     operator-(const Rectangle<dimT> &scaler) const
   {
     auto r = *this;
-    r.m_top_left - scaler.m_top_left;
-    r.m_width_height - scaler.m_width_height;
+    r.m_top_left -= scaler.m_top_left;
+    r.m_width_height -= scaler.m_width_height;
     return r;
   }
   constexpr auto
     operator/(const Rectangle<dimT> &scaler) const
   {
     auto r = *this;
-    r.m_top_left / scaler.m_top_left;
-    r.m_width_height / scaler.m_width_height;
+    r.m_top_left /= scaler.m_top_left;
+    r.m_width_height /= scaler.m_width_height;
     return r;
   }
 };
