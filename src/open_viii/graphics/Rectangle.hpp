@@ -200,18 +200,6 @@ public:
   {
     return m_width_height.area();
   }
-  Rectangle<dimT> constexpr
-    operator/(const Rectangle<dimT> &input) const noexcept
-  {
-    return { m_top_left / input.m_top_left,
-             m_width_height / input.m_width_height };
-  }
-  Rectangle<dimT> constexpr
-    operator*(const Rectangle<dimT> &input) const noexcept
-  {
-    return { m_top_left * input.m_top_left,
-             m_width_height * input.m_width_height };
-  }
   constexpr Point<dimT>
     top_left() const noexcept
   {
@@ -221,6 +209,71 @@ public:
     width_height() const noexcept
   {
     return m_width_height;
+  }
+  constexpr auto
+    operator*(const dimT &scaler) const
+  {
+    auto              r = *this;
+    r.m_top_left     *scaler;
+    r.m_width_height *scaler;
+    return r;
+  }
+  constexpr auto
+    operator+(const dimT &scaler) const
+  {
+    auto r = *this;
+    r.m_top_left + scaler;
+    r.m_width_height + scaler;
+    return r;
+  }
+  constexpr auto
+    operator-(const dimT &scaler) const
+  {
+    auto r = *this;
+    r.m_top_left - scaler;
+    r.m_width_height - scaler;
+    return r;
+  }
+  constexpr auto
+    operator/(const dimT &scaler) const
+  {
+    auto r = *this;
+    r.m_top_left / scaler;
+    r.m_width_height / scaler;
+    return r;
+  }
+
+  constexpr auto
+    operator*(const Rectangle<dimT> &scaler) const
+  {
+    auto              r = *this;
+    r.m_top_left     *scaler.m_top_left;
+    r.m_width_height *scaler.m_width_height;
+    return r;
+  }
+  constexpr auto
+    operator+(const Rectangle<dimT> &scaler) const
+  {
+    auto r = *this;
+    r.m_top_left + scaler.m_top_left;
+    r.m_width_height + scaler.m_width_height;
+    return r;
+  }
+  constexpr auto
+    operator-(const Rectangle<dimT> &scaler) const
+  {
+    auto r = *this;
+    r.m_top_left - scaler.m_top_left;
+    r.m_width_height - scaler.m_width_height;
+    return r;
+  }
+  constexpr auto
+    operator/(const Rectangle<dimT> &scaler) const
+  {
+    auto r = *this;
+    r.m_top_left / scaler.m_top_left;
+    r.m_width_height / scaler.m_width_height;
+    return r;
   }
 };
 template<typename dimT>

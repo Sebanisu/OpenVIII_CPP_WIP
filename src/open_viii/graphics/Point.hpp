@@ -109,12 +109,10 @@ public:
   [[nodiscard]] constexpr Point<dimT>
     operator/(const Point<dimT> &input) const noexcept
   {
-    return {
-      (input.m_x != static_cast<dimT>(0) ? static_cast<dimT>(m_x / input.m_x)
-                                         : static_cast<dimT>(0)),
-      (input.m_y != static_cast<dimT>(0) ? static_cast<dimT>(m_y / input.m_y)
-                                         : static_cast<dimT>(0))
-    };
+    return { (input.m_x != dimT{ 0 } ? static_cast<dimT>(m_x / input.m_x)
+                                     : static_cast<dimT>(0)),
+             (input.m_y != dimT{ 0 } ? static_cast<dimT>(m_y / input.m_y)
+                                     : static_cast<dimT>(0)) };
   }
   [[nodiscard]] constexpr Point<dimT>
     operator*(const Point<dimT> &input) const noexcept
@@ -133,6 +131,30 @@ public:
   {
     return { static_cast<dimT>(m_x + input.m_x),
              static_cast<dimT>(m_y + input.m_y) };
+  }
+
+  [[nodiscard]] constexpr Point<dimT>
+    operator/(const dimT &input) const noexcept
+  {
+    return { (input != dimT{ 0 } ? static_cast<dimT>(m_x / input)
+                                 : static_cast<dimT>(0)),
+             (input != dimT{ 0 } ? static_cast<dimT>(m_y / input)
+                                 : static_cast<dimT>(0)) };
+  }
+  [[nodiscard]] constexpr Point<dimT>
+    operator*(const dimT &input) const noexcept
+  {
+    return { static_cast<dimT>(m_x * input), static_cast<dimT>(m_y * input) };
+  }
+  [[nodiscard]] constexpr Point<dimT>
+    operator-(const dimT &input) const noexcept
+  {
+    return { static_cast<dimT>(m_x - input), static_cast<dimT>(m_y - input) };
+  }
+  [[nodiscard]] constexpr Point<dimT>
+    operator+(const dimT &input) const noexcept
+  {
+    return { static_cast<dimT>(m_x + input), static_cast<dimT>(m_y + input) };
   }
   [[nodiscard]] constexpr Point<dimT>
     with_x(dimT in_x) const noexcept
