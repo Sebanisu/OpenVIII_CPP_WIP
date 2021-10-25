@@ -107,7 +107,7 @@ public:
     }
   }
   constexpr Point<dimT>
-    operator/=(const Point<dimT> &input) const noexcept
+    operator/=(const Point<dimT> &input) noexcept
   {
     m_x = (input.m_x != dimT{ 0 } ? static_cast<dimT>(m_x / input.m_x)
                                   : static_cast<dimT>(0));
