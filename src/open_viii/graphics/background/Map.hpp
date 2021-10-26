@@ -84,6 +84,11 @@ public:
       return (tile.x() != end_x) && tile.draw();
     };
   }
+  [[nodiscard]] auto
+    offset() const
+  {
+    return m_offset;
+  }
 
 private:
   void
@@ -503,7 +508,7 @@ public:
       std::ranges::transform(filtered,
                              std::ranges::begin(tiles),
                              [&xy](const auto &t) {
-                               return t.with_xy(t.xy() + xy);
+                               return t.shift_xy(xy);
                              });
     });
   }
