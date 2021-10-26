@@ -118,8 +118,21 @@ public:
     with_xy(output_type in_x, output_type in_y) const noexcept
   {
     auto out = *this;
-    out.m_xy = out.m_xy.with_x(in_x);
-    out.m_xy = out.m_xy.with_y(in_y);
+    out.m_xy = decltype(m_xy){in_x,in_y};
+    return out;
+  }
+  [[nodiscard]] constexpr this_type
+    shift_xy(decltype(m_xy) in_xy) const noexcept
+  {
+    auto out = *this;
+    out.m_xy += in_xy;
+    return out;
+  }
+  [[nodiscard]] constexpr this_type
+    shift_xy(output_type in_x, output_type in_y) const noexcept
+  {
+    auto out = *this;
+    out.m_xy += decltype(m_xy){in_x,in_y};
     return out;
   }
   [[nodiscard]] constexpr auto
