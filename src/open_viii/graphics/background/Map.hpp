@@ -85,7 +85,7 @@ public:
     };
   }
   [[nodiscard]] auto
-    offset() const
+    offset() const noexcept
   {
     return m_offset;
   }
