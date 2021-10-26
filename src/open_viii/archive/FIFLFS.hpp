@@ -326,16 +326,24 @@ public:
   template<std::ranges::contiguous_range outT = std::vector<char>>
   [[nodiscard]] outT
     get_entry_data(const std::initializer_list<std::string_view> &filenames,
-                   std::string *out_name = nullptr) const
+                   std::string *const out_name     = nullptr,
+                   std::size_t *const out_name_pos = nullptr) const
   {
+    if (out_name_pos != nullptr) {
+      *out_name_pos = 0U;
+    }
     using pair = decltype(get_entry_id_and_path(""));
-    pair tmp{};
-    bool found
-      = std::ranges::any_of(filenames, [&tmp, this](std::string_view str) {
+    pair       tmp{};
+    const auto it
+      = std::ranges::find_if(filenames, [&tmp, this](std::string_view str) {
           tmp = get_entry_id_and_path(str);
           return tmp != pair{};
         });
-    if (found) {
+    if (it != filenames.end()) {
+      if (out_name_pos != nullptr) {
+        *out_name_pos
+          = static_cast<std::size_t>(std::distance(filenames.begin(), it));
+      }
       const auto &[id, path] = tmp;
       if (out_name != nullptr) {
         *out_name = path;
