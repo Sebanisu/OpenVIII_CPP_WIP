@@ -228,9 +228,9 @@ public:
     with_palette_id(decltype(m_palette_id.id()) in_palette_id) const noexcept
   {
     auto       out    = *this;
-    const auto old_id = palette_id();
+    //const auto old_id = palette_id();
     out.m_palette_id  = m_palette_id.with_id(in_palette_id);
-    const auto new_id = out.palette_id();
+    //const auto new_id = out.palette_id();
 //    if (old_id != new_id) {
 //      std::cout << +old_id << +new_id << std::endl;
 //    }
