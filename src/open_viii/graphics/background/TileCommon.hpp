@@ -231,9 +231,9 @@ public:
     const auto old_id = palette_id();
     out.m_palette_id  = m_palette_id.with_id(in_palette_id);
     const auto new_id = out.palette_id();
-    if (old_id != new_id) {
-      std::cout << +old_id << +new_id << std::endl;
-    }
+//    if (old_id != new_id) {
+//      std::cout << +old_id << +new_id << std::endl;
+//    }
     return out;
   }
   [[nodiscard]] constexpr auto
