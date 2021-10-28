@@ -1,0 +1,45 @@
+./BackgroundTiles.cpp:5:12: warning: access declarations are deprecated in favour of using-declarations; suggestion: add the ‘using’ keyword [-Wdeprecated]
+    5 |            c::e;
+      |            ^
+‘
+Segmentation fault
+    8 |        this;
+      |        ^~~~
+0xe306b3 internal_error(char const*, ...)
+	???:0
+0x143e0a9 pp_format(pretty_printer*, text_info*)
+	???:0
+0x605ea6 pp_format_verbatim(pretty_printer*, text_info*)
+	???:0
+0x605e18 pp_verbatim(pretty_printer*, char const*, ...)
+	???:0
+0xf1b17c diagnostic_report_diagnostic(diagnostic_context*, diagnostic_info*)
+	???:0
+0xf6737c warning_at(unsigned int, int, char const*, ...)
+	???:0
+0x1098db3 finish_expr_stmt(tree_node*)
+	???:0
+0x1179128 tsubst_expr(tree_node*, tree_node*, int, tree_node*, bool)
+	???:0
+0x1178f95 tsubst_expr(tree_node*, tree_node*, int, tree_node*, bool)
+	???:0
+0x122150a instantiate_decl(tree_node*, bool, bool)
+	???:0
+0xf48b5a walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48d21 walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48762 walk_tree_without_duplicates_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xff9ad8 store_init_value(tree_node*, tree_node*, vec<tree_node*, va_gc, vl_embed>**, int)
+	???:0
+0xfdad04 cp_finish_decl(tree_node*, tree_node*, bool, tree_node*, int)
+	???:0
+0x1493083 c_parse_file()
+	???:0
+0x148045e c_common_parse_file()
+	???:0
+Please submit a full bug report,
+with preprocessed source if appropriate.
+Please include the complete backtrace with any bug report.
+See <file:///usr/share/doc/gcc-11/README.Bugs> for instructions.

@@ -1,0 +1,424 @@
+./BackgroundTiles.cpp:1:3: warning: style of line directive is a GCC extension
+    1 | # 0 "./BackgroundTiles.cpp"
+      |   ^
+./BackgroundTiles.cpp: warning: style of line directive is a GCC extension
+/mnt/d/dev/OpenVIII_CPP_WIP/reduce//:1:3: warning: style of line directive is a GCC extension
+<built-in>: warning: style of line directive is a GCC extension
+<command-line>: warning: style of line directive is a GCC extension
+<command-line>: warning: style of line directive is a GCC extension
+./BackgroundTiles.cpp:1:3: warning: style of line directive is a GCC extension
+    1 | # 0 "./BackgroundTiles.cpp"
+      |   ^
+In file included from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:15:3: warning: style of line directive is a GCC extension
+   15 | #include "BlendModeT.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:15,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/BlendModeT.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:15,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/BlendModeT.hpp:15:3: warning: style of line directive is a GCC extension
+   15 | #include <cstdint>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:15,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/BlendModeT.hpp:17:3: warning: style of line directive is a GCC extension
+   17 | enum struct BlendModeT : std::uint8_t {
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:15,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/BlendModeT.hpp:25:3: warning: style of line directive is a GCC extension
+   25 | #endif// VIIIARCHIVE_BLENDMODET_HPP
+      |   ^~
+In file included from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:16:3: warning: style of line directive is a GCC extension
+   16 | #include "LayerID.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:16,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/LayerID.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:16,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/LayerID.hpp:15:3: warning: style of line directive is a GCC extension
+   15 | #include <compare>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:16,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/LayerID.hpp:18:3: warning: style of line directive is a GCC extension
+   18 | struct LayerID
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:16,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/LayerID.hpp:49:3: warning: style of line directive is a GCC extension
+   49 | #endif// VIIIARCHIVE_LAYERID_HPP
+      |   ^~
+In file included from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:17:3: warning: style of line directive is a GCC extension
+   17 | #include "PaletteID.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:17,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/PaletteID.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:17,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/PaletteID.hpp:94:3: warning: style of line directive is a GCC extension
+   94 | #endif// VIIIARCHIVE_PALETTEID_HPP
+      |   ^~
+In file included from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18:3: warning: style of line directive is a GCC extension
+   18 | #include "TexIdBuffer.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:15:3: warning: style of line directive is a GCC extension
+   15 | #include "open_viii/graphics/BPPT.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/BPPT.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/BPPT.hpp:16:3: warning: style of line directive is a GCC extension
+   16 | #include <iostream>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/BPPT.hpp:18:3: warning: style of line directive is a GCC extension
+   18 | /**
+      |   ^ 
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/BPPT.hpp:18:3: warning: style of line directive is a GCC extension
+   18 | /**
+      |   ^ 
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/BPPT.hpp:194:3: warning: style of line directive is a GCC extension
+  194 |   //  _4bpp = 0b0U, /**< is coded as std::uint8_t of value 0. 4 bits per per
+      |   ^~~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/BPPT.hpp:239:3: warning: style of line directive is a GCC extension
+  239 | #endif// VIIIARCHIVE_BPPT_HPP
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:16:3: warning: style of line directive is a GCC extension
+   16 | #include <cassert>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:20:3: warning: style of line directive is a GCC extension
+   20 | /**
+      |   ^ 
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:18,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TexIdBuffer.hpp:145:3: warning: style of line directive is a GCC extension
+  145 | #endif// VIIIARCHIVE_TEXIDBUFFER_HPP
+      |   ^~
+In file included from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19:3: warning: style of line directive is a GCC extension
+   19 | #include "TileCommon.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8:3: warning: style of line directive is a GCC extension
+    8 | #include "open_viii/graphics/Rectangle.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15:3: warning: style of line directive is a GCC extension
+   15 | #include "open_viii/Concepts.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:15:3: warning: style of line directive is a GCC extension
+   15 | #include "CompressionTypeT.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/CompressionTypeT.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/CompressionTypeT.hpp:27:3: warning: style of line directive is a GCC extension
+   27 | #endif// VIIIARCHIVE_COMPRESSIONTYPET_HPP
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:16:3: warning: style of line directive is a GCC extension
+   16 | #include "tl/concepts.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:16,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/cmake-build-debug/_deps/tools_library-src/src/tl/concepts.hpp:73:3: warning: style of line directive is a GCC extension
+   73 | #endif// TOOLSLIBRARY_CONCEPTS_HPP
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:21:3: warning: style of line directive is a GCC extension
+   21 | #include <vector>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:22:3: warning: style of line directive is a GCC extension
+   22 | #include <variant>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:24:3: warning: style of line directive is a GCC extension
+   24 | template<typename T>
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:152:3: warning: style of line directive is a GCC extension
+  152 | // template<typename a_type, typename lambdaT>
+      |   ^~~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:15,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/Concepts.hpp:189:3: warning: style of line directive is a GCC extension
+  189 | #endif// VIIIARCHIVE_CONCEPTS_HPP
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:16:3: warning: style of line directive is a GCC extension
+   16 | #include "open_viii/graphics/Point.hpp"
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:16,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Point.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:16,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Point.hpp:16:3: warning: style of line directive is a GCC extension
+   16 | #include <algorithm>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:16,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Point.hpp:20:3: warning: style of line directive is a GCC extension
+   20 | #include <numeric>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:16,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Point.hpp:22:3: warning: style of line directive is a GCC extension
+   22 | template<Number dimT>
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:16,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Point.hpp:268:3: warning: style of line directive is a GCC extension
+  268 | #endif// VIIIARCHIVE_POINT_HPP
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:8,
+                 from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/Rectangle.hpp:287:3: warning: style of line directive is a GCC extension
+  287 | #endif// VIIIARCHIVE_RECTANGLE_HPP
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:10:3: warning: style of line directive is a GCC extension
+   10 | #include <cstring>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:11:3: warning: style of line directive is a GCC extension
+   11 | #include <iomanip>
+      |   ^
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:14:3: warning: style of line directive is a GCC extension
+   14 | enum class TileCommonConstants : std::uint16_t
+      |   ^~
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/TileCommon.hpp:392:3: warning: style of line directive is a GCC extension
+  392 | #endif// OPENVIII_CPP_WIP_TILECOMMON_HPP
+      |   ^~
+In file included from ./BackgroundTiles.cpp:1:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:57:3: warning: style of line directive is a GCC extension
+   57 | #endif// VIIIARCHIVE_impl_Tile1_HPP
+      |   ^
+./BackgroundTiles.cpp:2:3: warning: style of line directive is a GCC extension
+    2 | # 1 "/mnt/d/dev/OpenVIII_CPP_WIP/reduce//"
+      |   ^
+In file included from ./BackgroundTiles.cpp:2:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile2.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from ./BackgroundTiles.cpp:2:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile2.hpp:61:3: warning: style of line directive is a GCC extension
+   61 | #endif// VIIIARCHIVE_impl_Tile2_HPP
+      |   ^
+./BackgroundTiles.cpp:3:3: warning: style of line directive is a GCC extension
+    3 | # 0 "<built-in>"
+      |   ^
+In file included from ./BackgroundTiles.cpp:3:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile3.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | // This program is free software: you can redistribute it and/or modify
+      |   ^~
+In file included from ./BackgroundTiles.cpp:3:
+/mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile3.hpp:57:3: warning: style of line directive is a GCC extension
+   57 | #endif// VIIIARCHIVE_TILE3_HPP
+      |   ^
+./BackgroundTiles.cpp:4:3: warning: style of line directive is a GCC extension
+    4 | # 0 "<command-line>"
+      |   ^
+In file included from ./BackgroundTiles.cpp:4:
+/mnt/d/dev/OpenVIII_CPP_WIP/cmake-build-debug/_deps/ut_fetch-src/include/boost/ut.hpp:1:3: warning: style of line directive is a GCC extension
+    1 | //
+      |   ^ 
+In file included from ./BackgroundTiles.cpp:4:
+/mnt/d/dev/OpenVIII_CPP_WIP/cmake-build-debug/_deps/ut_fetch-src/include/boost/ut.hpp:13:3: warning: style of line directive is a GCC extension
+   13 | #endif
+      |   ^~
+In file included from ./BackgroundTiles.cpp:4:
+/mnt/d/dev/OpenVIII_CPP_WIP/cmake-build-debug/_deps/ut_fetch-src/include/boost/ut.hpp:62:3: warning: style of line directive is a GCC extension
+   62 | #include <sys/wait.h>
+      |   ^
+In file included from ./BackgroundTiles.cpp:4:
+/mnt/d/dev/OpenVIII_CPP_WIP/cmake-build-debug/_deps/ut_fetch-src/include/boost/ut.hpp:63:3: warning: style of line directive is a GCC extension
+   63 | #include <unistd.h>
+      |   ^
+In file included from ./BackgroundTiles.cpp:4:
+/mnt/d/dev/OpenVIII_CPP_WIP/cmake-build-debug/_deps/ut_fetch-src/include/boost/ut.hpp:64:3: warning: style of line directive is a GCC extension
+   64 | #endif
+      |   ^~
+In file included from ./BackgroundTiles.cpp:4:
+/mnt/d/dev/OpenVIII_CPP_WIP/cmake-build-debug/_deps/ut_fetch-src/include/boost/ut.hpp:77:3: warning: style of line directive is a GCC extension
+   77 | inline namespace ext {
+      |   ^~
+In file included from ./BackgroundTiles.cpp:4:
+/mnt/d/dev/OpenVIII_CPP_WIP/cmake-build-debug/_deps/ut_fetch-src/include/boost/ut.hpp:240:3: warning: style of line directive is a GCC extension
+  240 | #if defined(_MSC_VER) and not defined(__clang__)
+      |   ^~~
+In file included from ./BackgroundTiles.cpp:4:
+/mnt/d/dev/OpenVIII_CPP_WIP/cmake-build-debug/_deps/ut_fetch-src/include/boost/ut.hpp:2321:3: warning: style of line directive is a GCC extension
+ 2321 | #endif
+      |   ^
+./BackgroundTiles.cpp:5:3: warning: style of line directive is a GCC extension
+    5 | # 1 "/usr/include/stdc-predef.h" 1 3 4
+      |   ^
+‘
+In file included from /mnt/d/dev/OpenVIII_CPP_WIP/src/open_viii/graphics/background/Tile1.hpp:19,
+                 from ./BackgroundTiles.cpp:1:
+Segmentation fault
+  238 |   }
+      |   ^
+0xe306b3 internal_error(char const*, ...)
+	???:0
+0x143e0a9 pp_format(pretty_printer*, text_info*)
+	???:0
+0x605ea6 pp_format_verbatim(pretty_printer*, text_info*)
+	???:0
+0x605e18 pp_verbatim(pretty_printer*, char const*, ...)
+	???:0
+0xf1b17c diagnostic_report_diagnostic(diagnostic_context*, diagnostic_info*)
+	???:0
+0xf6737c warning_at(unsigned int, int, char const*, ...)
+	???:0
+0x1028717 do_poplevel(tree_node*)
+	???:0
+0x1027688 finish_compound_stmt(tree_node*)
+	???:0
+0x1178fae tsubst_expr(tree_node*, tree_node*, int, tree_node*, bool)
+	???:0
+0x122150a instantiate_decl(tree_node*, bool, bool)
+	???:0
+0xf48b5a walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48d21 walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48fce walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48d5e walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48fce walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48d5e walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48fce walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48d5e walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48fce walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+0xf48d5e walk_tree_1(tree_node**, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*, tree_node* (*)(tree_node**, int*, tree_node* (*)(tree_node**, int*, void*), void*, hash_set<tree_node*, false, default_hash_traits<tree_node*> >*))
+	???:0
+Please submit a full bug report,
+with preprocessed source if appropriate.
+Please include the complete backtrace with any bug report.
+See <file:///usr/share/doc/gcc-11/README.Bugs> for instructions.
