@@ -26,6 +26,7 @@ enum class LangT : std::uint8_t
   jp,
   end,
   begin = en,
+  generic = end
 };
 }// namespace open_viii
 #endif// VIIIARCHIVE_LANGT_HPP
