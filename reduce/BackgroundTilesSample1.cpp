@@ -1,4 +1,4 @@
-// https://godbolt.org/z/d7ea6n1x3
+// https://godbolt.org/z/3TxGsGbYr
 struct a {
   bool b();
 };
