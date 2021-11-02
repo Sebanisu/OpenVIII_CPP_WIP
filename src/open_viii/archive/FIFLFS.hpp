@@ -468,17 +468,7 @@ public:
                                               virtualPath,
                                               fi);
       }();
-      if (retVal == TryAddT::added_to_archive) {
-        std::cout << "Added:\t" << virtualPath << '\n';
-        //          if(static_cast<bool>(archive)) {
-        //            retVal = TryAddT::archive_full;
-        //          }
-      }
-      if (retVal == TryAddT::archive_full) {
-        std::cout << "Full:\t" << archive.get_base_name() << '\n';
-        return true;
-      }
-      return false;
+      return retVal == TryAddT::archive_full;
     };
   }
   auto
