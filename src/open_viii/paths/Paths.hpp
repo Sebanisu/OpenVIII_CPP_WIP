@@ -15,7 +15,7 @@
 #include "open_viii/tools/Tools.hpp"
 #include "tl/string.hpp"
 #include <algorithm>
-#include <array>
+#include <vector>
 #include <filesystem>
 #include <ranges>
 #include <string>
@@ -27,25 +27,53 @@ public:
     get()
   {
     using namespace std::literals::string_literals;
-    const static std::array paths = {
+    static std::vector paths = {
+      tl::string::replace_slashes(
+        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s),
+      tl::string::replace_slashes(
+        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s),
+
+      tl::string::replace_slashes(
+        R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII Remastered)"s),
+      tl::string::replace_slashes(
+        R"(mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII Remastered)"s),
+
       tl::string::replace_slashes(
         R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"s),
       tl::string::replace_slashes(
         R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"s),
+
+      tl::string::replace_slashes(
+        R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII)"s),
+      tl::string::replace_slashes(
+        R"(mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII)"s),
+
       tl::string::replace_slashes(R"(/mnt/k/ff82000)"s),
       tl::string::replace_slashes(R"(K:\ff82000)"s),
+
       tl::string::replace_slashes(R"(/mnt/d/games/ff82000)"s),
       tl::string::replace_slashes(R"(D:\games\ff82000)"s),
-      tl::string::replace_slashes(R"(/mnt/e/)"s),// CD
-      tl::string::replace_slashes(R"(e:\)"s),    // CD
-      tl::string::replace_slashes(
-        R"(/mnt/d/tim)"s),                      // folder with tim files in it
-      tl::string::replace_slashes(R"(d:\tim)"s),// folder with tim files in it
-      tl::string::replace_slashes(
-        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s),
-      tl::string::replace_slashes(
-        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s)
+
+      // CD
+      tl::string::replace_slashes(R"(/mnt/e/)"s),
+      tl::string::replace_slashes(R"(e:\)"s),
+
+      // folders with tim files in it
+      tl::string::replace_slashes(R"(/mnt/d/tim)"s),
+      tl::string::replace_slashes(R"(d:\tim)"s)
     };
+    static const auto path_file = std::filesystem::current_path() / "paths.conf";
+    static bool read_file = true;
+    if(read_file) {
+      auto fs = std::ifstream(path_file, std::ios::in | std::ios::binary);
+      if (fs.is_open()) {
+        read_file = false;
+        std::string line{};
+        while (std::getline(fs, line)) {
+          paths.emplace_back(tl::string::replace_slashes(std::move(line)));
+        }
+      }
+    }
     return paths;
   }
   template<std::invocable<std::filesystem::path> lambdaT>
