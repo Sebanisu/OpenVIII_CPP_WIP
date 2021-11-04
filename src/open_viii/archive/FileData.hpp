@@ -29,15 +29,15 @@ private:
   /**
    * The size of the string is defined before the raw char array.
    */
-  std::string m_filename{};
+  std::string   m_filename{};
   /**
    * offset to file
    */
-  std::uint64_t           m_offset{};
+  std::uint64_t m_offset{};
   /**
    * size of the file
    */
-  std::uint32_t           m_size{};
+  std::uint32_t m_size{};
 
 public:
   constexpr FileData() = default;
@@ -47,17 +47,19 @@ public:
    * @param offset path to
    * @param size
    */
-  [[maybe_unused]] FileData(decltype(m_filename)              filename,
-                            const std::unsigned_integral auto offset,
-                            const std::unsigned_integral auto size)
+  [[maybe_unused]] FileData(
+    decltype(m_filename)              filename,
+    const std::unsigned_integral auto offset,
+    const std::unsigned_integral auto size)
     : m_filename(tl::string::replace_slashes(std::move(filename))),
       m_offset(static_cast<decltype(m_offset)>(offset)),
       m_size(static_cast<decltype(m_size)>(size))
   {
     tl::string::replace_slashes(m_filename);
   }
-  [[maybe_unused]] FileData(const std::unsigned_integral auto offset,
-                            const std::unsigned_integral auto size)
+  [[maybe_unused]] FileData(
+    const std::unsigned_integral auto offset,
+    const std::unsigned_integral auto size)
     : FileData(std::string(), offset, size)
   {}
   [[nodiscard]] bool
@@ -65,8 +67,9 @@ public:
   {
     return m_size == 0 || m_filename.empty();
   }
-  explicit FileData(tl::read::input                   input,
-                    const std::unsigned_integral auto string_length)
+  explicit FileData(
+    tl::read::input                   input,
+    const std::unsigned_integral auto string_length)
     : m_filename(tl::string::replace_slashes(
       input.output<decltype(m_filename)>(std::string(string_length, '\0')))),
       m_offset(input.output<decltype(m_offset)>()),
@@ -110,7 +113,12 @@ public:
         "data");
     }
   }
-  // size of this file entry in the zzz file.
+  /** size of this file entry in the zzz file.
+   * This is for appending a new entry. I don't know if it works.
+   * @todo used in tests no where else. might want to make this a free function
+   * of the tests.
+   * @return
+   */
   [[maybe_unused]] [[nodiscard]] constexpr auto
     total_size() const noexcept
   {
@@ -155,6 +163,33 @@ public:
   {
     return m_offset;
   }
+
+  [[maybe_unused]] [[nodiscard]] FileData
+    with_uncompressed_size(std::uint32_t in_size) const noexcept
+  {
+
+    auto r   = *this;
+    r.m_size = in_size;
+    return r;
+  }
+
+  [[maybe_unused]] [[nodiscard]] FileData
+    with_offset(std::uint64_t in_offset) const noexcept
+  {
+    auto r     = *this;
+    r.m_offset = in_offset;
+    return r;
+  }
+
+  [[maybe_unused]] [[nodiscard]] auto
+    with_path(std::filesystem::path path) const
+  {
+
+    auto r       = *this;
+    r.m_filename = path.string();
+    return r;
+  }
+
   /**
    * gets path as a std::string_view
    */
