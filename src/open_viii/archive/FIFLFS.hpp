@@ -602,6 +602,103 @@ public:
   }
   return archive;
 }
+auto
+  find_match(const std::vector<std::filesystem::path> &paths,
+             const std::filesystem::path              &in_path)
+{
+  return std::ranges::find_if(
+    paths,
+    [&in_path](const std::filesystem::path &new_path) {
+      return new_path.has_filename()
+          && in_path.filename() == new_path.filename();
+    });
+}
+
+bool
+  any_matches(const std::vector<std::filesystem::path> &paths,
+              const std::filesystem::path              &in_path)
+{
+  return find_match(paths, in_path) != std::ranges::end(paths);
+}
+
+inline bool
+  any_matches(const std::vector<std::filesystem::path>                 &paths,
+              const std::vector<std::pair<std::uint32_t, std::string>> &pairs)
+{
+  return std::ranges::any_of(pairs, [&paths](const auto &pair) {
+    const auto in_path = std::filesystem::path(pair.second);
+    return in_path.has_filename() && any_matches(paths, in_path);
+  });
+}
+/**
+ * create a copy of the archive with the files that have the same filename
+ * replaced with a new one. rest are copied with no changes.
+ * @param source original archive
+ * @param paths paths to new files.
+ * @return paths to new archive files.
+ */
+inline std::vector<std::filesystem::path>
+  replace_files(const FIFLFS<false>                      &source,
+                const std::vector<std::filesystem::path> &paths)
+{
+
+  std::vector<std::filesystem::path> r{};
+  auto pairs = source.get_vector_of_indexes_and_files({});
+
+  // make sure there is a match.
+  if (!any_matches(paths, pairs)) {
+    return r;
+  }
+  std::ranges::sort(pairs);
+  const auto &fi_name = source.fi().path().filename();
+  const auto &fl_name = source.fl().path().filename();
+  const auto &fs_name = source.fs().path().filename();
+  std::cout << "Destination FI: " << fi_name << '\n';
+  std::cout << "Destination FL: " << fl_name << '\n';
+  std::cout << "Destination FS: " << fs_name << '\n';
+  const auto   &temp = std::filesystem::temp_directory_path();
+  std::ofstream fs_fi(temp / fi_name,
+                      std::ios::out | std::ios::binary | std::ios::trunc);
+  std::ofstream fs_fl(temp / fl_name,
+                      std::ios::out | std::ios::binary | std::ios::trunc);
+  std::ofstream fs_fs(temp / fs_name,
+                      std::ios::out | std::ios::binary | std::ios::trunc);
+  std::ranges::for_each(pairs, [&](const auto &pair) {
+    const auto &[i, in_path] = pair;
+    const FI source_fi       = source.get_entry_by_index(i);
+    switch (source_fi.compression_type()) {
+    case open_viii::CompressionTypeT::none:
+      std::puts("\t Not Compressed");
+      break;
+    case open_viii::CompressionTypeT::lzss:
+      std::puts("\t LZSS Compressed");
+      break;
+    case open_viii::CompressionTypeT::lz4:
+      std::puts("\t LZ4 Compressed");
+      break;
+    }
+
+    // match found use the new file
+    open_viii::archive::FI fi = [&](const auto &in_path_ref) {
+      if (auto match = find_match(paths, in_path_ref);
+          match != std::ranges::end(paths)) {
+        return open_viii::archive::append_entry(fs_fs,
+                                                *match,
+                                                source_fi.compression_type());
+      }
+      return open_viii::archive::append_entry(fs_fs,
+                                              source.get_entry_data(source_fi),
+                                              source_fi.compression_type());
+    }(in_path);
+    open_viii::archive::append_entry(fs_fi, fi);
+    open_viii::archive::append_entry(fs_fl, std::filesystem::path(in_path));
+    std::puts("\t\tAdded File");
+    r.template emplace_back(temp / fi_name);
+    r.template emplace_back(temp / fl_name);
+    r.template emplace_back(temp / fs_name);
+  });
+  return r;
+}
 inline auto
   get_fiflfs_entries(const FIFLFS<true>                            &source,
                      const std::initializer_list<std::string_view> &filename)
