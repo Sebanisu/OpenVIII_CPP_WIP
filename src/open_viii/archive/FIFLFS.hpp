@@ -711,7 +711,7 @@ template<bool Nested = false>
     open_viii::archive::FI fi        = [&](const auto &in_path_ref) {
       if (auto match = find_match(paths, in_path_ref);
           match != std::ranges::end(paths)) {
-        std::cout << "Updated: " << *match << std::endl;
+        std::cout << "Updated: " << in_path << std::endl;
         return open_viii::archive::append_entry(
                  fs_fs,
                  *match,
