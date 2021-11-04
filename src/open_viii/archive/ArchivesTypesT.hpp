@@ -35,16 +35,15 @@ enum class ArchiveTypeT : std::uint8_t
  * @return true if valid.
  */
 constexpr bool
-  test_valid_archive_type_t(std::signed_integral auto I,
-                            bool                      include_end = false)
+  test_valid_archive_type_t(
+    std::signed_integral auto I,
+    bool                      include_end = false)
 {
   return ((static_cast<std::intmax_t>(I)
            >= static_cast<std::intmax_t>(ArchiveTypeT::first))
-          && (static_cast<std::intmax_t>(I)
-              <= static_cast<std::intmax_t>(ArchiveTypeT::last)))
+          && (static_cast<std::intmax_t>(I) <= static_cast<std::intmax_t>(ArchiveTypeT::last)))
       || (include_end
-          && (static_cast<std::intmax_t>(I)
-              == static_cast<std::intmax_t>(ArchiveTypeT::end)));
+          && (static_cast<std::intmax_t>(I) == static_cast<std::intmax_t>(ArchiveTypeT::end)));
 }
 
 /**
@@ -55,14 +54,14 @@ constexpr bool
 template<auto I, bool include_end = false>
 concept valid_archive_type_t_signed = test_valid_archive_type_t(I, include_end);
 constexpr bool
-  test_valid_archive_type_t(std::unsigned_integral auto I,
-                            bool                        include_end = false)
+  test_valid_archive_type_t(
+    std::unsigned_integral auto I,
+    bool                        include_end = false)
 {
   return static_cast<std::size_t>(I)
         <= static_cast<std::size_t>(ArchiveTypeT::last)
       || (include_end
-          && (static_cast<std::size_t>(I)
-              == static_cast<std::size_t>(ArchiveTypeT::end)));
+          && (static_cast<std::size_t>(I) == static_cast<std::size_t>(ArchiveTypeT::end)));
 }
 
 /**
@@ -106,6 +105,8 @@ concept valid_archive_type_t
       include_end> || valid_archive_type_t_enum
   < static_cast<ArchiveTypeT>(I)
 , include_end > ;
+template<auto... I>
+concept valid_archive_type_t_v = (valid_archive_type_t<I> && ...);
 
 static_assert(valid_archive_type_t<ArchiveTypeT::battle>);
 static_assert(valid_archive_type_t<ArchiveTypeT::field>);

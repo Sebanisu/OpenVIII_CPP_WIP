@@ -30,6 +30,8 @@ concept does_have_execute_with_nested = requires(T a, lambdaT l, filterT f)
 {
   a.execute_with_nested({}, l, {}, f);
 };
+template<ArchiveTypeT... aT>
+concept not_zero = sizeof...(aT) > 0U;
 /**
  * Reads a path looking for ZZZ or FIFLFS archives. It remembers the locations
  * of the archives, and serves serves as a front end to access them.
@@ -78,9 +80,10 @@ private:
    * @param path location of FF8.
    */
   static std::filesystem::path
-    set_path(std::filesystem::path path,
-             std::string          &lang,
-             std::string_view      in_lang = {})
+    set_path(
+      std::filesystem::path path,
+      std::string          &lang,
+      std::string_view      in_lang = {})
   {
     using namespace std::string_literals;
     using namespace std::string_view_literals;
@@ -130,7 +133,7 @@ private:
   }
   /**
    * TryToAdd archive of type to archive member variable.
-   * @param archiveType_ Type of valid archive.
+   * @param archiveTypeT Type of valid archive.
    * @param path physical path on the hard drive
    * @param nestedPath path located inside the archive. default {}
    * @param offset bytes from front of file where archive is located. 0U =
@@ -140,10 +143,11 @@ private:
    */
   template<FI_Like fiT>
   bool
-    try_add(const ArchiveTypeT          &archive_type,
-            fiT                          fi,
-            const std::filesystem::path &path,
-            const std::filesystem::path &nested_path)
+    try_add(
+      const ArchiveTypeT          &archive_type,
+      fiT                          fi,
+      const std::filesystem::path &path,
+      const std::filesystem::path &nested_path)
   {
     // this string can be compared to the stem of the filename to determine
     // which archive is try added to.
@@ -154,8 +158,9 @@ private:
       return add == TryAddT::added_to_archive;
     };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
-      if (path.has_extension()
-          && tools::i_equals(path.extension().string(), ZZZ::EXT)) {
+      if (
+        path.has_extension()
+        && tools::i_equals(path.extension().string(), ZZZ::EXT)) {
         archive.emplace(path);
         return true;
       }
@@ -187,12 +192,15 @@ private:
             continue;
           }
           auto localPath = std::filesystem::path(pathString);
-          loop<static_cast<intmax_t>(ArchiveTypeT::begin),
-               static_cast<intmax_t>(ArchiveTypeT::zzz_main) - 1>(
-            [&localPath, &dataItem, &path, this](const ArchiveTypeT     test,
-                                                 const std::string_view stem) {
-              if (!(open_viii::tools::i_equals(stem,
-                                               localPath.stem().string()))) {
+          loop<
+            static_cast<intmax_t>(ArchiveTypeT::begin),
+            static_cast<intmax_t>(ArchiveTypeT::zzz_main) - 1>(
+            [&localPath, &dataItem, &path, this](
+              const ArchiveTypeT     test,
+              const std::string_view stem) {
+              if (!(open_viii::tools::i_equals(
+                    stem,
+                    localPath.stem().string()))) {
                 return true;
               }
               try_add(test, dataItem, path, localPath);
@@ -229,15 +237,17 @@ private:
       { FI::EXT, FS::EXT, fl::EXT, ZZZ::EXT },
       [this](const std::filesystem::path &localPath) {
         if (localPath.has_stem()) {
-          loop([&localPath, this](const ArchiveTypeT     archiveTypeT,
-                                  const std::string_view stem) {
+          loop([&localPath, this](
+                 const ArchiveTypeT     archiveTypeT,
+                 const std::string_view stem) {
             if (!(tools::i_equals(stem, localPath.stem().string()))) {
               return true;
             }
             try_add(
               archiveTypeT,
-              FI(static_cast<uint32_t>(std::filesystem::file_size(localPath)),
-                 0U),
+              FI(
+                static_cast<uint32_t>(std::filesystem::file_size(localPath)),
+                0U),
               localPath,
               localPath);
             return true;
@@ -292,23 +302,22 @@ private:
    * @param lambda
    * @return
    */
-  template<bool nested = true,
-           typename lambdaT,
-           typename filterT = decltype(default_filter_lambda)>
-  requires(
-    valid_execute_on_lambda<lambdaT> &&valid_filter_lambda<
-      filterT>) auto get_execute_on_lambda(const std::
-                                             initializer_list<std::string_view>
-                                                    &filename,
-                                           lambdaT &&lambda,
-                                           filterT &&filter_lambda = {}) const
+  template<
+    bool nested = true,
+    typename lambdaT,
+    typename filterT = decltype(default_filter_lambda)>
+  requires valid_execute_on_lambda<lambdaT> && valid_filter_lambda<filterT>
+  auto
+    get_execute_on_lambda(
+      const std::initializer_list<std::string_view> &filename,
+      lambdaT                                      &&lambda,
+      filterT                                      &&filter_lambda = {}) const
   {
     return [&filename, &lambda, &filter_lambda](const auto &archive) -> bool {
       archive.execute_on(filename, lambda, filter_lambda);
-      if constexpr (nested
-                    && does_have_execute_with_nested<decltype(archive),
-                                                     lambdaT,
-                                                     filterT>) {
+      if constexpr (
+        nested
+        && does_have_execute_with_nested<decltype(archive), lambdaT, filterT>) {
         archive.execute_with_nested({}, lambda, filename, filter_lambda);
       }
       return true;
@@ -318,67 +327,71 @@ private:
 public:
   /**
    * Get archive via ArchiveTypeT
-   * @tparam archiveType_
+   * @tparam archiveTypeT
    * @return
    */
-  template<ArchiveTypeT archiveType_>
-  requires(valid_archive_type_t<archiveType_>) const auto &get() const noexcept
+  template<ArchiveTypeT archiveTypeT>
+  requires valid_archive_type_t<archiveTypeT>
+  const auto &
+    get() const noexcept
   {
-    if constexpr (archiveType_ == ArchiveTypeT::battle) {
+    if constexpr (archiveTypeT == ArchiveTypeT::battle) {
       return m_battle;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::field) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::field) {
       return m_field;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::magic) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::magic) {
       return m_magic;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::main) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::main) {
       return m_main;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::menu) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::menu) {
       return m_menu;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::world) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::world) {
       return m_world;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::zzz_main) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::zzz_main) {
       return m_zzz_main;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::zzz_other) {
       return m_zzz_other;
     }
   }
   /**
    * Get archive via ArchiveTypeT
-   * @tparam archiveType_
+   * @tparam archiveTypeT
    * @return
    */
-  template<ArchiveTypeT archiveType_>
-  requires(valid_archive_type_t<archiveType_>) auto &get() noexcept
+  template<ArchiveTypeT archiveTypeT>
+  requires valid_archive_type_t<archiveTypeT>
+  auto &
+    get() noexcept
   {
-    if constexpr (archiveType_ == ArchiveTypeT::battle) {
+    if constexpr (archiveTypeT == ArchiveTypeT::battle) {
       return m_battle;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::field) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::field) {
       return m_field;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::magic) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::magic) {
       return m_magic;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::main) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::main) {
       return m_main;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::menu) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::menu) {
       return m_menu;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::world) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::world) {
       return m_world;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::zzz_main) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::zzz_main) {
       return m_zzz_main;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::zzz_other) {
       return m_zzz_other;
     }
   }
@@ -458,42 +471,43 @@ public:
     }
     return std::monostate{};
   }
-  template<ArchiveTypeT archiveType_>
-  requires(valid_archive_type_t<archiveType_>) constexpr std::string_view
+  template<ArchiveTypeT archiveTypeT>
+  requires valid_archive_type_t<archiveTypeT>
+  constexpr std::string_view
     get_string() const noexcept
   {// this string can be compared to the stem of the filename to determine which
    // archive is try added to.
     // returns nullptr on failure.
     using namespace std::literals;
-    if constexpr (archiveType_ == ArchiveTypeT::battle) {
+    if constexpr (archiveTypeT == ArchiveTypeT::battle) {
       constexpr auto battle = "BATTLE"sv;
       return battle;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::field) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::field) {
       constexpr auto field = "FIELD"sv;
       return field;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::magic) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::magic) {
       constexpr auto magic = "MAGIC"sv;
       return magic;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::main) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::main) {
       constexpr auto main = "MAIN"sv;
       return main;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::menu) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::menu) {
       constexpr auto menu = "MENU"sv;
       return menu;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::world) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::world) {
       constexpr auto world = "WORLD"sv;
       return world;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::zzz_other) {
       constexpr auto other = "OTHER"sv;
       return other;
     }
-    else if constexpr (archiveType_ == ArchiveTypeT::zzz_main) {
+    else if constexpr (archiveTypeT == ArchiveTypeT::zzz_main) {
       constexpr auto main = "MAIN"sv;
       return main;
     }
@@ -524,6 +538,10 @@ public:
   {
     populate_archives_from_path();
   }
+  template<typename lambdaT>
+  static constexpr bool valid_lambda
+    = takes_valid_archive_type<
+        lambdaT> || valid_static_for_lambda_type<lambdaT>;
   /**
    * Loop through each of the archives.
    * @tparam minT min archive
@@ -533,34 +551,32 @@ public:
    * @param lambda lambda of type lambdaT
    * @return true if ran to completion
    */
-  template<std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::begin),
-           std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::end),
-           typename lambdaT>
-  requires(
-    valid_archive_type_t<minT> &&valid_archive_type_t<
-      maxT,
-      true> && ((takes_valid_archive_type<lambdaT>) || (valid_static_for_lambda_type<lambdaT>))) bool loop(const lambdaT
-                                                                                                             &lambda)
-    const
+  template<
+    std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::begin),
+    std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::end),
+    typename lambdaT>
+  requires valid_archive_type_t<
+    minT> && valid_archive_type_t<maxT, true> && valid_lambda<lambdaT>
+  bool
+    loop(const lambdaT &lambda) const
   {
     bool ret{ true };
-    if constexpr (test_valid_archive_type_t(minT)
-                  && test_valid_archive_type_t(maxT - 1)) {
+    if constexpr (
+      test_valid_archive_type_t(minT) && test_valid_archive_type_t(maxT - 1)) {
       ret = loop<minT, maxT - 1>(lambda);
       if (!ret)
         return ret;
     }
     if constexpr (test_valid_archive_type_t(maxT)) {
-      constexpr auto archiveType_
-        = std::integral_constant<ArchiveTypeT,
-                                 static_cast<ArchiveTypeT>(maxT)>{};
+      constexpr auto archiveTypeT = std::
+        integral_constant<ArchiveTypeT, static_cast<ArchiveTypeT>(maxT)>{};
       if constexpr (valid_static_for_lambda_type<lambdaT>) {
-        ret = lambda(archiveType_, get_string<archiveType_>());
+        ret = lambda(archiveTypeT, get_string<archiveTypeT>());
         return ret;
       }
       else if (takes_valid_archive_type<lambdaT>) {
-        const auto &archive = get<archiveType_>();
-        std::cout << "Loop On: " << get_string<archiveType_>() << '\n';
+        const auto &archive = get<archiveTypeT>();
+        std::cout << "Loop On: " << get_string<archiveTypeT>() << '\n';
         if constexpr (does_have_has_value<decltype(archive)>) {
           if (archive.has_value()) {
             ret = lambda(*archive);
@@ -584,7 +600,9 @@ public:
    * @return
    */
   template<ArchiveTypeT... aT, typename lambdaT>
-  requires(valid_archive_type_t<aT> &&...) bool specify(const lambdaT &lambda)
+  requires valid_archive_type_t_v<aT...>
+  bool
+    specify(const lambdaT &lambda)
   {
     return (loop<aT, aT>(lambda) && ...);
   }
@@ -597,13 +615,17 @@ public:
   {
     return loop(test_valid_lambda());
   }
+
+
   /**
    * if true listed archives are valid
    * @tparam aT
    * @return
    */
   template<ArchiveTypeT... aT>
-  requires(sizeof...(aT) > 0) bool test_set()
+  requires not_zero<aT...>
+  bool
+    test_set()
   {
     return specify<aT...>(test_valid_lambda());
   }
@@ -615,15 +637,16 @@ public:
    * @param lambda
    * @return
    */
-  template<bool nested = true,
-           typename lambdaT,
-           typename filterT = decltype(default_filter_lambda)>
-  requires(
-    valid_execute_on_lambda<lambdaT> &&valid_filter_lambda<
-      filterT>) bool execute_on(const std::initializer_list<std::string_view>
-                                         &filename,
-                                lambdaT &&lambda,
-                                filterT &&filter_lambda = {}) const
+  template<
+    bool nested = true,
+    typename lambdaT,
+    typename filterT = decltype(default_filter_lambda)>
+  requires valid_execute_on_lambda<lambdaT> && valid_filter_lambda<filterT>
+  bool
+    execute_on(
+      const std::initializer_list<std::string_view> &filename,
+      lambdaT                                      &&lambda,
+      filterT                                      &&filter_lambda = {}) const
   {
     return loop(get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
   }
@@ -636,26 +659,27 @@ public:
    * @param lambda
    * @return
    */
-  template<bool nested = true,
-           ArchiveTypeT... aT,
-           typename lambdaT,
-           typename filterT = decltype(default_filter_lambda)>
-  requires((valid_execute_on_lambda<
-              lambdaT> && valid_filter_lambda<filterT>)&&sizeof...(aT)
-           > 0) bool execute_on(const std::initializer_list<std::string_view>
-                                         &filename,
-                                lambdaT &&lambda,
-                                filterT &&filter_lambda = {}) const
+  template<
+    bool nested = true,
+    ArchiveTypeT... aT,
+    typename lambdaT,
+    typename filterT = decltype(default_filter_lambda)>
+  requires not_zero<aT...> && valid_execute_on_lambda<
+    lambdaT> && valid_filter_lambda<filterT>
+  bool
+    execute_on(
+      const std::initializer_list<std::string_view> &filename,
+      lambdaT                                      &&lambda,
+      filterT                                      &&filter_lambda = {}) const
   {
     return specify<aT...>(
       get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
   }
 };
 inline bool
-  fiflfs_in_main_zzz(const Archives & archives) noexcept
+  fiflfs_in_main_zzz(const Archives &archives) noexcept
 {
-  return archives.get<open_viii::archive::ArchiveTypeT::zzz_main>()
-    .has_value();
+  return archives.get<open_viii::archive::ArchiveTypeT::zzz_main>().has_value();
 }
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ARCHIVES_HPP
