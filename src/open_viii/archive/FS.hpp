@@ -133,8 +133,8 @@ template<is_default_constructible_has_data_size_resize outputT
          FI_Like fiT = FI>
 [[nodiscard]] static outputT
   get_entry(const std::filesystem::path &path,
-            const fiT &                  fi,
-            const size_t &               offset = 0U)
+            const fiT                   &fi,
+            const size_t                &offset = 0U)
 {
   if (fi.uncompressed_size() == 0) {
     return {};
@@ -218,7 +218,7 @@ static void
  */
 template<is_insertable_or_ostream T, FI_Like fiT = FI>
 static fiT
-  append_entry(T &                         output,
+  append_entry(T                          &output,
                const std::span<const char> input,
                const CompressionTypeT compression_type = CompressionTypeT::none)
 {
@@ -265,7 +265,7 @@ static out_fiT
 }
 template<is_insertable_or_ostream T>
 static FI
-  append_entry(T &                         output,
+  append_entry(T                          &output,
                const std::filesystem::path input,
                const CompressionTypeT      in_compress)
 {
