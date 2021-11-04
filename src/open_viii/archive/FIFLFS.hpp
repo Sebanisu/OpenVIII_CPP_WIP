@@ -182,10 +182,11 @@ public:
    */
   template<path_or_range srcT, FI_Like datT = archive::FI>
   TryAddT
-    try_add_nested(const srcT                  &src,
-                   const size_t                 src_offset,
-                   const std::filesystem::path &file_entry,
-                   const datT                  &fi)
+    try_add_nested(
+      const srcT                  &src,
+      const size_t                 src_offset,
+      const std::filesystem::path &file_entry,
+      const datT                  &fi)
   {
     const fiflfsT i = check_extension(file_entry);
     switch (i) {
@@ -233,9 +234,10 @@ public:
   void
     compare_base_names() const
   {
-    if ((m_fl.base() == m_fs.base() && m_fi.base() == m_fs.base())
-        || std::empty(m_fl.base()) || std::empty(m_fi.base())
-        || std::empty(m_fs.base())) {
+    if (
+      (m_fl.base() == m_fs.base() && m_fi.base() == m_fs.base())
+      || std::empty(m_fl.base()) || std::empty(m_fi.base())
+      || std::empty(m_fs.base())) {
       return;
     }
     if (m_fl.base() != m_fs.base() || m_fi.base() != m_fs.base()) {
@@ -284,13 +286,15 @@ public:
   {
     return [this, &fi]() {
       if (std::ranges::empty(m_fs.data())) {
-        return open_viii::archive::FS::get_entry<outT>(m_fs.path(),
-                                                       fi,
-                                                       m_fs.offset());
+        return open_viii::archive::FS::get_entry<outT>(
+          m_fs.path(),
+          fi,
+          m_fs.offset());
       }
-      return open_viii::archive::FS::get_entry<outT>(m_fs.data(),
-                                                     fi,
-                                                     m_fs.offset());
+      return open_viii::archive::FS::get_entry<outT>(
+        m_fs.data(),
+        fi,
+        m_fs.offset());
     }();
   }
   [[nodiscard]] std::string
@@ -302,18 +306,20 @@ public:
     get_entry_id_and_path(const std::string_view &filename) const
   {
     if (std::ranges::empty(m_fl.data())) {
-      return open_viii::archive::fl::get_entry(m_fl.path(),
-                                               { filename },
-                                               m_fl.offset(),
-                                               m_fl.size(),
-                                               m_count);
+      return open_viii::archive::fl::get_entry(
+        m_fl.path(),
+        { filename },
+        m_fl.offset(),
+        m_fl.size(),
+        m_count);
     }
-    return open_viii::archive::fl::get_entry(m_fl.path(),
-                                             m_fl.data(),
-                                             { filename },
-                                             m_fl.offset(),
-                                             m_fl.size(),
-                                             m_count);
+    return open_viii::archive::fl::get_entry(
+      m_fl.path(),
+      m_fl.data(),
+      { filename },
+      m_fl.offset(),
+      m_fl.size(),
+      m_count);
   }
   template<std::ranges::contiguous_range outT = std::vector<char>>
   [[nodiscard]] outT
@@ -325,9 +331,10 @@ public:
 
   template<std::ranges::contiguous_range outT = std::vector<char>>
   [[nodiscard]] outT
-    get_entry_data(const std::initializer_list<std::string_view> &filenames,
-                   std::string *const out_name     = nullptr,
-                   std::size_t *const out_name_pos = nullptr) const
+    get_entry_data(
+      const std::initializer_list<std::string_view> &filenames,
+      std::string *const                             out_name = nullptr,
+      std::size_t *const out_name_pos                         = nullptr) const
   {
     if (out_name_pos != nullptr) {
       *out_name_pos = 0U;
@@ -357,12 +364,13 @@ public:
     get_vector_of_indexes_and_files(
       const std::initializer_list<std::string_view> &filename) const
   {
-    return archive::fl::get_all_entries(m_fl.path(),
-                                        m_fl.data(),
-                                        m_fl.offset(),
-                                        m_fl.size(),
-                                        m_count,
-                                        filename);
+    return archive::fl::get_all_entries(
+      m_fl.path(),
+      m_fl.data(),
+      m_fl.offset(),
+      m_fl.size(),
+      m_count,
+      filename);
   }
   template<executable_on_pair_of_int_string lambdaT>
   void
@@ -388,12 +396,14 @@ public:
   static constexpr auto default_filter_lambda = [](auto &&) {
     return true;
   };
-  template<executable_common_sans_nested lambdaT,
-           filter_paths filterT = decltype(default_filter_lambda)>
+  template<
+    executable_common_sans_nested lambdaT,
+    filter_paths                  filterT = decltype(default_filter_lambda)>
   void
-    execute_on(const std::initializer_list<std::string_view> &filename,
-               lambdaT                                      &&lambda,
-               filterT &&filter_lambda = {}) const
+    execute_on(
+      const std::initializer_list<std::string_view> &filename,
+      lambdaT                                      &&lambda,
+      filterT                                      &&filter_lambda = {}) const
   {
     const auto results = get_vector_of_indexes_and_files(filename);
     const auto process = [this, &lambda, &filter_lambda](
@@ -421,29 +431,29 @@ public:
       std::vector<std::string> list{};
       FIFLFS<false>            archive = {};
       const auto               items   = get_all_items_from_fl({ "mapdata" });
-      (void)std::any_of(std::execution::seq,
-                        items.cbegin(),
-                        items.cend(),
-                        [&archive, this, &list](const auto &item) {
-                          if (fill_archive_lambda(archive)(item)) {
-                            const auto raw_list
-                              = archive.template get_entry_data<std::string>(
-                                "maplist");
-                            // archive::fl::get_all_entries(raw_list,0,0,0)
-                            std::stringstream ss{ raw_list };
-                            std::string       tmp{};
-                            while (std::getline(ss, tmp)) {
-                              while (!tmp.empty() && tmp.back() == '\r') {
-                                tmp.pop_back();
-                              }
-                              if (!tmp.empty()) {
-                                list.emplace_back(std::move(tmp));
-                              }
-                            }
-                            return true;
-                          }
-                          return false;
-                        });
+      (void)std::any_of(
+        std::execution::seq,
+        items.cbegin(),
+        items.cend(),
+        [&archive, this, &list](const auto &item) {
+          if (fill_archive_lambda(archive)(item)) {
+            const auto raw_list
+              = archive.template get_entry_data<std::string>("maplist");
+            // archive::fl::get_all_entries(raw_list,0,0,0)
+            std::stringstream ss{ raw_list };
+            std::string       tmp{};
+            while (std::getline(ss, tmp)) {
+              while (!tmp.empty() && tmp.back() == '\r') {
+                tmp.pop_back();
+              }
+              if (!tmp.empty()) {
+                list.emplace_back(std::move(tmp));
+              }
+            }
+            return true;
+          }
+          return false;
+        });
       return list;
     }
   }
@@ -458,15 +468,14 @@ public:
       const TryAddT         retVal = [&]() {
         if (fi.compression_type() == CompressionTypeT::none) {
           return archive.try_add(
-                    FileData(static_cast<unsigned long>(m_fs.offset() + fi.offset()),
-                             fi.uncompressed_size()),
+                    FileData(
+                      static_cast<unsigned long>(m_fs.offset() + fi.offset()),
+                      fi.uncompressed_size()),
                     m_fs.path(),
                     virtualPath);
         }
-        return archive.try_add_nested(m_fs.path(),
-                                              m_fs.offset(),
-                                              virtualPath,
-                                              fi);
+        return archive
+          .try_add_nested(m_fs.path(), m_fs.offset(), virtualPath, fi);
       }();
       return retVal == TryAddT::archive_full;
     };
@@ -475,15 +484,17 @@ public:
     get_all_items_from_fl(
       const std::initializer_list<std::string_view> &filename) const
   {
-    return archive::fl::get_all_entries(m_fl.path(),
-                                        m_fl.data(),
-                                        m_fl.offset(),
-                                        m_fl.size(),
-                                        m_count,
-                                        filename);
+    return archive::fl::get_all_entries(
+      m_fl.path(),
+      m_fl.data(),
+      m_fl.offset(),
+      m_fl.size(),
+      m_count,
+      filename);
   }
-  template<executable_common_nested lambdaT,
-           filter_paths             filterT = decltype(default_filter_lambda)>
+  template<
+    executable_common_nested lambdaT,
+    filter_paths             filterT = decltype(default_filter_lambda)>
   void
     execute_with_nested(
       const std::initializer_list<std::string_view> &filename,
@@ -514,23 +525,26 @@ public:
         return false;
       };
       if (!limit_once)
-        std::for_each(std::execution::seq,
-                      items.cbegin(),
-                      items.cend(),
-                      pFunction);
+        std::for_each(
+          std::execution::seq,
+          items.cbegin(),
+          items.cend(),
+          pFunction);
       else {
-        (void)std::any_of(std::execution::seq,
-                          items.cbegin(),
-                          items.cend(),
-                          pFunction);
+        (void)std::any_of(
+          std::execution::seq,
+          items.cbegin(),
+          items.cend(),
+          pFunction);
       }
     }
   }
   template<FI_Like fiT>
   [[nodiscard]] TryAddT
-    try_add(fiT                          fi_like,
-            const std::filesystem::path &parent_path,
-            const std::filesystem::path &child_path)
+    try_add(
+      fiT                          fi_like,
+      const std::filesystem::path &parent_path,
+      const std::filesystem::path &child_path)
   {
     switch (check_extension(child_path)) {
     case fiflfsT::none:
@@ -551,19 +565,21 @@ public:
 };
 
 [[nodiscard]] inline TryAddT
-  get_fiflfs(const FIFLFS<true>    &source,
-             FIFLFS<false>         &archive,
-             const std::uint32_t    id,
-             const std::string_view str_virtual_path)
+  get_fiflfs(
+    const FIFLFS<true>    &source,
+    FIFLFS<false>         &archive,
+    const std::uint32_t    id,
+    const std::string_view str_virtual_path)
 {
   FI fi = source.get_entry_by_index(id);
   return [&source, &archive, &fi, &str_virtual_path]() {
     std::filesystem::path virtualPath(str_virtual_path);
     if (!std::ranges::empty(source.fs().data())) {
-      return archive.try_add_nested(source.fs().data(),
-                                    source.fs().offset(),
-                                    virtualPath,
-                                    fi);
+      return archive.try_add_nested(
+        source.fs().data(),
+        source.fs().offset(),
+        virtualPath,
+        fi);
     }
     if (fi.compression_type() == CompressionTypeT::none) {
       auto localRetVal = archive.try_add(
@@ -584,16 +600,18 @@ public:
   }();
 }
 [[nodiscard]] inline FIFLFS<false>
-  get_fiflfs(const FIFLFS<true>                            &source,
-             const std::initializer_list<std::string_view> &filename)
+  get_fiflfs(
+    const FIFLFS<true>                            &source,
+    const std::initializer_list<std::string_view> &filename)
 {
   FIFLFS<false> archive{};
-  const auto    items = archive::fl::get_all_entries(source.fl().path(),
-                                                     source.fl().data(),
-                                                     source.fl().offset(),
-                                                     source.fl().size(),
-                                                     source.count(),
-                                                     filename);
+  const auto    items = archive::fl::get_all_entries(
+       source.fl().path(),
+       source.fl().data(),
+       source.fl().offset(),
+       source.fl().size(),
+       source.count(),
+       filename);
   for (const auto &[id, strVirtualPath] : items) {
     TryAddT tryAddT = get_fiflfs(source, archive, id, strVirtualPath);
     if (tryAddT == TryAddT::archive_full) {
@@ -602,9 +620,10 @@ public:
   }
   return archive;
 }
-auto
-  find_match(const std::vector<std::filesystem::path> &paths,
-             const std::filesystem::path              &in_path)
+[[nodiscard]] inline auto
+  find_match(
+    const std::vector<std::filesystem::path> &paths,
+    const std::filesystem::path              &in_path)
 {
   return std::ranges::find_if(
     paths,
@@ -614,16 +633,18 @@ auto
     });
 }
 
-bool
-  any_matches(const std::vector<std::filesystem::path> &paths,
-              const std::filesystem::path              &in_path)
+[[nodiscard]] inline bool
+  any_matches(
+    const std::vector<std::filesystem::path> &paths,
+    const std::filesystem::path              &in_path)
 {
   return find_match(paths, in_path) != std::ranges::end(paths);
 }
 
-inline bool
-  any_matches(const std::vector<std::filesystem::path>                 &paths,
-              const std::vector<std::pair<std::uint32_t, std::string>> &pairs)
+[[nodiscard]] inline bool
+  any_matches(
+    const std::vector<std::filesystem::path>                 &paths,
+    const std::vector<std::pair<std::uint32_t, std::string>> &pairs)
 {
   return std::ranges::any_of(pairs, [&paths](const auto &pair) {
     const auto in_path = std::filesystem::path(pair.second);
@@ -637,9 +658,11 @@ inline bool
  * @param paths paths to new files.
  * @return paths to new archive files.
  */
-inline std::vector<std::filesystem::path>
-  replace_files(const FIFLFS<false>                      &source,
-                const std::vector<std::filesystem::path> &paths)
+template<bool Nested = false>
+[[nodiscard]] inline std::vector<std::filesystem::path>
+  replace_files(
+    const FIFLFS<Nested>                     &source,
+    const std::vector<std::filesystem::path> &paths)
 {
 
   std::vector<std::filesystem::path> r{};
@@ -657,12 +680,15 @@ inline std::vector<std::filesystem::path>
   std::cout << "Destination FL: " << fl_name << '\n';
   std::cout << "Destination FS: " << fs_name << '\n';
   const auto   &temp = std::filesystem::temp_directory_path();
-  std::ofstream fs_fi(temp / fi_name,
-                      std::ios::out | std::ios::binary | std::ios::trunc);
-  std::ofstream fs_fl(temp / fl_name,
-                      std::ios::out | std::ios::binary | std::ios::trunc);
-  std::ofstream fs_fs(temp / fs_name,
-                      std::ios::out | std::ios::binary | std::ios::trunc);
+  std::ofstream fs_fi(
+    temp / fi_name,
+    std::ios::out | std::ios::binary | std::ios::trunc);
+  std::ofstream fs_fl(
+    temp / fl_name,
+    std::ios::out | std::ios::binary | std::ios::trunc);
+  std::ofstream fs_fs(
+    temp / fs_name,
+    std::ios::out | std::ios::binary | std::ios::trunc);
   std::ranges::for_each(pairs, [&](const auto &pair) {
     const auto &[i, in_path] = pair;
     const FI source_fi       = source.get_entry_by_index(i);
@@ -682,13 +708,15 @@ inline std::vector<std::filesystem::path>
     open_viii::archive::FI fi = [&](const auto &in_path_ref) {
       if (auto match = find_match(paths, in_path_ref);
           match != std::ranges::end(paths)) {
-        return open_viii::archive::append_entry(fs_fs,
-                                                *match,
-                                                source_fi.compression_type());
+        return open_viii::archive::append_entry(
+          fs_fs,
+          *match,
+          source_fi.compression_type());
       }
-      return open_viii::archive::append_entry(fs_fs,
-                                              source.get_entry_data(source_fi),
-                                              source_fi.compression_type());
+      return open_viii::archive::append_entry(
+        fs_fs,
+        source.get_entry_data(source_fi),
+        source_fi.compression_type());
     }(in_path);
     open_viii::archive::append_entry(fs_fi, fi);
     open_viii::archive::append_entry(fs_fl, std::filesystem::path(in_path));
@@ -700,16 +728,18 @@ inline std::vector<std::filesystem::path>
   return r;
 }
 inline auto
-  get_fiflfs_entries(const FIFLFS<true>                            &source,
-                     const std::initializer_list<std::string_view> &filename)
+  get_fiflfs_entries(
+    const FIFLFS<true>                            &source,
+    const std::initializer_list<std::string_view> &filename)
 {
   std::vector<FIFLFS<false>> out{};
-  const auto items = archive::fl::get_all_entries(source.fl().path(),
-                                                  source.fl().data(),
-                                                  source.fl().offset(),
-                                                  source.fl().size(),
-                                                  source.count(),
-                                                  filename);
+  const auto                 items = archive::fl::get_all_entries(
+                    source.fl().path(),
+                    source.fl().data(),
+                    source.fl().offset(),
+                    source.fl().size(),
+                    source.count(),
+                    filename);
   for (const auto &[id, strVirtualPath] : items) {
     const TryAddT t
       = get_fiflfs(source, out.emplace_back(), id, strVirtualPath);
