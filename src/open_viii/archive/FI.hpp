@@ -108,8 +108,8 @@ public:
    * @param compression_type compressed or not. And which compression it's
    * using.
    */
-  constexpr FI(const unsigned int &    uncompressed_size,
-               const unsigned int &    offset,
+  constexpr FI(const unsigned int     &uncompressed_size,
+               const unsigned int     &offset,
                const CompressionTypeT &compression_type
                = CompressionTypeT::none) noexcept
     : m_uncompressed_size{ uncompressed_size }, m_offset{ offset },
@@ -204,6 +204,23 @@ public:
   {
     return (id * FI::SIZE) + offset;
   }
+
+  [[nodiscard]] constexpr FI
+    with_compression_type(CompressionTypeT in_compression_type)
+  {
+    return FI(m_uncompressed_size, m_offset, in_compression_type);
+  }
+  [[nodiscard]] constexpr FI
+    with_uncompression_size(std::uint32_t in_uncompressed_size)
+  {
+    return FI(in_uncompressed_size, m_offset, m_compression_type);
+  }
+
+  [[nodiscard]] constexpr FI
+    with_offset(std::uint32_t in_offset_size)
+  {
+    return FI(m_uncompressed_size, in_offset_size, m_compression_type);
+  }
 };
 static_assert(sizeof(FI) == FI::SIZE);
 
@@ -213,8 +230,8 @@ static_assert(sizeof(FI) == FI::SIZE);
  * @param output buffer to write to.
  * @param in_fi incoming FI it's just grabbing the compression type from it.
  */
-template<is_insertable_or_ostream T> inline
-void
+template<is_insertable_or_ostream T>
+inline void
   append_entry(T &output, const FI in_fi)
 {
   tl::write::append(output, in_fi);
