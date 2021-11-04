@@ -724,10 +724,10 @@ template<bool Nested = false>
     open_viii::archive::append_entry(fs_fi, fi);
     open_viii::archive::append_entry(fs_fl, std::filesystem::path(in_path));
     std::puts("\t\tAdded File");
-    r.emplace_back(temp / fi_name);
-    r.emplace_back(temp / fl_name);
-    r.emplace_back(temp / fs_name);
   });
+  r.emplace_back(temp / fi_name);
+  r.emplace_back(temp / fl_name);
+  r.emplace_back(temp / fs_name);
   return r;
 }
 inline auto
