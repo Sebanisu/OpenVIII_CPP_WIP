@@ -10,8 +10,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef VIIIARCHIVE_FIFLm_fsH
-#define VIIIARCHIVE_FIFLm_fsH
+#ifndef VIIIARCHIVE_FIFLFS_HPP
+#define VIIIARCHIVE_FIFLFS_HPP
 #include "Grouping.hpp"
 #include <algorithm>
 #include <concepts>
@@ -693,37 +693,38 @@ template<bool Nested = false>
     temp / fs_name,
     std::ios::out | std::ios::binary | std::ios::trunc);
   std::ranges::for_each(pairs, [&](const auto &pair) {
-    const auto &[i, in_path] = pair;
-    const FI source_fi       = source.get_entry_by_index(i);
-    switch (source_fi.compression_type()) {
-    case open_viii::CompressionTypeT::none:
-      std::puts("\t Not Compressed");
-      break;
-    case open_viii::CompressionTypeT::lzss:
-      std::puts("\t LZSS Compressed");
-      break;
-    case open_viii::CompressionTypeT::lz4:
-      std::puts("\t LZ4 Compressed");
-      break;
-    }
+    const auto &[i, in_path]         = pair;
+    const FI               source_fi = source.get_entry_by_index(i);
+    //    switch (source_fi.compression_type()) {
+    //    case open_viii::CompressionTypeT::none:
+    //      std::puts("\t Not Compressed");
+    //      break;
+    //    case open_viii::CompressionTypeT::lzss:
+    //      std::puts("\t LZSS Compressed");
+    //      break;
+    //    case open_viii::CompressionTypeT::lz4:
+    //      std::puts("\t LZ4 Compressed");
+    //      break;
+    //    }
 
     // match found use the new file
-    open_viii::archive::FI fi = [&](const auto &in_path_ref) {
+    open_viii::archive::FI fi        = [&](const auto &in_path_ref) {
       if (auto match = find_match(paths, in_path_ref);
           match != std::ranges::end(paths)) {
+        std::cout << "Updated: " << *match << std::endl;
         return open_viii::archive::append_entry(
-          fs_fs,
-          *match,
-          source_fi.compression_type());
+                 fs_fs,
+                 *match,
+                 source_fi.compression_type());
       }
       return open_viii::archive::append_entry(
-        fs_fs,
-        source.get_entry_data(source_fi),
-        source_fi.compression_type());
+               fs_fs,
+               source.get_entry_data(source_fi),
+               source_fi.compression_type());
     }(in_path);
     open_viii::archive::append_entry(fs_fi, fi);
     open_viii::archive::append_entry(fs_fl, std::filesystem::path(in_path));
-    std::puts("\t\tAdded File");
+    //    std::puts("\t\tAdded File");
   });
   r.emplace_back(temp / fi_name);
   r.emplace_back(temp / fl_name);
@@ -766,4 +767,4 @@ inline std::ostream &
             << str(data.fl()) << ", " << str(data.fs()) << "}}";
 }
 }// namespace open_viii::archive
-#endif// !VIIIARCHIVE_FIFLm_fsH
+#endif// !VIIIARCHIVE_FIFLFS_HPP
