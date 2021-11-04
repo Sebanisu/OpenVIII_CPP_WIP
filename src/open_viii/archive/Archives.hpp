@@ -651,5 +651,11 @@ public:
       get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
   }
 };
+inline bool
+  fiflfs_in_main_zzz(const Archives & archives) noexcept
+{
+  return archives.get<open_viii::archive::ArchiveTypeT::zzz_main>()
+    .has_value();
+}
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ARCHIVES_HPP
