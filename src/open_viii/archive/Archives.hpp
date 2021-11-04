@@ -292,7 +292,9 @@ private:
    * @param lambda
    * @return
    */
-  template<bool nested = true, typename lambdaT, typename filterT = decltype(default_filter_lambda)>
+  template<bool nested = true,
+           typename lambdaT,
+           typename filterT = decltype(default_filter_lambda)>
   requires(
     valid_execute_on_lambda<lambdaT> &&valid_filter_lambda<
       filterT>) auto get_execute_on_lambda(const std::
@@ -321,6 +323,39 @@ public:
    */
   template<ArchiveTypeT archiveType_>
   requires(valid_archive_type_t<archiveType_>) const auto &get() const noexcept
+  {
+    if constexpr (archiveType_ == ArchiveTypeT::battle) {
+      return m_battle;
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::field) {
+      return m_field;
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::magic) {
+      return m_magic;
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::main) {
+      return m_main;
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::menu) {
+      return m_menu;
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::world) {
+      return m_world;
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::zzz_main) {
+      return m_zzz_main;
+    }
+    else if constexpr (archiveType_ == ArchiveTypeT::zzz_other) {
+      return m_zzz_other;
+    }
+  }
+  /**
+   * Get archive via ArchiveTypeT
+   * @tparam archiveType_
+   * @return
+   */
+  template<ArchiveTypeT archiveType_>
+  requires(valid_archive_type_t<archiveType_>) auto &get() noexcept
   {
     if constexpr (archiveType_ == ArchiveTypeT::battle) {
       return m_battle;
