@@ -4,9 +4,9 @@
 #ifndef VIIIARCHIVE_GROUPING_HPP
 #define VIIIARCHIVE_GROUPING_HPP
 #include "FI.hpp"
+#include "FileData.hpp"
 #include "FL.hpp"
 #include "FS.hpp"
-#include "FileData.hpp"
 #include "open_viii/Concepts.hpp"
 namespace open_viii::archive {
 
@@ -46,9 +46,10 @@ private:
 public:
   Grouping() = default;
   template<FI_Like fiT>
-  Grouping(fiT                   fi,
-           std::filesystem::path parent_path,
-           std::filesystem::path child_path)
+  Grouping(
+    fiT                   fi,
+    std::filesystem::path parent_path,
+    std::filesystem::path child_path)
     : m_offset(static_cast<std::size_t>(fi.offset())),
       m_size(fi.uncompressed_size()), m_path(std::move(parent_path)),
       m_nested_path(std::move(child_path)),
@@ -60,9 +61,10 @@ public:
   Grouping(fiT fi, std::filesystem::path parent_path)
     : Grouping(fi, parent_path, parent_path)
   {}
-  Grouping(T &&                  data,
-           std::filesystem::path parent_path,
-           std::filesystem::path child_path)
+  Grouping(
+    T                   &&data,
+    std::filesystem::path parent_path,
+    std::filesystem::path child_path)
     : m_offset(0), m_size(std::ranges::size(data)),
       m_path(std::move(parent_path)), m_nested_path(std::move(child_path)),
       m_base(tools::get_base_name(m_nested_path)), m_data(std::move(data))
@@ -182,13 +184,22 @@ public:
   {
     return m_nested_path;
   }
-  //  /**
-  //   * set path inside file
-  //   */
-  //  void nested_path(const std::filesystem::path &value) noexcept
-  //  {
-  //    m_nested_path = value;
-  //  }
+  [[nodiscard]] const std::filesystem::path &
+    path_or_nested_path() const noexcept
+  {
+    if (m_path.empty()) {
+      return m_nested_path;
+    }
+    return m_path;
+  }
+  [[nodiscard]] const std::filesystem::path &
+    nested_path_or_path() const noexcept
+  {
+    if (m_nested_path.empty()) {
+      return m_path;
+    }
+    return m_nested_path;
+  }
   /**
    * convert to bool
    * @return true means value is set and loaded.

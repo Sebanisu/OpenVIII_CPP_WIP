@@ -673,12 +673,15 @@ template<bool Nested = false>
     return r;
   }
   std::ranges::sort(pairs);
-  const auto &fi_name = source.fi().path().filename();
-  const auto &fl_name = source.fl().path().filename();
-  const auto &fs_name = source.fs().path().filename();
+  const auto &fi_name = source.fi().nested_path_or_path().filename();
+  const auto &fl_name = source.fl().nested_path_or_path().filename();
+  const auto &fs_name = source.fs().nested_path_or_path().filename();
   std::cout << "Destination FI: " << fi_name << '\n';
   std::cout << "Destination FL: " << fl_name << '\n';
   std::cout << "Destination FS: " << fs_name << '\n';
+  if (fi_name.empty() || fl_name.empty() || fs_name.empty()) {
+    return r;
+  }
   const auto   &temp = std::filesystem::temp_directory_path();
   std::ofstream fs_fi(
     temp / fi_name,
