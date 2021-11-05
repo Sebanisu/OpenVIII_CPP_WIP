@@ -708,19 +708,19 @@ template<bool Nested = false>
     //    }
 
     // match found use the new file
-    open_viii::archive::FI fi        = [&](const auto &in_path_ref) {
-//      if (auto match = find_match(paths, in_path_ref);
-//          match != std::ranges::end(paths)) {
-//        std::cout << "Updated: " << in_path << std::endl;
-//        return open_viii::archive::append_entry(
-//                 fs_fs,
-//                 *match,
-//                 source_fi.compression_type());
-//      }
+    open_viii::archive::FI fi = [&]([[maybe_unused]] const auto &in_path_ref) {
+      //      if (auto match = find_match(paths, in_path_ref);
+      //          match != std::ranges::end(paths)) {
+      //        std::cout << "Updated: " << in_path << std::endl;
+      //        return open_viii::archive::append_entry(
+      //                 fs_fs,
+      //                 *match,
+      //                 source_fi.compression_type());
+      //      }
       return open_viii::archive::append_entry(
-               fs_fs,
-               source.get_entry_data(source_fi),
-               source_fi.compression_type());
+        fs_fs,
+        source.get_entry_data(source_fi),
+        source_fi.compression_type());
     }(in_path);
     open_viii::archive::append_entry(fs_fi, fi);
     open_viii::archive::append_entry(fs_fl, std::filesystem::path(in_path));
