@@ -720,7 +720,7 @@ template<bool Nested = false>
       return open_viii::archive::append_entry(
         fs_fs,
         source.get_entry_data(source_fi),
-        source_fi.compression_type());
+        CompressionTypeT::none);//source_fi.compression_type()
     }(in_path);
     open_viii::archive::append_entry(fs_fi, fi);
     open_viii::archive::append_entry(fs_fl, std::filesystem::path(in_path));
