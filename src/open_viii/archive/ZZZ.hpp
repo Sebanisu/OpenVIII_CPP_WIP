@@ -41,9 +41,10 @@ private:
     load_data_from_file() const
   {
     std::vector<FileData> data{};
-    if (m_path.has_extension()
-        && tools::i_equals(m_path.extension().string(), EXT)
-        && std::filesystem::exists(m_path)) {
+    if (
+      m_path.has_extension()
+      && tools::i_equals(m_path.extension().string(), EXT)
+      && std::filesystem::exists(m_path)) {
       tools::read_from_file(
         [&data](std::istream &fp) {
           auto count{ tools::read_val<uint32_t>(fp) };
@@ -138,12 +139,14 @@ public:
   using default_filter_lambda = decltype([](auto &&) {
     return true;
   });
-  template<std::invocable<std::vector<char>, std::string> BinaryFunctionT,
-           typename FilterT = default_filter_lambda>
+  template<
+    std::invocable<std::vector<char>, std::string> BinaryFunctionT,
+    typename FilterT = default_filter_lambda>
   void
-    execute_on(const std::initializer_list<std::string_view> &filename,
-               BinaryFunctionT                              &&binary_function,
-               FilterT &&filter_lambda = {}) const
+    execute_on(
+      const std::initializer_list<std::string_view> &filename,
+      BinaryFunctionT                              &&binary_function,
+      FilterT                                      &&filter_lambda = {}) const
   {
     std::ranges::for_each(
       data(),
@@ -152,22 +155,25 @@ public:
         auto pathString = dataItem.get_path_string();
         if (open_viii::tools::i_find_any(pathString, filename)) {
           if (filter_lambda(pathString)) {
-            binary_function(FS::get_entry(m_path, dataItem),
-                            std::string(pathString));
+            binary_function(
+              FS::get_entry(m_path, dataItem),
+              std::string(pathString));
           }
         }
       });
   }
   using default_lambda = decltype([](auto &&, auto &&) {});
-  template<typename lambdaT = default_lambda,
-           typename FilterT = default_filter_lambda>
+  template<
+    typename lambdaT = default_lambda,
+    typename FilterT = default_filter_lambda>
   requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)) void execute_with_nested(
     [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
     [[maybe_unused]] lambdaT                                      && = {},
     [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
     FilterT                                                       && = {}) const
   {
-    // only nested archives are handled in the other functions. maybe delete this.
+    // only nested archives are handled in the other functions. maybe delete
+    // this.
   }
   explicit operator bool() const
   {
