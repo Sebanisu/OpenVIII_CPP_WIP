@@ -326,7 +326,7 @@ inline void
   append_entry(T &output, const std::filesystem::path &path)
 {
   using namespace std::string_literals;
-  std::string string = "c:\\"s + path.string() + "\r\n"s;
+  std::string string = "C:\\"s + path.string() + "\r\n"s;
   tl::string::undo_replace_slashes(string);
   tl::write::append(output, string);
 }
