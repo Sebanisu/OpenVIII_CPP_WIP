@@ -81,7 +81,7 @@ public:
   {
     return [](const is_tile auto &tile) {
       static constexpr auto end_x{ 0x7FFFU };
-      return (tile.x() != end_x) && tile.draw();
+      return (tile.x() != end_x);// && tile.draw();
     };
   }
   [[nodiscard]] auto
