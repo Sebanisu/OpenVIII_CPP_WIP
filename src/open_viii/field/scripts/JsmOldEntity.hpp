@@ -58,13 +58,12 @@ public:
   }
 };
 }// namespace open_viii::field::scripts
-namespace std {
 /**
  * number of arguments
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] tuple_size<open_viii::field::scripts::JsmOldEntity>
+struct [[maybe_unused]] std::tuple_size<open_viii::field::scripts::JsmOldEntity>
   : std::integral_constant<size_t, 2U>
 {
 };
@@ -73,7 +72,7 @@ struct [[maybe_unused]] tuple_size<open_viii::field::scripts::JsmOldEntity>
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] tuple_element<0U,
+struct [[maybe_unused]] std::tuple_element<0U,
                                       open_viii::field::scripts::JsmOldEntity>
 {
   using type = std::uint16_t;
@@ -83,10 +82,9 @@ struct [[maybe_unused]] tuple_element<0U,
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] tuple_element<1U,
+struct [[maybe_unused]] std::tuple_element<1U,
                                       open_viii::field::scripts::JsmOldEntity>
 {
   using type = std::uint16_t;
 };
-}// namespace std
 #endif// VIIIARCHIVE_JSMOLDENTITY_HPP

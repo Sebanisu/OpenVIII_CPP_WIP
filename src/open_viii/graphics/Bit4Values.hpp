@@ -39,8 +39,9 @@ public:
   static Bit4Values
     create(const std::uint8_t in_first, const std::uint8_t in_second)
   {
-    return create(static_cast<uint8_t>((in_first & MASK_4_BIT) << SHIFT_4_BITS)
-                  | (in_second & MASK_4_BIT));
+    return create(
+      static_cast<uint8_t>((in_first & MASK_4_BIT) << SHIFT_4_BITS)
+      | (in_second & MASK_4_BIT));
   }
   //  constexpr Bit4Values(const std::uint8_t in_first,
   //                       const std::uint8_t in_second)
@@ -68,7 +69,8 @@ public:
   {
     if constexpr (I == 0U) {
       return m_first;
-    } else if constexpr (I == 1U) {
+    }
+    else if constexpr (I == 1U) {
       return m_second;
     }
   }
@@ -100,13 +102,12 @@ public:
 };
 static_assert(sizeof(Bit4Values) == Bit4Values::EXPECTED_SIZE);
 }// namespace open_viii::graphics
-namespace std {
 /**
  * number of arguments
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] tuple_size<open_viii::graphics::Bit4Values>
+struct [[maybe_unused]] std::tuple_size<open_viii::graphics::Bit4Values>
   : std::integral_constant<size_t, 2>
 {
 };
@@ -115,9 +116,8 @@ struct [[maybe_unused]] tuple_size<open_viii::graphics::Bit4Values>
  * @note required to structured binding support
  */
 template<size_t I>
-struct [[maybe_unused]] tuple_element<I, open_viii::graphics::Bit4Values>
+struct [[maybe_unused]] std::tuple_element<I, open_viii::graphics::Bit4Values>
 {
   using type = uint8_t;
 };
-}// namespace std
 #endif// VIIIARCHIVE_4BITVALUES_H

@@ -246,13 +246,12 @@ static void
 }
 }// namespace open_viii::archive
 
-namespace std {
 /**
  * define number of arguments
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] tuple_size<open_viii::archive::FileData>
+struct [[maybe_unused]] std::tuple_size<open_viii::archive::FileData>
   : std::integral_constant<size_t, 3>
 {
 };
@@ -261,7 +260,7 @@ struct [[maybe_unused]] tuple_size<open_viii::archive::FileData>
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] tuple_element<0, open_viii::archive::FileData>
+struct [[maybe_unused]] std::tuple_element<0, open_viii::archive::FileData>
 {
   using type = std::string_view;
 };
@@ -270,7 +269,7 @@ struct [[maybe_unused]] tuple_element<0, open_viii::archive::FileData>
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] tuple_element<1, open_viii::archive::FileData>
+struct [[maybe_unused]] std::tuple_element<1, open_viii::archive::FileData>
 {
   using type = std::uint64_t;
 };
@@ -279,9 +278,9 @@ struct [[maybe_unused]] tuple_element<1, open_viii::archive::FileData>
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] tuple_element<2, open_viii::archive::FileData>
+struct [[maybe_unused]] std::tuple_element<2, open_viii::archive::FileData>
 {
   using type = std::uint32_t;
 };
-}// namespace std
+
 #endif// VIIIARCHIVE_FILEDATA_HPP
