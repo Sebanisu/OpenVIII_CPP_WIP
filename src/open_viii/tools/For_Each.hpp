@@ -82,22 +82,19 @@ static_assert(test_for_each_xy(5U) == 100U);
  * @param binary_function
  * @todo add tests
  */
-template<std::invocable<std::filesystem::path> UnaryOperationT,
-         typename BinaryOperationT>
+template<
+  std::invocable<std::filesystem::path> UnaryOperationT,
+  typename BinaryOperationT>
 static void
-  execute_on_directory(
-    const std::filesystem::path &directory,
-    UnaryOperationT              unary_function,
-    BinaryOperationT             binary_function
-    = true) requires((std::is_same_v<std::decay<BinaryOperationT>, bool>)
-                     || (std::is_invocable_r_v<bool,
-                                               BinaryOperationT,
-                                               std::filesystem::path>))
+  execute_on_directory(const std::filesystem::path &directory, UnaryOperationT unary_function, BinaryOperationT binary_function = true) requires(
+    (std::is_same_v<std::decay<BinaryOperationT>, bool>)
+    || (std::is_invocable_r_v<bool, BinaryOperationT, std::filesystem::path>))
 {
   const std::filesystem::directory_options options
     = std::filesystem::directory_options::skip_permission_denied;
+  std::error_code ec{};
   std::ranges::for_each(
-    std::filesystem::directory_iterator(directory, options),
+    std::filesystem::directory_iterator(directory, options, ec),
     [&unary_function, &binary_function](const auto &item) {
       const auto path = item.path();
       if constexpr (std::is_same_v<std::decay<BinaryOperationT>, bool>) {
@@ -105,15 +102,21 @@ static void
           return;
         }
       }
-      else if constexpr (std::is_invocable_r_v<bool,
-                                               BinaryOperationT,
-                                               std::filesystem::path>) {
+      else if constexpr (std::is_invocable_r_v<
+                           bool,
+                           BinaryOperationT,
+                           std::filesystem::path>) {
         if (!binary_function(path)) {
           return;
         }
       }
       unary_function(path);
     });
+  if (ec) {
+    std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - " << ec.value()
+              << ": " << ec.message() << std::endl;
+    ec.clear();
+  }
 }
 /**
  *
@@ -127,10 +130,10 @@ static void
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::filesystem::path>)
   [[maybe_unused]] static void execute_on_directory(
-    const std::filesystem::path &           dir,
+    const std::filesystem::path            &dir,
     std::initializer_list<std::string_view> filenames,
     std::initializer_list<std::string_view> extensions,
-    const lambdaT &                         lambda)
+    const lambdaT                          &lambda)
 {
   execute_on_directory(
     dir,
@@ -138,11 +141,9 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
     [&filenames, &extensions](const std::filesystem::path &path) {
       return std::filesystem::is_regular_file(path)
           && (std::ranges::empty(extensions)
-              || (path.has_extension()
-                  && i_ends_with_any(path.extension().string(), extensions)))
+              || (path.has_extension() && i_ends_with_any(path.extension().string(), extensions)))
           && (std::ranges::empty(filenames)
-              || (path.has_stem()
-                  && i_find_any(path.stem().string(), filenames)));
+              || (path.has_stem() && i_find_any(path.stem().string(), filenames)));
     });
 }
 /**
@@ -156,16 +157,17 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::filesystem::path>)
   [[maybe_unused]] static void execute_on_directories(
-    const std::filesystem::path &           dir,
+    const std::filesystem::path            &dir,
     std::initializer_list<std::string_view> path_contains,
-    const lambdaT &                         lambda)
+    const lambdaT                          &lambda)
 {
-  execute_on_directory(dir,
-                       lambda,
-                       [&path_contains](const std::filesystem::path &path) {
-                         return std::filesystem::is_directory(path)
-                             && tools::i_find_any(path.string(), path_contains);
-                       });
+  execute_on_directory(
+    dir,
+    lambda,
+    [&path_contains](const std::filesystem::path &path) {
+      return std::filesystem::is_directory(path)
+          && tools::i_find_any(path.string(), path_contains);
+    });
 }
 }// namespace open_viii::tools
 #endif// VIIIARCHIVE_FOR_EACH_HPP
