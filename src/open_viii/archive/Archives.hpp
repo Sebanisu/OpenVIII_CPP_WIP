@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_ARCHIVES_HPP
 #include "ArchivesTypesT.hpp"
 #include "FIFLFS.hpp"
+#include "FileData.hpp"
 #include "open_viii/strings/LangCommon.hpp"
 #include "ZZZ.hpp"
 #include <future>
@@ -189,35 +190,44 @@ private:
 
         loop<
           static_cast<intmax_t>(ArchiveTypeT::begin),
-          static_cast<intmax_t>(ArchiveTypeT::zzz_main)
-            - 1>([&path,
-                  this](const ArchiveTypeT test, const std::string_view stem) {
-          const auto task = [this](
-                              const std::filesystem::path path,
-                              const ArchiveTypeT          test,
-                              const std::string_view      stem) {
-            for (const auto &dataItem : m_zzz_main->data()) {
-              const auto pathString = dataItem.get_path_string();
-              if (FIFLFS<true>::check_extension(pathString) == fiflfsT::none) {
-                continue;
+          static_cast<intmax_t>(ArchiveTypeT::zzz_main) - 1>(
+          [&path, this](const ArchiveTypeT test, const std::string_view stem) {
+            const auto task = [this](
+                                const std::filesystem::path path,
+                                const ArchiveTypeT          test,
+                                const std::string_view      stem) {
+              auto filter_data
+                = m_zzz_main->data()
+                | std::views::filter([&](const FileData &fileData) {
+                    const auto localPath
+                      = std::filesystem::path(fileData.get_path_string());
+                    const auto &pathString = localPath.string();
+                    if (
+                      FIFLFS<true>::check_extension(pathString)
+                      == fiflfsT::none) {
+                      return false;
+                    }
+                    if (check_lang_path(pathString)) {
+                      return false;
+                    }
+                    if (!(open_viii::tools::i_equals(
+                          stem,
+                          localPath.stem().string()))) {
+                      return false;
+                    }
+                    return true;
+                  });
+              for (FileData dataItem : filter_data) {
+                auto pathString = dataItem.get_path_string();
+                auto localPath  = std::filesystem::path(pathString);
+                try_add(test, std::move(dataItem), path, std::move(localPath));
               }
-              if (check_lang_path(pathString)) {
-                continue;
-              }
-              auto localPath = std::filesystem::path(pathString);
-              if (!(open_viii::tools::i_equals(
-                    stem,
-                    localPath.stem().string()))) {
-                return;
-              }
-              try_add(test, dataItem, path, localPath);
               return;
-            }
-          };
-          m_futures.emplace_back(
-            std::async(std::launch::async, task, path, test, stem));
-          return true;
-        });
+            };
+            m_futures.emplace_back(
+              std::async(std::launch::async, task, path, test, stem));
+            return true;
+          });
         std::ranges::for_each(m_futures, [](std::future<void> &f) {
           f.wait();
         });

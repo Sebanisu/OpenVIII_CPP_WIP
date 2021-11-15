@@ -37,7 +37,7 @@ public:
         R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII Remastered)"s),
       tl::string::replace_slashes(
         R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII Remastered)"s),
-
+#if 1
       tl::string::replace_slashes(
         R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"s),
       tl::string::replace_slashes(
@@ -61,6 +61,7 @@ public:
       // folders with tim files in it
       tl::string::replace_slashes(R"(/mnt/d/tim)"s),
       tl::string::replace_slashes(R"(d:\tim)"s)
+#endif
     };
     static const auto path_file
       = std::filesystem::current_path() / "paths.conf";
