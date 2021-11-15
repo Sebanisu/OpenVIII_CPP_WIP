@@ -202,27 +202,24 @@ private:
                     const auto localPath
                       = std::filesystem::path(fileData.get_path_string());
                     const auto &pathString = localPath.string();
-                    if (
-                      FIFLFS<true>::check_extension(pathString)
-                      == fiflfsT::none) {
-                      return false;
-                    }
-                    if (check_lang_path(pathString)) {
-                      return false;
-                    }
-                    if (!(open_viii::tools::i_equals(
-                          stem,
-                          localPath.stem().string()))) {
-                      return false;
-                    }
-                    return true;
+                    return !(
+                      FIFLFS<true>::check_extension(pathString) == fiflfsT::none
+                      || check_lang_path(pathString)
+                      || !(open_viii::tools::i_equals(
+                        stem,
+                        localPath.stem().string())));
                   });
-              for (FileData dataItem : filter_data) {
-                auto pathString = dataItem.get_path_string();
-                auto localPath  = std::filesystem::path(pathString);
-                try_add(test, std::move(dataItem), path, std::move(localPath));
-              }
-              return;
+              std::for_each(
+                std::execution::par,
+                filter_data.begin(),
+                filter_data.end(),
+                [&](FileData dataItem) {
+                  try_add(
+                    test,
+                    std::move(dataItem),
+                    path,
+                    dataItem.get_path_string());
+                });
             };
             m_futures.emplace_back(
               std::async(std::launch::async, task, path, test, stem));
