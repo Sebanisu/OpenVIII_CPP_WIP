@@ -15,10 +15,10 @@
 #include "open_viii/tools/Tools.hpp"
 #include "tl/string.hpp"
 #include <algorithm>
-#include <vector>
 #include <filesystem>
 #include <ranges>
 #include <string>
+#include <vector>
 namespace open_viii {
 struct Paths
 {
@@ -36,7 +36,7 @@ public:
       tl::string::replace_slashes(
         R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII Remastered)"s),
       tl::string::replace_slashes(
-        R"(mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII Remastered)"s),
+        R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII Remastered)"s),
 
       tl::string::replace_slashes(
         R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"s),
@@ -46,7 +46,7 @@ public:
       tl::string::replace_slashes(
         R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII)"s),
       tl::string::replace_slashes(
-        R"(mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII)"s),
+        R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII)"s),
 
       tl::string::replace_slashes(R"(/mnt/k/ff82000)"s),
       tl::string::replace_slashes(R"(K:\ff82000)"s),
@@ -62,9 +62,10 @@ public:
       tl::string::replace_slashes(R"(/mnt/d/tim)"s),
       tl::string::replace_slashes(R"(d:\tim)"s)
     };
-    static const auto path_file = std::filesystem::current_path() / "paths.conf";
+    static const auto path_file
+      = std::filesystem::current_path() / "paths.conf";
     static bool read_file = true;
-    if(read_file) {
+    if (read_file) {
       auto fs = std::ifstream(path_file, std::ios::in | std::ios::binary);
       if (fs.is_open()) {
         read_file = false;
@@ -74,23 +75,26 @@ public:
         }
       }
     }
-    const auto [first, last] = std::ranges::remove_if(paths,[](const std::filesystem::path path){
-      std::error_code ec{};
-      const bool      found = std::filesystem::exists(path, ec);
-      if (ec) {
-        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - " << ec.value()
-                  << ": " << ec.message() << std::endl;
-        ec.clear();
-      }
-      const bool is_dir = std::filesystem::is_directory(path, ec);
-      if (ec) {
-        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - " << ec.value()
-                  << ": " << ec.message() << std::endl;
-        ec.clear();
-      }
-      return !found || !is_dir;
-    });
-    paths.erase(first,last);
+    const auto [first, last]
+      = std::ranges::remove_if(paths, [](const std::filesystem::path path) {
+          std::error_code ec{};
+          const bool      found = std::filesystem::exists(path, ec);
+          if (ec) {
+            std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                      << ec.value() << ": " << ec.message() << ec.value()
+                      << " - path: " << path << std::endl;
+            ec.clear();
+          }
+          const bool is_dir = std::filesystem::is_directory(path, ec);
+          if (ec) {
+            std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                      << ec.value() << ": " << ec.message()
+                      << " - path: " << path << std::endl;
+            ec.clear();
+          }
+          return !found || !is_dir;
+        });
+    paths.erase(first, last);
     return paths;
   }
   template<std::invocable<std::filesystem::path> lambdaT>
@@ -102,14 +106,14 @@ public:
       std::error_code ec{};
       const bool      found = std::filesystem::exists(fs_path, ec);
       if (ec) {
-        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - " << ec.value()
-                  << ": " << ec.message() << std::endl;
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                  << ec.value() << ": " << ec.message() << std::endl;
         ec.clear();
       }
       const bool is_dir = std::filesystem::is_directory(fs_path, ec);
       if (ec) {
-        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - " << ec.value()
-                  << ": " << ec.message() << std::endl;
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                  << ec.value() << ": " << ec.message() << std::endl;
         ec.clear();
       }
       if (found && is_dir) {
