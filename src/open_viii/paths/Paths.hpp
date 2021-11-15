@@ -74,6 +74,23 @@ public:
         }
       }
     }
+    const auto [first, last] = std::ranges::remove_if(paths,[](const std::filesystem::path path){
+      std::error_code ec{};
+      const bool      found = std::filesystem::exists(path, ec);
+      if (ec) {
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - " << ec.value()
+                  << ": " << ec.message() << std::endl;
+        ec.clear();
+      }
+      const bool is_dir = std::filesystem::is_directory(path, ec);
+      if (ec) {
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - " << ec.value()
+                  << ": " << ec.message() << std::endl;
+        ec.clear();
+      }
+      return !found || !is_dir;
+    });
+    paths.erase(first,last);
     return paths;
   }
   template<std::invocable<std::filesystem::path> lambdaT>
@@ -85,12 +102,14 @@ public:
       std::error_code ec{};
       const bool      found = std::filesystem::exists(fs_path, ec);
       if (ec) {
-        std::cerr << ec.message() << std::endl;
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - " << ec.value()
+                  << ": " << ec.message() << std::endl;
         ec.clear();
       }
       const bool is_dir = std::filesystem::is_directory(fs_path, ec);
       if (ec) {
-        std::cerr << ec.message() << std::endl;
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - " << ec.value()
+                  << ": " << ec.message() << std::endl;
         ec.clear();
       }
       if (found && is_dir) {
@@ -99,5 +118,6 @@ public:
     });
   }
 };
+
 }// namespace open_viii
 #endif// VIIIARCHIVE_TESTPATHS_H
