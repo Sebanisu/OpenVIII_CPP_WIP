@@ -42,17 +42,16 @@ concept not_zero = sizeof...(aT) > 0U;
 struct Archives
 {
 private:
-  std::string                    m_lang{};
-  std::filesystem::path          m_path{};
-  FIFLFS<false>                  m_battle{};
-  FIFLFS<true>                   m_field{};
-  FIFLFS<false>                  m_magic{};
-  FIFLFS<false>                  m_main{};
-  FIFLFS<false>                  m_menu{};
-  FIFLFS<false>                  m_world{};
-  std::optional<ZZZ>             m_zzz_main{};
-  std::optional<ZZZ>             m_zzz_other{};
-  std::vector<std::future<void>> m_futures{};
+  std::string           m_lang{};
+  std::filesystem::path m_path{};
+  FIFLFS<false>         m_battle{};
+  FIFLFS<true>          m_field{};
+  FIFLFS<false>         m_magic{};
+  FIFLFS<false>         m_main{};
+  FIFLFS<false>         m_menu{};
+  FIFLFS<false>         m_world{};
+  std::optional<ZZZ>    m_zzz_main{};
+  std::optional<ZZZ>    m_zzz_other{};
   /**
    * Search for lang.dat from steam 2013 release.
    * @todo find cross platform way to get to remaster config.txt for remaster
@@ -187,11 +186,12 @@ private:
       if (tryAddToZZZ(m_zzz_main)) {
         // using namespace std::string_literals;
         // using namespace std::string_view_literals;
-
+        std::vector<std::future<void>> futures{};
+        futures.reserve(static_cast<std::size_t>(ArchiveTypeT::zzz_main)-1U);
         loop<
           static_cast<intmax_t>(ArchiveTypeT::begin),
           static_cast<intmax_t>(ArchiveTypeT::zzz_main) - 1>(
-          [&path, this](const ArchiveTypeT test, const std::string_view stem) {
+          [&path, this, &futures](const ArchiveTypeT test, const std::string_view stem) {
             const auto task = [this](
                                 const std::filesystem::path path,
                                 const ArchiveTypeT          test,
@@ -221,14 +221,13 @@ private:
                     dataItem.get_path_string());
                 });
             };
-            m_futures.emplace_back(
+            futures.emplace_back(
               std::async(std::launch::async, task, path, test, stem));
             return true;
           });
-        std::ranges::for_each(m_futures, [](std::future<void> &f) {
+        std::ranges::for_each(futures, [](std::future<void> &f) {
           f.wait();
         });
-        m_futures.clear();
         return true;
       }
       return false;
