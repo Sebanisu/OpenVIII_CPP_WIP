@@ -187,11 +187,13 @@ private:
         // using namespace std::string_literals;
         // using namespace std::string_view_literals;
         std::vector<std::future<void>> futures{};
-        futures.reserve(static_cast<std::size_t>(ArchiveTypeT::zzz_main)-1U);
+        futures.reserve(static_cast<std::size_t>(ArchiveTypeT::zzz_main) - 1U);
         loop<
           static_cast<intmax_t>(ArchiveTypeT::begin),
           static_cast<intmax_t>(ArchiveTypeT::zzz_main) - 1>(
-          [&path, this, &futures](const ArchiveTypeT test, const std::string_view stem) {
+          [&path,
+           this,
+           &futures](const ArchiveTypeT test, const std::string_view stem) {
             const auto task = [this](
                                 const std::filesystem::path path,
                                 const ArchiveTypeT          test,
