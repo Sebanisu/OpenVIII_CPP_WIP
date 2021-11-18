@@ -85,7 +85,7 @@ private:
       // memset(text_buf, 0, r); //std::array should init with 0s.
       std::uint32_t len = 0;
       for (; len < NODE_SIZE && data != data_end; ++len, ++data) {
-        m_text_buf.at(r + len) = static_cast<std::uint8_t>(
+        m_text_buf.at(std::size_t{r} + len) = static_cast<std::uint8_t>(
           *data);// Read 18 bytes into the last 18 bytes of the buffer
       }
       if (/* (textsize =  */ len /* ) */ == 0) {
@@ -145,7 +145,7 @@ private:
             delete_node(s);// Delete old strings and
             m_text_buf.at(s) = static_cast<std::uint8_t>(c);// read new bytes
             if (s < F_MINUS1) {
-              m_text_buf.at(s + N) = static_cast<std::uint8_t>(
+              m_text_buf.at(std::size_t{s} + N) = static_cast<std::uint8_t>(
                 c);// If the position is near the end of buffer, extend the
                    // buffer to make string comparison easier.
             }
@@ -223,7 +223,7 @@ private:
           for (; node_index < NODE_SIZE;
                ++node_index) {// if ((cmp = key.subspan(node_index)[0] -
                               // (text_buf.at(p + node_index))) != 0) {
-            if ((cmp = key[node_index] - (m_text_buf.at(p + node_index)))
+            if ((cmp = key[node_index] - (m_text_buf.at(std::size_t{p} + node_index)))
                 != 0) {
               break;
             }
@@ -327,6 +327,8 @@ public:
   [[nodiscard]] static dstT
     decompress(std::span<const char> src, size_t dst_size = 0)
   {
+    //warning C6262: Function uses '16560' bytes of stack:  exceeds /analyze:stacksize '16384'.  Consider moving some data to heap.
+    //warning C6262: Function uses '16568' bytes of stack:  exceeds /analyze:stacksize '16384'.  Consider moving some data to heap.
     dstT dst{};
     if (dst_size > 0) {
       dst.reserve(dst_size);
@@ -416,6 +418,7 @@ public:
   static auto
     compress(std::span<const char> span)
   {
+    // warning C6262: Function uses '54328' bytes of stack:  exceeds /analyze:stacksize '16384'.  Consider moving some data to heap.
     CompressImpl compress_obj{};// complex code moved into abstraction.
     return compress_obj(span);
   }

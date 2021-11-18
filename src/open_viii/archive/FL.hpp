@@ -178,7 +178,7 @@ inline void
     for (std::uint32_t id = 0; (max == 0U || std::ranges::size(vector) != max)
                                && (size == 0U || (cont.tell() < size + offset));
          ++id) {
-      const std::string inner_path = clean_path_string(cont.get_line());
+      std::string inner_path = clean_path_string(cont.get_line());
       if (std::ranges::empty(inner_path)) {
         break;
       }

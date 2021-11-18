@@ -227,7 +227,7 @@ public:
 
     m_row_bytes = ::libpng::png_get_rowbytes(png_ptr.get(), info_ptr.get());
     m_channels  = ::libpng::png_get_channels(png_ptr.get(), info_ptr.get());
-    m_color.resize(m_width * m_height);
+    m_color.resize(std::size_t{ m_width } * m_height);
     assert(m_width * bytes_per_pixel == m_row_bytes);
     for (std::size_t i = 0; i != m_height; ++i)
       row_pointers.emplace_back(
@@ -344,7 +344,7 @@ public:
       ::libpng::png_uint_32  height,
       T &&...t) noexcept
   {
-    if (data.size() < width * height) {
+    if (std::cmp_less(data.size(), std::size_t{ width } * height)) {
       std::cerr << "Size is wrong! " << data.size() << " != " << width << " x "
                 << height << '\n';
       return std::nullopt;

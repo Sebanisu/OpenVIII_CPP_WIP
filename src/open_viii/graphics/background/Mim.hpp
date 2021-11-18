@@ -116,16 +116,16 @@ private:
     const auto     m_image_buffer_bbp4 = set_image_span_bpp4();
     std::vector<T> out{};
     out.reserve(std::ranges::size(m_image_buffer_bbp4) * 2);
-    std::ranges::for_each(m_image_buffer_bbp4,
-                          [&palette, this, &out](const Bit4Values &key) {
-                            const auto output
-                              = [&out, &palette, this](const uint8_t &input) {
-                                  out.emplace_back(safe_get_color_from_palette(
-                                    get_palette_key(input, palette)));
-                                };
-                            output(key.first());
-                            output(key.second());
-                          });
+    std::ranges::for_each(
+      m_image_buffer_bbp4,
+      [&palette, this, &out](const Bit4Values &key) {
+        const auto output = [&out, &palette, this](const uint8_t &input) {
+          out.emplace_back(
+            safe_get_color_from_palette(get_palette_key(input, palette)));
+        };
+        output(key.first());
+        output(key.second());
+      });
     return out;
   }
 
@@ -212,18 +212,20 @@ public:
 
   template<Color T>
   std::vector<T>
-    get_colors(const BPPT    &bpp,
-               const uint8_t &palette,
-               bool           dump_palette = false) const
+    get_colors(
+      const BPPT    &bpp,
+      const uint8_t &palette,
+      bool           dump_palette = false) const
   {
     std::vector<T> colors{};
     const auto     convert_color = [&colors](const auto &raw_color) {
       colors.reserve(raw_color.size());
-      std::ranges::transform(raw_color,
-                                 std::back_inserter(colors),
-                                 [](const auto &color) {
-                               return static_cast<T>(color);
-                                 });
+      std::ranges::transform(
+            raw_color,
+            std::back_inserter(colors),
+            [](const auto &color) {
+          return static_cast<T>(color);
+            });
     };
     if (dump_palette) {
       const auto m_palette_buffer = set_palette_span();
@@ -262,19 +264,22 @@ public:
     const auto path = std::filesystem::path(filename);
     if (dump_palette) {
       const auto m_palette_buffer = set_palette_span();
-      if constexpr (std::invocable<lambdaT,
-                                   std::span<const Color16ABGR>,
-                                   std::size_t,
-                                   std::size_t,
-                                   std::string>) {
-        lambda(m_palette_buffer,
-               static_cast<std::size_t>(clut_width()),
-               clut_height(),
-               ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
+      if constexpr (std::invocable<
+                      lambdaT,
+                      std::span<const Color16ABGR>,
+                      std::size_t,
+                      std::size_t,
+                      std::string>) {
+        lambda(
+          m_palette_buffer,
+          static_cast<std::size_t>(clut_width()),
+          clut_height(),
+          ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
       }
-      else if constexpr (std::invocable<lambdaT,
-                                        std::span<const Color16ABGR>,
-                                        std::size_t>) {
+      else if constexpr (std::invocable<
+                           lambdaT,
+                           std::span<const Color16ABGR>,
+                           std::size_t>) {
         lambda(m_palette_buffer, static_cast<std::size_t>(clut_width()));
       }
       return;
@@ -289,57 +294,66 @@ public:
         };
     if (bpp.bpp8()) {
       auto out = get_image_bpp8(palette);
-      if constexpr (std::invocable<lambdaT,
-                                   std::span<const Color16ABGR>,
-                                   std::size_t,
-                                   std::size_t,
-                                   std::string>) {
-        lambda(out,
-               width,
-               std::ranges::size(out) / width,
-               out_path(BPPT::BPP8));
+      if constexpr (std::invocable<
+                      lambdaT,
+                      std::span<const Color16ABGR>,
+                      std::size_t,
+                      std::size_t,
+                      std::string>) {
+        lambda(
+          out,
+          width,
+          std::ranges::size(out) / width,
+          out_path(BPPT::BPP8));
       }
-      else if (std::invocable<lambdaT,
-                              std::span<const Color16ABGR>,
-                              std::size_t>) {
+      else if (std::invocable<
+                 lambdaT,
+                 std::span<const Color16ABGR>,
+                 std::size_t>) {
         lambda(out, width);
       }
     }
     else if (bpp.bpp4()) {
       std::vector<Color16ABGR> out = get_image_bpp4(palette);
       width *= 2U;
-      if constexpr (std::invocable<lambdaT,
-                                   std::span<const Color16ABGR>,
-                                   std::size_t,
-                                   std::size_t,
-                                   std::string>) {
-        lambda(out,
-               width,
-               std::ranges::size(out) / width,
-               out_path(BPPT::BPP4));
+      if constexpr (std::invocable<
+                      lambdaT,
+                      std::span<const Color16ABGR>,
+                      std::size_t,
+                      std::size_t,
+                      std::string>) {
+        lambda(
+          out,
+          width,
+          std::ranges::size(out) / width,
+          out_path(BPPT::BPP4));
       }
-      else if (std::invocable<lambdaT,
-                              std::span<const Color16ABGR>,
-                              std::size_t>) {
+      else if (std::invocable<
+                 lambdaT,
+                 std::span<const Color16ABGR>,
+                 std::size_t>) {
         lambda(out, width);
       }
     }
     else if (bpp.bpp16()) {
       width /= 2U;
-      if constexpr (std::invocable<lambdaT,
-                                   std::span<const Color16ABGR>,
-                                   std::size_t,
-                                   std::size_t,
-                                   std::string>) {
+      if constexpr (std::invocable<
+                      lambdaT,
+                      std::span<const Color16ABGR>,
+                      std::size_t,
+                      std::size_t,
+                      std::string>) {
         const auto m_image_buffer_bbp16 = set_image_span_bpp16();
-        lambda(m_image_buffer_bbp16,
-               (width),
-               std::ranges::size(m_image_buffer_bbp16) / width,
-               out_path(BPPT::BPP16, false));
+        lambda(
+          m_image_buffer_bbp16,
+          (width),
+          std::ranges::size(m_image_buffer_bbp16) / width,
+          out_path(BPPT::BPP16, false));
       }
-      else if (std::invocable<lambdaT,
-                              std::span<const Color16ABGR>,
-                              std::size_t>) {
+      else if (std::invocable<
+                 lambdaT,
+                 std::span<const Color16ABGR>,
+                 std::size_t>) {
         const auto m_image_buffer_bbp16 = set_image_span_bpp16();
         lambda(m_image_buffer_bbp16, width);
       }
@@ -362,11 +376,12 @@ public:
     return width;
   }
   [[nodiscard]] Color16ABGR
-    get_color(const std::uint32_t x,
-              const std::uint32_t y,
-              const BPPT          depth,
-              const std::uint8_t  palette    = 0U,
-              const std::uint8_t  texture_id = 0U) const
+    get_color(
+      const std::uint32_t x,
+      const std::uint32_t y,
+      const BPPT          depth,
+      const std::uint8_t  palette    = 0U,
+      const std::uint8_t  texture_id = 0U) const
   {
     auto                  width = m_mim_type.width();
     constexpr static auto offset_interval
@@ -377,14 +392,14 @@ public:
       const auto m_image_buffer = set_image_span();
       return safe_get_color_from_palette(get_palette_key(
         static_cast<std::uint8_t>(
-          m_image_buffer[x + texture_page_offset + (y * width)]),
+          m_image_buffer[std::size_t{x} + texture_page_offset + (std::size_t{y} * width)]),
         palette));
     }
     if (depth.bpp4()) {
       texture_page_offset *= 2U * texture_id;
       const auto       m_image_buffer_bbp4 = set_image_span_bpp4();
       const Bit4Values pair
-        = m_image_buffer_bbp4[(x + texture_page_offset) / 2U + (y * width)];
+        = m_image_buffer_bbp4[(std::size_t{x} + texture_page_offset) / 2U + (std::size_t{y} * width)];
       if (x % 2U == 0) {
         return safe_get_color_from_palette(
           get_palette_key(pair.first(), palette));
@@ -397,20 +412,21 @@ public:
       texture_page_offset /= 2U;
       texture_page_offset *= texture_id;
       const auto m_image_buffer_bbp16 = set_image_span_bpp16();
-      return m_image_buffer_bbp16[x + texture_page_offset + (y * width)];
+      return m_image_buffer_bbp16
+        [std::size_t{ x } + texture_page_offset + (std::size_t{ y } * width)];
     }
     return {};
   }
   [[maybe_unused]] void
     save([[maybe_unused]] std::string_view filename) const
   {
-    static constexpr auto ppm_save
-      = [](const std::span<const Color16ABGR> &data,
-           const std::size_t                  &width,
-           const std::size_t                  &height,
-           const std::string                  &local_filename) {
-          Ppm::save(data, width, height, local_filename);
-        };
+    static constexpr auto ppm_save = [](
+                                       const std::span<const Color16ABGR> &data,
+                                       const std::size_t &width,
+                                       const std::size_t &height,
+                                       const std::string &local_filename) {
+      Ppm::save(data, width, height, local_filename);
+    };
     get_colors_for_saving(filename, {}, {}, ppm_save, true);
     BPPT bpp{};
     {
