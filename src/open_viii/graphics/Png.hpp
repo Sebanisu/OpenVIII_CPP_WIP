@@ -34,17 +34,15 @@ private:
         png_destroy_read_struct(&png_s, nullptr, nullptr);
       };
 
-  using safe_png_read_struct
-    = std::unique_ptr<::libpng::png_struct,
-                      decltype(safe_png_read_struct_deleter)>;
+  using safe_png_read_struct = std::
+    unique_ptr<::libpng::png_struct, decltype(safe_png_read_struct_deleter)>;
 
   static constexpr auto safe_png_write_struct_deleter
     = [](::libpng::png_struct *png_s) {
         png_destroy_write_struct(&png_s, ::libpng::png_infopp{ nullptr });
       };
-  using safe_png_write_struct
-    = std::unique_ptr<::libpng::png_struct,
-                      decltype(safe_png_write_struct_deleter)>;
+  using safe_png_write_struct = std::
+    unique_ptr<::libpng::png_struct, decltype(safe_png_write_struct_deleter)>;
   template<typename deleter>
   static auto
     create_info_struct(
@@ -103,8 +101,9 @@ private:
 
   template<typename deleter>
   [[nodiscard]] double
-    get_gamma(const safe_png_read_struct                         &png_ptr,
-              const std::unique_ptr<::libpng::png_info, deleter> &info_ptr)
+    get_gamma(
+      const safe_png_read_struct                         &png_ptr,
+      const std::unique_ptr<::libpng::png_info, deleter> &info_ptr)
       const noexcept
   {
     static constexpr auto display_exponent = Png::get_display_exponent();
@@ -154,9 +153,9 @@ public:
                        fclose };// todo do I need fopen?
 
     if (fp) {
-      uint8_t sig[8] = {};
+      uint8_t     sig[8]     = {};
       std::size_t bytes_read = fread(sig, 1, 8, fp.get());
-      if (bytes_read!=8U || ::libpng::png_sig_cmp(sig, 0, 8) != 0) {
+      if (bytes_read != 8U || ::libpng::png_sig_cmp(sig, 0, 8) != 0) {
 
         std::cerr << "Bad signature \n" << filename.string() << '\n';
         std::cerr << +sig[0] << ',' << +sig[1] << ',' << +sig[2] << ','
@@ -193,15 +192,16 @@ public:
     png_init_io(png_ptr.get(), fp.get());
     png_set_sig_bytes(png_ptr.get(), 8);
     png_read_info(png_ptr.get(), info_ptr.get());
-    png_get_IHDR(png_ptr.get(),
-                 info_ptr.get(),
-                 &m_width,
-                 &m_height,
-                 &m_bit_depth,
-                 &m_color_type,
-                 nullptr,
-                 nullptr,
-                 nullptr);
+    png_get_IHDR(
+      png_ptr.get(),
+      info_ptr.get(),
+      &m_width,
+      &m_height,
+      &m_bit_depth,
+      &m_color_type,
+      nullptr,
+      nullptr,
+      nullptr);
     m_background_color = get_background_color(png_ptr, info_ptr);
     // http://www.libpng.org/pub/png/book/chapter13.html
     // begin readpng_get_image
@@ -214,8 +214,9 @@ public:
 
     if (m_bit_depth == 16)
       ::libpng::png_set_strip_16(png_ptr.get());
-    if (m_color_type == PNG_COLOR_TYPE_GRAY
-        || m_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+    if (
+      m_color_type == PNG_COLOR_TYPE_GRAY
+      || m_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
       ::libpng::png_set_gray_to_rgb(png_ptr.get());
 
     m_gamma           = get_gamma(png_ptr, info_ptr);
@@ -236,22 +237,18 @@ public:
     ::libpng::png_read_image(png_ptr.get(), row_pointers.data());
   }
 
-  template<Color cT>
+  template<Color cT = Color32RGBA>
   static std::optional<std::filesystem::path>
-    save(const std::vector<cT> &data,
-         ::libpng::png_uint_32  width,
-         ::libpng::png_uint_32  height,
-         std::filesystem::path  filename,
-         std::string            title  = "",
-         std::string            prefix = "tmp") noexcept
+    save(
+      const std::uint8_t   *data,
+      ::libpng::png_uint_32 width,
+      ::libpng::png_uint_32 height,
+      std::filesystem::path filename,
+      std::string           title  = "",
+      std::string           prefix = "tmp") noexcept
   {
     if (width == 0U || height == 0U)
       return std::nullopt;
-    if (data.size() < width * height) {
-      std::cerr << "Size is wrong! " << data.size() << " != " << width << " x "
-                << height << '\n';
-      return std::nullopt;
-    }
     if (!open_viii::tools::i_ends_with(filename.string(), ".png")) {
       filename
         = (!filename.string().starts_with(prefix)
@@ -295,15 +292,16 @@ public:
     //    }
     png_init_io(png_ptr.get(), fp.get());
     // Write header (8 bit colour depth)
-    png_set_IHDR(png_ptr.get(),
-                 info_ptr.get(),
-                 width,
-                 height,
-                 8,
-                 PNG_COLOR_TYPE_RGBA,
-                 PNG_INTERLACE_NONE,
-                 PNG_COMPRESSION_TYPE_BASE,
-                 PNG_FILTER_TYPE_BASE);
+    png_set_IHDR(
+      png_ptr.get(),
+      info_ptr.get(),
+      width,
+      height,
+      8,
+      PNG_COLOR_TYPE_RGBA,
+      PNG_INTERLACE_NONE,
+      PNG_COMPRESSION_TYPE_BASE,
+      PNG_FILTER_TYPE_BASE);
 
     // Set title
     if (!title.empty()) {
@@ -317,30 +315,51 @@ public:
 
     png_write_info(png_ptr.get(), info_ptr.get());
     static constexpr auto setRBGA
-      = [](::libpng::png_byte *const out, const cT &in) {
+      = [](::libpng::png_byte *const out, const cT in) {
           out[0] = in.r();
           out[1] = in.g();
           out[2] = in.b();
           out[3] = in.a();
         };
-    auto row = std::vector<::libpng::png_byte>(bytes_per_pixel * width
-                                               * sizeof(::libpng::png_byte));
+    auto row = std::vector<::libpng::png_byte>(
+      bytes_per_pixel * width * sizeof(::libpng::png_byte));
     for (const auto y :
          std::ranges::iota_view(::libpng::png_uint_32{ 0U }, height)) {
       for (const auto x :
            std::ranges::iota_view(::libpng::png_uint_32{ 0U }, width)) {
-        setRBGA(&row[x * bytes_per_pixel], data[y * width + x]);
+        setRBGA(
+          &row[x * bytes_per_pixel],
+          reinterpret_cast<const cT *>(data)[y * width + x]);
       }
       png_write_row(png_ptr.get(), row.data());
     }
     png_write_end(png_ptr.get(), nullptr);
     return filename;
   }
+  template<Color cT, typename... T>
+  static std::optional<std::filesystem::path>
+    save(
+      const std::vector<cT> &data,
+      ::libpng::png_uint_32  width,
+      ::libpng::png_uint_32  height,
+      T &&...t) noexcept
+  {
+    if (data.size() < width * height) {
+      std::cerr << "Size is wrong! " << data.size() << " != " << width << " x "
+                << height << '\n';
+      return std::nullopt;
+    }
+    return save<cT>(
+      reinterpret_cast<const std::uint8_t *>(data.data()),
+      width,
+      height,
+      std::forward<T>(t)...);
+  }
   template<class... T>
   static std::optional<std::filesystem::path>
-    save(const Png &data, const T &...t) noexcept
+    save(const Png &data, T &&...t) noexcept
   {
-    return save(data.m_color, t...);
+    return save(data.m_color, std::forward<T>(t)...);
   }
   inline auto
     begin() const noexcept
