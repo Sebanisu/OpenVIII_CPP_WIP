@@ -148,6 +148,7 @@ private:
   }
 
 public:
+  Png() = default;
   Png(const std::filesystem::path &filename)
   {
     auto fp = safe_fp{ fopen(filename.string().c_str(), "rb"),
@@ -238,6 +239,16 @@ public:
     ::libpng::png_read_image(png_ptr.get(), row_pointers.data());
   }
 
+  auto
+    width() const noexcept
+  {
+    return m_width;
+  }
+  auto
+    height() const noexcept
+  {
+    return m_height;
+  }
   template<Color cT = Color32RGBA>
   static std::optional<std::filesystem::path>
     save(
