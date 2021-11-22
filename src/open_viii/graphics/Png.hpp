@@ -5,9 +5,10 @@
 #ifndef OPENVIII_CPP_WIP_PNG_HPP
 #define OPENVIII_CPP_WIP_PNG_HPP
 #include "open_viii/graphics/Color.hpp"
+#include "open_viii/tools/Tools.hpp"
 namespace libpng {
 #include "png.h"
-}
+}// namespace libpng
 #include <cstdio>
 #include <memory>
 namespace open_viii::graphics {
