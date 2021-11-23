@@ -149,7 +149,7 @@ private:
 
 public:
   Png() = default;
-  Png(const std::filesystem::path &filename)
+  Png(const std::filesystem::path &filename, bool flipv = false)
   {
     auto fp = safe_fp{ fopen(filename.string().c_str(), "rb"),
                        fclose };// todo do I need fopen?
@@ -231,9 +231,21 @@ public:
     m_channels  = ::libpng::png_get_channels(png_ptr.get(), info_ptr.get());
     m_color.resize(std::size_t{ m_width } * m_height);
     assert(m_width * bytes_per_pixel == m_row_bytes);
-    for (std::size_t i = 0; i != m_height; ++i)
-      row_pointers.emplace_back(
-        reinterpret_cast<::libpng::png_byte *>(&m_color[i * m_width]));
+    auto rows = std::views::iota(std::size_t{}, std::size_t{ m_height });
+    if (flipv) {
+      auto b = std::ranges::rbegin(rows);
+      auto e = std::ranges::rend(rows);
+      for (; b != e; ++b)
+        row_pointers.emplace_back(
+          reinterpret_cast<::libpng::png_byte *>(&m_color[*b * m_width]));
+    }
+    else {
+      auto b = std::ranges::begin(rows);
+      auto e = std::ranges::end(rows);
+      for (; b != e; ++b)
+        row_pointers.emplace_back(
+          reinterpret_cast<::libpng::png_byte *>(&m_color[*b * m_width]));
+    }
     // the underlying type of color32 are bytes. So all we're doing is pointing
     // at them.
     ::libpng::png_read_image(png_ptr.get(), row_pointers.data());
