@@ -26,7 +26,7 @@ private:
   double                                   m_gamma{};
   std::vector<Color32<ColorLayoutT::RGBA>> m_color{};
   Color32<ColorLayoutT::RGBA>              m_background_color{};
-  static constexpr ::libpng::png_uint_32   bytes_per_pixel = 4;
+  libpng::png_uint_32                      bytes_per_pixel = 4;
 
   using safe_fp = std::unique_ptr<FILE, decltype(&fclose)>;
 
@@ -227,28 +227,45 @@ public:
     row_pointers.reserve(m_height);
     ::libpng::png_read_update_info(png_ptr.get(), info_ptr.get());
 
-    m_row_bytes = ::libpng::png_get_rowbytes(png_ptr.get(), info_ptr.get());
-    m_channels  = ::libpng::png_get_channels(png_ptr.get(), info_ptr.get());
-    m_color.resize(std::size_t{ m_width } * m_height);
-    assert(m_width * bytes_per_pixel == m_row_bytes);
-    auto rows = std::views::iota(std::size_t{}, std::size_t{ m_height });
-    if (flipv) {
-      auto b = std::ranges::rbegin(rows);
-      auto e = std::ranges::rend(rows);
-      for (; b != e; ++b)
-        row_pointers.emplace_back(
-          reinterpret_cast<::libpng::png_byte *>(&m_color[*b * m_width]));
+    m_row_bytes     = ::libpng::png_get_rowbytes(png_ptr.get(), info_ptr.get());
+    m_channels      = ::libpng::png_get_channels(png_ptr.get(), info_ptr.get());
+
+    bytes_per_pixel = static_cast<libpng::png_uint_32>(m_row_bytes / m_width);
+    const auto get_colors = [&](auto &color) {
+      color.resize(std::size_t{ m_width } * m_height);
+      auto rows = std::views::iota(std::size_t{}, std::size_t{ m_height });
+      if (flipv) {
+        auto b = std::ranges::rbegin(rows);
+        auto e = std::ranges::rend(rows);
+        for (; b != e; ++b)
+          row_pointers.emplace_back(
+            reinterpret_cast<::libpng::png_byte *>(&color[*b * m_width]));
+      }
+      else {
+        auto b = std::ranges::begin(rows);
+        auto e = std::ranges::end(rows);
+        for (; b != e; ++b)
+          row_pointers.emplace_back(
+            reinterpret_cast<::libpng::png_byte *>(&color[*b * m_width]));
+      }
+      // the underlying type of color32 are bytes. So all we're doing is
+      // pointing at them.
+      ::libpng::png_read_image(png_ptr.get(), row_pointers.data());
+    };
+    if (bytes_per_pixel == 3U) {
+      std::vector<Color24RGB> color24{};
+      get_colors(color24);
+      m_color.insert(
+        std::begin(m_color),
+        std::begin(color24),
+        std::end(color24));
+    }
+    else if (bytes_per_pixel == 4U) {
+      get_colors(m_color);
     }
     else {
-      auto b = std::ranges::begin(rows);
-      auto e = std::ranges::end(rows);
-      for (; b != e; ++b)
-        row_pointers.emplace_back(
-          reinterpret_cast<::libpng::png_byte *>(&m_color[*b * m_width]));
+      assert(false);
     }
-    // the underlying type of color32 are bytes. So all we're doing is pointing
-    // at them.
-    ::libpng::png_read_image(png_ptr.get(), row_pointers.data());
   }
 
   auto
@@ -339,21 +356,19 @@ public:
 
     png_write_info(png_ptr.get(), info_ptr.get());
     static constexpr auto setRBGA
-      = [](::libpng::png_byte *const out, const cT in) {
+      = [&](::libpng::png_byte *const out, const cT in) {
           out[0] = in.r();
           out[1] = in.g();
           out[2] = in.b();
           out[3] = in.a();
         };
-    auto row = std::vector<::libpng::png_byte>(
-      bytes_per_pixel * width * sizeof(::libpng::png_byte));
+    auto row
+      = std::vector<::libpng::png_byte>(4 * width * sizeof(::libpng::png_byte));
     for (const auto y :
          std::ranges::iota_view(::libpng::png_uint_32{ 0U }, height)) {
       for (const auto x :
            std::ranges::iota_view(::libpng::png_uint_32{ 0U }, width)) {
-        setRBGA(
-          &row[x * bytes_per_pixel],
-          reinterpret_cast<const cT *>(data)[y * width + x]);
+        setRBGA(&row[x * 4], reinterpret_cast<const cT *>(data)[y * width + x]);
       }
       png_write_row(png_ptr.get(), row.data());
     }
