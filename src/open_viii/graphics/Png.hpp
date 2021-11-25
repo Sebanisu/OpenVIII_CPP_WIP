@@ -6,9 +6,7 @@
 #define OPENVIII_CPP_WIP_PNG_HPP
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/tools/Tools.hpp"
-namespace libpng {
 #include "png.h"
-}// namespace libpng
 #include <cstdio>
 #include <memory>
 namespace open_viii::graphics {
@@ -17,44 +15,41 @@ struct Png
 {
 private:
   std::filesystem::path                    m_filename{};
-  libpng::png_uint_32                      m_width{};
-  libpng::png_uint_32                      m_height{};
+  png_uint_32                              m_width{};
+  png_uint_32                              m_height{};
   int                                      m_bit_depth{};
   int                                      m_color_type{};
   std::size_t                              m_row_bytes{};
-  libpng::png_byte                         m_channels{};
+  png_byte                                 m_channels{};
   double                                   m_gamma{};
   std::vector<Color32<ColorLayoutT::RGBA>> m_color{};
   Color32<ColorLayoutT::RGBA>              m_background_color{};
-  libpng::png_uint_32                      bytes_per_pixel = 4;
+  png_uint_32                              bytes_per_pixel = 4;
 
   using safe_fp = std::unique_ptr<FILE, decltype(&fclose)>;
 
-  static constexpr auto safe_png_read_struct_deleter
-    = [](libpng::png_struct *png_s) {
-        png_destroy_read_struct(&png_s, nullptr, nullptr);
-      };
+  static constexpr auto safe_png_read_struct_deleter = [](png_struct *png_s) {
+    png_destroy_read_struct(&png_s, nullptr, nullptr);
+  };
 
-  using safe_png_read_struct = std::
-    unique_ptr<libpng::png_struct, decltype(safe_png_read_struct_deleter)>;
+  using safe_png_read_struct
+    = std::unique_ptr<png_struct, decltype(safe_png_read_struct_deleter)>;
 
-  static constexpr auto safe_png_write_struct_deleter
-    = [](libpng::png_struct *png_s) {
-        png_destroy_write_struct(&png_s, libpng::png_infopp{ nullptr });
-      };
-  using safe_png_write_struct = std::
-    unique_ptr<libpng::png_struct, decltype(safe_png_write_struct_deleter)>;
+  static constexpr auto safe_png_write_struct_deleter = [](png_struct *png_s) {
+    png_destroy_write_struct(&png_s, png_infopp{ nullptr });
+  };
+  using safe_png_write_struct
+    = std::unique_ptr<png_struct, decltype(safe_png_write_struct_deleter)>;
   template<typename deleter>
   static auto
-    create_info_struct(
-      const std::unique_ptr<libpng::png_struct, deleter> &png_ptr)
+    create_info_struct(const std::unique_ptr<png_struct, deleter> &png_ptr)
   {
     // Initialize info structure
-    const auto safe_png_info_deleter = [&png_ptr](libpng::png_info *info) {
+    const auto safe_png_info_deleter = [&png_ptr](png_info *info) {
       png_free_data(png_ptr.get(), info, PNG_FREE_ALL, -1);
     };
     using safe_png_info
-      = std::unique_ptr<libpng::png_info, decltype(safe_png_info_deleter)>;
+      = std::unique_ptr<png_info, decltype(safe_png_info_deleter)>;
     auto info_ptr = safe_png_info{ png_create_info_struct(png_ptr.get()),
                                    safe_png_info_deleter };
     if (!info_ptr) {
@@ -103,22 +98,22 @@ private:
   template<typename deleter>
   [[nodiscard]] double
     get_gamma(
-      const safe_png_read_struct                       &png_ptr,
-      const std::unique_ptr<libpng::png_info, deleter> &info_ptr) const noexcept
+      const safe_png_read_struct               &png_ptr,
+      const std::unique_ptr<png_info, deleter> &info_ptr) const noexcept
   {
     static constexpr auto display_exponent = Png::get_display_exponent();
     double                g{};
-    if (libpng::png_get_gAMA(png_ptr.get(), info_ptr.get(), &g))
-      libpng::png_set_gamma(png_ptr.get(), display_exponent, g);
+    if (png_get_gAMA(png_ptr.get(), info_ptr.get(), &g))
+      png_set_gamma(png_ptr.get(), display_exponent, g);
     return g;
   }
   template<typename deleter>
   [[nodiscard]] auto
     get_background_color(
-      const safe_png_read_struct                       &png_ptr,
-      const std::unique_ptr<libpng::png_info, deleter> &info_ptr) const
+      const safe_png_read_struct               &png_ptr,
+      const std::unique_ptr<png_info, deleter> &info_ptr) const
   {
-    libpng::png_color_16 *pBackground{};
+    png_color_16 *pBackground{};
     png_get_bKGD(png_ptr.get(), info_ptr.get(), &pBackground);
     if (pBackground == nullptr)
       return Color32<ColorLayoutT::RGBA>{};
@@ -156,7 +151,7 @@ public:
     if (fp) {
       uint8_t     sig[8]     = {};
       std::size_t bytes_read = fread(sig, 1, 8, fp.get());
-      if (bytes_read != 8U || libpng::png_sig_cmp(sig, 0, 8) != 0) {
+      if (bytes_read != 8U || png_sig_cmp(sig, 0, 8) != 0) {
 
         std::cerr << "Bad signature \n" << filename.string() << '\n';
         std::cerr << +sig[0] << ',' << +sig[1] << ',' << +sig[2] << ','
@@ -174,12 +169,10 @@ public:
     }
 
     // Initialize read structure
-    auto png_ptr = safe_png_read_struct{ libpng::png_create_read_struct(
-                                           PNG_LIBPNG_VER_STRING,
-                                           nullptr,
-                                           nullptr,
-                                           nullptr),
-                                         safe_png_read_struct_deleter };
+    auto png_ptr = safe_png_read_struct{
+      png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr),
+      safe_png_read_struct_deleter
+    };
     if (!png_ptr) {
       std::cerr << "Could not allocate read struct\n";
       return;
@@ -207,29 +200,29 @@ public:
     // http://www.libpng.org/pub/png/book/chapter13.html
     // begin readpng_get_image
     if (m_color_type == PNG_COLOR_TYPE_PALETTE)
-      libpng::png_set_expand(png_ptr.get());
+      png_set_expand(png_ptr.get());
     if (m_color_type == PNG_COLOR_TYPE_GRAY && m_bit_depth < 8)
-      libpng::png_set_expand(png_ptr.get());
-    if (libpng::png_get_valid(png_ptr.get(), info_ptr.get(), PNG_INFO_tRNS))
-      libpng::png_set_expand(png_ptr.get());
+      png_set_expand(png_ptr.get());
+    if (png_get_valid(png_ptr.get(), info_ptr.get(), PNG_INFO_tRNS))
+      png_set_expand(png_ptr.get());
 
     if (m_bit_depth == 16)
-      libpng::png_set_strip_16(png_ptr.get());
+      png_set_strip_16(png_ptr.get());
     if (
       m_color_type == PNG_COLOR_TYPE_GRAY
       || m_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-      libpng::png_set_gray_to_rgb(png_ptr.get());
+      png_set_gray_to_rgb(png_ptr.get());
 
     m_gamma           = get_gamma(png_ptr, info_ptr);
 
-    auto row_pointers = std::vector<libpng::png_byte *>{};
+    auto row_pointers = std::vector<png_byte *>{};
     row_pointers.reserve(m_height);
-    libpng::png_read_update_info(png_ptr.get(), info_ptr.get());
+    png_read_update_info(png_ptr.get(), info_ptr.get());
 
-    m_row_bytes     = libpng::png_get_rowbytes(png_ptr.get(), info_ptr.get());
-    m_channels      = libpng::png_get_channels(png_ptr.get(), info_ptr.get());
+    m_row_bytes           = png_get_rowbytes(png_ptr.get(), info_ptr.get());
+    m_channels            = png_get_channels(png_ptr.get(), info_ptr.get());
 
-    bytes_per_pixel = static_cast<libpng::png_uint_32>(m_row_bytes / m_width);
+    bytes_per_pixel       = static_cast<png_uint_32>(m_row_bytes / m_width);
     const auto get_colors = [this](
                               const auto &in_flipv,
                               auto       &in_row_pointers,
@@ -242,18 +235,18 @@ public:
         auto e = std::ranges::rend(rows);
         for (; b != e; ++b)
           in_row_pointers.emplace_back(
-            reinterpret_cast<libpng::png_byte *>(&in_color[*b * m_width]));
+            reinterpret_cast<png_byte *>(&in_color[*b * m_width]));
       }
       else {
         auto b = std::ranges::begin(rows);
         auto e = std::ranges::end(rows);
         for (; b != e; ++b)
           in_row_pointers.emplace_back(
-            reinterpret_cast<libpng::png_byte *>(&in_color[*b * m_width]));
+            reinterpret_cast<png_byte *>(&in_color[*b * m_width]));
       }
       // the underlying type of color32 are bytes. So all we're doing is
       // pointing at them.
-      libpng::png_read_image(in_png_ptr.get(), in_row_pointers.data());
+      png_read_image(in_png_ptr.get(), in_row_pointers.data());
     };
     if (bytes_per_pixel == 3U) {
       std::vector<Color24RGB> color24{};
@@ -285,8 +278,8 @@ public:
   static std::optional<std::filesystem::path>
     save(
       const std::uint8_t   *data,
-      libpng::png_uint_32   width,
-      libpng::png_uint_32   height,
+      png_uint_32           width,
+      png_uint_32           height,
       std::filesystem::path filename,
       std::string           title  = "",
       std::string           prefix = "tmp") noexcept
@@ -312,12 +305,10 @@ public:
       return std::nullopt;
     }
     // Initialize write structure
-    auto png_ptr = safe_png_write_struct{ libpng::png_create_write_struct(
-                                            PNG_LIBPNG_VER_STRING,
-                                            nullptr,
-                                            nullptr,
-                                            nullptr),
-                                          safe_png_write_struct_deleter };
+    auto png_ptr = safe_png_write_struct{
+      png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr),
+      safe_png_write_struct_deleter
+    };
     if (!png_ptr) {
       std::cerr << "Could not allocate write struct\n";
       return std::nullopt;
@@ -349,8 +340,8 @@ public:
 
     // Set title
     if (!title.empty()) {
-      static char      k[] = "Title";
-      libpng::png_text title_text;
+      static char k[] = "Title";
+      png_text    title_text;
       title_text.compression = PNG_TEXT_COMPRESSION_NONE;
       title_text.key         = k;
       title_text.text        = title.data();
@@ -358,19 +349,15 @@ public:
     }
 
     png_write_info(png_ptr.get(), info_ptr.get());
-    static constexpr auto setRBGA
-      = [&](libpng::png_byte *const out, const cT in) {
-          out[0] = in.r();
-          out[1] = in.g();
-          out[2] = in.b();
-          out[3] = in.a();
-        };
-    auto row
-      = std::vector<libpng::png_byte>(4 * width * sizeof(libpng::png_byte));
-    for (const auto y :
-         std::ranges::iota_view(libpng::png_uint_32{ 0U }, height)) {
-      for (const auto x :
-           std::ranges::iota_view(libpng::png_uint_32{ 0U }, width)) {
+    static constexpr auto setRBGA = [&](png_byte *const out, const cT in) {
+      out[0] = in.r();
+      out[1] = in.g();
+      out[2] = in.b();
+      out[3] = in.a();
+    };
+    auto row = std::vector<png_byte>(4 * width * sizeof(png_byte));
+    for (const auto y : std::ranges::iota_view(png_uint_32{ 0U }, height)) {
+      for (const auto x : std::ranges::iota_view(png_uint_32{ 0U }, width)) {
         setRBGA(&row[x * 4], reinterpret_cast<const cT *>(data)[y * width + x]);
       }
       png_write_row(png_ptr.get(), row.data());
@@ -382,8 +369,8 @@ public:
   static std::optional<std::filesystem::path>
     save(
       const std::vector<cT> &data,
-      libpng::png_uint_32    width,
-      libpng::png_uint_32    height,
+      png_uint_32            width,
+      png_uint_32            height,
       T &&...t) noexcept
   {
     if (std::cmp_less(data.size(), std::size_t{ width } * height)) {
