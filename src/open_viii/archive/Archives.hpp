@@ -195,7 +195,7 @@ private:
            this,
            &futures](const ArchiveTypeT test, const std::string_view stem) {
             const auto task = [this](
-                                const std::filesystem::path path,
+                                const std::filesystem::path in_path,
                                 const ArchiveTypeT          in_test,
                                 const std::string_view      in_stem) {
               auto filter_data
@@ -219,7 +219,7 @@ private:
                   try_add(
                     in_test,
                     std::move(dataItem),
-                    path,
+                    in_path,
                     dataItem.get_path_string());
                 });
             };
