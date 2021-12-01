@@ -196,8 +196,8 @@ private:
            &futures](const ArchiveTypeT test, const std::string_view stem) {
             const auto task = [this](
                                 const std::filesystem::path path,
-                                const ArchiveTypeT          test,
-                                const std::string_view      stem) {
+                                const ArchiveTypeT          in_test,
+                                const std::string_view      in_stem) {
               auto filter_data
                 = m_zzz_main->data()
                 | std::views::filter([&](const FileData &fileData) {
@@ -208,7 +208,7 @@ private:
                       FIFLFS<true>::check_extension(pathString) == fiflfsT::none
                       || check_lang_path(pathString)
                       || !(open_viii::tools::i_equals(
-                        stem,
+                        in_stem,
                         localPath.stem().string())));
                   });
               std::for_each(
@@ -217,7 +217,7 @@ private:
                 filter_data.end(),
                 [&](FileData dataItem) {
                   try_add(
-                    test,
+                    in_test,
                     std::move(dataItem),
                     path,
                     dataItem.get_path_string());

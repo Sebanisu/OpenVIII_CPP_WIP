@@ -76,11 +76,11 @@ template<bool HasNested>
 struct FIFLFS
 {
 private:
-  Grouping<std::vector<char>> m_fi{};
-  Grouping<std::vector<char>> m_fs{};
-  Grouping<std::basic_string<char>>
-         m_fl{};// this is char because the file contains strings.
-  size_t m_count{};
+  Grouping<std::vector<char>>       m_fi{};
+  Grouping<std::vector<char>>       m_fs{};
+  // this is char because the file contains strings.
+  Grouping<std::basic_string<char>> m_fl{};
+  size_t                            m_count{};
   void
     get_count() noexcept
   {
@@ -117,9 +117,9 @@ public:
   FIFLFS(std::filesystem::path src)
   {
     const auto parent_path = src.parent_path();
-    //std::cout << "Parent Path: " << parent_path << std::endl;
-    const auto stem = src.stem().string();
-    //std::cout << "Archive Name: " << stem << std::endl;
+    // std::cout << "Parent Path: " << parent_path << std::endl;
+    const auto stem        = src.stem().string();
+    // std::cout << "Archive Name: " << stem << std::endl;
     open_viii::tools::execute_on_directory(
       parent_path,
       { stem },
@@ -132,14 +132,14 @@ public:
             path);
         switch (result) {
         case TryAddT::added_to_archive:
-          //std::cout << "added: " << path << '\n';
+          // std::cout << "added: " << path << '\n';
           break;
         case TryAddT::archive_full:
-          //std::cout << "added: " << path << '\n';
-          //std::cout << "Archive Loaded\n";
+          // std::cout << "added: " << path << '\n';
+          // std::cout << "Archive Loaded\n";
           break;
         case TryAddT::not_part_of_archive:
-          //std::cout << "not added: " << path << '\n';
+          // std::cout << "not added: " << path << '\n';
           break;
         }
       });
@@ -676,9 +676,9 @@ template<bool Nested = false>
   const auto &fi_name = source.fi().nested_path_or_path().filename();
   const auto &fl_name = source.fl().nested_path_or_path().filename();
   const auto &fs_name = source.fs().nested_path_or_path().filename();
-  //std::cout << "Destination FI: " << fi_name << '\n';
-  //std::cout << "Destination FL: " << fl_name << '\n';
-  //std::cout << "Destination FS: " << fs_name << '\n';
+  // std::cout << "Destination FI: " << fi_name << '\n';
+  // std::cout << "Destination FL: " << fl_name << '\n';
+  // std::cout << "Destination FS: " << fs_name << '\n';
   if (fi_name.empty() || fl_name.empty() || fs_name.empty()) {
     return r;
   }
@@ -711,7 +711,7 @@ template<bool Nested = false>
     open_viii::archive::FI fi = [&]([[maybe_unused]] const auto &in_path_ref) {
       if (auto match = find_match(paths, in_path_ref);
           match != std::ranges::end(paths)) {
-        //std::cout << "Updated: " << pair.second << std::endl;
+        // std::cout << "Updated: " << pair.second << std::endl;
         return open_viii::archive::append_entry(
           fs_fs,
           *match,
