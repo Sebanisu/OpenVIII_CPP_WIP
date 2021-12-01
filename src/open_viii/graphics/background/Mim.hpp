@@ -217,7 +217,12 @@ public:
       const uint8_t &palette,
       bool           dump_palette = false) const
   {
+
     std::vector<T> colors{};
+    if(std::empty(m_buffer)) {
+      return colors;
+    }
+
     const auto     convert_color = [&colors](const auto &raw_color) {
       colors.reserve(raw_color.size());
       std::ranges::transform(
