@@ -182,7 +182,9 @@ public:
   std::uint32_t
     get_height(bool dump_palette = false) const
   {
-
+    if (std::empty(m_buffer)) {
+      return 0U;
+    }
     if (dump_palette) {
       return clut_height();
     }
@@ -193,7 +195,9 @@ public:
   std::uint32_t
     get_width(const BPPT &bpp, bool dump_palette = false) const
   {
-
+    if (std::empty(m_buffer)) {
+      return 0U;
+    }
     if (dump_palette) {
       return clut_width();
     }
@@ -219,18 +223,18 @@ public:
   {
 
     std::vector<T> colors{};
-    if(std::empty(m_buffer)) {
+    if (std::empty(m_buffer)) {
       return colors;
     }
 
-    const auto     convert_color = [&colors](const auto &raw_color) {
+    const auto convert_color = [&colors](const auto &raw_color) {
       colors.reserve(raw_color.size());
       std::ranges::transform(
-            raw_color,
-            std::back_inserter(colors),
-            [](const auto &color) {
+        raw_color,
+        std::back_inserter(colors),
+        [](const auto &color) {
           return static_cast<T>(color);
-            });
+        });
     };
     if (dump_palette) {
       const auto m_palette_buffer = set_palette_span();
@@ -396,15 +400,17 @@ public:
       texture_page_offset *= texture_id;
       const auto m_image_buffer = set_image_span();
       return safe_get_color_from_palette(get_palette_key(
-        static_cast<std::uint8_t>(
-          m_image_buffer[std::size_t{x} + texture_page_offset + (std::size_t{y} * width)]),
+        static_cast<std::uint8_t>(m_image_buffer
+                                    [std::size_t{ x } + texture_page_offset
+                                     + (std::size_t{ y } * width)]),
         palette));
     }
     if (depth.bpp4()) {
       texture_page_offset *= 2U * texture_id;
       const auto       m_image_buffer_bbp4 = set_image_span_bpp4();
-      const Bit4Values pair
-        = m_image_buffer_bbp4[(std::size_t{x} + texture_page_offset) / 2U + (std::size_t{y} * width)];
+      const Bit4Values pair                = m_image_buffer_bbp4
+        [(std::size_t{ x } + texture_page_offset) / 2U
+         + (std::size_t{ y } * width)];
       if (x % 2U == 0) {
         return safe_get_color_from_palette(
           get_palette_key(pair.first(), palette));
