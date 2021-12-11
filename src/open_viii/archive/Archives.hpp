@@ -198,29 +198,24 @@ private:
                                 const std::filesystem::path in_path,
                                 const ArchiveTypeT          in_test,
                                 const std::string_view      in_stem) {
-              auto filter_data
-                = m_zzz_main->data()
-                | std::views::filter([&](const FileData &fileData) {
-                    const auto localPath
-                      = std::filesystem::path(fileData.get_path_string());
-                    const auto &pathString = localPath.string();
-                    return !(
-                      FIFLFS<true>::check_extension(pathString) == fiflfsT::none
-                      || check_lang_path(pathString)
-                      || !(open_viii::tools::i_equals(
-                        in_stem,
-                        localPath.stem().string())));
-                  });
-              std::for_each(
-                std::execution::par,
-                filter_data.begin(),
-                filter_data.end(),
+              m_zzz_main->execute_on(
+                {},
                 [&](FileData dataItem) {
                   try_add(
                     in_test,
                     std::move(dataItem),
                     in_path,
                     dataItem.get_path_string());
+                },
+                [&](const std::string &path_string) {
+                  const auto  localPath  = std::filesystem::path(path_string);
+                  const auto &pathString = localPath.string();
+                  return !(
+                    FIFLFS<true>::check_extension(pathString) == fiflfsT::none
+                    || check_lang_path(pathString)
+                    || !(open_viii::tools::i_equals(
+                      in_stem,
+                      localPath.stem().string())));
                 });
             };
             futures.emplace_back(

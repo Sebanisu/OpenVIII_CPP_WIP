@@ -17,6 +17,7 @@
 #include "FileData.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include <algorithm>
+#include <bit>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -25,6 +26,14 @@
 #include <string>
 #include <utility>
 namespace open_viii::archive {
+
+template<typename T>
+concept execute_binary_function
+  = std::invocable<T, std::vector<char>, std::string>;
+template<typename T>
+concept execute_unary_function = std::invocable<T, FileData>;
+template<typename T>
+concept execute_zzz = execute_binary_function<T> || execute_unary_function<T>;
 /**
  * ZZZ file archive from FF8 remaster.
  * @see https://github.com/myst6re/qt-zzz
@@ -32,67 +41,62 @@ namespace open_viii::archive {
 struct [[maybe_unused]] ZZZ
 {
 private:
-  std::filesystem::path m_path{};
+  std::filesystem::path               m_path{};
   /**
    * uint32_t count_{}; fallowed by array of file data
    */
-  std::vector<FileData> m_data{};
-  [[nodiscard]] auto
-    load_data_from_file() const
+  std::vector<std::istream::off_type> m_offsets{};
+  std::vector<std::uint32_t>          m_string_sizes{};
+  void
+    load_data_from_file()
   {
-    std::vector<FileData> data{};
+    m_offsets.push_back(
+      static_cast<std::istream::off_type>(sizeof(uint32_t) * 2));
     if (
       m_path.has_extension()
       && tools::i_equals(m_path.extension().string(), EXT)
       && std::filesystem::exists(m_path)) {
       tools::read_from_file(
-        [&data](std::istream &fp) {
+        [this](std::istream &fp) {
           auto count{ tools::read_val<uint32_t>(fp) };
-          data.reserve(count);
-          while (!fp.eof() && count-- != 0U) {
-            if ((data.emplace_back(fp).empty())) {
-              std::cerr << "empty element detected and removed\n";
-              data.pop_back();
-            }
+
+          m_offsets.reserve(count + 1);
+          m_string_sizes.reserve(count);
+
+          for (; count != 0; --count) {
+            // get string length
+            std::array<char, sizeof(std::uint32_t)> tmp{};
+            fp.read(
+              std::ranges::data(tmp),
+              static_cast<std::istream::off_type>(sizeof(uint32_t)));
+            auto string_size = std::bit_cast<std::uint32_t>(tmp);
+            m_string_sizes.push_back(string_size);
+
+            // seek to next entry
+            fp.seekg(
+              static_cast<std::istream::off_type>(
+                sizeof(std::uint64_t) + sizeof(std::uint32_t) + string_size),
+              std::ios::cur);
+            m_offsets.push_back(
+              fp.tellg()
+              + static_cast<std::istream::off_type>(sizeof(std::uint32_t)));
           }
         },
         m_path);
     }
-    return data;
-  }
-  void
-    sort_data()
-  {
-    std::ranges::sort(m_data, [](const FileData &left, const FileData &right) {
-      const auto right_string = right.get_path_string();
-      const auto left_string  = left.get_path_string();
-      const auto right_size   = std::ranges::size(right_string);
-      const auto left_size    = std::ranges::size(left_string);
-      if (left_size == right_size) {
-        return left_string < right_string;// clangtidy wants < to be nullptr
-      }
-      return left_size < right_size;
-    });
-    m_data.shrink_to_fit();
   }
 
 public:
   constexpr static auto EXT = std::string_view(".zzz");
-  [[maybe_unused]] [[nodiscard]] const auto &
-    data() const noexcept
-  {
-    return m_data;
-  }
   [[maybe_unused]] [[nodiscard]] const auto &
     path() const noexcept
   {
     return m_path;
   }
   constexpr ZZZ() = default;
-  explicit ZZZ(std::filesystem::path path)
-    : m_path(std::move(path)), m_data(load_data_from_file())
+  explicit ZZZ(std::filesystem::path path) : m_path(std::move(path))
   {
-    sort_data();
+    load_data_from_file();
   }
   [[nodiscard]] static std::vector<
     std::pair<std::string, open_viii::archive::ZZZ>>
@@ -119,48 +123,71 @@ public:
     return tmp;
   }
 
-  //  [[nodiscard]] std::vector<std::pair<unsigned int, std::string>>
-  //    get_vector_of_indexes_and_files(
-  //      const std::initializer_list<std::string_view> &filename) const
-  //  {
-  //    unsigned int i{};
-  //    std::vector<std::pair<unsigned int, std::string>> vector{};
-  //    for (const open_viii::archive::FileData &data_item : data()) {
-  //      {
-  //        auto path_string = data_item.get_path_string();
-  //        if (open_viii::tools::i_find_any(path_string, filename)) {
-  //          vector.emplace_back(std::make_pair(i, path_string));
-  //        }
-  //      }
-  //      i++;
-  //    }
-  //    return vector;
-  //  }
   using default_filter_lambda = decltype([](auto &&) {
     return true;
   });
-  template<
-    std::invocable<std::vector<char>, std::string> BinaryFunctionT,
-    typename FilterT = default_filter_lambda>
+  template<execute_zzz FunctionT, typename FilterT = default_filter_lambda>
   void
     execute_on(
       const std::initializer_list<std::string_view> &filename,
-      BinaryFunctionT                              &&binary_function,
+      FunctionT                                    &&function,
       FilterT                                      &&filter_lambda = {}) const
   {
-    std::ranges::for_each(
-      data(),
-      [&binary_function, &filename, this, &filter_lambda](
-        const open_viii::archive::FileData &dataItem) {
-        auto pathString = dataItem.get_path_string();
-        if (open_viii::tools::i_find_any(pathString, filename)) {
-          if (filter_lambda(pathString)) {
-            binary_function(
-              FS::get_entry(m_path, dataItem),
-              std::string(pathString));
-          }
-        }
-      });
+    tools::read_from_file(
+      [&](std::istream &fp) {
+        auto data
+          = std::views::iota(
+              std::uint32_t{},
+              static_cast<std::uint32_t>(std::ranges::size(m_string_sizes)))
+          | std::views::transform([this, &fp](std::uint32_t i) {
+              std::string name{};
+              name.resize(m_string_sizes[i]);
+              std::uint64_t offset{};
+              std::uint32_t size{};
+              {
+                fp.seekg(m_offsets[i], std::ios::beg);
+                fp.read(
+                  std::ranges::data(name),
+                  static_cast<std::istream::off_type>(m_string_sizes[i]));
+                tl::string::replace_slashes(name);
+              }
+
+              {
+                std::array<char, sizeof(std::uint64_t)> tmp{};
+                fp.read(
+                  std::ranges::data(tmp),
+                  static_cast<std::istream::off_type>(sizeof(std::uint64_t)));
+                offset = std::bit_cast<std::uint64_t>(tmp);
+              }
+              {
+                std::array<char, sizeof(std::uint32_t)> tmp{};
+                fp.read(
+                  std::ranges::data(tmp),
+                  static_cast<std::istream::off_type>(sizeof(std::uint32_t)));
+                size = std::bit_cast<std::uint32_t>(tmp);
+              }
+              return FileData(name, offset, size);
+            });
+        std::ranges::for_each(
+          data,
+          [&function, &filename, this, &filter_lambda](
+            const open_viii::archive::FileData &dataItem) {
+            auto pathString = dataItem.get_path_string();
+            if (open_viii::tools::i_find_any(pathString, filename)) {
+              if (filter_lambda(pathString)) {
+                if constexpr (execute_unary_function<FunctionT>) {
+                  function(dataItem);
+                }
+                else if constexpr (execute_binary_function<FunctionT>) {
+                  function(
+                    FS::get_entry(m_path, dataItem),
+                    std::string(pathString));
+                }
+              }
+            }
+          });
+      },
+      m_path);
   }
   using default_lambda = decltype([](auto &&, auto &&) {});
   template<
@@ -177,15 +204,20 @@ public:
   }
   explicit operator bool() const
   {
-    return !std::ranges::empty(m_data);
+    return !std::ranges::empty(m_string_sizes);
+  }
+  std::size_t
+    size() const
+  {
+    return std::ranges::size(m_string_sizes);
   }
 };
 inline std::ostream &
   operator<<(std::ostream &os, const ZZZ &data)
 {
   return os << '{' << data.path().stem().string() << " zzz {"
-            << std::ranges::size(data.data())
-            << " File Entries from : " << data.path() << "}}";
+            << std::ranges::size(data) << " File Entries from : " << data.path()
+            << "}}";
 }
 inline std::ostream &
   operator<<(std::ostream &os, const std::optional<ZZZ> &data)
