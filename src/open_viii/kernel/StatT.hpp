@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_STATT_HPP
 #define VIIIARCHIVE_STATT_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 enum class StatT : std::uint8_t
 {

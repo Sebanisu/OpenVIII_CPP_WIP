@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_JUNCTIONSTATUSEST_HPP
 #define VIIIARCHIVE_JUNCTIONSTATUSEST_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 enum class JunctionStatusesT : std::uint16_t
 {

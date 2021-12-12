@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_ELEMENTT_HPP
 #define VIIIARCHIVE_ELEMENTT_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 enum class ElementT : std::uint8_t
 {

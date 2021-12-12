@@ -5,13 +5,6 @@
 #define VIIIARCHIVE_X_HPP
 #include "Camera.hpp"
 #include "open_viii/graphics/Tim.hpp"
-#include <algorithm>
-#include <array>
-#include <iterator>
-#include <ranges>
-#include <string>
-#include <string_view>
-#include <vector>
 namespace open_viii::battle::stage {
 /**
  * X File format
@@ -39,15 +32,17 @@ public:
     {
       const char *buffer_begin = std::ranges::data(m_buffer);
       const char *buffer_end   = std::ranges::data(m_buffer)
-                             + std::distance(std::ranges::begin(m_buffer),
-                                             std::ranges::end(m_buffer));
+                             + std::distance(
+                                 std::ranges::begin(m_buffer),
+                                 std::ranges::end(m_buffer));
       const auto search
-        = [&buffer_begin, &buffer_end](const std::span<const char> &needle,
-                                       auto                         lambda) {
-            const auto start   = std::search(buffer_begin,
-                                           buffer_end,
-                                           std::ranges::begin(needle),
-                                           std::ranges::end(needle));
+        = [&buffer_begin,
+           &buffer_end](const std::span<const char> &needle, auto lambda) {
+            const auto start = std::search(
+              buffer_begin,
+              buffer_end,
+              std::ranges::begin(needle),
+              std::ranges::end(needle));
             const auto match   = start == buffer_end;
             const auto message = [&match]() {
               if (match) {

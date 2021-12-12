@@ -16,9 +16,6 @@
 #include "Tile1.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
-#include <bit>
-#include <compare>
-#include <cstdint>
 namespace open_viii::graphics::background {
 /*
  * A disambiguation ID based on Pupu an application for descrambling and

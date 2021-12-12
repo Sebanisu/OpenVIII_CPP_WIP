@@ -13,11 +13,6 @@
 #ifndef VIIIARCHIVE_POINT_HPP
 #define VIIIARCHIVE_POINT_HPP
 #include "open_viii/Concepts.hpp"
-#include <algorithm>
-#include <compare>
-#include <concepts>
-#include <iostream>
-#include <numeric>
 namespace open_viii::graphics {
 template<Number dimT>
 struct Point
@@ -44,8 +39,9 @@ public:
     abs() const noexcept
   {
     if constexpr (std::signed_integral<dimT> || std::floating_point<dimT>) {
-      return Point<dimT>(static_cast<dimT>(std::abs(m_x)),
-                         static_cast<dimT>(std::abs(m_y)));
+      return Point<dimT>(
+        static_cast<dimT>(std::abs(m_x)),
+        static_cast<dimT>(std::abs(m_y)));
     }
     else {
       return *this;
@@ -109,10 +105,10 @@ public:
   constexpr Point<dimT>
     operator/=(const Point<dimT> &input) noexcept
   {
-    m_x = (input.m_x != dimT{ 0 } ? static_cast<dimT>(m_x / input.m_x)
-                                  : static_cast<dimT>(0));
-    m_y = (input.m_y != dimT{ 0 } ? static_cast<dimT>(m_y / input.m_y)
-                                  : static_cast<dimT>(0));
+    m_x
+      = (input.m_x != dimT{ 0 } ? static_cast<dimT>(m_x / input.m_x) : static_cast<dimT>(0));
+    m_y
+      = (input.m_y != dimT{ 0 } ? static_cast<dimT>(m_y / input.m_y) : static_cast<dimT>(0));
     return *this;
   }
   constexpr Point<dimT>
@@ -140,10 +136,10 @@ public:
   constexpr Point<dimT> &
     operator/=(const dimT &input) noexcept
   {
-    m_x = (input != dimT{ 0 } ? static_cast<dimT>(m_x / input)
-                              : static_cast<dimT>(0));
-    m_y = (input != dimT{ 0 } ? static_cast<dimT>(m_y / input)
-                              : static_cast<dimT>(0));
+    m_x
+      = (input != dimT{ 0 } ? static_cast<dimT>(m_x / input) : static_cast<dimT>(0));
+    m_y
+      = (input != dimT{ 0 } ? static_cast<dimT>(m_y / input) : static_cast<dimT>(0));
     return *this;
   }
   constexpr Point<dimT> &
@@ -242,8 +238,8 @@ public:
  * @return the max
  */
 template<Number dimT>
-[[nodiscard]] constexpr inline Point<dimT>(max)(const Point<dimT> &rhs,
-                                                const Point<dimT> &lhs) noexcept
+[[nodiscard]] constexpr inline Point<dimT>(
+  max)(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
 {
   return { (std::max)(rhs.x(), lhs.x()), (std::max)(rhs.y(), lhs.y()) };
 }
@@ -253,8 +249,8 @@ template<Number dimT>
  * @return the min
  */
 template<Number dimT>
-[[nodiscard]] constexpr inline Point<dimT>(min)(const Point<dimT> &rhs,
-                                                const Point<dimT> &lhs) noexcept
+[[nodiscard]] constexpr inline Point<dimT>(
+  min)(const Point<dimT> &rhs, const Point<dimT> &lhs) noexcept
 {
   return { (std::min)(rhs.x(), lhs.x()), (std::min)(rhs.y(), lhs.y()) };
 }

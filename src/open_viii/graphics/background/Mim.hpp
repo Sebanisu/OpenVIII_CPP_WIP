@@ -19,8 +19,6 @@
 #include "Tile2.hpp"
 #include "Tile3.hpp"
 #include "TileCommon.hpp"
-#include <span>
-#include <vector>
 namespace open_viii::graphics::background {
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_MIM

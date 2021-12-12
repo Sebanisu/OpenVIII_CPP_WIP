@@ -17,9 +17,8 @@
 #include "BattleOnlyStatusesT.hpp"
 #include "CommonKernel.hpp"
 #include "ElementT.hpp"
-#include "PersistentStatusesT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
+#include "PersistentStatusesT.hpp"
 namespace open_viii::kernel {
 /**
  * 0x0000	2 bytes	Magic ID
@@ -57,8 +56,8 @@ public:
       const CommandAbilitiesData_impl &right) const noexcept = default;
 };
 using CommandAbilitiesData = CommonKernel<CommandAbilitiesData_impl>;
-static_assert(sizeof(CommandAbilitiesData)
-              == CommandAbilitiesData::EXPECTED_SIZE);
+static_assert(
+  sizeof(CommandAbilitiesData) == CommandAbilitiesData::EXPECTED_SIZE);
 static_assert(has_magic_id<CommandAbilitiesData>);
 static_assert(has_unknown<CommandAbilitiesData>);
 static_assert(has_attack_type<CommandAbilitiesData>);

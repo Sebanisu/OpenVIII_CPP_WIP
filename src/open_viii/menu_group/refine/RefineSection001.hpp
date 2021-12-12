@@ -12,10 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_REFINESECTION001_HPP
 #define VIIIARCHIVE_REFINESECTION001_HPP
-#include "RefineEntry.hpp"
 #include "open_viii/ItemIdT.hpp"
-#include <array>
-#include <iostream>
+#include "RefineEntry.hpp"
 namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection001// Item to Item
 {
@@ -96,11 +94,12 @@ public:
   }
   template<LangT langVal, typename T>
   [[maybe_unused]] std::ostream &
-    out_array(const T &                    arr,
-              std::ostream &               os,
-              const std::span<const char> &buffer          = ""sv,
-              const intmax_t               offset          = 0,
-              bool                         skip_first_null = false) const
+    out_array(
+      const T                     &arr,
+      std::ostream                &os,
+      const std::span<const char> &buffer          = ""sv,
+      const intmax_t               offset          = 0,
+      bool                         skip_first_null = false) const
   {
     for (const auto item : arr) {
       (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
@@ -109,10 +108,11 @@ public:
   }
   template<LangT langVal>
   std::ostream &
-    out(std::ostream &               os,
-        const std::span<const char> &buffer          = ""sv,
-        const intmax_t               offset          = 0,
-        bool                         skip_first_null = false) const
+    out(
+      std::ostream                &os,
+      const std::span<const char> &buffer          = ""sv,
+      const intmax_t               offset          = 0,
+      bool                         skip_first_null = false) const
   {
     os << "recovMedRF:\n";
     out_array<langVal>(m_recov_med_rf, os, buffer, offset, skip_first_null);

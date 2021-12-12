@@ -15,7 +15,6 @@
 #include "CharacterAbilityFlagsT.hpp"
 #include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
 namespace open_viii::kernel {
 struct CharacterAbilities_impl
 {

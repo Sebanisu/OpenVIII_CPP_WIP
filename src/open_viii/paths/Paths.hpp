@@ -14,11 +14,6 @@
 #define VIIIARCHIVE_TESTPATHS_H
 #include "open_viii/tools/Tools.hpp"
 #include "tl/string.hpp"
-#include <algorithm>
-#include <filesystem>
-#include <ranges>
-#include <string>
-#include <vector>
 namespace open_viii {
 struct Paths
 {

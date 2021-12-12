@@ -14,40 +14,34 @@
 #define VIIIARCHIVE_CONCEPTS_HPP
 #include "CompressionTypeT.hpp"
 #include "tl/concepts.hpp"
-#include <concepts>
-#include <cstdint>
-#include <string_view>
-#include <type_traits>
-#include <vector>
-#include <variant>
 namespace open_viii {
 template<typename T>
 concept Color_R = requires(T a)
 {
   {
-  a.r()
-  } -> std::integral;
+    a.r()
+    } -> std::integral;
 };
 template<typename T>
 concept Color_G = requires(T a)
 {
   {
-  a.g()
-  } -> std::integral;
+    a.g()
+    } -> std::integral;
 };
 template<typename T>
 concept Color_B = requires(T a)
 {
   {
-  a.b()
-  } -> std::integral;
+    a.b()
+    } -> std::integral;
 };
 template<typename T>
 concept Color_A = requires(T a)
 {
   {
-  a.a()
-  } -> std::integral;
+    a.a()
+    } -> std::integral;
 };
 template<typename T>
 concept is_bool = std::is_same_v<T, bool>;
@@ -55,12 +49,12 @@ template<typename T>
 concept Color_is_black = requires(T a)
 {
   {
-  a.is_black()
-  } -> is_bool;
+    a.is_black()
+    } -> is_bool;
 };
 template<typename T>
 concept Color
-= Color_A<T> && Color_B<T> && Color_G<T> && Color_R<T> && Color_is_black<T>;
+  = Color_A<T> && Color_B<T> && Color_G<T> && Color_R<T> && Color_is_black<T>;
 template<typename T>
 concept Number = std::floating_point<T> || std::integral<T>;
 template<typename T>
@@ -129,8 +123,8 @@ template<typename trivialType>
 concept is_trivially_copyable_and_default_constructible = is_trivially_copyable<
   trivialType> && std::is_default_constructible_v<trivialType>;
 template<typename trivialType>
-concept is_default_constructible_has_data_and_size =
-  std::is_default_constructible_v<trivialType> && has_data_and_size<
+concept is_default_constructible_has_data_and_size
+  = std::is_default_constructible_v<trivialType> && has_data_and_size<
     trivialType> && !is_trivially_copyable<trivialType>;
 template<typename Type>
 concept has_resize = requires(Type a)
@@ -143,12 +137,12 @@ concept has_reserve = requires(Type a)
   a.reserve(static_cast<std::size_t>(0U));
 };
 template<typename trivialType>
-concept is_default_constructible_has_data_size_resize =
-  is_default_constructible_has_data_and_size<trivialType> && has_resize<
+concept is_default_constructible_has_data_size_resize
+  = is_default_constructible_has_data_and_size<trivialType> && has_resize<
     trivialType>;
 template<typename lambdaT>
-concept Foreach_Archive_Lambda =
-  std::invocable<lambdaT, std::vector<char>, std::string>;
+concept Foreach_Archive_Lambda
+  = std::invocable<lambdaT, std::vector<char>, std::string>;
 // template<typename a_type, typename lambdaT>
 // concept Optional_Archive_Execute_On = (
 //  Foreach_Archive_Lambda<lambdaT> && requires(a_type a) { a.has_value(); }
@@ -184,6 +178,6 @@ template<typename T>
 concept is_insertable_or_ostream = tl::concepts::is_contiguous_with_insert<
   T> || std::is_base_of_v<std::ostream, std::decay_t<T>>;
 template<typename T>
-concept is_monostate = std::same_as<std::decay_t<T>,std::monostate>;
+concept is_monostate = std::same_as<std::decay_t<T>, std::monostate>;
 }// namespace open_viii
 #endif// VIIIARCHIVE_CONCEPTS_HPP

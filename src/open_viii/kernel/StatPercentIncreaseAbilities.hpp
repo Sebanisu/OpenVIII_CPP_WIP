@@ -44,8 +44,9 @@ public:
 };
 using StatPercentIncreaseAbilities
   = CommonKernel<StatPercentIncreaseAbilities_impl>;
-static_assert(StatPercentIncreaseAbilities::EXPECTED_SIZE
-              == sizeof(StatPercentIncreaseAbilities));
+static_assert(
+  StatPercentIncreaseAbilities::EXPECTED_SIZE
+  == sizeof(StatPercentIncreaseAbilities));
 static_assert(has_name_offset<StatPercentIncreaseAbilities>);
 static_assert(has_description_offset<StatPercentIncreaseAbilities>);
 static_assert(

@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_JUNCTIONFLAGST_HPP
 #define VIIIARCHIVE_JUNCTIONFLAGST_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 enum class JunctionFlagsT : std::uint32_t// cannot contain all abilities because
 {

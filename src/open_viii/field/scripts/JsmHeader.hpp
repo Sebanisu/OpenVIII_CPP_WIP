@@ -6,8 +6,6 @@
 #include "JsmEntity.hpp"
 #include "JsmOldEntity.hpp"
 #include "JsmScriptEntity.hpp"
-#include <cstdint>
-#include <iostream>
 namespace open_viii::field::scripts {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_JSM
@@ -42,12 +40,13 @@ private:
 
 public:
   constexpr JsmHeader() = default;
-  constexpr JsmHeader(std::uint8_t  in_count_door_entities,
-                      std::uint8_t  in_count_walk_mesh_line_entities,
-                      std::uint8_t  in_count_background_entities,
-                      std::uint8_t  in_count_other_entities,
-                      std::uint16_t in_offset_section_1,
-                      std::uint16_t in_offset_script_data)
+  constexpr JsmHeader(
+    std::uint8_t  in_count_door_entities,
+    std::uint8_t  in_count_walk_mesh_line_entities,
+    std::uint8_t  in_count_background_entities,
+    std::uint8_t  in_count_other_entities,
+    std::uint16_t in_offset_section_1,
+    std::uint16_t in_offset_script_data)
     : m_count_door_entities(in_count_door_entities),
       m_count_walk_mesh_line_entities(in_count_walk_mesh_line_entities),
       m_count_background_entities(in_count_background_entities),
@@ -174,12 +173,13 @@ static constexpr JsmHeader
     }
     return count;
   };
-  return JsmHeader(fix(in.count_door_entities()),
-                   fix(in.count_walk_mesh_line_entities()),
-                   fix(in.count_background_entities()),
-                   fix(in.count_other_entities()),
-                   in.offset_section_1(),
-                   in.offset_script_data());
+  return JsmHeader(
+    fix(in.count_door_entities()),
+    fix(in.count_walk_mesh_line_entities()),
+    fix(in.count_background_entities()),
+    fix(in.count_other_entities()),
+    in.offset_section_1(),
+    in.offset_script_data());
 }
 }// namespace open_viii::field::scripts
 #endif// VIIIARCHIVE_JSMHEADER_HPP

@@ -16,15 +16,6 @@
 #include "open_viii/Concepts.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include "Point.hpp"
-#include <cctype>
-#include <cstdint>
-#include <execution>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <span>
-#include <string_view>
-#include <utility>
 
 namespace open_viii::graphics {
 struct Ppm
@@ -109,13 +100,14 @@ private:
     static constexpr auto color_size    = sizeof(Color24<ColorLayoutT::RGB>);
     const auto            size_of_bytes = area * color_size;
     if (area > 0 && std::ranges::size(buffer_span) > size_of_bytes) {
-      buffer_span
-        = buffer_span.subspan(std::ranges::size(buffer_span) - size_of_bytes,
-                              size_of_bytes);
+      buffer_span = buffer_span.subspan(
+        std::ranges::size(buffer_span) - size_of_bytes,
+        size_of_bytes);
       colors.resize(area);
-      std::memcpy(std::ranges::data(colors),
-                  std::ranges::data(buffer_span),
-                  size_of_bytes);
+      std::memcpy(
+        std::ranges::data(colors),
+        std::ranges::data(buffer_span),
+        size_of_bytes);
     }
     return colors;
   }
@@ -137,17 +129,19 @@ public:
   }
   template<std::ranges::contiguous_range cT>
   static void
-    save(const cT               &data,
-         std::size_t             width,
-         std::size_t             height,
-         const std::string_view &input,
-         bool                    skip_check = false)
+    save(
+      const cT               &data,
+      std::size_t             width,
+      std::size_t             height,
+      const std::string_view &input,
+      bool                    skip_check = false)
   {// how do i make the concept reject ranges that aren't of Colors? I'm at
    // least checking for Color down below.
     if (!skip_check) {
       bool are_colors_all_black = check_if_colors_are_black(data);
-      if (width == 0 || height == 0 || std::ranges::empty(data)
-          || are_colors_all_black) {
+      if (
+        width == 0 || height == 0 || std::ranges::empty(data)
+        || are_colors_all_black) {
         return;
       }
     }
@@ -161,7 +155,7 @@ public:
         local_filename += ".ppm";
         return local_filename;
       }
-      return std::string {input};
+      return std::string{ input };
     }();
     if (std::ranges::size(data) < width * height) {
       std::cout << std::ranges::size(data) << ", " << width << '*' << height
@@ -184,14 +178,14 @@ public:
   static bool
     check_if_colors_are_black(const auto &data)
   {
-    return std::all_of(std::execution::par_unseq,
-                       data.begin(),
-                       data.end(),
-                       [](const Color auto &color) -> bool {
-                         return color.a() == 0U
-                             || (color.b() == 0U && color.g() == 0U
-                                 && color.r() == 0U);
-                       });
+    return std::all_of(
+      std::execution::par_unseq,
+      data.begin(),
+      data.end(),
+      [](const Color auto &color) -> bool {
+        return color.a() == 0U
+            || (color.b() == 0U && color.g() == 0U && color.r() == 0U);
+      });
   }
   [[nodiscard]] const std::vector<Color24<ColorLayoutT::RGB>> &
     colors() const noexcept

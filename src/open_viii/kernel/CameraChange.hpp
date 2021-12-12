@@ -12,9 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_CAMERACHANGE_HPP
 #define VIIIARCHIVE_CAMERACHANGE_HPP
-#include <compare>
-#include <cstdint>
-#include <iostream>
 namespace open_viii::kernel {
 struct CameraChange
 {
@@ -39,8 +36,7 @@ public:
   friend std::ostream &
     operator<<(std::ostream &os, const CameraChange &camera_change)
   {
-    os << +camera_change.checked() << '/'
-       << +camera_change.value();
+    os << +camera_change.checked() << '/' << +camera_change.value();
     return os;
   }
 };

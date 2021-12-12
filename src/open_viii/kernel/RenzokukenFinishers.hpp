@@ -17,9 +17,9 @@
 #include "BattleOnlyStatusesT.hpp"
 #include "CommonKernel.hpp"
 #include "ElementT.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
-#include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 struct RenzokukenFinishers_impl
 {
@@ -66,8 +66,8 @@ public:
     operator<=>(const RenzokukenFinishers_impl &right) const noexcept = default;
 };
 using RenzokukenFinishers = CommonKernel<RenzokukenFinishers_impl>;
-static_assert(RenzokukenFinishers::EXPECTED_SIZE
-              == sizeof(RenzokukenFinishers));
+static_assert(
+  RenzokukenFinishers::EXPECTED_SIZE == sizeof(RenzokukenFinishers));
 static_assert(has_name_offset<RenzokukenFinishers>);
 static_assert(has_description_offset<RenzokukenFinishers>);
 static_assert(has_magic_id<RenzokukenFinishers>);

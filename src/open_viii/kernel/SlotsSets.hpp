@@ -14,8 +14,6 @@
 #define VIIIARCHIVE_SLOTSSETS_HPP
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include "Slot.hpp"
-#include <array>
-#include <cstdint>
 namespace open_viii::kernel {
 /**
  * array of 16 bytes 8 total 2 bytes per Magic Slot { Magic ID and Count }

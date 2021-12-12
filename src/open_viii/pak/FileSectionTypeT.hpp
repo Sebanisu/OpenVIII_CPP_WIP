@@ -4,9 +4,6 @@
 #ifndef VIIIARCHIVE_FILESECTIONTYPET_HPP
 #define VIIIARCHIVE_FILESECTIONTYPET_HPP
 #include "open_viii/tools/Tools.hpp"
-#include <algorithm>
-#include <ranges>
-#include <string_view>
 namespace open_viii::pak::FileSectionTypeT {
 /**
  * None; no type defined.
@@ -62,8 +59,8 @@ constexpr static bool
   if constexpr (sizeof...(haystack) == 0) {
     return valid_type(needle, CAM, BIK, KB2);
   }
-  else if constexpr (std::ranges::range<
-                       needleT> && (std::ranges::range<haystackT> && ...)) {
+  else if constexpr (
+    std::ranges::range<needleT> && (std::ranges::range<haystackT> && ...)) {
     return (std::ranges::equal(needle, haystack) || ...);
   }
   else {
@@ -82,9 +79,10 @@ constexpr static bool
  */
 template<typename needleT, typename first_haystackT, typename... haystackT>
 constexpr static auto
-  find_type(const needleT &        needle,
-            const first_haystackT &first_haystack,
-            const haystackT &...haystack) noexcept
+  find_type(
+    const needleT         &needle,
+    const first_haystackT &first_haystack,
+    const haystackT &...haystack) noexcept
 {
   if (std::ranges::equal(needle, first_haystack)) {
     return first_haystack;
@@ -114,5 +112,5 @@ static_assert(valid_type(KB2));
 static_assert(valid_type(find_type(CAM)));
 static_assert(valid_type(find_type(BIK)));
 static_assert(valid_type(find_type(KB2)));
-}// namespace open_viii::FileSectionTypeT
+}// namespace open_viii::pak::FileSectionTypeT
 #endif// VIIIARCHIVE_FILESECTIONTYPET_HPP

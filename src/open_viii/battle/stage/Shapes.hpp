@@ -14,17 +14,19 @@ namespace open_viii::graphics {
  * @param lambda lambda function
  * @return return point
  */
-template<std::size_t current = 0U,
-         Point_Like  pointT  = graphics::Point<std::uint8_t>,
-         Shape_Like  shapeT,
-         TakesTwoPointsReturnsPoint<pointT> lambdaT>
+template<
+  std::size_t                        current = 0U,
+  Point_Like                         pointT  = graphics::Point<std::uint8_t>,
+  Shape_Like                         shapeT,
+  TakesTwoPointsReturnsPoint<pointT> lambdaT>
 requires(current < shapeT::COUNT) [[nodiscard]] constexpr static pointT
   for_each_uv(const shapeT &shape, const lambdaT &lambda)
 {
   if constexpr (current + 1U < shapeT::COUNT) {
-    return std::invoke(lambda,
-                       shape.template uv<current>(),
-                       for_each_uv<current + 1>(shape, lambda));
+    return std::invoke(
+      lambda,
+      shape.template uv<current>(),
+      for_each_uv<current + 1>(shape, lambda));
   }
   else {
     return shape.template uv<current>();

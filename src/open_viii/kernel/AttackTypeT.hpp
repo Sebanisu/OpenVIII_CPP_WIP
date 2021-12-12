@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_ATTACKTYPET_HPP
 #define VIIIARCHIVE_ATTACKTYPET_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 // https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/Resources/Attack_Type_List.txt"/>
 enum class AttackTypeT : std::uint8_t

@@ -17,10 +17,9 @@
 #include "BattleOnlyStatusesT.hpp"
 #include "CommonKernel.hpp"
 #include "ElementT.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
-#include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
 namespace open_viii::kernel {
 struct BattleItems_impl
 {

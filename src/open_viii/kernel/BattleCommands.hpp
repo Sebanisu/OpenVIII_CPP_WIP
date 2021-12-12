@@ -13,9 +13,8 @@
 #ifndef VIIIARCHIVE_BATTLECOMMANDS_HPP
 #define VIIIARCHIVE_BATTLECOMMANDS_HPP
 #include "CommonKernel.hpp"
-#include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
+#include "TargetT.hpp"
 namespace open_viii::kernel {
 struct BattleCommands_impl
 {

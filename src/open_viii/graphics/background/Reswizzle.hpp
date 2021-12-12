@@ -6,12 +6,6 @@
 #include "Map.hpp"
 #include "open_viii/graphics/Ppm.hpp"
 #include "Pupu.hpp"
-#include <concepts>
-#include <filesystem>
-#include <numeric>
-#include <ranges>
-#include <string>
-#include <string_view>
 namespace open_viii::graphics::background {
 struct PupuPath
 {
@@ -35,18 +29,19 @@ private:
   mutable std::uint8_t             m_scale
     = {};// when I can detect the scale this will
          // probably be mutable or I can detect on init
-  const Point<uint16_t>        m_map_width_height = {};
-  mutable std::uint32_t        m_width            = {};
-  mutable std::uint32_t        m_height           = {};
-  mutable std::uint32_t        m_area             = {};
-  static constexpr std::size_t PALETTE_COUNT      = 16U;
-  mutable bool                     m_drawn = { false };
-  mutable std::vector<Color32RGBA> m_out   = {};
-  mutable std::variant<std::array<std::vector<Tile1>, PALETTE_COUNT>,
-                       std::array<std::vector<Tile2>, PALETTE_COUNT>,
-                       std::array<std::vector<Tile3>, PALETTE_COUNT>,
-                       std::monostate>
-                                   m_skip  = {};
+  const Point<uint16_t>            m_map_width_height = {};
+  mutable std::uint32_t            m_width            = {};
+  mutable std::uint32_t            m_height           = {};
+  mutable std::uint32_t            m_area             = {};
+  static constexpr std::size_t     PALETTE_COUNT      = 16U;
+  mutable bool                     m_drawn            = { false };
+  mutable std::vector<Color32RGBA> m_out              = {};
+  mutable std::variant<
+    std::array<std::vector<Tile1>, PALETTE_COUNT>,
+    std::array<std::vector<Tile2>, PALETTE_COUNT>,
+    std::array<std::vector<Tile3>, PALETTE_COUNT>,
+    std::monostate>
+    m_skip = {};
   uint32_t
     get_area() const noexcept
   {
@@ -130,16 +125,16 @@ private:
         }
         constexpr static auto suffix_offset = 7;
         auto                  suffix        = std::string_view(basename).substr(
-                                  std::ranges::size(basename) - suffix_offset);
+          std::ranges::size(basename) - suffix_offset);
         if (suffix != "_mimmap") {
           return;
         }
         constexpr static auto hex_begin_offset          = 23;
         constexpr static auto hex_length                = 16;
         constexpr static auto hex_begin_offset_and_dash = hex_begin_offset + 1;
-        auto hex = std::string_view(basename).substr(std::ranges::size(basename)
-                                                       - hex_begin_offset,
-                                                     hex_length);
+        auto                  hex = std::string_view(basename).substr(
+          std::ranges::size(basename) - hex_begin_offset,
+          hex_length);
         auto prefix = std::string_view(basename).substr(
           0,
           std::ranges::size(basename) - hex_begin_offset_and_dash);
@@ -157,14 +152,16 @@ private:
     std::vector<std::uint16_t> valid_texture_ids{};
     m_map.visit_tiles([&valid_texture_ids](auto &&tiles) {
       valid_texture_ids.reserve(std::ranges::size(tiles));
-      std::ranges::transform(tiles,
-                             std::back_insert_iterator(valid_texture_ids),
-                             [](auto &&tile) {
-                               return tile.texture_id();
-                             });
+      std::ranges::transform(
+        tiles,
+        std::back_insert_iterator(valid_texture_ids),
+        [](auto &&tile) {
+          return tile.texture_id();
+        });
       std::ranges::sort(valid_texture_ids);
-      auto last = std::unique(std::ranges::begin(valid_texture_ids),
-                              std::ranges::end(valid_texture_ids));
+      auto last = std::unique(
+        std::ranges::begin(valid_texture_ids),
+        std::ranges::end(valid_texture_ids));
       valid_texture_ids.erase(last, std::ranges::end(valid_texture_ids));
     });
     return valid_texture_ids;
@@ -194,24 +191,27 @@ private:
       std::string output_name
         = m_output_prefix + "(" + std::to_string(texture_id) + ")";
       Ppm::save(m_out, m_width, m_height, output_name, true);
-      std::fill(std::ranges::begin(m_out),
-                std::ranges::end(m_out),
-                Color32RGBA{});
+      std::fill(
+        std::ranges::begin(m_out),
+        std::ranges::end(m_out),
+        Color32RGBA{});
       m_drawn = false;
     }
   }
   void
-    save_and_clear_out_buffer(const std::uint16_t &texture_id,
-                              const std::uint8_t  &palette) const
+    save_and_clear_out_buffer(
+      const std::uint16_t &texture_id,
+      const std::uint8_t  &palette) const
   {
     if (m_drawn) {
       std::string output_name = m_output_prefix + "("
                               + std::to_string(texture_id) + "_"
                               + std::to_string(palette) + ")";
       Ppm::save(m_out, m_width, m_height, output_name, true);
-      std::fill(std::ranges::begin(m_out),
-                std::ranges::end(m_out),
-                Color32RGBA{});
+      std::fill(
+        std::ranges::begin(m_out),
+        std::ranges::end(m_out),
+        Color32RGBA{});
       m_drawn = false;
     }
   }
@@ -226,8 +226,9 @@ private:
         for_each_tile(
           [this, &ppm](auto &&tile) {
             static constexpr auto tile_size = 16U;
-            open_viii::tools::for_each_xy(tile_size * m_scale,
-                                          get_set_color_lambda(ppm, tile));
+            open_viii::tools::for_each_xy(
+              tile_size * m_scale,
+              get_set_color_lambda(ppm, tile));
           },
           [&pupu_path, &texture_id](auto &&tile) {
             return pupu_path.pupu == tile && tile.texture_id() == texture_id;
@@ -291,17 +292,19 @@ private:
           = tile.source_x() * this->m_scale;
         const std::size_t scaled_tile_source_y
           = tile.source_y() * this->m_scale;
-        this->m_out.at(x + scaled_tile_source_x
-                       + ((y + scaled_tile_source_y) * this->m_width))
+        this->m_out.at(
+          x + scaled_tile_source_x
+          + ((y + scaled_tile_source_y) * this->m_width))
           = {};// put the values back to black.
       }
       return false;
     };
   }
   auto
-    get_set_color_lambda(const Ppm &ppm,
-                         auto     &&tile,
-                         const bool skipped = false) const
+    get_set_color_lambda(
+      const Ppm &ppm,
+      auto     &&tile,
+      const bool skipped = false) const
   {
     return [this, &tile, &ppm, skipped](const auto &x, const auto &y) -> bool {
       const auto  scaled_tile_y = scale_dim(tile.y());
@@ -317,13 +320,12 @@ private:
         if (!skipped && !current.is_black()) {
           tools::for_each_xy(x + 1, y + 1, get_clear_color_lambda(ppm, tile));
           visit_skip([&tile](auto &&skip) {
-            auto & vector =skip.at(tile.palette_id());
-            using vector_type = std::decay_t<decltype(vector)>;
-            using tile_type = typename vector_type::value_type;
+            auto &vector         = skip.at(tile.palette_id());
+            using vector_type    = std::decay_t<decltype(vector)>;
+            using tile_type      = typename vector_type::value_type;
             using this_tile_type = std::decay_t<decltype(tile)>;
-            if constexpr (std::is_same_v<this_tile_type,tile_type>)
-            {
-               vector.push_back(tile);
+            if constexpr (std::is_same_v<this_tile_type, tile_type>) {
+              vector.push_back(tile);
             }
             // if here type mismatch?
           });
@@ -350,12 +352,12 @@ private:
                            return std::ranges::size(vector);
                          });
       total            = std::reduce(
-                   std::ranges::begin(array),
-                   std::ranges::end(array),
-                   static_cast<std::size_t>(0U),
-                   [](const std::size_t &local_total, const std::size_t &vector_size) {
+        std::ranges::begin(array),
+        std::ranges::end(array),
+        static_cast<std::size_t>(0U),
+        [](const std::size_t &local_total, const std::size_t &vector_size) {
           return local_total + vector_size;
-                   });
+        });
     });
     return total;
   }
@@ -391,12 +393,13 @@ private:
   }
 
 public:
-  Reswizzle(const MimType               &mim_type,
-            const std::vector<char>     &buffer,
-            const std::filesystem::path &dir_path,
-            const std::string_view      &dir_name,
-            const std::string           &output_prefix,
-            const uint8_t                scale = 1U)
+  Reswizzle(
+    const MimType               &mim_type,
+    const std::vector<char>     &buffer,
+    const std::filesystem::path &dir_path,
+    const std::string_view      &dir_name,
+    const std::string           &output_prefix,
+    const uint8_t                scale = 1U)
     : m_map(mim_type, buffer), m_dir_path(dir_path), m_dir_name(dir_name),
       m_output_prefix(output_prefix),
       m_pupu_paths(find_pupu_image_file_paths()),

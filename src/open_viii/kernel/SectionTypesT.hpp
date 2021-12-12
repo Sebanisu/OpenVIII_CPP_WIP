@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_SECTIONTYPEST_HPP
 #define VIIIARCHIVE_SECTIONTYPEST_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 /**
  * Type ID for each Section in Kernel.bin

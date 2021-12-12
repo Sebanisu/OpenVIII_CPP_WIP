@@ -17,9 +17,6 @@
 #include "Png.hpp"
 #include "Ppm.hpp"
 #include "Rectangle.hpp"
-#include <cstring>
-#include <span>
-#include <vector>
 namespace open_viii::graphics {
 /**
  * lzs images are LZSS images with a small header (X,Y,H,W) and 16bit colors.
@@ -72,20 +69,22 @@ public:
       }
       m_colors.resize(min_size);
       std::cout << std::ranges::size(m_colors) << ", " << area << '\n';
-      std::memcpy(std::ranges::data(m_colors),
-                  std::ranges::data(adj),
-                  min_size);
+      std::memcpy(
+        std::ranges::data(m_colors),
+        std::ranges::data(adj),
+        min_size);
     }
   }
   [[maybe_unused]] void
     save(const std::string_view &filename) const
   {
     Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
-    Png::save(m_colors,
-              m_rectangle.width(),
-              m_rectangle.height(),
-              filename,
-              std::string(filename));
+    Png::save(
+      m_colors,
+      m_rectangle.width(),
+      m_rectangle.height(),
+      filename,
+      std::string(filename));
   }
 
   [[nodiscard]] Rectangle<std::uint16_t>

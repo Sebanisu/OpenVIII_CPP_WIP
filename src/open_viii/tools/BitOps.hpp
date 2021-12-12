@@ -3,9 +3,6 @@
 //
 #ifndef VIIIARCHIVE_BITOPS_HPP
 #define VIIIARCHIVE_BITOPS_HPP
-#include <concepts>
-#include <cstdint>
-#include <limits>
 namespace open_viii::tools {
 static constexpr auto bits_per_byte = 8U;
 /**
@@ -23,8 +20,9 @@ static_assert(number_of_bits<std::uint16_t> == 16U);
  * @tparam lshift how many bits to shift left
  * @return as retT
  */
-template<std::integral retT   = std::uint64_t,
-         std::size_t   lshift = number_of_bits<retT> - 1>
+template<
+  std::integral retT   = std::uint64_t,
+  std::size_t   lshift = number_of_bits<retT> - 1>
 static constexpr retT largest_bit_value = []() -> retT {
   std::size_t i;
   retT        ret{ 1U };

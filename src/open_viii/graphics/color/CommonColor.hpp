@@ -56,8 +56,9 @@ public:
   template<Color cT>
   requires(
     has_alpha
-    && !std::is_same_v<std::decay_t<cT>,
-                       this_type>) constexpr explicit CommonColor(cT &&color)
+    && !std::is_same_v<
+       std::decay_t<cT>,
+       this_type>) constexpr explicit CommonColor(cT &&color)
     : CommonColor{ swap_index<0>(color),
                    swap_index<1>(color),
                    swap_index<2>(color),
@@ -66,8 +67,9 @@ public:
   template<Color cT>
   requires(
     !has_alpha
-    && !std::is_same_v<std::decay_t<cT>,
-                       this_type>) constexpr explicit CommonColor(cT &&color)
+    && !std::is_same_v<
+       std::decay_t<cT>,
+       this_type>) constexpr explicit CommonColor(cT &&color)
     : CommonColor{ swap_index<0>(color),
                    swap_index<1>(color),
                    swap_index<2>(color) }
@@ -95,8 +97,9 @@ public:
   {
     if constexpr (has_alpha) {
       if constexpr (alpha_size == 1U) {
-        if (operator[](red_index) == 0 && operator[](green_index) == 0
-            &&                            operator[](blue_index) == 0)
+        if (
+          operator[](red_index) == 0 && operator[](green_index) == 0
+          &&                            operator[](blue_index) == 0)
           return 0U;
         else
           return (std::numeric_limits<std::uint8_t>::max)();

@@ -5,7 +5,6 @@
 #define VIIIARCHIVE_MOVIECLIP_HPP
 #include "Cam.hpp"
 #include "FileSection.hpp"
-#include <iostream>
 namespace open_viii::pak {
 struct MovieClip
 {
@@ -146,5 +145,5 @@ public:
     return os;
   }
 };
-}// namespace open_viii
+}// namespace open_viii::pak
 #endif// VIIIARCHIVE_MOVIECLIP_HPP

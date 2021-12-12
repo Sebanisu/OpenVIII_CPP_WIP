@@ -15,10 +15,6 @@
 #include "open_viii/Concepts.hpp"
 #include "tl/input.hpp"
 #include "tl/string.hpp"
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <string>
 namespace open_viii::archive {
 /**
  * FileData is an FI Like that contains the filepath, offset and size.

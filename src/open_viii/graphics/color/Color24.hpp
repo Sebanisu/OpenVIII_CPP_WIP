@@ -12,20 +12,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_COLOR24_HPP
 #define VIIIARCHIVE_COLOR24_HPP
-#include "CommonColor.hpp"
 #include "ColorByteArray.hpp"
+#include "CommonColor.hpp"
 namespace open_viii::graphics {
 template<ColorLayoutT layoutT>
-requires(layoutT == ColorLayoutT::BGR
-         || layoutT == ColorLayoutT::RGB) struct Color24_impl
-  : ColorByteArray<3U>
+requires(
+  layoutT == ColorLayoutT::BGR
+  || layoutT == ColorLayoutT::RGB) struct Color24_impl : ColorByteArray<3U>
 {
 protected:
   constexpr static auto current_layout = layoutT;
   using ColorByteArray<3U>::ColorByteArray;
 };
 template<ColorLayoutT layoutT>
-using Color24 = CommonColor<Color24_impl<layoutT>>;
+using Color24    = CommonColor<Color24_impl<layoutT>>;
 using Color24BGR = Color24<ColorLayoutT::BGR>;
 using Color24RGB = Color24<ColorLayoutT::RGB>;
 static_assert(Color<Color24BGR>);

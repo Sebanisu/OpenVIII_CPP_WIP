@@ -3,7 +3,6 @@
 //
 #ifndef VIIIARCHIVE_GEOMETRYHEADER2_HPP
 #define VIIIARCHIVE_GEOMETRYHEADER2_HPP
-#include <cstdint>
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Geometry
  * Offset	Length	Description

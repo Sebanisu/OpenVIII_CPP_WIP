@@ -12,10 +12,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_REFINESECTION000_HPP
 #define VIIIARCHIVE_REFINESECTION000_HPP
+#include "open_viii/ItemIdT.hpp"
 #include "RefineEntry.hpp"
 #include "RefineSpellID.hpp"
-#include "open_viii/ItemIdT.hpp"
-#include <iostream>
 namespace open_viii::menu_group {
 // enum struct Refine000T
 //{
@@ -115,11 +114,12 @@ public:
   }
   template<LangT langVal, typename T>
   std::ostream &
-    out_array(const T &                    arr,
-              std::ostream &               os,
-              const std::span<const char> &buffer          = ""sv,
-              const intmax_t               offset          = 0,
-              bool                         skip_first_null = false) const
+    out_array(
+      const T                     &arr,
+      std::ostream                &os,
+      const std::span<const char> &buffer          = ""sv,
+      const intmax_t               offset          = 0,
+      bool                         skip_first_null = false) const
   {
     for (const auto item : arr) {
       item.template out<langVal>(os, buffer, offset, skip_first_null);
@@ -129,10 +129,11 @@ public:
   }
   template<LangT langVal>
   std::ostream &
-    out(std::ostream &               os,
-        const std::span<const char> &buffer          = ""sv,
-        const intmax_t               offset          = 0,
-        bool                         skip_first_null = false) const
+    out(
+      std::ostream                &os,
+      const std::span<const char> &buffer          = ""sv,
+      const intmax_t               offset          = 0,
+      bool                         skip_first_null = false) const
   {
     os << "tMagRF:\n";
     out_array<langVal>(m_t_mag_rf, os, buffer, offset, skip_first_null);

@@ -14,9 +14,8 @@
 #define VIIIARCHIVE_CHARACTERS_HPP
 #include "CommonKernel.hpp"
 #include "GenderT.hpp"
-#include "StatGroupNoEVANoHIT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
+#include "StatGroupNoEVANoHIT.hpp"
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description

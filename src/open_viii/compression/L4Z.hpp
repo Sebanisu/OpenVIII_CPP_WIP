@@ -10,14 +10,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include "open_viii/Concepts.hpp"
-#include <ranges>
-#include <span>
-#include <vector>
 #ifndef VIIICOMPRESSION_L4Z_H
 #define VIIICOMPRESSION_L4Z_H
-namespace open_viii::compression::l4z {
 #include "lib/lz4.h"
+#include "open_viii/Concepts.hpp"
+namespace open_viii::compression::l4z {
 /**
  * Extract char buffer using LZ4 decompressor.
  * @tparam dstT returning type.
@@ -26,23 +23,26 @@ namespace open_viii::compression::l4z {
  * @param dst_size (cast to int) size of dst data.
  * @return uncompressed char buffer.
  */
-template<typename dstT = std::vector<char>,
-         std::integral srcSizeT,
-         std::integral dstSizeT>
+template<
+  typename dstT = std::vector<char>,
+  std::integral srcSizeT,
+  std::integral dstSizeT>
 [[nodiscard]] [[maybe_unused]] static dstT
-  decompress(const char *    src_data,
-             const srcSizeT &src_size,
-             const dstSizeT &dst_size)
+  decompress(
+    const char     *src_data,
+    const srcSizeT &src_size,
+    const dstSizeT &dst_size)
 {
   if (src_size < 0 || dst_size < 0) {
     return {};
   }
   dstT dst{};
   dst.resize(static_cast<std::size_t>(dst_size));
-  auto outSize = LZ4_decompress_safe(src_data,
-                                     std::ranges::data(dst),
-                                     static_cast<int>(src_size),
-                                     static_cast<int>(std::ranges::size(dst)));
+  auto outSize = LZ4_decompress_safe(
+    src_data,
+    std::ranges::data(dst),
+    static_cast<int>(src_size),
+    static_cast<int>(std::ranges::size(dst)));
   if (outSize <= 0) {
     return {};
   }
@@ -63,7 +63,9 @@ template<typename dstT = std::vector<char>, std::integral dstSizeT>
   decompress(const std::span<const char> &src, const dstSizeT &dst_size)
 {
   return decompress<dstT>(
-    std::ranges::data(src), std::ranges::size(src), dst_size);
+    std::ranges::data(src),
+    std::ranges::size(src),
+    dst_size);
 }
 template<typename dstT = std::vector<char>>
 static dstT
@@ -74,7 +76,10 @@ static dstT
   const auto dstSize = LZ4_compressBound(srcSize);
   dst.resize(static_cast<std::size_t>(dstSize));
   const auto size_wrote = LZ4_compress_default(
-    std::ranges::data(src), std::ranges::data(dst), srcSize, dstSize);
+    std::ranges::data(src),
+    std::ranges::data(dst),
+    srcSize,
+    dstSize);
   if (size_wrote <= 0) {
     return {};
   }

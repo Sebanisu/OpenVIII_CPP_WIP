@@ -3,13 +3,6 @@
 //
 #ifndef VIIIARCHIVE_CONVERT_HPP
 #define VIIIARCHIVE_CONVERT_HPP
-#include <algorithm>
-#include <cctype>
-#include <filesystem>
-#include <ranges>
-#include <span>
-#include <string>
-#include <string_view>
 namespace open_viii::tools {
 /**
  * Workaround there is no way to currently to print a utf8 string... streams are
@@ -66,15 +59,17 @@ static_assert(upper('a') != 'Z');
  */
 template<std::integral intT>
 [[nodiscard]] inline std::string
-  to_string_with_padding(const intT       &value,
-                         const std::size_t total_length  = {},
-                         const char        pad_character = '0')
+  to_string_with_padding(
+    const intT       &value,
+    const std::size_t total_length  = {},
+    const char        pad_character = '0')
 {
   auto str = std::to_string(value);
   if (str.length() < total_length)
-    str.insert(str.front() == '-' ? 1 : 0,
-               total_length - str.length(),
-               pad_character);
+    str.insert(
+      str.front() == '-' ? 1 : 0,
+      total_length - str.length(),
+      pad_character);
   return str;
 }
 [[maybe_unused]] [[nodiscard]] inline std::string

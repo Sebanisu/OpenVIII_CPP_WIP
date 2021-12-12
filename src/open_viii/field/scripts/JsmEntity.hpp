@@ -3,9 +3,6 @@
 //
 #ifndef VIIIARCHIVE_JSMENTITY_HPP
 #define VIIIARCHIVE_JSMENTITY_HPP
-#include <cstdint>
-#include <type_traits>
-#include <utility>
 namespace open_viii::field::scripts {
 /**
  * @see

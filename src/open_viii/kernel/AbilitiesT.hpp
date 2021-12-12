@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_ABILITIEST_HPP
 #define VIIIARCHIVE_ABILITIEST_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 /**
  * @see https://github.com/alexfilth/doomtrain/wiki/Junction-abilities

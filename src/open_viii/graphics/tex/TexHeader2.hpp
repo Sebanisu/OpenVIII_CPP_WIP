@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TEXHEADER2_HPP
 #define VIIIARCHIVE_TEXHEADER2_HPP
-#include <cstdint>
 namespace open_viii::graphics {
 /**
  * texHeader2 contains extra values

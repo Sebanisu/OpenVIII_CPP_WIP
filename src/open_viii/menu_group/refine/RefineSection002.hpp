@@ -14,7 +14,6 @@
 #define VIIIARCHIVE_REFINESECTION002_HPP
 #include "RefineEntry.hpp"
 #include "RefineSpellID.hpp"
-#include <iostream>
 namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection002// refine Magic to Magic
 {
@@ -51,11 +50,12 @@ public:
   }
   template<LangT langVal, typename T>
   std::ostream &
-    out_array(const T &                    arr,
-              std::ostream &               os,
-              const std::span<const char> &buffer          = ""sv,
-              const intmax_t               offset          = 0,
-              bool                         skip_first_null = false) const
+    out_array(
+      const T                     &arr,
+      std::ostream                &os,
+      const std::span<const char> &buffer          = ""sv,
+      const intmax_t               offset          = 0,
+      bool                         skip_first_null = false) const
   {
     for (const auto item : arr) {
       (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
@@ -64,10 +64,11 @@ public:
   }
   template<LangT langVal>
   std::ostream &
-    out(std::ostream &               os,
-        const std::span<const char> &buffer          = ""sv,
-        const intmax_t               offset          = 0,
-        bool                         skip_first_null = false) const
+    out(
+      std::ostream                &os,
+      const std::span<const char> &buffer          = ""sv,
+      const intmax_t               offset          = 0,
+      bool                         skip_first_null = false) const
   {
     os << "midMagRF_:\n";
     out_array<langVal>(m_mid_mag_rf, os, buffer, offset, skip_first_null);

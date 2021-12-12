@@ -16,11 +16,13 @@
 #include "CommonColor.hpp"
 namespace open_viii::graphics {
 template<ColorLayoutT layoutT>
-requires((has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
-          && has_one_flag<layoutT, ColorLayoutT::PREA, ColorLayoutT::POSTA>())
-         || has_one_flag<layoutT,
-                         ColorLayoutT::BGR,
-                         ColorLayoutT::RGB>()) struct Color16_impl
+requires(
+  (has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
+   && has_one_flag<layoutT, ColorLayoutT::PREA, ColorLayoutT::POSTA>())
+  || has_one_flag<
+    layoutT,
+    ColorLayoutT::BGR,
+    ColorLayoutT::RGB>()) struct Color16_impl
 {
 
 private:
@@ -42,9 +44,10 @@ protected:
   std::uint16_t         value{};
   constexpr Color16_impl() = default;
   template<typename... Ts>
-  requires(sizeof...(Ts) == indexes.size()
-           && (std::integral<
-                 std::decay_t<Ts>> && ...)) constexpr Color16_impl(Ts &&...ts)
+  requires(
+    sizeof...(Ts) == indexes.size()
+    && (std::integral<std::decay_t<Ts>> && ...)) constexpr Color16_impl(Ts
+                                                                          &&...ts)
     : value([&]() {
         auto          i = indexes.begin();
         std::uint16_t v = {};
@@ -83,7 +86,8 @@ static_assert(Color<Color16BGRA>);
 static_assert(Color<Color16RGBA>);
 static_assert(Color<Color16BGR>);
 static_assert(Color<Color16RGB>);
-static_assert(sizeof(Color16<ColorLayoutT::ABGR>)
-              == Color16<ColorLayoutT::ABGR>::EXPECTED_SIZE);
+static_assert(
+  sizeof(Color16<ColorLayoutT::ABGR>)
+  == Color16<ColorLayoutT::ABGR>::EXPECTED_SIZE);
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_COLOR16_HPP

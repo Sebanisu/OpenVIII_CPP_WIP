@@ -13,8 +13,6 @@
 #ifndef VIIIARCHIVE_LANGCOMMON_HPP
 #define VIIIARCHIVE_LANGCOMMON_HPP
 #include "LangT.hpp"
-#include <ranges>
-#include <string_view>
 namespace open_viii {
 /**
  * Lang Common for conversion from enum to 2 letter language code
@@ -122,15 +120,15 @@ namespace LangCommon {
     });
     return coos_c_str;
   }
-  
+
   /**
    * Get an array of string views
    */
   [[nodiscard]] consteval auto
     to_string_array_3_char()
   {
-    auto                                          coos = to_array();
-    std::array<std::string_view, std::size(coos)+1> coos_c_str{};
+    auto                                              coos = to_array();
+    std::array<std::string_view, std::size(coos) + 1> coos_c_str{};
     std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
       return to_string_3_char(coo);// I hope these are null terminated.
     });

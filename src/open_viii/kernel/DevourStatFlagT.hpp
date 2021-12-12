@@ -3,7 +3,6 @@
 //
 #ifndef VIIIARCHIVE_DEVOURSTATFLAGT_HPP
 #define VIIIARCHIVE_DEVOURSTATFLAGT_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 enum class DevourStatFlagT : std::uint8_t
 {

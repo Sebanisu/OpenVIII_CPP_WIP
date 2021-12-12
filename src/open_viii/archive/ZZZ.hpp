@@ -16,15 +16,6 @@
 #include "FIFLFS.hpp"
 #include "FileData.hpp"
 #include "open_viii/tools/Tools.hpp"
-#include <algorithm>
-#include <bit>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <iterator>
-#include <set>
-#include <string>
-#include <utility>
 namespace open_viii::archive {
 
 template<typename T>

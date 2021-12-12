@@ -14,12 +14,9 @@
 #define VIIIARCHIVE_TILE3_HPP
 #include "BlendModeT.hpp"
 #include "LayerID.hpp"
+#include "open_viii/graphics/Point.hpp"
 #include "PaletteID.hpp"
 #include "TexIdBuffer.hpp"
-#include "open_viii/graphics/Point.hpp"
-#include <array>
-#include <cstdint>
-#include <string_view>
 namespace open_viii::graphics::background {
 /**
  * @see

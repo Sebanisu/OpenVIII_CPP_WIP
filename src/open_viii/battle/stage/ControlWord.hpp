@@ -6,7 +6,6 @@
 #include "FovTypeT.hpp"
 #include "LayoutTypeT.hpp"
 #include "RollTypeT.hpp"
-#include <cstdint>
 namespace open_viii::battle::stage {
 struct ControlWord
 {
@@ -27,16 +26,16 @@ public:
   {
     constexpr std::uint16_t shift = 0x6U;
     constexpr std::uint8_t  mask  = 0x3U;
-    return static_cast<FovTypeT>(static_cast<std::uint16_t>(m_word >> shift)
-                                 & mask);
+    return static_cast<FovTypeT>(
+      static_cast<std::uint16_t>(m_word >> shift) & mask);
   }
   [[nodiscard]] constexpr auto
     roll() const noexcept
   {
     constexpr std::uint16_t shift = 0x8U;
     constexpr std::uint8_t  mask  = 0x3U;
-    return static_cast<RollTypeT>(static_cast<std::uint16_t>(m_word >> shift)
-                                  & mask);
+    return static_cast<RollTypeT>(
+      static_cast<std::uint16_t>(m_word >> shift) & mask);
   }
   [[nodiscard]] constexpr auto
     layout() const noexcept

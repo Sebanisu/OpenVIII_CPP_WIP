@@ -13,10 +13,6 @@
 #ifndef VIIIARCHIVE_MENUGROUPHEADER_HPP
 #define VIIIARCHIVE_MENUGROUPHEADER_HPP
 #include "MenuGroupHeaderSection.hpp"
-#include <array>
-#include <cstdint>
-#include <cstring>
-#include <string_view>
 namespace open_viii::menu_group {
 struct MenuGroupHeader
 {
@@ -38,11 +34,13 @@ public:
     return m_sections;
   }
   MenuGroupHeader() = default;
-  template<typename mainT> explicit MenuGroupHeader(const mainT &main)
+  template<typename mainT>
+  explicit MenuGroupHeader(const mainT &main)
   {
     auto buffer = main.get_entry_data(FILENAME);
-    if (std::ranges::size(buffer) < sizeof(std::uint32_t)
-        || SIZE != std::ranges::size(buffer)) {
+    if (
+      std::ranges::size(buffer) < sizeof(std::uint32_t)
+      || SIZE != std::ranges::size(buffer)) {
       return;
     }
     std::memcpy(m_sections.data(), buffer.data(), std::ranges::size(buffer));

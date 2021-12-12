@@ -11,9 +11,11 @@ requires(sizeT == 3U || sizeT == 4U) struct ColorByteArray
 protected:
   std::array<std::uint8_t, sizeT> value{};
   constexpr ColorByteArray() = default;
-  template<typename ... Ts>
-  requires(sizeof...(Ts) == sizeT && (std::integral<std::decay_t<Ts>> && ...))
-  constexpr ColorByteArray(Ts &&...ts)
+  template<typename... Ts>
+  requires(
+    sizeof...(Ts) == sizeT
+    && (std::integral<std::decay_t<Ts>> && ...)) constexpr ColorByteArray(Ts
+                                                                            &&...ts)
     : value{ static_cast<std::uint8_t>(ts)... }
   {}
   template<typename T>

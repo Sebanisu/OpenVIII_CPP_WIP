@@ -19,11 +19,10 @@
 #include "ElementT.hpp"
 #include "GFGroup.hpp"
 #include "JunctionStatusesT.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "StatGroup.hpp"
 #include "TargetT.hpp"
-#include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
 namespace open_viii::kernel {
 struct Magic_impl
 {

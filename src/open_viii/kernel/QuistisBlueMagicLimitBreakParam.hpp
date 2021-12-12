@@ -6,9 +6,6 @@
 #include "BattleOnlyStatusesT.hpp"
 #include "CrisisLevelT.hpp"
 #include "PersistentStatusesT.hpp"
-#include <array>
-#include <compare>
-#include <iostream>
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description
@@ -36,8 +33,9 @@ public:
 };
 using QuistisBlueMagicLimitBreakParam
   = CommonKernel<QuistisBlueMagicLimitBreakParam_impl>;
-static_assert(QuistisBlueMagicLimitBreakParam::EXPECTED_SIZE
-              == sizeof(QuistisBlueMagicLimitBreakParam));
+static_assert(
+  QuistisBlueMagicLimitBreakParam::EXPECTED_SIZE
+  == sizeof(QuistisBlueMagicLimitBreakParam));
 static_assert(has_battle_only_statuses<QuistisBlueMagicLimitBreakParam>);
 static_assert(has_persistent_statuses<QuistisBlueMagicLimitBreakParam>);
 static_assert(has_attack_power<QuistisBlueMagicLimitBreakParam>);

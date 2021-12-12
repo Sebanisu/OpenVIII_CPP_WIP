@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TEXHEADER2_VERSION2_HPP
 #define VIIIARCHIVE_TEXHEADER2_VERSION2_HPP
-#include <cstdint>
 namespace open_viii::graphics {
 /**
  * This appends to texHeader2 if the file is version 2. used by ff8 only.

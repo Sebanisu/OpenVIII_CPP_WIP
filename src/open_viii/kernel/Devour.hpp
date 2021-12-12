@@ -15,10 +15,9 @@
 #include "BattleOnlyStatusesT.hpp"
 #include "CommonKernel.hpp"
 #include "DevourStatFlagT.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PercentQuantityT.hpp"
 #include "PersistentStatusesT.hpp"
-#include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description

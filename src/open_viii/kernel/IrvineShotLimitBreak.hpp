@@ -16,9 +16,9 @@
 #include "AttackTypeT.hpp"
 #include "BattleOnlyStatusesT.hpp"
 #include "ElementT.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
-#include "open_viii/strings/EncodedStringOffset.hpp"
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description
@@ -69,8 +69,8 @@ public:
       const IrvineShotLimitBreak_impl &right) const noexcept = default;
 };
 using IrvineShotLimitBreak = CommonKernel<IrvineShotLimitBreak_impl>;
-static_assert(IrvineShotLimitBreak::EXPECTED_SIZE
-              == sizeof(IrvineShotLimitBreak));
+static_assert(
+  IrvineShotLimitBreak::EXPECTED_SIZE == sizeof(IrvineShotLimitBreak));
 static_assert(has_name_offset<IrvineShotLimitBreak>);
 static_assert(has_description_offset<IrvineShotLimitBreak>);
 static_assert(has_magic_id<IrvineShotLimitBreak>);

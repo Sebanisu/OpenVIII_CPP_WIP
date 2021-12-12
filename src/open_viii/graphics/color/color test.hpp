@@ -4,20 +4,8 @@
 
 #ifndef OPENVIII_CPP_WIP_COLOR_TEST_HPP
 #define OPENVIII_CPP_WIP_COLOR_TEST_HPP
-#include <array>
-#include <bit>
-#include <bitset>
-#include <cassert>
-#include <compare>
-#include <concepts>
-#include <cstdint>
-#include <iostream>
-#include <limits>
-#include <string>
 
-
-//todo make actual tests
-
+// todo make actual tests
 
 // int
 // main()
@@ -74,11 +62,12 @@
 // }
 template<ColorLayoutT layoutT>
 using Color16 = CommonColor<Color16_impl<layoutT>>;
-static_assert(Color32<ColorLayoutT::ARGB>{ 0xFFU, 0xFFU, 0xFFU, 0X0U }
-              == CommonColor<Color32_impl<ColorLayoutT::ARGB>>{ 0xFFU,
-                                                                0xFFU,
-                                                                0xFFU,
-                                                                0X0U });
+static_assert(
+  Color32<ColorLayoutT::ARGB>{ 0xFFU, 0xFFU, 0xFFU, 0X0U }
+  == CommonColor<Color32_impl<ColorLayoutT::ARGB>>{ 0xFFU,
+                                                    0xFFU,
+                                                    0xFFU,
+                                                    0X0U });
 
 static_assert(
   CommonColor<Color32_impl<ColorLayoutT::ARGB>>{ 0xFFU, 0xFFU, 0xFFU, 0X0U }

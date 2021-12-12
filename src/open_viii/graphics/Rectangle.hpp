@@ -14,8 +14,6 @@
 #define VIIIARCHIVE_RECTANGLE_HPP
 #include "open_viii/Concepts.hpp"
 #include "open_viii/graphics/Point.hpp"
-#include <compare>
-#include <iostream>
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::rectangle
@@ -39,13 +37,15 @@ public:
   template<Number T>
   requires(!std::is_same_v<T, dimT>) constexpr explicit Rectangle(
     const Rectangle<T> &r)
-    : Rectangle(static_cast<Point<dimT>>(r.top_left()),
-                static_cast<Point<dimT>>(r.width_height()))
+    : Rectangle(
+      static_cast<Point<dimT>>(r.top_left()),
+      static_cast<Point<dimT>>(r.width_height()))
   {}
-  constexpr Rectangle(const dimT &in_x,
-                      const dimT &in_y,
-                      const dimT &in_width,
-                      const dimT &in_height) noexcept
+  constexpr Rectangle(
+    const dimT &in_x,
+    const dimT &in_y,
+    const dimT &in_width,
+    const dimT &in_height) noexcept
     : Rectangle(Point<dimT>(in_x, in_y), Point<dimT>(in_width, in_height))
   {}
   /**

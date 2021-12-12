@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_SP1ENTRY_HPP
 #define VIIIARCHIVE_SP1ENTRY_HPP
-#include <cstdint>
 namespace open_viii::graphics {
 struct Sp1Entry
 {

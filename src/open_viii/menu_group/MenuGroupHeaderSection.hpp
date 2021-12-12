@@ -12,9 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_MENUGROUPHEADERSECTION_HPP
 #define VIIIARCHIVE_MENUGROUPHEADERSECTION_HPP
-#include <cstdint>
-#include <cstring>
-#include <string_view>
 namespace open_viii::menu_group {
 struct MenuGroupHeaderSection
 {
@@ -43,10 +40,10 @@ public:
     get_section_buffer(const charContainer &file_buffer) const
   {
     const uint32_t adj_offset = file_offset();
-    if (m_size == INVALID_SIZE || m_file_offset == INVALID_FILE_OFFSET
-        || static_cast<std::size_t>(adj_offset)
-               + static_cast<std::size_t>(m_size)
-             > std::ranges::size(file_buffer)) {
+    if (
+      m_size == INVALID_SIZE || m_file_offset == INVALID_FILE_OFFSET
+      || static_cast<std::size_t>(adj_offset) + static_cast<std::size_t>(m_size)
+           > std::ranges::size(file_buffer)) {
       return {};// returns empty buffer if invalid or error.
     }
     std::cout << '<' << adj_offset << ',' << m_size << ">\n";

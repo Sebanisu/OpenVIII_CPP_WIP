@@ -13,10 +13,6 @@
 #ifndef VIIIARCHIVE_MIMTYPE_HPP
 #define VIIIARCHIVE_MIMTYPE_HPP
 #include "open_viii/graphics/Rectangle.hpp"
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <cstdint>
 namespace open_viii::graphics::background {
 struct MimType
 {
@@ -44,10 +40,11 @@ public:
       TEXTURE_TYPES().front().with_type(static_cast<std::uint8_t>(type)))
   {}
   constexpr MimType() = default;
-  constexpr MimType(std::uint8_t palettes,
-                    std::uint8_t texture_pages,
-                    std::uint8_t skipped_palettes = DEFAULT_SKIPPED_PALETTES,
-                    std::uint8_t type             = DEFAULT_TYPE)
+  constexpr MimType(
+    std::uint8_t palettes,
+    std::uint8_t texture_pages,
+    std::uint8_t skipped_palettes = DEFAULT_SKIPPED_PALETTES,
+    std::uint8_t type             = DEFAULT_TYPE)
     : m_palettes(palettes), m_texture_pages(texture_pages),
       m_skipped_palettes(skipped_palettes), m_type(type)
   {}

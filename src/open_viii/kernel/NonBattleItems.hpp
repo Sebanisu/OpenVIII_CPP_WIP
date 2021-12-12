@@ -14,7 +14,6 @@
 #define VIIIARCHIVE_NONBATTLEITEMS_HPP
 #include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
 namespace open_viii::kernel {
 struct NonBattleItems_impl
 {

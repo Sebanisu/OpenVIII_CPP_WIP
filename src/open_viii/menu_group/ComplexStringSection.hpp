@@ -13,11 +13,6 @@
 #ifndef VIIIARCHIVE_COMPLEXSTRINGSECTION_HPP
 #define VIIIARCHIVE_COMPLEXSTRINGSECTION_HPP
 #include "open_viii/strings/FF8String.hpp"
-#include <array>
-#include <cstdint>
-#include <cstring>
-#include <ostream>
-#include <string_view>
 namespace open_viii::menu_group {
 struct ComplexStringSectionEntry
 {
@@ -32,9 +27,9 @@ public:
     uint16_t length{};
     std::memcpy(m_unknown.data(), buffer.data(), sizeof(m_unknown));
     std::memcpy(&length, buffer.data() + sizeof(m_unknown), sizeof(length));
-    m_buffer =
-      std::string_view{ buffer.data() + sizeof(m_unknown) + sizeof(length),
-                        length };
+    m_buffer
+      = std::string_view{ buffer.data() + sizeof(m_unknown) + sizeof(length),
+                          length };
   }
   template<LangT langVal>
   std::ostream &
@@ -78,8 +73,9 @@ private:
   std::array<std::string_view, SECTION_COUNT> m_data{};
 
 public:
-  ComplexStringSection([[maybe_unused]] const std::span<const char> &buffer,
-                       const std::array<std::string_view, SECTION_COUNT> &data)
+  ComplexStringSection(
+    [[maybe_unused]] const std::span<const char>      &buffer,
+    const std::array<std::string_view, SECTION_COUNT> &data)
     : m_data{ data }
   {
     if (std::ranges::size(buffer) > sizeof(m_count)) {
@@ -107,7 +103,8 @@ public:
   {
     const auto temp = m_data.at(offsets.index());
     return ComplexStringSectionEntry{ std::string_view{
-      temp.data() + offsets.offset(), temp.size() - offsets.offset() } };
+      temp.data() + offsets.offset(),
+      temp.size() - offsets.offset() } };
   }
 };
 }// namespace open_viii::menu_group

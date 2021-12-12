@@ -13,9 +13,6 @@
 #ifndef VIIIARCHIVE_TIMHEADER_HPP
 #define VIIIARCHIVE_TIMHEADER_HPP
 #include "open_viii/graphics/BPPT.hpp"
-#include <compare>
-#include <cstdint>
-#include <iostream>
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timHeader

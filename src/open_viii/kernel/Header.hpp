@@ -30,6 +30,7 @@
 #include "MiscText.hpp"
 #include "NonBattleItems.hpp"
 #include "NonJunctionableGFs.hpp"
+#include "open_viii/BulkSectionData.hpp"
 #include "PartyAbilities.hpp"
 #include "QuistisBlueMagicLimitBreak.hpp"
 #include "QuistisBlueMagicLimitBreakParams.hpp"
@@ -44,17 +45,6 @@
 #include "Weapons.hpp"
 #include "ZellDuelLimitBreak.hpp"
 #include "ZellDuelLimitBreakParams.hpp"
-#include "open_viii/BulkSectionData.hpp"
-#include <algorithm>
-#include <array>
-#include <compare>
-#include <cstring>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <string_view>
-#include <utility>
-#include <vector>
 namespace open_viii::kernel {
 /**
  * Kernel Reader, it parses the header and knows how to get from each section.
@@ -84,8 +74,9 @@ public:
       return std::span<const char>{};
     }
     auto length = [this]() {
-      if constexpr (static_cast<int>(sectionType)
-                    >= (static_cast<int>(SectionTypesT::count) - 1)) {
+      if constexpr (
+        static_cast<int>(sectionType)
+        >= (static_cast<int>(SectionTypesT::count) - 1)) {
         return std::ranges::size(m_buffer)
              - m_section_offsets.at(static_cast<size_t>(sectionType));
       }
@@ -177,8 +168,8 @@ public:
         get_span<SectionTypesT::character_abilities_text>()
       };
     }
-    else if constexpr (sectionType
-                       == SectionTypesT::stat_percent_increase_abilities) {
+    else if constexpr (
+      sectionType == SectionTypesT::stat_percent_increase_abilities) {
       return BulkSectionData<StatPercentIncreaseAbilities>{
         get_span<sectionType>(),
         get_span<SectionTypesT::stat_percent_increase_abilities_text>()
@@ -214,16 +205,15 @@ public:
         get_span<SectionTypesT::team_laguna_limit_breaks_text>()
       };
     }
-    else if constexpr (sectionType
-                       == SectionTypesT::quistis_blue_magic_limit_break) {
+    else if constexpr (
+      sectionType == SectionTypesT::quistis_blue_magic_limit_break) {
       return BulkSectionData<QuistisBlueMagicLimitBreak>{
         get_span<sectionType>(),
         get_span<SectionTypesT::quistis_blue_magic_limit_break_text>()
       };
     }
-    else if constexpr (sectionType
-                       == SectionTypesT::
-                         quistis_blue_magic_limit_break_params) {
+    else if constexpr (
+      sectionType == SectionTypesT::quistis_blue_magic_limit_break_params) {
       return BulkSectionData<QuistisBlueMagicLimitBreakParams>{
         get_span<sectionType>()
       };
@@ -240,8 +230,8 @@ public:
         get_span<SectionTypesT::zell_duel_limit_break_text>()
       };
     }
-    else if constexpr (sectionType
-                       == SectionTypesT::zell_duel_limit_break_params) {
+    else if constexpr (
+      sectionType == SectionTypesT::zell_duel_limit_break_params) {
       return BulkSectionData<ZellDuelLimitBreakParams>{
         get_span<sectionType>()
       };
@@ -295,19 +285,21 @@ public:
       return local_offsets;
     }
     uint32_t section_count{};
-    memcpy(&section_count,
-           std::ranges::data(buffer_span),
-           sizeof(section_count));
-    if (std::ranges::size(buffer_span)
-        < sizeof(uint32_t) * (section_count + 1)) {
+    memcpy(
+      &section_count,
+      std::ranges::data(buffer_span),
+      sizeof(section_count));
+    if (
+      std::ranges::size(buffer_span) < sizeof(uint32_t) * (section_count + 1)) {
       return local_offsets;
     }
     local_offsets.reserve(section_count);
     while (section_count-- > 0) {
       buffer_span = buffer_span.subspan(sizeof(section_count));
-      memcpy(&local_offsets.emplace_back(),
-             std::ranges::data(buffer_span),
-             sizeof(section_count));
+      memcpy(
+        &local_offsets.emplace_back(),
+        std::ranges::data(buffer_span),
+        sizeof(section_count));
     }
     return local_offsets;
   }
@@ -340,21 +332,20 @@ public:
    * @see
    * https://stackoverflow.com/questions/13816850/is-it-possible-to-develop-static-for-loop-in-c
    */
-  template<int Begin = static_cast<int>(SectionTypesT::begin),
-           int End   = static_cast<int>(SectionTypesT::end),
-           typename Lambda>
+  template<
+    int Begin = static_cast<int>(SectionTypesT::begin),
+    int End   = static_cast<int>(SectionTypesT::end),
+    typename Lambda>
   requires(
     section_type_test<static_cast<SectionTypesT>(Begin)> &&Begin < End
-    && (section_type_test<static_cast<SectionTypesT>(
-          End)> || End == static_cast<int>(SectionTypesT::end))) void static_for([[maybe_unused]] const Lambda
-                                                                                   &f)
+    && (section_type_test<static_cast<SectionTypesT>(End)> || End == static_cast<int>(SectionTypesT::end))) void static_for([[maybe_unused]] const Lambda
+                                                                                                                              &f)
   {
     if (std::ranges::empty(m_buffer)) {
       return;
     }
-    constexpr auto sectionType
-      = std::integral_constant<SectionTypesT,
-                               static_cast<SectionTypesT>(Begin)>{};
+    constexpr auto sectionType = std::
+      integral_constant<SectionTypesT, static_cast<SectionTypesT>(Begin)>{};
     const auto data = get_section_data<sectionType>();
     if constexpr (!std::is_null_pointer_v<decltype(data)>) {
       f(get_section_name<sectionType>(), get_span<sectionType>(), data);

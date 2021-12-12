@@ -13,9 +13,8 @@
 #ifndef VIIIARCHIVE_GFABILITIES_HPP
 #define VIIIARCHIVE_GFABILITIES_HPP
 #include "CommonKernel.hpp"
-#include "StatT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
+#include "StatT.hpp"
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description

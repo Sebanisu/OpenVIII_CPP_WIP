@@ -13,8 +13,8 @@
 #ifndef VIIIARCHIVE_RINOALIMITBREAKPART1_HPP
 #define VIIIARCHIVE_RINOALIMITBREAKPART1_HPP
 #include "CommonKernel.hpp"
-#include "TargetT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include "TargetT.hpp"
 namespace open_viii::kernel {
 struct RinoaLimitBreakPart1_impl
 {
@@ -44,8 +44,8 @@ public:
       const RinoaLimitBreakPart1_impl &right) const noexcept = default;
 };
 using RinoaLimitBreakPart1 = CommonKernel<RinoaLimitBreakPart1_impl>;
-static_assert(RinoaLimitBreakPart1::EXPECTED_SIZE
-              == sizeof(RinoaLimitBreakPart1));
+static_assert(
+  RinoaLimitBreakPart1::EXPECTED_SIZE == sizeof(RinoaLimitBreakPart1));
 static_assert(has_name_offset<RinoaLimitBreakPart1>);
 static_assert(has_unknown_flags<RinoaLimitBreakPart1>);
 static_assert(has_target<RinoaLimitBreakPart1>);

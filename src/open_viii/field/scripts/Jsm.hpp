@@ -7,8 +7,6 @@
 #include "JsmHeader.hpp"
 #include "JsmScriptEntity.hpp"
 #include "open_viii/tools/Tools.hpp"
-#include <span>
-#include <vector>
 namespace open_viii::field::scripts {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_JSM
@@ -67,14 +65,16 @@ public:
       m_other_entities(get_other_entities(buffer)),
       m_script_entities(get_script_entities(buffer))
   {
-    assert(std::ranges::size(m_door_entities)
-           == m_header.count_door_entities());
-    assert(std::ranges::size(m_walk_mesh_entities)
-           == m_header.count_walk_mesh_line_entities());
-    assert(std::ranges::size(m_background_entities)
-           == m_header.count_background_entities());
-    assert(std::ranges::size(m_other_entities)
-           == m_header.count_other_entities());
+    assert(
+      std::ranges::size(m_door_entities) == m_header.count_door_entities());
+    assert(
+      std::ranges::size(m_walk_mesh_entities)
+      == m_header.count_walk_mesh_line_entities());
+    assert(
+      std::ranges::size(m_background_entities)
+      == m_header.count_background_entities());
+    assert(
+      std::ranges::size(m_other_entities) == m_header.count_other_entities());
     assert(std::ranges::size(m_script_entities) == m_header.count_section_1());
     // std::cout << m_header.total_count() << '\t' << m_header.expected_count()
     // << std::endl; //counts must match

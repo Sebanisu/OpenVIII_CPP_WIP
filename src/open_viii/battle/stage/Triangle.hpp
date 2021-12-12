@@ -8,9 +8,6 @@
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Point.hpp"
 #include "open_viii/graphics/Rectangle.hpp"
-#include <bit>
-#include <cstdint>
-#include <type_traits>
 namespace open_viii::battle::stage {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Triangle

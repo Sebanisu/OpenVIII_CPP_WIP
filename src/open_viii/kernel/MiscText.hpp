@@ -14,8 +14,6 @@
 #define VIIIARCHIVE_MISCTEXT_HPP
 #include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
-#include <iostream>
 namespace open_viii::kernel {
 /**
  * Section Structure
@@ -34,7 +32,7 @@ public:
   constexpr auto
     operator<=>(const MiscText_impl &right) const noexcept = default;
   constexpr explicit operator EncodedStringOffset() const noexcept
-  { //todo keep?
+  {// todo keep?
     return m_name_offset;
   }
 };

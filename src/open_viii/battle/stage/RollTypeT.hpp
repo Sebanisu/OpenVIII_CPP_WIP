@@ -3,7 +3,6 @@
 //
 #ifndef VIIIARCHIVE_ROLLTYPET_HPP
 #define VIIIARCHIVE_ROLLTYPET_HPP
-#include <cstdint>
 namespace open_viii::battle::stage {
 enum struct RollTypeT : std::uint8_t
 {

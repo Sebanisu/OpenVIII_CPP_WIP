@@ -14,7 +14,6 @@
 #define VIIIARCHIVE_SP2_HPP
 #include "sp2/Sp2Entry.hpp"
 #include "sp2/Sp2Header.hpp"
-#include <cstring>
 namespace open_viii::graphics {
 /**
  * @see
@@ -33,9 +32,10 @@ public:
     m_entries.resize(header.size());
     std::span<Sp2Entry> s{ m_entries };
     for (const std::uint32_t offset : header.offsets()) {
-      std::memcpy(std::ranges::data(s),
-                  std::ranges::data(buffer.subspan(offset)),
-                  sizeof(Sp2Entry));
+      std::memcpy(
+        std::ranges::data(s),
+        std::ranges::data(buffer.subspan(offset)),
+        sizeof(Sp2Entry));
       s = s.subspan(1);
     }
   }

@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_SECTIONDATA_HPP
 #define VIIIARCHIVE_SECTIONDATA_HPP
-#include <string_view>
 namespace open_viii {
 template<typename spanT>
 requires(sizeof(spanT) > 0U) struct SectionData
@@ -24,8 +23,9 @@ private:
   std::string_view m_text_span{};
 
 public:
-  [[maybe_unused]] explicit SectionData(const spanT &           span,
-                                        const std::string_view &text_span = {})
+  [[maybe_unused]] explicit SectionData(
+    const spanT            &span,
+    const std::string_view &text_span = {})
     : m_span{ span }, m_text_span{ text_span }
   {}
   [[nodiscard]] auto

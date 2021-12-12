@@ -12,9 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_GFGROUP_HPP
 #define VIIIARCHIVE_GFGROUP_HPP
-#include <array>
-#include <compare>
-#include <iostream>
 namespace open_viii::kernel {
 template<typename T>
 requires(

@@ -5,7 +5,6 @@
 #define VIIIARCHIVE_MIMFROMPATH_HPP
 #include "Mim.hpp"
 #include "open_viii/graphics/Ppm.hpp"
-#include <array>
 namespace open_viii::graphics::background {
 /**
  * This surfaces the same interface as Mim but the backend will handle multiple
@@ -81,21 +80,22 @@ public:
     friend std::ostream &
       operator<<(std::ostream &os, const PalettesByTexturePages &data)
     {
-      std::ranges::for_each(data.to_array(),
-                            [&os](const TexturesByPalettes &tbp) {
-                              os << tbp;
-                            });
+      std::ranges::for_each(
+        data.to_array(),
+        [&os](const TexturesByPalettes &tbp) {
+          os << tbp;
+        });
       return os;
     }
   };
 
 private:
-  static constexpr auto DEFAULT_PALETTE =
-    TexturesByPalettes::MAX_PALETTES_PLUS_1 - 1;
+  static constexpr auto DEFAULT_PALETTE
+    = TexturesByPalettes::MAX_PALETTES_PLUS_1 - 1;
   const MimType                m_mim_type{};
   const std::filesystem::path &m_dir_path{};
   const std::string_view       m_dir_name{};
-  const std::string &          m_output_prefix{};
+  const std::string           &m_output_prefix{};
   const PalettesByTexturePages m_textures{};
   auto
     get_textures() const
@@ -113,8 +113,8 @@ private:
         }
         const auto view_of_filename = std::string_view(
           filename);// substring of a view is better than string.
-        const auto suffix =
-          view_of_filename.substr(std::ranges::size(m_dir_name));
+        const auto suffix
+          = view_of_filename.substr(std::ranges::size(m_dir_name));
         if (!suffix.starts_with('(')) {
           return;
         }
@@ -154,15 +154,13 @@ private:
 
 public:
   MimFromPath() = default;
-  explicit MimFromPath(MimType                      mim_type,
-                       const std::filesystem::path &dir_path,
-                       const std::string_view &     dir_name,
-                       const std::string &          output_prefix)
-    : m_mim_type(mim_type),
-      m_dir_path(dir_path),
-      m_dir_name(dir_name),
-      m_output_prefix(output_prefix),
-      m_textures(get_textures())
+  explicit MimFromPath(
+    MimType                      mim_type,
+    const std::filesystem::path &dir_path,
+    const std::string_view      &dir_name,
+    const std::string           &output_prefix)
+    : m_mim_type(mim_type), m_dir_path(dir_path), m_dir_name(dir_name),
+      m_output_prefix(output_prefix), m_textures(get_textures())
   {}
   std::size_t
     get_raw_width(const BPPT &depth) const
@@ -170,11 +168,12 @@ public:
     return Mim::get_raw_width(depth, m_mim_type.width());
   }
   Color auto
-    get_color([[maybe_unused]] const std::size_t & x,
-              [[maybe_unused]] const std::size_t & y,
-              [[maybe_unused]] const BPPT &        depth,
-              [[maybe_unused]] const std::uint8_t &palette,
-              [[maybe_unused]] const std::uint8_t &texture_id) const
+    get_color(
+      [[maybe_unused]] const std::size_t  &x,
+      [[maybe_unused]] const std::size_t  &y,
+      [[maybe_unused]] const BPPT         &depth,
+      [[maybe_unused]] const std::uint8_t &palette,
+      [[maybe_unused]] const std::uint8_t &texture_id) const
   {
     const auto &palette_texture = m_textures.at(texture_id, palette);
     if (!palette_texture.empty()) {

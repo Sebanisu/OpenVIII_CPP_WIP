@@ -13,9 +13,6 @@
 #ifndef VIIIARCHIVE_FF8STRING_HPP
 #define VIIIARCHIVE_FF8STRING_HPP
 #include "LangT.hpp"
-#include <array>
-#include <sstream>
-#include <string_view>
 using namespace std::string_view_literals;
 namespace open_viii {
 template<LangT langVal>

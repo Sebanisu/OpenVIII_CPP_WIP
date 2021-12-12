@@ -17,10 +17,9 @@
 #include "BattleOnlyStatusesT.hpp"
 #include "CommonKernel.hpp"
 #include "ElementT.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
-#include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description
@@ -67,8 +66,8 @@ public:
       const RinoaLimitBreakPart2_impl &right) const noexcept = default;
 };
 using RinoaLimitBreakPart2 = CommonKernel<RinoaLimitBreakPart2_impl>;
-static_assert(RinoaLimitBreakPart2::EXPECTED_SIZE
-              == sizeof(RinoaLimitBreakPart2));
+static_assert(
+  RinoaLimitBreakPart2::EXPECTED_SIZE == sizeof(RinoaLimitBreakPart2));
 static_assert(has_name_offset<RinoaLimitBreakPart2>);
 static_assert(has_magic_id<RinoaLimitBreakPart2>);
 static_assert(has_attack_type<RinoaLimitBreakPart2>);

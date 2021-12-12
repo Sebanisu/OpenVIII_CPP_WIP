@@ -14,7 +14,6 @@
 #define VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAKPARAMS_HPP
 #include "CommonKernel.hpp"
 #include "QuistisBlueMagicLimitBreakParam.hpp"
-#include <compare>
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description
@@ -47,7 +46,8 @@ using QuistisBlueMagicLimitBreakParams
 // using QuistisBlueMagicLimitBreakParams =
 // CrisisLevelT<QuistisBlueMagicLimitBreakParam>;
 static_assert(has_blue_magic_data<QuistisBlueMagicLimitBreakParams>);
-static_assert(sizeof(QuistisBlueMagicLimitBreakParams)
-              == QuistisBlueMagicLimitBreakParams::EXPECTED_SIZE);
+static_assert(
+  sizeof(QuistisBlueMagicLimitBreakParams)
+  == QuistisBlueMagicLimitBreakParams::EXPECTED_SIZE);
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_QUISTISBLUEMAGICLIMITBREAKPARAMS_HPP

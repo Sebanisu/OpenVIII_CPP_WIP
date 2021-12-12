@@ -13,9 +13,6 @@
 #ifndef VIIIARCHIVE_TEXIDBUFFER_HPP
 #define VIIIARCHIVE_TEXIDBUFFER_HPP
 #include "open_viii/graphics/BPPT.hpp"
-#include <cassert>
-#include <compare>
-#include <cstdint>
 namespace open_viii::graphics::background {
 /**
  * 4 bit paletteID nested inside of 16 bits of data.
@@ -98,8 +95,8 @@ public:
   {
     TexIdBuffer out{};
     out.m_data = (m_data & DEPTH_INVERSE_MASK)
-               | static_cast<std::uint16_t>((in_depth.raw() << DEPTH_SHIFT)
-                                            & DEPTH_MASK);
+               | static_cast<std::uint16_t>(
+                   (in_depth.raw() << DEPTH_SHIFT) & DEPTH_MASK);
     return out;
   }
   [[nodiscard]] BPPT

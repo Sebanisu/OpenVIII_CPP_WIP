@@ -73,7 +73,7 @@ public:
     save_tim(const std::string &path, const size_t i, const Tim &tim) const
   {
     if (tim) {
-      auto       path_parts = std::filesystem::path(path);
+      auto path_parts = std::filesystem::path(path);
       const auto out_path   = (path_parts.parent_path()
                              / (path_parts.stem().string() + std::to_string(i)
                                 + path_parts.extension().string()))

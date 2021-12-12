@@ -14,15 +14,17 @@ private:
 
 public:
   constexpr OneModelHeaderStart() = default;
-  constexpr OneModelHeaderStart(std::uint32_t offset,
-                                std::uint32_t size,
-                                std::uint32_t size2,
-                                std::uint32_t flag_dword)
+  constexpr OneModelHeaderStart(
+    std::uint32_t offset,
+    std::uint32_t size,
+    std::uint32_t size2,
+    std::uint32_t flag_dword)
     : m_offset(offset), m_size(size), m_size2(size2), m_flag_dword(flag_dword)
   {}
-  constexpr OneModelHeaderStart(std::uint32_t offset,
-                                std::uint32_t size,
-                                std::uint32_t flag_dword)
+  constexpr OneModelHeaderStart(
+    std::uint32_t offset,
+    std::uint32_t size,
+    std::uint32_t flag_dword)
     : OneModelHeaderStart(offset, size, size, flag_dword)
   {}
   constexpr std::uint32_t

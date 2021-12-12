@@ -13,8 +13,6 @@
 #ifndef VIIIARCHIVE_SLOTSARRAY_HPP
 #define VIIIARCHIVE_SLOTSARRAY_HPP
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
-#include <cstdint>
 namespace open_viii::kernel {
 /**
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Slot-array

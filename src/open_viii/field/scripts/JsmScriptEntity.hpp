@@ -3,9 +3,6 @@
 //
 #ifndef VIIIARCHIVE_JSMSCRIPTENTITY_HPP
 #define VIIIARCHIVE_JSMSCRIPTENTITY_HPP
-#include <cstdint>
-#include <type_traits>
-#include <utility>
 namespace open_viii::field::scripts {
 struct JsmScriptEntity
 {

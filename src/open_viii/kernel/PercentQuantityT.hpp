@@ -3,7 +3,6 @@
 //
 #ifndef VIIIARCHIVE_PERCENTQUANTITYT_HPP
 #define VIIIARCHIVE_PERCENTQUANTITYT_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 enum class PercentQuantityT : std::uint8_t
 {

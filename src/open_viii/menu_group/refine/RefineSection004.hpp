@@ -12,11 +12,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_REFINESECTION004_HPP
 #define VIIIARCHIVE_REFINESECTION004_HPP
+#include "open_viii/ItemIdT.hpp"
 #include "RefineCardID.hpp"
 #include "RefineEntry.hpp"
-#include "open_viii/ItemIdT.hpp"
-#include <array>
-#include <iostream>
 namespace open_viii::menu_group {
 struct [[maybe_unused]] RefineSection004// refine cards to items
 {
@@ -47,11 +45,12 @@ public:
   }
   template<LangT langVal, typename T>
   std::ostream &
-    out_array(const T &                    arr,
-              std::ostream &               os,
-              const std::span<const char> &buffer          = ""sv,
-              const intmax_t               offset          = 0,
-              bool                         skip_first_null = false) const
+    out_array(
+      const T                     &arr,
+      std::ostream                &os,
+      const std::span<const char> &buffer          = ""sv,
+      const intmax_t               offset          = 0,
+      bool                         skip_first_null = false) const
   {
     for (const auto item : arr) {
       (item.template out<langVal>(os, buffer, offset, skip_first_null)) << '\n';
@@ -60,10 +59,11 @@ public:
   }
   template<LangT langVal>
   std::ostream &
-    out(std::ostream &               os,
-        const std::span<const char> &buffer          = ""sv,
-        const intmax_t               offset          = 0,
-        bool                         skip_first_null = false) const
+    out(
+      std::ostream                &os,
+      const std::span<const char> &buffer          = ""sv,
+      const intmax_t               offset          = 0,
+      bool                         skip_first_null = false) const
   {
     os << "cardMod:\n";
     out_array<langVal>(m_card_mod, os, buffer, offset, skip_first_null);

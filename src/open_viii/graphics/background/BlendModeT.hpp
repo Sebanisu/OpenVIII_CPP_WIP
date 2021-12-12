@@ -12,14 +12,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_BLENDMODET_HPP
 #define VIIIARCHIVE_BLENDMODET_HPP
-#include <cstdint>
 namespace open_viii::graphics::background {
-enum struct BlendModeT : std::uint8_t {
+enum struct BlendModeT : std::uint8_t
+{
   half_add [[maybe_unused]],
   add [[maybe_unused]],
   subtract [[maybe_unused]],
   quarter_add [[maybe_unused]],
   none [[maybe_unused]],
 };
-}
+}// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_BLENDMODET_HPP

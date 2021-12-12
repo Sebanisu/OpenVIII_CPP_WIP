@@ -4,8 +4,6 @@
 #ifndef VIIIARCHIVE_SLOT_HPP
 #define VIIIARCHIVE_SLOT_HPP
 #include "CommonKernel.hpp"
-#include <compare>
-#include <cstdint>
 namespace open_viii::kernel {
 /**
  * 8 total - magic id and count

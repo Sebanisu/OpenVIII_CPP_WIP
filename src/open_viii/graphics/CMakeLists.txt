@@ -10,3 +10,35 @@ target_link_libraries(${PROJECT_NAME}_VIIIGraphics
         INTERFACE ${PROJECT_NAME}_VIIITools
         )
 target_include_directories(${PROJECT_NAME}_VIIIGraphics INTERFACE ${PNG_INCLUDE_DIRS})
+target_precompile_headers(
+        ${PROJECT_NAME}_VIIIGraphics INTERFACE
+        <algorithm>
+        <array>
+        <bit>
+        <bitset>
+        <cassert>
+        <cctype>
+        <compare>
+        <concepts>
+        <cstdint>
+        <cstdio>
+        <cstring>
+        <execution>
+        <filesystem>
+        <fstream>
+        <iomanip>
+        <iostream>
+        <limits>
+        <memory>
+        <numeric>
+        <ostream>
+        <ranges>
+        <span>
+        <sstream>
+        <string>
+        <string_view>
+        <type_traits>
+        <utility>
+        <variant>
+        <vector>
+)

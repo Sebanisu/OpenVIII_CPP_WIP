@@ -4,7 +4,6 @@
 #ifndef VIIIARCHIVE_GEOMETRIES_HPP
 #define VIIIARCHIVE_GEOMETRIES_HPP
 #include "Geometry.hpp"
-#include <array>
 namespace open_viii::battle::stage {
 /**
  * There maybe more than one Geometry checking for 01 00 01 00 to know if there

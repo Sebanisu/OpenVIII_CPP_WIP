@@ -21,7 +21,6 @@
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
 #include "ZellDuelButtonT.hpp"
-#include <array>
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description

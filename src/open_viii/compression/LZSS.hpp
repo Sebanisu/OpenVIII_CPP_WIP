@@ -12,10 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIICOMPRESSION_LZSS_H
 #define VIIICOMPRESSION_LZSS_H
-#include <algorithm>
-#include <array>
-#include <span>
-#include <vector>
 namespace open_viii::compression {
 struct LZSS
 {
@@ -85,7 +81,7 @@ private:
       // memset(text_buf, 0, r); //std::array should init with 0s.
       std::uint32_t len = 0;
       for (; len < NODE_SIZE && data != data_end; ++len, ++data) {
-        m_text_buf.at(std::size_t{r} + len) = static_cast<std::uint8_t>(
+        m_text_buf.at(std::size_t{ r } + len) = static_cast<std::uint8_t>(
           *data);// Read 18 bytes into the last 18 bytes of the buffer
       }
       if (/* (textsize =  */ len /* ) */ == 0) {
@@ -106,23 +102,25 @@ private:
       std::uint8_t  mask         = 1;
       do {
         if (m_match_length > len) {
-          m_match_length =
-            len;// match_length may be spuriously long near the end of text.
+          m_match_length
+            = len;// match_length may be spuriously long near the end of text.
         }
         if (m_match_length <= 2) {
           m_match_length = 1; // Not long enough match.  Send one byte.
           code_buf[0] |= mask;//'send one byte' flag
           code_buf.at(code_buf_ptr++) = m_text_buf.at(r);// Send unencoded.
-        } else {
-          code_buf.at(code_buf_ptr++) =
-            static_cast<std::uint8_t>(m_match_position);
+        }
+        else {
+          code_buf.at(code_buf_ptr++)
+            = static_cast<std::uint8_t>(m_match_position);
           code_buf.at(code_buf_ptr++) = static_cast<std::uint8_t>(
             (((m_match_position >> 4U) & MATCH_MASK))
             | (m_match_length - (2 + 1)));// Send position and length pair. Note
                                           // match_length > 2.
         }
-        if ((mask = static_cast<std::uint8_t>((mask << 1U)))
-            == 0)// Shift mask left one bit.
+        if ((mask = static_cast<std::uint8_t>((mask << 1U))) == 0)// Shift mask
+                                                                  // left one
+                                                                  // bit.
         {
           //			for(i=0 ; i<code_buf_ptr ; ++i)//Send at most 8
           // units
@@ -130,9 +128,10 @@ private:
           // result.replace(curResult, code_buf_ptr, (char *)code_buf,
           // code_buf_ptr); pos,len,after,after_len if length the same then
           // would be a memcpy. or .insert()
-          result.insert(result.begin() + cur_result,
-                        code_buf.begin(),
-                        code_buf.begin() + code_buf_ptr);
+          result.insert(
+            result.begin() + cur_result,
+            code_buf.begin(),
+            code_buf.begin() + code_buf_ptr);
           cur_result += code_buf_ptr;
           code_buf[0]  = 0;
           code_buf_ptr = mask = 1;
@@ -145,7 +144,7 @@ private:
             delete_node(s);// Delete old strings and
             m_text_buf.at(s) = static_cast<std::uint8_t>(c);// read new bytes
             if (s < F_MINUS1) {
-              m_text_buf.at(std::size_t{s} + N) = static_cast<std::uint8_t>(
+              m_text_buf.at(std::size_t{ s } + N) = static_cast<std::uint8_t>(
                 c);// If the position is near the end of buffer, extend the
                    // buffer to make string comparison easier.
             }
@@ -164,7 +163,8 @@ private:
             }
           }
         }
-      } while (len > 0);   // until length of string to be processed is zero
+      }
+      while (len > 0);     // until length of string to be processed is zero
       if (code_buf_ptr > 1)// Send remaining code.
       {
         //		for(i = 0; i < code_buf_ptr ; ++i)
@@ -172,9 +172,10 @@ private:
         // result.replace(curResult, code_buf_ptr, (char *)code_buf,
         // code_buf_ptr); pos,len,after,after_len if length the same then would
         // be a memcpy. or .insert()
-        result.insert(result.begin() + cur_result,
-                      code_buf.begin(),
-                      code_buf.begin() + code_buf_ptr);
+        result.insert(
+          result.begin() + cur_result,
+          code_buf.begin(),
+          code_buf.begin() + code_buf_ptr);
         cur_result += code_buf_ptr;
       }
       // result.truncate(curResult);
@@ -204,15 +205,18 @@ private:
         if (cmp >= 0) {// if cmp is unsigned this is always true..
           if (m_right_side.at(p) != NOT_USED) {
             p = m_right_side.at(p);
-          } else {
+          }
+          else {
             m_right_side.at(p) = item;
             m_parent.at(item)  = p;
             return;
           }
-        } else {
+        }
+        else {
           if (m_left_side.at(p) != NOT_USED) {
             p = m_left_side.at(p);
-          } else {
+          }
+          else {
             m_left_side.at(p) = item;
             m_parent.at(item) = p;
             return;
@@ -223,8 +227,10 @@ private:
           for (; node_index < NODE_SIZE;
                ++node_index) {// if ((cmp = key.subspan(node_index)[0] -
                               // (text_buf.at(p + node_index))) != 0) {
-            if ((cmp = key[node_index] - (m_text_buf.at(std::size_t{p} + node_index)))
-                != 0) {
+            if (
+              (cmp = key[node_index]
+                   - (m_text_buf.at(std::size_t{ p } + node_index)))
+              != 0) {
               break;
             }
           }
@@ -243,7 +249,8 @@ private:
       m_parent.at(m_right_side.at(p)) = item;
       if (m_right_side.at(m_parent.at(p)) == p) {
         m_right_side.at(m_parent.at(p)) = item;
-      } else {
+      }
+      else {
         m_left_side.at(m_parent.at(p)) = item;
       }
       m_parent.at(p) = NOT_USED;// remove p
@@ -260,14 +267,17 @@ private:
         auto q = [&p, this]() -> std::uint32_t {
           if (m_right_side.at(p) == NOT_USED) {
             return m_left_side.at(p);
-          } else if (m_left_side.at(p) == NOT_USED) {
+          }
+          else if (m_left_side.at(p) == NOT_USED) {
             return m_right_side.at(p);
-          } else {
+          }
+          else {
             std::uint32_t q_i = m_left_side.at(p);
             if (m_right_side.at(q_i) != NOT_USED) {
               do {
                 q_i = m_right_side.at(q_i);
-              } while (m_right_side.at(q_i) != NOT_USED);
+              }
+              while (m_right_side.at(q_i) != NOT_USED);
               m_right_side.at(m_parent.at(q_i)) = m_left_side.at(q_i);
               m_parent.at(m_left_side.at(q_i))  = m_parent.at(q_i);
               m_left_side.at(q_i)               = m_left_side.at(p);
@@ -281,7 +291,8 @@ private:
         m_parent.at(q) = m_parent.at(p);
         if (m_right_side.at(m_parent.at(p)) == p) {
           m_right_side.at(m_parent.at(p)) = q;
-        } else {
+        }
+        else {
           m_left_side.at(m_parent.at(p)) = q;
         }
       }
@@ -327,8 +338,10 @@ public:
   [[nodiscard]] static dstT
     decompress(std::span<const char> src, size_t dst_size = 0)
   {
-    //warning C6262: Function uses '16560' bytes of stack:  exceeds /analyze:stacksize '16384'.  Consider moving some data to heap.
-    //warning C6262: Function uses '16568' bytes of stack:  exceeds /analyze:stacksize '16384'.  Consider moving some data to heap.
+    // warning C6262: Function uses '16560' bytes of stack:  exceeds
+    // /analyze:stacksize '16384'.  Consider moving some data to heap. warning
+    // C6262: Function uses '16568' bytes of stack:  exceeds /analyze:stacksize
+    // '16384'.  Consider moving some data to heap.
     dstT dst{};
     if (dst_size > 0) {
       dst.reserve(dst_size);
@@ -360,7 +373,8 @@ public:
         dst.push_back(static_cast<char>(current));
         textBuf.at(r++) = current;
         r &= N_MINUS1;
-      } else {// value previously read
+      }
+      else {// value previously read
         // get bounds of ring buffer
         if (testAtEnd()) {
           break;
@@ -418,7 +432,8 @@ public:
   static auto
     compress(std::span<const char> span)
   {
-    // warning C6262: Function uses '54328' bytes of stack:  exceeds /analyze:stacksize '16384'.  Consider moving some data to heap.
+    // warning C6262: Function uses '54328' bytes of stack:  exceeds
+    // /analyze:stacksize '16384'.  Consider moving some data to heap.
     CompressImpl compress_obj{};// complex code moved into abstraction.
     return compress_obj(span);
   }

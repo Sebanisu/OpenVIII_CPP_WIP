@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_ATTACKFLAGST_HPP
 #define VIIIARCHIVE_ATTACKFLAGST_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 enum class AttackFlagsT : std::uint8_t
 {

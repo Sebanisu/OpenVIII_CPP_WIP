@@ -5,7 +5,6 @@
 #define VIIIARCHIVE_CAMFRAME_HPP
 #include "open_viii/graphics/Point.hpp"
 #include "open_viii/graphics/Vertice.hpp"
-#include <array>
 namespace open_viii::pak {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK#CAM_files
@@ -255,16 +254,15 @@ public:
   friend std::ostream &
     operator<<(std::ostream &os, const CamFrame &cam_frame)
   {
-    return os << '{' << cam_frame.m_x << ',' << cam_frame.m_y << ','
-              << cam_frame.m_z << ',' << cam_frame.m_z_z << ','
-              << cam_frame.m_space << ',' << cam_frame.m_pan << ','
-              << cam_frame.m_zoom << ',' << cam_frame.m_zoom2 << ',' << std::hex
-              << std::uppercase << "0x"
-              << (static_cast<uint16_t>(cam_frame.m_render_mode) & 0xFFU)
-              << std::dec << std::nouppercase << ','
-              << std::string_view(cam_frame.m_end.begin(),
-                                  cam_frame.m_end.end())
-              << '}';
+    return os
+        << '{' << cam_frame.m_x << ',' << cam_frame.m_y << ',' << cam_frame.m_z
+        << ',' << cam_frame.m_z_z << ',' << cam_frame.m_space << ','
+        << cam_frame.m_pan << ',' << cam_frame.m_zoom << ','
+        << cam_frame.m_zoom2 << ',' << std::hex << std::uppercase << "0x"
+        << (static_cast<uint16_t>(cam_frame.m_render_mode) & 0xFFU) << std::dec
+        << std::nouppercase << ','
+        << std::string_view(cam_frame.m_end.begin(), cam_frame.m_end.end())
+        << '}';
   }
   constexpr auto
     midpoint(const CamFrame other) const noexcept

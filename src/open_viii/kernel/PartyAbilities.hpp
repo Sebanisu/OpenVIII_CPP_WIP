@@ -14,7 +14,6 @@
 #define VIIIARCHIVE_PARTYABILITIES_HPP
 #include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description

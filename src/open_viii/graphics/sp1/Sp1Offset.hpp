@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_SP1OFFSET_HPP
 #define VIIIARCHIVE_SP1OFFSET_HPP
-#include <cstdint>
 namespace open_viii::graphics {
 struct Sp1Offset
 {

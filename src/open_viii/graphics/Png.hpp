@@ -7,8 +7,6 @@
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include "png.h"
-#include <cstdio>
-#include <memory>
 namespace open_viii::graphics {
 
 struct Png

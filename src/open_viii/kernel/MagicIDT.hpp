@@ -1,6 +1,5 @@
 #ifndef OPENVIII_CPP_WIP_MAGICIDT_HPP
 #define OPENVIII_CPP_WIP_MAGICIDT_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 enum class MagicIDT : std::uint16_t
 {

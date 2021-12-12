@@ -6,8 +6,6 @@
 #include "CameraAnimationFrame.hpp"
 #include "ControlWord.hpp"
 #include "open_viii/graphics/Vertice.hpp"
-#include <cstdint>
-#include <vector>
 namespace open_viii::battle::stage {
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Camera_Animation_.28WIP.29

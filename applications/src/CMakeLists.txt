@@ -143,7 +143,9 @@ add_executable(${PROJECT_NAME}_TestExtractPAK
         TestExtractPAK.cpp TestExtractPAK.hpp)
 set_target_properties(${PROJECT_NAME}_TestExtractPAK PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(${PROJECT_NAME}_TestExtractPAK
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
         PRIVATE ${PROJECT_NAME}_VIIIPaths
+        PRIVATE ${PROJECT_NAME}_VIIIPak
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )
@@ -282,6 +284,8 @@ set_target_properties(${PROJECT_NAME}_double_cam PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${PROJECT_NAME}_double_cam PROPERTIES OUTPUT_NAME "double_cam")
 target_link_libraries(${PROJECT_NAME}_double_cam
         PRIVATE ${PROJECT_NAME}_VIIIPaths
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
+        PRIVATE ${PROJECT_NAME}_VIIIPak
         PRIVATE ${PROJECT_NAME}_project_warnings
         PRIVATE ToolsLibrary_tl
         )

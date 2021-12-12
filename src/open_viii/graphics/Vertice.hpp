@@ -4,9 +4,6 @@
 #ifndef VIIIARCHIVE_VERTICE_HPP
 #define VIIIARCHIVE_VERTICE_HPP
 #include "open_viii/Concepts.hpp"
-#include <cstdint>
-#include <numeric>
-#include <ostream>
 namespace open_viii::graphics {
 template<Number mainNumberT = std::int16_t>
 struct Vertice
@@ -99,9 +96,10 @@ public:
   [[nodiscard]] constexpr auto
     midpoint(const Vertice<T> other) const noexcept
   {
-    return Vertice(std::midpoint(m_x, other.x()),
-                   std::midpoint(m_y, other.y()),
-                   std::midpoint(m_z, other.z()));
+    return Vertice(
+      std::midpoint(m_x, other.x()),
+      std::midpoint(m_y, other.y()),
+      std::midpoint(m_z, other.z()));
   }
 };
 template<typename mainNumberT>

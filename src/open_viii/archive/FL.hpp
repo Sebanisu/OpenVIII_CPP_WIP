@@ -17,19 +17,6 @@
 #include "tl/read.hpp"
 #include "tl/string.hpp"
 #include "tl/write.hpp"
-#include <cassert>
-#include <compare>
-#include <filesystem>
-#include <fstream>
-#include <functional>
-#include <initializer_list>
-#include <iostream>
-#include <optional>
-#include <ranges>
-#include <set>
-#include <sstream>
-#include <string>
-#include <vector>
 
 namespace open_viii::archive::fl {
 /**
@@ -83,10 +70,11 @@ inline constexpr void
 [[nodiscard]] [[maybe_unused]] inline std::string
   clean_buffer(std::string &&in_buffer)
 {
-  return tl::string::replace_slashes(tl::string::remove_carriage_return(
-    tl::string::erase_string_from_string(std::move(in_buffer),
-                                         std::string_view(R"(c:\)"),
-                                         std::string_view(R"(C:\)"))));
+  return tl::string::replace_slashes(
+    tl::string::remove_carriage_return(tl::string::erase_string_from_string(
+      std::move(in_buffer),
+      std::string_view(R"(c:\)"),
+      std::string_view(R"(C:\)"))));
 }
 
 /**
@@ -120,16 +108,18 @@ static constexpr auto EXT = std::string_view(".fl");
 inline void
   sort_entries(std::span<std::pair<std::uint32_t, std::string>> vector)
 {
-  std::ranges::sort(vector,
-                    [](const std::pair<std::uint32_t, std::string> &left,
-                       const std::pair<std::uint32_t, std::string> &right) {
-                      const std::string &ls = std::get<1>(left);
-                      const std::string &rs = std::get<1>(right);
-                      if (std::ranges::size(ls) == std::ranges::size(rs)) {
-                        return ls.compare(rs) < 0;
-                      }
-                      return std::ranges::size(ls) < std::ranges::size(rs);
-                    });
+  std::ranges::sort(
+    vector,
+    [](
+      const std::pair<std::uint32_t, std::string> &left,
+      const std::pair<std::uint32_t, std::string> &right) {
+      const std::string &ls = std::get<1>(left);
+      const std::string &rs = std::get<1>(right);
+      if (std::ranges::size(ls) == std::ranges::size(rs)) {
+        return ls.compare(rs) < 0;
+      }
+      return std::ranges::size(ls) < std::ranges::size(rs);
+    });
 }
 
 /**
@@ -159,12 +149,13 @@ inline void
  */
 [[nodiscard]] [[maybe_unused]] inline std::vector<
   std::pair<std::uint32_t, std::string>>
-  get_all_entries(const tl::read::input                         &cont,
-                  const size_t                                  &offset,
-                  const size_t                                  &size   = 0U,
-                  const size_t                                  &count  = 0U,
-                  const std::initializer_list<std::string_view> &needle = {},
-                  const size_t                                  &limit  = 0U)
+  get_all_entries(
+    const tl::read::input                         &cont,
+    const size_t                                  &offset,
+    const size_t                                  &size   = 0U,
+    const size_t                                  &count  = 0U,
+    const std::initializer_list<std::string_view> &needle = {},
+    const size_t                                  &limit  = 0U)
 {
   std::vector<std::pair<std::uint32_t, std::string>> vector{};
   cont.seek(static_cast<std::intmax_t>(offset), std::ios::beg);
@@ -187,32 +178,35 @@ inline void
       }
 
       // https://youtu.be/oTMSgI1XjF8?t=1727
-      vector.emplace_back(std::piecewise_construct,
-                          std::forward_as_tuple(id),
-                          std::forward_as_tuple(std::move(inner_path)));
+      vector.emplace_back(
+        std::piecewise_construct,
+        std::forward_as_tuple(id),
+        std::forward_as_tuple(std::move(inner_path)));
     }
   }
   return sort_entries(std::move(vector));
 }
 // Get all entries from the FL file sorted and cleaned.
 [[nodiscard]] [[maybe_unused]] inline auto
-  get_all_entries(const std::filesystem::path                   &path,
-                  const size_t                                  &offset,
-                  const size_t                                  &size   = 0U,
-                  const size_t                                  &count  = 0U,
-                  const std::initializer_list<std::string_view> &needle = {},
-                  const size_t                                  &limit  = 0U)
+  get_all_entries(
+    const std::filesystem::path                   &path,
+    const size_t                                  &offset,
+    const size_t                                  &size   = 0U,
+    const size_t                                  &count  = 0U,
+    const std::initializer_list<std::string_view> &needle = {},
+    const size_t                                  &limit  = 0U)
 {
 
   std::vector<std::pair<std::uint32_t, std::string>> vector{};
   tl::read::from_file(
     [&](std::istream &istream) {
-      vector = get_all_entries(tl::read::input(&istream, true),
-                               offset,
-                               size,
-                               count,
-                               needle,
-                               limit);
+      vector = get_all_entries(
+        tl::read::input(&istream, true),
+        offset,
+        size,
+        count,
+        needle,
+        limit);
     },
     path);
   return vector;
@@ -220,19 +214,21 @@ inline void
 
 [[nodiscard]] [[maybe_unused]] inline std::vector<
   std::pair<std::uint32_t, std::string>>
-  get_all_entries(const std::string                             &data,
-                  const size_t                                  &offset,
-                  const size_t                                  &size,
-                  const size_t                                  &count,
-                  const std::initializer_list<std::string_view> &needle,
-                  const size_t                                  &limit)
+  get_all_entries(
+    const std::string                             &data,
+    const size_t                                  &offset,
+    const size_t                                  &size,
+    const size_t                                  &count,
+    const std::initializer_list<std::string_view> &needle,
+    const size_t                                  &limit)
 {
-  return get_all_entries(tl::read::input(data, true),
-                         offset,
-                         size,
-                         count,
-                         needle,
-                         limit);
+  return get_all_entries(
+    tl::read::input(data, true),
+    offset,
+    size,
+    count,
+    needle,
+    limit);
 }
 
 /**
@@ -249,13 +245,14 @@ inline void
  */
 [[nodiscard]] [[maybe_unused]] inline std::vector<
   std::pair<std::uint32_t, std::string>>
-  get_all_entries(const std::filesystem::path                   &path,
-                  const std::string                             &data,
-                  const size_t                                  &offset,
-                  const size_t                                  &size   = 0U,
-                  const size_t                                  &count  = 0U,
-                  const std::initializer_list<std::string_view> &needle = {},
-                  const size_t                                  &limit  = 0U)
+  get_all_entries(
+    const std::filesystem::path                   &path,
+    const std::string                             &data,
+    const size_t                                  &offset,
+    const size_t                                  &size   = 0U,
+    const size_t                                  &count  = 0U,
+    const std::initializer_list<std::string_view> &needle = {},
+    const size_t                                  &limit  = 0U)
 {
 
   if (!std::empty(data) && data.front() != '\0') {
@@ -276,11 +273,12 @@ inline void
  */
 template<typename T>
 [[nodiscard]] [[maybe_unused]] inline auto
-  get_entry(const T                                       &data,
-            const std::initializer_list<std::string_view> &needle,
-            const size_t                                  &offset = 0U,
-            const size_t                                  &size   = 0U,
-            const size_t                                  &count  = 0U)
+  get_entry(
+    const T                                       &data,
+    const std::initializer_list<std::string_view> &needle,
+    const size_t                                  &offset = 0U,
+    const size_t                                  &size   = 0U,
+    const size_t                                  &count  = 0U)
 {
   auto vector  = get_all_entries(data, offset, size, count, needle, 1U);
   using valueT = typename decltype(vector)::value_type;
@@ -300,12 +298,13 @@ template<typename T>
  * @param count is max results returned. 0 is unlimited.
  */
 [[nodiscard]] [[maybe_unused]] inline auto
-  get_entry(const std::filesystem::path                   &path,
-            const std::string                             &data,
-            const std::initializer_list<std::string_view> &needle,
-            const size_t                                  &offset = 0U,
-            const size_t                                  &size   = 0U,
-            const size_t                                  &count  = 0U)
+  get_entry(
+    const std::filesystem::path                   &path,
+    const std::string                             &data,
+    const std::initializer_list<std::string_view> &needle,
+    const size_t                                  &offset = 0U,
+    const size_t                                  &size   = 0U,
+    const size_t                                  &count  = 0U)
 {
   if (std::ranges::empty(data)) {
     return get_entry(path, needle, offset, size, count);

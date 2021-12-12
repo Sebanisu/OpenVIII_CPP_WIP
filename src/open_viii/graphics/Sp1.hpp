@@ -41,9 +41,10 @@ public:
         m_entries = {};
         return;
       }
-      std::memcpy(std::ranges::data(current),
-                  std::ranges::data(buffer.subspan(offset.offset())),
-                  sz);
+      std::memcpy(
+        std::ranges::data(current),
+        std::ranges::data(buffer.subspan(offset.offset())),
+        sz);
       s = s.subspan(1);
     }
   }

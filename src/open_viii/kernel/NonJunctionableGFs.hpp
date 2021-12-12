@@ -16,9 +16,8 @@
 #include "BattleOnlyStatusesT.hpp"
 #include "CommonKernel.hpp"
 #include "ElementT.hpp"
-#include "PersistentStatusesT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
+#include "PersistentStatusesT.hpp"
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description

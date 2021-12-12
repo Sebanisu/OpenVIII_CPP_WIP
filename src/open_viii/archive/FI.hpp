@@ -17,15 +17,6 @@
 #include "open_viii/tools/Tools.hpp"
 #include "tl/read.hpp"
 #include "tl/write.hpp"
-#include <algorithm>
-#include <array>
-#include <cstring>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <iterator>
-#include <span>
-#include <vector>
 namespace open_viii::archive {
 /**
  * FI is the file index for the FL and FS files.

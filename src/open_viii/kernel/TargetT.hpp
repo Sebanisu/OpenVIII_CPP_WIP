@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TARGETT_HPP
 #define VIIIARCHIVE_TARGETT_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 enum class TargetT : std::uint8_t
 {

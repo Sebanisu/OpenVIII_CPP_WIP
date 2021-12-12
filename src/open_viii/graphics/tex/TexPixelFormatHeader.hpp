@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TEXPIXELFORMATHEADER_HPP
 #define VIIIARCHIVE_TEXPIXELFORMATHEADER_HPP
-#include <cstdint>
 namespace open_viii::graphics {
 /**
  * Pixel format header. This tells how the colors are laid out. These are
@@ -235,32 +234,28 @@ public:
   /**
    * Red Max
    */
-  [[maybe_unused]] [[nodiscard]] auto
-    (red_max)() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto(red_max)() const noexcept
   {
     return m_red_max;
   }
   /**
    * Green Max
    */
-  [[maybe_unused]] [[nodiscard]] auto
-    (green_max)() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto(green_max)() const noexcept
   {
     return m_green_max;
   }
   /**
    * Blue Max
    */
-  [[maybe_unused]] [[nodiscard]] auto
-    (blue_max)() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto(blue_max)() const noexcept
   {
     return m_blue_max;
   }
   /**
    * Alpha Max
    */
-  [[maybe_unused]] [[nodiscard]] auto
-    (alpha_max)() const noexcept
+  [[maybe_unused]] [[nodiscard]] auto(alpha_max)() const noexcept
   {
     return m_alpha_max;
   }

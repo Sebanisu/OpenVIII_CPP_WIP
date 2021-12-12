@@ -13,8 +13,6 @@
 #ifndef VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #define VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #include "open_viii/graphics/Rectangle.hpp"
-#include <compare>
-#include <cstdint>
 namespace open_viii::graphics {
 /**
  * Base Header for the following raw 16bit color image data.
@@ -27,8 +25,9 @@ private:
 
 public:
   constexpr TimImageHeader() = default;
-  constexpr TimImageHeader(std::uint32_t            in_size,
-                           Rectangle<std::uint16_t> in_rect)
+  constexpr TimImageHeader(
+    std::uint32_t            in_size,
+    Rectangle<std::uint16_t> in_rect)
     : m_size(in_size), m_rectangle(in_rect)
   {}
   constexpr auto

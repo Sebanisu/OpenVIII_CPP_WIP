@@ -17,8 +17,6 @@
 #include "CommonKernel.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include "RenzokukenFinishersT.hpp"
-#include <compare>
-#include <cstdint>
 namespace open_viii::kernel {
 struct Weapons_impl
 {

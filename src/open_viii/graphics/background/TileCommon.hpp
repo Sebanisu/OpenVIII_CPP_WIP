@@ -6,10 +6,6 @@
 #define OPENVIII_CPP_WIP_TILECOMMON_HPP
 #include "BlendModeT.hpp"
 #include "open_viii/graphics/Rectangle.hpp"
-#include <compare>
-#include <cstring>
-#include <iomanip>
-#include <iostream>
 namespace open_viii::graphics::background {
 enum class TileCommonConstants : std::uint16_t
 {
@@ -41,9 +37,10 @@ private:
     copy_tile(const std::vector<char> &buffer)
   {
     auto tile = this_type{};
-    std::memcpy(&tile,
-                std::data(buffer),
-                (std::min)(sizeof(tileT), std::size(buffer)));
+    std::memcpy(
+      &tile,
+      std::data(buffer),
+      (std::min)(sizeof(tileT), std::size(buffer)));
     return tile;
   }
 
@@ -94,8 +91,8 @@ public:
     return out;
   }
   [[nodiscard]] constexpr this_type
-    with_source_xy(source_type in_source_x,
-                   source_type in_source_y) const noexcept
+    with_source_xy(source_type in_source_x, source_type in_source_y)
+      const noexcept
   {
     auto out        = *this;
     out.m_source_xy = out.m_source_xy.with_x(in_source_x);
@@ -118,7 +115,7 @@ public:
     with_xy(output_type in_x, output_type in_y) const noexcept
   {
     auto out = *this;
-    out.m_xy = decltype(m_xy){in_x,in_y};
+    out.m_xy = decltype(m_xy){ in_x, in_y };
     return out;
   }
   [[nodiscard]] constexpr this_type
@@ -132,7 +129,7 @@ public:
     shift_xy(output_type in_x, output_type in_y) const noexcept
   {
     auto out = *this;
-    out.m_xy += decltype(m_xy){in_x,in_y};
+    out.m_xy += decltype(m_xy){ in_x, in_y };
     return out;
   }
   [[nodiscard]] constexpr auto
@@ -227,13 +224,13 @@ public:
   [[nodiscard]] constexpr this_type
     with_palette_id(decltype(m_palette_id.id()) in_palette_id) const noexcept
   {
-    auto       out    = *this;
-    //const auto old_id = palette_id();
-    out.m_palette_id  = m_palette_id.with_id(in_palette_id);
-    //const auto new_id = out.palette_id();
-//    if (old_id != new_id) {
-//      std::cout << +old_id << +new_id << std::endl;
-//    }
+    auto out         = *this;
+    // const auto old_id = palette_id();
+    out.m_palette_id = m_palette_id.with_id(in_palette_id);
+    // const auto new_id = out.palette_id();
+    //    if (old_id != new_id) {
+    //      std::cout << +old_id << +new_id << std::endl;
+    //    }
     return out;
   }
   [[nodiscard]] constexpr auto

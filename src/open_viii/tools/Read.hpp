@@ -4,16 +4,6 @@
 #ifndef VIIIARCHIVE_READ_HPP
 #define VIIIARCHIVE_READ_HPP
 #include "open_viii/Concepts.hpp"
-#include <cstdint>
-#include <cstring>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <optional>
-#include <span>
-#include <string>
-#include <thread>
-#include <vector>
 namespace open_viii::tools {
 // TODO anything that requires memcpy could maybe be replaced with std::bitcast
 // then the functions could be changes to constexpr.
@@ -26,11 +16,13 @@ namespace open_viii::tools {
  * @todo test?
  * @todo remove or refactor. Does this function even work in all cases?
  */
-template<is_trivially_copyable_and_default_constructible fixed_size_rangeT,
-         std::integral auto                              sizeOfType>
-requires(sizeOfType > 0
-         && (has_data_and_size<fixed_size_rangeT>)&&(
-           !has_reserve<fixed_size_rangeT>)&&(!has_resize<fixed_size_rangeT>))
+template<
+  is_trivially_copyable_and_default_constructible fixed_size_rangeT,
+  std::integral auto                              sizeOfType>
+requires(
+  sizeOfType > 0
+  && (has_data_and_size<fixed_size_rangeT>)&&(
+    !has_reserve<fixed_size_rangeT>)&&(!has_resize<fixed_size_rangeT>))
   [[nodiscard]] inline fixed_size_rangeT read_val2(std::istream &fp)
 {
   fixed_size_rangeT            item{};
@@ -41,9 +33,10 @@ requires(sizeOfType > 0
   // but vector or string wouldn't be good because you would need to manually
   // set size.
   assert(std::ranges::size(item) > 0);
-  memcpy(std::ranges::data(item),
-         std::ranges::data(tmp),
-         sizeof(decltype(*std::ranges::data(item))) * std::ranges::size(item));
+  memcpy(
+    std::ranges::data(item),
+    std::ranges::data(tmp),
+    sizeof(decltype(*std::ranges::data(item))) * std::ranges::size(item));
   return item;
 }
 /**
@@ -118,8 +111,9 @@ template<is_trivially_copyable_and_default_constructible trivialType>
  * @return
  * @todo test?
  */
-template<is_trivially_copyable_and_default_constructible trivialT,
-         std::integral auto                              sizeOfType>
+template<
+  is_trivially_copyable_and_default_constructible trivialT,
+  std::integral auto                              sizeOfType>
 requires(sizeOfType > 0) [[nodiscard]] inline trivialT
   read_val(std::istream &fp)
 {
@@ -148,8 +142,9 @@ template<is_trivially_copyable_and_default_constructible trivialType>
  * @return
  * @todo test?
  */
-template<is_trivially_copyable_and_default_constructible trivialT_or_rangeT,
-         std::integral auto                              sizeOfType>
+template<
+  is_trivially_copyable_and_default_constructible trivialT_or_rangeT,
+  std::integral auto                              sizeOfType>
 requires(sizeOfType > 0) [[nodiscard]] inline trivialT_or_rangeT
   safe_read_val(std::istream &fp)
 {
@@ -188,18 +183,20 @@ template<is_trivially_copyable_and_default_constructible trivialType>
 template<has_data_and_size trivialType>
 requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType>
 inline void
-  read_val(const std::span<const char> &span,
-           trivialType                 &item,
-           std::size_t                  size)
+  read_val(
+    const std::span<const char> &span,
+    trivialType                 &item,
+    std::size_t                  size)
 {
   const auto  element_size = sizeof(decltype(*std::ranges::data(item)));
   // std::ranges::size(span) / element_size
   std::size_t size_of_span = std::ranges::size(span);
   item.resize((std::min)(size, element_size * size_of_span));
   if (size != 0) {
-    memcpy(std::ranges::data(item),
-           std::ranges::data(span),
-           std::ranges::size(item));
+    memcpy(
+      std::ranges::data(item),
+      std::ranges::data(span),
+      std::ranges::size(item));
   }
 }
 /**
@@ -247,8 +244,8 @@ template<is_default_constructible_has_data_and_size rangeT>
 [[nodiscard]] inline rangeT
   safe_read_val(const std::span<const char> &span)
 {
-  if (std::ranges::size(span)
-      < sizeof(decltype(*std::ranges::data(rangeT())))) {
+  if (
+    std::ranges::size(span) < sizeof(decltype(*std::ranges::data(rangeT())))) {
     return rangeT();
   }
   return read_val<rangeT>(span);
@@ -260,8 +257,9 @@ template<is_default_constructible_has_data_and_size rangeT>
  * @return
  * @todo test?
  */
-template<std::ranges::contiguous_range dstT = std::vector<char>,
-         std::integral                 sizeT>
+template<
+  std::ranges::contiguous_range dstT = std::vector<char>,
+  std::integral                 sizeT>
 requires has_resize<dstT>
 [[maybe_unused]] inline auto
   read_val(std::istream &fp, const sizeT &s)
@@ -334,8 +332,9 @@ template<typename dstT = std::vector<char>>
  */
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::istream &>)
-  [[maybe_unused]] inline bool read_from_file(const lambdaT &lambda,
-                                              const std::filesystem::path &path)
+  [[maybe_unused]] inline bool read_from_file(
+    const lambdaT               &lambda,
+    const std::filesystem::path &path)
 {
   auto ofp = open_file(path);
   if (ofp.has_value() && ofp->is_open()) {// check might be redundant.
@@ -373,8 +372,9 @@ template<std::ranges::contiguous_range dstT = std::vector<char>>
  */
 template<is_trivially_copyable_and_default_constructible valueT>
 [[nodiscard]] inline valueT
-  read_value_from_file(const std::filesystem::path &path,
-                       const std::size_t           &offset)
+  read_value_from_file(
+    const std::filesystem::path &path,
+    const std::size_t           &offset)
 {
   valueT item{};
   if (!read_from_file(

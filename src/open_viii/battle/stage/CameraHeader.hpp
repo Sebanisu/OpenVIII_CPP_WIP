@@ -3,9 +3,6 @@
 //
 #ifndef VIIIARCHIVE_CAMERAHEADER_HPP
 #define VIIIARCHIVE_CAMERAHEADER_HPP
-#include <cstdint>
-#include <ostream>
-#include <span>
 namespace open_viii::battle::stage {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Camera_data

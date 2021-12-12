@@ -14,9 +14,8 @@
 #define VIIIARCHIVE_MISC_HPP
 #include "CommonKernel.hpp"
 #include "CrisisLevelT.hpp"
-#include "SequenceAndTimer.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
+#include "SequenceAndTimer.hpp"
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description

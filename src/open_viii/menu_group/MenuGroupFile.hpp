@@ -16,9 +16,8 @@
 #include "MenuGroupHeader.hpp"
 #include "MenuGroupSectionT.hpp"
 #include "MenuMessages.hpp"
-#include "open_viii/BulkSectionData.hpp"
-#include "open_viii/SectionData.hpp"
 #include "open_viii/archive/Archives.hpp"
+#include "open_viii/BulkSectionData.hpp"
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/graphics/Ppm.hpp"
 #include "open_viii/graphics/Tim.hpp"
@@ -27,9 +26,8 @@
 #include "open_viii/menu_group/refine/RefineSection002.hpp"
 #include "open_viii/menu_group/refine/RefineSection003.hpp"
 #include "open_viii/menu_group/refine/RefineSection004.hpp"
+#include "open_viii/SectionData.hpp"
 #include "open_viii/tools/Tools.hpp"
-#include <sstream>
-#include <vector>
 namespace open_viii::menu_group {
 struct MenuGroupFile
 {
@@ -43,7 +41,8 @@ private:
   {
     if constexpr (static_cast<size_t>(sectionT) < MenuGroupHeader::size()) {
       return m_menu_group_header.sections().at(static_cast<size_t>(sectionT));
-    } else {
+    }
+    else {
       return nullptr;
     }
   }
@@ -127,9 +126,10 @@ private:
     MenuGroupSectionT::mes43, MenuGroupSectionT::mes44,
     MenuGroupSectionT::mes45,
   };
-  template<typename refineT,
-           MenuGroupSectionT textSectionT,
-           typename sectionBufferT>
+  template<
+    typename refineT,
+    MenuGroupSectionT textSectionT,
+    typename sectionBufferT>
   auto
     get_refine(const sectionBufferT &section_buffer) const
   {
@@ -188,11 +188,13 @@ public:
   [[nodiscard]] auto
     get_section() const
   {
-    if constexpr (std::ranges::any_of(COMPLEX_VALUE_ARRAY,
-                                      [](const auto &item) {
-                                        return item == sectionT;
-                                      })
-                  || sectionT == MenuGroupSectionT::complex_map) {
+    if constexpr (
+      std::ranges::any_of(
+        COMPLEX_VALUE_ARRAY,
+        [](const auto &item) {
+          return item == sectionT;
+        })
+      || sectionT == MenuGroupSectionT::complex_map) {
       const auto map{ get_section_internal<MenuGroupSectionT::complex_map>()
                         .get_section_buffer(m_data_buffer) };
       const std::array data = {
@@ -210,45 +212,64 @@ public:
           m_data_buffer)
       };
       return ComplexStringSection(map, data);
-    } else {
+    }
+    else {
       [[maybe_unused]] auto section{ get_section_internal<sectionT>() };
       if constexpr (std::is_null_pointer_v<decltype(section)>) {
         return nullptr;
-      } else {
+      }
+      else {
         // return mngrphd.Sections().at(id).get_section_buffer(mngrpBuffer);
         [[maybe_unused]] const auto section_buffer{ section.get_section_buffer(
           m_data_buffer) };
-        if constexpr (sectionT == MenuGroupSectionT::tkmnmes1
-                      || sectionT == MenuGroupSectionT::tkmnmes2
-                      || sectionT == MenuGroupSectionT::tkmnmes3) {
-          return SectionData<MenuMessages>(MenuMessages{ section_buffer },
-                                           section_buffer);
-        } else if constexpr (std::ranges::any_of(TIM_VALUE_ARRAY,
-                                                 [](const auto &item) {
-                                                   return item == sectionT;
-                                                 })) {
+        if constexpr (
+          sectionT == MenuGroupSectionT::tkmnmes1
+          || sectionT == MenuGroupSectionT::tkmnmes2
+          || sectionT == MenuGroupSectionT::tkmnmes3) {
+          return SectionData<MenuMessages>(
+            MenuMessages{ section_buffer },
+            section_buffer);
+        }
+        else if constexpr (std::ranges::any_of(
+                             TIM_VALUE_ARRAY,
+                             [](const auto &item) {
+                               return item == sectionT;
+                             })) {
           return graphics::Tim(section_buffer);
-        } else if constexpr (std::ranges::any_of(MES_VALUE_ARRAY,
-                                                 [](const auto &item) {
-                                                   return item == sectionT;
-                                                 })) {
+        }
+        else if constexpr (std::ranges::any_of(
+                             MES_VALUE_ARRAY,
+                             [](const auto &item) {
+                               return item == sectionT;
+                             })) {
           return SectionData<MenuMessagesSection>(
-            MenuMessagesSection{ section_buffer }, section_buffer);
-        } else if constexpr (sectionT == MenuGroupSectionT::refine0) {
-          return get_refine<open_viii::menu_group::RefineSection000,
-                            MenuGroupSectionT::refine_text0>(section_buffer);
-        } else if constexpr (sectionT == MenuGroupSectionT::refine1) {
-          return get_refine<open_viii::menu_group::RefineSection001,
-                            MenuGroupSectionT::refine_text1>(section_buffer);
-        } else if constexpr (sectionT == MenuGroupSectionT::refine2) {
-          return get_refine<open_viii::menu_group::RefineSection002,
-                            MenuGroupSectionT::refine_text2>(section_buffer);
-        } else if constexpr (sectionT == MenuGroupSectionT::refine3) {
-          return get_refine<open_viii::menu_group::RefineSection003,
-                            MenuGroupSectionT::refine_text3>(section_buffer);
-        } else if constexpr (sectionT == MenuGroupSectionT::refine4) {
-          return get_refine<open_viii::menu_group::RefineSection004,
-                            MenuGroupSectionT::refine_text4>(section_buffer);
+            MenuMessagesSection{ section_buffer },
+            section_buffer);
+        }
+        else if constexpr (sectionT == MenuGroupSectionT::refine0) {
+          return get_refine<
+            open_viii::menu_group::RefineSection000,
+            MenuGroupSectionT::refine_text0>(section_buffer);
+        }
+        else if constexpr (sectionT == MenuGroupSectionT::refine1) {
+          return get_refine<
+            open_viii::menu_group::RefineSection001,
+            MenuGroupSectionT::refine_text1>(section_buffer);
+        }
+        else if constexpr (sectionT == MenuGroupSectionT::refine2) {
+          return get_refine<
+            open_viii::menu_group::RefineSection002,
+            MenuGroupSectionT::refine_text2>(section_buffer);
+        }
+        else if constexpr (sectionT == MenuGroupSectionT::refine3) {
+          return get_refine<
+            open_viii::menu_group::RefineSection003,
+            MenuGroupSectionT::refine_text3>(section_buffer);
+        }
+        else if constexpr (sectionT == MenuGroupSectionT::refine4) {
+          return get_refine<
+            open_viii::menu_group::RefineSection004,
+            MenuGroupSectionT::refine_text4>(section_buffer);
         }
       }
     }
@@ -259,8 +280,7 @@ public:
     const auto temp_path = std::filesystem::path(path_input);
     auto path = temp_path.parent_path() / (temp_path.stem().string() + "_tim");
     static_for_tim<0U, TIM_VALUE_ARRAY.size()>(
-      [&](const auto &                          section_id,
-                [[maybe_unused]] const graphics::Tim &tim) {
+      [&](const auto &section_id, [[maybe_unused]] const graphics::Tim &tim) {
         std::stringstream
           so{};// TODO have these save in the folder with the mngrp files.
         std::cout << ':' << static_cast<std::size_t>(section_id) << ":  {"
@@ -268,21 +288,28 @@ public:
         std::cout << tim << '\n';
         std::cout << tim.check();
         so << path.string() << static_cast<std::size_t>(section_id);
-        const auto colors_dump =
-          [&tim, &so](const std::vector<graphics::Color32<graphics::ColorLayoutT::RGBA>> &colors,
-                      std::uint16_t num = 0) {
-            std::cout << '\n';
-            std::stringstream fn{};
-            fn << so.str() << "_" << static_cast<std::size_t>(num) << ".tmp";
-            // std::cout << "Saved: " << fn.str() << "\n";
-            graphics::Ppm::save(colors, tim.width(), tim.height(), fn.str());
-          };
+        const auto colors_dump
+          = [&tim, &so](
+              const std::vector<graphics::Color32<graphics::ColorLayoutT::RGBA>>
+                           &colors,
+              std::uint16_t num = 0) {
+              std::cout << '\n';
+              std::stringstream fn{};
+              fn << so.str() << "_" << static_cast<std::size_t>(num) << ".tmp";
+              // std::cout << "Saved: " << fn.str() << "\n";
+              graphics::Ppm::save(colors, tim.width(), tim.height(), fn.str());
+            };
         if (tim.clut_rows() > 0) {
           for (std::uint16_t i = 0; i < tim.clut_rows(); i++) {
-            colors_dump(tim.get_colors<graphics::Color32<graphics::ColorLayoutT::RGBA>>(i), i);
+            colors_dump(
+              tim.get_colors<graphics::Color32<graphics::ColorLayoutT::RGBA>>(
+                i),
+              i);
           }
-        } else {
-          colors_dump(tim.get_colors<graphics::Color32<graphics::ColorLayoutT::RGBA>>());
+        }
+        else {
+          colors_dump(
+            tim.get_colors<graphics::Color32<graphics::ColorLayoutT::RGBA>>());
         }
       });
   }
@@ -302,8 +329,8 @@ public:
           }
           const auto &textSpan = mes.text_span();
           if (!std::ranges::empty(textSpan)) {
-            const auto temp =
-              subSection.template decoded_string<langVal>(textSpan, 0, true);
+            const auto temp
+              = subSection.template decoded_string<langVal>(textSpan, 0, true);
             std::cout << "    " << id - 1 << ": {" << subSection.offset()
                       << "} " << tools::u8_to_sv(temp) << '\n';
           }
@@ -316,8 +343,8 @@ public:
   {
     constexpr auto start = 0U;
     static_for_tkmnmes<start, MES_VALUE_ARRAY.size() - start>(
-      [&, this](const auto &                 sectionID,
-                [[maybe_unused]] const auto &tkmnmesPair) {
+      [&,
+       this](const auto &sectionID, [[maybe_unused]] const auto &tkmnmesPair) {
         std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {"
                   << tkmnmesPair->sections().size() << ", "
                   << tkmnmesPair->sub_sections().size() << "},\n";
@@ -332,7 +359,9 @@ public:
               continue;
             }
             const auto temp = subSection.template decoded_string<langVal>(
-              tkmnmesPair.text_span(), offset, true);
+              tkmnmesPair.text_span(),
+              offset,
+              true);
             std::cout << "    " << stringNumber++ << ": {"
                       << subSection.offset() << "} " << tools::u8_to_sv(temp)
                       << '\n';
@@ -359,13 +388,15 @@ public:
   {
     constexpr auto start = 0U;
     static_for_refine<start, REFINE_VALUE_ARRAY.size() - start>(
-      [&, this](const auto &                 sectionID,
-                [[maybe_unused]] const auto &refineBulkSectionData) {
+      [&, this](
+        const auto                  &sectionID,
+        [[maybe_unused]] const auto &refineBulkSectionData) {
         std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {"
                   << refineBulkSectionData.size() << "},\n";
         for (size_t id = 0U; id < 1U; id++) {
           refineBulkSectionData[id].template out<langVal>(
-            std::cout, refineBulkSectionData.text_span());
+            std::cout,
+            refineBulkSectionData.text_span());
         }
       });
   }

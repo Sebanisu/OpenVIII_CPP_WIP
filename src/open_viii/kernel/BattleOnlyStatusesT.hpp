@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_BATTLEONLYSTATUSEST_HPP
 #define VIIIARCHIVE_BATTLEONLYSTATUSEST_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 /**
  * @see https://github.com/DarkShinryu/doomtrain/wiki/Statuses-1

@@ -14,7 +14,8 @@
 #ifndef VIIIARCHIVE_RefineEntry_H
 #define VIIIARCHIVE_RefineEntry_H
 namespace open_viii::menu_group {
-template<typename inputT, typename outputT> struct RefineEntry
+template<typename inputT, typename outputT>
+struct RefineEntry
 {
   /*
    * Type	Size	Value	Description
@@ -72,13 +73,14 @@ public:
   }
   template<LangT langVal>
   std::ostream &
-    out(std::ostream &               os,
-        const std::span<const char> &buffer          = ""sv,
-        const intmax_t               offset          = 0,
-        bool                         skip_first_null = false) const
+    out(
+      std::ostream                &os,
+      const std::span<const char> &buffer          = ""sv,
+      const intmax_t               offset          = 0,
+      bool                         skip_first_null = false) const
   {
-    const auto temp =
-      m_offset.decoded_string<langVal>(buffer, offset, skip_first_null);
+    const auto temp
+      = m_offset.decoded_string<langVal>(buffer, offset, skip_first_null);
     return os << '"' << tools::u8_to_sv(temp) << "\", "
               << static_cast<std::uint16_t>(m_amount_received) << ", "
               << static_cast<std::uint16_t>(m_unknown0) << ", "

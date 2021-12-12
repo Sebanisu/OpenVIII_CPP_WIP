@@ -3,7 +3,6 @@
 //
 #ifndef VIIIARCHIVE_LAYOUTTYPET_HPP
 #define VIIIARCHIVE_LAYOUTTYPET_HPP
-#include <cstdint>
 namespace open_viii::battle::stage {
 enum struct LayoutTypeT : std::uint8_t
 {

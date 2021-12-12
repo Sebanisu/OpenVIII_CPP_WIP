@@ -20,7 +20,6 @@
 #include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
-#include <compare>
 namespace open_viii::kernel {
 /**
  * Offset	Length	Description
@@ -71,8 +70,8 @@ public:
       const TeamLagunaLimitBreaks_impl &right) const noexcept = default;
 };
 using TeamLagunaLimitBreaks = CommonKernel<TeamLagunaLimitBreaks_impl>;
-static_assert(TeamLagunaLimitBreaks::EXPECTED_SIZE
-              == sizeof(TeamLagunaLimitBreaks));
+static_assert(
+  TeamLagunaLimitBreaks::EXPECTED_SIZE == sizeof(TeamLagunaLimitBreaks));
 static_assert(has_name_offset<TeamLagunaLimitBreaks>);
 static_assert(has_description_offset<TeamLagunaLimitBreaks>);
 static_assert(has_magic_id<TeamLagunaLimitBreaks>);

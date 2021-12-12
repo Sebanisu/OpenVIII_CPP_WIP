@@ -12,10 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_SP2HEADER_HPP
 #define VIIIARCHIVE_SP2HEADER_HPP
-#include <cstdint>
-#include <ranges>
-#include <span>
-#include <vector>
 namespace open_viii::graphics {
 struct Sp2Header
 {
@@ -30,9 +26,10 @@ public:
     std::memcpy(&m_count, std::ranges::data(buffer), sizeof(m_count));
     buffer = buffer.subspan(sizeof(m_count));
     m_offsets.resize(m_count);
-    std::memcpy(std::ranges::data(m_offsets),
-                std::ranges::data(buffer),
-                sizeof(std::uint32_t) * m_count);
+    std::memcpy(
+      std::ranges::data(m_offsets),
+      std::ranges::data(buffer),
+      sizeof(std::uint32_t) * m_count);
   }
   [[nodiscard]] const auto &
     offsets() const noexcept

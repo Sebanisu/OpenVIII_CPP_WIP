@@ -13,7 +13,6 @@
 #ifndef VIIIARCHIVE_TIMCLUTHEADER_HPP
 #define VIIIARCHIVE_TIMCLUTHEADER_HPP
 #include "TimImageHeader.hpp"
-#include <compare>
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timClutHeader
@@ -47,8 +46,9 @@ public:
   explicit constexpr TimClutHeader(TimImageHeader in_image_header)
     : m_image_header(in_image_header)
   {}
-  constexpr TimClutHeader(std::uint32_t            in_size,
-                          Rectangle<std::uint16_t> in_rect)
+  constexpr TimClutHeader(
+    std::uint32_t            in_size,
+    Rectangle<std::uint16_t> in_rect)
     : TimClutHeader(TimImageHeader(in_size, in_rect))
   {}
   constexpr auto

@@ -4,7 +4,6 @@
 #ifndef VIIIARCHIVE_CAMERAANIMATIONFRAME_HPP
 #define VIIIARCHIVE_CAMERAANIMATIONFRAME_HPP
 #include "open_viii/graphics/Vertice.hpp"
-#include <cstdint>
 namespace open_viii::battle::stage {
 struct CameraAnimationFrame
 {
@@ -16,10 +15,11 @@ private:
 
 public:
   constexpr CameraAnimationFrame() = default;
-  constexpr CameraAnimationFrame(std::uint16_t is_frame_durations_shot,
-                                 graphics::Vertice<std::uint16_t> world,
-                                 std::uint16_t is_frame_ending_shots,
-                                 graphics::Vertice<std::uint16_t> look_at)
+  constexpr CameraAnimationFrame(
+    std::uint16_t                    is_frame_durations_shot,
+    graphics::Vertice<std::uint16_t> world,
+    std::uint16_t                    is_frame_ending_shots,
+    graphics::Vertice<std::uint16_t> look_at)
     : m_is_frame_durations_shot(is_frame_durations_shot), m_world(world),
       m_is_frame_ending_shot(is_frame_ending_shots), m_look_at(look_at)
   {}
@@ -45,7 +45,7 @@ public:
   }
   constexpr static auto EXPECTED_SIZE = 16U;
 };
-static_assert(sizeof(CameraAnimationFrame)
-              == CameraAnimationFrame::EXPECTED_SIZE);
+static_assert(
+  sizeof(CameraAnimationFrame) == CameraAnimationFrame::EXPECTED_SIZE);
 }// namespace open_viii::battle::stage
 #endif// VIIIARCHIVE_CAMERAANIMATIONFRAME_HPP

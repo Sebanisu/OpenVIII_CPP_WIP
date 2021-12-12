@@ -12,9 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_ZELLDUELLIMITBREAKPARAMS_HPP
 #define VIIIARCHIVE_ZELLDUELLIMITBREAKPARAMS_HPP
-#include <array>
-#include <compare>
-#include <cstdint>
 namespace open_viii::kernel {
 /**
   *Zell Limit Break Parameters Section

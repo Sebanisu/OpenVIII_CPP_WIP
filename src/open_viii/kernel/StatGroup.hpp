@@ -12,14 +12,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_STATGROUP_HPP
 #define VIIIARCHIVE_STATGROUP_HPP
-#include <array>
-#include <compare>
-#include <concepts>
-#include <iostream>
 namespace open_viii::kernel {
 template<typename T>
-requires(std::unsigned_integral<
-           T> || std::ranges::contiguous_range<T>) struct StatGroup
+requires(
+  std::unsigned_integral<
+    T> || std::ranges::contiguous_range<T>) struct StatGroup
 {
 public:
   static constexpr auto STAT_COUNT = 9U;

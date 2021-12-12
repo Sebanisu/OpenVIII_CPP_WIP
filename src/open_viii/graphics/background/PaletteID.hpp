@@ -12,8 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_PALETTEID_HPP
 #define VIIIARCHIVE_PALETTEID_HPP
-#include <compare>
-#include <cstdint>
 namespace open_viii::graphics::background {
 /**
  * 4 bit paletteID nested inside of 16 bits of data.
@@ -48,8 +46,8 @@ public:
     with_thirty(std::uint16_t in_thirty) const noexcept
   {
     PaletteID out{};
-    out.m_data = static_cast<std::uint16_t>((m_data & THIRTY_INVERSE_MASK)
-                                            | (in_thirty & THIRTY_MASK));
+    out.m_data = static_cast<std::uint16_t>(
+      (m_data & THIRTY_INVERSE_MASK) | (in_thirty & THIRTY_MASK));
     return out;
   }
   [[nodiscard]] std::uint8_t
@@ -62,8 +60,8 @@ public:
     with_id(std::uint8_t in_id) const noexcept
   {
     PaletteID out{};
-    out.m_data = static_cast<std::uint16_t>((m_data & ID_INVERSE_MASK)
-                                            | ((in_id << ID_SHIFT) & ID_MASK));
+    out.m_data = static_cast<std::uint16_t>(
+      (m_data & ID_INVERSE_MASK) | ((in_id << ID_SHIFT) & ID_MASK));
     return out;
   }
   [[nodiscard]] std::uint8_t

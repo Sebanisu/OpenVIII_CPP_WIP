@@ -8,10 +8,6 @@
 #include "FileSection.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include "tl/write.hpp"
-#include <istream>
-#include <ostream>
-#include <ranges>
-#include <vector>
 namespace open_viii::pak {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK#CAM_files
@@ -52,14 +48,15 @@ public:
   {
     os << cam.m_header << '\n';
     os << '{';
-    std::ranges::for_each(cam.m_frames,
-                          [&os, not_first = false](const auto &frame) mutable {
-                            if (!not_first) {
-                              not_first = true;
-                              os << ',';
-                            }
-                            os << frame << '\n';
-                          });
+    std::ranges::for_each(
+      cam.m_frames,
+      [&os, not_first = false](const auto &frame) mutable {
+        if (!not_first) {
+          not_first = true;
+          os << ',';
+        }
+        os << frame << '\n';
+      });
     os << '}';
     return os;
   }

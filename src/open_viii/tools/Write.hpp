@@ -4,15 +4,13 @@
 #ifndef VIIIARCHIVE_WRITE_HPP
 #define VIIIARCHIVE_WRITE_HPP
 #include "open_viii/Concepts.hpp"
-#include <fstream>
-#include <string_view>
 namespace open_viii::tools {
 template<typename lambdaT>
 requires(std::invocable<lambdaT, std::ostream &>)
-  [[maybe_unused]] inline bool write_buffer(const lambdaT          &lambda,
-                                            const std::string_view &path,
-                                            const std::string_view &root
-                                            = "tmp")
+  [[maybe_unused]] inline bool write_buffer(
+    const lambdaT          &lambda,
+    const std::string_view &path,
+    const std::string_view &root = "tmp")
 {
   auto dir      = std::filesystem::path(root);
   auto filename = dir / path;
@@ -33,9 +31,10 @@ requires(std::invocable<lambdaT, std::ostream &>)
   return true;
 }
 [[maybe_unused]] inline bool
-  write_buffer([[maybe_unused]] const std::span<const char> &buffer,
-               const std::string_view                       &path,
-               const std::string_view                       &root = "tmp")
+  write_buffer(
+    [[maybe_unused]] const std::span<const char> &buffer,
+    const std::string_view                       &path,
+    const std::string_view                       &root = "tmp")
 {
   if (std::ranges::empty(buffer)) {
     // std::cout << (std::string("Buffer is empty: \"")+ std::string(path) +
@@ -44,8 +43,9 @@ requires(std::invocable<lambdaT, std::ostream &>)
   }
   return write_buffer(
     [&buffer](std::ostream &fp) {
-      fp.write(std::ranges::data(buffer),
-               static_cast<long>(std::ranges::size(buffer)));
+      fp.write(
+        std::ranges::data(buffer),
+        static_cast<long>(std::ranges::size(buffer)));
     },
     path,
     root);

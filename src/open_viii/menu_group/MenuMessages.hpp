@@ -13,10 +13,6 @@
 #ifndef VIIIARCHIVE_MENUMESSAGES_HPP
 #define VIIIARCHIVE_MENUMESSAGES_HPP
 #include "MenuMessagesSection.hpp"
-#include <array>
-#include <cstdint>
-#include <cstring>
-#include <vector>
 namespace open_viii::menu_group {
 struct MenuMessages
 {
@@ -63,9 +59,10 @@ public:
       exit(1);
     }
     ptr += sizeof(m_size);
-    std::memcpy(m_sections.data(),
-                ptr,
-                std::ranges::size(m_sections) * sizeof(std::uint16_t));
+    std::memcpy(
+      m_sections.data(),
+      ptr,
+      std::ranges::size(m_sections) * sizeof(std::uint16_t));
     ptr += sizeof(m_sections);
     for (size_t i = 0; i < std::ranges::size(m_sections); i++) {
       //[Count of Subsections] = [Start of file] + [Section value]

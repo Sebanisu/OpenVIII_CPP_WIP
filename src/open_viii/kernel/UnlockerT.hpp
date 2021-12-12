@@ -12,11 +12,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_UNLOCKERT_HPP
 #define VIIIARCHIVE_UNLOCKERT_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 /**
- * @see https://github.com/DarkShinryu/doomtrain/wiki/Junctionable-Abilities-Unlocker
- * @see https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/MainForm.Designer.cs
+ * @see
+ * https://github.com/DarkShinryu/doomtrain/wiki/Junctionable-Abilities-Unlocker
+ * @see
+ * https://github.com/alexfilth/doomtrain/blob/master/Doomtrain/MainForm.Designer.cs
  */
 enum class UnlockerT : std::uint8_t
 {

@@ -19,12 +19,6 @@
 #include "Tile2.hpp"
 #include "Tile3.hpp"
 #include "tl/write.hpp"
-#include <bit>
-#include <bitset>
-#include <cstdint>
-#include <filesystem>
-#include <utility>
-#include <variant>
 namespace open_viii::graphics::background {
 template<typename T>
 concept is_tile = std::is_same_v<Tile1, std::decay_t<T>> || std::
@@ -36,10 +30,11 @@ concept is_tiles = is_tile<typename T::value_type>;
 struct Map
 {
 private:
-  std::variant<std::monostate,
-               std::vector<Tile1>,
-               std::vector<Tile2>,
-               std::vector<Tile3>>
+  std::variant<
+    std::monostate,
+    std::vector<Tile1>,
+    std::vector<Tile2>,
+    std::vector<Tile3>>
     m_tiles{};
 
 public:
@@ -364,9 +359,10 @@ private:
           const auto count = std::ranges::size(buffer) / sizeof(map_type);
           const auto size_in_bytes = count * sizeof(map_type);
           local_tiles.resize(count);
-          std::memcpy(std::ranges::data(local_tiles),
-                      std::ranges::data(buffer),
-                      size_in_bytes);
+          std::memcpy(
+            std::ranges::data(local_tiles),
+            std::ranges::data(buffer),
+            size_in_bytes);
         }
       },
       tiles);
@@ -380,10 +376,11 @@ public:
    * Import tiles from a raw buffer.
    * @param buffer is a raw char buffer.
    */
-  explicit Map(const MimType           &mim_type,
-               const std::vector<char> &buffer,
-               // bool                     sort_remove = true,
-               bool                     shift = true)
+  explicit Map(
+    const MimType           &mim_type,
+    const std::vector<char> &buffer,
+    // bool                     sort_remove = true,
+    bool                     shift = true)
     : m_tiles(init_tiles(mim_type, buffer))
   {
     //    if (sort_remove) {
@@ -394,28 +391,32 @@ public:
       shift_to_origin();
     }
   }
-  Map(const MimType               &mim_type,
-      const std::filesystem::path &path,
-      // bool                         sort_remove = true,
-      bool                         shift = true)
+  Map(
+    const MimType               &mim_type,
+    const std::filesystem::path &path,
+    // bool                         sort_remove = true,
+    bool                         shift = true)
     : Map(mim_type, tools::read_entire_file(path), shift)
   {}
-  Map(std::integral auto &&mim_type,
-      auto               &&buffer,
-      bool                 sort_remove = true,
-      bool                 shift       = true)
-    : Map(static_cast<MimType>(mim_type),
-          std::forward<decltype(buffer)>(buffer),
-          sort_remove,
-          shift)
+  Map(
+    std::integral auto &&mim_type,
+    auto               &&buffer,
+    bool                 sort_remove = true,
+    bool                 shift       = true)
+    : Map(
+      static_cast<MimType>(mim_type),
+      std::forward<decltype(buffer)>(buffer),
+      sort_remove,
+      shift)
   {}
   template<typename tile_funcT>
-  requires(
-    std::is_invocable_r_v<std::variant<open_viii::graphics::background::Tile1,
-                                       open_viii::graphics::background::Tile2,
-                                       open_viii::graphics::background::Tile3,
-                                       std::monostate>,
-                          tile_funcT>) explicit Map(tile_funcT tile_func)
+  requires(std::is_invocable_r_v<
+           std::variant<
+             open_viii::graphics::background::Tile1,
+             open_viii::graphics::background::Tile2,
+             open_viii::graphics::background::Tile3,
+             std::monostate>,
+           tile_funcT>) explicit Map(tile_funcT tile_func)
     : m_tiles(std::monostate())
   {
 
@@ -505,11 +506,12 @@ public:
     const auto xy = Point(x, y);
     visit_tiles([&xy, this](auto &tiles) {
       auto filtered = tiles | std::views::filter(filter_invalid());
-      std::ranges::transform(filtered,
-                             std::ranges::begin(tiles),
-                             [&xy](const auto &t) {
-                               return t.shift_xy(xy);
-                             });
+      std::ranges::transform(
+        filtered,
+        std::ranges::begin(tiles),
+        [&xy](const auto &t) {
+          return t.shift_xy(xy);
+        });
     });
   }
   void
@@ -701,18 +703,21 @@ auto
   switch (tile_type) {
   case 1:
   case '1':
-    return Tile1(std::forward<decltype(data)>(data),
-                 std::forward<decltype(misc)>(misc)...);
+    return Tile1(
+      std::forward<decltype(data)>(data),
+      std::forward<decltype(misc)>(misc)...);
     break;
   case 2:
   case '2':
-    return Tile2(std::forward<decltype(data)>(data),
-                 std::forward<decltype(misc)>(misc)...);
+    return Tile2(
+      std::forward<decltype(data)>(data),
+      std::forward<decltype(misc)>(misc)...);
     break;
   case 3:
   case '3':
-    return Tile3(std::forward<decltype(data)>(data),
-                 std::forward<decltype(misc)>(misc)...);
+    return Tile3(
+      std::forward<decltype(data)>(data),
+      std::forward<decltype(misc)>(misc)...);
     break;
   }
   return std::monostate{};

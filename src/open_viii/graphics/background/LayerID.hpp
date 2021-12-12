@@ -12,13 +12,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_LAYERID_HPP
 #define VIIIARCHIVE_LAYERID_HPP
-#include <compare>
-#include <cstdint>
 namespace open_viii::graphics::background {
 struct LayerID
 {
 private:
-  enum : std::uint8_t {
+  enum : std::uint8_t
+  {
     ID_MASK         = 0b1111'1110,
     ID_INVERSE_MASK = 0b0000'0001,
     ID_SHIFT        = 1U,
@@ -26,21 +25,22 @@ private:
   std::uint8_t m_data = {};
 
 public:
-  static constexpr auto EXPECTED_SIZE               = 1U;
-  constexpr LayerID()                               = default;
-  constexpr auto operator<=>(const LayerID &) const = default;
+  static constexpr auto EXPECTED_SIZE = 1U;
+  constexpr LayerID()                 = default;
+  constexpr auto
+    operator<=>(const LayerID &) const = default;
   [[nodiscard]] constexpr auto
     id() const noexcept
   {
-    return static_cast<std::uint8_t>(static_cast<std::uint8_t>(m_data & ID_MASK)
-                                     >> ID_SHIFT);
+    return static_cast<std::uint8_t>(
+      static_cast<std::uint8_t>(m_data & ID_MASK) >> ID_SHIFT);
   }
   [[nodiscard]] constexpr auto
     with_id(std::uint8_t in_id) const noexcept
   {
     LayerID out{};
-    out.m_data = static_cast<std::uint8_t>((m_data & ID_INVERSE_MASK)
-                                           | ((in_id << ID_SHIFT) & ID_MASK));
+    out.m_data = static_cast<std::uint8_t>(
+      (m_data & ID_INVERSE_MASK) | ((in_id << ID_SHIFT) & ID_MASK));
     return out;
   }
 };

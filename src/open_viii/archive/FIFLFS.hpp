@@ -13,19 +13,6 @@
 #ifndef VIIIARCHIVE_FIFLFS_HPP
 #define VIIIARCHIVE_FIFLFS_HPP
 #include "Grouping.hpp"
-#include <algorithm>
-#include <concepts>
-#include <execution>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <ranges>
-#include <set>
-#include <string>
-#include <thread>
-#include <utility>
 namespace open_viii::archive {
 
 template<bool HasNested = false>
@@ -127,9 +114,9 @@ public:
       [this](const std::filesystem::path &path) {
         std::string   cur_path = path.string();
         const TryAddT result   = try_add(
-            FI(static_cast<std::uint32_t>(std::filesystem::file_size(path)), 0U),
-            path,
-            path);
+          FI(static_cast<std::uint32_t>(std::filesystem::file_size(path)), 0U),
+          path,
+          path);
         switch (result) {
         case TryAddT::added_to_archive:
           // std::cout << "added: " << path << '\n';
@@ -468,11 +455,11 @@ public:
       const TryAddT         retVal = [&]() {
         if (fi.compression_type() == CompressionTypeT::none) {
           return archive.try_add(
-                    FileData(
-                      static_cast<unsigned long>(m_fs.offset() + fi.offset()),
-                      fi.uncompressed_size()),
-                    m_fs.path(),
-                    virtualPath);
+            FileData(
+              static_cast<unsigned long>(m_fs.offset() + fi.offset()),
+              fi.uncompressed_size()),
+            m_fs.path(),
+            virtualPath);
         }
         return archive
           .try_add_nested(m_fs.path(), m_fs.offset(), virtualPath, fi);
@@ -606,12 +593,12 @@ public:
 {
   FIFLFS<false> archive{};
   const auto    items = archive::fl::get_all_entries(
-       source.fl().path(),
-       source.fl().data(),
-       source.fl().offset(),
-       source.fl().size(),
-       source.count(),
-       filename);
+    source.fl().path(),
+    source.fl().data(),
+    source.fl().offset(),
+    source.fl().size(),
+    source.count(),
+    filename);
   for (const auto &[id, strVirtualPath] : items) {
     TryAddT tryAddT = get_fiflfs(source, archive, id, strVirtualPath);
     if (tryAddT == TryAddT::archive_full) {
@@ -739,12 +726,12 @@ inline auto
 {
   std::vector<FIFLFS<false>> out{};
   const auto                 items = archive::fl::get_all_entries(
-                    source.fl().path(),
-                    source.fl().data(),
-                    source.fl().offset(),
-                    source.fl().size(),
-                    source.count(),
-                    filename);
+    source.fl().path(),
+    source.fl().data(),
+    source.fl().offset(),
+    source.fl().size(),
+    source.count(),
+    filename);
   for (const auto &[id, strVirtualPath] : items) {
     const TryAddT t
       = get_fiflfs(source, out.emplace_back(), id, strVirtualPath);

@@ -13,10 +13,6 @@
 #ifndef VIIIARCHIVE_SP1HEADER_HPP
 #define VIIIARCHIVE_SP1HEADER_HPP
 #include "Sp1Offset.hpp"
-#include <cstdint>
-#include <cstring>
-#include <span>
-#include <vector>
 namespace open_viii::graphics {
 struct Sp1Header
 {

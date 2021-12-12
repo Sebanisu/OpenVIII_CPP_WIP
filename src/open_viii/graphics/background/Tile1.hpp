@@ -14,14 +14,11 @@
 #define VIIIARCHIVE_impl_Tile1_HPP
 #include "BlendModeT.hpp"
 #include "LayerID.hpp"
+#include "open_viii/graphics/Point.hpp"
+#include "open_viii/graphics/Rectangle.hpp"
 #include "PaletteID.hpp"
 #include "TexIdBuffer.hpp"
 #include "TileCommon.hpp"
-#include "open_viii/graphics/Point.hpp"
-#include "open_viii/graphics/Rectangle.hpp"
-#include <array>
-#include <cstdint>
-#include <string_view>
 namespace open_viii::graphics::background {
 /**
  * @see

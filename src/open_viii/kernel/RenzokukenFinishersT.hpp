@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_RENZOKUKENFINISHERST_HPP
 #define VIIIARCHIVE_RENZOKUKENFINISHERST_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 /**
  * Each of 4 bits is one of the Renzokuken Finishers

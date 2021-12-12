@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_CHARACTERST_HPP
 #define VIIIARCHIVE_CHARACTERST_HPP
-#include <cstdint>
 namespace open_viii::kernel {
 /**
  * Character IDs

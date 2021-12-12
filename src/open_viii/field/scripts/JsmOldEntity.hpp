@@ -3,9 +3,6 @@
 //
 #ifndef VIIIARCHIVE_JSMOLDENTITY_HPP
 #define VIIIARCHIVE_JSMOLDENTITY_HPP
-#include <cstdint>
-#include <type_traits>
-#include <utility>
 namespace open_viii::field::scripts {
 /**
  * @see
@@ -72,8 +69,8 @@ struct [[maybe_unused]] std::tuple_size<open_viii::field::scripts::JsmOldEntity>
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] std::tuple_element<0U,
-                                      open_viii::field::scripts::JsmOldEntity>
+struct [[maybe_unused]] std::
+  tuple_element<0U, open_viii::field::scripts::JsmOldEntity>
 {
   using type = std::uint16_t;
 };
@@ -82,8 +79,8 @@ struct [[maybe_unused]] std::tuple_element<0U,
  * @note required to structured binding support
  */
 template<>
-struct [[maybe_unused]] std::tuple_element<1U,
-                                      open_viii::field::scripts::JsmOldEntity>
+struct [[maybe_unused]] std::
+  tuple_element<1U, open_viii::field::scripts::JsmOldEntity>
 {
   using type = std::uint16_t;
 };

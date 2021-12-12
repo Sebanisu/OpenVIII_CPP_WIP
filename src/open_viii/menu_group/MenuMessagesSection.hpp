@@ -73,7 +73,7 @@ public:
   {
     //[Count of Subsections] = [Start of file] + [Section value]
     std::uint16_t subSectionCount{};
-    auto *        ptr = buffer.data();
+    auto         *ptr = buffer.data();
     std::memcpy(&subSectionCount, ptr, sizeof(std::uint16_t));
     ptr += sizeof(std::uint16_t);
     auto totalBytes = subSectionCount * sizeof(std::uint16_t);

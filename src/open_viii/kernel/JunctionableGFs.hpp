@@ -5,10 +5,9 @@
 #include "BattleOnlyStatusesT.hpp"
 #include "ElementT.hpp"
 #include "GFGroup.hpp"
+#include "open_viii/strings/EncodedStringOffset.hpp"
 #include "PersistentStatusesT.hpp"
 #include "UnlockableAbility.hpp"
-#include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
 namespace open_viii::kernel {
 struct JunctionableGFs_impl
 {

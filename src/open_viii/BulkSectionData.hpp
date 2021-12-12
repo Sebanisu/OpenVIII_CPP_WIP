@@ -16,10 +16,9 @@
 #include "open_viii/kernel/BattleItems.hpp"
 #include "open_viii/kernel/NonBattleItems.hpp"
 #include "open_viii/tools/Tools.hpp"
-#include <iterator>
-#include <string_view>
 namespace open_viii {
-template<typename spanT, size_t max = 0U> struct BulkSectionData
+template<typename spanT, size_t max = 0U>
+struct BulkSectionData
 {
 private:
   // data
@@ -41,7 +40,8 @@ public:
     };
     if constexpr (max == 0U) {
       return calc_size();
-    } else {
+    }
+    else {
       const auto c = calc_size();
       if (max > c) {
         return c;
@@ -55,19 +55,20 @@ public:
   {
     auto id = static_cast<size_t>(id_v);
     if constexpr (std::is_same_v<T, ItemIdT>) {
-      if constexpr (std::is_same_v<spanT, kernel::BattleItems>) {
-      } else if constexpr (std::is_same_v<spanT, kernel::NonBattleItems>) {
+      if constexpr (std::is_same_v<spanT, kernel::BattleItems>) {}
+      else if constexpr (std::is_same_v<spanT, kernel::NonBattleItems>) {
         static constexpr auto battle_items_count = 33U;
         id -= battle_items_count;
-      } else {
+      }
+      else {
         throw(std::invalid_argument{ "ItemID used in wrong place!" });
       }
     }
     if (id > size()) {
       using namespace std::string_literals;
-      throw std::out_of_range("BulkSectionData index out of range: "s
-                              + std::to_string(id) + "//"s
-                              + std::to_string(size()));
+      throw std::out_of_range(
+        "BulkSectionData index out of range: "s + std::to_string(id) + "//"s
+        + std::to_string(size()));
       // return spanT{};
     }
     return operator[](id);

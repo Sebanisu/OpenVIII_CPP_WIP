@@ -13,8 +13,6 @@
 #ifndef VIIIARCHIVE_LANGT_HPP
 #define VIIIARCHIVE_LANGT_HPP
 #include "open_viii/tools/Tools.hpp"
-#include <cstdint>
-#include <string_view>
 namespace open_viii {
 enum class LangT : std::uint8_t
 {
@@ -25,7 +23,7 @@ enum class LangT : std::uint8_t
   es,
   jp,
   end,
-  begin = en,
+  begin   = en,
   generic = end
 };
 }// namespace open_viii

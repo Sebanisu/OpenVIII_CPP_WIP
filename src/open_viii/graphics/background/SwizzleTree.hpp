@@ -8,7 +8,6 @@
 #include "Mim.hpp"
 #include "open_viii/archive/FIFLFS.hpp"
 #include "Reswizzle.hpp"
-#include <utility>
 namespace open_viii::graphics::background {
 /**
  * Load all subfolders and find the matching path inside the field archive. Then
@@ -80,11 +79,12 @@ private:
       Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void reswizzle_with_type()
     const
   {
-    const auto r = Reswizzle(m_mim_type,
-                             get_map_buffer(),
-                             m_dir_path,
-                             m_dir_name,
-                             m_output_prefix);
+    const auto r = Reswizzle(
+      m_mim_type,
+      get_map_buffer(),
+      m_dir_path,
+      m_dir_name,
+      m_output_prefix);
     r.process();
   }
   template<typename map_type>
@@ -105,15 +105,15 @@ private:
   }
 
 public:
-  SwizzleTree(const open_viii::archive::FIFLFS<true> &field,
-              const std::filesystem::path            &dir_path)
+  SwizzleTree(
+    const open_viii::archive::FIFLFS<true> &field,
+    const std::filesystem::path            &dir_path)
     : m_dir_path(dir_path), m_dir_name(dir_path.filename().string()),
       m_fi_filename(get_path_with_ext(archive::FI::EXT)),
       m_fl_filename(get_path_with_ext(open_viii::archive::fl::EXT)),
       m_fs_filename(get_path_with_ext(open_viii::archive::FS::EXT)),
       m_map_filename(
-        get_path_with_ext(open_viii::graphics::background::Map::EXT)
-          .substr(1)),
+        get_path_with_ext(open_viii::graphics::background::Map::EXT).substr(1)),
       m_mim_filename(
         get_path_with_ext(open_viii::graphics::background::Mim::EXT).substr(1)),
       m_output_prefix((m_dir_path / m_dir_name).string()),

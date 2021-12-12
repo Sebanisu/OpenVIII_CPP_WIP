@@ -19,10 +19,6 @@
 #include "open_viii/graphics/tex/TexPixelFormatHeader.hpp"
 #include "Png.hpp"
 #include "Ppm.hpp"
-#include <cstdint>
-#include <cstring>
-#include <ranges>
-#include <span>
 namespace open_viii::graphics {
 //{
 //  // Palette Entry (BGRA)
@@ -57,15 +53,17 @@ private:
   TexHeader2                               m_tex_header2{};
   TexHeader2Version2                       m_tex_header2_version2{};
   std::vector<Color32<ColorLayoutT::BGRA>> m_palette_data{};
-  std::variant<std::vector<char>,
-               std::vector<Color16<ColorLayoutT::ABGR>>,
-               std::vector<Color32<ColorLayoutT::BGRA>>>
+  std::variant<
+    std::vector<char>,
+    std::vector<Color16<ColorLayoutT::ABGR>>,
+    std::vector<Color32<ColorLayoutT::BGRA>>>
     m_image_data{};
   [[nodiscard]] auto
     get_color_from_palette(std::uint32_t row, std::uint8_t key) const
   {
-    if (m_tex_header.num_palettes() == 0
-        || key > m_tex_header.num_colors_per_palette()) {
+    if (
+      m_tex_header.num_palettes() == 0
+      || key > m_tex_header.num_colors_per_palette()) {
       return Color32<ColorLayoutT::BGRA>{};
     }
     if (row > m_tex_header.num_palettes()) {
@@ -141,18 +139,20 @@ public:
       }
     }
     if (m_tex_header.palette_flag()) {
-      if (std::ranges::size(buffer_backup)
-          < size_of_palette() + palette_locator()) {
+      if (
+        std::ranges::size(buffer_backup)
+        < size_of_palette() + palette_locator()) {
         reset();
         return;
       }
-      m_palette_data.resize(size_of_palette()
-                            / sizeof(Color32<ColorLayoutT::BGRA>));
+      m_palette_data.resize(
+        size_of_palette() / sizeof(Color32<ColorLayoutT::BGRA>));
       const auto palette_span
         = buffer_backup.subspan(palette_locator(), size_of_palette());
-      std::memcpy(m_palette_data.data(),
-                  palette_span.data(),
-                  palette_span.size());
+      std::memcpy(
+        m_palette_data.data(),
+        palette_span.data(),
+        palette_span.size());
     }
     if (std::ranges::size(buffer_backup) < texture_locator()) {
       reset();
@@ -228,15 +228,17 @@ public:
   {
     if (m_tex_header.num_palettes() == 0) {
       const auto data = get_colors();
-      Ppm::save(data,
-                m_tex_header.image_width(),
-                m_tex_header.image_height(),
-                filename);
-      Png::save(data,
-                m_tex_header.image_width(),
-                m_tex_header.image_height(),
-                filename,
-                std::string{ filename });
+      Ppm::save(
+        data,
+        m_tex_header.image_width(),
+        m_tex_header.image_height(),
+        filename);
+      Png::save(
+        data,
+        m_tex_header.image_width(),
+        m_tex_header.image_height(),
+        filename,
+        std::string{ filename });
     }
     else {
       auto path = std::filesystem::path(filename);
@@ -245,43 +247,47 @@ public:
         ss << (path.parent_path() / path.stem()).string() << '_' << +i << '_'
            << path.extension().string().substr(1);
         const auto data = get_colors(i);
-        Ppm::save(data,
-                  m_tex_header.image_width(),
-                  m_tex_header.image_height(),
-                  ss.str());
-        Png::save(data,
-                  m_tex_header.image_width(),
-                  m_tex_header.image_height(),
-                  ss.str(),
-                  path.string());
+        Ppm::save(
+          data,
+          m_tex_header.image_width(),
+          m_tex_header.image_height(),
+          ss.str());
+        Png::save(
+          data,
+          m_tex_header.image_width(),
+          m_tex_header.image_height(),
+          ss.str(),
+          path.string());
       }
       const auto out_path = (path.parent_path() / path.stem()).string()
                           + "_clut" + path.extension().string();
-      Ppm::save(m_palette_data,
-                m_tex_header.num_colors_per_palette(),
-                m_tex_header.num_palettes(),
-                out_path);
-      if (const auto saved_path
-          = Png::save(m_palette_data,
-                      m_tex_header.num_colors_per_palette(),
-                      m_tex_header.num_palettes(),
-                      out_path,
-                      path.string());
+      Ppm::save(
+        m_palette_data,
+        m_tex_header.num_colors_per_palette(),
+        m_tex_header.num_palettes(),
+        out_path);
+      if (const auto saved_path = Png::save(
+            m_palette_data,
+            m_tex_header.num_colors_per_palette(),
+            m_tex_header.num_palettes(),
+            out_path,
+            path.string());
           saved_path) {
-        const Png    read_image = { *saved_path };
+        const Png read_image = { *saved_path };
         assert(read_image.size() == m_palette_data.size());
-//        auto       b1 = read_image.begin();
-//        const auto e1 = read_image.end();
-//        auto       b2 = m_palette_data.begin();
-//        const auto e2 = m_palette_data.end();
-//        for (; b1 != e1 && b2 != e2; (void)++b1, ++b2) {
-//          assert(*b1 == *b2);
-//        }
-        Png::save(read_image,
-                  m_tex_header.num_colors_per_palette(),
-                  m_tex_header.num_palettes(),
-                  *saved_path,
-                  path.string());
+        //        auto       b1 = read_image.begin();
+        //        const auto e1 = read_image.end();
+        //        auto       b2 = m_palette_data.begin();
+        //        const auto e2 = m_palette_data.end();
+        //        for (; b1 != e1 && b2 != e2; (void)++b1, ++b2) {
+        //          assert(*b1 == *b2);
+        //        }
+        Png::save(
+          read_image,
+          m_tex_header.num_colors_per_palette(),
+          m_tex_header.num_palettes(),
+          *saved_path,
+          path.string());
       }
     }
   }

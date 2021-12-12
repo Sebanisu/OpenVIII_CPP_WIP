@@ -4,9 +4,6 @@
 #ifndef VIIIARCHIVE_JSMSCRIPTDATA_HPP
 #define VIIIARCHIVE_JSMSCRIPTDATA_HPP
 #include "opcodeT.hpp"
-#include <cstdint>
-#include <type_traits>
-#include <utility>
 namespace open_viii::field::scripts {
 struct JsmScriptData
 {

@@ -15,8 +15,6 @@
 #include "CommonKernel.hpp"
 #include "JunctionFlagsT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
-#include <cstring>
 namespace open_viii::kernel {
 struct JunctionAbilities_impl
 {
@@ -34,7 +32,7 @@ protected:
   constexpr JunctionAbilities_impl()                      = default;
   static constexpr std::size_t EXPECTED_SIZE              = 8U;
   [[nodiscard]] constexpr JunctionFlagsT
-  junction_flags_impl() const
+    junction_flags_impl() const
   {
     return static_cast<JunctionFlagsT>(
       (m_junction_flags0 << 16U) | (m_junction_flags1 << 8U)

@@ -6,10 +6,6 @@
 #include "CameraAnimation.hpp"
 #include "CameraAnimationSet.hpp"
 #include "open_viii/tools/Tools.hpp"
-#include <cstdint>
-#include <ostream>
-#include <span>
-#include <vector>
 namespace open_viii::battle::stage {
 /**
  * @see
@@ -98,29 +94,30 @@ inline std::ostream &
      << "\n\t\t\t SET OFFSETS: " << '[';
   {
     bool first = true;
-    std::ranges::for_each(in.set_offsets(),
-                          [&os, &first](const std::uint16_t &c) {
-                            if (!first) {
-                              os << ',';
-                            }
-                            first = false;
-                            os << "0x" << std::hex << std::uppercase
-                               << static_cast<std::uint16_t>(c) << std::dec
-                               << std::nouppercase;
-                          });
+    std::ranges::for_each(
+      in.set_offsets(),
+      [&os, &first](const std::uint16_t &c) {
+        if (!first) {
+          os << ',';
+        }
+        first = false;
+        os << "0x" << std::hex << std::uppercase
+           << static_cast<std::uint16_t>(c) << std::dec << std::nouppercase;
+      });
   }
   os << ']' << "\n\t\t\t END: " << in.camera_end() << "\n\t\t\t SETS: " << '[';
   {
     bool first = true;
-    std::ranges::for_each(in.camera_animation_set(),
-                          [&os, &first](const CameraAnimationSet &c) {
-                            if (!first) {
-                              os << ",";
-                            }
-                            os << "\n\t\t\t\t";
-                            first = false;
-                            os << c;
-                          });
+    std::ranges::for_each(
+      in.camera_animation_set(),
+      [&os, &first](const CameraAnimationSet &c) {
+        if (!first) {
+          os << ",";
+        }
+        os << "\n\t\t\t\t";
+        first = false;
+        os << c;
+      });
   }
   return os << "]";
 }

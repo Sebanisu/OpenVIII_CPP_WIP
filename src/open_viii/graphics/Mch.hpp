@@ -22,16 +22,18 @@ private:
 
 public:
   static void
-    read_tim_offsets(std::vector<std::uint32_t> &ret,
-                     std::span<const char> &     buffer)
+    read_tim_offsets(
+      std::vector<std::uint32_t> &ret,
+      std::span<const char>      &buffer)
   {
     do {
       if (std::ranges::size(buffer) < sizeof(uint32_t)) {
         break;
       }
       auto val = tools::read_val<uint32_t>(buffer);
-      if (val > std::ranges::size(buffer)
-          || val == (std::numeric_limits<uint32_t>::max)()) {
+      if (
+        val > std::ranges::size(buffer)
+        || val == (std::numeric_limits<uint32_t>::max)()) {
         break;
       }
       buffer = buffer.subspan(sizeof(uint32_t));

@@ -12,8 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_MENUGROUPSECTIONT_HPP
 #define VIIIARCHIVE_MENUGROUPSECTIONT_HPP
-#include <cstdint>
-enum class MenuGroupSectionT : std::uint16_t {
+enum class MenuGroupSectionT : std::uint16_t
+{
   tkmnmes1                   = 0U,
   tkmnmes2                   = 1U,
   tkmnmes3                   = 2U,

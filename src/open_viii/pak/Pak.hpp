@@ -5,14 +5,6 @@
 #define VIIIARCHIVE_PAK_HPP
 #include "MovieClip.hpp"
 #include "open_viii/tools/Tools.hpp"
-#include <array>
-#include <cctype>
-#include <cinttypes>
-#include <filesystem>
-#include <iostream>
-#include <ranges>
-#include <utility>
-#include <vector>
 namespace open_viii::pak {
 /**
  * PAK reading struct, Gathers all the sections
@@ -145,10 +137,12 @@ public:
                       is.seekg(fs.offset(), std::ios::beg);
                       std::vector<char> tmp{};
                       tmp.resize(fs.size());
-                      is.read(std::ranges::data(tmp),
-                              static_cast<std::intmax_t>(fs.size()));
-                      os.write(std::ranges::data(tmp),
-                               static_cast<std::intmax_t>(fs.size()));
+                      is.read(
+                        std::ranges::data(tmp),
+                        static_cast<std::intmax_t>(fs.size()));
+                      os.write(
+                        std::ranges::data(tmp),
+                        static_cast<std::intmax_t>(fs.size()));
                     },
                     out_path.string());
                 }
@@ -170,8 +164,9 @@ public:
    * @return std::string
    */
   std::string
-    generate_file_name(const std::string &extension,
-                       const std::string &suffix = {})
+    generate_file_name(
+      const std::string &extension,
+      const std::string &suffix = {})
   {
     using namespace std::string_literals;
     static constexpr auto length = 2U;
@@ -213,9 +208,10 @@ public:
     auto frames = tools::read_val<uint16_t>(is);
     is.seekg(frames * CAM_SECTION_SIZE, std::ios::cur);
     // there seems to be 1 or more extra frames. Check for those.
-    while (!FileSectionTypeT::valid_type(FileSectionTypeT::get_type(is),
-                                         FileSectionTypeT::BIK,
-                                         FileSectionTypeT::KB2)) {
+    while (!FileSectionTypeT::valid_type(
+      FileSectionTypeT::get_type(is),
+      FileSectionTypeT::BIK,
+      FileSectionTypeT::KB2)) {
       is.seekg(CAM_SECTION_SIZE - 3, std::ios::cur);
       frames++;
     }
@@ -229,24 +225,27 @@ public:
     movie.cam_fs(std::move(fs));
   }
   void
-    get_bik(std::istream &               is,
-            MovieClip &                  movie,
-            const std::span<const char> &type)
+    get_bik(
+      std::istream                &is,
+      MovieClip                   &movie,
+      const std::span<const char> &type)
   { /**
      * Read Bink video offset and size
      */
     char        version = tools::read_val<char>(is);
     FileSection fs{};
-    if (std::ranges::equal(type, FileSectionTypeT::BIK)
-        && std::ranges::any_of(BIK1, [&version](const auto &item) {
-             return version == item;
-           })) {
+    if (
+      std::ranges::equal(type, FileSectionTypeT::BIK)
+      && std::ranges::any_of(BIK1, [&version](const auto &item) {
+           return version == item;
+         })) {
       fs.type(FileSectionTypeT::BIK);
     }
-    else if (std::ranges::equal(type, FileSectionTypeT::KB2)
-             && std::ranges::any_of(BIK2, [&version](const auto &item) {
-                  return version == item;
-                })) {
+    else if (
+      std::ranges::equal(type, FileSectionTypeT::KB2)
+      && std::ranges::any_of(BIK2, [&version](const auto &item) {
+           return version == item;
+         })) {
       fs.type(FileSectionTypeT::KB2);
     }
     else {
@@ -304,9 +303,10 @@ public:
         MovieClip movie{};
         while (!is.eof()) {
           auto type = FileSectionTypeT::get_type(is);
-          if (FileSectionTypeT::valid_type(type,
-                                           FileSectionTypeT::BIK,
-                                           FileSectionTypeT::KB2)) {
+          if (FileSectionTypeT::valid_type(
+                type,
+                FileSectionTypeT::BIK,
+                FileSectionTypeT::KB2)) {
             get_bik(is, movie, type);
           }
           else if (std::ranges::equal(type, FileSectionTypeT::CAM)) {
@@ -334,5 +334,5 @@ public:
     return os << "|}\n";
   }
 };
-}// namespace open_viii
+}// namespace open_viii::pak
 #endif// VIIIARCHIVE_PAK_HPP

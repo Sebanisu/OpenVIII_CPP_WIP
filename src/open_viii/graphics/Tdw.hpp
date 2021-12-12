@@ -14,8 +14,6 @@
 #define VIIIARCHIVE_TDW_HPP
 #include "Bit4Values.hpp"
 #include "Tim.hpp"
-#include <cstdint>
-#include <cstring>
 namespace open_viii::graphics {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_TDW
@@ -59,9 +57,10 @@ public:
     }
     if (widths_size() > 0) {
       m_widths.resize(widths_size());
-      std::memcpy(std::ranges::data(m_widths),
-                  std::ranges::data(buffer_bak.subspan(m_widths_offset)),
-                  widths_size());
+      std::memcpy(
+        std::ranges::data(m_widths),
+        std::ranges::data(buffer_bak.subspan(m_widths_offset)),
+        widths_size());
     }
     m_tim = Tim{ buffer_bak.subspan(m_tim_offset) };
   }

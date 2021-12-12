@@ -12,7 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TEXHEADER_HPP
 #define VIIIARCHIVE_TEXHEADER_HPP
-#include <cstdint>
 namespace open_viii::graphics {
 /**
  * Header see version to know if the extra value is present in header 2. Tells

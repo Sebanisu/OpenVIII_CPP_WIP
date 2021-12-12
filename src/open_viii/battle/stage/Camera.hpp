@@ -6,10 +6,7 @@
 #include "CameraAnimationCollection.hpp"
 #include "CameraHeader.hpp"
 #include "CameraSettings.hpp"
-#include <cstdint>
-#include <open_viii/tools/Tools.hpp>
-#include <ostream>
-#include <span>
+#include "open_viii/tools/Tools.hpp"
 namespace open_viii::battle::stage {
 struct Camera
 {

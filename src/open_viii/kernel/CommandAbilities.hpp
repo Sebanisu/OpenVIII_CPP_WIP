@@ -15,7 +15,6 @@
 #include "CommonKernel.hpp"
 #include "open_viii/Concepts.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
-#include <compare>
 namespace open_viii::kernel {
 /**
  * 0x0000	2 bytes	Offset to ability name

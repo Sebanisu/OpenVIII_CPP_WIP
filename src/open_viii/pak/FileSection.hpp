@@ -4,11 +4,6 @@
 #ifndef VIIIARCHIVE_FILESECTION_HPP
 #define VIIIARCHIVE_FILESECTION_HPP
 #include "FileSectionTypeT.hpp"
-#include <cinttypes>
-#include <iostream>
-#include <istream>
-#include <string>
-#include <utility>
 namespace open_viii::pak {
 /**
  * Collection of data related to a file section of a pak file.
@@ -39,11 +34,12 @@ private:
 
 public:
   constexpr FileSection() = default;
-  FileSection(std::string             in_file_name,
-              const std::uint32_t &   in_frames,
-              const std::int64_t &    in_offset,
-              const std::uint32_t &   in_size,
-              const std::string_view &in_type)
+  FileSection(
+    std::string             in_file_name,
+    const std::uint32_t    &in_frames,
+    const std::int64_t     &in_offset,
+    const std::uint32_t    &in_size,
+    const std::string_view &in_type)
     : m_file_name(std::move(in_file_name)), m_frames(in_frames),
       m_offset(in_offset), m_size(in_size), m_type(in_type)
   {}
@@ -138,8 +134,9 @@ public:
   friend std::ostream &
     operator<<(std::ostream &os, const FileSection &file_section)
   {
-    if (!std::ranges::empty(file_section.file_name())
-        && file_section.size() > 0) {
+    if (
+      !std::ranges::empty(file_section.file_name())
+      && file_section.size() > 0) {
       return os << "|" << file_section.file_name() << "||"
                 << file_section.frames() << "||" << std::hex
                 << file_section.offset() << std::dec << "||"
@@ -148,5 +145,5 @@ public:
     return os;
   }
 };
-}// namespace open_viii
+}// namespace open_viii::pak
 #endif// VIIIARCHIVE_FILESECTION_HPP

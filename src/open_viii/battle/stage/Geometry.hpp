@@ -5,9 +5,8 @@
 #define VIIIARCHIVE_GEOMETRY_HPP
 #include "GeometryHeader1.hpp"
 #include "GeometryHeader2.hpp"
-#include "Shapes.hpp"
 #include "open_viii/graphics/Vertice.hpp"
-#include <vector>
+#include "Shapes.hpp"
 namespace open_viii::battle::stage {
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Geometry

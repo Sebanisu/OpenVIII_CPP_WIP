@@ -3,12 +3,6 @@
 //
 #ifndef VIIIARCHIVE_CAMHEADER_HPP
 #define VIIIARCHIVE_CAMHEADER_HPP
-#include <algorithm>
-#include <array>
-#include <cstdint>
-#include <ostream>
-#include <string_view>
-#include <type_traits>
 namespace open_viii::pak {
 /**
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK#CAM_files
