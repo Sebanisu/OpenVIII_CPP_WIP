@@ -59,7 +59,9 @@ private:
       tools::read_from_file(
         [this](std::istream &fp) {
           auto count{ tools::read_val<uint32_t>(fp) };
-
+          if (count == 0) {
+            return;
+          }
           m_offsets.reserve(count + 1);
           m_string_sizes.reserve(count);
 
@@ -81,6 +83,8 @@ private:
               fp.tellg()
               + static_cast<std::istream::off_type>(sizeof(std::uint32_t)));
           }
+          m_offsets.back()
+            -= static_cast<std::istream::off_type>(sizeof(std::uint32_t));
         },
         m_path);
     }
