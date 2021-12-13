@@ -19,6 +19,9 @@
 #include "PaletteID.hpp"
 #include "TexIdBuffer.hpp"
 #include "TileCommon.hpp"
+#include <array>
+#include <cstdint>
+#include <string_view>
 namespace open_viii::graphics::background {
 /**
  * @see

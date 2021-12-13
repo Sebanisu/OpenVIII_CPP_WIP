@@ -4,8 +4,9 @@
 #ifndef VIIIARCHIVE_COMPARE_HPP
 #define VIIIARCHIVE_COMPARE_HPP
 #include "Convert.hpp"
+#include <span>
+#include <string_view>
 namespace open_viii::tools {
-
 template<typename t1, typename t2>
 concept can_upper = requires(t1 c1, t2 c2)
 {

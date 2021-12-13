@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_4BITVALUES_H
 #define VIIIARCHIVE_4BITVALUES_H
+#include <cstring>
 namespace open_viii::graphics {
 struct Bit4Values
 {

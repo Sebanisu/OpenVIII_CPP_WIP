@@ -3,6 +3,8 @@
 //
 #ifndef VIIIARCHIVE_ARCHIVESTYPEST_HPP
 #define VIIIARCHIVE_ARCHIVESTYPEST_HPP
+#include <cstdint>
+#include <concepts>
 namespace open_viii::archive {
 
 /**

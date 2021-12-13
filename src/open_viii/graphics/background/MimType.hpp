@@ -13,6 +13,8 @@
 #ifndef VIIIARCHIVE_MIMTYPE_HPP
 #define VIIIARCHIVE_MIMTYPE_HPP
 #include "open_viii/graphics/Rectangle.hpp"
+#include <array>
+#include <cassert>
 namespace open_viii::graphics::background {
 struct MimType
 {

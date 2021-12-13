@@ -3,6 +3,10 @@
 //
 #ifndef VIIIARCHIVE_CONVERT_HPP
 #define VIIIARCHIVE_CONVERT_HPP
+#include <algorithm>
+#include <cctype>
+#include <filesystem>
+#include <string>
 namespace open_viii::tools {
 /**
  * Workaround there is no way to currently to print a utf8 string... streams are

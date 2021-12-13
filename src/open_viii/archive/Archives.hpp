@@ -17,6 +17,7 @@
 #include "FileData.hpp"
 #include "open_viii/strings/LangCommon.hpp"
 #include "ZZZ.hpp"
+#include <future>
 namespace open_viii::archive {
 template<typename T>
 concept does_have_has_value = requires(T a)

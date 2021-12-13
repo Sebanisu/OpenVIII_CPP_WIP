@@ -4,6 +4,8 @@
 #ifndef VIIIARCHIVE_RANDOM_HPP
 #define VIIIARCHIVE_RANDOM_HPP
 #include "Make_Container.hpp"
+#include <atomic>
+#include <random>
 namespace open_viii::tools {
 template<typename lambdaT>
 static void

@@ -14,6 +14,11 @@
 #define VIIIARCHIVE_CONCEPTS_HPP
 #include "CompressionTypeT.hpp"
 #include "tl/concepts.hpp"
+#include <concepts>
+#include <ranges>
+#include <string_view>
+#include <variant>
+#include <vector>
 namespace open_viii {
 template<typename T>
 concept Color_R = requires(T a)

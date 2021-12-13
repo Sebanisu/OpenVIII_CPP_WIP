@@ -13,6 +13,8 @@
 #ifndef VIIIARCHIVE_POINT_HPP
 #define VIIIARCHIVE_POINT_HPP
 #include "open_viii/Concepts.hpp"
+#include <iostream>
+#include <numeric>
 namespace open_viii::graphics {
 template<Number dimT>
 struct Point

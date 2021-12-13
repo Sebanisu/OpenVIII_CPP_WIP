@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_COMPRESSIONTYPET_HPP
 #define VIIIARCHIVE_COMPRESSIONTYPET_HPP
+#include <cstdint>
 namespace open_viii {
 enum class CompressionTypeT : std::uint32_t
 {

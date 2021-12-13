@@ -6,6 +6,8 @@
 #define OPENVIII_CPP_WIP_TILECOMMON_HPP
 #include "BlendModeT.hpp"
 #include "open_viii/graphics/Rectangle.hpp"
+#include <cstring>
+#include <iomanip>
 namespace open_viii::graphics::background {
 enum class TileCommonConstants : std::uint16_t
 {

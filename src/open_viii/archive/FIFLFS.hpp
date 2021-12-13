@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_FIFLFS_HPP
 #define VIIIARCHIVE_FIFLFS_HPP
 #include "Grouping.hpp"
+#include <execution>
 namespace open_viii::archive {
 
 template<bool HasNested = false>

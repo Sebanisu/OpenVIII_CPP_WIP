@@ -19,6 +19,7 @@
 #include "Tile2.hpp"
 #include "Tile3.hpp"
 #include "tl/write.hpp"
+#include <variant>
 namespace open_viii::graphics::background {
 template<typename T>
 concept is_tile = std::is_same_v<Tile1, std::decay_t<T>> || std::

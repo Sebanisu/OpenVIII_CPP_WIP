@@ -5,6 +5,7 @@
 #ifndef OPENVIII_CPP_WIP_COMMONKERNEL_HPP
 #define OPENVIII_CPP_WIP_COMMONKERNEL_HPP
 #include "concepts.hpp"
+#include <compare>
 namespace open_viii::kernel {
 template<typename T>
 struct CommonKernel : public T

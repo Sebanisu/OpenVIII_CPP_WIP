@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_LAYERID_HPP
 #define VIIIARCHIVE_LAYERID_HPP
+#include <compare>
 namespace open_viii::graphics::background {
 struct LayerID
 {

@@ -14,6 +14,7 @@
 #define VIIICOMPRESSION_L4Z_H
 #include "lib/lz4.h"
 #include "open_viii/Concepts.hpp"
+#include <span>
 namespace open_viii::compression::l4z {
 /**
  * Extract char buffer using LZ4 decompressor.

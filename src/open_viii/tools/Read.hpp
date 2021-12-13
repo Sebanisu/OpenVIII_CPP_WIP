@@ -4,6 +4,10 @@
 #ifndef VIIIARCHIVE_READ_HPP
 #define VIIIARCHIVE_READ_HPP
 #include "open_viii/Concepts.hpp"
+#include <cstring>
+#include <fstream>
+#include <optional>
+#include <thread>
 namespace open_viii::tools {
 // TODO anything that requires memcpy could maybe be replaced with std::bitcast
 // then the functions could be changes to constexpr.

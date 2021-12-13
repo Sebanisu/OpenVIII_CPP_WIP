@@ -1,4 +1,8 @@
-
+add_library(${PROJECT_NAME}_VIIICommon INTERFACE)
+#target_precompile_headers(${PROJECT_NAME}_VIIICommon INTERFACE
+#        <variant>
+#        <concepts>
+#        )
 add_subdirectory(archive)
 add_subdirectory(graphics)
 add_subdirectory(compression)

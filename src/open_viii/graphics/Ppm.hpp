@@ -16,6 +16,7 @@
 #include "open_viii/Concepts.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include "Point.hpp"
+#include <execution>
 
 namespace open_viii::graphics {
 struct Ppm

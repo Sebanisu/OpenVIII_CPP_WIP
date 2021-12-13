@@ -12,6 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIICOMPRESSION_LZSS_H
 #define VIIICOMPRESSION_LZSS_H
+#include <algorithm>
+#include <ranges>
 namespace open_viii::compression {
 struct LZSS
 {
