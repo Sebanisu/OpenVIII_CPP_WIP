@@ -12,6 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_BPPT_HPP
 #define VIIIARCHIVE_BPPT_HPP
+#include <compare>
+#include <iostream>
 namespace open_viii::graphics {
 /**
  * @enum open_viii::graphics::BPPT
