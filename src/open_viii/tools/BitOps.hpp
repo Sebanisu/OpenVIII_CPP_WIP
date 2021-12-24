@@ -5,6 +5,7 @@
 #define VIIIARCHIVE_BITOPS_HPP
 #include <cstdint>
 #include <limits>
+#include <concepts>
 namespace open_viii::tools {
 static constexpr auto bits_per_byte = 8U;
 /**
