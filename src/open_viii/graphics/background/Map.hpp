@@ -20,6 +20,7 @@
 #include "Tile3.hpp"
 #include "tl/write.hpp"
 #include <variant>
+#include <utility>
 namespace open_viii::graphics::background {
 template<typename T>
 concept is_tile = std::is_same_v<Tile1, std::decay_t<T>> || std::
@@ -77,7 +78,7 @@ public:
   {
     return [](const is_tile auto &tile) {
       static constexpr auto end_x{ 0x7FFFU };
-      return (tile.x() != end_x);// && tile.draw();
+      return (std::cmp_not_equal(tile.x(), end_x));// && tile.draw();
     };
   }
   [[nodiscard]] auto
