@@ -92,7 +92,7 @@ private:
     return key + (palette * static_cast<std::size_t>(clut_width()));
   }
 
-  template<Color T = Color16ABGR>
+  template<Color_types T = Color16ABGR>
   [[nodiscard]] std::vector<T>
     get_image_bpp8(const uint8_t &palette) const
   {
@@ -108,7 +108,7 @@ private:
       });
     return out;
   }
-  template<Color T = Color16ABGR>
+  template<Color_types T = Color16ABGR>
   [[nodiscard]] std::vector<T>
     get_image_bpp4(const uint8_t &palette) const
   {
