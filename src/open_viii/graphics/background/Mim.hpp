@@ -20,6 +20,7 @@
 #include "Tile3.hpp"
 #include "TileCommon.hpp"
 namespace open_viii::graphics::background {
+
 /**
  * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_MIM
  * todo rewrite so you don't have to delete the copy constructors. aka no spans
@@ -212,7 +213,7 @@ public:
     return 0U;
   }
 
-  template<Color T>
+  template<Color_types T>
   std::vector<T>
     get_colors(
       const BPPT    &bpp,

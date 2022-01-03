@@ -6,6 +6,7 @@
 #define OPENVIII_CPP_WIP_COMMONCOLOR_HPP
 #include "ColorLayoutT.hpp"
 #include "open_viii/Concepts.hpp"
+#include <algorithm>
 namespace open_viii::graphics {
 template<typename T>
 struct CommonColor : T
@@ -173,12 +174,35 @@ public:
     return std::compare_three_way{}(a(), rhs.a());
   }
 
+  template<struct_of_color32_byte cT>
+  constexpr auto
+    operator<=>(const cT &rhs) const noexcept
+  {
+    // if constexpr (std::is_same_v<std::decay_t<cT>, this_type>) {
+    //   if (auto cmp = std::compare_three_way{}(value, rhs.value); cmp == 0)
+    //     return cmp;
+    // }
+    if (auto cmp = std::compare_three_way{}(r(), rhs.r); cmp != 0)
+      return cmp;
+    if (auto cmp = std::compare_three_way{}(g(), rhs.g); cmp != 0)
+      return cmp;
+    if (auto cmp = std::compare_three_way{}(b(), rhs.b); cmp != 0)
+      return cmp;
+    return std::compare_three_way{}(a(), rhs.a);
+  }
+
   constexpr auto
     operator==(const this_type &rhs) const noexcept
   {
     return value == rhs.value;
   }
   template<Color cT>
+  constexpr auto
+    operator==(const cT &rhs) const noexcept
+  {
+    return operator<=>(rhs) == 0;
+  }
+  template<struct_of_color32_byte cT>
   constexpr auto
     operator==(const cT &rhs) const noexcept
   {
@@ -195,6 +219,40 @@ public:
     operator!=(const cT &rhs) const noexcept
   {
     return operator<=>(rhs) != 0;
+  }
+
+  template<struct_of_color32_byte cT>
+  constexpr auto
+    operator!=(const cT &rhs) const noexcept
+  {
+    return operator<=>(rhs) != 0;
+  }
+
+  template<struct_of_color32_byte cT>
+  constexpr operator cT() const
+  {
+    cT ret{};
+    ret.r = r();
+    ret.b = b();
+    ret.g = g();
+    ret.a = a();
+    return ret;
+  }
+
+private:
+  static constexpr auto byte_max
+    = static_cast<float>((std::numeric_limits<std::uint8_t>::max)());
+
+public:
+  template<struct_of_color32_float cT>
+  constexpr operator cT() const
+  {
+    cT ret{};
+    ret.r = std::clamp(static_cast<float>(r()) / byte_max, 0.F, 1.F);
+    ret.b = std::clamp(static_cast<float>(b()) / byte_max, 0.F, 1.F);
+    ret.g = std::clamp(static_cast<float>(g()) / byte_max, 0.F, 1.F);
+    ret.a = std::clamp(static_cast<float>(a()) / byte_max, 0.F, 1.F);
+    return ret;
   }
 };
 }// namespace open_viii::graphics

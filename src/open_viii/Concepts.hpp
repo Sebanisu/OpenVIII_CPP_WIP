@@ -57,9 +57,34 @@ concept Color_is_black = requires(T a)
     a.is_black()
     } -> is_bool;
 };
+template<typename T, typename U>
+concept struct_of_color32 = requires(T c)
+{
+  {
+    c.r
+    } -> std::same_as<U>;
+  {
+    c.g
+    } -> std::same_as<U>;
+  {
+    c.b
+    } -> std::same_as<U>;
+  {
+    c.a
+    } -> std::same_as<U>;
+};
+
+template<typename T>
+concept struct_of_color32_byte = struct_of_color32<T, std::uint8_t &>;
+template<typename T>
+concept struct_of_color32_float = struct_of_color32<T, float &>;
 template<typename T>
 concept Color
   = Color_A<T> && Color_B<T> && Color_G<T> && Color_R<T> && Color_is_black<T>;
+template<typename T>
+concept Color_types
+  = struct_of_color32_byte<T> || struct_of_color32_float<T> || Color<T>;
+
 template<typename T>
 concept Number = std::floating_point<T> || std::integral<T>;
 template<typename T>
