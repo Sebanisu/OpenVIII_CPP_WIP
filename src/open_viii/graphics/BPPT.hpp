@@ -150,44 +150,36 @@ public:
       (m_bpp8 ? RAW8_VALUE : 0U) + (m_bpp16 ? RAW16_VALUE : 0U)
       + (m_color_lookup_table_present ? CLP_VALUE : 0U));
   }
-
+  constexpr BPPT() = default;
+  constexpr BPPT(
+    bool in_bpp8,
+    bool in_bpp16,
+    bool in_color_lookup_table_present)
+    : m_bpp8(in_bpp8), m_bpp16(in_bpp16),
+      m_color_lookup_table_present(in_color_lookup_table_present)
+  {}
   static consteval BPPT
     BPP4_CONST() noexcept
   {
-    BPPT r{};
-    r.m_bpp8                       = false;
-    r.m_bpp16                      = false;
-    r.m_color_lookup_table_present = true;
-    return r;
-  };
+    return { false, false, true };
+  }
 
   static consteval BPPT
     BPP8_CONST() noexcept
   {
-    BPPT r{};
-    r.m_bpp8                       = true;
-    r.m_bpp16                      = false;
-    r.m_color_lookup_table_present = true;
-    return r;
-  };
+    return { true, false, true };
+  }
 
   static consteval BPPT
     BPP16_CONST() noexcept
   {
-    BPPT r{};
-    r.m_bpp8                       = false;
-    r.m_bpp16                      = true;
-    r.m_color_lookup_table_present = false;
-    return r;
-  };
+    return { false, true, false };
+  }
+
   static consteval BPPT
     BPP24_CONST() noexcept
   {
-    BPPT r{};
-    r.m_bpp8                       = true;
-    r.m_bpp16                      = true;
-    r.m_color_lookup_table_present = false;
-    return r;
+    return { true, true, false };
   };
 };
 
@@ -201,28 +193,25 @@ namespace literals {
   consteval BPPT operator""_bpp(const char *const value)
   {
     const auto sv = std::string_view(value);
-    BPPT       r{};
+
     if ((sv.size() == 1U)) {
       if (sv[0] == '4') {
-        r = BPPT::BPP4_CONST();
+        return BPPT::BPP4_CONST();
       }
       if (sv[0] == '8') {
-        r = BPPT::BPP8_CONST();
+        return BPPT::BPP8_CONST();
       }
     }
     else if ((sv.size() == 2U)) {
       using namespace std::string_view_literals;
       if (sv == "16"sv) {
-        r = BPPT::BPP16_CONST();
+        return BPPT::BPP16_CONST();
       }
       if (sv == "24"sv) {
-        r = BPPT::BPP24_CONST();
+        return BPPT::BPP24_CONST();
       }
     }
-    if (!r) {
-      throw std::invalid_argument("value must be 4, 8, 16, or 24");
-    }
-    return r;
+    throw std::invalid_argument("value must be 4, 8, 16, or 24");
   }
   static_assert(4_bpp != 8_bpp);
   static_assert(16_bpp != 24_bpp);

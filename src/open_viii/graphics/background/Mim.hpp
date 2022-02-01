@@ -437,25 +437,26 @@ public:
                                        const std::string &local_filename) {
       Ppm::save(data, width, height, local_filename);
     };
+    using namespace open_viii::graphics::literals;
     get_colors_for_saving(filename, {}, {}, ppm_save, true);
     {
       for (std::uint8_t i{}; i < static_cast<std::uint8_t>(clut_height());
            i++) {
-        get_colors_for_saving(filename, BPPT::BPP4_CONST(), i, ppm_save, false);
+        get_colors_for_saving(filename, 4_bpp, i, ppm_save, false);
       }
     }
     {
       for (std::uint8_t i{}; i < static_cast<std::uint8_t>(clut_height());
            i++) {
-        get_colors_for_saving(filename, BPPT::BPP8_CONST(), i, ppm_save, false);
+        get_colors_for_saving(filename, 8_bpp, i, ppm_save, false);
       }
     }
-    get_colors_for_saving(filename, BPPT::BPP16_CONST(), {}, ppm_save, false);
+    get_colors_for_saving(filename, 16_bpp, {}, ppm_save, false);
   }
   /**
    * bpp selections
    */
-  static constexpr std::array<open_viii::graphics::BPPT, 3U>
+  static consteval std::array<open_viii::graphics::BPPT, 3U>
     bpp_selections() noexcept
   {
     using namespace open_viii::graphics::literals;
@@ -464,7 +465,7 @@ public:
   /**
    * bpp selections strings
    */
-  static constexpr std::array<const char *, 3U>
+  static consteval std::array<const char *, 3U>
     bpp_selections_c_str() noexcept
   {
     return { "4", "8", "16" };
