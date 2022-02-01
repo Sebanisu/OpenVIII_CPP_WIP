@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_BPPT_HPP
 #include <compare>
 #include <iostream>
+#include <string_view>
 namespace open_viii::graphics {
 /**
  * @enum open_viii::graphics::BPPT
@@ -26,20 +27,20 @@ namespace open_viii::graphics {
 struct BPPT
 {
 private:
-  mutable bool          m_bpp8                       : 1 { false };
-  mutable bool          m_bpp16                      : 1 { false };
+  bool                  m_bpp8                       : 1 { false };
+  bool                  m_bpp16                      : 1 { false };
   /**
    * might be used sometimes. for some files. I think it could be for multi
    * format
    */
-  mutable bool          m_unused1                    : 1 { false };
-  mutable bool          m_color_lookup_table_present : 1 { false };
+  bool                  m_unused1                    : 1 { false };
+  bool                  m_color_lookup_table_present : 1 { false };
   bool                  m_unused2                    : 1 { false };
   bool                  m_unused3                    : 1 { false };
   bool                  m_unused4                    : 1 { false };
   bool                  m_unused5                    : 1 { false };
-  constexpr static auto RAW8_VALUE  = 0b1U;
-  constexpr static auto RAW16_VALUE = 0b10U;
+  constexpr static auto RAW8_VALUE  = 0b0001U;
+  constexpr static auto RAW16_VALUE = 0b0010U;
   constexpr static auto CLP_VALUE   = 0b1000U;
 
 public:
@@ -47,7 +48,6 @@ public:
   constexpr static auto BPP8  = 8U;
   constexpr static auto BPP16 = 16U;
   constexpr static auto BPP24 = 24U;
-  // consteval friend BPPT operator"" _bpp(unsigned long long int value);
   auto
     operator<=>(const BPPT &) const = default;
   [[nodiscard]] constexpr bool
@@ -61,7 +61,7 @@ public:
    * @return true if 4bpp
    */
   constexpr void
-    bpp4(bool in) const noexcept
+    bpp4(bool in) noexcept
   {
     if (in) {
       m_bpp8                       = false;
@@ -75,7 +75,7 @@ public:
    * @return true if 8bpp
    */
   constexpr void
-    bpp8(bool in) const
+    bpp8(bool in) noexcept
   {
     if (in) {
       m_bpp8                       = true;
@@ -89,13 +89,13 @@ public:
    * @return true if 16bpp
    */
   constexpr void
-    bpp16(bool in) const
+    bpp16(bool in) noexcept
   {
-    if (in) {
-      m_bpp8                       = false;
-      m_bpp16                      = true;
-      m_color_lookup_table_present = false;
-    }
+     if (in) {
+       m_bpp8                       = false;
+       m_bpp16                      = true;
+       m_color_lookup_table_present = false;
+     }
   }
   /**
    * Test bits to check if color lookup table is not present and 8bpp is set and
@@ -103,7 +103,7 @@ public:
    * @return true if 24bpp
    */
   constexpr void
-    bpp24(bool in) const
+    bpp24(bool in) noexcept
   {
     if (in) {
       m_bpp8                       = true;
@@ -214,25 +214,34 @@ inline std::ostream &
             << ", CLP: " << input.color_lookup_table_present() << '}';
 }
 namespace literals {
-  constexpr BPPT operator""_bpp(unsigned long long int value)
+  consteval BPPT operator""_bpp(const char *const value)
   {
+    const auto sv = std::string_view(value);
     BPPT r{};
-    switch (value) {
-    case BPPT::BPP4:
-      r.bpp4(true);
-      break;
-    case BPPT::BPP8:
-      r.bpp8(true);
-      break;
-    case BPPT::BPP16:
-      r.bpp16(true);
-      break;
-    case BPPT::BPP24:
-      r.bpp24(true);
-      break;
+    if ((sv.size() == 1U)) {
+      if (sv[0] == '4') {
+        r.bpp4(true);
+      }
+      if (sv[0] == '8') {
+        r.bpp8(true);
+      }
+    }
+    else if ((sv.size() == 2U)) {
+      using namespace std::string_view_literals;
+      if (sv == "16"sv) {
+        r.bpp16(true);
+      }
+      if (sv == "24"sv) {
+        r.bpp24(true);
+      }
+    }
+    if (!r) {
+      throw std::invalid_argument("value must be 4, 8, 16, or 24");
     }
     return r;
   }
+  static_assert(4_bpp != 8_bpp);
+  static_assert(16_bpp != 24_bpp);
 }// namespace literals
 static_assert(sizeof(BPPT) == 1U);
 }// namespace open_viii::graphics
