@@ -60,62 +60,6 @@ public:
    * not set;
    * @return true if 4bpp
    */
-  constexpr void
-    bpp4(bool in) noexcept
-  {
-    if (in) {
-      m_bpp8                       = false;
-      m_bpp16                      = false;
-      m_color_lookup_table_present = true;
-    }
-  }
-  /**
-   * Test bits to check if color lookup table is present and 8bpp is set and
-   * 16bpp is not set;
-   * @return true if 8bpp
-   */
-  constexpr void
-    bpp8(bool in) noexcept
-  {
-    if (in) {
-      m_bpp8                       = true;
-      m_bpp16                      = false;
-      m_color_lookup_table_present = true;
-    }
-  }
-  /**
-   * Test bits to check if color lookup table is not present and 8bpp is not set
-   * and 16bpp is set;
-   * @return true if 16bpp
-   */
-  constexpr void
-    bpp16(bool in) noexcept
-  {
-     if (in) {
-       m_bpp8                       = false;
-       m_bpp16                      = true;
-       m_color_lookup_table_present = false;
-     }
-  }
-  /**
-   * Test bits to check if color lookup table is not present and 8bpp is set and
-   * 16bpp is set;
-   * @return true if 24bpp
-   */
-  constexpr void
-    bpp24(bool in) noexcept
-  {
-    if (in) {
-      m_bpp8                       = true;
-      m_bpp16                      = true;
-      m_color_lookup_table_present = false;
-    }
-  }
-  /**
-   * Test bits to check if color lookup table is present and 8bpp and 16bpp are
-   * not set;
-   * @return true if 4bpp
-   */
   [[nodiscard]] constexpr bool
     bpp4() const noexcept
   {
@@ -206,7 +150,47 @@ public:
       (m_bpp8 ? RAW8_VALUE : 0U) + (m_bpp16 ? RAW16_VALUE : 0U)
       + (m_color_lookup_table_present ? CLP_VALUE : 0U));
   }
+
+  static consteval BPPT
+    BPP4_CONST() noexcept
+  {
+    BPPT r{};
+    r.m_bpp8                       = false;
+    r.m_bpp16                      = false;
+    r.m_color_lookup_table_present = true;
+    return r;
+  };
+
+  static consteval BPPT
+    BPP8_CONST() noexcept
+  {
+    BPPT r{};
+    r.m_bpp8                       = true;
+    r.m_bpp16                      = false;
+    r.m_color_lookup_table_present = true;
+    return r;
+  };
+
+  static consteval BPPT
+    BPP16_CONST() noexcept
+  {
+    BPPT r{};
+    r.m_bpp8                       = false;
+    r.m_bpp16                      = true;
+    r.m_color_lookup_table_present = false;
+    return r;
+  };
+  static consteval BPPT
+    BPP24_CONST() noexcept
+  {
+    BPPT r{};
+    r.m_bpp8                       = true;
+    r.m_bpp16                      = true;
+    r.m_color_lookup_table_present = false;
+    return r;
+  };
 };
+
 inline std::ostream &
   operator<<(std::ostream &os, [[maybe_unused]] const BPPT &input)
 {
@@ -217,22 +201,22 @@ namespace literals {
   consteval BPPT operator""_bpp(const char *const value)
   {
     const auto sv = std::string_view(value);
-    BPPT r{};
+    BPPT       r{};
     if ((sv.size() == 1U)) {
       if (sv[0] == '4') {
-        r.bpp4(true);
+        r = BPPT::BPP4_CONST();
       }
       if (sv[0] == '8') {
-        r.bpp8(true);
+        r = BPPT::BPP8_CONST();
       }
     }
     else if ((sv.size() == 2U)) {
       using namespace std::string_view_literals;
       if (sv == "16"sv) {
-        r.bpp16(true);
+        r = BPPT::BPP16_CONST();
       }
       if (sv == "24"sv) {
-        r.bpp24(true);
+        r = BPPT::BPP24_CONST();
       }
     }
     if (!r) {

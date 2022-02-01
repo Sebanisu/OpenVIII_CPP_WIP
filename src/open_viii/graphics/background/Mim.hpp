@@ -438,23 +438,19 @@ public:
       Ppm::save(data, width, height, local_filename);
     };
     get_colors_for_saving(filename, {}, {}, ppm_save, true);
-    BPPT bpp{};
     {
-      bpp.bpp4(true);
       for (std::uint8_t i{}; i < static_cast<std::uint8_t>(clut_height());
            i++) {
-        get_colors_for_saving(filename, bpp, i, ppm_save, false);
+        get_colors_for_saving(filename, BPPT::BPP4_CONST(), i, ppm_save, false);
       }
     }
     {
-      bpp.bpp8(true);
       for (std::uint8_t i{}; i < static_cast<std::uint8_t>(clut_height());
            i++) {
-        get_colors_for_saving(filename, bpp, i, ppm_save, false);
+        get_colors_for_saving(filename, BPPT::BPP8_CONST(), i, ppm_save, false);
       }
     }
-    bpp.bpp16(true);
-    get_colors_for_saving(filename, bpp, {}, ppm_save, false);
+    get_colors_for_saving(filename, BPPT::BPP16_CONST(), {}, ppm_save, false);
   }
   /**
    * bpp selections
