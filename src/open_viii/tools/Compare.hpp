@@ -6,6 +6,7 @@
 #include "Convert.hpp"
 #include <span>
 #include <string_view>
+#include <array>
 namespace open_viii::tools {
 template<typename t1, typename t2>
 concept can_upper = requires(t1 c1, t2 c2)
