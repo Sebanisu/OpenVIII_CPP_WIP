@@ -70,9 +70,10 @@ static consteval retT
 template<int bit_count>
 static constexpr auto get_mask = []() {
   static_assert(bit_count <= number_of_bits<std::uint64_t> && bit_count > 0);
-  constexpr auto bit_count_8  = number_of_bits<std::uint8_t>;
-  constexpr auto bit_count_16 = number_of_bits<std::uint16_t>;
-  constexpr auto bit_count_32 = number_of_bits<std::uint32_t>;
+  [[maybe_unused]] constexpr auto bit_count_8  = number_of_bits<std::uint8_t>;
+  [[maybe_unused]] constexpr auto bit_count_16 = number_of_bits<std::uint16_t>;
+  [[maybe_unused]] constexpr auto bit_count_32 = number_of_bits<std::uint32_t>;
+  //bug in msvc 2022 [[maybe_unused]] to silence error message.
   if constexpr (bit_count <= 0) {
     return uint8_t(0U);
   }
