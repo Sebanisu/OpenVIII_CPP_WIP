@@ -47,7 +47,7 @@ public:
       [&lambda](const auto &tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
-          return lambda(std::forward<decltype(tiles)>(tiles));
+          return lambda(tiles);
         }
         else {
           static const std::vector<Tile1> empty{};
@@ -64,7 +64,7 @@ public:
       [&lambda](auto &tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
-          return lambda(std::forward<decltype(tiles)>(tiles));
+          return lambda(tiles);
         }
         else {
           std::vector<Tile1> empty{};
