@@ -40,6 +40,7 @@ private:
     m_tiles{};
 
 public:
+
   auto
     visit_tiles(auto &&lambda) const
   {
@@ -87,6 +88,20 @@ public:
     return m_offset;
   }
 
+    bool operator ==(const Map & other) const noexcept
+    {
+      return (m_tiles.index() == m_tiles.index()) && other.visit_tiles([this](const auto & other_tiles)->bool{
+        return visit_tiles([&other_tiles](const auto & tiles)->bool{
+          if constexpr(std::is_same_v<std::remove_cvref<decltype(tiles)>,std::remove_cvref<decltype(other_tiles)>>) {
+            return std::ranges::equal(tiles, other_tiles);
+          }
+          else
+          {
+            return false;
+          }
+        });
+      });
+    }
 private:
   void
     visit_not_tiles(auto &&lambda) const
