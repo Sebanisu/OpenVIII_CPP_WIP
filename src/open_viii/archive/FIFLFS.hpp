@@ -32,16 +32,15 @@ concept executable_common_sans_nested
   = executable_buffer_path<lambdaT> || executable_buffer_path_fi<lambdaT>;
 
 template<typename lambdaT>
-concept executable_common_nested = executable_common_sans_nested<
-  lambdaT> || executable_fiflfs_sans_nested<lambdaT>;
+concept executable_common_nested = executable_common_sans_nested<lambdaT>
+                                || executable_fiflfs_sans_nested<lambdaT>;
 
 template<typename lambdaT>
 concept filter_paths = std::is_invocable_r_v<bool, lambdaT, std::string>;
 
 template<typename srcT>
-concept path_or_range
-  = std::convertible_to<srcT, std::filesystem::path> || std::ranges::
-    contiguous_range<srcT>;
+concept path_or_range = std::convertible_to<srcT, std::filesystem::path>
+                     || std::ranges::contiguous_range<srcT>;
 
 template<typename lambdaT>
 concept executable_on_pair_of_int_string
@@ -410,7 +409,7 @@ public:
     for_each_sans_nested(results, process);
   }
   [[nodiscard]] std::vector<std::string>
-    map_data() const
+    map_data_classic() const
   {
     if constexpr (!HasNested) {
       return {};
@@ -418,7 +417,7 @@ public:
     else {
       std::vector<std::string> list{};
       FIFLFS<false>            archive = {};
-      const auto               items   = get_all_items_from_fl({ "mapdata" });
+      const auto               items = get_all_items_from_fl({ "mapdata" });
       (void)std::any_of(
         std::execution::seq,
         items.cbegin(),
@@ -442,6 +441,29 @@ public:
           }
           return false;
         });
+      return list;
+    }
+  }
+  [[nodiscard]] std::vector<std::string>
+    map_data() const
+  {
+    if constexpr (!HasNested) {
+      return {};
+    }
+    else {
+      std::vector<std::string> list{};
+      const auto               items = get_all_items_from_fl({ ".fs" });
+      (void)std::transform(
+        std::execution::seq,
+        items.cbegin(),
+        items.cend(),
+        std::back_inserter(list),
+        [&list](const auto &item) {
+          std::string &path = item.second();
+          auto fspath = std::filesystem::path(path);
+          return fspath.filename().stem().string();
+        });
+      std::sort(list.begin(),list.end());
       return list;
     }
   }
