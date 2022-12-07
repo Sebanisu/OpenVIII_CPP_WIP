@@ -458,8 +458,7 @@ public:
         items.cend(),
         std::back_inserter(list),
         [&list](const auto &item) {
-          std::string &path = item.second;
-          auto fspath = std::filesystem::path(path);
+          auto fspath = std::filesystem::path(item.second);
           return fspath.filename().stem().string();
         });
       std::sort(list.begin(),list.end());
