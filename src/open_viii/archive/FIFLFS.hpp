@@ -454,7 +454,6 @@ public:
       std::vector<std::string> list{};
       const auto               items = get_all_items_from_fl({ ".fs" });
       (void)std::transform(
-        std::execution::seq,
         items.cbegin(),
         items.cend(),
         std::back_inserter(list),
