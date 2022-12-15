@@ -6,26 +6,40 @@
 #include "open_viii/Concepts.hpp"
 namespace open_viii::tools {
 template<typename lambdaT>
-requires(std::invocable<lambdaT, std::ostream &>)
-  [[maybe_unused]] inline bool write_buffer(
-    const lambdaT          &lambda,
-    const std::string_view &path,
-    const std::string_view &root = "tmp")
+  requires(std::invocable<lambdaT, std::ostream &>)
+[[maybe_unused]] inline bool write_buffer(
+  const lambdaT          &lambda,
+  const std::string_view &path,
+  const std::string_view &root = "tmp")
 {
-  auto dir      = std::filesystem::path(root);
-  auto filename = dir / path;
-  std::filesystem::create_directories(filename.parent_path());
+  std::error_code ec{};
+  auto            dir      = std::filesystem::path(root);
+  auto            filename = dir / path;
+  std::filesystem::create_directories(filename.parent_path(), ec);
+  if (ec) {
+    std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
+              << ec.message() << " - " << filename.parent_path() << std::endl;
+    ec.clear();
+  }
+  std::filesystem::remove(filename, ec);
+  if (ec) {
+    std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
+              << ec.message() << " - " << filename << std::endl;
+    ec.clear();
+  }
   auto fp = std::ofstream{};
   for (;;) {
     fp.open(filename, std::ios::out | std::ios::binary | std::ios::trunc);
-    if (fp.is_open()) {
+    if (!fp.is_open()) {
+      std::cerr << __FILE__ << ":" << __LINE__ << " - Failed to open - "
+                << filename << std::endl;
+      ec.clear();
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    else {
       break;
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
-  //    if (fp.is_open()) {
-  //  const auto &string = filename.string();
-  //  std::cout << "Saving: \t\"" << string << "\"\n";// << std::flush;
   lambda(fp);
   fp.close();
   return true;
