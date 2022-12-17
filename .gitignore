@@ -9,7 +9,8 @@ cmake-build-*/
 External/lz4
 *.h~
 *.txt~
-.idea/*
+.idea/vcs.xml
+.idea/workspace.xml*
 venv/*
 *.mch
 build/*

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSharedSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug-WSL" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL" GENERATION_OPTIONS="-G &quot;Ninja Multi-Config&quot; -DDOCS:STRING=YES -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="RelWithDebInfo-WSL" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="WSL" GENERATION_OPTIONS="-G &quot;Ninja Multi-Config&quot; -DDOCS:STRING=YES -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="Debug-Visual Studio 2022" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio 2022" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="RelWithDebInfo-Visual Studio 2022" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="Visual Studio 2022" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="Debug-Visual Studio 2019" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio 2019" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="RelWithDebInfo-Visual Studio 2019" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="Visual Studio 2019" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
+    </configurations>
+  </component>
+</project>
