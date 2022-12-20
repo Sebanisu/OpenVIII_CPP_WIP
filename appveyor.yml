@@ -49,8 +49,6 @@ for:
           export CXX=clang++
     build_script:
       - sh: >-
-          mkdir build
-
           cmake -G "Ninja Multi-Config" -B build
           
           ninja -C build
