@@ -79,8 +79,7 @@ public:
       }
     }
     const auto [first, last]
-      = std::ranges::remove_if(paths, [](const std::filesystem::path path) {
-          std::error_code ec{};
+      = std::ranges::remove_if(paths, [&ec](const std::filesystem::path path) {
           const bool      found = std::filesystem::exists(path, ec);
           if (ec) {
             std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
@@ -106,7 +105,7 @@ public:
   {
     std::ranges::for_each(get(), [&lambda](const std::string &path) {
       const auto      fs_path = std::filesystem::path(path);
-      std::error_code ec{};
+      std::error_code   ec{};
       const bool      found = std::filesystem::exists(fs_path, ec);
       if (ec) {
         std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
