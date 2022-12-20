@@ -46,7 +46,7 @@ public:
   /**
    * File extension for FI
    */
-  static constexpr auto        EXT  = std::string_view(".fi", 3U);
+  static constexpr auto        EXT  = std::string_view(".fi");
   /**
    * Uncompressed size in bytes.
    */

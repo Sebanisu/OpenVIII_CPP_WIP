@@ -265,15 +265,11 @@ private:
   void
     populate_archives_from_path()
   {
-    tools::execute_on_directory(
-      m_path,
-      {},
-      { FI::EXT, FS::EXT, fl::EXT, ZZZ::EXT },
-      [this](const std::filesystem::path &localPath) {
-        if (localPath.has_stem()) {
-          loop([&localPath, this](
-                 const ArchiveTypeT     archiveTypeT,
-                 const std::string_view stem) {
+    const auto func_on_path = [this](const std::filesystem::path &localPath) {
+      if (localPath.has_stem()) {
+        loop(
+          [&localPath,
+           this](const ArchiveTypeT archiveTypeT, const std::string_view stem) {
             if (!(tools::i_equals(stem, localPath.stem().string()))) {
               return true;
             }
@@ -289,8 +285,16 @@ private:
             try_add(archiveTypeT, FI(count, 0U), localPath, localPath);
             return true;
           });
-        }
-      });
+      }
+    };
+    static constexpr std::initializer_list<std::string_view> extensions
+      = { FI::EXT, FS::EXT, fl::EXT, ZZZ::EXT };
+    tools::execute_on_directory(
+      m_path.parent_path(),
+      {},
+      extensions,
+      func_on_path);
+    tools::execute_on_directory(m_path, {}, extensions, func_on_path);
   }
   /**
    * lambda takes all Archive types
