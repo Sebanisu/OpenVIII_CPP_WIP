@@ -20,17 +20,14 @@
 #include <future>
 namespace open_viii::archive {
 template<typename T>
-concept does_have_has_value = requires(T a)
-{
-  a.has_value();
-};
+concept does_have_has_value = requires(T a) { a.has_value(); };
 template<typename T, typename lambdaT, typename filterT>
-concept does_have_execute_with_nested = requires(T a, lambdaT l, filterT f)
-{
-  a.execute_with_nested({}, l, {}, f);
-};
+concept does_have_execute_with_nested = requires(T a, lambdaT l, filterT f) {
+                                          a.execute_with_nested({}, l, {}, f);
+                                        };
 template<ArchiveTypeT... aT>
-concept not_zero = sizeof...(aT) > 0U;
+concept not_zero = sizeof
+...(aT) > 0U;
 /**
  * Reads a path looking for ZZZ or FIFLFS archives. It remembers the locations
  * of the archives, and serves serves as a front end to access them.
@@ -62,13 +59,21 @@ private:
         // try to read lang.dat from ff8 steam folder
         // lang.dat overrides the explicitly set one.
         const std::filesystem::path &langDatPath = path / "lang.dat";
-        if (std::filesystem::exists(langDatPath)) {
+        std::error_code              ec{};
+        const bool found = std::filesystem::exists(langDatPath, ec);
+        if (ec) {
+          std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                    << ec.value() << ": " << ec.message() << ec.value()
+                    << " - path: " << langDatPath << std::endl;
+          ec.clear();
+        }
+        if (found) {
           return tools::read_entire_file<std::basic_string<char>>(langDatPath);
         }
       }
       // remaster stores the language value in my documents. I don't see a
-      // cross platform way to find this in cpp. will probably need a c#
-      // launcher to pass the lang code to this. As .Net has a standard cross
+      // cross-platform way to find this in cpp. will probably need a c#
+      // launcher to pass the lang code to this. As .Net has a standard cross-
       // platform way to get the documents folder. Documents\My Games\FINAL
       // FANTASY VIII Remastered\Steam\(\d+)\config.txt
       return std::string(lang);// defaulting to english
@@ -89,16 +94,31 @@ private:
     // assert(!std::empty(m_lang));
     // auto path = in_path;
     const std::filesystem::path &dataPath = path / "Data"sv;
-    if (std::filesystem::exists(dataPath)) {
+    std::error_code              ec{};
+    const bool                   found = std::filesystem::exists(dataPath, ec);
+    if (ec) {
+      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                << ec.value() << ": " << ec.message() << ec.value()
+                << " - path: " << dataPath << std::endl;
+      ec.clear();
+    }
+    if (found) {
       path = dataPath;
       {
-        auto get_path = [&path, &lang](std::string coo) -> bool {
+        auto get_path = [&path, &lang, &ec](std::string coo) -> bool {
           if (std::empty(coo))
             return false;
           static constexpr auto langStart      = "lang-"sv;
           std::filesystem::path langFolderPath = path / langStart;
           langFolderPath                       = langFolderPath.string() + coo;
-          if (std::filesystem::exists(langFolderPath)) {
+          const bool found2 = std::filesystem::exists(langFolderPath, ec);
+          if (ec) {
+            std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                      << ec.value() << ": " << ec.message() << ec.value()
+                      << " - path: " << langFolderPath << std::endl;
+            ec.clear();
+          }
+          if (found2) {
             path = langFolderPath;
             lang = coo;
             return true;
@@ -257,13 +277,16 @@ private:
             if (!(tools::i_equals(stem, localPath.stem().string()))) {
               return true;
             }
-            try_add(
-              archiveTypeT,
-              FI(
-                static_cast<uint32_t>(std::filesystem::file_size(localPath)),
-                0U),
-              localPath,
-              localPath);
+            std::error_code ec{};
+            const auto      count = static_cast<std::uint32_t>(
+              std::filesystem::file_size(localPath, ec));
+            if (ec) {
+              std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                        << ec.value() << ": " << ec.message() << ec.value()
+                        << " - path: " << localPath << std::endl;
+              ec.clear();
+            }
+            try_add(archiveTypeT, FI(count, 0U), localPath, localPath);
             return true;
           });
         }
@@ -320,7 +343,7 @@ private:
     bool nested = true,
     typename lambdaT,
     typename filterT = decltype(default_filter_lambda)>
-  requires valid_execute_on_lambda<lambdaT> && valid_filter_lambda<filterT>
+    requires valid_execute_on_lambda<lambdaT> && valid_filter_lambda<filterT>
   auto
     get_execute_on_lambda(
       const std::initializer_list<std::string_view> &filename,
@@ -345,7 +368,7 @@ public:
    * @return
    */
   template<ArchiveTypeT archiveTypeT>
-  requires valid_archive_type_t<archiveTypeT>
+    requires valid_archive_type_t<archiveTypeT>
   const auto &
     get() const noexcept
   {
@@ -380,7 +403,7 @@ public:
    * @return
    */
   template<ArchiveTypeT archiveTypeT>
-  requires valid_archive_type_t<archiveTypeT>
+    requires valid_archive_type_t<archiveTypeT>
   auto &
     get() noexcept
   {
@@ -486,7 +509,7 @@ public:
     return std::monostate{};
   }
   template<ArchiveTypeT archiveTypeT>
-  requires valid_archive_type_t<archiveTypeT>
+    requires valid_archive_type_t<archiveTypeT>
   constexpr std::string_view
     get_string() const noexcept
   {// this string can be compared to the stem of the filename to determine which
@@ -553,9 +576,8 @@ public:
     populate_archives_from_path();
   }
   template<typename lambdaT>
-  static constexpr bool valid_lambda
-    = takes_valid_archive_type<
-        lambdaT> || valid_static_for_lambda_type<lambdaT>;
+  static constexpr bool valid_lambda = takes_valid_archive_type<lambdaT>
+                                    || valid_static_for_lambda_type<lambdaT>;
   /**
    * Loop through each of the archives.
    * @tparam minT min archive
@@ -569,10 +591,9 @@ public:
     std::intmax_t minT = static_cast<std::intmax_t>(ArchiveTypeT::begin),
     std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::end),
     typename lambdaT>
-  requires valid_archive_type_t<
-    minT> && valid_archive_type_t<maxT, true> && valid_lambda<lambdaT>
-  bool
-    loop(const lambdaT &lambda) const
+    requires valid_archive_type_t<minT> && valid_archive_type_t<maxT, true>
+          && valid_lambda<lambdaT> bool
+  loop(const lambdaT &lambda) const
   {
     bool ret{ true };
     if constexpr (
@@ -614,9 +635,8 @@ public:
    * @return
    */
   template<ArchiveTypeT... aT, typename lambdaT>
-  requires valid_archive_type_t_v<aT...>
-  bool
-    specify(const lambdaT &lambda)
+    requires valid_archive_type_t_v<aT...> bool
+  specify(const lambdaT &lambda)
   {
     return (loop<aT, aT>(lambda) && ...);
   }
@@ -636,9 +656,8 @@ public:
    * @return
    */
   template<ArchiveTypeT... aT>
-  requires not_zero<aT...>
-  bool
-    test_set()
+    requires not_zero<aT...> bool
+  test_set()
   {
     return specify<aT...>(test_valid_lambda());
   }
@@ -654,12 +673,12 @@ public:
     bool nested = true,
     typename lambdaT,
     typename filterT = decltype(default_filter_lambda)>
-  requires valid_execute_on_lambda<lambdaT> && valid_filter_lambda<filterT>
-  bool
-    execute_on(
-      const std::initializer_list<std::string_view> &filename,
-      lambdaT                                      &&lambda,
-      filterT                                      &&filter_lambda = {}) const
+    requires valid_execute_on_lambda<lambdaT>
+          && valid_filter_lambda<filterT> bool
+  execute_on(
+    const std::initializer_list<std::string_view> &filename,
+    lambdaT                                      &&lambda,
+    filterT                                      &&filter_lambda = {}) const
   {
     return loop(get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
   }
@@ -677,13 +696,12 @@ public:
     ArchiveTypeT... aT,
     typename lambdaT,
     typename filterT = decltype(default_filter_lambda)>
-  requires not_zero<aT...> && valid_execute_on_lambda<
-    lambdaT> && valid_filter_lambda<filterT>
-  bool
-    execute_on(
-      const std::initializer_list<std::string_view> &filename,
-      lambdaT                                      &&lambda,
-      filterT                                      &&filter_lambda = {}) const
+    requires not_zero<aT...> && valid_execute_on_lambda<lambdaT>
+          && valid_filter_lambda<filterT> bool
+  execute_on(
+    const std::initializer_list<std::string_view> &filename,
+    lambdaT                                      &&lambda,
+    filterT                                      &&filter_lambda = {}) const
   {
     return specify<aT...>(
       get_execute_on_lambda<nested>(filename, lambda, filter_lambda));

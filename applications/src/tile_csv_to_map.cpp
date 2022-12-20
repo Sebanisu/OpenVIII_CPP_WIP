@@ -3,10 +3,10 @@
 //
 #include "tile_csv_to_map.hpp"
 template<typename T>
-requires(std::integral<std::decay_t<T>>)
-  std::optional<std::decay_t<T>> get_number(const std::string_view num,
-                                            const int              base = 10)
-noexcept
+  requires(std::integral<std::decay_t<T>>)
+std::optional<std::decay_t<T>> get_number(
+  const std::string_view num,
+  const int              base = 10) noexcept
 {
   std::decay_t<T>        return_value{};
   std::from_chars_result data
@@ -27,11 +27,10 @@ std::optional<bool>
 }
 
 template<typename T>
-requires(std::floating_point<std::decay_t<T>>)
-  std::optional<std::decay_t<T>> get_number(const std::string_view  num,
-                                            const std::chars_format fmt
-                                            = std::chars_format::general)
-noexcept
+  requires(std::floating_point<std::decay_t<T>>)
+std::optional<std::decay_t<T>> get_number(
+  const std::string_view  num,
+  const std::chars_format fmt = std::chars_format::general) noexcept
 {
   std::decay_t<T>        return_value{};
   std::from_chars_result data
@@ -68,21 +67,23 @@ void
 }
 
 void
-  common_code(const std::string_view &csv_path,
-              const std::string_view &tile_type_view)
+  common_code(
+    const std::string_view &csv_path,
+    const std::string_view &tile_type_view)
 {
   auto is
     = std::fstream(std::string{ csv_path }, std::ios::in | std::ios::binary);
   [[maybe_unused]] std::string headers{};
   std::getline(is, headers);
   puts(headers.c_str());
-  using variant_tiles = std::variant<open_viii::graphics::background::Tile1,
-                                     open_viii::graphics::background::Tile2,
-                                     open_viii::graphics::background::Tile3,
-                                     std::monostate>;
+  using variant_tiles = std::variant<
+    open_viii::graphics::background::Tile1,
+    open_viii::graphics::background::Tile2,
+    open_viii::graphics::background::Tile3,
+    std::monostate>;
 
-  const auto map      = open_viii::graphics::background::Map(
-         [&is, &tile_type_view]() -> variant_tiles {
+  const auto map = open_viii::graphics::background::Map(
+    [&is, &tile_type_view]() -> variant_tiles {
       std::string line{};
       std::getline(is, line);
       if (std::empty(line))
@@ -96,12 +97,12 @@ void
         puts("line didn't match pattern");
         exit(EXIT_FAILURE);
       }
-      const auto raw_bytes = out_hex_to_vector(results.get<2>());
-      auto       variant_tile
-        = open_viii::graphics::background::get_tile(tile_type_view[0],
-                                                         raw_bytes);
+      const auto raw_bytes    = out_hex_to_vector(results.get<2>());
+      auto       variant_tile = open_viii::graphics::background::get_tile(
+        tile_type_view[0],
+        raw_bytes);
       std::visit(
-             [&](auto &tile) {
+        [&](auto &tile) {
           if constexpr (!open_viii::is_monostate<decltype(tile)>) {
             [[maybe_unused]] const auto
               &[re_whole_line,
@@ -188,12 +189,21 @@ void
 }
 
 int
-  main([[maybe_unused]] const int         argc,
-       [[maybe_unused]] const char *const argv[])
+  main(
+    [[maybe_unused]] const int         argc,
+    [[maybe_unused]] const char *const argv[])
 {
   const auto get_tile_type
     = [](const std::string_view csv_path) -> std::optional<std::string_view> {
-    if (!std::filesystem::exists(csv_path)) {
+    std::error_code ec{};
+    const bool      found = std::filesystem::exists(csv_path, ec);
+    if (ec) {
+      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                << ec.value() << ": " << ec.message() << ec.value()
+                << " - path: " << csv_path << std::endl;
+      ec.clear();
+    }
+    if (!found) {
       puts("Path doesn't exist");
       return std::nullopt;
     }

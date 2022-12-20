@@ -17,7 +17,15 @@ int
                             const std::string_view       ext) -> bool {
     std::cout << "path: \"" << in_path.string() << "\"\n";
     const auto path_ext = in_path.extension().string();
-    if (!std::filesystem::exists(in_path)) {
+    std::error_code ec{};
+    const bool      found = std::filesystem::exists(in_path, ec);
+    if (ec) {
+      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                << ec.value() << ": " << ec.message() << ec.value()
+                << " - path: " << in_path << std::endl;
+      ec.clear();
+    }
+    if (found) {
       std::cout << "does not exist!\n";
       return false;
     }

@@ -125,8 +125,26 @@ public:
             const auto e = [&dest_path, &is](const FileSection &fs) {
               auto out_path = dest_path / fs.file_name();
               if ([&out_path, &fs]() -> bool {
-                    if (std::filesystem::exists(out_path)) {
-                      return std::filesystem::file_size(out_path) != fs.size();
+                    std::error_code ec{};
+                    const bool found = std::filesystem::exists(out_path, ec);
+                    if (ec) {
+                      std::cerr << "error " << __FILE__ << ":" << __LINE__
+                                << " - " << ec.value() << ": " << ec.message()
+                                << ec.value() << " - path: " << out_path
+                                << std::endl;
+                      ec.clear();
+                    }
+                    if (found) {
+                      const auto count
+                        = std::filesystem::file_size(out_path, ec);
+                      if (ec) {
+                        std::cerr << "error " << __FILE__ << ":" << __LINE__
+                                  << " - " << ec.value() << ": " << ec.message()
+                                  << ec.value() << " - path: " << out_path
+                                  << std::endl;
+                        ec.clear();
+                      }
+                      return count != fs.size();
                     }
                     return true;
                   }()) {

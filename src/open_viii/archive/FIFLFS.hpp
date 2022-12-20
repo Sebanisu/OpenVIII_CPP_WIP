@@ -112,11 +112,17 @@ public:
       { stem },
       { FI::EXT, FS::EXT, fl::EXT },
       [this](const std::filesystem::path &path) {
-        std::string   cur_path = path.string();
-        const TryAddT result   = try_add(
-          FI(static_cast<std::uint32_t>(std::filesystem::file_size(path)), 0U),
-          path,
-          path);
+        std::string     cur_path = path.string();
+        std::error_code ec{};
+        const auto      count
+          = static_cast<std::uint32_t>(std::filesystem::file_size(path, ec));
+        if (ec) {
+          std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                    << ec.value() << ": " << ec.message() << ec.value()
+                    << " - path: " << path << std::endl;
+          ec.clear();
+        }
+        const TryAddT result = try_add(FI(count, 0U), path, path);
         switch (result) {
         case TryAddT::added_to_archive:
           // std::cout << "added: " << path << '\n';
@@ -417,7 +423,7 @@ public:
     else {
       std::vector<std::string> list{};
       FIFLFS<false>            archive = {};
-      const auto               items = get_all_items_from_fl({ "mapdata" });
+      const auto               items   = get_all_items_from_fl({ "mapdata" });
       (void)std::any_of(
         std::execution::seq,
         items.cbegin(),
@@ -461,7 +467,7 @@ public:
           auto fspath = std::filesystem::path(item.second);
           return fspath.filename().stem().string();
         });
-      std::sort(list.begin(),list.end());
+      std::sort(list.begin(), list.end());
       return list;
     }
   }

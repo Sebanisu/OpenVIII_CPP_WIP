@@ -83,7 +83,11 @@ template<
   std::invocable<std::filesystem::path> UnaryOperationT,
   typename BinaryOperationT>
 static void
-  execute_on_directory(const std::filesystem::path &directory, UnaryOperationT unary_function, BinaryOperationT binary_function = true) requires(
+  execute_on_directory(
+    const std::filesystem::path &directory,
+    UnaryOperationT              unary_function,
+    BinaryOperationT             binary_function = true)
+  requires(
     (std::is_same_v<std::decay<BinaryOperationT>, bool>)
     || (std::is_invocable_r_v<bool, BinaryOperationT, std::filesystem::path>))
 {
@@ -125,22 +129,31 @@ static void
  * @todo add tests
  */
 template<typename lambdaT>
-requires(std::invocable<lambdaT, std::filesystem::path>)
-  [[maybe_unused]] static void execute_on_directory(
-    const std::filesystem::path            &dir,
-    std::initializer_list<std::string_view> filenames,
-    std::initializer_list<std::string_view> extensions,
-    const lambdaT                          &lambda)
+  requires(std::invocable<lambdaT, std::filesystem::path>)
+[[maybe_unused]] static void execute_on_directory(
+  const std::filesystem::path            &dir,
+  std::initializer_list<std::string_view> filenames,
+  std::initializer_list<std::string_view> extensions,
+  const lambdaT                          &lambda)
 {
   execute_on_directory(
     dir,
     lambda,
     [&filenames, &extensions](const std::filesystem::path &path) {
-      return std::filesystem::is_regular_file(path)
-          && (std::ranges::empty(extensions)
-              || (path.has_extension() && i_ends_with_any(path.extension().string(), extensions)))
-          && (std::ranges::empty(filenames)
-              || (path.has_stem() && i_find_any(path.stem().string(), filenames)));
+      std::error_code ec{};
+      const bool      match
+        = std::filesystem::is_regular_file(path, ec)
+       && (std::ranges::empty(extensions)
+           || (path.has_extension() && i_ends_with_any(path.extension().string(), extensions)))
+       && (std::ranges::empty(filenames)
+           || (path.has_stem() && i_find_any(path.stem().string(), filenames)));
+      if (ec) {
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                  << ec.value() << ": " << ec.message() << ec.value()
+                  << " - path: " << path << std::endl;
+        ec.clear();
+      }
+      return match;
     });
 }
 /**
@@ -152,18 +165,26 @@ requires(std::invocable<lambdaT, std::filesystem::path>)
  * @todo add tests
  */
 template<typename lambdaT>
-requires(std::invocable<lambdaT, std::filesystem::path>)
-  [[maybe_unused]] static void execute_on_directories(
-    const std::filesystem::path            &dir,
-    std::initializer_list<std::string_view> path_contains,
-    const lambdaT                          &lambda)
+  requires(std::invocable<lambdaT, std::filesystem::path>)
+[[maybe_unused]] static void execute_on_directories(
+  const std::filesystem::path            &dir,
+  std::initializer_list<std::string_view> path_contains,
+  const lambdaT                          &lambda)
 {
   execute_on_directory(
     dir,
     lambda,
     [&path_contains](const std::filesystem::path &path) {
-      return std::filesystem::is_directory(path)
-          && tools::i_find_any(path.string(), path_contains);
+      std::error_code ec{};
+      const auto      match = std::filesystem::is_directory(path, ec)
+                      && tools::i_find_any(path.string(), path_contains);
+      if (ec) {
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                  << ec.value() << ": " << ec.message() << ec.value()
+                  << " - path: " << path << std::endl;
+        ec.clear();
+      }
+      return match;
     });
 }
 }// namespace open_viii::tools

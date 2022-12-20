@@ -84,8 +84,8 @@ public:
    * path. This doesn't store the path.
    */
   template<FI_Like fiT>
-  requires(!std::is_same_v<std::decay_t<fiT>, FI>) constexpr explicit FI(
-    const fiT &fi) noexcept
+    requires(!std::is_same_v<std::decay_t<fiT>, FI>)
+  constexpr explicit FI(const fiT &fi) noexcept
     : m_uncompressed_size{ static_cast<decltype(m_uncompressed_size)>(
       fi.uncompressed_size()) },
       m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
@@ -160,8 +160,23 @@ public:
   [[maybe_unused]] [[nodiscard]] static std::size_t
     get_count(const std::filesystem::path &path)
   {
-    if (std::filesystem::exists(path)) {
-      return get_count(std::filesystem::file_size(path));
+    std::error_code ec{};
+    const bool      found = std::filesystem::exists(path, ec);
+    if (ec) {
+      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                << ec.value() << ": " << ec.message() << ec.value()
+                << " - path: " << path << std::endl;
+      ec.clear();
+    }
+    if (found) {
+      const std::size_t count = get_count(std::filesystem::file_size(path, ec));
+      if (ec) {
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                  << ec.value() << ": " << ec.message() << ec.value()
+                  << " - path: " << path << std::endl;
+        ec.clear();
+      }
+      return count;
     }
     return {};
   }

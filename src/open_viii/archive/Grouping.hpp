@@ -119,8 +119,26 @@ public:
       if (!std::ranges::empty(data())) {
         return std::ranges::size(data());
       }
-      else if (std::filesystem::exists(path())) {
-        return static_cast<std::size_t>(std::filesystem::file_size(path()));
+      else {
+        std::error_code ec{};
+        const bool      found = std::filesystem::exists(path(), ec);
+        if (ec) {
+          std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                    << ec.value() << ": " << ec.message() << ec.value()
+                    << " - path: " << path() << std::endl;
+          ec.clear();
+        }
+        if (found) {
+          const auto count
+            = static_cast<std::size_t>(std::filesystem::file_size(path(), ec));
+          if (ec) {
+            std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                      << ec.value() << ": " << ec.message() << ec.value()
+                      << " - path: " << path() << std::endl;
+            ec.clear();
+          }
+          return count;
+        }
       }
     }
     return m_size;
@@ -206,9 +224,18 @@ public:
    */
   explicit operator bool() const
   {
-    return (!std::ranges::empty(m_path) && std::filesystem::exists(m_path))
-        || !std::ranges::empty(m_data)
-        || (!std::ranges::empty(m_path) && (m_offset > 0 || m_size > 0));
+    std::error_code ec{};
+    const bool      match
+      = (!std::ranges::empty(m_path) && std::filesystem::exists(m_path, ec))
+     || !std::ranges::empty(m_data)
+     || (!std::ranges::empty(m_path) && (m_offset > 0 || m_size > 0));
+    if (ec) {
+      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                << ec.value() << ": " << ec.message() << ec.value()
+                << " - path: " << m_path << std::endl;
+      ec.clear();
+    }
+    return match;
   }
 };
 }// namespace open_viii::archive

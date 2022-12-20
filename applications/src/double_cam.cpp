@@ -11,8 +11,18 @@ int
         return std::filesystem::path(local_argv);
       });
   const auto validate_is_cam = [](std::filesystem::path local_path) -> bool {
-    return std::filesystem::exists(local_path) && local_path.has_extension()
-        && open_viii::tools::i_equals(local_path.extension().string(), ".cam");
+    std::error_code ec{};
+    const bool      found
+      = local_path.has_extension()
+     && open_viii::tools::i_equals(local_path.extension().string(), ".cam")
+     && std::filesystem::exists(local_path, ec);
+    if (ec) {
+      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                << ec.value() << ": " << ec.message() << ec.value()
+                << " - path: " << local_path << std::endl;
+      ec.clear();
+    }
+    return found;
   };
   for (const auto path : span_argv) {
     if (!validate_is_cam(path)) {
@@ -31,11 +41,12 @@ void
       const open_viii::pak::Cam             cam{ fp };
       std::vector<open_viii::pak::CamFrame> new_frames{};
 
-      double_input_transform(cam,
-                             std::back_inserter(new_frames),
-                             [](const auto &cam0, const auto &cam1) {
-                               return cam0.midpoint(cam1);
-                             });
+      double_input_transform(
+        cam,
+        std::back_inserter(new_frames),
+        [](const auto &cam0, const auto &cam1) {
+          return cam0.midpoint(cam1);
+        });
       const auto new_cam = cam.with_frames(std::move(new_frames));
 
       std::cout << "old size:\t" << cam.size() << std::endl;

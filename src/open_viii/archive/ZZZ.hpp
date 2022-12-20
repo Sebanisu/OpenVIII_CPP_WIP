@@ -43,10 +43,17 @@ private:
   {
     m_offsets.push_back(
       static_cast<std::istream::off_type>(sizeof(uint32_t) * 2));
-    if (
-      m_path.has_extension()
-      && tools::i_equals(m_path.extension().string(), EXT)
-      && std::filesystem::exists(m_path)) {
+    std::error_code ec{};
+    const bool      found = m_path.has_extension()
+                    && tools::i_equals(m_path.extension().string(), EXT)
+                    && std::filesystem::exists(m_path, ec);
+    if (ec) {
+      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                << ec.value() << ": " << ec.message() << ec.value()
+                << " - path: " << m_path << std::endl;
+      ec.clear();
+    }
+    if (found) {
       tools::read_from_file(
         [this](std::istream &fp) {
           auto count{ tools::read_val<uint32_t>(fp) };
@@ -188,7 +195,10 @@ public:
   template<
     typename lambdaT = default_lambda,
     typename FilterT = default_filter_lambda>
-  requires((std::invocable<lambdaT, FIFLFS<false>> || std::invocable<lambdaT, std::vector<char>, std::string>)) void execute_with_nested(
+    requires(
+      (std::invocable<lambdaT, FIFLFS<false>>
+       || std::invocable<lambdaT, std::vector<char>, std::string>))
+  void execute_with_nested(
     [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
     [[maybe_unused]] lambdaT                                      && = {},
     [[maybe_unused]] const std::initializer_list<std::string_view> & = {},

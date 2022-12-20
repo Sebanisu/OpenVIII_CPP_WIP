@@ -6,13 +6,28 @@ int
   main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 {
   const auto check = [](std::string_view in, bool create = false) {
-    if (std::filesystem::exists(in)) {
+    std::error_code ec{};
+    const bool      found = std::filesystem::exists(in, ec);
+    if (ec) {
+      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                << ec.value() << ": " << ec.message() << ec.value()
+                << " - path: " << in << std::endl;
+      ec.clear();
+    }
+    if (found) {
       return in;
     }
     if (create) {
-      std::cout << "created directory\n";
-      std::filesystem::create_directories(in);
-      return in;
+      bool created = std::filesystem::create_directories(in, ec);
+      if (ec) {
+        std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
+                  << ec.message() << " - " << in << std::endl;
+        ec.clear();
+      }
+      if (created) {
+        std::cout << "created directory " << in << "\n";
+        return in;
+      }
     }
     std::cerr << in << " is not a valid path..." << std::endl;
     return std::string_view{};
@@ -27,19 +42,34 @@ int
     fiflfs_extract(src, dst);
     return 0;
   }
-  const auto get_path = [](std::string_view msg,
-                           bool             create = false) -> std::string {
+  const auto get_path
+    = [](std::string_view msg, bool create = false) -> std::string {
     std::string temp;
     while (true) {
       std::cout << msg << std::flush;
       std::getline(std::cin, temp);
-      if (std::filesystem::exists(temp)) {
+      std::error_code ec{};
+      const bool      found = std::filesystem::exists(temp, ec);
+      if (ec) {
+        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                  << ec.value() << ": " << ec.message() << ec.value()
+                  << " - path: " << temp << std::endl;
+        ec.clear();
+      }
+      if (found) {
         break;
       }
       if (create) {
-        std::cout << "created directory\n";
-        std::filesystem::create_directories(temp);
-        break;
+        bool created = std::filesystem::create_directories(temp, ec);
+        if (ec) {
+          std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
+                    << ec.message() << " - " << temp << std::endl;
+          ec.clear();
+        }
+        if (created) {
+          std::cout << "created directory " << temp << "\n";
+          break;
+        }
       }
       std::cout << temp << " is not a valid path..." << std::endl;
     }

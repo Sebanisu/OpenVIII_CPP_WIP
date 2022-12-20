@@ -58,8 +58,15 @@ public:
       tl::string::replace_slashes(R"(d:\tim)"s)
 #endif
     };
+    std::error_code   ec{};
     static const auto path_file
-      = std::filesystem::current_path() / "paths.conf";
+      = std::filesystem::current_path(ec) / "paths.conf";
+    if (ec) {
+      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+                << ec.value() << ": " << ec.message() << ec.value()
+                << " - path: " << path_file << std::endl;
+      ec.clear();
+    }
     static bool read_file = true;
     if (read_file) {
       auto fs = std::ifstream(path_file, std::ios::in | std::ios::binary);
