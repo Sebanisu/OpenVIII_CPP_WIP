@@ -145,15 +145,11 @@ for:
           
           .\\vcpkg\\vcpkg install bext-ut
           
-          mkdir build
-          
           cmake --version
           
           cmake --debug-output -G "CodeBlocks - NMake Makefiles" -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=.\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake
           
           cmake --build build --target all
-          
-          mkdir build
           
           cmake -G "Visual Studio 16 2019" -B build
           
