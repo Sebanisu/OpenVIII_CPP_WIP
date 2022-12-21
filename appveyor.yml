@@ -150,10 +150,6 @@ for:
           cmake --debug-output -G "CodeBlocks - NMake Makefiles" -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=.\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake
           
           cmake --build build --target all
-          
-          cmake -G "Visual Studio 16 2019" -B build
-          
-          MSBuild build\\ALL_BUILD.vcxproj
     test_script:
       - cmd:
           cd build
