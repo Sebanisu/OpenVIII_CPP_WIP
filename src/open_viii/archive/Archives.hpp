@@ -596,8 +596,9 @@ public:
     std::intmax_t maxT = static_cast<std::intmax_t>(ArchiveTypeT::end),
     typename lambdaT>
     requires valid_archive_type_t<minT> && valid_archive_type_t<maxT, true>
-          && valid_lambda<lambdaT> bool
-  loop(const lambdaT &lambda) const
+          && valid_lambda<lambdaT>
+  bool
+    loop(const lambdaT &lambda) const
   {
     bool ret{ true };
     if constexpr (
@@ -615,7 +616,7 @@ public:
       }
       else if (takes_valid_archive_type<lambdaT>) {
         const auto &archive = get<archiveTypeT>();
-        std::cout << "Loop On: " << get_string<archiveTypeT>() << '\n';
+        // std::cout << "Loop On: " << get_string<archiveTypeT>() << '\n';
         if constexpr (does_have_has_value<decltype(archive)>) {
           if (archive.has_value()) {
             ret = lambda(*archive);
@@ -639,8 +640,9 @@ public:
    * @return
    */
   template<ArchiveTypeT... aT, typename lambdaT>
-    requires valid_archive_type_t_v<aT...> bool
-  specify(const lambdaT &lambda)
+    requires valid_archive_type_t_v<aT...>
+  bool
+    specify(const lambdaT &lambda)
   {
     return (loop<aT, aT>(lambda) && ...);
   }
@@ -660,8 +662,9 @@ public:
    * @return
    */
   template<ArchiveTypeT... aT>
-    requires not_zero<aT...> bool
-  test_set()
+    requires not_zero<aT...>
+  bool
+    test_set()
   {
     return specify<aT...>(test_valid_lambda());
   }
@@ -677,12 +680,12 @@ public:
     bool nested = true,
     typename lambdaT,
     typename filterT = decltype(default_filter_lambda)>
-    requires valid_execute_on_lambda<lambdaT>
-          && valid_filter_lambda<filterT> bool
-  execute_on(
-    const std::initializer_list<std::string_view> &filename,
-    lambdaT                                      &&lambda,
-    filterT                                      &&filter_lambda = {}) const
+    requires valid_execute_on_lambda<lambdaT> && valid_filter_lambda<filterT>
+  bool
+    execute_on(
+      const std::initializer_list<std::string_view> &filename,
+      lambdaT                                      &&lambda,
+      filterT                                      &&filter_lambda = {}) const
   {
     return loop(get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
   }
@@ -701,11 +704,12 @@ public:
     typename lambdaT,
     typename filterT = decltype(default_filter_lambda)>
     requires not_zero<aT...> && valid_execute_on_lambda<lambdaT>
-          && valid_filter_lambda<filterT> bool
-  execute_on(
-    const std::initializer_list<std::string_view> &filename,
-    lambdaT                                      &&lambda,
-    filterT                                      &&filter_lambda = {}) const
+          && valid_filter_lambda<filterT>
+  bool
+    execute_on(
+      const std::initializer_list<std::string_view> &filename,
+      lambdaT                                      &&lambda,
+      filterT                                      &&filter_lambda = {}) const
   {
     return specify<aT...>(
       get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
