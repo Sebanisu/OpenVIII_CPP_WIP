@@ -202,7 +202,7 @@ private:
     minmax_generic(auto compare, auto get, auto fail) const noexcept
   {
     return std::visit(
-      [&compare, &get, &fail, this](auto &&tiles) {
+      [&compare, &get, &fail](auto &&tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
           auto filtered = tiles | std::views::filter(filter_invalid());
@@ -219,7 +219,7 @@ private:
     min_generic(auto compare, auto get, auto fail) const noexcept
   {
     return std::visit(
-      [&compare, &get, &fail, this](auto &&tiles) {
+      [&compare, &get, &fail](auto &&tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
           auto filtered = tiles | std::views::filter(filter_invalid());
@@ -236,7 +236,7 @@ private:
     max_generic(auto compare, auto get, auto fail) const noexcept
   {
     return std::visit(
-      [&compare, &get, &fail, this](auto &&tiles) {
+      [&compare, &get, &fail](auto &&tiles) {
         using tiles_type = std::decay_t<decltype(tiles)>;
         if constexpr (!std::is_same_v<tiles_type, std::monostate>) {
           auto filtered = tiles | std::views::filter(filter_invalid());
