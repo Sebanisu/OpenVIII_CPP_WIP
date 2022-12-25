@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cctype>
 #include <filesystem>
+#include <ranges>
 #include <string>
 namespace open_viii::tools {
 /**
