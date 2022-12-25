@@ -19,12 +19,13 @@
 #include "Tile2.hpp"
 #include "Tile3.hpp"
 #include "tl/write.hpp"
-#include <variant>
 #include <utility>
+#include <variant>
 namespace open_viii::graphics::background {
 template<typename T>
-concept is_tile = std::is_same_v<Tile1, std::decay_t<T>> || std::
-  is_same_v<Tile2, std::decay_t<T>> || std::is_same_v<Tile3, std::decay_t<T>>;
+concept is_tile = std::is_same_v<Tile1, std::decay_t<T>>
+               || std::is_same_v<Tile2, std::decay_t<T>>
+               || std::is_same_v<Tile3, std::decay_t<T>>;
 
 template<typename T>
 concept is_tiles = is_tile<typename T::value_type>;
@@ -40,7 +41,6 @@ private:
     m_tiles{};
 
 public:
-
   auto
     visit_tiles(auto &&lambda) const
   {
@@ -88,20 +88,24 @@ public:
     return m_offset;
   }
 
-    bool operator ==(const Map & other) const noexcept
-    {
-      return (m_tiles.index() == m_tiles.index()) && other.visit_tiles([this](const auto & other_tiles)->bool{
-        return visit_tiles([&other_tiles](const auto & tiles)->bool{
-          if constexpr(std::is_same_v<std::remove_cvref<decltype(tiles)>,std::remove_cvref<decltype(other_tiles)>>) {
-            return std::ranges::equal(tiles, other_tiles);
-          }
-          else
-          {
-            return false;
-          }
-        });
-      });
-    }
+  bool
+    operator==(const Map &other) const noexcept
+  {
+    return (m_tiles.index() == m_tiles.index())
+        && other.visit_tiles([this](const auto &other_tiles) -> bool {
+             return visit_tiles([&other_tiles](const auto &tiles) -> bool {
+               if constexpr (std::is_same_v<
+                               std::remove_cvref<decltype(tiles)>,
+                               std::remove_cvref<decltype(other_tiles)>>) {
+                 return std::ranges::equal(tiles, other_tiles);
+               }
+               else {
+                 return false;
+               }
+             });
+           });
+  }
+
 private:
   void
     visit_not_tiles(auto &&lambda) const
@@ -427,14 +431,14 @@ public:
       shift)
   {}
   template<typename tile_funcT>
-  requires(std::is_invocable_r_v<
-           std::variant<
-             open_viii::graphics::background::Tile1,
-             open_viii::graphics::background::Tile2,
-             open_viii::graphics::background::Tile3,
-             std::monostate>,
-           tile_funcT>) explicit Map(tile_funcT tile_func)
-    : m_tiles(std::monostate())
+    requires(std::is_invocable_r_v<
+             std::variant<
+               open_viii::graphics::background::Tile1,
+               open_viii::graphics::background::Tile2,
+               open_viii::graphics::background::Tile3,
+               std::monostate>,
+             tile_funcT>)
+  explicit Map(tile_funcT tile_func) : m_tiles(std::monostate())
   {
 
     bool       on   = true;
@@ -521,7 +525,7 @@ public:
     shift(const std::int16_t &x, const std::int16_t &y) noexcept
   {
     const auto xy = Point(x, y);
-    visit_tiles([&xy, this](auto &tiles) {
+    visit_tiles([&xy](auto &tiles) {
       auto filtered = tiles | std::views::filter(filter_invalid());
       std::ranges::transform(
         filtered,

@@ -349,28 +349,30 @@ public:
       dst.reserve(dst_size);
     }
     auto       iterator  = src.begin();
-    const auto srcEnd    = std::ranges::end(src);
     auto       textBuf   = std::array<std::uint32_t, N_MINUS1 + F>();
     // ring buffer of size N, with extra F-1 bytes to facilitate string
     // comparison
     auto       r         = N - F;
     auto       flags     = 0U;
-    const auto testAtEnd = [&iterator, &srcEnd]() {
-      return (iterator + 1 <=> srcEnd) == std::strong_ordering::greater;
+    const auto testAtEnd = [the_end_minus_1 = std::ranges::end(src)-1, &iterator](){
+      return iterator > the_end_minus_1;
     };
-    while (iterator != srcEnd /*&& (dstSize == 0 || dst.size() < dstSize)*/) {
+    const auto next = [&iterator](){
+      return static_cast<std::uint8_t>(*iterator++);
+    };
+    while (!testAtEnd()) {
       if (((flags >>= 1U) & FLAGS_MASK) == 0) {
         if (testAtEnd()) {
           break;
         }
-        flags = static_cast<std::uint8_t>(*iterator++)
+        flags = next()
               | FLAGS_BITS;// uses higher byte cleverly to Count eight
       }
       if ((flags & 1U) == 1) {// raw value
         if (testAtEnd()) {
           break;
         }
-        std::uint32_t current = static_cast<std::uint8_t>(*iterator++);
+        std::uint32_t current = next();
         // if (dstSize != 0 && dst.size() + 1 >= dstSize) break;
         dst.push_back(static_cast<char>(current));
         textBuf.at(r++) = current;
@@ -381,17 +383,17 @@ public:
         if (testAtEnd()) {
           break;
         }
-        std::uint32_t offset = static_cast<std::uint8_t>(*iterator++);
+        std::uint32_t offset = next();
         if (testAtEnd()) {
           break;
         }
-        std::uint32_t count = static_cast<std::uint8_t>(*iterator++);
+        std::uint32_t count = next();
         offset |= ((count & OFFSET_MASK) << 4U);
         count = (count & COUNT_MASK) + THRESHOLD;
         // read from ring buffer
         // for (std::uint32_t k = 0; k <= count; ++k) {
         // for (auto k : std::ranges::iota_view(std::uint32_t{}, count + 1)) {
-        for (std::uint32_t k{}; k != count + 1U; ++k) {
+        for (const auto k : std::ranges::iota_view(std::uint32_t{}, count + 1)) {
           // get value
           std::uint32_t current = textBuf.at((offset + k) & N_MINUS1);
           // assign value

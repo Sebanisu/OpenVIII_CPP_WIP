@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_STATGROUP_HPP
 #define VIIIARCHIVE_STATGROUP_HPP
+#include "open_viii/tools/array_wrapper.hpp"
 namespace open_viii::kernel {
 template<typename T>
 requires(
@@ -114,7 +115,7 @@ public:
   }
 
 private:
-  std::array<T, STAT_COUNT> m_stats{};
+  tools::array_wrapper<T, STAT_COUNT> m_stats{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_STATGROUP_HPP

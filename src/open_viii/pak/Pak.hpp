@@ -236,7 +236,8 @@ public:
     // Found the end go back to it.
     is.seekg(-3, std::ios::cur);
     using namespace std::string_literals;
-    fs.size(static_cast<uint32_t>(is.tellg() - fs.offset()));
+    fs.size(
+      static_cast<uint32_t>(is.tellg()) - static_cast<uint32_t>(fs.offset()));
     fs.file_name(generate_file_name(".cam"s));
     fs.frames(frames);
     movie.cam(Cam(is, fs));

@@ -12,10 +12,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_GFGROUP_HPP
 #define VIIIARCHIVE_GFGROUP_HPP
+#include "open_viii/tools/array_wrapper.hpp"
 namespace open_viii::kernel {
 template<typename T>
-requires(
-  std::unsigned_integral<T> || std::ranges::contiguous_range<T>) struct GFGroup
+  requires(std::unsigned_integral<T> || std::ranges::contiguous_range<T>)
+struct GFGroup
 {
 public:
   enum
@@ -39,7 +40,8 @@ public:
     MAX_GFS
   };
   constexpr auto
-    operator<=>(const GFGroup<T> &right) const noexcept = default;
+    operator<=>(const GFGroup<T> &right) const noexcept
+    = default;
   [[nodiscard]] constexpr T
     quetzalcoatl() const noexcept
   {
@@ -143,7 +145,7 @@ public:
   }
 
 private:
-  std::array<T, MAX_GFS> m_gfs{};
+  tools::array_wrapper<T, MAX_GFS> m_gfs{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_GFGROUP_HPP

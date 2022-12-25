@@ -17,6 +17,7 @@
 #include "open_viii/tools/Tools.hpp"
 #include "Point.hpp"
 #include <execution>
+#include <sstream>
 
 namespace open_viii::graphics {
 struct Ppm
@@ -179,14 +180,10 @@ public:
   static bool
     check_if_colors_are_black(const auto &data)
   {
-    return std::all_of(
-      std::execution::par_unseq,
-      data.begin(),
-      data.end(),
-      [](const Color auto &color) -> bool {
-        return color.a() == 0U
-            || (color.b() == 0U && color.g() == 0U && color.r() == 0U);
-      });
+    return std::ranges::all_of(data, [](const Color auto &color) -> bool {
+      return color.a() == 0U
+          || (color.b() == 0U && color.g() == 0U && color.r() == 0U);
+    });
   }
   [[nodiscard]] const std::vector<Color24<ColorLayoutT::RGB>> &
     colors() const noexcept

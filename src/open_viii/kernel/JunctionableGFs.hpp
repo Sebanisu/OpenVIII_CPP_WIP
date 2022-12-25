@@ -6,6 +6,7 @@
 #include "ElementT.hpp"
 #include "GFGroup.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include "open_viii/tools/array_wrapper.hpp"
 #include "PersistentStatusesT.hpp"
 #include "UnlockableAbility.hpp"
 namespace open_viii::kernel {
@@ -134,39 +135,41 @@ struct JunctionableGFs_impl
    */
 
 protected:
-  static constexpr std::size_t                 MAX_ABILITIES           = 21U;
-  static constexpr std::size_t                 EXPECTED_SIZE           = 132U;
-  EncodedStringOffset                          m_name_offset           = {};
-  EncodedStringOffset                          m_description_offset    = {};
-  std::uint16_t                                m_magic_id              = {};
-  AttackTypeT                                  m_attack_type           = {};
-  std::uint8_t                                 m_gf_power              = {};
-  std::uint16_t                                m_unknown0              = {};
-  AttackFlagsT                                 m_attack_flags          = {};
-  std::uint8_t                                 m_unknown1              = {};
-  std::uint8_t                                 m_unknown2              = {};
-  ElementT                                     m_element               = {};
-  PersistentStatusesT                          m_persistent_statuses   = {};
-  BattleOnlyStatusesT                          m_battle_only_statuses  = {};
-  std::uint8_t                                 m_gf_hp_modifier        = {};
-  std::uint8_t                                 m_unknown3              = {};
-  std::uint8_t                                 m_unknown4              = {};
-  std::uint8_t                                 m_unknown5              = {};
-  std::uint8_t                                 m_unknown6              = {};
-  std::uint8_t                                 m_unknown7              = {};
-  std::uint8_t                                 m_unknown8              = {};
-  std::uint8_t                                 m_status_attack_enabler = {};
-  std::array<UnlockableAbility, MAX_ABILITIES> m_unlockable_abilities  = {};
-  GFGroup<std::uint8_t>                        m_compatibility         = {};
-  std::uint8_t                                 m_unknown9              = {};
-  std::uint8_t                                 m_unknown10             = {};
-  std::uint8_t                                 m_power_mod             = {};
-  std::uint8_t                                 m_level_mod             = {};
-  constexpr JunctionableGFs_impl() = default;
+  static constexpr std::size_t MAX_ABILITIES           = 21U;
+  static constexpr std::size_t EXPECTED_SIZE           = 132U;
+  EncodedStringOffset          m_name_offset           = {};
+  EncodedStringOffset          m_description_offset    = {};
+  std::uint16_t                m_magic_id              = {};
+  AttackTypeT                  m_attack_type           = {};
+  std::uint8_t                 m_gf_power              = {};
+  std::uint16_t                m_unknown0              = {};
+  AttackFlagsT                 m_attack_flags          = {};
+  std::uint8_t                 m_unknown1              = {};
+  std::uint8_t                 m_unknown2              = {};
+  ElementT                     m_element               = {};
+  PersistentStatusesT          m_persistent_statuses   = {};
+  BattleOnlyStatusesT          m_battle_only_statuses  = {};
+  std::uint8_t                 m_gf_hp_modifier        = {};
+  std::uint8_t                 m_unknown3              = {};
+  std::uint8_t                 m_unknown4              = {};
+  std::uint8_t                 m_unknown5              = {};
+  std::uint8_t                 m_unknown6              = {};
+  std::uint8_t                 m_unknown7              = {};
+  std::uint8_t                 m_unknown8              = {};
+  std::uint8_t                 m_status_attack_enabler = {};
+  tools::array_wrapper<UnlockableAbility, MAX_ABILITIES> m_unlockable_abilities
+    = {};
+  GFGroup<std::uint8_t> m_compatibility = {};
+  std::uint8_t          m_unknown9      = {};
+  std::uint8_t          m_unknown10     = {};
+  std::uint8_t          m_power_mod     = {};
+  std::uint8_t          m_level_mod     = {};
+  constexpr JunctionableGFs_impl()      = default;
 
 public:
   constexpr auto
-    operator<=>(const JunctionableGFs_impl &right) const noexcept = default;
+    operator<=>(const JunctionableGFs_impl &right) const noexcept
+    = default;
 };
 using JunctionableGFs = CommonKernel<JunctionableGFs_impl>;
 static_assert(JunctionableGFs::EXPECTED_SIZE == sizeof(JunctionableGFs));

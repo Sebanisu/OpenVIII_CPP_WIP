@@ -31,6 +31,7 @@
 #include "NonBattleItems.hpp"
 #include "NonJunctionableGFs.hpp"
 #include "open_viii/BulkSectionData.hpp"
+#include "open_viii/tools/vector_wrapper.hpp"
 #include "PartyAbilities.hpp"
 #include "QuistisBlueMagicLimitBreak.hpp"
 #include "QuistisBlueMagicLimitBreakParams.hpp"
@@ -53,13 +54,14 @@ namespace open_viii::kernel {
 struct Header
 {
 private:
-  std::vector<char>          m_buffer{};
-  std::vector<std::uint32_t> m_section_offsets{};
+  tools::vector_wrapper<char>          m_buffer{};
+  tools::vector_wrapper<std::uint32_t> m_section_offsets{};
 
 public:
   static constexpr auto FILE_NAME = std::string_view{ "kernel.bin" };
   auto
-    operator<=>(const Header &right) const noexcept = default;
+    operator<=>(const Header &right) const noexcept
+    = default;
   template<SectionTypesT sectionType>
   static constexpr bool section_type_test = []() {
     return static_cast<int>(sectionType)
@@ -67,8 +69,9 @@ public:
         && static_cast<int>(sectionType) >= 0;
   }();
   template<SectionTypesT sectionType>
-  requires(section_type_test<sectionType>)
-    [[nodiscard]] constexpr std::span<const char> get_span() const
+    requires(section_type_test<sectionType>)
+  [[nodiscard]] constexpr std::span<const char>
+    get_span() const
   {
     if (std::ranges::empty(m_buffer)) {
       return std::span<const char>{};
@@ -91,8 +94,9 @@ public:
       length);
   }
   template<SectionTypesT sectionType>
-  requires(section_type_test<sectionType>)
-    [[nodiscard]] auto get_section_data() const
+    requires(section_type_test<sectionType>)
+  [[nodiscard]] auto
+    get_section_data() const
   {
     using namespace std::string_literals;
     if constexpr (sectionType == SectionTypesT::battle_commands) {
@@ -271,8 +275,9 @@ public:
     }
   }
   template<SectionTypesT sectionType>
-  requires(section_type_test<sectionType>)
-    [[nodiscard]] constexpr std::string_view get_section_name() const
+    requires(section_type_test<sectionType>)
+  [[nodiscard]] constexpr std::string_view
+    get_section_name() const
   {
     return {};
   }
@@ -336,10 +341,11 @@ public:
     int Begin = static_cast<int>(SectionTypesT::begin),
     int End   = static_cast<int>(SectionTypesT::end),
     typename Lambda>
-  requires(
-    section_type_test<static_cast<SectionTypesT>(Begin)> &&Begin < End
-    && (section_type_test<static_cast<SectionTypesT>(End)> || End == static_cast<int>(SectionTypesT::end))) void static_for([[maybe_unused]] const Lambda
-                                                                                                                              &f)
+    requires(
+      section_type_test<static_cast<SectionTypesT>(Begin)> && Begin < End
+      && (section_type_test<static_cast<SectionTypesT>(End)> || End == static_cast<int>(SectionTypesT::end)))
+  void
+    static_for([[maybe_unused]] const Lambda &f)
   {
     if (std::ranges::empty(m_buffer)) {
       return;

@@ -170,24 +170,34 @@ public:
               }
               return FileData(name, offset, size);
             });
-        std::ranges::for_each(
-          data,
-          [&function, &filename, this, &filter_lambda](
-            const open_viii::archive::FileData &dataItem) {
-            auto pathString = dataItem.get_path_string();
-            if (open_viii::tools::i_find_any(pathString, filename)) {
-              if (filter_lambda(pathString)) {
-                if constexpr (execute_unary_function<FunctionT>) {
+        if constexpr (execute_unary_function<FunctionT>) {
+          std::ranges::for_each(
+            data,
+            [&function, &filename, &filter_lambda](
+              const open_viii::archive::FileData &dataItem) {
+              auto pathString = dataItem.get_path_string();
+              if (open_viii::tools::i_find_any(pathString, filename)) {
+                if (filter_lambda(pathString)) {
                   function(dataItem);
                 }
-                else if constexpr (execute_binary_function<FunctionT>) {
+              }
+            });
+        }
+        else if constexpr (execute_binary_function<FunctionT>) {
+          std::ranges::for_each(
+            data,
+            [&function, &filename, &filter_lambda, this](
+              const open_viii::archive::FileData &dataItem) {
+              auto pathString = dataItem.get_path_string();
+              if (open_viii::tools::i_find_any(pathString, filename)) {
+                if (filter_lambda(pathString)) {
                   function(
                     FS::get_entry(m_path, dataItem),
                     std::string(pathString));
                 }
               }
-            }
-          });
+            });
+        }
       },
       m_path);
   }
@@ -198,11 +208,12 @@ public:
     requires(
       (std::invocable<lambdaT, FIFLFS<false>>
        || std::invocable<lambdaT, std::vector<char>, std::string>))
-  void execute_with_nested(
-    [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
-    [[maybe_unused]] lambdaT                                      && = {},
-    [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
-    FilterT                                                       && = {}) const
+  void
+    execute_with_nested(
+      [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
+      [[maybe_unused]] lambdaT                                      && = {},
+      [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
+      FilterT && = {}) const
   {
     // only nested archives are handled in the other functions. maybe delete
     // this.

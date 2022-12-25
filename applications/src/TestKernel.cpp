@@ -287,7 +287,8 @@ int
         auto entry = data.at(i);
         if (entry != decltype(entry){}) {
           std::cout << i << ": ";
-          out<coo>(entry, std::cout, data.text_span());
+          //todo fix cout<coo> broken with clang
+          //out<coo>(entry, std::cout, data.text_span());
           std::cout << '\n';
         }
       }

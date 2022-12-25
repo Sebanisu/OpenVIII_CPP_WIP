@@ -318,7 +318,7 @@ public:
     test_mes() const
   {
     static_for_mes<0U, MES_VALUE_ARRAY.size()>(
-      [&, this](const auto &sectionID, [[maybe_unused]] const auto &mes) {
+      [&](const auto &sectionID, [[maybe_unused]] const auto &mes) {
         std::cout << ':' << static_cast<size_t>(sectionID) << ":  {"
                   << mes.size() << "},\n";
         size_t id = 0;
@@ -343,8 +343,7 @@ public:
   {
     constexpr auto start = 0U;
     static_for_tkmnmes<start, MES_VALUE_ARRAY.size() - start>(
-      [&,
-       this](const auto &sectionID, [[maybe_unused]] const auto &tkmnmesPair) {
+      [&](const auto &sectionID, [[maybe_unused]] const auto &tkmnmesPair) {
         std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {"
                   << tkmnmesPair->sections().size() << ", "
                   << tkmnmesPair->sub_sections().size() << "},\n";
@@ -388,7 +387,7 @@ public:
   {
     constexpr auto start = 0U;
     static_for_refine<start, REFINE_VALUE_ARRAY.size() - start>(
-      [&, this](
+      [&](
         const auto                  &sectionID,
         [[maybe_unused]] const auto &refineBulkSectionData) {
         std::cout << ':' << static_cast<size_t>(sectionID) << ":\n  {"

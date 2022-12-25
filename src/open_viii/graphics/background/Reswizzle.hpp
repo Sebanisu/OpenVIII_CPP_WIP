@@ -181,7 +181,7 @@ private:
     for_each_tile(auto &&exec, auto &&filter) const
   {
     m_map.visit_tiles([&exec, &filter, this](auto &&tiles) {
-      for_each_tile(tiles, exec, filter);
+      this->for_each_tile(tiles, exec, filter);
     });
   }
   void

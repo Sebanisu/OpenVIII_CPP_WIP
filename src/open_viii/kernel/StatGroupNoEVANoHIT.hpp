@@ -100,7 +100,7 @@ public:
   }
 
 private:
-  std::array<T, MAX_COUNT> m_stats{};
+  tools::array_wrapper<T, MAX_COUNT> m_stats{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_STATGROUPNOEVANOHIT_HPP

@@ -15,35 +15,37 @@ public:
   constexpr CommonKernel() = default;
   using T::EXPECTED_SIZE;
   constexpr auto
-    operator<=>(const this_type &right) const noexcept = default;
+    operator<=>(const this_type &right) const noexcept
+    = default;
 #define GET(value_name)                                                        \
-  [[nodiscard]] constexpr auto value_name()                                    \
-    const noexcept requires(requires(this_type t) { t.m_##value_name; })       \
+  [[nodiscard]] constexpr auto value_name() const noexcept                     \
+    requires(requires(this_type t) { t.m_##value_name; })                      \
   {                                                                            \
     return T::m_##value_name;                                                  \
   }
 #define GET_impl(value_name)                                                   \
-  [[nodiscard]] constexpr auto value_name()                                    \
-    const noexcept requires(requires(this_type t) { t.value_name##_impl(); })  \
+  [[nodiscard]] constexpr auto value_name() const noexcept                     \
+    requires(requires(this_type t) { t.value_name##_impl(); })                 \
   {                                                                            \
     return T::value_name##_impl();                                             \
   }
 #define WITH(value_name)                                                       \
   [[nodiscard]] constexpr auto with_##value_name(                              \
-    const auto &new_val) &&noexcept requires(requires(this_type t) {           \
-    t.m_##value_name;                                                          \
-  })                                                                           \
+    const auto &new_val) &&noexcept                                            \
+    requires(requires(this_type t) { t.m_##value_name; })                      \
   {                                                                            \
     T::m_##value_name = new_val;                                               \
     return *this;                                                              \
   }                                                                            \
   [[nodiscard]] constexpr auto with_##value_name(const auto &new_val)          \
-    const &noexcept requires(requires(this_type t) { t.m_##value_name; })      \
+    const &noexcept                                                            \
+    requires(requires(this_type t) { t.m_##value_name; })                      \
   {                                                                            \
     return this_type{ *this }.with_##value_name(new_val);                      \
   }                                                                            \
   [[nodiscard]] constexpr auto with_##value_name(const auto &new_val)          \
-    const &&noexcept requires(requires(this_type t) { t.m_##value_name; })     \
+    const &&noexcept                                                           \
+    requires(requires(this_type t) { t.m_##value_name; })                      \
   {                                                                            \
     return this_type{ *this }.with_##value_name(new_val);                      \
   }

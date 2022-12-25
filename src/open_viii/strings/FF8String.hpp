@@ -131,23 +131,23 @@ public:
       return EU_CODE_PAGE;
     }
   }
-  [[nodiscard]] auto static decode(uint8_t key) noexcept
+  [[nodiscard]] std::u8string_view static decode(uint8_t key) noexcept
   {
     return get_code_page().at(key);
   }
-  [[nodiscard]] auto static decode(const std::span<const char> &buffer)
+  [[nodiscard]] static std::u8string
+    decode(const std::span<const char> &buffer)
   {
-    using u8stringstream
-      = std::basic_stringstream<char8_t, std::char_traits<char8_t>>;
+
     if (std::empty(buffer)) {
       return std::u8string{};
     }
-    u8stringstream ss{};
+    std::u8string v8{};
     for (auto key : buffer) {
-      const auto value = decode(static_cast<uint8_t>(key));
-      ss << value;
+      const std::u8string_view value = decode(static_cast<uint8_t>(key));
+      std::ranges::copy(value, std::back_inserter(v8));
     }
-    return ss.str();
+    return v8;
   }
 };
 }// namespace open_viii

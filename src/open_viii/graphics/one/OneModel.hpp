@@ -20,6 +20,7 @@ struct OneModel
     buffer = buffer.subspan(sizeof(temp));
     return temp;
   }
+  //todo check if this function can be void.
   std::vector<std::uint32_t>
     get_tim_offsets(std::span<const char> &buffer) const
   {
@@ -34,6 +35,7 @@ struct OneModel
     std::vector<std::uint32_t> ret{};
     ret.push_back(m_model_header_start.flag_dword() << 8);
     Mch::read_tim_offsets(ret, buffer);
+    return ret;
   }
 
 public:

@@ -39,21 +39,21 @@ private:
 public:
   Pupu() = default;
   template<typename tileT>
-  requires(
-    std::is_convertible_v<
-      tileT,
-      Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) constexpr explicit Pupu(tileT
-                                                                                                                      tile)
+    requires(std::is_convertible_v<tileT, Tile1>
+             || std::is_convertible_v<tileT, Tile2>
+             || std::is_convertible_v<tileT, Tile3>)
+  constexpr explicit Pupu(tileT tile)
     : m_z(tile.z()), m_depth(tile.depth()), m_layer_id(tile.layer_id()),
       m_blend_mode(tile.blend_mode()), m_animation_id(tile.animation_id()),
       m_animation_state(tile.animation_state())
   {}
   auto
-    operator<=>(const Pupu &) const = default;
+    operator<=>(const Pupu &) const
+    = default;
   auto
     operator==(const Pupu &right) const
   {
-    return nullptr == (*this <=> right);
+    return (*this <=> right) == std::strong_ordering::equal;
   }
   friend auto
     operator<=>(const Pupu &left, const BPPT &right)
@@ -68,18 +68,18 @@ public:
   friend auto
     operator==(const Pupu &left, const BPPT &right)
   {
-    return nullptr == (left.m_depth <=> right);
+    return (left.m_depth <=> right) == std::strong_ordering::equal;
   }
   friend auto
     operator==(const BPPT &right, const Pupu &left)
   {
-    return nullptr == (left.m_depth <=> right);
+    return (left.m_depth <=> right) == std::strong_ordering::equal;
   }
   template<typename tileT>
-  requires(
-    std::is_convertible_v<
-      tileT,
-      Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) friend auto
+    requires(
+      std::is_convertible_v<tileT, Tile1> || std::is_convertible_v<tileT, Tile2>
+      || std::is_convertible_v<tileT, Tile3>)
+  friend auto
     operator==(const Pupu &left, const tileT &right)
   {
     return left.m_z == right.z() && left.m_depth == right.depth()
@@ -89,10 +89,10 @@ public:
         && left.m_animation_state == right.animation_state();
   }
   template<typename tileT>
-  requires(
-    std::is_convertible_v<
-      tileT,
-      Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) friend auto
+    requires(
+      std::is_convertible_v<tileT, Tile1> || std::is_convertible_v<tileT, Tile2>
+      || std::is_convertible_v<tileT, Tile3>)
+  friend auto
     operator==(const tileT &left, const Pupu &right)
   {
     return right.m_z == left.z() && right.m_depth == left.depth()
@@ -102,12 +102,11 @@ public:
         && right.m_animation_state == left.animation_state();
   }
   template<typename tileT>
-  requires(
-    std::is_convertible_v<
-      tileT,
-      Tile1> || std::is_convertible_v<tileT, Tile2> || std::is_convertible_v<tileT, Tile3>) bool AllButZ(const tileT
-                                                                                                           &left)
-    const noexcept
+    requires(
+      std::is_convertible_v<tileT, Tile1> || std::is_convertible_v<tileT, Tile2>
+      || std::is_convertible_v<tileT, Tile3>)
+  bool
+    AllButZ(const tileT &left) const noexcept
   {
     return m_depth == left.depth() && m_layer_id == left.layer_id()
         && m_blend_mode == left.blend_mode()

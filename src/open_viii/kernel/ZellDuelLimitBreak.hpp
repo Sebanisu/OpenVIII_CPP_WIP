@@ -18,6 +18,7 @@
 #include "CommonKernel.hpp"
 #include "ElementT.hpp"
 #include "open_viii/strings/EncodedStringOffset.hpp"
+#include "open_viii/tools/array_wrapper.hpp"
 #include "PersistentStatusesT.hpp"
 #include "TargetT.hpp"
 #include "ZellDuelButtonT.hpp"
@@ -80,13 +81,15 @@ protected:
   ElementT            m_element                      = {};
   uint8_t             m_element_attack_percent       = {};
   std::uint8_t        m_status_attack_enabler        = {};
-  std::array<ZellDuelButtonT, MAX_NUMBER_OF_BUTTONS> m_button_sequence     = {};
-  PersistentStatusesT                                m_persistent_statuses = {};
-  BattleOnlyStatusesT m_battle_only_statuses                               = {};
+  tools::array_wrapper<ZellDuelButtonT, MAX_NUMBER_OF_BUTTONS> m_button_sequence
+    = {};
+  PersistentStatusesT m_persistent_statuses  = {};
+  BattleOnlyStatusesT m_battle_only_statuses = {};
 
 public:
   constexpr auto
-    operator<=>(const ZellDuelLimitBreak_impl &right) const noexcept = default;
+    operator<=>(const ZellDuelLimitBreak_impl &right) const noexcept
+    = default;
 };
 using ZellDuelLimitBreak = CommonKernel<ZellDuelLimitBreak_impl>;
 static_assert(ZellDuelLimitBreak::EXPECTED_SIZE == sizeof(ZellDuelLimitBreak));

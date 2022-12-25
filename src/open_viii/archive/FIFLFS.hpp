@@ -13,7 +13,8 @@
 #ifndef VIIIARCHIVE_FIFLFS_HPP
 #define VIIIARCHIVE_FIFLFS_HPP
 #include "Grouping.hpp"
-#include <execution>
+#include <sstream>
+#include <string>
 namespace open_viii::archive {
 
 template<bool HasNested = false>
@@ -375,7 +376,7 @@ public:
       std::ranges::for_each(
         results
           | std::views::filter(
-            [this](const std::pair<unsigned int, std::string> &pair) -> bool {
+            [](const std::pair<unsigned int, std::string> &pair) -> bool {
               return check_extension(pair.second)
                   == fiflfsT::none;// prevent from running on nested archives.
                                    // We have another function for those.
@@ -424,10 +425,8 @@ public:
       std::vector<std::string> list{};
       FIFLFS<false>            archive = {};
       const auto               items   = get_all_items_from_fl({ "mapdata" });
-      (void)std::any_of(
-        std::execution::seq,
-        items.cbegin(),
-        items.cend(),
+      (void)std::ranges::any_of(
+        items,
         [&archive, this, &list](const auto &item) {
           if (fill_archive_lambda(archive)(item)) {
             const auto raw_list
@@ -523,33 +522,40 @@ public:
     else {
       FIFLFS<false> archive = {};
       const auto    items   = get_all_items_from_fl(filename);
-      const auto    pFunction
-        = [&lambda, &nested_filename, &archive, this, &filter_lambda](
-            const auto &item) -> bool {
-        if (filter_lambda(item.second) && fill_archive_lambda(archive)(item)) {
-          if constexpr (executable_common_sans_nested<lambdaT>) {
+      if constexpr (executable_common_sans_nested<lambdaT>) {
+        const auto pFunction
+          = [&lambda, &nested_filename, &archive, this, &filter_lambda](
+              const auto &item) -> bool {
+          if (
+            filter_lambda(item.second) && fill_archive_lambda(archive)(item)) {
             archive.execute_on(nested_filename, lambda, filter_lambda);
+            archive = {};
+            return true;
           }
-          else if constexpr (executable_fiflfs_sans_nested<lambdaT>) {
-            lambda(std::move(archive));
-          }
-          archive = {};
-          return true;
+          return false;
+        };
+        if (!limit_once)
+          std::ranges::for_each(items, pFunction);
+        else {
+          (void)std::ranges::any_of(items, pFunction);
         }
-        return false;
-      };
-      if (!limit_once)
-        std::for_each(
-          std::execution::seq,
-          items.cbegin(),
-          items.cend(),
-          pFunction);
-      else {
-        (void)std::any_of(
-          std::execution::seq,
-          items.cbegin(),
-          items.cend(),
-          pFunction);
+      }
+      else if constexpr (executable_fiflfs_sans_nested<lambdaT>) {
+        const auto pFunction =
+          [&lambda, &archive, this, &filter_lambda](const auto &item) -> bool {
+          if (
+            filter_lambda(item.second) && fill_archive_lambda(archive)(item)) {
+            lambda(std::move(archive));
+            archive = {};
+            return true;
+          }
+          return false;
+        };
+        if (!limit_once)
+          std::ranges::for_each(items, pFunction);
+        else {
+          (void)std::ranges::any_of(items, pFunction);
+        }
       }
     }
   }

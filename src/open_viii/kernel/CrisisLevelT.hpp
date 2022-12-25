@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_CRISISLEVELT_HPP
 #define VIIIARCHIVE_CRISISLEVELT_HPP
+#include "open_viii/tools/array_wrapper.hpp"
 namespace open_viii::kernel {
 // template<typename T>
 // struct CrisisLevelT
@@ -74,6 +75,6 @@ namespace open_viii::kernel {
 // };
 
 template<typename T>
-using CrisisLevelT = std::array<T, 4>;
+using CrisisLevelT = tools::array_wrapper<T, 4>;
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_CRISISLEVELT_HPP

@@ -95,7 +95,6 @@ private:
   const MimType                m_mim_type{};
   const std::filesystem::path &m_dir_path{};
   const std::string_view       m_dir_name{};
-  const std::string           &m_output_prefix{};
   const PalettesByTexturePages m_textures{};
   auto
     get_textures() const
@@ -158,9 +157,9 @@ public:
     MimType                      mim_type,
     const std::filesystem::path &dir_path,
     const std::string_view      &dir_name,
-    const std::string           &output_prefix)
+    const std::string &)
     : m_mim_type(mim_type), m_dir_path(dir_path), m_dir_name(dir_name),
-      m_output_prefix(output_prefix), m_textures(get_textures())
+      m_textures(get_textures())
   {}
   std::size_t
     get_raw_width(const BPPT &depth) const
