@@ -462,7 +462,7 @@ public:
         items.cbegin(),
         items.cend(),
         std::back_inserter(list),
-        [&list](const auto &item) {
+        [](const auto &item) {
           auto fspath = std::filesystem::path(item.second);
           return fspath.filename().stem().string();
         });
