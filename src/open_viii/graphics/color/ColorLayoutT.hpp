@@ -5,13 +5,13 @@
 #ifndef OPENVIII_CPP_WIP_COLORLAYOUTT_HPP
 #define OPENVIII_CPP_WIP_COLORLAYOUTT_HPP
 namespace open_viii::graphics {
-enum struct ColorLayoutT : std::uint16_t
+enum struct ColorLayoutT : std::uint8_t
 {
   None  = 0,
-  RGB   = 0b0000'0001U,
-  BGR   = 0b0000'0010U,
-  POSTA = 0b0000'0100U,
-  PREA  = 0b0000'1000U,
+  RGB   = 1U,
+  BGR   = 1U << 1,
+  POSTA = 1U << 2,
+  PREA  = 1U << 3,
   RGBA  = POSTA | RGB,
   BGRA  = POSTA | BGR,
   ARGB  = PREA | RGB,
