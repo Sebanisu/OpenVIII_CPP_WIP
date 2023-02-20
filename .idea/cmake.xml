@@ -2,14 +2,14 @@
 <project version="4">
   <component name="CMakeSharedSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug-WSL Clang15" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL Clang15" GENERATION_OPTIONS="-G Ninja" />
-      <configuration PROFILE_NAME="RelWithDebInfo-WSL Clang15" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="WSL Clang15" GENERATION_OPTIONS="-G Ninja" />
+      <configuration PROFILE_NAME="Debug-WSL Clang15" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL Clang15" GENERATION_OPTIONS="-G Ninja -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="RelWithDebInfo-WSL Clang15" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="WSL Clang15" GENERATION_OPTIONS="-G Ninja -DCMAKE_VERBOSE_MAKEFILE=ON" />
       <configuration PROFILE_NAME="Debug-WSL GCC11" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL GCC11" GENERATION_OPTIONS="-G Ninja -DCMAKE_VERBOSE_MAKEFILE=ON" />
       <configuration PROFILE_NAME="RelWithDebInfo-WSL GCC11" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="WSL GCC11" GENERATION_OPTIONS="-G Ninja -DCMAKE_VERBOSE_MAKEFILE=ON" />
-      <configuration PROFILE_NAME="Debug-Visual Studio 2022" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio 2022" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
-      <configuration PROFILE_NAME="RelWithDebInfo-Visual Studio 2022" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="Visual Studio 2022" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
-      <configuration PROFILE_NAME="Debug-Visual Studio 2019" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio 2019" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
-      <configuration PROFILE_NAME="RelWithDebInfo-Visual Studio 2019" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="Visual Studio 2019" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="Debug-Visual Studio 2022" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio 2022" GENERATION_OPTIONS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="RelWithDebInfo-Visual Studio 2022" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="Visual Studio 2022" GENERATION_OPTIONS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="Debug-Visual Studio 2019" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio 2019" GENERATION_OPTIONS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
+      <configuration PROFILE_NAME="RelWithDebInfo-Visual Studio 2019" ENABLED="true" CONFIG_NAME="RelWithDebInfo" TOOLCHAIN_NAME="Visual Studio 2019" GENERATION_OPTIONS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=d:\\dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake -DCMAKE_VERBOSE_MAKEFILE=ON" />
     </configurations>
   </component>
 </project>

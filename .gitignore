@@ -1,16 +1,40 @@
-*.ipch
-*.db
-*.sqlite
-.vs/CMake Overview
+# Build directories and binary files
+build/
+out/
 cmake-build-*/
-*/build/
-*.opendb
-.vs/*
-External/lz4
-*.h~
-*.txt~
-.idea/vcs.xml
+
+# IDE files
+.vs/
 .idea/workspace.xml*
+.idea/vcs.xml*
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*~
+
+# OS Generated Files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.Trash-*
+$RECYCLE.BIN/
+.TemporaryItems
+ehthumbs.db
+Thumbs.db
+
+# Output Directories
+bin/
+lib/
+*.i
+
+enc_temp_folder/*
+
 venv/*
 *.mch
 build/*
@@ -18,5 +42,3 @@ raw_docs/html
 raw_docs/latex
 raw_docs/_*/
 docs/.doctrees/environment.pickle
-bin/
-lib/
