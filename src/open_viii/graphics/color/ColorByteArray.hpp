@@ -18,6 +18,10 @@ protected:
                                                                             &&...ts)
     : value{ static_cast<std::uint8_t>(ts)... }
   {}
+  constexpr const std::uint8_t* data() const
+  {
+    return value.data();
+  }
   template<typename T>
   constexpr std::uint8_t
     operator[](T &&index) const

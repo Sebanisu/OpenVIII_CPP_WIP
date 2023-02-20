@@ -55,6 +55,10 @@ protected:
         return v;
       }())
   {}
+  constexpr const std::uint16_t * data() const
+  {
+    return &value;
+  }
   template<typename T>
   constexpr std::uint8_t
     operator[](T &&index) const

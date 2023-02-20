@@ -34,6 +34,7 @@ private:
   using T::alpha_size;
   using T::value;
   using T::with;
+  using T::data;
 
 public:
   using T::current_layout;
