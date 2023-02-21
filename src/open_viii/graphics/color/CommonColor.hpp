@@ -34,10 +34,10 @@ private:
   using T::alpha_size;
   using T::value;
   using T::with;
-  using T::data;
 
 public:
   using T::current_layout;
+  using T::data;
 
 private:
   static constexpr auto red_index   = get_index<current_layout, 2U, 0U, 1U>();
