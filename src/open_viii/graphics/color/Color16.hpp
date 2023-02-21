@@ -16,14 +16,18 @@
 #include "CommonColor.hpp"
 namespace open_viii::graphics {
 template<ColorLayoutT layoutT>
-requires(
-  (has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
-   && has_one_flag<layoutT, ColorLayoutT::PREA, ColorLayoutT::POSTA>())
-  || has_one_flag<
-    layoutT,
-    ColorLayoutT::BGR,
-    ColorLayoutT::RGB>()) struct Color16_impl
+  requires(
+    (has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
+     && has_one_flag<layoutT, ColorLayoutT::PREA, ColorLayoutT::POSTA>())
+    || has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>())
+struct Color16_impl
 {
+public:
+  constexpr const std::uint16_t *
+    data() const
+  {
+    return &value;
+  }
 
 private:
   static constexpr auto indexes = get_index<layoutT>(
@@ -44,10 +48,10 @@ protected:
   std::uint16_t         value{};
   constexpr Color16_impl() = default;
   template<typename... Ts>
-  requires(
-    sizeof...(Ts) == indexes.size()
-    && (std::integral<std::decay_t<Ts>> && ...)) constexpr Color16_impl(Ts
-                                                                          &&...ts)
+    requires(
+      sizeof...(Ts) == indexes.size()
+      && (std::integral<std::decay_t<Ts>> && ...))
+  constexpr Color16_impl(Ts &&...ts)
     : value([&]() {
         auto          i = indexes.begin();
         std::uint16_t v = {};
@@ -55,10 +59,6 @@ protected:
         return v;
       }())
   {}
-  constexpr const std::uint16_t * data() const
-  {
-    return &value;
-  }
   template<typename T>
   constexpr std::uint8_t
     operator[](T &&index) const

@@ -6,22 +6,24 @@
 #define OPENVIII_CPP_WIP_COLORBYTEARRAY_HPP
 namespace open_viii::graphics {
 template<std::size_t sizeT>
-requires(sizeT == 3U || sizeT == 4U) struct ColorByteArray
+  requires(sizeT == 3U || sizeT == 4U)
+struct ColorByteArray
 {
+public:
+  constexpr const std::uint8_t *
+    data() const
+  {
+    return value.data();
+  }
+
 protected:
   std::array<std::uint8_t, sizeT> value{};
   constexpr ColorByteArray() = default;
   template<typename... Ts>
-  requires(
-    sizeof...(Ts) == sizeT
-    && (std::integral<std::decay_t<Ts>> && ...)) constexpr ColorByteArray(Ts
-                                                                            &&...ts)
+    requires(sizeof...(Ts) == sizeT && (std::integral<std::decay_t<Ts>> && ...))
+  constexpr ColorByteArray(Ts &&...ts)
     : value{ static_cast<std::uint8_t>(ts)... }
   {}
-  constexpr const std::uint8_t* data() const
-  {
-    return value.data();
-  }
   template<typename T>
   constexpr std::uint8_t
     operator[](T &&index) const
