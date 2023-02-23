@@ -135,6 +135,23 @@ public:
     }
     return 0;
   }
+  [[nodiscard]] constexpr explicit operator unsigned int() const
+  {
+    //[[maybe_unused]] static constexpr auto size_ = sizeof(BPPT);
+    if (bpp4()) {
+      return BPP4;
+    }
+    if (bpp8()) {
+      return BPP8;
+    }
+    if (bpp16()) {
+      return BPP16;
+    }
+    if (bpp24()) {
+      return BPP24;
+    }
+    return 0;
+  }
   //  _4bpp = 0b0U, /**< is coded as std::uint8_t of value 0. 4 bits per per
   //  pixel */ _8bpp = 0b1U, /**< is coded as std::uint8_t of value 1. 8 bits
   //  per per pixel */ _16bpp = 0b10U, /**< is coded as std::uint8_t of value 2.

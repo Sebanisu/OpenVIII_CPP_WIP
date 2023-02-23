@@ -12,6 +12,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_MIMTYPE_HPP
 #define VIIIARCHIVE_MIMTYPE_HPP
+#include "open_viii/graphics/BPPT.hpp"
 #include "open_viii/graphics/Rectangle.hpp"
 #include <array>
 #include <cassert>
@@ -86,9 +87,14 @@ public:
          * static_cast<std::uint32_t>(m_texture_pages);
   }
   [[nodiscard]] constexpr std::uint32_t
-    width(const int &bbp) const noexcept
+    width(const BPPT &bbp) const noexcept
   {
     return (width() * DEFAULT_BPP) / static_cast<std::uint32_t>(bbp);
+  }
+  [[nodiscard]] constexpr std::uint32_t
+    width(const unsigned int &bbp) const noexcept
+  {
+    return (width() * DEFAULT_BPP) / bbp;
   }
   [[nodiscard]] std::uint32_t
     file_size() const noexcept

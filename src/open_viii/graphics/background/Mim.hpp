@@ -76,13 +76,12 @@ private:
                std::ranges::data(m_image_buffer)),
              std::ranges::size(m_image_buffer) / sizeof(Color16ABGR) };
   }
-  [[nodiscard]] Color16ABGR
-    safe_get_color_from_palette(size_t key) const
+  [[nodiscard]] Color16ABGR static safe_get_color_from_palette(
+    const std::span<const Color16ABGR> palette_buffer,
+    size_t                             key)
   {
-    const auto m_palette_buffer = set_palette_span();
-    auto       size1            = std::ranges::size(m_palette_buffer);
-    if (key < size1) {
-      return m_palette_buffer[key];
+    if (key < std::ranges::size(palette_buffer)) {
+      return palette_buffer[key];
     }
     return {};
   }
@@ -96,14 +95,16 @@ private:
   [[nodiscard]] std::vector<T>
     get_image_bpp8(const uint8_t &palette) const
   {
-    const auto     m_image_buffer = set_image_span();
+    const auto     palette_buffer = set_palette_span();
+    const auto     image_buffer   = set_image_span();
     std::vector<T> out{};
-    out.reserve(std::ranges::size(m_image_buffer));
+    out.reserve(std::ranges::size(image_buffer));
     std::ranges::transform(
-      m_image_buffer,
+      image_buffer,
       std::back_inserter(out),
-      [&palette, this](const char &c) {
+      [&](const char &c) {
         return static_cast<T>(safe_get_color_from_palette(
+          palette_buffer,
           get_palette_key(static_cast<uint8_t>(c), palette)));
       });
     return out;
@@ -112,19 +113,19 @@ private:
   [[nodiscard]] std::vector<T>
     get_image_bpp4(const uint8_t &palette) const
   {
-    const auto     m_image_buffer_bbp4 = set_image_span_bpp4();
+    const auto     palette_buffer    = set_palette_span();
+    const auto     image_buffer_bbp4 = set_image_span_bpp4();
     std::vector<T> out{};
-    out.reserve(std::ranges::size(m_image_buffer_bbp4) * 2);
-    std::ranges::for_each(
-      m_image_buffer_bbp4,
-      [&palette, this, &out](const Bit4Values &key) {
-        const auto output = [&out, &palette, this](const uint8_t &input) {
-          out.emplace_back(
-            safe_get_color_from_palette(get_palette_key(input, palette)));
-        };
-        output(key.first());
-        output(key.second());
-      });
+    out.reserve(std::ranges::size(image_buffer_bbp4) * 2);
+    std::ranges::for_each(image_buffer_bbp4, [&](const Bit4Values &key) {
+      const auto output = [&](const uint8_t &color_key) {
+        out.emplace_back(safe_get_color_from_palette(
+          palette_buffer,
+          get_palette_key(color_key, palette)));
+      };
+      output(key.first());
+      output(key.second());
+    });
     return out;
   }
 
@@ -253,15 +254,16 @@ public:
   }
 
   template<typename lambdaT>
-  requires(
-    std::invocable<
-      lambdaT,
-      std::span<const Color16ABGR>,
-      std::size_t,
-      std::size_t,
-      std::
-        string> || std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>)
-    [[maybe_unused]] void get_colors_for_saving(
+    requires(
+      std::invocable<
+        lambdaT,
+        std::span<const Color16ABGR>,
+        std::size_t,
+        std::size_t,
+        std::string>
+      || std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>)
+  [[maybe_unused]] void
+    get_colors_for_saving(
       const std::string_view &filename,
       const BPPT             &bpp,
       const uint8_t          &palette,
@@ -391,42 +393,119 @@ public:
       const std::uint8_t  palette    = 0U,
       const std::uint8_t  texture_id = 0U) const
   {
-    auto                  width = m_mim_type.width();
-    constexpr static auto offset_interval
-      = background::TileCommonConstants::texture_page_width;
-    auto texture_page_offset = static_cast<std::uint32_t>(offset_interval);
-    if (depth.bpp8()) {
-      texture_page_offset *= texture_id;
-      const auto m_image_buffer = set_image_span();
-      return safe_get_color_from_palette(get_palette_key(
-        static_cast<std::uint8_t>(m_image_buffer
-                                    [std::size_t{ x } + texture_page_offset
-                                     + (std::size_t{ y } * width)]),
-        palette));
-    }
-    if (depth.bpp4()) {
-      texture_page_offset *= 2U * texture_id;
-      const auto       m_image_buffer_bbp4 = set_image_span_bpp4();
-      const Bit4Values pair                = m_image_buffer_bbp4
-        [(std::size_t{ x } + texture_page_offset) / 2U
-         + (std::size_t{ y } * width)];
-      if (x % 2U == 0) {
-        return safe_get_color_from_palette(
-          get_palette_key(pair.first(), palette));
-      }
-      return safe_get_color_from_palette(
-        get_palette_key(pair.second(), palette));
-    }
     if (depth.bpp16()) {
-      width /= 2U;
-      texture_page_offset /= 2U;
-      texture_page_offset *= texture_id;
-      const auto m_image_buffer_bbp16 = set_image_span_bpp16();
-      return m_image_buffer_bbp16
-        [std::size_t{ x } + texture_page_offset + (std::size_t{ y } * width)];
+      return get_color_16bit(x, y, texture_id);
+    }
+    else if (depth.bpp8()) {
+      return get_color_8bit(x, y, palette, texture_id);
+    }
+    else if (depth.bpp4()) {
+      return get_color_4bit(x, y, palette, texture_id);
     }
     return {};
   }
+  enum struct texture_page_width_t : std::uint16_t
+  {
+    bit_4  = 256U,
+    bit_8  = bit_4 >> 1,
+    bit_16 = bit_4 >> 2,
+  };
+  friend std::underlying_type_t<texture_page_width_t>
+    operator+(texture_page_width_t tpw)
+  {
+    return std::underlying_type_t<texture_page_width_t>(tpw);
+  }
+  [[nodiscard]] Color16ABGR
+    get_color_16bit(
+      const std::uint32_t x,
+      const std::uint32_t y,
+      const std::uint8_t  texture_id) const
+  {
+    const auto width = m_mim_type.width(BPPT::BPP16_CONST());
+    const auto texture_page_offset
+      = std::uint32_t{ +texture_page_width_t::bit_16 }
+      * std::uint32_t{ texture_id };
+    const auto m_image_buffer_bbp16 = set_image_span_bpp16();
+    return m_image_buffer_bbp16
+      [std::uint32_t{ x } + texture_page_offset + (std::uint32_t{ y } * width)];
+  }
+
+  [[nodiscard]] Color16ABGR
+    get_color_4bit(
+      const std::uint32_t x,
+      const std::uint32_t y,
+      const std::uint8_t  palette,
+      const std::uint8_t  texture_id) const
+  {
+    const auto palette_buffer = set_palette_span();
+    const auto color          = [&](std::uint8_t key) -> Color16ABGR {
+      return safe_get_color_from_palette(
+        palette_buffer,
+        get_palette_key(key, palette));
+    };
+    return color(get_color_key_4bit(x, y, texture_id));
+  }
+
+  std::uint8_t
+    get_color_key_4bit(
+      const std::uint32_t x,
+      const std::uint32_t y,
+      const std::uint8_t  texture_id) const
+  {
+    const auto width = m_mim_type.width(BPPT::BPP4_CONST());
+    const auto texture_page_offset
+      = std::uint32_t{ +texture_page_width_t::bit_4 }
+      * std::uint32_t{ texture_id };
+    const auto       m_image_buffer_bbp4 = set_image_span_bpp4();
+    const Bit4Values pair                = m_image_buffer_bbp4
+      [(std::uint32_t{ x } + texture_page_offset) / 2U
+       + (std::uint32_t{ y } * width)];
+    return x % 2U == 0 ? pair.first() : pair.second();
+  }
+
+  [[nodiscard]] Color16ABGR
+    get_color_8bit(
+      const std::uint32_t x,
+      const std::uint32_t y,
+      const std::uint8_t  palette,
+      const std::uint8_t  texture_id) const
+  {
+    const auto palette_buffer = set_palette_span();
+    const auto color_key      = get_color_key_8bit(x, y, texture_id);
+    return safe_get_color_from_palette(
+      palette_buffer,
+      get_palette_key(color_key, palette));
+  }
+
+  std::uint8_t
+    get_color_key_8bit(
+      const std::uint32_t x,
+      const std::uint32_t y,
+      const std::uint8_t  texture_id) const
+  {
+    return get_color_key_8bit(
+      set_image_span(),
+      m_mim_type.width(BPPT::BPP8_CONST()),
+      x,
+      y,
+      texture_id);
+  }
+  static std::uint8_t
+    get_color_key_8bit(
+      const std::span<const char> image_buffer,
+      const std::uint32_t         width,
+      const std::uint32_t         x,
+      const std::uint32_t         y,
+      const std::uint8_t          texture_id)
+  {
+    const auto texture_page_offset
+      = std::uint32_t{ +texture_page_width_t::bit_8 }
+      * std::uint32_t{ texture_id };
+    const auto color_key
+      = std::uint32_t{ x } + texture_page_offset + (std::uint32_t{ y } * width);
+    return static_cast<std::uint8_t>(image_buffer[color_key]);
+  }
+
   [[maybe_unused]] void
     save([[maybe_unused]] std::string_view filename) const
   {
