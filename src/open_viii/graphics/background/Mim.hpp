@@ -19,6 +19,9 @@
 #include "Tile2.hpp"
 #include "Tile3.hpp"
 #include "TileCommon.hpp"
+#include <algorithm>
+#include <execution>
+#include <version>
 namespace open_viii::graphics::background {
 
 /**
@@ -98,34 +101,73 @@ private:
     const auto     palette_buffer = set_palette_span();
     const auto     image_buffer   = set_image_span();
     std::vector<T> out{};
+    out.resize(std::ranges::size(image_buffer));
+
+    auto get_color_from_palette = [&](const char &color_key) -> T {
+      return static_cast<T>(safe_get_color_from_palette(
+        palette_buffer,
+        get_palette_key(static_cast<uint8_t>(color_key), palette)));
+    };
+#ifdef __cpp_lib_parallel_algorithm
+    // Parallel algorithm available
+    out.resize(std::ranges::size(image_buffer));
+    std::transform(
+      std::execution::par_unseq,
+      image_buffer.begin(),
+      image_buffer.end(),
+      std::ranges::begin(out),
+      get_color_from_palette);
+#else
+    // Parallel algorithm not available
     out.reserve(std::ranges::size(image_buffer));
     std::ranges::transform(
       image_buffer,
       std::back_inserter(out),
-      [&](const char &c) {
-        return static_cast<T>(safe_get_color_from_palette(
-          palette_buffer,
-          get_palette_key(static_cast<uint8_t>(c), palette)));
-      });
+      get_color_from_palette);
+#endif
     return out;
   }
   template<Color_types T = Color16ABGR>
   [[nodiscard]] std::vector<T>
     get_image_bpp4(const uint8_t &palette) const
   {
-    const auto     palette_buffer    = set_palette_span();
-    const auto     image_buffer_bbp4 = set_image_span_bpp4();
+    const auto palette_buffer    = set_palette_span();
+    const auto image_buffer_bbp4 = set_image_span_bpp4();
+
+    // Compute the size of the output vector.
+    const auto output_size       = std::ranges::size(image_buffer_bbp4) * 2U;
+    const auto get_color_from_palette = [&](size_t i) {
+      const auto    key       = image_buffer_bbp4[i >> 1];
+      const uint8_t color_key = i % 2U == 0 ? key.first() : key.second();
+      return safe_get_color_from_palette(
+        palette_buffer,
+        get_palette_key(color_key, palette));
+    };
+#ifdef __cpp_lib_parallel_algorithm
+    // Generate indices for the output vector.
+    std::vector<size_t> indices(output_size);
+    std::iota(indices.begin(), indices.end(), 0);
+
+    // Transform the indices into color values.
+    std::vector<T> out(output_size);
+    std::transform(
+      std::execution::par_unseq,
+      indices.begin(),
+      indices.end(),
+      out.begin(),
+      get_color_from_palette);
+#else
+    // Generate indices for the output vector.
+    auto           indices = std::views::iota(size_t{}, output_size);
+
+    // Transform the indices into color values.
     std::vector<T> out{};
-    out.reserve(std::ranges::size(image_buffer_bbp4) * 2);
-    std::ranges::for_each(image_buffer_bbp4, [&](const Bit4Values &key) {
-      const auto output = [&](const uint8_t &color_key) {
-        out.emplace_back(safe_get_color_from_palette(
-          palette_buffer,
-          get_palette_key(color_key, palette)));
-      };
-      output(key.first());
-      output(key.second());
-    });
+    out.reserve(output_size);
+    std::ranges::transform(
+      indices,
+      std::back_inserter(out),
+      get_color_from_palette);
+#endif
     return out;
   }
 
@@ -228,13 +270,21 @@ public:
     }
 
     const auto convert_color = [&colors](const auto &raw_color) {
+      const auto cast_color = [](const auto &color) {
+        return static_cast<T>(color);
+      };
+#ifdef __cpp_lib_parallel_algorithm
+      colors.resize(raw_color.size());
+      std::transform(
+        std::execution::par_unseq,
+        std::ranges::begin(raw_color),
+        std::ranges::end(raw_color),
+        std::ranges::begin(colors),
+        cast_color);
+#else
       colors.reserve(raw_color.size());
-      std::ranges::transform(
-        raw_color,
-        std::back_inserter(colors),
-        [](const auto &color) {
-          return static_cast<T>(color);
-        });
+      std::ranges::transform(raw_color, std::back_inserter(colors), cast_color);
+#endif
     };
     if (dump_palette) {
       const auto m_palette_buffer = set_palette_span();
