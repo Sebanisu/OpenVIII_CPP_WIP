@@ -139,9 +139,9 @@ private:
     const auto get_color_from_palette = [&](size_t i) {
       const auto    key       = image_buffer_bbp4[i >> 1];
       const uint8_t color_key = i % 2U == 0 ? key.first() : key.second();
-      return safe_get_color_from_palette(
+      return static_cast<T>(safe_get_color_from_palette(
         palette_buffer,
-        get_palette_key(color_key, palette));
+        get_palette_key(color_key, palette)));
     };
 #ifdef __cpp_lib_parallel_algorithm
     // Generate indices for the output vector.
