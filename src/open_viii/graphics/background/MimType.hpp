@@ -108,7 +108,7 @@ public:
     return OUT_HEIGHT;
   }
   [[nodiscard]] constexpr auto
-    canvas(int bpp = DEFAULT_BPP, std::uint8_t scale = 1) const noexcept
+    canvas(unsigned int bpp = DEFAULT_BPP, std::uint8_t scale = 1) const noexcept
   {
     return Rectangle<std::uint32_t>(0, 0, width(bpp) * scale, height() * scale);
   }
