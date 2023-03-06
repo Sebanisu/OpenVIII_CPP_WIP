@@ -39,11 +39,13 @@ private:
   bool                  m_unused3                    : 1 { false };
   bool                  m_unused4                    : 1 { false };
   bool                  m_unused5                    : 1 { false };
-  constexpr static auto RAW8_VALUE  = 0b0001U;
-  constexpr static auto RAW16_VALUE = 0b0010U;
-  constexpr static auto CLP_VALUE   = 0b1000U;
 
 public:
+  constexpr static auto RAW4_VALUE  = 0b0000U;
+  constexpr static auto RAW8_VALUE  = 0b0001U;
+  constexpr static auto RAW16_VALUE = 0b0010U;
+  constexpr static auto RAW24_VALUE = RAW16_VALUE | RAW8_VALUE;
+  constexpr static auto CLP_VALUE   = 0b1000U;
   constexpr static auto BPP4  = 4U;
   constexpr static auto BPP8  = 8U;
   constexpr static auto BPP16 = 16U;
