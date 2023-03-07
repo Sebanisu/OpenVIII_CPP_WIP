@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_ARCHIVES_HPP
 #include "ArchivesTypesT.hpp"
 #include "FIFLFS.hpp"
+#include "FIFLFS_operations.hpp"
 #include "FileData.hpp"
 #include "open_viii/strings/LangCommon.hpp"
 #include "ZZZ.hpp"

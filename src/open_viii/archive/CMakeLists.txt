@@ -1,4 +1,4 @@
-add_library(${PROJECT_NAME}_VIIIArchive INTERFACE)
+add_library(${PROJECT_NAME}_VIIIArchive INTERFACE FIFLFS_operations.hpp)
 target_link_libraries(${PROJECT_NAME}_VIIIArchive
         INTERFACE ${PROJECT_NAME}_VIIICompression
         INTERFACE ${PROJECT_NAME}_VIIITools

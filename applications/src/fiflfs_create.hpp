@@ -4,7 +4,7 @@
 
 #ifndef VIIIARCHIVE_FIFLFS_CREATE_HPP
 #define VIIIARCHIVE_FIFLFS_CREATE_HPP
-#include "open_viii/archive/FIFLFS.hpp"
+#include "open_viii/archive/FIFLFS_operations.hpp"
 #include <filesystem>
 #include <iostream>
 #include <string_view>
