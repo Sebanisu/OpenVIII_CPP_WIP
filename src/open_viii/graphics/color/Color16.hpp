@@ -14,6 +14,8 @@
 #define VIIIARCHIVE_COLOR16_HPP
 #include "Color16_index_value.hpp"
 #include "CommonColor.hpp"
+#include <array>
+#include <utility>
 namespace open_viii::graphics {
 template<ColorLayoutT layoutT>
   requires(
