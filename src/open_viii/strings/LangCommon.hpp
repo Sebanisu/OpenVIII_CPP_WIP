@@ -44,6 +44,12 @@ namespace LangCommon {
   static constexpr std::string_view IT{ "it" };
   static constexpr std::string_view JP{ "jp" };
   static constexpr std::string_view ES{ "es" };
+  static constexpr std::string_view ENFULL{ "English" };
+  static constexpr std::string_view FRFULL{ "French" };
+  static constexpr std::string_view DEFULL{ "German" };
+  static constexpr std::string_view ITFULL{ "Italian" };
+  static constexpr std::string_view JPFULL{ "Japanese" };
+  static constexpr std::string_view ESFULL{ "Spanish" };
   static constexpr std::string_view ENG{ "eng" };
   static constexpr std::string_view FRE{ "fre" };
   static constexpr std::string_view GER{ "ger" };

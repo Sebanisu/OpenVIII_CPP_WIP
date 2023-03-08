@@ -22,9 +22,9 @@ enum class LangT : std::uint8_t
   it,
   es,
   jp,
+  generic, //this is for matching files without lang code in them.
   end,
   begin   = en,
-  generic = end
 };
 }// namespace open_viii
 #endif// VIIIARCHIVE_LANGT_HPP
