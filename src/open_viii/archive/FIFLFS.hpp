@@ -101,7 +101,27 @@ public:
   {
     return m_fi && m_fs && m_fl;
   }
-  FIFLFS() = default;
+  // Default constructor
+  FIFLFS()                    = default;
+  // Copy constructor
+  FIFLFS(const FIFLFS &other) = default;
+
+  // Move constructor
+  FIFLFS(FIFLFS &&other) noexcept     = default;
+
+  // Copy assignment operator
+  FIFLFS &
+    operator=(const FIFLFS &other)
+    = default;
+
+  // Move assignment operator
+  FIFLFS &
+    operator=(FIFLFS &&other) noexcept
+    = default;
+
+  // Destructor
+  ~FIFLFS() noexcept = default;
+
   FIFLFS(std::filesystem::path src)
   {
     const auto parent_path = src.parent_path();
@@ -582,10 +602,11 @@ public:
     }
     return all_set() ? TryAddT::archive_full : TryAddT::added_to_archive;
   }
-  struct FIFLFS_true_sentinel
+  struct FIFLFS_sentinel
   {
   };
-  template<typename archive_T>
+  template<bool is_true>
+    requires(is_true)
   class FIFLFS_true_Iterator
   {
   public:
@@ -593,7 +614,9 @@ public:
     using difference_type   = std::ptrdiff_t;
     using pointer           = open_viii::archive::FIFLFS<false> *;
     using reference         = open_viii::archive::FIFLFS<false> &;
-    using iterator_category = std::input_iterator_tag;
+    using iterator_category = std::random_access_iterator_tag;
+    using const_iterator    = FIFLFS_true_Iterator<is_true>;
+
     FIFLFS_true_Iterator(
       const open_viii::archive::FIFLFS<true> &archive,
       std::size_t                             index = 0)
@@ -608,9 +631,55 @@ public:
           && m_map_names == other.m_map_names;
     }
     bool
-      operator==(const FIFLFS_true_sentinel) const
+      operator==(const FIFLFS_sentinel) const
     {
       return m_current_index == std::ranges::size(m_map_names);
+    }
+
+    FIFLFS_true_Iterator &
+      operator+=(difference_type n)
+    {
+      m_current_index += n;
+      return *this;
+    }
+
+    friend FIFLFS_true_Iterator
+      operator+(FIFLFS_true_Iterator it, difference_type n)
+    {
+      return it += n;
+    }
+
+    friend FIFLFS_true_Iterator
+      operator+(difference_type n, FIFLFS_true_Iterator it)
+    {
+      return it += n;
+    }
+
+    FIFLFS_true_Iterator &
+      operator-=(difference_type n)
+    {
+      m_current_index -= n;
+      return *this;
+    }
+
+    friend FIFLFS_true_Iterator
+      operator-(FIFLFS_true_Iterator it, difference_type n)
+    {
+      return it -= n;
+    }
+
+    friend difference_type
+      operator-(
+        FIFLFS_true_Iterator const &lhs,
+        FIFLFS_true_Iterator const &rhs)
+    {
+      return lhs.m_current_index - rhs.m_current_index;
+    }
+
+    value_type
+      operator[](difference_type n) const
+    {
+      return *(*this + n);
     }
 
     FIFLFS_true_Iterator &
@@ -661,19 +730,174 @@ public:
       return archive;
     }
 
+//    operator const_iterator() const
+//    {
+//      return *this;
+//    }
+
   private:
-    std::reference_wrapper<const archive_T> m_fiflfs_true;
-    std::vector<std::string>                m_map_names;
-    std::size_t                             m_current_index;
+    std::reference_wrapper<const FIFLFS<true>> m_fiflfs_true;
+    std::vector<std::string>                   m_map_names;
+    std::size_t                                m_current_index;
   };
 
-  FIFLFS_true_Iterator<FIFLFS<true>>
-    begin()  const requires(HasNested)
+  template<bool is_false>
+    requires(!is_false)
+  class FIFLFS_false_Iterator
   {
-    return { *this };
+  public:
+    using value_type        = std::pair<std::string, std::vector<char>>;
+    using difference_type   = std::ptrdiff_t;
+    using pointer           = std::pair<std::string, std::vector<char>> *;
+    using reference         = std::pair<std::string, std::vector<char>> &;
+    using iterator_category = std::random_access_iterator_tag;
+    using const_iterator    = FIFLFS_false_Iterator<is_false>;
+    FIFLFS_false_Iterator(
+      const open_viii::archive::FIFLFS<false> &archive,
+      std::size_t                              index = 0)
+      : m_fiflfs_false(archive),
+        m_pair_id_names(m_fiflfs_false.get().get_all_items_from_fl({})),
+        m_current_index(index)
+    {}
+    bool
+      operator==(const FIFLFS_false_Iterator &other) const
+    {
+      return &m_fiflfs_false.get() == &other.m_fiflfs_false.get()
+          && m_current_index == other.m_current_index
+          && m_pair_id_names == other.m_pair_id_names;
+    }
+    bool
+      operator==(const FIFLFS_sentinel) const
+    {
+      return m_current_index == std::ranges::size(m_pair_id_names);
+    }
+
+    FIFLFS_false_Iterator &
+      operator+=(difference_type n)
+    {
+      m_current_index += n;
+      return *this;
+    }
+
+    friend FIFLFS_false_Iterator
+      operator+(FIFLFS_false_Iterator it, difference_type n)
+    {
+      return it += n;
+    }
+
+    friend FIFLFS_false_Iterator
+      operator+(difference_type n, FIFLFS_false_Iterator it)
+    {
+      return it += n;
+    }
+
+    FIFLFS_false_Iterator &
+      operator-=(difference_type n)
+    {
+      m_current_index -= n;
+      return *this;
+    }
+
+    friend FIFLFS_false_Iterator
+      operator-(FIFLFS_false_Iterator it, difference_type n)
+    {
+      return it -= n;
+    }
+
+    friend difference_type
+      operator-(
+        FIFLFS_false_Iterator const &lhs,
+        FIFLFS_false_Iterator const &rhs)
+    {
+      return lhs.m_current_index - rhs.m_current_index;
+    }
+
+    value_type
+      operator[](difference_type n) const
+    {
+      return *(*this + n);
+    }
+
+    FIFLFS_false_Iterator &
+      operator++()
+    {
+      ++m_current_index;
+      return *this;
+    }
+
+    FIFLFS_false_Iterator
+      operator++(int)
+    {
+      FIFLFS_false_Iterator old = *this;
+      ++(*this);
+      return old;
+    }
+    FIFLFS_false_Iterator &
+      operator--()
+    {
+      --m_current_index;
+      return *this;
+    }
+
+    FIFLFS_false_Iterator
+      operator--(int)
+    {
+      FIFLFS_false_Iterator old = *this;
+      --(*this);
+      return old;
+    }
+
+    value_type
+      operator*() const
+    {
+      const auto &[file_id, file_name] = m_pair_id_names[m_current_index];
+      const FI file_info = m_fiflfs_false.get().get_entry_by_index(file_id);
+      return { file_name, m_fiflfs_false.get().get_entry_buffer(file_info) };
+    }
+//
+//    operator const_iterator() const
+//    {
+//      return *this;
+//    }
+
+  private:
+    std::reference_wrapper<const FIFLFS<false>>        m_fiflfs_false;
+    std::vector<std::pair<std::uint32_t, std::string>> m_pair_id_names;
+    std::size_t                                        m_current_index;
+  };
+
+  auto
+    begin() const
+    requires(HasNested)
+  {
+    return FIFLFS_true_Iterator<HasNested>{ *this };
   }
-  FIFLFS_true_sentinel
-    end() const requires(HasNested)
+  auto
+    begin() const
+    requires(!HasNested)
+  {
+    return FIFLFS_false_Iterator<HasNested>{ *this };
+  }
+  FIFLFS_sentinel
+    end() const
+  {
+    return {};
+  }
+
+  auto
+    cbegin() const
+    requires(HasNested)
+  {
+    return FIFLFS_true_Iterator<HasNested>{ *this };
+  }
+  auto
+    cbegin() const
+    requires(!HasNested)
+  {
+    return FIFLFS_false_Iterator<HasNested>{ *this };
+  }
+  FIFLFS_sentinel
+    cend() const
   {
     return {};
   }
