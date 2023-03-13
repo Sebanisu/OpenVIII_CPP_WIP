@@ -445,27 +445,26 @@ public:
       std::vector<std::string> list{};
       FIFLFS<false>            archive = {};
       const auto               items   = get_all_items_from_fl({ "mapdata" });
-      (void)std::ranges::any_of(
-        items,
-        [&archive, this, &list](const auto &item) {
-          if (fill_archive_lambda(archive)(item)) {
-            const auto raw_list
-              = archive.template get_entry_data<std::string>("maplist");
-            // archive::fl::get_all_entries(raw_list,0,0,0)
-            std::stringstream ss{ raw_list };
-            std::string       tmp{};
-            while (std::getline(ss, tmp)) {
-              while (!tmp.empty() && tmp.back() == '\r') {
-                tmp.pop_back();
+      std::ignore
+        = std::ranges::any_of(items, [&archive, this, &list](const auto &item) {
+            if (fill_archive_lambda(archive)(item)) {
+              const auto raw_list
+                = archive.template get_entry_data<std::string>("maplist");
+              // archive::fl::get_all_entries(raw_list,0,0,0)
+              std::stringstream ss{ raw_list };
+              std::string       tmp{};
+              while (std::getline(ss, tmp)) {
+                while (!tmp.empty() && tmp.back() == '\r') {
+                  tmp.pop_back();
+                }
+                if (!tmp.empty()) {
+                  list.emplace_back(std::move(tmp));
+                }
               }
-              if (!tmp.empty()) {
-                list.emplace_back(std::move(tmp));
-              }
+              return true;
             }
-            return true;
-          }
-          return false;
-        });
+            return false;
+          });
       return list;
     }
   }
@@ -534,7 +533,7 @@ public:
   {
     FIFLFS<false> archive = {};
     const auto    items   = get_all_items_from_fl(filename);
-    return std::ranges::any_of(items, [&](const auto &item) {
+    std::ignore           = std::ranges::any_of(items, [&](const auto &item) {
       return filter_lambda(item.second) && fill_archive_lambda(archive)(item);
     });
     return archive;
@@ -572,7 +571,7 @@ public:
         if (!limit_once)
           std::ranges::for_each(items, pFunction);
         else {
-          (void)std::ranges::any_of(items, pFunction);
+          std::ignore = std::ranges::any_of(items, pFunction);
         }
       }
       else if constexpr (executable_fiflfs_sans_nested<lambdaT>) {
@@ -589,7 +588,7 @@ public:
         if (!limit_once)
           std::ranges::for_each(items, pFunction);
         else {
-          (void)std::ranges::any_of(items, pFunction);
+          std::ignore = std::ranges::any_of(items, pFunction);
         }
       }
     }
