@@ -102,12 +102,12 @@ public:
     return m_fi && m_fs && m_fl;
   }
   // Default constructor
-  FIFLFS()                    = default;
+  FIFLFS()                        = default;
   // Copy constructor
-  FIFLFS(const FIFLFS &other) = default;
+  FIFLFS(const FIFLFS &other)     = default;
 
   // Move constructor
-  FIFLFS(FIFLFS &&other) noexcept     = default;
+  FIFLFS(FIFLFS &&other) noexcept = default;
 
   // Copy assignment operator
   FIFLFS &
@@ -525,6 +525,21 @@ public:
       m_count,
       filename);
   }
+
+  template<filter_paths filterT = decltype(default_filter_lambda)>
+  auto
+    get_archive_with_nested(
+      const std::initializer_list<std::string_view> &filename,
+      filterT                                      &&filter_lambda = {}) const
+  {
+    FIFLFS<false> archive = {};
+    const auto    items   = get_all_items_from_fl(filename);
+    return std::ranges::any_of(items, [&](const auto &item) {
+      return filter_lambda(item.second) && fill_archive_lambda(archive)(item);
+    });
+    return archive;
+  }
+
   template<
     executable_common_nested lambdaT,
     filter_paths             filterT = decltype(default_filter_lambda)>
@@ -714,26 +729,12 @@ public:
     value_type
       operator*() const
     {
-      value_type archive{};
-      m_fiflfs_true.get().execute_with_nested(
+      return m_fiflfs_true.get().get_archive_with_nested(
         { m_map_names[m_current_index] },
-        [&archive](auto &&field) {
-          archive = open_viii::archive::FIFLFS<false>{
-            std::forward<decltype(field)>(field)
-          };
-        },
-        {},
         [](auto &&) {
           return true;
-        },
-        true);
-      return archive;
+        });
     }
-
-//    operator const_iterator() const
-//    {
-//      return *this;
-//    }
 
   private:
     std::reference_wrapper<const FIFLFS<true>> m_fiflfs_true;
@@ -854,11 +855,11 @@ public:
       const FI file_info = m_fiflfs_false.get().get_entry_by_index(file_id);
       return { file_name, m_fiflfs_false.get().get_entry_buffer(file_info) };
     }
-//
-//    operator const_iterator() const
-//    {
-//      return *this;
-//    }
+    //
+    //    operator const_iterator() const
+    //    {
+    //      return *this;
+    //    }
 
   private:
     std::reference_wrapper<const FIFLFS<false>>        m_fiflfs_false;
