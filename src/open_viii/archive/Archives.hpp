@@ -401,6 +401,10 @@ public:
     else if constexpr (archiveTypeT == ArchiveTypeT::zzz_other) {
       return m_zzz_other;
     }
+    else
+    {
+      return m_field;
+    }
   }
   /**
    * Get archive via ArchiveTypeT

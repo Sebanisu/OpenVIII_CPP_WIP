@@ -14,6 +14,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
             INTERFACE "-fuse-ld=lld"
             INTERFACE "-Wl") #,--gdb-index
     target_compile_features(${PROJECT_NAME}_VIIICommon
+            INTERFACE cxx_std_23
             INTERFACE cxx_std_20)
 endif ()
 add_subdirectory(archive)

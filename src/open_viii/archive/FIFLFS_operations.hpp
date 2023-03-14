@@ -7,41 +7,35 @@
 #include "FIFLFS.hpp"
 namespace open_viii::archive
 {
-[[nodiscard]] inline TryAddT
-  get_fiflfs(
-    const FIFLFS<true>    &source,
-    FIFLFS<false>         &archive,
-    const std::uint32_t    id,
-    const std::string_view str_virtual_path)
+[[nodiscard]] inline TryAddT get_fiflfs(const FIFLFS<true>& source,
+             FIFLFS<false>& archive,
+             const std::uint32_t id,
+             const std::string_view str_virtual_path)
 {
   FI fi = source.get_entry_by_index(id);
-  return [&source, &archive, &fi, &str_virtual_path]() {
-    std::filesystem::path virtualPath(str_virtual_path);
-    if (!std::ranges::empty(source.fs().data())) {
-      return archive.try_add_nested(
-        source.fs().data(),
-        source.fs().offset(),
-        virtualPath,
-        fi);
-    }
-    if (fi.compression_type() == CompressionTypeT::none) {
-      auto localRetVal = archive.try_add(
-        FileData(source.fs().offset() + fi.offset(), fi.uncompressed_size()),
-        source.fs().path(),
-        virtualPath);
-      //        if (localRetVal != TryAddT::not_part_of_archive) {
-      //          std::cout << virtualPath.filename() << " is uncompressed
-      //          pointing at location in actual file!\n";
-      //        }
-      return localRetVal;
-    }
-    return archive.try_add_nested(
+  std::filesystem::path virtualPath(str_virtual_path);
+  if (!std::ranges::empty(source.fs().data())) {
+    return archive.try_add_nested(source.fs().data(),
+                                  source.fs().offset(),
+                                  virtualPath,
+                                  fi);
+  }
+  if (fi.compression_type() == CompressionTypeT::none) {
+    auto localRetVal = archive.try_add(
+      FileData(source.fs().offset() + fi.offset(), fi.uncompressed_size()),
       source.fs().path(),
-      source.fs().offset(),
-      virtualPath,
-      fi);// when path is sent a different function is used later.
-  }();
+      virtualPath);
+    // if (localRetVal != TryAddT::not_part_of_archive) {
+    //   std::cout << virtualPath.filename() << " is uncompressed pointing at location in actual file!\n";
+    // }
+    return localRetVal;
+  }
+  return archive.try_add_nested(source.fs().path(),
+                                source.fs().offset(),
+                                virtualPath,
+                                fi);
 }
+
 [[nodiscard]] inline FIFLFS<false>
   get_fiflfs(
     const FIFLFS<true>                            &source,

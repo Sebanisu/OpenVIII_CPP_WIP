@@ -238,5 +238,9 @@ public:
     return match;
   }
 };
+static_assert(std::movable<Grouping<std::vector<char>>>);
+static_assert(std::movable<Grouping<std::string>>);
+static_assert(std::copyable<Grouping<std::vector<char>>>);
+static_assert(std::copyable<Grouping<std::string>>);
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_GROUPING_HPP
