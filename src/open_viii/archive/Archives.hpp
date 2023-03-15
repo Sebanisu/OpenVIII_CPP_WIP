@@ -29,6 +29,12 @@ concept does_have_execute_with_nested = requires(T a, lambdaT l, filterT f) {
 template<ArchiveTypeT... aT>
 concept not_zero = sizeof
 ...(aT) > 0U;
+
+struct ArchiveSentinel
+{
+};
+class ArchiveIterator;
+
 /**
  * Reads a path looking for ZZZ or FIFLFS archives. It remembers the locations
  * of the archives, and serves serves as a front end to access them.
@@ -401,8 +407,7 @@ public:
     else if constexpr (archiveTypeT == ArchiveTypeT::zzz_other) {
       return m_zzz_other;
     }
-    else
-    {
+    else {
       return m_field;
     }
   }
@@ -449,8 +454,23 @@ public:
   {
     return test_set();
   }
-  [[nodiscard]] std::
-    variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
+  using FIFLFSRef       = std::reference_wrapper<FIFLFS<true>>;
+  using FIFLFSConstRef  = std::reference_wrapper<const FIFLFS<true>>;
+  using FIFLFSRef2      = std::reference_wrapper<FIFLFS<false>>;
+  using FIFLFSConstRef2 = std::reference_wrapper<const FIFLFS<false>>;
+  using ZZZRef          = std::reference_wrapper<std::optional<ZZZ>>;
+  using ZZZConstRef     = std::reference_wrapper<const std::optional<ZZZ>>;
+
+  using MyVariant       = std::variant<
+    std::monostate,
+    FIFLFSRef,
+    FIFLFSConstRef,
+    FIFLFSRef2,
+    FIFLFSConstRef2,
+    ZZZRef,
+    ZZZConstRef>;
+
+  [[nodiscard]] MyVariant
     get(const std::string_view &name, bool zzz = false) const
   {
     if (!zzz) {
@@ -487,8 +507,7 @@ public:
     }
     return std::monostate{};
   }
-  [[maybe_unused]] [[nodiscard]] std::
-    variant<std::monostate, FIFLFS<true>, FIFLFS<false>, std::optional<ZZZ>>
+  [[maybe_unused]] [[nodiscard]] MyVariant
     get(const ArchiveTypeT &type) const
   {
     if (ArchiveTypeT::battle == type) {
@@ -719,11 +738,267 @@ public:
     return specify<aT...>(
       get_execute_on_lambda<nested>(filename, lambda, filter_lambda));
   }
+
+  using iterator = ArchiveIterator;
+  iterator
+    begin() const;
+  iterator
+    cbegin() const;
+  ArchiveSentinel
+    end() const
+  {
+    return {};
+  }
+  ArchiveSentinel
+    cend() const
+  {
+    return {};
+  }
 };
 inline bool
   fiflfs_in_main_zzz(const Archives &archives) noexcept
 {
   return archives.get<open_viii::archive::ArchiveTypeT::zzz_main>().has_value();
 }
+class ArchiveIterator
+{
+public:
+  using FIFLFSRef       = std::reference_wrapper<FIFLFS<true>>;
+  using FIFLFSConstRef  = std::reference_wrapper<const FIFLFS<true>>;
+  using FIFLFSRef2      = std::reference_wrapper<FIFLFS<false>>;
+  using FIFLFSConstRef2 = std::reference_wrapper<const FIFLFS<false>>;
+  using ZZZRef          = std::reference_wrapper<std::optional<ZZZ>>;
+  using ZZZConstRef     = std::reference_wrapper<const std::optional<ZZZ>>;
+
+  using MyVariant       = std::variant<
+    std::monostate,
+    FIFLFSRef,
+    FIFLFSConstRef,
+    FIFLFSRef2,
+    FIFLFSConstRef2,
+    ZZZRef,
+    ZZZConstRef>;
+
+  using iterator_category = std::random_access_iterator_tag;
+  using value_type        = MyVariant;
+  using difference_type   = std::ptrdiff_t;
+  // using pointer           = const value_type *;
+  // using reference         = const value_type &;
+  ArchiveIterator()       = default;
+  explicit ArchiveIterator(const Archives &in_archives) : archive_(in_archives)
+  {}
+  ArchiveTypeT
+    operator+() const
+  {
+    return static_cast<ArchiveTypeT>(index_);
+  }
+  value_type
+    operator*() const
+  {
+    return archive_.get().get(operator+());
+  }
+
+  ArchiveIterator &
+    operator++()
+  {
+    operator+=(1);
+    return *this;
+  }
+
+  ArchiveIterator
+    operator++(int)
+  {
+    ArchiveIterator it(*this);
+                    operator+=(1);
+    return it;
+  }
+
+  ArchiveIterator &
+    operator--()
+  {
+    operator+=(-1);
+    return *this;
+  }
+
+  ArchiveIterator
+    operator--(int)
+  {
+    ArchiveIterator it(*this);
+                    operator+=(-1);
+    return it;
+  }
+
+  ArchiveIterator &
+    operator+=(difference_type n)
+  {
+    if (n >= 0) {
+      index_
+        = static_cast<std::size_t>(static_cast<difference_type>(index_) + n);
+      if (index_ >= static_cast<std::size_t>(ArchiveTypeT::count)) {
+        index_ = static_cast<std::size_t>(ArchiveTypeT::count);
+      }
+    }
+    else {
+      index_
+        = std::cmp_less(index_, -n)
+          ? 0
+          : static_cast<std::size_t>(static_cast<difference_type>(index_) + n);
+    }
+    return *this;
+  }
+
+  ArchiveIterator &
+    operator-=(difference_type n)
+  {
+    return operator+=(-n);
+  }
+
+  value_type
+    operator[](difference_type n) const
+  {
+    ArchiveIterator it(*this);
+    it += n;
+    return *it;
+  }
+
+  friend bool
+    operator==(const ArchiveIterator &lhs, const ArchiveIterator &rhs)
+  {
+    return lhs.index_ == rhs.index_;
+  }
+
+  bool
+    operator==(const ArchiveSentinel) const
+  {
+    return index_ == end_value;
+  }
+
+  friend bool
+    operator!=(const ArchiveIterator &lhs, const ArchiveIterator &rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  friend bool
+    operator<(const ArchiveIterator &lhs, const ArchiveIterator &rhs)
+  {
+    return lhs.index_ < rhs.index_;
+  }
+
+  friend bool
+    operator>(const ArchiveIterator &lhs, const ArchiveIterator &rhs)
+  {
+    return rhs < lhs;
+  }
+
+  friend bool
+    operator<=(const ArchiveIterator &lhs, const ArchiveIterator &rhs)
+  {
+    return !(lhs > rhs);
+  }
+
+  friend bool
+    operator>=(const ArchiveIterator &lhs, const ArchiveIterator &rhs)
+  {
+    return !(lhs < rhs);
+  }
+
+  friend ArchiveIterator
+    operator-(ArchiveIterator it, difference_type n)
+  {
+    return it -= n;
+  }
+
+  bool
+    operator<(const ArchiveSentinel) const
+  {
+    return index_ < end_value;
+  }
+
+  bool
+    operator<=(const ArchiveSentinel other) const
+  {
+    return *this == other || *this < other;
+  }
+
+  bool
+    operator>(const ArchiveSentinel other) const
+  {
+    return !(*this <= other);
+  }
+
+  bool
+    operator>=(const ArchiveSentinel other) const
+  {
+    return !(*this < other);
+  }
+
+  friend difference_type
+    operator-(ArchiveIterator const &lhs, ArchiveIterator const &rhs)
+  {
+    return static_cast<difference_type>(lhs.index_)
+         - static_cast<difference_type>(rhs.index_);
+  }
+  friend difference_type
+    operator-(ArchiveSentinel const, ArchiveIterator const &rhs)
+  {
+    return static_cast<difference_type>(end_value)
+         - static_cast<difference_type>(rhs.index_);
+  }
+  friend difference_type
+    operator-(ArchiveIterator const &lhs, ArchiveSentinel const)
+  {
+    return static_cast<difference_type>(lhs.index_)
+         - static_cast<difference_type>(end_value);
+  }
+
+  friend ArchiveIterator
+    operator+(ArchiveIterator it, difference_type n)
+  {
+    return it += n;
+  }
+
+  friend ArchiveIterator
+    operator+(difference_type n, ArchiveIterator it)
+  {
+    return it += n;
+  }
+
+  friend difference_type
+    operator+(ArchiveIterator const &lhs, ArchiveIterator const &rhs)
+  {
+    return static_cast<difference_type>(lhs.index_)
+         + static_cast<difference_type>(rhs.index_);
+  }
+
+private:
+  static constexpr std::size_t end_value
+    = static_cast<std::size_t>(ArchiveTypeT::zzz_other) + 1U;
+  inline static const Archives           m_tmp{};
+  std::size_t                            index_{};
+  std::reference_wrapper<const Archives> archive_{ m_tmp };
+};
+
+Archives::iterator
+  Archives::begin() const
+{
+  return ArchiveIterator(*this);
+}
+
+Archives::iterator
+  Archives::cbegin() const
+{
+  return ArchiveIterator(*this);
+}
+static_assert(std::movable<Archives>);
+static_assert(std::copyable<Archives>);
+static_assert(std::ranges::random_access_range<Archives>);
+static_assert(std::ranges::sized_range<Archives>);
+static_assert(std::movable<ArchiveIterator>);
+static_assert(std::copyable<ArchiveIterator>);
+static_assert(std::random_access_iterator<ArchiveIterator>);
+static_assert(std::sentinel_for<ArchiveSentinel, ArchiveIterator>);
+static_assert(std::sized_sentinel_for<ArchiveSentinel, ArchiveIterator>);
+// ArchiveIterator
 }// namespace open_viii::archive
 #endif// VIIIARCHIVE_ARCHIVES_HPP
