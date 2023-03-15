@@ -646,25 +646,23 @@ struct FIFLFS : public FIFLFSBase
     for_each_sans_nested(results, process);
   }
 
-  template<class lambdaT>
+  template<executable_on_pair_of_int_string lambdaT>
     requires(!HasNested)
   void
     for_each_sans_nested(
       const std::vector<std::pair<unsigned int, std::string>> &results,
       lambdaT                                                &&process) const
   {
-    static_assert(executable_on_pair_of_int_string<lambdaT>);
     std::ranges::for_each(results, process);
   }
 
-  template<class lambdaT>
+  template<executable_on_pair_of_int_string lambdaT>
     requires(HasNested)
   void
     for_each_sans_nested(
       const std::vector<std::pair<unsigned int, std::string>> &results,
       lambdaT                                                &&process) const
   {
-    static_assert(executable_on_pair_of_int_string<lambdaT>);
     std::ranges::for_each(
       results
         | std::views::filter(
@@ -811,11 +809,17 @@ public:
     return old;
   }
 
+  const std::string &
+    operator+() const
+  {
+    m_map_names[m_current_index];
+  }
+
   value_type
     operator*() const
   {
     return m_fiflfs_true.get().get_archive_with_nested(
-      { m_map_names[m_current_index] },
+      { operator+() },
       [](auto &&) {
         return true;
       });
@@ -993,10 +997,16 @@ public:
     return old;
   }
 
+  const std::pair<std::uint32_t, std::string> &
+    operator+() const
+  {
+    m_pair_id_names[m_current_index];
+  }
+
   value_type
     operator*() const
   {
-    const auto &[file_id, file_name] = m_pair_id_names[m_current_index];
+    const auto &[file_id, file_name] = operator+();
     const FI file_info = m_fiflfs_false.get().get_entry_by_index(file_id);
     return { file_name, m_fiflfs_false.get().get_entry_buffer(file_info) };
   }
