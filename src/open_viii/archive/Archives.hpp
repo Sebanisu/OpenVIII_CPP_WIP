@@ -979,14 +979,12 @@ private:
   std::reference_wrapper<const Archives> archive_{ m_tmp };
 };
 
-Archives::iterator
-  Archives::begin() const
+Archives::iterator inline Archives::begin() const
 {
   return ArchiveIterator(*this);
 }
 
-Archives::iterator
-  Archives::cbegin() const
+Archives::iterator inline Archives::cbegin() const
 {
   return ArchiveIterator(*this);
 }

@@ -1067,13 +1067,13 @@ private:
   std::size_t                                        m_current_index{};
 };
 template<bool HasNested>
-typename FIFLFS<HasNested>::iterator
+inline typename FIFLFS<HasNested>::iterator
   FIFLFS<HasNested>::begin() const
 {
   return FIFLFS_Iterator<HasNested>{ *this };
 }
 template<bool HasNested>
-typename FIFLFS<HasNested>::iterator
+inline typename FIFLFS<HasNested>::iterator
   FIFLFS<HasNested>::cbegin() const
 {
   return FIFLFS_Iterator<HasNested>{ *this };
