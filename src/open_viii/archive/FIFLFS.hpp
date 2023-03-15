@@ -465,10 +465,64 @@ struct FIFLFS : public FIFLFSBase
 
   FIFLFS(std::filesystem::path src) : FIFLFSBase(std::move(src)) {}
   FIFLFS(FIFLFSBase src) : FIFLFSBase(std::move(src)) {}
-  [[nodiscard]] std::vector<std::string>
-    map_data_from_maplist() const;
-  [[nodiscard]] std::vector<std::string>
-    map_data() const;
+
+  std::vector<std::string>
+    map_data_from_maplist() const
+    requires(!HasNested)
+  {
+    return {};
+  }
+
+  std::vector<std::string>
+    map_data_from_maplist() const
+    requires(HasNested)
+  {
+    std::vector<std::string> list{};
+    list.reserve(count());
+    FIFLFS<false> archive = get_archive_with_nested({ "mapdata" });
+    if (!archive) {
+      return list;
+    }
+    const auto raw_list
+      = archive.template get_entry_data<std::string>("maplist");
+    std::stringstream ss{ raw_list };
+    std::string       tmp{};
+    while (std::getline(ss, tmp)) {
+      while (!tmp.empty() && tmp.back() == '\r') {
+        tmp.pop_back();
+      }
+      if (!tmp.empty()) {
+        list.emplace_back(std::move(tmp));
+      }
+    }
+    return list;
+  }
+
+  std::vector<std::string>
+    map_data() const
+    requires(!HasNested)
+  {
+    return {};
+  }
+  std::vector<std::string>
+    map_data() const
+    requires(HasNested)
+  {
+    std::vector<std::string> list{};
+    const auto               items = get_all_paths_from_fl({ ".fs" });
+    list.reserve(items.size());
+    std::ignore = std::ranges::transform(
+      items,
+      std::back_inserter(list),
+      [](const auto &item) {
+        const auto fspath = std::filesystem::path(item);
+        assert(fspath.has_stem());
+        return fspath.filename().stem().string();
+      });
+    std::ranges::sort(list);
+    return list;
+  }
+
   template<class lambdaT>
   void
     for_each_sans_nested(
@@ -635,62 +689,6 @@ void
                                // We have another function for those.
         }),
     process);
-}
-
-template<>
-std::vector<std::string>
-  FIFLFS<false>::map_data_from_maplist() const
-{
-  return {};
-}
-
-template<>
-std::vector<std::string>
-  FIFLFS<true>::map_data_from_maplist() const
-{
-  std::vector<std::string> list{};
-  list.reserve(count());
-  FIFLFS<false> archive = get_archive_with_nested({ "mapdata" });
-  if (!archive) {
-    return list;
-  }
-  const auto raw_list = archive.template get_entry_data<std::string>("maplist");
-  std::stringstream ss{ raw_list };
-  std::string       tmp{};
-  while (std::getline(ss, tmp)) {
-    while (!tmp.empty() && tmp.back() == '\r') {
-      tmp.pop_back();
-    }
-    if (!tmp.empty()) {
-      list.emplace_back(std::move(tmp));
-    }
-  }
-  return list;
-}
-
-template<>
-std::vector<std::string>
-  FIFLFS<false>::map_data() const
-{
-  return {};
-}
-template<>
-std::vector<std::string>
-  FIFLFS<true>::map_data() const
-{
-  std::vector<std::string> list{};
-  const auto               items = get_all_paths_from_fl({ ".fs" });
-  list.reserve(items.size());
-  std::ignore = std::ranges::transform(
-    items,
-    std::back_inserter(list),
-    [](const auto &item) {
-      const auto fspath = std::filesystem::path(item);
-      assert(fspath.has_stem());
-      return fspath.filename().stem().string();
-    });
-  std::ranges::sort(list);
-  return list;
 }
 
 template<>
