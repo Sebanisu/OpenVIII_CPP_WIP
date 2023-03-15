@@ -12,10 +12,20 @@
       <file path="$PROJECT_DIR$/External" />
     </libraryRoots>
     <excludeRoots>
+      <file path="$PROJECT_DIR$/bin" />
       <file path="$PROJECT_DIR$/build" />
       <file path="$PROJECT_DIR$/cmake-build-debug" />
+      <file path="$PROJECT_DIR$/cmake-build-debug-visual-studio-2019" />
+      <file path="$PROJECT_DIR$/cmake-build-debug-visual-studio-2022" />
+      <file path="$PROJECT_DIR$/cmake-build-debug-wsl-clang15" />
+      <file path="$PROJECT_DIR$/cmake-build-debug-wsl-gcc11" />
       <file path="$PROJECT_DIR$/cmake-build-release" />
+      <file path="$PROJECT_DIR$/cmake-build-relwithdebinfo-visual-studio-2019" />
+      <file path="$PROJECT_DIR$/cmake-build-relwithdebinfo-visual-studio-2022" />
+      <file path="$PROJECT_DIR$/cmake-build-relwithdebinfo-wsl-clang15" />
+      <file path="$PROJECT_DIR$/cmake-build-relwithdebinfo-wsl-gcc11" />
       <file path="$PROJECT_DIR$/docs" />
+      <file path="$PROJECT_DIR$/lib" />
       <file path="$PROJECT_DIR$/out" />
       <file path="$PROJECT_DIR$/raw_docs/html" />
       <file path="$PROJECT_DIR$/raw_docs/latex" />

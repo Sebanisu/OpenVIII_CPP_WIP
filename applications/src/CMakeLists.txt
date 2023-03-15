@@ -1,292 +1,143 @@
 find_package(Threads REQUIRED)
 ##test app for trying to extract a single file from the FIFLFS archives.
+function(apply_common_operations target_name)
+    # Find required Threads package
+    find_package(Threads REQUIRED)
+
+    # Set target properties
+    set_target_properties(${PROJECT_NAME}_${target_name} PROPERTIES LINKER_LANGUAGE CXX)
+    set_target_properties(${PROJECT_NAME}_${target_name} PROPERTIES OUTPUT_NAME ${target_name})
+
+    # Link required libraries
+    target_link_libraries(${PROJECT_NAME}_${target_name}
+            PUBLIC ${PROJECT_NAME}_VIIIArchive
+            PUBLIC ${PROJECT_NAME}_VIIIPaths
+            PUBLIC ${PROJECT_NAME}_project_warnings
+            PUBLIC ToolsLibrary_tl
+            PUBLIC Threads::Threads
+            PRIVATE ${PROJECT_NAME}_VIIIGraphics
+            )
+    target_compile_features(${PROJECT_NAME}_${target_name}
+            PUBLIC cxx_std_23
+            PUBLIC cxx_std_20)
+    # Apply MSVC-specific settings if applicable
+    if (MSVC)
+        target_compile_definitions(${PROJECT_NAME}_${target_name}
+                PUBLIC _CRT_SECURE_NO_WARNINGS) # required by libpng
+        target_compile_options(${PROJECT_NAME}_${target_name} PUBLIC "/bigobj")
+        target_link_options(${PROJECT_NAME}_${target_name} PUBLIC "/PROFILE")
+    endif ()
+
+    # Set target paths
+    SET_TARGET_PATHS(${PROJECT_NAME}_${target_name})
+endfunction()
+
 add_executable(${PROJECT_NAME}_TestExtractALLSearch
         TestExtractALLSearch.hpp
         TestExtractALLSearch.cpp)
-set_target_properties(${PROJECT_NAME}_TestExtractALLSearch PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestExtractALLSearch
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestExtractALLSearch)
+apply_common_operations(TestExtractALLSearch)
 
-##Test Archives loading struct
 add_executable(${PROJECT_NAME}_TestArchives
         TestArchives.hpp TestArchives.cpp)
-set_target_properties(${PROJECT_NAME}_TestArchives PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestArchives
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestArchives)
+apply_common_operations(TestArchives)
 
-##test searching threw zzz contents and nested fi fl fs files.
 add_executable(${PROJECT_NAME}_TestSearchZZZ
         TestSearchZZZ.hpp TestSearchZZZ.cpp)
-set_target_properties(${PROJECT_NAME}_TestSearchZZZ PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestSearchZZZ
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl)
-SET_TARGET_PATHS(${PROJECT_NAME}_TestSearchZZZ)
+apply_common_operations(TestSearchZZZ)
 
-
-##test kernel.bin
 add_executable(${PROJECT_NAME}_TestKernel
         TestKernel.cpp TestKernel.hpp)
-set_target_properties(${PROJECT_NAME}_TestKernel PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestKernel
-        PRIVATE ${PROJECT_NAME}_VIIIStrings
-        PRIVATE ${PROJECT_NAME}_VIIIKernel
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestKernel)
-
+apply_common_operations(TestKernel)
 
 ##test mngrphd.bin and mngrp.bin
 add_executable(${PROJECT_NAME}_TestMenuGroup
         TestMenuGroup.cpp TestMenuGroup.hpp)
-set_target_properties(${PROJECT_NAME}_TestMenuGroup PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestMenuGroup
-        PRIVATE ${PROJECT_NAME}_VIIIStrings
-        PRIVATE ${PROJECT_NAME}_VIIIMenuGroup
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestMenuGroup)
+apply_common_operations(TestMenuGroup)
 
 ##test image texture libraries
 add_executable(${PROJECT_NAME}_TestExtractImages
         TestExtractImages.cpp TestExtractImages.hpp)
-set_target_properties(${PROJECT_NAME}_TestExtractImages PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestExtractImages
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestExtractImages)
+apply_common_operations(TestExtractImages)
 
 ##test image Deswizzle of fields like pupu
 add_executable(${PROJECT_NAME}_TestDeswizzleFields
         TestDeswizzleFields.cpp TestDeswizzleFields.hpp)
-set_target_properties(${PROJECT_NAME}_TestDeswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestDeswizzleFields
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestDeswizzleFields)
+apply_common_operations(TestDeswizzleFields)
 
 ##test image Reswizzle of fields like pupu
 add_executable(${PROJECT_NAME}_TestReswizzleFields
         TestReswizzleFields.cpp TestReswizzleFields.hpp)
-set_target_properties(${PROJECT_NAME}_TestReswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestReswizzleFields
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestReswizzleFields)
+apply_common_operations(TestReswizzleFields)
 
 ##test image ReDeswizzle of fields like pupu
 add_executable(${PROJECT_NAME}_TestReDeswizzleFields
         TestReDeswizzleFields.cpp TestReDeswizzleFields.hpp)
-set_target_properties(${PROJECT_NAME}_TestReDeswizzleFields PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestReDeswizzleFields
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestReDeswizzleFields)
-
+apply_common_operations(TestReDeswizzleFields)
 
 ##test extract all, uses new code to extract files instead of old versions.
 add_executable(${PROJECT_NAME}_TestExtractALL
         TestExtractALL.cpp TestExtractALL.hpp)
-set_target_properties(${PROJECT_NAME}_TestExtractALL PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestExtractALL
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestExtractALL)
-
+apply_common_operations(TestExtractALL)
 
 ##test extract all, uses new code to extract files instead of old versions.
 add_executable(${PROJECT_NAME}_TestExtractPAK
         TestExtractPAK.cpp TestExtractPAK.hpp)
-set_target_properties(${PROJECT_NAME}_TestExtractPAK PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestExtractPAK
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIPak
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestExtractPAK)
+apply_common_operations(TestExtractPAK)
 
 ##test battle, uses new code to extract files instead of old versions.
 add_executable(${PROJECT_NAME}_TestBattle
         TestBattle.cpp TestBattle.hpp)
-set_target_properties(${PROJECT_NAME}_TestBattle PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestBattle
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIBattle
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestBattle)
+apply_common_operations(TestBattle)
 
 ##test battle, uses new code to extract files instead of old versions.
 add_executable(${PROJECT_NAME}_TestJSM
         TestJSM.cpp TestJSM.hpp)
-set_target_properties(${PROJECT_NAME}_TestJSM PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${PROJECT_NAME}_TestJSM
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIField
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE Threads::Threads
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_TestJSM)
+apply_common_operations(TestJSM)
 
 #compress file with lz4 like ff8 would. or uncompress
 add_executable(${PROJECT_NAME}_lz4_ff8
         lz4_ff8.cpp
         lz4_lzss_common_ff8.hpp)
-set_target_properties(${PROJECT_NAME}_lz4_ff8 PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(${PROJECT_NAME}_lz4_ff8 PROPERTIES OUTPUT_NAME "lz4_ff8")
-target_link_libraries(${PROJECT_NAME}_lz4_ff8
-        PRIVATE ${PROJECT_NAME}_VIIICompression
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE Threads::Threads
-        PRIVATE ToolsLibrary_tl
-        )
+apply_common_operations(lz4_ff8)
+
 #compress file with lzss like ff8 would. or uncompress
 add_executable(${PROJECT_NAME}_lzss_ff8
         lzss_ff8.cpp
         lz4_lzss_common_ff8.hpp)
-set_target_properties(${PROJECT_NAME}_lzss_ff8 PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(${PROJECT_NAME}_lzss_ff8 PROPERTIES OUTPUT_NAME "lzss_ff8")
-target_link_libraries(${PROJECT_NAME}_lzss_ff8
-        PRIVATE ${PROJECT_NAME}_VIIICompression
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE Threads::Threads
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_lzss_ff8)
+apply_common_operations(lzss_ff8)
 
 #fiflfs files extract not nested
 add_executable(${PROJECT_NAME}_fiflfs_extract
         fiflfs_extract.cpp
         fiflfs_extract.hpp)
-set_target_properties(${PROJECT_NAME}_fiflfs_extract PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(${PROJECT_NAME}_fiflfs_extract PROPERTIES OUTPUT_NAME "fiflfs_extract")
-target_link_libraries(${PROJECT_NAME}_fiflfs_extract
-        PRIVATE ${PROJECT_NAME}_VIIICompression
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE Threads::Threads
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_fiflfs_extract)
+apply_common_operations(fiflfs_extract)
 
 #fiflfs files create not nested
 add_executable(${PROJECT_NAME}_fiflfs_create
         fiflfs_create.cpp
         fiflfs_create.hpp)
-set_target_properties(${PROJECT_NAME}_fiflfs_create PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(${PROJECT_NAME}_fiflfs_create PROPERTIES OUTPUT_NAME "fiflfs_create")
-target_link_libraries(${PROJECT_NAME}_fiflfs_create
-        PRIVATE ${PROJECT_NAME}_VIIICompression
-        PRIVATE ${PROJECT_NAME}_VIIIArchive
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE Threads::Threads
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_fiflfs_create)
+apply_common_operations(fiflfs_create)
 
 #convert tile map to csv
 add_executable(${PROJECT_NAME}_tile_map_to_csv
         tile_map_to_csv.cpp
         tile_map_to_csv.hpp)
-set_target_properties(${PROJECT_NAME}_tile_map_to_csv PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(${PROJECT_NAME}_tile_map_to_csv PROPERTIES OUTPUT_NAME "tile_map_to_csv")
-target_link_libraries(${PROJECT_NAME}_tile_map_to_csv
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE ${PROJECT_NAME}_VIIITools
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE Threads::Threads
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_tile_map_to_csv)
+apply_common_operations(tile_map_to_csv)
 
 #convert back from csv to tile map
 add_executable(${PROJECT_NAME}_tile_csv_to_map
         tile_csv_to_map.cpp
         tile_csv_to_map.hpp)
-set_target_properties(${PROJECT_NAME}_tile_csv_to_map PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(${PROJECT_NAME}_tile_csv_to_map PROPERTIES OUTPUT_NAME "tile_csv_to_map")
+apply_common_operations(tile_csv_to_map)
 target_link_libraries(${PROJECT_NAME}_tile_csv_to_map
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE ${PROJECT_NAME}_VIIITools
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE Threads::Threads
-        PRIVATE ToolsLibrary_tl
         PRIVATE ctre
         )
-if (CMAKE_BUILD_TYPE EQUAL "Debug" OR CMAKE_BUILD_TYPE EQUAL "RelWithDebInfo")
-    if (NOT MSVC)
-        target_compile_options(${PROJECT_NAME}_tile_csv_to_map
-                PRIVATE -fno-inline)
-    endif ()
-endif ()
 if (MSVC)
     target_compile_options(${PROJECT_NAME}_tile_csv_to_map
             PRIVATE /Ob0) #https://docs.microsoft.com/en-us/cpp/build/reference/ob-inline-function-expansion?view=msvc-160
 endif ()
-SET_TARGET_PATHS(${PROJECT_NAME}_tile_csv_to_map)
 
 ##test extract all, uses new code to extract files instead of old versions.
 add_executable(${PROJECT_NAME}_double_cam
         double_cam.cpp double_cam.hpp)
-set_target_properties(${PROJECT_NAME}_double_cam PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(${PROJECT_NAME}_double_cam PROPERTIES OUTPUT_NAME "double_cam")
-target_link_libraries(${PROJECT_NAME}_double_cam
-        PRIVATE ${PROJECT_NAME}_VIIIPaths
-        PRIVATE ${PROJECT_NAME}_VIIIGraphics
-        PRIVATE ${PROJECT_NAME}_VIIIPak
-        PRIVATE ${PROJECT_NAME}_project_warnings
-        PRIVATE ToolsLibrary_tl
-        )
-SET_TARGET_PATHS(${PROJECT_NAME}_double_cam)
+apply_common_operations(double_cam)

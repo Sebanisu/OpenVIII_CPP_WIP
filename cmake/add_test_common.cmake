@@ -11,6 +11,15 @@ function(add_test_common file_name)
     add_test(
             NAME ${PROJECT_NAME}_${file_name} COMMAND ${PROJECT_NAME}_${file_name}
     )
+    target_compile_features(${PROJECT_NAME}_${file_name}
+            PUBLIC cxx_std_23
+            PUBLIC cxx_std_20)
+    if (MSVC)
+        target_compile_definitions(${PROJECT_NAME}_${file_name}
+                PUBLIC _CRT_SECURE_NO_WARNINGS) # required by libpng
+        target_compile_options(${PROJECT_NAME}_${file_name} PUBLIC "/bigobj")
+        target_link_options(${PROJECT_NAME}_${file_name} PUBLIC "/PROFILE")
+    endif ()
     #    target_compile_definitions(${PROJECT_NAME}_${file_name}
     #            PRIVATE BOOST_UT_DISABLE_MODULE
     #            )
