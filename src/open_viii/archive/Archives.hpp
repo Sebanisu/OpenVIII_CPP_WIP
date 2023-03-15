@@ -763,24 +763,8 @@ inline bool
 class ArchiveIterator
 {
 public:
-  using FIFLFSRef       = std::reference_wrapper<FIFLFS<true>>;
-  using FIFLFSConstRef  = std::reference_wrapper<const FIFLFS<true>>;
-  using FIFLFSRef2      = std::reference_wrapper<FIFLFS<false>>;
-  using FIFLFSConstRef2 = std::reference_wrapper<const FIFLFS<false>>;
-  using ZZZRef          = std::reference_wrapper<std::optional<ZZZ>>;
-  using ZZZConstRef     = std::reference_wrapper<const std::optional<ZZZ>>;
-
-  using MyVariant       = std::variant<
-    std::monostate,
-    FIFLFSRef,
-    FIFLFSConstRef,
-    FIFLFSRef2,
-    FIFLFSConstRef2,
-    ZZZRef,
-    ZZZConstRef>;
-
   using iterator_category = std::random_access_iterator_tag;
-  using value_type        = MyVariant;
+  using value_type        = Archives::MyVariant;
   using difference_type   = std::ptrdiff_t;
   // using pointer           = const value_type *;
   // using reference         = const value_type &;
@@ -988,6 +972,228 @@ Archives::iterator inline Archives::cbegin() const
 {
   return ArchiveIterator(*this);
 }
+class ArchivesIteratorVisitor
+{
+  template<typename Func>
+  struct MyVariantClass
+  {
+    MyVariantClass(Func &func) : m_function(func) {}
+
+    static decltype(auto)
+      test_value()
+    {
+      if constexpr (std::invocable<Func, FIFLFS<true> &>) {
+        FIFLFS<true> tmp{};
+        return std::invoke(Func{}, tmp);
+      }
+      else if constexpr (std::invocable<Func, const FIFLFS<true> &>) {
+        const FIFLFS<true> tmp{};
+        return std::invoke(Func{}, tmp);
+      }
+      else if constexpr (std::invocable<Func, FIFLFS<false> &>) {
+        FIFLFS<false> tmp{};
+        return std::invoke(Func{}, tmp);
+      }
+      else if constexpr (std::invocable<Func, const FIFLFS<false> &>) {
+        const FIFLFS<false> tmp{};
+        return std::invoke(Func{}, tmp);
+      }
+      else if constexpr (std::invocable<Func, std::optional<ZZZ> &>) {
+        std::optional<ZZZ> tmp{};
+        return std::invoke(Func{}, tmp);
+      }
+      else if constexpr (std::invocable<Func, const std::optional<ZZZ> &>) {
+        const std::optional<ZZZ> tmp{};
+        return std::invoke(Func{}, tmp);
+      }
+      else if constexpr (std::invocable<Func, ZZZ &>) {
+        ZZZ tmp{};
+        return std::invoke(Func{}, tmp);
+      }
+      else if constexpr (std::invocable<Func, const ZZZ &>) {
+        const ZZZ tmp{};
+        return std::invoke(Func{}, tmp);
+      }
+    }
+    using return_val_t = decltype(test_value());
+
+  public:
+    // Overload for std::monostate
+    return_val_t
+      operator()(const std::monostate &) const
+    {
+      std::cout << "Got std::monostate" << std::endl;
+      if constexpr (!std::is_void_v<return_val_t>) {
+        return {};
+      }
+    }
+    return_val_t
+      operator()(Archives::FIFLFSRef) const
+      requires(!std::invocable<Func, FIFLFS<true> &>)
+    {
+      if constexpr (!std::is_void_v<return_val_t>) {
+        return {};
+      }
+    }
+    return_val_t
+      operator()(Archives::FIFLFSConstRef) const
+      requires(!std::invocable<Func, const FIFLFS<true> &>)
+    {
+      if constexpr (!std::is_void_v<return_val_t>) {
+        return {};
+      }
+    }
+    return_val_t
+      operator()(Archives::FIFLFSRef2) const
+      requires(!std::invocable<Func, FIFLFS<false> &>)
+    {
+      if constexpr (!std::is_void_v<return_val_t>) {
+        return {};
+      }
+    }
+    return_val_t
+      operator()(Archives::FIFLFSConstRef2) const
+      requires(!std::invocable<Func, const FIFLFS<false> &>)
+    {
+      if constexpr (!std::is_void_v<return_val_t>) {
+        return {};
+      }
+    }
+
+    // Overload for FIFLFSRef
+    return_val_t
+      operator()(Archives::FIFLFSRef fiflfs_ref) const
+      requires(std::invocable<Func, FIFLFS<true> &>)
+    {
+      std::cout << "Got FIFLFSRef" << std::endl;
+      // Access the underlying FIFLFS object through the reference wrapper
+      FIFLFS<true> &fiflfs = fiflfs_ref.get();
+      // Do something with the FIFLFS object...
+      return std::invoke(m_function.get(), fiflfs);
+    }
+
+    // Overload for FIFLFSConstRef
+    return_val_t
+      operator()(Archives::FIFLFSConstRef fiflfs_const_ref) const
+      requires(std::invocable<Func, const FIFLFS<true> &>)
+    {
+      std::cout << "Got FIFLFSConstRef" << std::endl;
+      // Access the underlying FIFLFS object through the reference wrapper
+      const FIFLFS<true> &fiflfs = fiflfs_const_ref.get();
+      // Do something with the FIFLFS object...
+      return std::invoke(m_function.get(), fiflfs);
+    }
+
+    // Overload for FIFLFSRef2
+    return_val_t
+      operator()(Archives::FIFLFSRef2 fiflfs_ref2) const
+      requires(std::invocable<Func, FIFLFS<false> &>)
+    {
+      std::cout << "Got FIFLFSRef2" << std::endl;
+      // Access the underlying FIFLFS object through the reference wrapper
+      FIFLFS<false> &fiflfs = fiflfs_ref2.get();
+      // Do something with the FIFLFS object...
+      return std::invoke(m_function.get(), fiflfs);
+    }
+
+    // Overload for FIFLFSConstRef2
+    return_val_t
+      operator()(Archives::FIFLFSConstRef2 fiflfs_const_ref2) const
+      requires(std::invocable<Func, const FIFLFS<false> &>)
+    {
+      std::cout << "Got FIFLFSConstRef2" << std::endl;
+      // Access the underlying FIFLFS object through the reference wrapper
+      const FIFLFS<false> &fiflfs = fiflfs_const_ref2.get();
+      // Do something with the FIFLFS object...
+      return std::invoke(m_function.get(), fiflfs);
+    }
+
+    // Overload for ZZZRef
+    return_val_t
+      operator()(Archives::ZZZRef zzz_ref) const
+    {
+      if constexpr (std::invocable<Func, std::optional<ZZZ> &>) {
+        std::cout << "Got ZZZRef" << std::endl;
+        // Access the underlying std::optional<ZZZ> object through the reference
+        // wrapper
+        std::optional<ZZZ> &zzz = zzz_ref.get();
+        // Do something with the ZZZ object...
+        return std::invoke(m_function.get(), zzz);
+      }
+      else if constexpr (std::invocable<Func, ZZZ &>) {
+        std::cout << "Got ZZZRef" << std::endl;
+        // Access the underlying std::optional<ZZZ> object through the reference
+        // wrapper
+        std::optional<ZZZ> &zzz = zzz_ref.get();
+        // Do something with the ZZZ object...
+        if (zzz) {
+          return std::invoke(m_function.get(), zzz.value());
+        }
+        if constexpr (!std::is_void_v<return_val_t>) {
+          return {};
+        }
+      }
+      else if constexpr (!std::is_void_v<return_val_t>) {
+        return {};
+      }
+    }
+
+    // Overload for ZZZConstRef
+    return_val_t
+      operator()(Archives::ZZZConstRef zzz_const_ref) const
+    {
+      if constexpr (std::invocable<Func, const std::optional<ZZZ> &>) {
+        std::cout << "Got ZZZConstRef" << std::endl;
+        // Access the underlying std::optional<ZZZ> object through the reference
+        // wrapper
+        const std::optional<ZZZ> &zzz = zzz_const_ref.get();
+        // Do something with the ZZZ object...
+        return std::invoke(m_function.get(), zzz);
+      }
+      else if constexpr (std::invocable<Func, const ZZZ &>) {
+        std::cout << "Got ZZZConstRef" << std::endl;
+        // Access the underlying std::optional<ZZZ> object through the reference
+        // wrapper
+        const std::optional<ZZZ> &zzz = zzz_const_ref.get();
+        // Do something with the ZZZ object...
+        if (zzz) {
+          return std::invoke(m_function.get(), zzz.value());
+        }
+        if constexpr (!std::is_void_v<return_val_t>) {
+          return {};
+        }
+      }
+      else if constexpr (!std::is_void_v<return_val_t>) {
+        return {};
+      }
+    }
+
+  private:
+    std::reference_wrapper<Func> m_function;
+  };
+
+public:
+  ArchivesIteratorVisitor(Archives::MyVariant in_variant)
+    : m_visit(std::move(in_variant))
+  {}
+  template<typename lambdaT>
+  decltype(auto)
+    operator()(lambdaT &&lambda)
+  {
+    return std::visit(MyVariantClass(lambda), m_visit);
+  }
+
+  template<typename lambdaT>
+  decltype(auto)
+    operator()(lambdaT &&lambda) const
+  {
+    return std::visit(MyVariantClass(lambda), m_visit);
+  }
+
+private:
+  Archives::MyVariant m_visit{};
+};
+
 static_assert(std::movable<Archives>);
 static_assert(std::copyable<Archives>);
 static_assert(std::ranges::random_access_range<Archives>);

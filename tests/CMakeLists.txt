@@ -22,6 +22,11 @@ target_link_libraries(${PROJECT_NAME}_FileData
         PRIVATE ${PROJECT_NAME}_VIIIArchive
         )
 
+add_test_common(ArchiveRange)
+target_link_libraries(${PROJECT_NAME}_ArchiveRange
+        PRIVATE ${PROJECT_NAME}_VIIIArchive
+        )
+
 add_test_common(BackgroundTiles)
 target_link_libraries(${PROJECT_NAME}_BackgroundTiles
         PRIVATE ${PROJECT_NAME}_VIIIGraphics
