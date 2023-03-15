@@ -812,7 +812,7 @@ public:
   const std::string &
     operator+() const
   {
-    m_map_names[m_current_index];
+    return m_map_names[m_current_index];
   }
 
   value_type
@@ -1000,7 +1000,7 @@ public:
   const std::pair<std::uint32_t, std::string> &
     operator+() const
   {
-    m_pair_id_names[m_current_index];
+    return m_pair_id_names[m_current_index];
   }
 
   value_type
