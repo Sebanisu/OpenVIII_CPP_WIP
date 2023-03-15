@@ -69,74 +69,34 @@ enum class TryAddT
   added_to_archive,
   archive_full
 };
-template<bool HasNested>
-struct FIFLFS
+class FIFLFSBase
 {
-private:
-  Grouping<std::vector<char>>       m_fi{};
-  Grouping<std::vector<char>>       m_fs{};
+protected:
+  Grouping<std::vector<char>> m_fi{};
+  Grouping<std::vector<char>> m_fs{};
   // this is char because the file contains strings.
-  Grouping<std::basic_string<char>> m_fl{};
-  size_t                            m_count{};
+  Grouping<std::string>       m_fl{};
+  std::size_t                 m_count{};
   void
     get_count() noexcept
   {
     m_count = FI::get_count(m_fi.size());
   }
 
-public:
-  [[maybe_unused]] [[nodiscard]] constexpr auto
-    count() const noexcept
-  {
-    return m_count;
-  }
-  [[maybe_unused]] [[nodiscard]] const auto &
-    fi() const noexcept
-  {
-    return m_fi;
-  }
-  [[maybe_unused]] [[nodiscard]] const auto &
-    fs() const noexcept
-  {
-    return m_fs;
-  }
-  [[maybe_unused]] [[nodiscard]] const auto &
-    fl() const noexcept
-  {
-    return m_fl;
-  }
-  [[nodiscard]] bool
-    all_set() const
-  {
-    return m_fi && m_fs && m_fl;
-  }
-  // Default constructor
-  FIFLFS() = default;
-  //  // Copy constructor
-  //  FIFLFS(const FIFLFS &other)     = default;
-  //
-  //  // Move constructor
-  //  FIFLFS(FIFLFS &&other) noexcept = default;
-  //
-  //  // Copy assignment operator
-  //  FIFLFS &
-  //    operator=(const FIFLFS &other)
-  //    = default;
-  //
-  //  // Move assignment operator
-  //  FIFLFS &
-  //    operator=(FIFLFS &&other) noexcept
-  //    = default;
-  //
-  //  // Destructor
-  ////  ~FIFLFS() noexcept = default;
+  static constexpr auto default_filter_lambda = [](auto &&) {
+    return true;
+  };
 
-  FIFLFS(std::filesystem::path src)
+public:
+  // Default constructor
+  FIFLFSBase() = default;
+
+  FIFLFSBase(std::filesystem::path src)
   {
+    assert(src.has_parent_path());
+    assert(src.has_stem());
     const auto parent_path = src.parent_path();
-    // std::cout << "Parent Path: " << parent_path << std::endl;
     const auto stem        = src.stem().string();
-    // std::cout << "Archive Name: " << stem << std::endl;
     open_viii::tools::execute_on_directory(
       parent_path,
       { stem },
@@ -167,6 +127,68 @@ public:
         }
       });
   }
+
+  template<FI_Like fiT>
+  [[nodiscard]] TryAddT
+    try_add(
+      fiT                          fi_like,
+      const std::filesystem::path &parent_path,
+      const std::filesystem::path &child_path)
+  {
+    switch (check_extension(child_path)) {
+    case fiflfsT::none:
+      return TryAddT::not_part_of_archive;
+    case fiflfsT::fi:
+      m_fi = decltype(m_fi)(fi_like, parent_path, child_path);
+      get_count();
+      break;
+    case fiflfsT::fl:
+      m_fl = decltype(m_fl)(fi_like, parent_path, child_path);
+      break;
+    case fiflfsT::fs:
+      m_fs = decltype(m_fs)(fi_like, parent_path, child_path);
+      break;
+    }
+    return all_set() ? TryAddT::archive_full : TryAddT::added_to_archive;
+  }
+  fiflfsT static check_extension(const std::filesystem::path &path)
+  {
+    return static_cast<fiflfsT>(tools::i_ends_with_any_get_offset(
+      path.string(),
+      std::array{ open_viii::archive::fl::EXT,
+                  open_viii::archive::FS::EXT,
+                  open_viii::archive::FI::EXT }));
+  }
+  [[maybe_unused]] [[nodiscard]] constexpr std::size_t
+    count() const noexcept
+  {
+    return m_count;
+  }
+  [[maybe_unused]] [[nodiscard]] const Grouping<std::vector<char>> &
+    fi() const noexcept
+  {
+    return m_fi;
+  }
+  [[maybe_unused]] [[nodiscard]] const Grouping<std::vector<char>> &
+    fs() const noexcept
+  {
+    return m_fs;
+  }
+  [[maybe_unused]] [[nodiscard]] const Grouping<std::string> &
+    fl() const noexcept
+  {
+    return m_fl;
+  }
+  [[nodiscard]] bool
+    all_set() const noexcept
+  {
+    return m_fi && m_fs && m_fl;
+  }
+  explicit operator bool() const noexcept
+  {
+    return all_set();
+  }
+
   template<std::unsigned_integral T>
   [[nodiscard]] archive::FI
     get_entry_by_index(const T id) const
@@ -182,10 +204,6 @@ public:
       // return archive::FI(m_fi.path(), id, m_fi.offset());
     }
     return {};
-  }
-  explicit operator bool() const noexcept
-  {
-    return all_set();
   }
   /**
    * Try and Add Nested data. There are 3 parts to an archive so it this
@@ -246,14 +264,6 @@ public:
       return FS::get_entry<dstT>(m_fs.path(), fi, m_fs.offset());
     }
   }
-  auto static check_extension(const std::filesystem::path &path)
-  {
-    return static_cast<fiflfsT>(tools::i_ends_with_any_get_offset(
-      path.string(),
-      std::array{ open_viii::archive::fl::EXT,
-                  open_viii::archive::FS::EXT,
-                  open_viii::archive::FI::EXT }));
-  }
   void
     compare_base_names() const
   {
@@ -293,10 +303,12 @@ public:
       exit(EXIT_FAILURE);
     }
   }
-  [[nodiscard]] std::string
+  [[nodiscard]] std::string_view
     get_base_name() const
   {
-    for (const auto &path : { m_fi.base(), m_fl.base(), m_fs.base() }) {
+    for (const auto &path : { std::string_view{ m_fi.base() },
+                              std::string_view{ m_fl.base() },
+                              std::string_view{ m_fs.base() } }) {
       if (!std::ranges::empty(path)) {
         return path;
       }
@@ -320,11 +332,6 @@ public:
         m_fs.offset());
     }();
   }
-  [[nodiscard]] std::string
-    get_full_path(const std::string_view &filename) const
-  {
-    return get_entry_id_and_path(filename).second;
-  }
   [[nodiscard]] auto
     get_entry_id_and_path(const std::string_view &filename) const
   {
@@ -343,6 +350,11 @@ public:
       m_fl.offset(),
       m_fl.size(),
       m_count);
+  }
+  [[nodiscard]] std::string
+    get_full_path(const std::string_view &filename) const
+  {
+    return get_entry_id_and_path(filename).second;
   }
   template<std::ranges::contiguous_range outT = std::vector<char>>
   [[nodiscard]] outT
@@ -395,30 +407,165 @@ public:
       m_count,
       filename);
   }
-  template<executable_on_pair_of_int_string lambdaT>
+
+  auto
+    fill_archive_lambda(FIFLFSBase &archive) const
+  {
+    return [this, &archive](const auto &item) -> bool {
+      const auto &[id, strVirtualPath] = item;
+      const FI_Like auto    fi         = get_entry_by_index(id);
+      std::filesystem::path virtualPath(strVirtualPath);
+      const TryAddT         retVal = [&]() {
+        if (fi.compression_type() == CompressionTypeT::none) {
+          return archive.try_add(
+            FileData(
+              static_cast<unsigned long>(m_fs.offset() + fi.offset()),
+              fi.uncompressed_size()),
+            m_fs.path(),
+            virtualPath);
+        }
+        return archive
+          .try_add_nested(m_fs.path(), m_fs.offset(), virtualPath, fi);
+      }();
+      return retVal == TryAddT::archive_full;
+    };
+  }
+  std::vector<std::string>
+    get_all_paths_from_fl(
+      const std::initializer_list<std::string_view> &filename) const
+  {
+    return archive::fl::get_all_entry_strings(
+      m_fl.path(),
+      m_fl.data(),
+      m_fl.offset(),
+      m_fl.size(),
+      m_count,
+      filename);
+  }
+  std::vector<std::pair<std::uint32_t, std::string>>
+    get_all_pairs_from_fl(
+      const std::initializer_list<std::string_view> &filename) const
+  {
+    return archive::fl::get_all_entries(
+      m_fl.path(),
+      m_fl.data(),
+      m_fl.offset(),
+      m_fl.size(),
+      m_count,
+      filename);
+  }
+};
+template<bool HasNested>
+struct FIFLFS : public FIFLFSBase
+{
+  using iterator = FIFLFS_Iterator<HasNested>;
+
+  // Default constructor
+  FIFLFS()       = default;
+
+  FIFLFS(std::filesystem::path src) : FIFLFSBase(std::move(src)) {}
+  FIFLFS(FIFLFSBase src) : FIFLFSBase(std::move(src)) {}
+  [[nodiscard]] std::vector<std::string>
+    map_data_from_maplist() const;
+  [[nodiscard]] std::vector<std::string>
+    map_data() const;
+  template<class lambdaT>
   void
     for_each_sans_nested(
       const std::vector<std::pair<unsigned int, std::string>> &results,
-      lambdaT                                                &&process) const
+      lambdaT                                                &&process) const;
+
+  template<
+    executable_common_sans_nested lambdaT,
+    filter_paths                  filterT = decltype(default_filter_lambda)>
+    requires(HasNested)
+  void
+    execute_with_nested(
+      const std::initializer_list<std::string_view> &filename,
+      lambdaT                                      &&lambda,
+      const std::initializer_list<std::string_view> &nested_filename = {},
+      filterT                                      &&filter_lambda   = {},
+      bool                                           limit_once = false) const
   {
-    if constexpr (HasNested) {
-      std::ranges::for_each(
-        results
-          | std::views::filter(
-            [](const std::pair<unsigned int, std::string> &pair) -> bool {
-              return check_extension(pair.second)
-                  == fiflfsT::none;// prevent from running on nested archives.
-                                   // We have another function for those.
-            }),
-        process);
-    }
+    FIFLFS<false> archive = {};
+    const auto    items   = get_all_pairs_from_fl(filename);
+    const auto    pFunction
+      = [&lambda, &nested_filename, &archive, this, &filter_lambda](
+          const auto &item) -> bool {
+      if (filter_lambda(item.second) && fill_archive_lambda(archive)(item)) {
+        archive.execute_on(nested_filename, lambda, filter_lambda);
+        archive = {};
+        return true;
+      }
+      return false;
+    };
+    if (!limit_once)
+      std::ranges::for_each(items, pFunction);
     else {
-      std::ranges::for_each(results, process);
+      std::ignore = std::ranges::any_of(items, pFunction);
     }
   }
-  static constexpr auto default_filter_lambda = [](auto &&) {
-    return true;
-  };
+
+  template<
+    executable_fiflfs_sans_nested lambdaT,
+    filter_paths                  filterT = decltype(default_filter_lambda)>
+    requires(HasNested)
+  void
+    execute_with_nested(
+      const std::initializer_list<std::string_view> &filename,
+      lambdaT                                      &&lambda,
+      [[maybe_unused]] const std::initializer_list<std::string_view>
+        &nested_filename
+      = {},
+      filterT &&filter_lambda = {},
+      bool      limit_once    = false) const
+  {
+    FIFLFS<false> archive = {};
+    const auto    items   = get_all_pairs_from_fl(filename);
+    const auto    pFunction
+      = [&lambda, &archive, this, &filter_lambda](const auto &item) -> bool {
+      if (filter_lambda(item.second) && fill_archive_lambda(archive)(item)) {
+        lambda(std::move(archive));
+        archive = {};
+        return true;
+      }
+      return false;
+    };
+    if (!limit_once)
+      std::ranges::for_each(items, pFunction);
+    else {
+      std::ignore = std::ranges::any_of(items, pFunction);
+    }
+  }
+
+  template<typename lambdaT, typename filterT = decltype(default_filter_lambda)>
+    requires(!HasNested)
+  void
+    execute_with_nested(
+      [[maybe_unused]] const std::initializer_list<std::string_view> &filename,
+      [[maybe_unused]] lambdaT                                      &&lambda,
+      [[maybe_unused]] const std::initializer_list<std::string_view>
+        &nested_filename
+      = {},
+      [[maybe_unused]] filterT &&filter_lambda = {},
+      [[maybe_unused]] bool      limit_once    = false) const
+  {
+    return;
+  }
+
+  template<filter_paths filterT = decltype(default_filter_lambda)>
+  auto
+    get_archive_with_nested(
+      const std::initializer_list<std::string_view> &filename,
+      filterT                                      &&filter_lambda = {}) const
+  {
+    FIFLFS<false> archive = {};
+    const auto    items   = get_all_pairs_from_fl(filename);
+    std::ignore           = std::ranges::any_of(items, [&](const auto &item) {
+      return filter_lambda(item.second) && fill_archive_lambda(archive)(item);
+    });
+    return archive;
+  }
   template<
     executable_common_sans_nested lambdaT,
     filter_paths                  filterT = decltype(default_filter_lambda)>
@@ -444,189 +591,6 @@ public:
     };
     for_each_sans_nested(results, process);
   }
-  [[nodiscard]] std::vector<std::string>
-    map_data_classic() const
-  {
-    if constexpr (!HasNested) {
-      return {};
-    }
-    else {
-      std::vector<std::string> list{};
-      FIFLFS<false>            archive = {};
-      const auto               items   = get_all_items_from_fl({ "mapdata" });
-      std::ignore
-        = std::ranges::any_of(items, [&archive, this, &list](const auto &item) {
-            if (fill_archive_lambda(archive)(item)) {
-              const auto raw_list
-                = archive.template get_entry_data<std::string>("maplist");
-              // archive::fl::get_all_entries(raw_list,0,0,0)
-              std::stringstream ss{ raw_list };
-              std::string       tmp{};
-              while (std::getline(ss, tmp)) {
-                while (!tmp.empty() && tmp.back() == '\r') {
-                  tmp.pop_back();
-                }
-                if (!tmp.empty()) {
-                  list.emplace_back(std::move(tmp));
-                }
-              }
-              return true;
-            }
-            return false;
-          });
-      return list;
-    }
-  }
-  [[nodiscard]] std::vector<std::string>
-    map_data() const
-  {
-    if constexpr (!HasNested) {
-      return {};
-    }
-    else {
-      std::vector<std::string> list{};
-      const auto               items = get_all_items_from_fl({ ".fs" });
-      (void)std::transform(
-        items.cbegin(),
-        items.cend(),
-        std::back_inserter(list),
-        [](const auto &item) {
-          auto fspath = std::filesystem::path(item.second);
-          return fspath.filename().stem().string();
-        });
-      std::sort(list.begin(), list.end());
-      return list;
-    }
-  }
-
-  auto
-    fill_archive_lambda(FIFLFS<false> &archive) const
-  {
-    return [this, &archive](const auto &item) -> bool {
-      const auto &[id, strVirtualPath] = item;
-      const FI_Like auto    fi         = get_entry_by_index(id);
-      std::filesystem::path virtualPath(strVirtualPath);
-      const TryAddT         retVal = [&]() {
-        if (fi.compression_type() == CompressionTypeT::none) {
-          return archive.try_add(
-            FileData(
-              static_cast<unsigned long>(m_fs.offset() + fi.offset()),
-              fi.uncompressed_size()),
-            m_fs.path(),
-            virtualPath);
-        }
-        return archive
-          .try_add_nested(m_fs.path(), m_fs.offset(), virtualPath, fi);
-      }();
-      return retVal == TryAddT::archive_full;
-    };
-  }
-  auto
-    get_all_items_from_fl(
-      const std::initializer_list<std::string_view> &filename) const
-  {
-    return archive::fl::get_all_entries(
-      m_fl.path(),
-      m_fl.data(),
-      m_fl.offset(),
-      m_fl.size(),
-      m_count,
-      filename);
-  }
-
-  template<filter_paths filterT = decltype(default_filter_lambda)>
-  auto
-    get_archive_with_nested(
-      const std::initializer_list<std::string_view> &filename,
-      filterT                                      &&filter_lambda = {}) const
-  {
-    FIFLFS<false> archive = {};
-    const auto    items   = get_all_items_from_fl(filename);
-    std::ignore           = std::ranges::any_of(items, [&](const auto &item) {
-      return filter_lambda(item.second) && fill_archive_lambda(archive)(item);
-    });
-    return archive;
-  }
-
-  template<
-    executable_common_nested lambdaT,
-    filter_paths             filterT = decltype(default_filter_lambda)>
-  void
-    execute_with_nested(
-      const std::initializer_list<std::string_view> &filename,
-      lambdaT                                      &&lambda,
-      const std::initializer_list<std::string_view> &nested_filename = {},
-      filterT                                      &&filter_lambda   = {},
-      bool                                           limit_once = false) const
-  {
-    if constexpr (!HasNested) {
-      return;
-    }
-    else {
-      FIFLFS<false> archive = {};
-      const auto    items   = get_all_items_from_fl(filename);
-      if constexpr (executable_common_sans_nested<lambdaT>) {
-        const auto pFunction
-          = [&lambda, &nested_filename, &archive, this, &filter_lambda](
-              const auto &item) -> bool {
-          if (
-            filter_lambda(item.second) && fill_archive_lambda(archive)(item)) {
-            archive.execute_on(nested_filename, lambda, filter_lambda);
-            archive = {};
-            return true;
-          }
-          return false;
-        };
-        if (!limit_once)
-          std::ranges::for_each(items, pFunction);
-        else {
-          std::ignore = std::ranges::any_of(items, pFunction);
-        }
-      }
-      else if constexpr (executable_fiflfs_sans_nested<lambdaT>) {
-        const auto pFunction =
-          [&lambda, &archive, this, &filter_lambda](const auto &item) -> bool {
-          if (
-            filter_lambda(item.second) && fill_archive_lambda(archive)(item)) {
-            lambda(std::move(archive));
-            archive = {};
-            return true;
-          }
-          return false;
-        };
-        if (!limit_once)
-          std::ranges::for_each(items, pFunction);
-        else {
-          std::ignore = std::ranges::any_of(items, pFunction);
-        }
-      }
-    }
-  }
-  template<FI_Like fiT>
-  [[nodiscard]] TryAddT
-    try_add(
-      fiT                          fi_like,
-      const std::filesystem::path &parent_path,
-      const std::filesystem::path &child_path)
-  {
-    switch (check_extension(child_path)) {
-    case fiflfsT::none:
-      return TryAddT::not_part_of_archive;
-    case fiflfsT::fi:
-      m_fi = decltype(m_fi)(fi_like, parent_path, child_path);
-      get_count();
-      break;
-    case fiflfsT::fl:
-      m_fl = decltype(m_fl)(fi_like, parent_path, child_path);
-      break;
-    case fiflfsT::fs:
-      m_fs = decltype(m_fs)(fi_like, parent_path, child_path);
-      break;
-    }
-    return all_set() ? TryAddT::archive_full : TryAddT::added_to_archive;
-  }
-  using iterator = FIFLFS_Iterator<HasNested>;
-
   iterator
     begin() const;
   iterator
@@ -642,6 +606,92 @@ public:
     return {};
   }
 };
+
+template<>
+template<class lambdaT>
+void
+  FIFLFS<false>::for_each_sans_nested(
+    const std::vector<std::pair<unsigned int, std::string>> &results,
+    lambdaT                                                &&process) const
+{
+  static_assert(executable_on_pair_of_int_string<lambdaT>);
+  std::ranges::for_each(results, process);
+}
+
+template<>
+template<class lambdaT>
+void
+  FIFLFS<true>::for_each_sans_nested(
+    const std::vector<std::pair<unsigned int, std::string>> &results,
+    lambdaT                                                &&process) const
+{
+  static_assert(executable_on_pair_of_int_string<lambdaT>);
+  std::ranges::for_each(
+    results
+      | std::views::filter(
+        [](const std::pair<unsigned int, std::string> &pair) -> bool {
+          return check_extension(pair.second)
+              == fiflfsT::none;// prevent from running on nested archives.
+                               // We have another function for those.
+        }),
+    process);
+}
+
+template<>
+std::vector<std::string>
+  FIFLFS<false>::map_data_from_maplist() const
+{
+  return {};
+}
+
+template<>
+std::vector<std::string>
+  FIFLFS<true>::map_data_from_maplist() const
+{
+  std::vector<std::string> list{};
+  list.reserve(count());
+  FIFLFS<false> archive = get_archive_with_nested({ "mapdata" });
+  if (!archive) {
+    return list;
+  }
+  const auto raw_list = archive.template get_entry_data<std::string>("maplist");
+  std::stringstream ss{ raw_list };
+  std::string       tmp{};
+  while (std::getline(ss, tmp)) {
+    while (!tmp.empty() && tmp.back() == '\r') {
+      tmp.pop_back();
+    }
+    if (!tmp.empty()) {
+      list.emplace_back(std::move(tmp));
+    }
+  }
+  return list;
+}
+
+template<>
+std::vector<std::string>
+  FIFLFS<false>::map_data() const
+{
+  return {};
+}
+template<>
+std::vector<std::string>
+  FIFLFS<true>::map_data() const
+{
+  std::vector<std::string> list{};
+  const auto               items = get_all_paths_from_fl({ ".fs" });
+  list.reserve(items.size());
+  std::ignore = std::ranges::transform(
+    items,
+    std::back_inserter(list),
+    [](const auto &item) {
+      const auto fspath = std::filesystem::path(item);
+      assert(fspath.has_stem());
+      return fspath.filename().stem().string();
+    });
+  std::ranges::sort(list);
+  return list;
+}
 
 template<>
 class FIFLFS_Iterator<true>
@@ -841,7 +891,7 @@ public:
     const open_viii::archive::FIFLFS<false> &archive,
     std::size_t                              index = 0)
     : m_fiflfs_false(archive),
-      m_pair_id_names(m_fiflfs_false.get().get_all_items_from_fl({})),
+      m_pair_id_names(m_fiflfs_false.get().get_all_pairs_from_fl({})),
       m_current_index(index)
   {}
   bool

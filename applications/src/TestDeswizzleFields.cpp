@@ -21,10 +21,10 @@ int
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    static constexpr auto coo = open_viii::LangT::en;
-    const auto            archives
-      = open_viii::archive::Archives(path,
-                                     open_viii::LangCommon::to_string<coo>());
+    static constexpr auto coo      = open_viii::LangT::en;
+    const auto            archives = open_viii::archive::Archives(
+      path,
+      open_viii::LangCommon::to_string<coo>());
     if (!static_cast<bool>(archives)) {
       std::cerr << "Failed to load path: " << path.string() << '\n';
       return;
@@ -35,11 +35,13 @@ int
       field.execute_with_nested(
         {},
         [](const open_viii::archive::FIFLFS<false> &e) {
-          const std::string &basename = e.get_base_name();
-          const std::string  mim_name
-            = basename + open_viii::graphics::background::Mim::EXT.data();
-          const std::string map_name
-            = basename + open_viii::graphics::background::Map::EXT.data();
+          const std::string_view basename = e.get_base_name();
+          const auto             mim_name
+            = std::string{ basename }
+            + open_viii::graphics::background::Mim::EXT.data();
+          const auto map_name
+            = std::string{ basename }
+            + open_viii::graphics::background::Map::EXT.data();
           auto mim
             = open_viii::graphics::background::Mim{ e.get_entry_data(mim_name),
                                                     basename };

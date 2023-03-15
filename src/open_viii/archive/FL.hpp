@@ -136,6 +136,107 @@ inline void
 }
 
 /**
+ * Eagerly populate a vector with strings of paths, then sort it.
+ * @param cont wrapper on istream or span. For the source data.
+ * @param offset to start of data.
+ * @param size + offset is the end of the data.
+ * @param count max count detected from FI filesize / 12U.
+ * @param needle set of strings to search for.
+ * @param limit manually set max count.
+ * @note If size, limit, count are all 0 it'll read till end of file. Or till it
+ * reads an empty line.
+ * @todo make needle a predicate lambda.
+ */
+[[nodiscard]] [[maybe_unused]] inline std::vector<std::string>
+  get_all_entry_strings(
+    const tl::read::input                         &cont,
+    const size_t                                  &offset,
+    const size_t                                  &size   = 0U,
+    const size_t                                  &count  = 0U,
+    const std::initializer_list<std::string_view> &needle = {},
+    const size_t                                  &limit  = 0U)
+{
+  std::vector<std::string> vector{};
+  cont.seek(static_cast<std::intmax_t>(offset), std::ios::beg);
+  std::size_t max = (get_max)(count, limit);
+  if (max != 0U) {
+    vector.reserve(max);
+  }
+  {
+    for (; (max == 0U || std::ranges::size(vector) != max)
+           && (size == 0U || (cont.tell() < size + offset));) {
+      std::string inner_path = clean_path_string(cont.get_line());
+      if (std::ranges::empty(inner_path)) {
+        break;
+      }
+      if (!tools::i_find_any(inner_path, needle)) {
+        continue;
+      }
+
+      vector.emplace_back(std::move(inner_path));
+    }
+  }
+  std::ranges::sort(vector);
+  return vector;
+}
+
+// Get all entries from the FL file sorted and cleaned.
+[[nodiscard]] [[maybe_unused]] inline auto
+  get_all_entry_strings(
+    const std::filesystem::path                   &path,
+    const size_t                                  &offset,
+    const size_t                                  &size   = 0U,
+    const size_t                                  &count  = 0U,
+    const std::initializer_list<std::string_view> &needle = {},
+    const size_t                                  &limit  = 0U)
+{
+
+  std::vector<std::string> vector{};
+  tl::read::from_file(
+    [&](std::istream &istream) {
+      vector = get_all_entry_strings(
+        tl::read::input(&istream, true),
+        offset,
+        size,
+        count,
+        needle,
+        limit);
+    },
+    path);
+  return vector;
+}
+
+/**
+ * Get All entries sorted from file or data buffer.
+ * @param path filename path.
+ * @param data buffer of bytes.
+ * @param offset bytes from start of data to start looking.
+ * @param size of FL file if known; 0 == unlimited
+ * @param count expected number of matches; calculated from FI file size / 12; 0
+ * == unlimited
+ * @param needle possible string matches; {} == all
+ * @param limit max matches; 0 == unlimited
+ * @return matches
+ */
+[[nodiscard]] [[maybe_unused]] inline std::vector<std::string>
+  get_all_entry_strings(
+    const std::filesystem::path                   &path,
+    const std::string                             &data,
+    const std::size_t                             &offset,
+    const std::size_t                             &size   = 0U,
+    const std::size_t                             &count  = 0U,
+    const std::initializer_list<std::string_view> &needle = {},
+    const std::size_t                             &limit  = 0U)
+{
+
+  if (!std::empty(data) && data.front() != '\0') {
+    return get_all_entry_strings(data, offset, size, count, needle, limit);
+  }
+  else {}
+  return get_all_entry_strings(path, offset, size, count, needle, limit);
+}
+
+/**
  * Eagerly populate a vector with pairs of (id,path), then sort it.
  * @param cont wrapper on istream or span. For the source data.
  * @param offset to start of data.
@@ -258,8 +359,7 @@ inline void
   if (!std::empty(data) && data.front() != '\0') {
     return get_all_entries(data, offset, size, count, needle, limit);
   }
-  else {
-  }
+  else {}
   return get_all_entries(path, offset, size, count, needle, limit);
 }
 
