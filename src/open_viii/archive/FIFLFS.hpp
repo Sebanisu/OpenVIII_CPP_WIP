@@ -645,6 +645,37 @@ struct FIFLFS : public FIFLFSBase
     };
     for_each_sans_nested(results, process);
   }
+
+  template<class lambdaT>
+    requires(!HasNested)
+  void
+    for_each_sans_nested(
+      const std::vector<std::pair<unsigned int, std::string>> &results,
+      lambdaT                                                &&process) const
+  {
+    static_assert(executable_on_pair_of_int_string<lambdaT>);
+    std::ranges::for_each(results, process);
+  }
+
+  template<class lambdaT>
+    requires(HasNested)
+  void
+    for_each_sans_nested(
+      const std::vector<std::pair<unsigned int, std::string>> &results,
+      lambdaT                                                &&process) const
+  {
+    static_assert(executable_on_pair_of_int_string<lambdaT>);
+    std::ranges::for_each(
+      results
+        | std::views::filter(
+          [](const std::pair<unsigned int, std::string> &pair) -> bool {
+            return check_extension(pair.second)
+                == fiflfsT::none;// prevent from running on nested archives.
+                                 // We have another function for those.
+          }),
+      process);
+  }
+
   iterator
     begin() const;
   iterator
@@ -660,36 +691,6 @@ struct FIFLFS : public FIFLFSBase
     return {};
   }
 };
-
-template<>
-template<class lambdaT>
-void
-  FIFLFS<false>::for_each_sans_nested(
-    const std::vector<std::pair<unsigned int, std::string>> &results,
-    lambdaT                                                &&process) const
-{
-  static_assert(executable_on_pair_of_int_string<lambdaT>);
-  std::ranges::for_each(results, process);
-}
-
-template<>
-template<class lambdaT>
-void
-  FIFLFS<true>::for_each_sans_nested(
-    const std::vector<std::pair<unsigned int, std::string>> &results,
-    lambdaT                                                &&process) const
-{
-  static_assert(executable_on_pair_of_int_string<lambdaT>);
-  std::ranges::for_each(
-    results
-      | std::views::filter(
-        [](const std::pair<unsigned int, std::string> &pair) -> bool {
-          return check_extension(pair.second)
-              == fiflfsT::none;// prevent from running on nested archives.
-                               // We have another function for those.
-        }),
-    process);
-}
 
 template<>
 class FIFLFS_Iterator<true>
