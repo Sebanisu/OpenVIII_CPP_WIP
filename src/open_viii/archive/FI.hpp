@@ -38,6 +38,33 @@ private:
    */
   CompressionTypeT m_compression_type{};
 
+  static FI
+    read_from_file(
+      const std::filesystem::path &path,
+      std::ifstream::pos_type      offset)
+  {
+    std::ifstream file(path, std::ios::binary);
+    if (!file) {
+      std::cerr << ("Failed to open file: " + path.string()) << std::endl;
+      return {};
+    }
+    file.seekg(offset, std::ios::beg);
+
+    std::array<char, sizeof(FI)> offset_tmp{};
+    file.read(
+      std::ranges::data(offset_tmp),
+      static_cast<std::istream::off_type>(sizeof(FI)));
+    return std::bit_cast<FI>(offset_tmp);
+  }
+  static FI
+    read_from_memory(std::span<const char> data, std::size_t offset)
+  {
+    data = data.subspan(offset, FI::SIZE);
+    std::array<char, sizeof(FI)> offset_tmp{};
+    std::memcpy(offset_tmp.data(), data.data(), FI::SIZE);
+    return std::bit_cast<FI>(offset_tmp);
+  }
+
 public:
   /**
    * Expected size of the FI struct, used for a static assert after.
@@ -100,8 +127,8 @@ public:
    * using.
    */
   constexpr FI(
-    const unsigned int     &uncompressed_size,
-    const unsigned int     &offset,
+    const std::uint32_t    &uncompressed_size,
+    const std::uint32_t    &offset,
     const CompressionTypeT &compression_type = CompressionTypeT::none) noexcept
     : m_uncompressed_size{ uncompressed_size }, m_offset{ offset },
       m_compression_type{ compression_type }
@@ -111,10 +138,8 @@ public:
    * @param data span containing all the FI entries
    * @param offset location from start where the desired entry is.
    */
-  FI(std::span<const char> data, std::intmax_t offset)
-    : FI(tl::read::input(&data, true)
-           .seek(offset, std::ios::beg)
-           .template output<FI>())
+  FI(std::span<const char> data, std::size_t offset)
+    : FI(read_from_memory(data, offset))
   {}
   /**
    * Read FI[id] from a span at offset.
@@ -123,15 +148,18 @@ public:
    * @param offset to entry 0.
    */
   FI(std::span<const char> data, std::size_t id, std::size_t offset)
-    : FI(data, static_cast<std::intmax_t>(get_fi_entry_offset(id, offset)))
+    : FI(read_from_memory(data, get_fi_entry_offset(id, offset)))
   {}
+
   /**
    * Read FI from a path at offset.
    * @param path containing all the FI entries
    * @param offset location from start where the desired entry is.
    */
-  FI(const std::filesystem::path &path, long offset)
-    : FI(tl::read::from_file<FI>(offset, path))
+  template<typename T>
+    requires std::same_as<std::filesystem::path, std::remove_cvref_t<T>>
+  FI(const T &path, std::size_t offset)
+    : FI(read_from_file(path, static_cast<std::ifstream::off_type>(offset)))
   {}
   /**
    * Read FI[id] from a path at offset.
@@ -139,8 +167,12 @@ public:
    * @param id is the FI entry number starting at 0.
    * @param offset to entry 0.
    */
-  FI(const std::filesystem::path &path, std::size_t id, std::size_t offset)
-    : FI(path, static_cast<long>(get_fi_entry_offset(id, offset)))
+  template<typename T>
+    requires std::same_as<std::filesystem::path, std::remove_cvref_t<T>>
+  FI(const T &path, std::size_t id, std::size_t offset)
+    : FI(read_from_file(
+      path,
+      static_cast<std::ifstream::off_type>(get_fi_entry_offset(id, offset))))
   {}
   /**
    * Get count of possible entries based on file_size
@@ -157,8 +189,10 @@ public:
    * @param path to file containing the FI entries.
    * @return If path doesn't exist returns 0.
    */
+  template<typename T>
+    requires std::same_as<std::filesystem::path, std::remove_cvref<T>>
   [[maybe_unused]] [[nodiscard]] static std::size_t
-    get_count(const std::filesystem::path &path)
+    get_count(const T &path)
   {
     std::error_code ec{};
     const bool      found = std::filesystem::exists(path, ec);
@@ -205,10 +239,12 @@ public:
    * @param offset, the number of bytes to start of first FI entry
    * @return id * 12 + offset
    */
-  [[nodiscard]] static constexpr std::size_t
-    get_fi_entry_offset(const std::size_t &id, const std::size_t &offset = 0U)
+  template<std::integral T, std::integral U>
+  [[nodiscard]] static constexpr U
+    get_fi_entry_offset(T id, U offset = {})
   {
-    return (id * FI::SIZE) + offset;
+    return static_cast<U>(
+      static_cast<U>(id * static_cast<T>(FI::SIZE)) + offset);
   }
 
   [[nodiscard]] constexpr FI
@@ -251,7 +287,7 @@ inline std::ostream &
   operator<<(std::ostream &os, const FI &data)
 {
   os << '{' << data.uncompressed_size() << ", " << data.offset() << ", "
-     << static_cast<unsigned int>(data.compression_type()) << '}';
+     << static_cast<std::uint32_t>(data.compression_type()) << '}';
   return os;
 }
 }// namespace open_viii::archive
