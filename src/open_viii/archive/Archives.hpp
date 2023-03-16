@@ -168,7 +168,7 @@ private:
    * @return
    */
   template<FI_Like fiT>
-  bool
+  [[nodiscard]] TryAddT
     try_add(
       const ArchiveTypeT           archive_type,
       fiT                          fi,
@@ -181,16 +181,16 @@ private:
     assert(test_valid_archive_type_t(archive_type));
     const auto tryAddToFIFLFS = [&path, &nested_path, &fi](auto &archive) {
       TryAddT add = archive.try_add(fi, path, nested_path);
-      return add == TryAddT::added_to_archive;
+      return add;
     };
     const auto tryAddToZZZ = [&path](std::optional<ZZZ> &archive) {
       if (
         path.has_extension()
         && tools::i_equals(path.extension().string(), ZZZ::EXT)) {
         archive.emplace(path);
-        return true;
+        return TryAddT::archive_full;
       }
-      return false;
+      return TryAddT::not_part_of_archive;
     };
     switch (archive_type) {
     case ArchiveTypeT::battle:
@@ -206,7 +206,8 @@ private:
     case ArchiveTypeT::world:
       return tryAddToFIFLFS(m_world);
     case ArchiveTypeT::zzz_main: {
-      if (tryAddToZZZ(m_zzz_main)) {
+      if (const TryAddT try_add_value = tryAddToZZZ(m_zzz_main);
+          try_add_value == TryAddT::archive_full) {
         // using namespace std::string_literals;
         // using namespace std::string_view_literals;
         std::vector<std::future<void>> futures{};
@@ -221,43 +222,68 @@ private:
                                 const std::filesystem::path in_path,
                                 const ArchiveTypeT          in_test,
                                 const std::string_view      in_stem) {
-              m_zzz_main->execute_on(
-                {},
-                [&](FileData dataItem) {
-                  try_add(
-                    in_test,
-                    std::move(dataItem),
-                    in_path,
-                    dataItem.get_path_string());
-                },
-                [&](const std::string &path_string) {
-                  const auto  localPath  = std::filesystem::path(path_string);
-                  const auto &pathString = localPath.string();
-                  return !(
-                    FIFLFS<true>::check_extension(pathString) == fiflfsT::none
-                    || check_lang_path(pathString)
-                    || !(open_viii::tools::i_equals(
-                      in_stem,
-                      localPath.stem().string())));
-                });
+              for (auto item : m_zzz_main.value()) {
+                const auto &localPath = item.get_file_info().get_path();
+                if (FIFLFS<true>::check_extension(localPath) == fiflfsT::none) {
+                  continue;
+                }
+                if (check_lang_path(localPath.string())) {
+                  continue;
+                }
+                if (
+                  !localPath.has_stem()
+                  || !(open_viii::tools::i_equals(
+                    in_stem,
+                    localPath.stem().string()))) {
+                  continue;
+                }
+                if (const TryAddT fiflfs_try_add_result = try_add(
+                      in_test,
+                      std::move(item.get_file_info()),
+                      in_path,
+                      localPath);
+                    fiflfs_try_add_result == TryAddT::archive_full) {
+                  return;
+                }
+              }
+              //              m_zzz_main->execute_on(
+              //                {},
+              //                [&](FileData dataItem) {
+              //                  try_add(
+              //                    in_test,
+              //                    std::move(dataItem),
+              //                    in_path,
+              //                    dataItem.get_path_string());
+              //                },
+              //                [&](const std::string &path_string) {
+              //                  const auto  localPath  =
+              //                  std::filesystem::path(path_string); const auto
+              //                  &pathString = localPath.string(); return !(
+              //                    FIFLFS<true>::check_extension(pathString) ==
+              //                    fiflfsT::none
+              //                    || check_lang_path(pathString)
+              //                    || !(open_viii::tools::i_equals(
+              //                      in_stem,
+              //                      localPath.stem().string())));
+              //                });
             };
             futures.emplace_back(
               std::async(std::launch::async, task, path, test, stem));
             return true;
           });
         std::ranges::for_each(futures, [](std::future<void> &f) {
-          f.wait();
+          f.get();
         });
-        return true;
+        return try_add_value;
       }
-      return false;
+      return TryAddT::not_part_of_archive;
     }
     case ArchiveTypeT::zzz_other:
       return tryAddToZZZ(m_zzz_other);
     case ArchiveTypeT::count:
       break;
     }
-    return false;
+    return TryAddT::not_part_of_archive;
   }
   /**
    * Is this a valid lambda type
@@ -289,7 +315,8 @@ private:
                         << " - path: " << localPath << std::endl;
               ec.clear();
             }
-            try_add(archiveTypeT, FI(count, 0U), localPath, localPath);
+            std::ignore
+              = try_add(archiveTypeT, FI(count, 0U), localPath, localPath);
             return true;
           });
       }
