@@ -79,7 +79,7 @@ public:
     {
       return m_file_data;
     }
-    FileData
+    const FileData &
       get_file_info() const
     {
       return m_file_data;

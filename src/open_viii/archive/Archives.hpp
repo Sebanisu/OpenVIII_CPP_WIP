@@ -239,7 +239,7 @@ private:
                 }
                 if (const TryAddT fiflfs_try_add_result = try_add(
                       in_test,
-                      std::move(item.get_file_info()),
+                      item.get_file_info(),
                       in_path,
                       localPath);
                     fiflfs_try_add_result == TryAddT::archive_full) {
