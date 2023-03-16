@@ -20,12 +20,14 @@ namespace open_viii::archive {
 struct FIFLFS_sentinel
 {
 };
+class FIFLFSArchiveIterator;
+
 template<bool is_nested>
-class FIFLFS_Iterator;
-template<>
-class FIFLFS_Iterator<true>;
-template<>
-class FIFLFS_Iterator<false>;
+class FIFLFSFileIterator;
+// template<>
+// class FIFLFS_Iterator<true>;
+// template<>
+// class FIFLFS_Iterator<false>;
 template<bool HasNested = false>
 struct FIFLFS;// forward declare for concepts.
 template<typename lambdaT>
@@ -41,9 +43,9 @@ template<typename lambdaT>
 concept executable_common_sans_nested
   = executable_buffer_path<lambdaT> || executable_buffer_path_fi<lambdaT>;
 
-template<typename lambdaT>
-concept executable_common_nested = executable_common_sans_nested<lambdaT>
-                                || executable_fiflfs_sans_nested<lambdaT>;
+// template<typename lambdaT>
+// concept executable_common_nested = executable_common_sans_nested<lambdaT>
+//                                 || executable_fiflfs_sans_nested<lambdaT>;
 
 template<typename lambdaT>
 concept filter_paths = std::is_invocable_r_v<bool, lambdaT, std::string>;
@@ -458,10 +460,13 @@ public:
 template<bool HasNested>
 struct FIFLFS : public FIFLFSBase
 {
-  using iterator = FIFLFS_Iterator<HasNested>;
+  using iterator = std::conditional_t<
+    HasNested,
+    FIFLFSArchiveIterator,
+    FIFLFSFileIterator<HasNested>>;
 
   // Default constructor
-  FIFLFS()       = default;
+  FIFLFS() = default;
 
   FIFLFS(std::filesystem::path src) : FIFLFSBase(std::move(src)) {}
   FIFLFS(FIFLFSBase src) : FIFLFSBase(std::move(src)) {}
@@ -673,7 +678,13 @@ struct FIFLFS : public FIFLFSBase
           }),
       process);
   }
-
+  auto
+    file_range() const
+  {
+    return std::ranges::subrange(
+      FIFLFSFileIterator<HasNested>{ *this },
+      cend());
+  }
   iterator
     begin() const;
   iterator
@@ -689,26 +700,119 @@ struct FIFLFS : public FIFLFSBase
     return {};
   }
 };
-
-template<>
-class FIFLFS_Iterator<true>
+class FIFLFSArchiveFetcher
 {
 public:
-  using value_type        = open_viii::archive::FIFLFS<false>;
+  using value_type = FIFLFS<false>;
+  FIFLFSArchiveFetcher(
+    std::string_view    map_name,
+    const FIFLFS<true> &fiflfs_true)
+    : m_map_name(map_name), m_fiflfs_true(fiflfs_true)
+  {}
+
+  FIFLFSArchiveFetcher(const FIFLFSArchiveFetcher &other)
+    : m_map_name(other.m_map_name), m_fiflfs_true(other.m_fiflfs_true)
+  {}
+
+  FIFLFSArchiveFetcher &
+    operator=(const FIFLFSArchiveFetcher &other)
+  {
+    if (this != &other) {
+      m_map_name    = other.m_map_name;
+      m_fiflfs_true = other.m_fiflfs_true;
+    }
+    return *this;
+  }
+  operator value_type()
+  {
+    return get();
+  };
+  value_type
+    get() const
+  {
+    return m_fiflfs_true.get().get_archive_with_nested(
+      { m_map_name },
+      [](auto &&) {
+        return true;
+      });
+  }
+
+private:
+  std::string_view                           m_map_name;
+  std::reference_wrapper<const FIFLFS<true>> m_fiflfs_true;
+};
+template<bool is_nested>
+class FIFLFSFileFetcher
+{
+public:
+  using value_type = std::vector<char>;
+  FIFLFSFileFetcher(
+    std::uint32_t            file_id,
+    std::string_view         map_name,
+    const FIFLFS<is_nested> &fiflfs_false)
+    : m_file_id(file_id), m_file_name(map_name), m_fiflfs_false(fiflfs_false)
+  {}
+  FIFLFSFileFetcher(
+    const std::pair<std::uint32_t, std::string> &pair,
+    const FIFLFS<is_nested>                     &fiflfs_false)
+    : m_file_id(pair.first), m_file_name(pair.second),
+      m_fiflfs_false(fiflfs_false)
+  {}
+
+  FIFLFSFileFetcher(const FIFLFSFileFetcher &other)
+    : m_file_id(other.m_file_id), m_file_name(other.m_file_name),
+      m_fiflfs_false(other.m_fiflfs_false)
+  {}
+
+  FIFLFSFileFetcher &
+    operator=(const FIFLFSFileFetcher &other)
+  {
+    if (this != &other) {
+      m_file_id      = other.m_file_id;
+      m_file_name    = other.m_file_name;
+      m_fiflfs_false = other.m_fiflfs_false;
+    }
+    return *this;
+  }
+  operator value_type()
+  {
+    return get();
+  };
+  FI
+    get_file_info() const
+  {
+    return m_fiflfs_false.get().get_entry_by_index(m_file_id);
+  }
+  value_type
+    get() const
+  {
+    return m_fiflfs_false.get().get_entry_buffer(get_file_info());
+  }
+
+private:
+  std::uint32_t                                   m_file_id;
+  std::string_view                                m_file_name;
+  std::reference_wrapper<const FIFLFS<is_nested>> m_fiflfs_false;
+};
+
+class FIFLFSArchiveIterator
+{
+public:
+  using value_type        = FIFLFSArchiveFetcher;
   using difference_type   = std::ptrdiff_t;
-  using pointer           = open_viii::archive::FIFLFS<false> *;
-  using reference         = open_viii::archive::FIFLFS<false> &;
+  //  using pointer           = open_viii::archive::FIFLFS<false> *;
+  //  using reference         = open_viii::archive::FIFLFS<false> &;
   using iterator_category = std::random_access_iterator_tag;
-  // using const_iterator    = FIFLFS_Iterator<true>;
-  FIFLFS_Iterator()       = default;
-  FIFLFS_Iterator(
+  // using const_iterator    = FIFLFSArchiveIterator;
+  FIFLFSArchiveIterator() = default;
+  FIFLFSArchiveIterator(
     const open_viii::archive::FIFLFS<true> &archive,
     std::size_t                             index = 0)
     : m_fiflfs_true(archive), m_map_names(m_fiflfs_true.get().map_data()),
       m_current_index(index)
   {}
   bool
-    operator==(const FIFLFS_Iterator &other) const
+    operator==(const FIFLFSArchiveIterator &other) const
   {
     return &m_fiflfs_true.get() == &other.m_fiflfs_true.get()
         && m_current_index == other.m_current_index
@@ -720,7 +824,7 @@ public:
     return m_current_index == std::ranges::size(m_map_names);
   }
 
-  FIFLFS_Iterator &
+  FIFLFSArchiveIterator &
     operator+=(difference_type n)
   {
     m_current_index = static_cast<std::size_t>(
@@ -728,19 +832,19 @@ public:
     return *this;
   }
 
-  friend FIFLFS_Iterator
-    operator+(FIFLFS_Iterator it, difference_type n)
+  friend FIFLFSArchiveIterator
+    operator+(FIFLFSArchiveIterator it, difference_type n)
   {
     return it += n;
   }
 
-  friend FIFLFS_Iterator
-    operator+(difference_type n, FIFLFS_Iterator it)
+  friend FIFLFSArchiveIterator
+    operator+(difference_type n, FIFLFSArchiveIterator it)
   {
     return it += n;
   }
 
-  FIFLFS_Iterator &
+  FIFLFSArchiveIterator &
     operator-=(difference_type n)
   {
     m_current_index -= static_cast<std::size_t>(
@@ -748,27 +852,29 @@ public:
     return *this;
   }
 
-  friend FIFLFS_Iterator
-    operator-(FIFLFS_Iterator it, difference_type n)
+  friend FIFLFSArchiveIterator
+    operator-(FIFLFSArchiveIterator it, difference_type n)
   {
     return it -= n;
   }
 
   friend difference_type
-    operator-(FIFLFS_Iterator const &lhs, FIFLFS_Iterator const &rhs)
+    operator-(
+      FIFLFSArchiveIterator const &lhs,
+      FIFLFSArchiveIterator const &rhs)
   {
     return static_cast<difference_type>(lhs.m_current_index)
          - static_cast<difference_type>(rhs.m_current_index);
   }
 
   friend difference_type
-    operator-(FIFLFS_sentinel const &, FIFLFS_Iterator const &rhs)
+    operator-(FIFLFS_sentinel const &, FIFLFSArchiveIterator const &rhs)
   {
     return static_cast<difference_type>(rhs.m_map_names.size())
          - static_cast<difference_type>(rhs.m_current_index);
   }
   friend difference_type
-    operator-(FIFLFS_Iterator const &lhs, FIFLFS_sentinel const &)
+    operator-(FIFLFSArchiveIterator const &lhs, FIFLFS_sentinel const &)
   {
     return static_cast<difference_type>(lhs.m_current_index)
          - static_cast<difference_type>(lhs.m_map_names.size());
@@ -780,31 +886,31 @@ public:
     return *(*this + n);
   }
 
-  FIFLFS_Iterator &
+  FIFLFSArchiveIterator &
     operator++()
   {
     ++m_current_index;
     return *this;
   }
 
-  FIFLFS_Iterator
+  FIFLFSArchiveIterator
     operator++(int)
   {
-    FIFLFS_Iterator old = *this;
+    FIFLFSArchiveIterator old = *this;
     ++(*this);
     return old;
   }
-  FIFLFS_Iterator &
+  FIFLFSArchiveIterator &
     operator--()
   {
     --m_current_index;
     return *this;
   }
 
-  FIFLFS_Iterator
+  FIFLFSArchiveIterator
     operator--(int)
   {
-    FIFLFS_Iterator old = *this;
+    FIFLFSArchiveIterator old = *this;
     --(*this);
     return old;
   }
@@ -818,33 +924,29 @@ public:
   value_type
     operator*() const
   {
-    return m_fiflfs_true.get().get_archive_with_nested(
-      { operator+() },
-      [](auto &&) {
-        return true;
-      });
+    return { operator+(), m_fiflfs_true };
   }
   bool
-    operator<(const FIFLFS_Iterator &other) const
+    operator<(const FIFLFSArchiveIterator &other) const
   {
     return &m_fiflfs_true.get() == &other.m_fiflfs_true.get()
         && m_current_index < other.m_current_index;
   }
 
   bool
-    operator<=(const FIFLFS_Iterator &other) const
+    operator<=(const FIFLFSArchiveIterator &other) const
   {
     return *this == other || *this < other;
   }
 
   bool
-    operator>(const FIFLFS_Iterator &other) const
+    operator>(const FIFLFSArchiveIterator &other) const
   {
     return !(*this <= other);
   }
 
   bool
-    operator>=(const FIFLFS_Iterator &other) const
+    operator>=(const FIFLFSArchiveIterator &other) const
   {
     return !(*this < other);
   }
@@ -878,27 +980,25 @@ private:
   std::vector<std::string>                   m_map_names{};
   std::size_t                                m_current_index{};
 };
-template<>
-class FIFLFS_Iterator<false>
+template<bool is_nested>
+class FIFLFSFileIterator
 {
 public:
-  using value_type        = std::pair<std::string, std::vector<char>>;
+  using value_type        = FIFLFSFileFetcher<is_nested>;
   using difference_type   = std::ptrdiff_t;
-  using pointer           = std::pair<std::string, std::vector<char>> *;
-  using reference         = std::pair<std::string, std::vector<char>> &;
   using iterator_category = std::random_access_iterator_tag;
   // using const_iterator    = FIFLFS_Iterator<false>;
 
-  FIFLFS_Iterator()       = default;
-  FIFLFS_Iterator(
-    const open_viii::archive::FIFLFS<false> &archive,
-    std::size_t                              index = 0)
+  FIFLFSFileIterator()    = default;
+  FIFLFSFileIterator(
+    const open_viii::archive::FIFLFS<is_nested> &archive,
+    std::size_t                                  index = 0)
     : m_fiflfs_false(archive),
       m_pair_id_names(m_fiflfs_false.get().get_all_pairs_from_fl({})),
       m_current_index(index)
   {}
   bool
-    operator==(const FIFLFS_Iterator &other) const
+    operator==(const FIFLFSFileIterator &other) const
   {
     return &m_fiflfs_false.get() == &other.m_fiflfs_false.get()
         && m_current_index == other.m_current_index
@@ -910,7 +1010,7 @@ public:
     return m_current_index == std::ranges::size(m_pair_id_names);
   }
 
-  FIFLFS_Iterator &
+  FIFLFSFileIterator &
     operator+=(difference_type n)
   {
     m_current_index = static_cast<std::size_t>(
@@ -918,19 +1018,19 @@ public:
     return *this;
   }
 
-  friend FIFLFS_Iterator
-    operator+(FIFLFS_Iterator it, difference_type n)
+  friend FIFLFSFileIterator
+    operator+(FIFLFSFileIterator it, difference_type n)
   {
     return it += n;
   }
 
-  friend FIFLFS_Iterator
-    operator+(difference_type n, FIFLFS_Iterator it)
+  friend FIFLFSFileIterator
+    operator+(difference_type n, FIFLFSFileIterator it)
   {
     return it += n;
   }
 
-  FIFLFS_Iterator &
+  FIFLFSFileIterator &
     operator-=(difference_type n)
   {
     m_current_index = static_cast<std::size_t>(
@@ -938,26 +1038,26 @@ public:
     return *this;
   }
 
-  friend FIFLFS_Iterator
-    operator-(FIFLFS_Iterator it, difference_type n)
+  friend FIFLFSFileIterator
+    operator-(FIFLFSFileIterator it, difference_type n)
   {
     return it -= n;
   }
 
   friend difference_type
-    operator-(FIFLFS_Iterator const &lhs, FIFLFS_Iterator const &rhs)
+    operator-(FIFLFSFileIterator const &lhs, FIFLFSFileIterator const &rhs)
   {
     return static_cast<difference_type>(lhs.m_current_index)
          - static_cast<difference_type>(rhs.m_current_index);
   }
   friend difference_type
-    operator-(FIFLFS_sentinel const &, FIFLFS_Iterator const &rhs)
+    operator-(FIFLFS_sentinel const &, FIFLFSFileIterator const &rhs)
   {
     return static_cast<difference_type>(rhs.m_pair_id_names.size())
          - static_cast<difference_type>(rhs.m_current_index);
   }
   friend difference_type
-    operator-(FIFLFS_Iterator const &lhs, FIFLFS_sentinel const &)
+    operator-(FIFLFSFileIterator const &lhs, FIFLFS_sentinel const &)
   {
     return static_cast<difference_type>(lhs.m_current_index)
          - static_cast<difference_type>(lhs.m_pair_id_names.size());
@@ -968,31 +1068,31 @@ public:
     return *(*this + n);
   }
 
-  FIFLFS_Iterator &
+  FIFLFSFileIterator &
     operator++()
   {
     ++m_current_index;
     return *this;
   }
 
-  FIFLFS_Iterator
+  FIFLFSFileIterator
     operator++(int)
   {
-    FIFLFS_Iterator old = *this;
+    FIFLFSFileIterator old = *this;
     ++(*this);
     return old;
   }
-  FIFLFS_Iterator &
+  FIFLFSFileIterator &
     operator--()
   {
     --m_current_index;
     return *this;
   }
 
-  FIFLFS_Iterator
+  FIFLFSFileIterator
     operator--(int)
   {
-    FIFLFS_Iterator old = *this;
+    FIFLFSFileIterator old = *this;
     --(*this);
     return old;
   }
@@ -1006,32 +1106,30 @@ public:
   value_type
     operator*() const
   {
-    const auto &[file_id, file_name] = operator+();
-    const FI file_info = m_fiflfs_false.get().get_entry_by_index(file_id);
-    return { file_name, m_fiflfs_false.get().get_entry_buffer(file_info) };
+    return { m_pair_id_names[m_current_index], m_fiflfs_false };
   }
 
   bool
-    operator<(const FIFLFS_Iterator &other) const
+    operator<(const FIFLFSFileIterator &other) const
   {
     return &m_fiflfs_false.get() == &other.m_fiflfs_false.get()
         && m_current_index < other.m_current_index;
   }
 
   bool
-    operator<=(const FIFLFS_Iterator &other) const
+    operator<=(const FIFLFSFileIterator &other) const
   {
     return *this == other || *this < other;
   }
 
   bool
-    operator>(const FIFLFS_Iterator &other) const
+    operator>(const FIFLFSFileIterator &other) const
   {
     return !(*this <= other);
   }
 
   bool
-    operator>=(const FIFLFS_Iterator &other) const
+    operator>=(const FIFLFSFileIterator &other) const
   {
     return !(*this < other);
   }
@@ -1061,8 +1159,8 @@ public:
   }
 
 private:
-  static const inline FIFLFS<false>                  m_tmp{};
-  std::reference_wrapper<const FIFLFS<false>>        m_fiflfs_false{ m_tmp };
+  static const inline FIFLFS<is_nested>              m_tmp{};
+  std::reference_wrapper<const FIFLFS<is_nested>>    m_fiflfs_false{ m_tmp };
   std::vector<std::pair<std::uint32_t, std::string>> m_pair_id_names{};
   std::size_t                                        m_current_index{};
 };
@@ -1070,33 +1168,50 @@ template<bool HasNested>
 inline typename FIFLFS<HasNested>::iterator
   FIFLFS<HasNested>::begin() const
 {
-  return FIFLFS_Iterator<HasNested>{ *this };
+  return typename FIFLFS<HasNested>::iterator{ *this };
 }
 template<bool HasNested>
 inline typename FIFLFS<HasNested>::iterator
   FIFLFS<HasNested>::cbegin() const
 {
-  return FIFLFS_Iterator<HasNested>{ *this };
+  return typename FIFLFS<HasNested>::iterator{ *this };
 }
 
+static_assert(std::movable<FIFLFSFileFetcher<true>>);
+static_assert(std::movable<FIFLFSFileFetcher<false>>);
+static_assert(std::movable<FIFLFSArchiveFetcher>);
 static_assert(std::movable<FIFLFS<false>>);
 static_assert(std::movable<FIFLFS<true>>);
+static_assert(std::movable<FIFLFSFileIterator<false>>);
+static_assert(std::movable<FIFLFSFileIterator<true>>);
+static_assert(std::movable<FIFLFSArchiveIterator>);
+static_assert(std::copyable<FIFLFSFileFetcher<true>>);
+static_assert(std::copyable<FIFLFSFileFetcher<false>>);
+static_assert(std::copyable<FIFLFSArchiveFetcher>);
 static_assert(std::copyable<FIFLFS<false>>);
 static_assert(std::copyable<FIFLFS<true>>);
+static_assert(std::copyable<FIFLFSFileIterator<false>>);
+static_assert(std::copyable<FIFLFSFileIterator<true>>);
+static_assert(std::copyable<FIFLFSArchiveIterator>);
 static_assert(std::ranges::random_access_range<FIFLFS<false>>);
 static_assert(std::ranges::random_access_range<FIFLFS<true>>);
+static_assert(std::ranges::random_access_range<std::invoke_result_t<
+                decltype(&FIFLFS<true>::file_range),
+                const FIFLFS<true> *>>);
 static_assert(std::ranges::sized_range<FIFLFS<false>>);
 static_assert(std::ranges::sized_range<FIFLFS<true>>);
-static_assert(std::movable<FIFLFS_Iterator<false>>);
-static_assert(std::movable<FIFLFS_Iterator<true>>);
-static_assert(std::copyable<FIFLFS_Iterator<false>>);
-static_assert(std::copyable<FIFLFS_Iterator<true>>);
-static_assert(std::random_access_iterator<FIFLFS_Iterator<false>>);
-static_assert(std::random_access_iterator<FIFLFS_Iterator<true>>);
-static_assert(std::sentinel_for<FIFLFS_sentinel, FIFLFS_Iterator<false>>);
-static_assert(std::sentinel_for<FIFLFS_sentinel, FIFLFS_Iterator<true>>);
-static_assert(std::sized_sentinel_for<FIFLFS_sentinel, FIFLFS_Iterator<false>>);
-static_assert(std::sized_sentinel_for<FIFLFS_sentinel, FIFLFS_Iterator<true>>);
+static_assert(std::ranges::sized_range<std::invoke_result_t<
+                decltype(&FIFLFS<true>::file_range),
+                const FIFLFS<true> *>>);
+static_assert(std::random_access_iterator<FIFLFSFileIterator<false>>);
+static_assert(std::random_access_iterator<FIFLFSFileIterator<true>>);
+static_assert(std::random_access_iterator<FIFLFSArchiveIterator>);
+static_assert(std::sentinel_for<FIFLFS_sentinel, FIFLFSFileIterator<false>>);
+static_assert(std::sentinel_for<FIFLFS_sentinel, FIFLFSFileIterator<true>>);
+static_assert(std::sentinel_for<FIFLFS_sentinel, FIFLFSArchiveIterator>);
+static_assert(
+  std::sized_sentinel_for<FIFLFS_sentinel, FIFLFSFileIterator<false>>);
+static_assert(std::sized_sentinel_for<FIFLFS_sentinel, FIFLFSArchiveIterator>);
 
 }// namespace open_viii::archive
 #endif// !VIIIARCHIVE_FIFLFS_HPP

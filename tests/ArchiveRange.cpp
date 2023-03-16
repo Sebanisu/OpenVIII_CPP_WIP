@@ -76,7 +76,8 @@ int
             std::invoke(
               item,
               [](const FIFLFS<true> &fields) {
-                for (const auto &field : fields) {
+                for (const auto &field_fetch : fields) {
+                  const auto field = field_fetch.get();
                   std::puts(field.get_base_name().data());
                 }
                 return true;
