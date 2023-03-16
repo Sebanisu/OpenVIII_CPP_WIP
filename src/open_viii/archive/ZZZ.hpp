@@ -33,14 +33,14 @@ concept execute_zzz = execute_binary_function<T> || execute_unary_function<T>;
 
 template<typename T>
   requires std::same_as<std::filesystem::path, std::remove_cvref_t<T>>
-std::vector<char>
+inline std::vector<char>
   operator+(const open_viii::archive::FileData &dataItem, const T &path)
 {
   return FS::get_entry(path, dataItem);
 }
 template<typename T>
   requires std::same_as<std::filesystem::path, std::remove_cvref_t<T>>
-std::vector<char>
+inline std::vector<char>
   operator+(const T &path, const open_viii::archive::FileData &dataItem)
 {
   return FS::get_entry(path, dataItem);
