@@ -59,9 +59,7 @@ private:
     read_from_memory(std::span<const char> data, std::size_t offset)
   {
     data = data.subspan(offset, FI::SIZE);
-    std::array<char, sizeof(FI)> offset_tmp{};
-    std::memcpy(offset_tmp.data(), data.data(), FI::SIZE);
-    return std::bit_cast<FI>(offset_tmp);
+    return *std::bit_cast<FI *>(data.data());
   }
 
 public:
@@ -137,7 +135,7 @@ public:
    * @param data span containing all the FI entries
    * @param offset location from start where the desired entry is.
    */
-  FI(std::span<const char> data, std::size_t offset)
+  constexpr FI(std::span<const char> data, std::size_t offset)
     : FI(read_from_memory(data, offset))
   {}
   /**
@@ -146,7 +144,7 @@ public:
    * @param id is the FI entry number starting at 0.
    * @param offset to entry 0.
    */
-  FI(std::span<const char> data, std::size_t id, std::size_t offset)
+  constexpr FI(std::span<const char> data, std::size_t id, std::size_t offset)
     : FI(read_from_memory(data, get_fi_entry_offset(id, offset)))
   {}
 
@@ -274,6 +272,7 @@ public:
   }
 };
 static_assert(sizeof(FI) == FI::SIZE);
+static_assert(std::is_trivially_copyable_v<FI>);
 
 /**
  *
@@ -594,7 +593,8 @@ public:
     difference_type
       operator-(const iterator &other) const
     {
-      return (m_offset - other.m_offset) / value_size;
+      return static_cast<difference_type>(m_offset - other.m_offset)
+           / value_size;
     }
 
     iterator &
