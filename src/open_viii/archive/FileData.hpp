@@ -82,8 +82,8 @@ public:
     : FileData(tl::read::input(&fp, true))
   {}
   template<FI_Like fiT>
-  requires(!std::is_same_v<fiT, FileData>) constexpr explicit FileData(
-    const fiT &fi)
+    requires(!std::is_same_v<fiT, FileData>)
+  constexpr explicit FileData(const fiT &fi)
     : m_offset{ static_cast<decltype(m_offset)>(fi.offset()) }, m_size{
         static_cast<decltype(m_size)>(fi.uncompressed_size())
       }
@@ -95,9 +95,8 @@ public:
     }
   }
   template<FI_Like fiT>
-  requires(!std::is_same_v<fiT, FileData>) explicit FileData(
-    std::string filename,
-    const fiT  &fi)
+    requires(!std::is_same_v<fiT, FileData>)
+  explicit FileData(std::string filename, const fiT &fi)
     : m_filename(tl::string::replace_slashes(std::move(filename))),
       m_offset{ static_cast<decltype(m_offset)>(fi.offset()) }, m_size{
         static_cast<decltype(m_size)>(fi.uncompressed_size())
@@ -240,6 +239,67 @@ static void
   tl::write::append(output, string);
   tl::write::append(output, fd.offset(), fd.uncompressed_size());
 }
+
+class FileDataOutputIterator
+{
+public:
+  using iterator_category = std::output_iterator_tag;
+  using value_type        = FileData;
+  using difference_type   = std::ptrdiff_t;
+  using pointer           = void;
+  using reference         = void;
+  explicit FileDataOutputIterator(std::ostream &output_stream)
+    : m_output_stream(output_stream)
+  {}
+
+  FileDataOutputIterator &
+    operator=(const FileData &file_data)
+  {
+    // Write string_size to output stream
+    const std::uint32_t string_size
+      = static_cast<std::uint32_t>(file_data.get_path_string_view().size());
+    m_output_stream.write(
+      std::bit_cast<const char *>(&string_size),
+      sizeof(string_size));
+
+    // Write file_path to output stream
+    m_output_stream.write(
+      file_data.get_path_string_view().data(),
+      static_cast<std::streamsize>(file_data.get_path_string_view().size()));
+
+    // Write binary_offset to output stream
+    const std::uint64_t offset = file_data.offset();
+    m_output_stream.write(std::bit_cast<const char *>(&offset), sizeof(offset));
+
+    // Write binary_size to output stream
+    const std::uint32_t size = file_data.uncompressed_size();
+    m_output_stream.write(std::bit_cast<const char *>(&size), sizeof(size));
+
+    return *this;
+  }
+
+  FileDataOutputIterator &
+    operator*()
+  {
+    return *this;
+  }
+
+  FileDataOutputIterator &
+    operator++()
+  {
+    return *this;
+  }
+
+  FileDataOutputIterator &
+    operator++(int)
+  {
+    return *this;
+  }
+
+private:
+  std::ostream &m_output_stream;
+};
+
 }// namespace open_viii::archive
 
 /**
@@ -251,6 +311,7 @@ struct [[maybe_unused]] std::tuple_size<open_viii::archive::FileData>
   : std::integral_constant<size_t, 3>
 {
 };
+
 /**
  * type of 1st argument
  * @note required to structured binding support

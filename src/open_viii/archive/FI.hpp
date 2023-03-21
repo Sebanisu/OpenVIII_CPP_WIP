@@ -25,22 +25,46 @@ struct FI
 {
 private:
   /**
-   * Uncompressed Size
+   * @brief The uncompressed size of the data represented by this block.
+   *
+   * This field stores the size of the block's data after decompression. Note
+   * that the compressed size of the data is not explicitly stored and must be
+   * inferred based on other factors such as the size of the block header.
    */
   std::uint32_t    m_uncompressed_size{};
+
   /**
-   * Offset
+   * @brief The offset of the block within the compressed file.
+   *
+   * This field stores the offset in bytes from the beginning of the compressed
+   * file where this block's compressed data can be found.
    */
   std::uint32_t    m_offset{};
+
   /**
-   * Compression Type
+   * @brief The compression algorithm used to compress this block's data.
+   *
+   * This field indicates the type of compression used to compress the data in
+   * this block. The compression type is specified by a value from the
+   * `CompressionTypeT` enum, which can be one of the following:
+   * - `none` (0): no compression (uncompressed)
+   * - `lzss` (1): LZSS compression
+   * - `lz4` (2): LZ4 compression
    */
   CompressionTypeT m_compression_type{};
 
-  static FI
+  /**
+   * \brief Reads a FI object from a binary file at a given offset.
+   *
+   * \param path The path to the file to read from.
+   * \param offset The offset in bytes from the beginning of the file to read
+   * from. \return The FI object read from the file, or an empty FI object if an
+   * error occurs.
+   */
+  static auto
     read_from_file(
       const std::filesystem::path &path,
-      std::ifstream::pos_type      offset)
+      std::ifstream::pos_type      offset) -> FI
   {
     std::ifstream file(path, std::ios::binary);
     if (!file) {
@@ -49,66 +73,111 @@ private:
     }
     file.seekg(offset, std::ios::beg);
 
-    std::array<char, sizeof(FI)> offset_tmp{};
-    file.read(
-      std::ranges::data(offset_tmp),
-      static_cast<std::istream::off_type>(sizeof(FI)));
-    return std::bit_cast<FI>(offset_tmp);
+    FI fi{};
+    file >> fi;
+    return fi;
   }
-  static FI
-    read_from_memory(std::span<const char> data, std::size_t offset)
+  /**
+   * @brief Reads a fixed-size `FI` struct from a `std::span` of char data.
+   *
+   * This function takes a `std::span` of char data and reads a fixed-size `FI`
+   * struct from it, starting at the specified offset. The `data` span is first
+   * truncated to a subspan starting at the given offset and spanning `FI::SIZE`
+   * bytes. The subspan's data is then copied into a `std::array<char,
+   * FI::SIZE>` buffer using `std::ranges::copy`. Finally, the contents of the
+   * buffer are converted into an `FI` struct using `std::bit_cast`.
+   *
+   * @param data The `std::span` of char data to read from.
+   * @param offset The offset in bytes from the start of the `data` span to
+   * start reading from.
+   *
+   * @returns The `FI` struct read from the specified position in the `data`
+   * span.
+   */
+  constexpr static auto
+    read_from_memory(std::span<const char> data, std::size_t offset) -> FI
   {
     data = data.subspan(offset, FI::SIZE);
-    return *std::bit_cast<FI *>(data.data());
+    std::array<char, FI::SIZE> byte_data{};
+    std::ranges::copy(data, byte_data.begin());
+    return std::bit_cast<FI>(byte_data);
   }
 
 public:
   /**
-   * Expected size of the FI struct, used for a static assert after.
+   * @brief The size of the `FI` struct in bytes.
+   *
+   * This constant stores the expected size of the `FI` struct, in bytes. It is
+   * used in a static assertion to ensure that the size of the `FI` struct
+   * matches the expected size at compile time.
    */
-  static constexpr std::size_t SIZE = 12U;
+  static constexpr auto SIZE = std::size_t{ 12U };
+
   /**
-   * File extension for FI
+   * @brief The file extension for files containing `FI` data.
+   *
+   * This constant stores the file extension for files containing `FI` data. The
+   * extension is stored as a `std::string_view` for efficiency and ease of use.
    */
-  static constexpr auto        EXT  = std::string_view(".fi");
+  static constexpr auto EXT  = std::string_view{ ".fi" };
   /**
-   * Uncompressed size in bytes.
+   * @brief Get the uncompressed size of the data represented by this block.
+   *
+   * @return The size of the block's data after decompression, in bytes.
    */
   [[nodiscard]] constexpr auto
     uncompressed_size() const noexcept -> std::uint32_t
   {
     return m_uncompressed_size;
   }
+
   /**
-   * Offset is distance from beginning in bytes.
+   * @brief Get the offset of the block within the compressed file.
+   *
+   * @return The offset in bytes from the beginning of the compressed file where
+   * this block's compressed data can be found.
    */
   [[nodiscard]] constexpr auto
     offset() const noexcept -> std::uint32_t
   {
     return m_offset;
   }
+
   /**
-   * Compression type (uncompressed, lzss, or lz4).
+   * @brief Get the compression algorithm used to compress this block's data.
+   *
+   * @return The type of compression used to compress the data in this block, as
+   * defined by the `CompressionTypeT` enum. Possible values are `none` (for
+   * uncompressed data), `lzss`, or `lz4`.
    */
   [[nodiscard]] constexpr auto
     compression_type() const noexcept -> CompressionTypeT
   {
     return m_compression_type;
   }
+
   /**
-   * Enable default constructor.
+   * @brief Default constructor for FI object.
+   *
+   * This constructor initializes the FI object with default values.
    */
   constexpr FI() noexcept = default;
+
   /**
-   * Constructor takes a FI like object and copies the data out of it.
-   * @tparam fiT Fi Like object type
-   * @param fi Fi Like object
-   * @note There may be data loss. This object stores things as std::uint32_t.
-   * FileData object uses std::uint64_t. Also FileData has a string for file
-   * path. This doesn't store the path.
+   * @brief Constructor that takes a FI-like object and copies its data into
+   * this object.
+   *
+   * This constructor takes a FI-like object and copies its data into this FI
+   * object. The template parameter `fiT` specifies the type of the FI-like
+   * object. There may be data loss when converting the data to std::uint32_t
+   * values. Note that this object does not store the file path like the
+   * FileData object does.
+   *
+   * @tparam fiT Type of FI-like object
+   * @param fi FI-like object to copy data from
    */
   template<FI_Like fiT>
-    requires(!std::is_same_v<std::decay_t<fiT>, FI>)
+    requires(!std::is_same_v<std::remove_cvref<fiT>, FI>)
   constexpr explicit FI(const fiT &fi) noexcept
     : m_uncompressed_size{ static_cast<decltype(m_uncompressed_size)>(
       fi.uncompressed_size()) },
@@ -116,12 +185,17 @@ public:
       m_compression_type{ static_cast<decltype(m_compression_type)>(
         fi.compression_type()) }
   {}
+
   /**
-   * Piecemeal constructor takes the 3 values stored in this object.
-   * @param uncompressed_size bytes of the entry after being uncompressed.
-   * @param offset bytes from start of FS file.
-   * @param compression_type compressed or not. And which compression it's
-   * using.
+   * @brief Constructor that initializes an FI object with the given values.
+   *
+   * This constructor takes the uncompressed size, offset, and compression type
+   * of the FI object and initializes it with those values.
+   *
+   * @param uncompressed_size Bytes of the entry after being uncompressed
+   * @param offset Bytes from the start of the file system file
+   * @param compression_type Indicates whether the data is compressed or
+   * uncompressed, and which compression algorithm was used if compressed
    */
   constexpr FI(
     const std::uint32_t    &uncompressed_size,
@@ -130,28 +204,36 @@ public:
     : m_uncompressed_size{ uncompressed_size }, m_offset{ offset },
       m_compression_type{ compression_type }
   {}
+
   /**
-   * Read FI from a span at offset.
-   * @param data span containing all the FI entries
-   * @param offset location from start where the desired entry is.
+   * Construct an FI object by reading its binary representation from a span of
+   * data.
+   * @param data A span containing all the FI entries
+   * @param offset The offset from the start of the span where the desired entry
+   * is located
    */
   constexpr FI(std::span<const char> data, std::size_t offset)
     : FI(read_from_memory(data, offset))
   {}
+
   /**
-   * Read FI[id] from a span at offset.
-   * @param data span containing all the FI entries
-   * @param id is the FI entry number starting at 0.
-   * @param offset to entry 0.
+   * Construct an FI object by reading its binary representation from a span of
+   * data at a specific index.
+   * @param data A span containing all the FI entries
+   * @param id The index of the desired FI entry, starting at 0
+   * @param offset The offset from the start of the span to the beginning of the
+   * FI entries
    */
   constexpr FI(std::span<const char> data, std::size_t id, std::size_t offset)
     : FI(read_from_memory(data, get_fi_entry_offset(id, offset)))
   {}
 
   /**
-   * Read FI from a path at offset.
-   * @param path containing all the FI entries
-   * @param offset location from start where the desired entry is.
+   * Construct an FI object by reading its binary representation from a file at
+   * a specific offset.
+   * @param path The path to the file containing the FI entries
+   * @param offset The offset from the start of the file where the desired entry
+   * is located
    */
   template<typename T>
     requires std::same_as<std::filesystem::path, std::remove_cvref_t<T>>
@@ -159,10 +241,18 @@ public:
     : FI(read_from_file(path, static_cast<std::ifstream::off_type>(offset)))
   {}
   /**
-   * Read FI[id] from a path at offset.
-   * @param path containing all the FI entries
-   * @param id is the FI entry number starting at 0.
-   * @param offset to entry 0.
+   * @brief Construct an `FI` object by reading the FI[id] entry from a file at
+   * the given offset.
+   *
+   * @tparam T Type of the path parameter. Must be `std::filesystem::path`.
+   * @param path Path to the file containing the FI entries.
+   * @param id ID of the FI entry to read, starting at 0.
+   * @param offset Offset in bytes to the start of the first FI entry in the
+   * file.
+   * @note The constructed `FI` object will contain data from the specified
+   * entry in the file.
+   * @warning The file must exist and be readable, otherwise an exception will
+   * be thrown.
    */
   template<typename T>
     requires std::same_as<std::filesystem::path, std::remove_cvref_t<T>>
@@ -171,25 +261,30 @@ public:
       path,
       static_cast<std::ifstream::off_type>(get_fi_entry_offset(id, offset))))
   {}
+
   /**
-   * Get count of possible entries based on file_size
-   * @param file_size total bytes in a file.
+   * Get the count of possible entries based on the file size.
+   * @param file_size Total bytes in a file.
+   * @return The count of possible entries based on the file size.
    */
   template<std::unsigned_integral T>
   [[nodiscard]] static constexpr auto
-    get_count(const T &file_size) noexcept
+    get_count(const T &file_size) noexcept -> std::size_t
   {
     return static_cast<std::size_t>(file_size / SIZE);
   }
+
   /**
-   * Get count of possible entries based on file_size
-   * @param path to file containing the FI entries.
-   * @return If path doesn't exist returns 0.
+   * Get the count of possible entries based on the file size of a file
+   * containing the FI entries.
+   * @param path The path to the file containing the FI entries.
+   * @return The count of possible entries based on the file size. If the path
+   * does not exist, returns 0.
    */
   template<typename T>
     requires std::same_as<std::filesystem::path, std::remove_cvref<T>>
-  [[maybe_unused]] [[nodiscard]] static std::size_t
-    get_count(const T &path)
+  [[maybe_unused]] [[nodiscard]] static auto
+    get_count(const T &path) -> std::size_t
   {
     std::error_code ec{};
     const bool      found = std::filesystem::exists(path, ec);
@@ -211,30 +306,35 @@ public:
     }
     return {};
   }
-  /**
-   * gets member variables
-   * @note required to structured binding support
+  /** Get the value of the member variable at the specified index. This function
+   * is required for structured binding support.
+   * @tparam Index of the member variable to retrieve, which must be 0, 1 or 2.
+   * @return The value of the member variable at the specified index.
+   * @note This function assumes that the object is in a valid state.
    */
-  template<std::size_t I>
+  template<std::size_t Index>
   [[nodiscard]] constexpr auto
     get() const noexcept
   {
-    static_assert(I < 3);
-    if constexpr (I == 0) {
+    static_assert(Index < 3, "Index out of range");
+    if constexpr (Index == 0) {
       return m_uncompressed_size;
     }
-    else if constexpr (I == 1) {
+    else if constexpr (Index == 1) {
       return m_offset;
     }
-    else if constexpr (I == 2) {
+    else if constexpr (Index == 2) {
       return m_compression_type;
     }
   }
   /**
-   * find the offset in file where FI entry is located
-   * @param id, count from 0 to N of FI entries to skip.
-   * @param offset, the number of bytes to start of first FI entry
-   * @return id * 12 + offset
+   * Calculates the offset in the file where the FI entry is located.
+   * @tparam T an integral type to represent the ID of the FI entry.
+   * @tparam U an integral type to represent the offset from the start of the
+   * first FI entry.
+   * @param id The ID of the FI entry, counting from 0 to N.
+   * @param offset The number of bytes to start of the first FI entry.
+   * @return The offset in the file where the FI entry is located.
    */
   template<std::integral T, std::integral U>
   [[nodiscard]] static constexpr U
@@ -243,26 +343,51 @@ public:
     return static_cast<U>(
       static_cast<U>(id * static_cast<T>(FI::SIZE)) + offset);
   }
-
-  [[nodiscard]] constexpr FI
-    with_compression_type(CompressionTypeT in_compression_type)
+  /**
+   * Return a new FI object with a different compression type.
+   * @param in_compression_type The new compression type.
+   * @return A new FI object with the same uncompressed size and offset but with
+   *         the specified compression type.
+   */
+  [[nodiscard]] constexpr auto
+    with_compression_type(CompressionTypeT in_compression_type) -> FI
   {
     return FI(m_uncompressed_size, m_offset, in_compression_type);
   }
-  [[nodiscard]] constexpr FI
-    with_uncompression_size(std::uint32_t in_uncompressed_size)
+
+  /**
+   * Return a new FI object with a different uncompressed size.
+   * @param in_uncompressed_size The new uncompressed size in bytes.
+   * @return A new FI object with the specified uncompressed size and the same
+   *         offset and compression type.
+   */
+  [[nodiscard]] constexpr auto
+    with_uncompressed_size(std::uint32_t in_uncompressed_size) -> FI
   {
     return FI(in_uncompressed_size, m_offset, m_compression_type);
   }
 
-  [[nodiscard]] constexpr FI
-    with_offset(std::uint32_t in_offset_size)
+  /**
+   * Return a new FI object with a different offset.
+   * @param in_offset_size The new offset in bytes.
+   * @return A new FI object with the same uncompressed size and compression
+   * type but with the specified offset.
+   */
+  [[nodiscard]] constexpr auto
+    with_offset(std::uint32_t in_offset_size) -> FI
   {
     return FI(m_uncompressed_size, in_offset_size, m_compression_type);
   }
 
-  friend std::istream &
-    operator>>(std::istream &is, FI &fi)
+  /**
+   * Overload the stream input operator to read the binary data of a FI object
+   * from an input stream.
+   * @param is the input stream to read from.
+   * @param fi the FI object to store the read data.
+   * @return the input stream after the read operation.
+   */
+  friend auto
+    operator>>(std::istream &is, FI &fi) -> std::istream &
   {
     std::array<char, 12U> buffer{};
     if (is.read(buffer.data(), 12)) {
@@ -270,8 +395,30 @@ public:
     }
     return is;
   }
+
+  /**
+   * Dump FI entry values to an output stream.
+   *
+   * @param os Output stream value.
+   * @param data The FI entry to dump.
+   * @return Reference to the output stream.
+   */
+  friend auto
+    operator<<(std::ostream &os, const FI &data) -> std::ostream &
+  {
+    os << '{' << data.uncompressed_size() << ", " << data.offset() << ", "
+       << static_cast<std::uint32_t>(data.compression_type()) << '}';
+    return os;
+  }
 };
+/**
+ * Ensures that the size of the FI object matches its expected size.
+ */
 static_assert(sizeof(FI) == FI::SIZE);
+
+/**
+ * Ensures that the FI object is trivially copyable.
+ */
 static_assert(std::is_trivially_copyable_v<FI>);
 
 /**
@@ -286,466 +433,50 @@ inline void
 {
   tl::write::append(output, in_fi);
 }
-/**
- * Dump values to ostream.
- * @param os out stream value
- * @param data FI entry
- */
-inline std::ostream &
-  operator<<(std::ostream &os, const FI &data)
-{
-  os << '{' << data.uncompressed_size() << ", " << data.offset() << ", "
-     << static_cast<std::uint32_t>(data.compression_type()) << '}';
-  return os;
-}
-class FIFileRange
-{
-public:
-  class iterator
-  {
-  public:
-    using iterator_category = std::random_access_iterator_tag;
-    using value_type        = FI;
-    using difference_type   = std::ifstream::off_type;
-    //    using pointer           = const FI *;
-    //    using reference         = const FI &;
-    static constexpr difference_type value_size
-      = static_cast<difference_type>(sizeof(FI));
-    iterator() = default;
-    explicit iterator(std::ifstream &ifs, difference_type offset = 0)
-      : m_ifs(&ifs), m_offset(offset)
-    {}
-
-    iterator &
-      operator++()
-    {
-      m_offset += value_size;
-      return *this;
-    }
-
-    iterator
-      operator++(int)
-    {
-      iterator tmp(*this);
-      ++(*this);
-      return tmp;
-    }
-
-    iterator &
-      operator--()
-    {
-      m_offset -= value_size;
-      return *this;
-    }
-
-    iterator
-      operator--(int)
-    {
-      iterator tmp(*this);
-      --(*this);
-      return tmp;
-    }
-    iterator
-      operator+(iterator other) const
-    {
-      return iterator(*m_ifs, m_offset + other.m_offset);
-    }
-
-    iterator
-      operator+(difference_type n) const
-    {
-      return iterator(*m_ifs, m_offset + n * value_size);
-    }
-
-    iterator friend
-      operator+(difference_type n, iterator other)
-    {
-      return iterator(*other.m_ifs, other.m_offset + n * value_size);
-    }
-
-    iterator
-      operator-(difference_type n) const
-    {
-      return iterator(*m_ifs, m_offset - n * value_size);
-    }
-
-    difference_type
-      operator-(const iterator &other) const
-    {
-      return (m_offset - other.m_offset) / value_size;
-    }
-
-    iterator &
-      operator+=(difference_type n)
-    {
-      m_offset += n * value_size;
-      return *this;
-    }
-
-    iterator &
-      operator-=(difference_type n)
-    {
-      m_offset -= n * value_size;
-      return *this;
-    }
-
-    value_type
-      operator*() const
-    {
-      FI fi = {};
-      m_ifs->seekg(m_offset);
-      *m_ifs >> fi;
-      return fi;
-    }
-    //    const FI *
-    //      operator->() const
-    //    {
-    //      return &m_fi;
-    //    }
-    value_type
-      operator[](difference_type n) const
-    {
-      return *(*this + n);
-    }
-
-    bool
-      operator==(const iterator &other) const
-    {
-      return m_ifs == other.m_ifs && m_offset == other.m_offset;
-    }
-    bool
-      operator!=(const iterator &other) const
-    {
-      return !(*this == other);
-    }
-    bool
-      operator<(const iterator &other) const
-    {
-      return m_offset < other.m_offset;
-    }
-    bool
-      operator<=(const iterator &other) const
-    {
-      return m_ifs == other.m_ifs && m_offset <= other.m_offset;
-    }
-    bool
-      operator>(const iterator &other) const
-    {
-      return m_offset > other.m_offset;
-    }
-    bool
-      operator>=(const iterator &other) const
-    {
-      return m_ifs == other.m_ifs && m_offset >= other.m_offset;
-    }
-
-  private:
-    std::ifstream *m_ifs{};
-    std::streamoff m_offset{};
-  };
-
-  // The begin function returns an FIInputIterator that points to the beginning
-  // of the file
-  iterator
-    begin()
-  {
-    open();
-    return iterator(m_file_stream, m_begin);
-  }
-
-  // The end function returns an FIInputIterator that points past the end of the
-  // file
-  iterator
-    end()
-  {
-    open();
-    // We need to seek to the end of the file to get the offset
-
-    if (m_end > 0) {
-      return iterator(m_file_stream, m_end);
-    }
-    std::streamoff offset = m_file_stream.seekg(0, std::ios::end).tellg();
-    return iterator(m_file_stream, offset);
-  }
-  iterator::value_type
-    operator[](iterator::difference_type n)
-  {
-    if (!m_file_stream) {
-      open();
-    }
-    FI fi = {};
-    m_file_stream.seekg(m_begin + (n * iterator::value_size));
-    m_file_stream >> fi;
-    return fi;
-  }
-
-  FIFileRange(std::filesystem::path in_file_path)
-    : m_file_path(std::move(in_file_path))
-  {}
-
-  FIFileRange(
-    std::filesystem::path     in_file_path,
-    iterator::difference_type in_begin,
-    iterator::difference_type in_size)
-    : m_file_path(std::move(in_file_path)), m_begin(in_begin),
-      m_end(in_begin + in_size)
-  {}
-
-private:
-  void
-    open()
-  {
-    if (!m_file_stream) {
-      m_file_stream.open(m_file_path, std::ios::binary);
-    }
-  }
-  std::filesystem::path   m_file_path   = {};
-  std::ifstream           m_file_stream = {};
-  std::ifstream::off_type m_begin       = {};
-  std::ifstream::off_type m_end         = {};
-};
-static_assert(std::random_access_iterator<FIFileRange::iterator>);
-static_assert(std::ranges::random_access_range<FIFileRange>);
-class FIMemoryRange
-{
-public:
-  class iterator
-  {
-  public:
-    using iterator_category = std::random_access_iterator_tag;
-    using value_type        = FI;
-    using difference_type   = std::ptrdiff_t;
-    // using pointer           = const FI *;
-    // using reference         = const FI &;
-    static constexpr difference_type value_size
-      = static_cast<difference_type>(sizeof(FI));
-    iterator() = default;
-    explicit iterator(
-      std::span<const char> in_buffer,
-      std::size_t           in_offset = 0)
-      : m_buffer_iterator(in_buffer), m_offset(in_offset)
-    {}
-
-    iterator &
-      operator++()
-    {
-      m_offset = static_cast<std::size_t>(
-        static_cast<difference_type>(m_offset) + value_size);
-      return *this;
-    }
-
-    iterator
-      operator++(int)
-    {
-      iterator tmp(*this);
-      ++(*this);
-      return tmp;
-    }
-
-    iterator &
-      operator--()
-    {
-      m_offset = static_cast<std::size_t>(
-        static_cast<difference_type>(m_offset) - value_size);
-      return *this;
-    }
-
-    iterator
-      operator--(int)
-    {
-      iterator tmp(*this);
-      --(*this);
-      return tmp;
-    }
-    iterator
-      operator+(iterator other) const
-    {
-      return iterator(m_buffer_iterator, m_offset + other.m_offset);
-    }
-
-    iterator
-      operator+(difference_type n) const
-    {
-      return iterator(
-        m_buffer_iterator,
-        static_cast<std::size_t>(
-          static_cast<difference_type>(m_offset) + n * value_size));
-    }
-
-    iterator friend
-      operator+(difference_type n, iterator other)
-    {
-      return iterator(
-        other.m_buffer_iterator,
-        static_cast<std::size_t>(
-          static_cast<difference_type>(other.m_offset) + n * value_size));
-    }
-
-    iterator
-      operator-(difference_type n) const
-    {
-      return iterator(
-        m_buffer_iterator,
-        static_cast<std::size_t>(
-          static_cast<difference_type>(m_offset) - n * value_size));
-    }
-
-    difference_type
-      operator-(const iterator &other) const
-    {
-      return static_cast<difference_type>(m_offset - other.m_offset)
-           / value_size;
-    }
-
-    iterator &
-      operator+=(difference_type n)
-    {
-      m_offset = static_cast<std::size_t>(
-        static_cast<difference_type>(m_offset) + n * value_size);
-      return *this;
-    }
-
-    iterator &
-      operator-=(difference_type n)
-    {
-      m_offset = static_cast<std::size_t>(
-        static_cast<difference_type>(m_offset) - n * value_size);
-
-      return *this;
-    }
-
-    value_type
-      operator*() const
-    {
-      FI         fi  = {};
-      const auto tmp = m_buffer_iterator.subspan(m_offset, sizeof(FI));
-      std::memcpy(&fi, tmp.data(), tmp.size());
-      return fi;
-    }
-    //    const FI *
-    //      operator->() const
-    //    {
-    //      return &m_fi;
-    //    }
-    value_type
-      operator[](difference_type n) const
-    {
-      return *(*this + n);
-    }
-
-    bool
-      operator==(const iterator &other) const
-    {
-      return same_range(other) && m_offset == other.m_offset;
-    }
-    bool
-      operator!=(const iterator &other) const
-    {
-      return !(*this == other);
-    }
-    bool
-      operator<(const iterator &other) const
-    {
-      return m_offset < other.m_offset;
-    }
-    bool
-      operator<=(const iterator &other) const
-    {
-      return same_range(other) && m_offset <= other.m_offset;
-    }
-    bool
-      operator>(const iterator &other) const
-    {
-      return m_offset > other.m_offset;
-    }
-    bool
-      operator>=(const iterator &other) const
-    {
-      return same_range(other) && m_offset >= other.m_offset;
-    }
-
-  private:
-    bool
-      same_range(const iterator &other) const
-    {
-      // std::ranges::equal(m_buffer_iterator, other.m_buffer_iterator)
-      return m_buffer_iterator.data() == other.m_buffer_iterator.data()
-          && m_buffer_iterator.size() == other.m_buffer_iterator.size();
-    }
-    std::span<const char> m_buffer_iterator{};
-    std::size_t           m_offset{};
-    // FI             m_fi{};
-  };
-
-  iterator::value_type
-    operator[](std::size_t n) const
-  {
-    FI         fi  = {};
-    const auto tmp = m_buffer.subspan(n * sizeof(FI));
-    std::memcpy(&fi, tmp.data(), tmp.size());
-    return fi;
-  }
-  // The begin function returns an FIInputIterator that points to the beginning
-  // of the file
-  iterator
-    begin() const
-  {
-    return iterator(m_buffer);
-  }
-
-  // The end function returns an FIInputIterator that points past the end of the
-  // file
-  iterator
-    end() const
-  {
-    return iterator(m_buffer, m_buffer.size());
-  }
-
-  FIMemoryRange(std::span<const char> in_buffer)
-    : m_buffer(std::move(in_buffer))
-  {}
-
-private:
-  std::span<const char> m_buffer = {};
-};
-static_assert(std::random_access_iterator<FIMemoryRange::iterator>);
-static_assert(std::ranges::random_access_range<FIMemoryRange>);
 
 }// namespace open_viii::archive
 /**
- * define number of arguments
- * @note required to structured binding support
+ * @brief Defines the number of arguments for structured bindings support
+ *
+ * @note Required for structured bindings support
  */
 template<>
 struct [[maybe_unused]] std::tuple_size<open_viii::archive::FI>
   : std::integral_constant<size_t, 3>
 {
 };
+
 /**
- * type of 1st argument
- * @note required to structured binding support
+ * @brief Defines the type of the 1st argument for structured bindings support
+ *
+ * @note Required for structured bindings support
  */
 template<>
 struct [[maybe_unused]] std::tuple_element<0, open_viii::archive::FI>
 {
   using type = std::uint32_t;
 };
+
 /**
- * type of 2nd argument
- * @note required to structured binding support
+ * @brief Defines the type of the 2nd argument for structured bindings support
+ *
+ * @note Required for structured bindings support
  */
 template<>
 struct [[maybe_unused]] std::tuple_element<1, open_viii::archive::FI>
 {
   using type = std::uint32_t;
 };
+
 /**
- * type of 3rd argument
- * @note required to structured binding support
+ * @brief Defines the type of the 3rd argument for structured bindings support
+ *
+ * @note Required for structured bindings support
  */
 template<>
 struct [[maybe_unused]] std::tuple_element<2, open_viii::archive::FI>
 {
   using type = open_viii::CompressionTypeT;
 };
+
 #endif// !VIIIARCHIVE_FI_HPP
