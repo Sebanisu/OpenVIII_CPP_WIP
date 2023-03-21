@@ -23,7 +23,6 @@ namespace open_viii::archive {
  */
 struct FI
 {
-  // changed to int because libraries require casting to int anyway.
 private:
   /**
    * Uncompressed Size
@@ -263,6 +262,16 @@ public:
   {
     return FI(m_uncompressed_size, in_offset_size, m_compression_type);
   }
+
+  friend std::istream &
+    operator>>(std::istream &is, FI &fi)
+  {
+    std::array<char, 12U> buffer{};
+    if (is.read(buffer.data(), 12)) {
+      fi = std::bit_cast<FI>(buffer);
+    }
+    return is;
+  }
 };
 static_assert(sizeof(FI) == FI::SIZE);
 
@@ -290,6 +299,418 @@ inline std::ostream &
      << static_cast<std::uint32_t>(data.compression_type()) << '}';
   return os;
 }
+class FIFileRange
+{
+public:
+  class iterator
+  {
+  public:
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type        = FI;
+    using difference_type   = std::ifstream::off_type;
+    //    using pointer           = const FI *;
+    //    using reference         = const FI &;
+    static constexpr difference_type value_size
+      = static_cast<difference_type>(sizeof(FI));
+    iterator() = default;
+    explicit iterator(std::ifstream &ifs, difference_type offset = 0)
+      : m_ifs(&ifs), m_offset(offset)
+    {}
+
+    iterator &
+      operator++()
+    {
+      m_offset += value_size;
+      return *this;
+    }
+
+    iterator
+      operator++(int)
+    {
+      iterator tmp(*this);
+      ++(*this);
+      return tmp;
+    }
+
+    iterator &
+      operator--()
+    {
+      m_offset -= value_size;
+      return *this;
+    }
+
+    iterator
+      operator--(int)
+    {
+      iterator tmp(*this);
+      --(*this);
+      return tmp;
+    }
+    iterator
+      operator+(iterator other) const
+    {
+      return iterator(*m_ifs, m_offset + other.m_offset);
+    }
+
+    iterator
+      operator+(difference_type n) const
+    {
+      return iterator(*m_ifs, m_offset + n * value_size);
+    }
+
+    iterator friend
+      operator+(difference_type n, iterator other)
+    {
+      return iterator(*other.m_ifs, other.m_offset + n * value_size);
+    }
+
+    iterator
+      operator-(difference_type n) const
+    {
+      return iterator(*m_ifs, m_offset - n * value_size);
+    }
+
+    difference_type
+      operator-(const iterator &other) const
+    {
+      return (m_offset - other.m_offset) / value_size;
+    }
+
+    iterator &
+      operator+=(difference_type n)
+    {
+      m_offset += n * value_size;
+      return *this;
+    }
+
+    iterator &
+      operator-=(difference_type n)
+    {
+      m_offset -= n * value_size;
+      return *this;
+    }
+
+    value_type
+      operator*() const
+    {
+      FI fi = {};
+      m_ifs->seekg(m_offset);
+      *m_ifs >> fi;
+      return fi;
+    }
+    //    const FI *
+    //      operator->() const
+    //    {
+    //      return &m_fi;
+    //    }
+    value_type
+      operator[](difference_type n) const
+    {
+      return *(*this + n);
+    }
+
+    bool
+      operator==(const iterator &other) const
+    {
+      return m_ifs == other.m_ifs && m_offset == other.m_offset;
+    }
+    bool
+      operator!=(const iterator &other) const
+    {
+      return !(*this == other);
+    }
+    bool
+      operator<(const iterator &other) const
+    {
+      return m_offset < other.m_offset;
+    }
+    bool
+      operator<=(const iterator &other) const
+    {
+      return m_ifs == other.m_ifs && m_offset <= other.m_offset;
+    }
+    bool
+      operator>(const iterator &other) const
+    {
+      return m_offset > other.m_offset;
+    }
+    bool
+      operator>=(const iterator &other) const
+    {
+      return m_ifs == other.m_ifs && m_offset >= other.m_offset;
+    }
+
+  private:
+    std::ifstream *m_ifs{};
+    std::streamoff m_offset{};
+  };
+
+  // The begin function returns an FIInputIterator that points to the beginning
+  // of the file
+  iterator
+    begin()
+  {
+    open();
+    return iterator(m_file_stream, m_begin);
+  }
+
+  // The end function returns an FIInputIterator that points past the end of the
+  // file
+  iterator
+    end()
+  {
+    open();
+    // We need to seek to the end of the file to get the offset
+
+    if (m_end > 0) {
+      return iterator(m_file_stream, m_end);
+    }
+    std::streamoff offset = m_file_stream.seekg(0, std::ios::end).tellg();
+    return iterator(m_file_stream, offset);
+  }
+  iterator::value_type
+    operator[](iterator::difference_type n)
+  {
+    if (!m_file_stream) {
+      open();
+    }
+    FI fi = {};
+    m_file_stream.seekg(m_begin + (n * iterator::value_size));
+    m_file_stream >> fi;
+    return fi;
+  }
+
+  FIFileRange(std::filesystem::path in_file_path)
+    : m_file_path(std::move(in_file_path))
+  {}
+
+  FIFileRange(
+    std::filesystem::path     in_file_path,
+    iterator::difference_type in_begin,
+    iterator::difference_type in_size)
+    : m_file_path(std::move(in_file_path)), m_begin(in_begin),
+      m_end(in_begin + in_size)
+  {}
+
+private:
+  void
+    open()
+  {
+    if (!m_file_stream) {
+      m_file_stream.open(m_file_path, std::ios::binary);
+    }
+  }
+  std::filesystem::path   m_file_path   = {};
+  std::ifstream           m_file_stream = {};
+  std::ifstream::off_type m_begin       = {};
+  std::ifstream::off_type m_end         = {};
+};
+static_assert(std::random_access_iterator<FIFileRange::iterator>);
+static_assert(std::ranges::random_access_range<FIFileRange>);
+class FIMemoryRange
+{
+public:
+  class iterator
+  {
+  public:
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type        = FI;
+    using difference_type   = std::ptrdiff_t;
+    // using pointer           = const FI *;
+    // using reference         = const FI &;
+    static constexpr difference_type value_size
+      = static_cast<difference_type>(sizeof(FI));
+    iterator() = default;
+    explicit iterator(
+      std::span<const char> in_buffer,
+      std::size_t           in_offset = 0)
+      : m_buffer_iterator(in_buffer), m_offset(in_offset)
+    {}
+
+    iterator &
+      operator++()
+    {
+      m_offset = static_cast<std::size_t>(
+        static_cast<difference_type>(m_offset) + value_size);
+      return *this;
+    }
+
+    iterator
+      operator++(int)
+    {
+      iterator tmp(*this);
+      ++(*this);
+      return tmp;
+    }
+
+    iterator &
+      operator--()
+    {
+      m_offset = static_cast<std::size_t>(
+        static_cast<difference_type>(m_offset) - value_size);
+      return *this;
+    }
+
+    iterator
+      operator--(int)
+    {
+      iterator tmp(*this);
+      --(*this);
+      return tmp;
+    }
+    iterator
+      operator+(iterator other) const
+    {
+      return iterator(m_buffer_iterator, m_offset + other.m_offset);
+    }
+
+    iterator
+      operator+(difference_type n) const
+    {
+      return iterator(
+        m_buffer_iterator,
+        static_cast<std::size_t>(
+          static_cast<difference_type>(m_offset) + n * value_size));
+    }
+
+    iterator friend
+      operator+(difference_type n, iterator other)
+    {
+      return iterator(
+        other.m_buffer_iterator,
+        static_cast<std::size_t>(
+          static_cast<difference_type>(other.m_offset) + n * value_size));
+    }
+
+    iterator
+      operator-(difference_type n) const
+    {
+      return iterator(
+        m_buffer_iterator,
+        static_cast<std::size_t>(
+          static_cast<difference_type>(m_offset) - n * value_size));
+    }
+
+    difference_type
+      operator-(const iterator &other) const
+    {
+      return (m_offset - other.m_offset) / value_size;
+    }
+
+    iterator &
+      operator+=(difference_type n)
+    {
+      m_offset = static_cast<std::size_t>(
+        static_cast<difference_type>(m_offset) + n * value_size);
+      return *this;
+    }
+
+    iterator &
+      operator-=(difference_type n)
+    {
+      m_offset = static_cast<std::size_t>(
+        static_cast<difference_type>(m_offset) - n * value_size);
+
+      return *this;
+    }
+
+    value_type
+      operator*() const
+    {
+      FI         fi  = {};
+      const auto tmp = m_buffer_iterator.subspan(m_offset, sizeof(FI));
+      std::memcpy(&fi, tmp.data(), tmp.size());
+      return fi;
+    }
+    //    const FI *
+    //      operator->() const
+    //    {
+    //      return &m_fi;
+    //    }
+    value_type
+      operator[](difference_type n) const
+    {
+      return *(*this + n);
+    }
+
+    bool
+      operator==(const iterator &other) const
+    {
+      return same_range(other) && m_offset == other.m_offset;
+    }
+    bool
+      operator!=(const iterator &other) const
+    {
+      return !(*this == other);
+    }
+    bool
+      operator<(const iterator &other) const
+    {
+      return m_offset < other.m_offset;
+    }
+    bool
+      operator<=(const iterator &other) const
+    {
+      return same_range(other) && m_offset <= other.m_offset;
+    }
+    bool
+      operator>(const iterator &other) const
+    {
+      return m_offset > other.m_offset;
+    }
+    bool
+      operator>=(const iterator &other) const
+    {
+      return same_range(other) && m_offset >= other.m_offset;
+    }
+
+  private:
+    bool
+      same_range(const iterator &other) const
+    {
+      // std::ranges::equal(m_buffer_iterator, other.m_buffer_iterator)
+      return m_buffer_iterator.data() == other.m_buffer_iterator.data()
+          && m_buffer_iterator.size() == other.m_buffer_iterator.size();
+    }
+    std::span<const char> m_buffer_iterator{};
+    std::size_t           m_offset{};
+    // FI             m_fi{};
+  };
+
+  iterator::value_type
+    operator[](std::size_t n) const
+  {
+    FI         fi  = {};
+    const auto tmp = m_buffer.subspan(n * sizeof(FI));
+    std::memcpy(&fi, tmp.data(), tmp.size());
+    return fi;
+  }
+  // The begin function returns an FIInputIterator that points to the beginning
+  // of the file
+  iterator
+    begin() const
+  {
+    return iterator(m_buffer);
+  }
+
+  // The end function returns an FIInputIterator that points past the end of the
+  // file
+  iterator
+    end() const
+  {
+    return iterator(m_buffer, m_buffer.size());
+  }
+
+  FIMemoryRange(std::span<const char> in_buffer)
+    : m_buffer(std::move(in_buffer))
+  {}
+
+private:
+  std::span<const char> m_buffer = {};
+};
+static_assert(std::random_access_iterator<FIMemoryRange::iterator>);
+static_assert(std::ranges::random_access_range<FIMemoryRange>);
+
 }// namespace open_viii::archive
 /**
  * define number of arguments
