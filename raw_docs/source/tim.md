@@ -49,13 +49,14 @@ http://www.psxdev.net/forum/viewtopic.php?t=953
 ```
 
 ## Header
+
 Total Size: 8 bytes
 
 | Offset (bits) | Size (bits) |            Fixed Value            | Description                               |
 |:-------------:|:-----------:|:---------------------------------:|:------------------------------------------|
 |       0       |      8      |              `0x10`               | Tag                                       |
 |       8       |      8      |                `0`                | Version                                   |
-|      32       |      2      | `0b00`, `0b01`, `0b10`, or `0b11` | BPP: [Bits Per Pixel](#bits_per_pixel)    |
+|      32       |      2      | `0b00`, `0b01`, `0b10`, or `0b11` | BPP: [Bits Per Pixel](#bits-per-pixel)    |
 |      35       |      1      |            `0` or `1`             | CLP: [Color Look-Up Table](#clut) Present |
 
 ```{eval-rst}
@@ -89,10 +90,22 @@ Total Size: 12 bytes
 | 8              | 2            | Width       |
 | 10             | 2            | Height      |
 
+The X and Y values in the [CLUT](#clut) header and the image header of TIM files represent the position of the data within the
+VRAM (Video RAM) of the PlayStation console. These values help the system know where to place the data in the memory
+when rendering graphics.
+
+X and Y are essentially the coordinates of the top-left corner of the image or the color lookup table in VRAM. In the
+case of the [CLUT](#clut) header, X is the horizontal position, and Y is the vertical position of the color lookup table within
+VRAM. Similarly, for the image header, X and Y represent the position of the image data within VRAM.
+
+If you are not working with the PlayStation's VRAM directly or emulating the rendering process, you may not need to use
+the X and Y values from the [CLUT](#clut) header and the image header. Instead, you can focus on the color and pixel data
+contained within the TIM files for your specific use case or application.
+
 ### CLUT
 
-Contains a Sub Header at the start of this section. Total Size: `Sub_Header.length` bytes. This section might not exist
-in the file. This contains the `16-bit` values of colors organized in cols and rows. In some cases, game developers and
+Contains a [Sub Header](#sub-header) at the start of this section. Total Size: `Sub_Header.length` bytes. This section might not exist
+in the file. This contains the [`16-bit`](#16-bit) values of colors organized in cols and rows. In some cases, game developers and
 graphic artists exploited the unused space in the Color Look-Up Table ([CLUT](#clut))
 to store additional palette colors. For example, while a standard `4-bit` color palette would only require `16` colors,
 they could utilize all `256` available colors by storing multiple `16-color` palettes in a row. To properly read and
@@ -105,7 +118,7 @@ display these additional colors, you would need to override the default [CLUT](#
 
 ### Image Data
 
-Contains a Sub Header at the start of this section. Total Size: `Sub_Header.length` bytes
+Contains a [Sub Header](#sub-header) at the start of this section. Total Size: `Sub_Header.length` bytes
 
 ```{eval-rst}
 .. doxygenstruct:: open_viii::graphics::TimImageHeader
@@ -129,6 +142,5 @@ This contains the `16-bit` values of colors organized in cols and rows.
 #### 24 bpp
 
 This contains the `24-bit` values of colors organized in cols and rows.
-
 
 Sources: http://www.psxdev.net/forum/viewtopic.php?t=109
