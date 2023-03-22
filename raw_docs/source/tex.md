@@ -127,3 +127,21 @@ Total Size: 4 bytes
 .. doxygenstruct:: open_viii::graphics::TexHeader2Version2
     :members:
 ```
+## Palette
+
+This contains the 32-bit BGRA values of colors organized in cols and rows.
+
+## Image
+
+#### 8 bpp
+
+This contains the `8-bit` color keys in cols and rows. You reference the [Palette](#palette) to get the color. Max `256`
+colors.
+
+#### 16 bpp
+
+This contains the `16-bit` ABGR values of colors organized in cols and rows.
+
+#### 32 bpp
+
+This contains the `32-bit` BGRA values of colors organized in cols and rows.
