@@ -1,5 +1,10 @@
 TEX file
 =====
+[TEX](http://wiki.ffrtt.ru/index.php?title=FF7/TEX_format)
+
+
+Used in only the PC games for 2x resolution fonts and UI elements.
+
 ## Layout
 
 | Offset (Bytes) | Size (Bytes) | Name                       | Description                            |

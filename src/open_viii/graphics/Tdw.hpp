@@ -16,6 +16,8 @@
 #include "Tim.hpp"
 namespace open_viii::graphics {
 /**
+ * @brief Stores bitmap font character widths for an included TIM image.
+ *
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_TDW
  */
 struct Tdw
@@ -26,6 +28,12 @@ private:
   std::uint32_t           m_tim_offset{};
   std::vector<Bit4Values> m_widths{};
   Tim                     m_tim{};
+
+  /**
+   * @brief Calculates the size of the bitmap font character widths in bytes.
+   *
+   * @return The size of the bitmap font character widths in bytes.
+   */
   [[nodiscard]] auto
     widths_size() const noexcept
   {
