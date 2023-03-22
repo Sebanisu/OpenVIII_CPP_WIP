@@ -60,7 +60,7 @@ html_sidebars = {'**': [
 # MyST-Parser configuration
 myst_linkify_fuzzy_links = False
 myst_enable_extensions = [
-    #"amsmath",
+    "amsmath",
     #"colon_fence",
     #"deflist",
     "dollarmath",
