@@ -7,22 +7,22 @@ Supported Versions
 My copy only has [en](https://en.wikipedia.org/wiki/English_language) language. I think each copy is regional to what language(s) it has on it.
 
 - Data
-  - battle.fi
+  - <span class="nolink">battle.fi</span>
   - battle.fl
   - battle.fs
-  - field.fi
+  - <span class="nolink">field.fi</span>
   - field.fl
   - field.fs
-  - magic.fi
+  - <span class="nolink">magic.fi</span>
   - magic.fl
   - magic.fs
-  - main.fi
+  - <span class="nolink">main.fi</span>
   - main.fl
   - main.fs
-  - menu.fi
+  - <span class="nolink">menu.fi</span>
   - menu.fl
   - menu.fs
-  - world.fi
+  - <span class="nolink">world.fi</span>
   - world.fl
   - world.fs
 ```
@@ -38,22 +38,22 @@ to [ru](https://en.wikipedia.org/wiki/Russian_language) or [pl](https://en.wikip
 
 - Data
   - lang-en
-    - battle.fi
+    - <span class="nolink">battle.fi</span>
     - battle.fl
     - battle.fs
-    - field.fi
+    - <span class="nolink">field.fi</span>
     - field.fl
     - field.fs
-    - magic.fi
+    - <span class="nolink">magic.fi</span>
     - magic.fl
     - magic.fs
-    - main.fi
+    - <span class="nolink">main.fi</span>
     - main.fl
     - main.fs
-    - menu.fi
+    - <span class="nolink">menu.fi</span>
     - menu.fl
     - menu.fs
-    - world.fi
+    - <span class="nolink">world.fi</span>
     - world.fl
     - world.fs
 - lang.dat
@@ -70,22 +70,22 @@ selected in game.
 - main.zzz
   - data
     - lang-en
-      - battle.fi
+      - <span class="nolink">battle.fi</span>
       - battle.fl
       - battle.fs
-      - main.fi
+      - <span class="nolink">main.fi</span>
       - main.fl
       - main.fs
-      - menu.fi
+      - <span class="nolink">menu.fi</span>
       - menu.fl
       - menu.fs
-    - field.fi
+    - <span class="nolink">field.fi</span>
     - field.fl
     - field.fs
-    - magic.fi
+    - <span class="nolink">magic.fi</span>
     - magic.fl
     - magic.fs
-    - world.fi
+    - <span class="nolink">world.fi</span>
     - world.fl
     - world.fs
 - other.zzz
