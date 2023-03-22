@@ -3,3 +3,4 @@ myst_parser
 sphinx_inline_tabs
 furo
 linkify-it-py
+dollarmath

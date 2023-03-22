@@ -57,11 +57,13 @@ html_sidebars = {'**': [
     "sidebar/scroll-end.html",
 ]
 }
+# MyST-Parser configuration
+myst_linkify_fuzzy_links = False
 myst_enable_extensions = [
     #"amsmath",
     #"colon_fence",
     #"deflist",
-    #"dollarmath",
+    "dollarmath",
     #"html_admonition",
     #"html_image",
     "linkify",
