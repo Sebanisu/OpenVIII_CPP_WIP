@@ -21,9 +21,10 @@
 #include "Png.hpp"
 namespace open_viii::graphics {
 /**
- * TIM, or PSX TIM, is an uncompressed raster image file format associated with
- * the Sony PlayStation family of video game consoles. It supports 4- and 8-bit
- * paletted images, and 15- and 24-bit full color images.
+ * @brief TIM, or PSX TIM, is an uncompressed raster image file format
+ * associated with the Sony PlayStation family of video game consoles. It
+ * supports 4- and 8-bit paletted images, and 15- and 24-bit full color images.
+ *
  * @see https://github.com/myst6re/vincent-tim
  * @see https://github.com/myst6re/deling/blob/master/FF8Image.cpp#L30
  * @see http://www.raphnet.net/electronique/psx_adaptor/Playstation.txt
@@ -34,20 +35,48 @@ namespace open_viii::graphics {
  * @see http://www.romhacking.net/documents/31/
  * @see http://mrclick.zophar.net/TilEd/download/timgfx.txt
  * @see http://fileformats.archiveteam.org/wiki/TIM_(PlayStation_graphics)
+ * @see http://www.psxdev.net/forum/viewtopic.php?t=780
+ * @see https://github.com/ColdSauce/psxsdk/blob/master/tools/bmp2tim.c
  */
 struct Tim
 {
 private:
+  /**
+   * @brief The header of the TIM file.
+   */
   TimHeader                                m_tim_header{};
+
+  /**
+   * @brief The header of the Color Lookup Table (CLUT) in the TIM file.
+   */
   TimClutHeader                            m_tim_clut_header{};
+
+  /**
+   * @brief The data of the Color Lookup Table (CLUT) in the TIM file.
+   */
   std::vector<Color16<ColorLayoutT::ABGR>> m_tim_clut_data{};
+
+  /**
+   * @brief The header of the image data in the TIM file.
+   */
   TimImageHeader                           m_tim_image_header{};
+
+  /**
+   * @brief The variant holding the actual image data of the TIM file.
+   * Can hold 4-bit paletted, 8-bit paletted, 15-bit full color, or 24-bit full
+   * color data.
+   */
   std::variant<
     std::vector<Bit4Values>,
     std::vector<std::uint8_t>,
     std::vector<Color16<ColorLayoutT::ABGR>>,
     std::vector<Color24<ColorLayoutT::BGR>>>
     m_tim_image_data{};
+
+  /**
+   * @brief Get the size of the image data.
+   * @return std::size_t Size of the image data.
+   */
   [[nodiscard]] std::size_t
     size_of_image_data() const noexcept
   {
@@ -57,6 +86,14 @@ private:
       },
       m_tim_image_data);
   }
+
+  /**
+   * @brief Get the color from the CLUT using the provided row and color_key.
+   * @param row Row in the CLUT.
+   * @param color_key Color key (index) in the row.
+   * @param clut_dims Dimensions of the CLUT (width and height).
+   * @return Color16<ColorLayoutT::ABGR> Color value from the CLUT.
+   */
   [[nodiscard]] Color16<ColorLayoutT::ABGR>
     get_color(
       [[maybe_unused]] const std::uint16_t                         row,
@@ -75,6 +112,14 @@ private:
     }
     return {};
   }
+
+  /**
+   * @brief Get 4-bit paletted colors from the image data.
+   * @tparam dstT Destination color type.
+   * @param row The row of the Color Lookup Table (CLUT) to use.
+   * @param clut_dims The dimensions of the CLUT.
+   * @return A vector of colors of type dstT.
+   */
   template<typename dstT>
   auto
     get_4bpp_colors(
@@ -93,6 +138,14 @@ private:
       });
     return output;
   }
+
+  /**
+   * @brief Get 8-bit paletted colors from the image data.
+   * @tparam dstT Destination color type.
+   * @param row The row of the Color Lookup Table (CLUT) to use.
+   * @param clut_dims The dimensions of the CLUT.
+   * @return A vector of colors of type dstT.
+   */
   template<typename dstT>
   auto
     get_8bbp_colors(
@@ -110,6 +163,12 @@ private:
       });
     return output;
   }
+
+  /**
+   * @brief Get 15-bit (16-bit) full color colors from the image data.
+   * @tparam dstT Destination color type.
+   * @return A vector of colors of type dstT.
+   */
   template<typename dstT>
   auto
     get_16bpp_colors() const
@@ -124,6 +183,12 @@ private:
       });
     return output;
   }
+
+  /**
+   * @brief Get 24-bit full color colors from the image data.
+   * @tparam dstT Destination color type.
+   * @return A vector of colors of type dstT.
+   */
   template<typename dstT>
   auto
     get_24bpp_colors() const
@@ -140,7 +205,15 @@ private:
   }
 
 public:
+  /**
+   * @brief Default constructor.
+   */
   Tim() = default;
+
+  /**
+   * @brief Construct a Tim object from a buffer.
+   * @param buffer A span containing TIM file data.
+   */
   explicit Tim(std::span<const char> buffer)
     : m_tim_header(get_tim_header(buffer)),
       m_tim_clut_header(get_tim_clut_header(buffer)),
@@ -148,6 +221,15 @@ public:
       m_tim_image_header(get_tim_image_header(buffer)),
       m_tim_image_data(get_tim_image_data(buffer))
   {}
+
+  /**
+   * @brief Construct a Tim object with all its components.
+   * @param in_tim_header TIM header.
+   * @param in_tim_clut_header TIM CLUT header.
+   * @param in_tim_clut_data TIM CLUT data.
+   * @param in_tim_image_header TIM image header.
+   * @param in_tim_image_data TIM image data.
+   */
   explicit Tim(
     TimHeader                                in_tim_header,
     TimClutHeader                            in_tim_clut_header,
@@ -164,11 +246,22 @@ public:
       m_tim_image_data(std::move(in_tim_image_data))
   {}
 
+  /**
+   * @brief Get the TIM header from the buffer.
+   * @param buffer A span containing TIM file data.
+   * @return The TIM header object.
+   */
   [[nodiscard]] static TimHeader
     get_tim_header(std::span<const char> &buffer)
   {
     return tools::read_val_safe_mutate<TimHeader>(buffer);
   }
+
+  /**
+   * @brief Get the TIM CLUT header from the buffer.
+   * @param buffer A span containing TIM file data.
+   * @return The TIM CLUT header object.
+   */
   [[nodiscard]] TimClutHeader
     get_tim_clut_header(std::span<const char> &buffer) const
   {
@@ -179,6 +272,12 @@ public:
     }
     return tools::read_val_safe_mutate<TimClutHeader>(buffer);
   }
+
+  /**
+   * @brief Get the TIM CLUT data from the buffer.
+   * @param buffer A span containing TIM file data.
+   * @return A vector containing the TIM CLUT data.
+   */
   [[nodiscard]] std::vector<Color16<ColorLayoutT::ABGR>>
     get_tim_clut_data(std::span<const char> &buffer) const
   {
@@ -190,6 +289,12 @@ public:
       buffer,
       m_tim_clut_header.data_size());
   }
+
+  /**
+   * @brief Get the TIM image header from the buffer.
+   * @param buffer A span containing TIM file data.
+   * @return The TIM image header object.
+   */
   [[nodiscard]] TimImageHeader
     get_tim_image_header(std::span<const char> &buffer) const
   {
@@ -198,8 +303,18 @@ public:
     }
     return tools::read_val_safe_mutate<TimImageHeader>(buffer);
   }
+  /**
+   * @brief Get the TIM image data from the buffer.
+   * @param buffer A span containing TIM file data.
+   * @return A variant containing the TIM image data.
+   */
   [[nodiscard]] decltype(m_tim_image_data)
     get_tim_image_data(std::span<const char> &buffer) const
+
+  /**
+   * @brief Check the validity of the TIM object.
+   * @return A boolean indicating whether the TIM object is valid or not.
+   */
   {
     if (!m_tim_header.check() || m_tim_image_header.data_size() == 0) {
       return {};
@@ -240,6 +355,11 @@ public:
         && (a == sizeOfImageData || a / 2 == sizeOfImageData
             || a * 2 == sizeOfImageData);
   }
+
+  /**
+   * @brief Get the width of the TIM image.
+   * @return The width of the TIM image.
+   */
   [[nodiscard]] std::uint16_t
     width() const
   {
@@ -261,57 +381,115 @@ public:
     }
     return {};// invalid value
   }
+
+  /**
+   * @brief Get the height of the TIM image.
+   * @return The height of the TIM image.
+   */
   [[nodiscard]] auto
     height() const
   {
     return m_tim_image_header.rectangle().height();
   }
+
+  /**
+   * @brief Get the area of the TIM image.
+   * @return The area of the TIM image.
+   */
   [[nodiscard]] std::size_t
     area() const
   {
     return width()
          * static_cast<std::size_t>(m_tim_image_header.rectangle().height());
   }
+
+  /**
+   * @brief Get the X coordinate of the TIM image header.
+   * @return The X coordinate of the TIM image header.
+   */
   [[maybe_unused]] [[nodiscard]] auto
     x() const
   {
     return m_tim_image_header.rectangle().x();
   }
+
+  /**
+   * @brief Get the Y coordinate of the TIM image header.
+   * @return The Y coordinate of the TIM image header.
+   */
   [[maybe_unused]] [[nodiscard]] auto
     y() const
   {
     return m_tim_image_header.rectangle().y();
   }
+
+  /**
+   * @brief Get the X coordinate of the TIM color lookup table (CLUT) header.
+   * @return The X coordinate of the TIM CLUT header.
+   */
   [[maybe_unused]] [[nodiscard]] auto
     clut_x() const
   {
     return m_tim_clut_header.rectangle().x();
   }
+
+  /**
+   * @brief Get the Y coordinate of the TIM color lookup table (CLUT) header.
+   * @return The Y coordinate of the TIM CLUT header.
+   */
   [[maybe_unused]] [[nodiscard]] auto
     clut_y() const
   {
     return m_tim_clut_header.rectangle().y();
   }
+
+  /**
+   * @brief Get the size of the TIM object in bytes.
+   * @return The size of the TIM object in bytes.
+   */
   [[nodiscard]] auto
     size() const
   {
     return sizeof(m_tim_header) + m_tim_clut_header.size()
          + m_tim_image_header.size();
   }
+
+  /**
+   * @brief Get the number of rows in the color lookup table (CLUT).
+   * @return The number of rows in the CLUT.
+   */
   [[nodiscard]] auto
     clut_rows() const
   {
     return m_tim_clut_header.rectangle().height();
   }
+
+  /**
+   * @brief Get the number of colors in the color lookup table (CLUT).
+   * @return The number of colors in the CLUT.
+   */
   [[maybe_unused]] [[nodiscard]] auto
     clut_colors() const
   {
     return m_tim_clut_header.rectangle().width();
   }
+
+  /**
+   * @brief Check if the TIM object is valid.
+   * @return True if the TIM object is valid, false otherwise.
+   */
   [[nodiscard]] explicit operator bool() const
   {
     return check();
   }
+
+  /**
+   * @brief Get the color data of the TIM object.
+   * @tparam dstT The color type (default: Tim).
+   * @param row The row of the color lookup table (CLUT) to use (default: 0U).
+   * @param clut_dims The dimensions of the CLUT (default: {}).
+   * @return A vector of color data.
+   */
   template<Color dstT = Tim>
   [[nodiscard]] std::vector<dstT>
     get_colors(
@@ -354,11 +532,12 @@ public:
     }
     }
   }
+
   /**
-   * Update the dims of the clut.
-   * @param width_height usually width is number of colors per palette, height
-   * is number of palettes.
-   * @return A new Tim with the new clut dims.
+   * @brief Update the dimensions of the color lookup table (CLUT).
+   * @param width_height The new dimensions (width is the number of colors per
+   * palette, height is the number of palettes).
+   * @return A new TIM object with the updated CLUT dimensions.
    */
   Tim
     force_tim_clut_dims(Point<std::uint16_t> width_height) const
@@ -378,20 +557,25 @@ public:
       m_tim_image_header,
       m_tim_image_data);
   }
+
   /**
-   * Update the dims of the clut.
-   * @param width usually is number of colors per palette
-   * @param height usually is number of palettes.
-   * @return A new Tim with the new clut dims.
+   * @brief Update the dimensions of the color lookup table (CLUT).
+   * @param width The new width (usually the number of colors per palette).
+   * @param height The new height (usually the number of palettes).
+   * @return A new TIM object with the updated CLUT dimensions.
    */
   [[maybe_unused]] Tim
     force_tim_clut_dims(std::uint16_t width, std::uint16_t height) const
   {
     return force_tim_clut_dims(Point<std::uint16_t>(width, height));
   }
+
   /**
-   *
-   * @param filename
+   * @brief Save the TIM object to a file.
+   * @param filename The output file name.
+   * @param clut_dims The dimensions of the color lookup table (CLUT) (default:
+   * {}).
+   * @param clut The index of the CLUT to save (-1 for all, default: -1).
    */
   [[maybe_unused]] void
     save(
@@ -447,26 +631,51 @@ public:
         std::filesystem::path(filename).string());
     }
   }
+
+  /**
+   * @brief Get the TIM header.
+   * @return The TIM header.
+   */
   [[nodiscard]] TimHeader
     tim_header() const noexcept
   {
     return m_tim_header;
   }
+
+  /**
+   * @brief Get the TIM CLUT header.
+   * @return The TIM CLUT header.
+   */
   [[nodiscard]] TimClutHeader
     tim_clut_header() const noexcept
   {
     return m_tim_clut_header;
   }
+
+  /**
+   * @brief Get the TIM CLUT data.
+   * @return A vector of TIM CLUT data.
+   */
   [[nodiscard]] std::vector<Color16<ColorLayoutT::ABGR>>
     tim_clut_data() const noexcept
   {
     return m_tim_clut_data;
   }
+
+  /**
+   * @brief Get the TIM image header.
+   * @return The TIM image header.
+   */
   [[nodiscard]] TimImageHeader
     tim_image_header() const noexcept
   {
     return m_tim_image_header;
   }
+
+  /**
+   * @brief Get the TIM image data.
+   * @return A reference to the variant holding the TIM image data.
+   */
   [[nodiscard]] const std::variant<
     std::vector<Bit4Values>,
     std::vector<std::uint8_t>,
@@ -477,18 +686,39 @@ public:
     return m_tim_image_data;
   }
 };
+
+/**
+ * @brief Get the 16bpp colors as a vector of Color16<ColorLayoutT::ABGR>
+ * objects.
+ * @return A vector of Color16<ColorLayoutT::ABGR> objects representing the
+ * 16bpp colors.
+ */
 template<>
 auto
   Tim::get_16bpp_colors<Color16<ColorLayoutT::ABGR>>() const
 {
   return std::get<2>(m_tim_image_data);
 }
+
+/**
+ * @brief Get the 24bpp colors as a vector of Color24<ColorLayoutT::BGR>
+ * objects.
+ * @return A vector of Color24<ColorLayoutT::BGR> objects representing the 24bpp
+ * colors.
+ */
 template<>
 auto
   Tim::get_24bpp_colors<Color24<ColorLayoutT::BGR>>() const
 {
   return std::get<3>(m_tim_image_data);
 }
+
+/**
+ * @brief Stream insertion operator for Tim objects.
+ * @param os The output stream to insert the Tim object into.
+ * @param input The Tim object to insert into the output stream.
+ * @return The output stream with the inserted Tim object.
+ */
 inline std::ostream &
   operator<<(std::ostream &os, const Tim &input)
 {
