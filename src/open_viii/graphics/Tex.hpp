@@ -20,25 +20,6 @@
 #include "Png.hpp"
 #include "Ppm.hpp"
 namespace open_viii::graphics {
-//{
-//  // Palette Entry (BGRA)
-//  /**
-//   * Blue
-//   */
-//  std::uint8_t BLUE{};
-//  /**
-//   * Green
-//   */
-//  std::uint8_t GREEN{};
-//  /**
-//   * Red
-//   */
-//  std::uint8_t RED{};
-//  /**
-//   * Alpha
-//   */
-//  std::uint8_t ALPHA{};
-//};
 /**
  * @brief A structure representing a TEX file.
  * @details The Tex structure represents a texture file used in the FF7 and FF8 games.
