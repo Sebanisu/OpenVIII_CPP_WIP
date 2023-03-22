@@ -54,10 +54,10 @@ http://www.psxdev.net/forum/viewtopic.php?t=953
 |       0       |      8      |              `0x10`               | Tag                             |
 |       8       |      8      |                `0`                | Version                         |
 |      32       |      2      | `0b00`, `0b01`, `0b10`, or `0b11` | BPP: Bits Per Pixel             |
-|      35       |      1      |            `0` or `1`             | CLP: Color Lookup Table Present |
+|      35       |      1      |            `0` or `1`             | CLP: [Color Look-Up Table](#clut) Present |
 
 
-| BPP Value | Bits Per Pixel | CLP: Color Lookup Table Present |
+| BPP Value | Bits Per Pixel | CLP: [Color Look-Up Table](#clut) Present |
 |:---------:|:--------------:|:-------------------------------:|
 |   `0b00`  |     4-bit      |                1                |
 |   `0b01`  |     8-bit      |                1                |
@@ -78,11 +78,11 @@ Total Size: 12 bytes
 | 10             | 2            | Height      |
 
 
-In some cases, game developers and graphic artists exploited the unused space in the Color Look-Up Table (CLUT) to store additional palette colors. For example, while a standard 4-bit color palette would only require 16 colors, they could utilize all 256 available colors by storing multiple 16-color palettes in a row. To properly read and display these additional colors, you would need to override the default CLUT row and column settings.
+In some cases, game developers and graphic artists exploited the unused space in the Color Look-Up Table ([CLUT](#clut)) to store additional palette colors. For example, while a standard `4-bit` color palette would only require `16` colors, they could utilize all `256` available colors by storing multiple `16-color` palettes in a row. To properly read and display these additional colors, you would need to override the default [CLUT](#clut) row and column settings.
 
 ## CLUT
 
-Contains a Sub Header at the start of this section. Total Size: `Sub_Header.length` bytes. This section might not exist in the file. This contains the 16-bit values of colors organized in cols and rows. In some cases, developers may use the unused space in the CLUT to store additional palette colors.
+Contains a Sub Header at the start of this section. Total Size: `Sub_Header.length` bytes. This section might not exist in the file. This contains the 16-bit values of colors organized in cols and rows. In some cases, developers may use the unused space in the [CLUT](#clut) to store additional palette colors.
 
 ## Image Data
 
@@ -90,11 +90,11 @@ Contains a Sub Header at the start of this section. Total Size: `Sub_Header.leng
 
 ### 4 bpp
 
-This contains the `4-bit` color keys in cols and rows. You reference the CLUT to get the color. Max `16` colors.
+This contains the `4-bit` color keys in cols and rows. You reference the [CLUT](#clut) to get the color. Max `16` colors.
 
 ### 8 bpp
 
-This contains the `8-bit` color keys in cols and rows. You reference the CLUT to get the color. Max `256` colors.
+This contains the `8-bit` color keys in cols and rows. You reference the [CLUT](#clut) to get the color. Max `256` colors.
 
 ### 16 bpp
 
@@ -104,6 +104,6 @@ This contains the `16-bit` values of colors organized in cols and rows.
 
 This contains the `24-bit` values of colors organized in cols and rows.
 
-By extending the CLUT and overriding the default row and column settings, developers could achieve more varied and visually appealing graphics, even with the limited color depth of the PlayStation One hardware.
+By extending the [CLUT](#clut) and overriding the default row and column settings, developers could achieve more varied and visually appealing graphics, even with the limited color depth of the PlayStation One hardware.
 
 Sources: http://www.psxdev.net/forum/viewtopic.php?t=109
