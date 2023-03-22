@@ -4,10 +4,14 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-yellowgreen.svg?style=flat)](https://github.com/sebanisu/OpenVIII_CPP_WIP/issues) 
 [![GPL v3 License](https://img.shields.io/badge/License-GPL_V3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) 
 [![C++ 20](https://img.shields.io/badge/C++%20-20-ff69b4.svg)](https://en.cppreference.com/w/cpp/20) 
-[![GitHub followers](https://img.shields.io/github/followers/sebanisu.svg?style=social&label=Follow)](https://github.com/sebanisu?tab=followers) 
-[![GitHub stars](https://img.shields.io/github/stars/sebanisu/ToolsLibrary.svg?style=social&label=Star)](https://GitHub.com/sebanisu/OpenVIII_CPP_WIP/stargazers/) 
-[![Sphinx Documentation](https://img.shields.io/badge/sphinx-documentation-yellow.svg?style=flat)](https://sebanisu.github.io/OpenVIII_CPP_WIP/)
-[![Doxygen Documentation](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP.svg)](https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP/)
+[![GitHub followers](https://img.shields.io/github/followers/sebanisu.svg?style=social&label=Follow)](https://github.com/sebanisu?tab=followers)
+[![Documentation Status](https://readthedocs.org/projects/openviii-cpp-wip/badge/?version=latest)](https://openviii-cpp-wip.readthedocs.io/en/latest/?badge=latest)
+
+[//]: # ([![GitHub stars]&#40;https://img.shields.io/github/stars/sebanisu/ToolsLibrary.svg?style=social&label=Star&#41;]&#40;https://GitHub.com/sebanisu/OpenVIII_CPP_WIP/stargazers/&#41; )
+
+[//]: # ([![Sphinx Documentation]&#40;https://img.shields.io/badge/sphinx-documentation-yellow.svg?style=flat&#41;]&#40;https://sebanisu.github.io/OpenVIII_CPP_WIP/&#41;)
+
+[//]: # ([![Doxygen Documentation]&#40;https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP.svg&#41;]&#40;https://codedocs.xyz/Sebanisu/OpenVIII_CPP_WIP/&#41;)
 
 ## Credits:
  - [MaKiPL](https://github.com/MaKiPL)
