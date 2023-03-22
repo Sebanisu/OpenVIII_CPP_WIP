@@ -9,35 +9,69 @@
 #include "png.h"
 namespace open_viii::graphics {
 
+/**
+ * @brief A class for reading and writing PNG files.
+ */
 struct Png
 {
 private:
-  std::filesystem::path                    m_filename{};
-  png_uint_32                              m_width{};
-  png_uint_32                              m_height{};
-  int                                      m_bit_depth{};
-  int                                      m_color_type{};
-  std::size_t                              m_row_bytes{};
-  png_byte                                 m_channels{};
-  double                                   m_gamma{};
-  std::vector<Color32<ColorLayoutT::RGBA>> m_color{};
-  Color32<ColorLayoutT::RGBA>              m_background_color{};
-  png_uint_32                              bytes_per_pixel = 4;
+  std::filesystem::path m_filename{};  ///< The filename of the PNG file.
+  png_uint_32           m_width{};     ///< The width of the PNG in pixels.
+  png_uint_32           m_height{};    ///< The height of the PNG in pixels.
+  int                   m_bit_depth{}; ///< The bit depth of the PNG.
+  int                   m_color_type{};///< The color type of the PNG.
+  std::size_t m_row_bytes{};///< The number of bytes per row in the PNG.
+  png_byte    m_channels{}; ///< The number of color channels in the PNG.
+  double      m_gamma{};    ///< The gamma value of the PNG.
+  std::vector<Color32<ColorLayoutT::RGBA>>
+    m_color{};///< The color data of the PNG.
+  Color32<ColorLayoutT::RGBA>
+              m_background_color{};///< The background color of the PNG.
+  png_uint_32 bytes_per_pixel = 4;///< The number of bytes per pixel in the PNG.
 
-  using safe_fp = std::unique_ptr<FILE, decltype(&fclose)>;
+  /**
+   * @brief Alias for a unique pointer to a FILE, with a custom deleter that
+   * uses fclose().
+   */
+  using safe_fp               = std::unique_ptr<FILE, decltype(&fclose)>;
 
+  /**
+   * @brief Deleter for a PNG read structure that uses
+   * png_destroy_read_struct().
+   */
   static constexpr auto safe_png_read_struct_deleter = [](png_struct *png_s) {
     png_destroy_read_struct(&png_s, nullptr, nullptr);
   };
 
+  /**
+   * @brief Alias for a unique pointer to a PNG read structure, with a custom
+   * deleter.
+   */
   using safe_png_read_struct
     = std::unique_ptr<png_struct, decltype(safe_png_read_struct_deleter)>;
 
+  /**
+   * @brief Deleter for a PNG write structure that uses
+   * png_destroy_write_struct().
+   */
   static constexpr auto safe_png_write_struct_deleter = [](png_struct *png_s) {
     png_destroy_write_struct(&png_s, png_infopp{ nullptr });
   };
+
+  /**
+   * @brief Alias for a unique pointer to a PNG write structure, with a custom
+   * deleter.
+   */
   using safe_png_write_struct
     = std::unique_ptr<png_struct, decltype(safe_png_write_struct_deleter)>;
+
+  /**
+   * @brief Creates a new `png_info` structure.
+   *
+   * @tparam deleter The type of the deleter for the `png_struct` pointer.
+   * @param png_ptr The `png_struct` pointer.
+   * @return A `unique_ptr` to the newly created `png_info` structure.
+   */
   template<typename deleter>
   static auto
     create_info_struct(const std::unique_ptr<png_struct, deleter> &png_ptr)
@@ -56,6 +90,11 @@ private:
     return info_ptr;
   }
 
+  /**
+   * @brief Calculates the display gamma exponent.
+   *
+   * @return The display gamma exponent.
+   */
   static constexpr double
     get_display_exponent() noexcept
   {
@@ -93,6 +132,14 @@ private:
     return LUT_exponent * CRT_exponent;
   }
 
+  /**
+   * @brief Returns the gamma value of the image.
+   *
+   * @tparam deleter Deleter of the std::unique_ptr<>::deleter_type type.
+   * @param png_ptr Safe pointer to the png_struct object.
+   * @param info_ptr Safe pointer to the png_info object.
+   * @return double The gamma value of the image.
+   */
   template<typename deleter>
   [[nodiscard]] double
     get_gamma(
@@ -105,6 +152,15 @@ private:
       png_set_gamma(png_ptr.get(), display_exponent, g);
     return g;
   }
+
+  /**
+   * @brief Gets the background color of the image.
+   *
+   * @tparam deleter Deleter of the std::unique_ptr<>::deleter_type type.
+   * @param png_ptr Safe pointer to the png_struct object.
+   * @param info_ptr Safe pointer to the png_info object.
+   * @return auto The background color of the image.
+   */
   template<typename deleter>
   [[nodiscard]] auto
     get_background_color(
@@ -140,7 +196,17 @@ private:
   }
 
 public:
+  /**
+   * @brief Default constructor for Png object.
+   */
   Png() = default;
+
+  /**
+   * @brief Constructor for Png object.
+   *
+   * @param filename Path to the PNG file.
+   * @param flipv Flag to indicate if the image should be flipped vertically.
+   */
   Png(const std::filesystem::path &filename, bool flipv = false)
   {
     auto fp = safe_fp{ fopen(filename.string().c_str(), "rb"),
@@ -262,16 +328,38 @@ public:
     }
   }
 
+  /**
+   * @brief Returns the width of the PNG image
+   * @return Width of the PNG image
+   */
   auto
     width() const noexcept
   {
     return m_width;
   }
+
+  /**
+   * @brief Returns the height of the PNG image
+   * @return Height of the PNG image
+   */
   auto
     height() const noexcept
   {
     return m_height;
   }
+
+  /**
+   * @brief Saves an array of color data as a PNG image file
+   *
+   * @tparam cT Color type
+   * @param data Array of color data
+   * @param width Width of the image
+   * @param height Height of the image
+   * @param filename Filename to save the PNG image as
+   * @param title Optional title for the PNG image
+   * @param prefix Optional prefix for the filename
+   * @return The saved filename or std::nullopt if saving failed
+   */
   template<Color cT = Color32RGBA>
   static std::optional<std::filesystem::path>
     save(
@@ -363,6 +451,18 @@ public:
     png_write_end(png_ptr.get(), nullptr);
     return filename;
   }
+
+  /**
+   * @brief Saves a vector of color data as a PNG image file
+   *
+   * @tparam cT Color type
+   * @tparam T Variadic template parameters
+   * @param data Vector of color data
+   * @param width Width of the image
+   * @param height Height of the image
+   * @param t Variadic template parameters
+   * @return The saved filename or std::nullopt if saving failed
+   */
   template<Color cT, typename... T>
   static std::optional<std::filesystem::path>
     save(
@@ -382,22 +482,46 @@ public:
       height,
       std::forward<T>(t)...);
   }
+
+  /**
+   * @brief Saves the color data of a Png object as a PNG image file
+   *
+   * @tparam T Variadic template parameters
+   * @param data Png object
+   * @param t Variadic template parameters
+   * @return The saved filename or std::nullopt if saving failed
+   */
   template<class... T>
   static std::optional<std::filesystem::path>
     save(const Png &data, T &&...t) noexcept
   {
     return save(data.m_color, std::forward<T>(t)...);
   }
+
+  /**
+   * @brief Returns an iterator to the beginning of the color data.
+   * @return An iterator pointing to the first element of the color data.
+   */
   inline auto
     begin() const noexcept
   {
     return m_color.begin();
   }
+
+  /**
+   * @brief Returns an iterator to the end of the color data.
+   * @return An iterator pointing to the element past the end of the color data.
+   */
   inline auto
     end() const noexcept
   {
     return m_color.end();
   }
+
+  /**
+   * @brief Returns the number of elements in the color data.
+   * @return The number of elements in the color data.
+   */
   inline auto
     size() const noexcept
   {
