@@ -15,6 +15,8 @@ archive
 graphics
 versions
 applications
+credits
+references
 ```
 
 [comment]: <> (compression)
