@@ -9,6 +9,8 @@
 Welcome to OpenVIII_CPP_WIP's documentation!
 =====
 
+Yep, it still needs a new name. :)
+
 ```{toctree}
 getting_started
 archive
