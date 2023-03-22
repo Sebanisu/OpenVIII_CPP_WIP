@@ -101,15 +101,15 @@ source_suffix = {
     '.md': 'markdown',
 }
 
-# import subprocess, os
-#
-# # Check if we're running on Read the Docs' servers
-# read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
-#
-# breathe_projects = {}
-#
-# if read_the_docs_build:
-#     input_dir = '../../src'
-#     output_dir = 'build'
-#     subprocess.call('doxygen', shell=True)
-#     breathe_projects['OpenVIII_CPP_WIP'] = output_dir + '/xml'
+import subprocess, os
+
+# Check if we're running on Read the Docs' servers
+read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
+
+breathe_projects = {}
+
+if read_the_docs_build:
+    input_dir = '../../src'
+    output_dir = 'build'
+    subprocess.call('doxygen', shell=True)
+    breathe_projects['OpenVIII_CPP_WIP'] = output_dir + '/xml'
