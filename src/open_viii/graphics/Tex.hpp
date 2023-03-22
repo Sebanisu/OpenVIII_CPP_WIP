@@ -22,9 +22,11 @@
 namespace open_viii::graphics {
 /**
  * @brief A structure representing a TEX file.
- * @details The Tex structure represents a texture file used in the FF7 and FF8 games.
- * It consists of several headers and data fields describing the texture and its format.
- * @see https://github.com/MaKiPL/FF8_Rinoa_s_Toolset/blob/master/SerahToolkit_SharpGL/FF8_Core/TEX.cs
+ * @details The Tex structure represents a texture file used in the FF7 and FF8
+ * games. It consists of several headers and data fields describing the texture
+ * and its format.
+ * @see
+ * https://github.com/MaKiPL/FF8_Rinoa_s_Toolset/blob/master/SerahToolkit_SharpGL/FF8_Core/TEX.cs
  * @see https://github.com/myst6re/vincent_tim/blob/master/TexFile.cpp
  * @see https://github.com/niemasd/PyFF7/blob/master/PyFF7/tex.py
  */
@@ -34,22 +36,22 @@ private:
   /**
    * @brief The main TEX header.
    */
-  TexHeader m_tex_header{};
+  TexHeader                                m_tex_header{};
 
   /**
    * @brief The pixel format header.
    */
-  TexPixelFormatHeader m_tex_pixel_format_header{};
+  TexPixelFormatHeader                     m_tex_pixel_format_header{};
 
   /**
    * @brief The second part of the TEX header.
    */
-  TexHeader2 m_tex_header2{};
+  TexHeader2                               m_tex_header2{};
 
   /**
    * @brief The third part of the TEX header, specific to FF8 (version 2).
    */
-  TexHeader2Version2 m_tex_header2_version2{};
+  TexHeader2Version2                       m_tex_header2_version2{};
 
   /**
    * @brief The palette data.
@@ -65,6 +67,12 @@ private:
     std::vector<Color32<ColorLayoutT::BGRA>>>
     m_image_data{};
 
+  /**
+   * @brief Get the color from the palette using row and key.
+   * @param row Palette row number.
+   * @param key Palette key (color index).
+   * @return Color32 object with the color in BGRA format.
+   */
   [[nodiscard]] auto
     get_color_from_palette(std::uint32_t row, std::uint8_t key) const
   {
@@ -81,11 +89,21 @@ private:
           .subspan(row * m_tex_header.num_colors_per_palette());
     return palette_span[key];
   }
+
+  /**
+   * @brief Get the size of the palette in bytes.
+   * @return Size of the palette in bytes.
+   */
   [[nodiscard]] auto
     size_of_palette() const noexcept
   {
     return m_tex_header.palette_size() * sizeof(std::uint32_t);
-  }// I think this is correct.
+  }
+
+  /**
+   * @brief Get the location of the palette in the file.
+   * @return Offset of the palette in the file.
+   */
   [[nodiscard]] auto
     palette_locator() const noexcept
   {
@@ -96,11 +114,20 @@ private:
     }
     return version1size;
   }
+
+  /**
+   * @brief Get the location of the texture data in the file.
+   * @return Offset of the texture data in the file.
+   */
   [[nodiscard]] auto
     texture_locator() const noexcept
   {
     return size_of_palette() + palette_locator();
   }
+
+  /**
+   * @brief Reset the Tex object to its default state.
+   */
   void
     reset()
   {
@@ -113,7 +140,15 @@ private:
   }
 
 public:
+  /**
+   * @brief Default constructor.
+   */
   Tex() = default;
+
+  /**
+   * @brief Construct a Tex object from a buffer.
+   * @param buffer A span containing the TEX file data.
+   */
   [[maybe_unused]] explicit Tex(std::span<const char> buffer)
   {
     auto       buffer_backup = buffer;
@@ -197,6 +232,12 @@ public:
     }
     }
   }
+
+  /**
+   * @brief Get the colors of the texture.
+   * @param palette_row Optional palette row number (default is 0).
+   * @return A vector of Color32 objects in RGBA format.
+   */
   [[maybe_unused]] [[nodiscard]] auto
     get_colors([[maybe_unused]] std::uint32_t palette_row = 0U) const
   {
@@ -230,6 +271,12 @@ public:
     }
     return ret;
   }
+
+  /**
+   * @brief Save the TEX file as an image file (PPM and PNG) with optional
+   * palette support.
+   * @param filename The output filename.
+   */
   [[maybe_unused]] void
     save(std::string_view filename) const
   {
@@ -298,12 +345,24 @@ public:
       }
     }
   }
+
+  /**
+   * @brief Get the TexHeader object.
+   * @return A TexHeader object.
+   */
   [[nodiscard]] TexHeader
     tex_header() const noexcept
   {
     return m_tex_header;
   }
 };
+
+/**
+ * @brief Output operator for the Tex class.
+ * @param os The output stream.
+ * @param t The Tex object to output.
+ * @return The modified output stream.
+ */
 inline std::ostream &
   operator<<(std::ostream &os, const Tex &t)
 {
