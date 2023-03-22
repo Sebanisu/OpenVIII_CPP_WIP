@@ -4,6 +4,15 @@ Pretty much everything else is some variation on
 [Playstation TIM](http://fileformats.archiveteam.org/wiki/TIM_(PlayStation_graphics)). Many files have TIM images
 embedded into them.
 
+| Offset (Bytes) | Size (Bytes) | Name                | Description                                   |
+|----------------|--------------|---------------------|-----------------------------------------------|
+| 0              | 8            | m_tim_header        | The header of the TIM file                    |
+| 8              | 12           | m_tim_clut_header   | The header of the CLUT in the TIM file        |
+| Varies         | Varies       | m_tim_clut_data     | The data of the CLUT in the TIM file          |
+| Varies         | 12           | m_tim_image_header  | The header of the image data in the TIM file  |
+| Varies         | Varies       | m_tim_image_data    | The actual image data of the TIM file         |
+
+
 ```{eval-rst}
 .. doxygenstruct:: open_viii::graphics::Tim
     :members:
