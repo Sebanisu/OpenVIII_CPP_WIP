@@ -76,16 +76,14 @@ Total Size: 12 bytes
 | 8              | 2            | Width       |
 | 10             | 2            | Height      |
 
-In some cases, game developers and graphic artists exploited the unused space in the Color Look-Up Table ([CLUT](#clut))
-to store additional palette colors. For example, while a standard `4-bit` color palette would only require `16` colors,
-they could utilize all `256` available colors by storing multiple `16-color` palettes in a row. To properly read and
-display these additional colors, you would need to override the default [CLUT](#clut) row and column settings.
-
 ## CLUT
 
 Contains a Sub Header at the start of this section. Total Size: `Sub_Header.length` bytes. This section might not exist
-in the file. This contains the `16-bit` values of colors organized in cols and rows. In some cases, developers may use
-the unused space in the [CLUT](#clut) to store additional palette colors.
+in the file. This contains the `16-bit` values of colors organized in cols and rows. In some cases, game developers and
+graphic artists exploited the unused space in the Color Look-Up Table ([CLUT](#clut))
+to store additional palette colors. For example, while a standard `4-bit` color palette would only require `16` colors,
+they could utilize all `256` available colors by storing multiple `16-color` palettes in a row. To properly read and
+display these additional colors, you would need to override the default [CLUT](#clut) row and column settings.
 
 ## Image Data
 
