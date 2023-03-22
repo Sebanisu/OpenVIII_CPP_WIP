@@ -6,4 +6,4 @@ sphinx:
 python:
   version: 3.8
   install:
-    - requirements: raw_docs/requirements.txt
+    - requirements: raw_docs/source/requirements.txt
