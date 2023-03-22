@@ -23,10 +23,29 @@ namespace open_viii::graphics {
 struct Tdw
 {
 private:
-  static constexpr auto   WIDTHS_OFFSET_VALUE = 8U;
+  /**
+   * @brief The constant value used for checking the widths offset.
+   */
+  static constexpr auto   WIDTHS_OFFSET_VALUE = std::uint32_t{ 8U };
+
+  /**
+   * @brief The offset value for the character widths in the buffer.
+   */
   std::uint32_t           m_widths_offset{};
+
+  /**
+   * @brief The offset value for the TIM image in the buffer.
+   */
   std::uint32_t           m_tim_offset{};
+
+  /**
+   * @brief A vector of Bit4Values containing the character widths.
+   */
   std::vector<Bit4Values> m_widths{};
+
+  /**
+   * @brief The TIM image associated with the character widths.
+   */
   Tim                     m_tim{};
 
   /**
@@ -41,7 +60,16 @@ private:
   }
 
 public:
+  /**
+   * @brief Default constructor.
+   */
   Tdw() = default;
+
+  /**
+   * @brief Constructs a Tdw object from a buffer.
+   *
+   * @param buffer The input buffer containing Tdw data.
+   */
   explicit Tdw([[maybe_unused]] std::span<const char> buffer)
   {
     const auto                   buffer_bak = buffer;
@@ -72,6 +100,13 @@ public:
     }
     m_tim = Tim{ buffer_bak.subspan(m_tim_offset) };
   }
+
+  /**
+   * @brief Accesses the character width at the specified index.
+   *
+   * @param i The index of the character width.
+   * @return The character width at the specified index.
+   */
   [[nodiscard]] auto
     operator[](size_t i) const
   {
@@ -82,16 +117,35 @@ public:
     }
     return m_widths.at(i).second();
   }
+
+  /**
+   * @brief Returns the number of character widths stored.
+   *
+   * @return The number of character widths.
+   */
   [[nodiscard]] auto
     size() const
   {
     return std::ranges::size(m_widths) * 2U;
   }
+
+  /**
+   * @brief Accesses the TIM image.
+   *
+   * @return A const reference to the TIM image.
+   */
   [[nodiscard]] const Tim &
     tim() const
   {
     return m_tim;
   }
+
+  /**
+   * @brief Saves the TIM image.
+   *
+   * @tparam Ts Parameter pack for the arguments to be forwarded.
+   * @param ts Arguments to be forwarded to the save function of the TIM image.
+   */
   template<class... Ts>
   void
     save(Ts &&...ts)
@@ -100,12 +154,26 @@ public:
       m_tim.save(std::forward<Ts>(ts)...);
     }
   }
+
+  /**
+   * @brief Accesses the vector of character widths.
+   *
+   * @return A const reference to the vector of character widths.
+   */
   [[nodiscard]] const std::vector<Bit4Values> &
     widths() const noexcept
   {
     return m_widths;
   }
 };
+
+/**
+ * @brief Outputs a Tdw object to an ostream.
+ *
+ * @param os The ostream to output to.
+ * @param t The Tdw object to be outputted.
+ * @return A reference to the ostream after outputting the Tdw object.
+ */
 inline std::ostream &
   operator<<(std::ostream &os, const Tdw &t)
 {
