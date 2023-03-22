@@ -111,5 +111,5 @@ breathe_projects = {}
 if read_the_docs_build:
     input_dir = '../../src'
     output_dir = 'build'
-    subprocess.call('doxygen', shell=True)
+    subprocess.call('doxygen raw_docs/source/Doxyfile', shell=True)
     breathe_projects['OpenVIII_CPP_WIP'] = output_dir + '/xml'
