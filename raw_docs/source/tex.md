@@ -1,5 +1,16 @@
 TEX file
 =====
+## Layout
+
+| Offset (Bytes) | Size (Bytes) | Name                       | Description                            |
+|----------------|--------------|----------------------------|----------------------------------------|
+| 0              | 108          | m_tex_header               | The main TEX header                    |
+| 108            | 80           | m_tex_pixel_format_header  | The pixel format header                |
+| 188            | 48           | m_tex_header2              | The second part of the TEX header      |
+| 236            | 4 or 0       | m_tex_header2_version2     | The third part of the TEX header (FF8) |
+| 236 or 240     | Varies       | m_palette_data             | The palette data                       |
+| Varies         | Varies       | m_image_data               | The image data                         |
+
 
 ```{eval-rst}
 .. doxygenstruct:: open_viii::graphics::Tex
@@ -76,5 +87,43 @@ Total Size: 80 bytes
 
 ```{eval-rst}
 .. doxygenstruct:: open_viii::graphics::TexPixelFormatHeader
+    :members:
+```
+
+### Part 3
+
+Total Size: 48 bytes
+
+| Offset (bytes) | Size (bytes) | Name                   | Description                   |
+|----------------|--------------|------------------------|-------------------------------|
+| 0              | 4            | m_color_key_array_flag | Color Key Array Flag          |
+| 4              | 4            | m_runtime_data_2       | Runtime Data 2                |
+| 8              | 4            | m_reference_alpha      | Reference Alpha               |
+| 12             | 4            | m_runtime_data_3       | Runtime Data 3                |
+| 16             | 4            | m_unknown_6            | Unknown 6                     |
+| 20             | 4            | m_palette_index        | Palette Index (Runtime Data)  |
+| 24             | 4            | m_runtime_data_4       | Runtime Data 4                |
+| 28             | 4            | m_runtime_data_5       | Runtime Data 5                |
+| 32             | 4            | m_unknown_7            | Unknown 7                     |
+| 36             | 4            | m_unknown_8            | Unknown 8                     |
+| 40             | 4            | m_unknown_9            | Unknown 9                     |
+| 44             | 4            | m_unknown_10           | Unknown 10                    |
+
+```{eval-rst}
+.. doxygenstruct:: open_viii::graphics::TexHeader2
+    :members:
+```
+
+### Part 4 - Tex version 2 only
+
+Total Size: 4 bytes
+
+| Offset (bytes) | Size (bytes) | Name        | Description                       |
+|----------------|--------------|-------------|-----------------------------------|
+| 0              | 4            | m_unknown_11| Unknown 11 (TEX version 2 only)   |
+
+
+```{eval-rst}
+.. doxygenstruct:: open_viii::graphics::TexHeader2Version2
     :members:
 ```

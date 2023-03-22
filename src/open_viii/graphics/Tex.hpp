@@ -40,24 +40,50 @@ namespace open_viii::graphics {
 //  std::uint8_t ALPHA{};
 //};
 /**
- * @see
- * https://github.com/MaKiPL/FF8_Rinoa_s_Toolset/blob/master/SerahToolkit_SharpGL/FF8_Core/TEX.cs
+ * @brief A structure representing a TEX file.
+ * @details The Tex structure represents a texture file used in the FF7 and FF8 games.
+ * It consists of several headers and data fields describing the texture and its format.
+ * @see https://github.com/MaKiPL/FF8_Rinoa_s_Toolset/blob/master/SerahToolkit_SharpGL/FF8_Core/TEX.cs
  * @see https://github.com/myst6re/vincent_tim/blob/master/TexFile.cpp
  * @see https://github.com/niemasd/PyFF7/blob/master/PyFF7/tex.py
  */
 struct [[maybe_unused]] Tex
 {
 private:
-  TexHeader                                m_tex_header{};
-  TexPixelFormatHeader                     m_tex_pixel_format_header{};
-  TexHeader2                               m_tex_header2{};
-  TexHeader2Version2                       m_tex_header2_version2{};
+  /**
+   * @brief The main TEX header.
+   */
+  TexHeader m_tex_header{};
+
+  /**
+   * @brief The pixel format header.
+   */
+  TexPixelFormatHeader m_tex_pixel_format_header{};
+
+  /**
+   * @brief The second part of the TEX header.
+   */
+  TexHeader2 m_tex_header2{};
+
+  /**
+   * @brief The third part of the TEX header, specific to FF8 (version 2).
+   */
+  TexHeader2Version2 m_tex_header2_version2{};
+
+  /**
+   * @brief The palette data.
+   */
   std::vector<Color32<ColorLayoutT::BGRA>> m_palette_data{};
+
+  /**
+   * @brief The image data.
+   */
   std::variant<
     std::vector<char>,
     std::vector<Color16<ColorLayoutT::ABGR>>,
     std::vector<Color32<ColorLayoutT::BGRA>>>
     m_image_data{};
+
   [[nodiscard]] auto
     get_color_from_palette(std::uint32_t row, std::uint8_t key) const
   {
