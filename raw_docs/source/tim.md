@@ -49,13 +49,21 @@ http://www.psxdev.net/forum/viewtopic.php?t=953
 ```
 
 ## Header
+Total Size: 8 bytes
 
 | Offset (bits) | Size (bits) |            Fixed Value            | Description                               |
 |:-------------:|:-----------:|:---------------------------------:|:------------------------------------------|
 |       0       |      8      |              `0x10`               | Tag                                       |
 |       8       |      8      |                `0`                | Version                                   |
-|      32       |      2      | `0b00`, `0b01`, `0b10`, or `0b11` | BPP: Bits Per Pixel                       |
+|      32       |      2      | `0b00`, `0b01`, `0b10`, or `0b11` | BPP: [Bits Per Pixel](#bits_per_pixel)    |
 |      35       |      1      |            `0` or `1`             | CLP: [Color Look-Up Table](#clut) Present |
+
+```{eval-rst}
+.. doxygenstruct:: open_viii::graphics::TimHeader
+    :members:
+```
+
+### Bits Per Pixel
 
 | BPP Value | Bits Per Pixel | CLP: [Color Look-Up Table](#clut) Present |
 |:---------:|:--------------:|:-----------------------------------------:|
@@ -63,6 +71,11 @@ http://www.psxdev.net/forum/viewtopic.php?t=953
 |  `0b01`   |     8-bit      |                     1                     |
 |  `0b10`   |     16-bit     |                     0                     |
 |  `0b11`   |     24-bit     |                     0                     |
+
+```{eval-rst}
+.. doxygenstruct:: open_viii::graphics::BPPT
+    :members:
+```
 
 ## Sub Header
 
