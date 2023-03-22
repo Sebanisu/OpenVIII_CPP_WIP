@@ -89,7 +89,7 @@ Total Size: 12 bytes
 | 8              | 2            | Width       |
 | 10             | 2            | Height      |
 
-## CLUT
+### CLUT
 
 Contains a Sub Header at the start of this section. Total Size: `Sub_Header.length` bytes. This section might not exist
 in the file. This contains the `16-bit` values of colors organized in cols and rows. In some cases, game developers and
@@ -98,25 +98,35 @@ to store additional palette colors. For example, while a standard `4-bit` color 
 they could utilize all `256` available colors by storing multiple `16-color` palettes in a row. To properly read and
 display these additional colors, you would need to override the default [CLUT](#clut) row and column settings.
 
-## Image Data
+```{eval-rst}
+.. doxygenstruct:: open_viii::graphics::TimClutHeader
+    :members:
+```
+
+### Image Data
 
 Contains a Sub Header at the start of this section. Total Size: `Sub_Header.length` bytes
 
-### 4 bpp
+```{eval-rst}
+.. doxygenstruct:: open_viii::graphics::TimImageHeader
+    :members:
+```
+
+#### 4 bpp
 
 This contains the `4-bit` color keys in cols and rows. You reference the [CLUT](#clut) to get the color. Max `16`
 colors.
 
-### 8 bpp
+#### 8 bpp
 
 This contains the `8-bit` color keys in cols and rows. You reference the [CLUT](#clut) to get the color. Max `256`
 colors.
 
-### 16 bpp
+#### 16 bpp
 
 This contains the `16-bit` values of colors organized in cols and rows.
 
-### 24 bpp
+#### 24 bpp
 
 This contains the `24-bit` values of colors organized in cols and rows.
 
