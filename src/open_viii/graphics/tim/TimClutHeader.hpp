@@ -17,75 +17,100 @@ namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timClutHeader
  * @ingroup graphics
- * @brief Color Lookup Table Header
+ * @brief Color Lookup Table (CLUT) Header
  */
 struct TimClutHeader
 {
 private:
   /**
-   * X value must be divisible by 4, the spec says 16 this but theres some
-   * values that aren't standard.
-   * @brief X value must be divisible by 4;
+   * @brief X value must be divisible by 4.
    */
   static constexpr auto                        XDIVISABLE_BY{ 4U };
+
   /**
-   * @brief Y max value is 511
+   * @brief Maximum Y value is 511.
    */
   static constexpr auto                        MAX_Y{ 511U };
+
   /**
-   * 4 bit can only read up to 16 values and 8 bit can only read up to 256
-   * values. But There are larger other sizes. The game uses
-   * @brief Valid width values; some non-standard width values exist so this
-   * isn't used.
+   * @brief Valid width values; some non-standard width values exist, so this
+   * isn't used. 4-bit can only read up to 16 values and 8-bit can only read up
+   * to 256 values.
    */
   [[maybe_unused]] static constexpr std::array VALID_WIDTH = { 16U, 256U };
+
   TimImageHeader                               m_image_header{};
 
 public:
+  /**
+   * @brief Default constructor.
+   */
   constexpr TimClutHeader() = default;
+
+  /**
+   * @brief Constructor with TimImageHeader parameter.
+   * @param in_image_header The TimImageHeader instance.
+   */
   explicit constexpr TimClutHeader(TimImageHeader in_image_header)
     : m_image_header(in_image_header)
   {}
+
+  /**
+   * @brief Constructor with size and rectangle parameters.
+   * @param in_size The total header and data size in bytes.
+   * @param in_rect The dimensions of the data.
+   */
   constexpr TimClutHeader(
     std::uint32_t            in_size,
     Rectangle<std::uint16_t> in_rect)
     : TimClutHeader(TimImageHeader(in_size, in_rect))
   {}
-  constexpr auto
-    operator<=>(const TimClutHeader &) const = default;
+
   /**
-   * Typically the width = number of colors, and height = number of color lookup
-   * tables. Sometimes if there is only 16 colors (4bpp) there is multiple
-   * groups of 16 in the table.
-   * @brief Dimensions of the color lookup table.
+   * @brief Default three-way comparison.
+   */
+  constexpr auto
+    operator<=>(const TimClutHeader &) const
+    = default;
+
+  /**
+   * @brief Get the dimensions of the color lookup table.
+   *        Typically, the width = number of colors, and height = number of
+   * color lookup tables. Sometimes, if there are only 16 colors (4bpp), there
+   * are multiple groups of 16 in the table.
+   * @return The dimensions of the color lookup table.
    */
   [[nodiscard]] constexpr auto
     rectangle() const
   {
     return m_image_header.rectangle();
   }
+
   /**
-   * Total size of Color Lookup Table including header.
-   * @brief Size in bytes.
+   * @brief Get the total size of the color lookup table including the header.
+   * @return The size in bytes.
    */
   [[nodiscard]] constexpr auto
     size() const
   {
     return m_image_header.size();
   };
+
   /**
-   * Total size of Color Lookup Table data without header.
-   * @brief Size in bytes.
+   * @brief Get the total size of the color lookup table data without the
+   * header.
+   * @return The size in bytes.
    */
   [[nodiscard]] constexpr auto
     data_size() const
   {
     return m_image_header.data_size();
   }
+
   /**
-   * Test X and Y of rectangle to see if they are valid values.
-   * Width is usually number of colors should be 16 or 256.
-   * @return returns true if valid
+   * @brief Check if the X and Y of the rectangle are valid values.
+   *        Width is usually the number of colors and should be 16 or 256.
+   * @return true if valid.
    */
   [[nodiscard]] constexpr bool
     check() const
@@ -93,10 +118,23 @@ public:
     return m_image_header.rectangle().x() % XDIVISABLE_BY == 0
         && m_image_header.rectangle().y() <= MAX_Y && m_image_header.check();
   }
+
+  /**
+   * @brief Implicit conversion to bool, calls check() method.
+   * @return true if check() passes.
+   */
   [[nodiscard]] explicit constexpr operator bool() const
   {
     return check();
   }
+  /**
+   * @brief Overloaded ostream insertion operator to output TimClutHeader
+   * information.
+   * @param os The output stream to insert the TimClutHeader information into.
+   * @param input The TimClutHeader instance to be output.
+   * @return A reference to the output stream with the TimClutHeader information
+   * inserted.
+   */
   friend std::ostream &
     operator<<(std::ostream &os, const TimClutHeader &input)
   {
