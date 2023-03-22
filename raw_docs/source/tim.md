@@ -4,6 +4,8 @@ Pretty much everything else is some variation on
 [Playstation TIM](http://fileformats.archiveteam.org/wiki/TIM_(PlayStation_graphics)). Many files have TIM images
 embedded into them.
 
+## Layout
+
 | Offset (Bytes) | Size (Bytes) | Name                | Description                                   |
 |----------------|--------------|---------------------|-----------------------------------------------|
 | 0              | 8            | m_tim_header        | The header of the TIM file                    |
