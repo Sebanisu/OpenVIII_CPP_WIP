@@ -4,6 +4,11 @@ Pretty much everything else is some variation on
 [Playstation TIM](http://fileformats.archiveteam.org/wiki/TIM_(PlayStation_graphics)). Many files have TIM images
 embedded into them.
 
+```{eval-rst}
+.. doxygenstruct:: open_viii::graphics::Tim
+    :members:
+```
+
 ## 16-bit
 
 All of these images use [15-bit high color](https://en.wikipedia.org/wiki/High_color#15-bit_high_color) with 1 bit for
