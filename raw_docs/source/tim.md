@@ -130,7 +130,5 @@ This contains the `16-bit` values of colors organized in cols and rows.
 
 This contains the `24-bit` values of colors organized in cols and rows.
 
-By extending the [CLUT](#clut) and overriding the default row and column settings, developers could achieve more varied
-and visually appealing graphics, even with the limited color depth of the PlayStation One hardware.
 
 Sources: http://www.psxdev.net/forum/viewtopic.php?t=109

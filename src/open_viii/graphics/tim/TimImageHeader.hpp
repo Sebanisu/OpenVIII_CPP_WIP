@@ -15,7 +15,7 @@
 #include "open_viii/graphics/Rectangle.hpp"
 namespace open_viii::graphics {
 /**
- * Base Header for the following raw 16bit color image data.
+ * @brief Base header for the following raw 16-bit color image data.
  */
 struct TimImageHeader
 {
@@ -24,54 +24,92 @@ private:
   Rectangle<std::uint16_t> m_rectangle{};
 
 public:
+  /**
+   * @brief Default constructor.
+   */
   constexpr TimImageHeader() = default;
+
+  /**
+   * @brief Constructor with size and rectangle parameters.
+   * @param in_size The total header and data size in bytes.
+   * @param in_rect The dimensions of the data.
+   */
   constexpr TimImageHeader(
     std::uint32_t            in_size,
     Rectangle<std::uint16_t> in_rect)
     : m_size(in_size), m_rectangle(in_rect)
   {}
-  constexpr auto
-    operator<=>(const TimImageHeader &) const = default;
+
   /**
-   * Total Header and Data size
-   * @brief size in bytes
+   * @brief Default three-way comparison.
+   */
+  constexpr auto
+    operator<=>(const TimImageHeader &) const
+    = default;
+
+  /**
+   * @brief Get the total header and data size in bytes.
+   * @return The value of m_size.
    */
   [[nodiscard]] constexpr auto
     size() const
   {
     return m_size;
   }
+
   /**
-   * Dimensions of data.
+   * @brief Get the dimensions of the data.
+   * @return The value of m_rectangle.
    */
   [[nodiscard]] constexpr auto
     rectangle() const
   {
     return m_rectangle;
   }
+
   /**
-   * Total size of Color Lookup Table data without header.
-   * @brief Size in bytes.
+   * @brief Get the total size of the color lookup table data without the
+   * header.
+   * @return The size in bytes.
    */
   [[nodiscard]] constexpr auto
     data_size() const
   {
     return m_size - sizeof(TimImageHeader);
   };
+
+  /**
+   * @brief Check whether the width and height of the rectangle are greater than
+   * 0.
+   * @return true if the check passes.
+   */
   [[nodiscard]] constexpr bool
     check() const
   {
     return rectangle().width() > 0 && rectangle().height() > 0;
   }
+
+  /**
+   * @brief Implicit conversion to bool, calls check() method.
+   * @return true if Check test passes.
+   */
   [[nodiscard]] explicit constexpr operator bool() const
   {
     return check();
   }
 };
+
+/**
+ * @brief Overloaded ostream operator for TimImageHeader.
+ * @param os Output stream.
+ * @param input TimImageHeader instance to output.
+ * @return Modified output stream.
+ */
 inline std::ostream &
   operator<<(std::ostream &os, const TimImageHeader &input)
 {
   return os << '{' << input.size() << " bytes, " << input.rectangle() << '}';
 }
+
 }// namespace open_viii::graphics
 #endif// VIIIARCHIVE_TIMIMAGEHEADER_HPP
