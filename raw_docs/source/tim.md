@@ -20,12 +20,12 @@ blend things.
 
 ### Blend Modes
 
-|Mode| Formula                     |
-|---|-----------------------------|
-|0| $0.5 * Back + 0.50 * Front$ |
-|1| $1.0 * Back + 1.00 * Front$ |
-|2| $1.0 * Back - 1.00 * Front$ |
-|3| $1.0 * Back + 0.25 * Front$ |
+| Mode | Formula                                 |
+|------|-----------------------------------------|
+| 0    | $$0.5 \times \text{Back} + 0.50 \times \text{Front}$$ |
+| 1    | $$1.0 \times \text{Back} + 1.00 \times \text{Front}$$ |
+| 2    | $$1.0 \times \text{Back} - 1.00 \times \text{Front}$$ |
+| 3    | $$1.0 \times \text{Back} + 0.25 \times \text{Front}$$ |
 
 Source:
 http://www.psxdev.net/forum/viewtopic.php?t=953
