@@ -8,9 +8,9 @@ Quad file
 |       4        |      2       | m_face_indice_c    | Face index C                                                 |                                                                                    |
 |       6        |      2       | m_face_indice_d    | Face index D                                                 |                                                                                    |
 |       8        |      2       | m_uv1              | UV coordinate 1                                              |                                                                                    |
-|       10       |      2       | m_raw_clut         | Raw CLUT value                                               | {math}`((\text{raw_clut} \ll 2) ∣ (\text{raw_clut} \gg (16 - 2))) \;\&\; 15{math}` |
+|       10       |      2       | m_raw_clut         | Raw CLUT value                                               | {math}`((\text{raw_clut} \ll 2) ∣ (\text{raw_clut} \gg (16 - 2))) \;\&\; 15` |
 |       12       |      2       | m_uv2              | UV coordinate 2                                              |                                                                                    |
-|       14       |      1       | m_raw_texture_page | Raw texture page value                                       | {math}`(\text{raw_texture_page} \gg 4) \;\text{\&}\; 15{math}`                     |
+|       14       |      1       | m_raw_texture_page | Raw texture page value                                       | {math}`(\text{raw_texture_page} \gg 4) \;\text{\&}\; 15`                     |
 |       15       |      1       | m_raw_hide         | Raw hide value                                               |                                                                                    |
 |       16       |      2       | m_uv3              | UV coordinate 3                                              |                                                                                    |
 |       18       |      2       | m_uv4              | UV coordinate 4                                              |                                                                                    |
