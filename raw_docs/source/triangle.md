@@ -1,6 +1,6 @@
-Quad file
+Triangle file
 =====
-[Quad](https://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Triangle)
+[Triangle](https://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Triangle)
 
 Total Size: 20 bytes
 
