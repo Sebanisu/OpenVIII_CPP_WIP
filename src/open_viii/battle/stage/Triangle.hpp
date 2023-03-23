@@ -46,7 +46,7 @@ private:
 
 public:
   static constexpr std::size_t COUNT = 3U;
-  
+
   /**
    * @brief Calculate the CLUT from raw CLUT value.
    * @param in_clut_raw The raw CLUT value.
