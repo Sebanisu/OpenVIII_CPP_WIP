@@ -973,7 +973,7 @@ struct FIFLFS : public FIFLFSBase
   auto
     get_archive_with_nested(
       const std::initializer_list<std::string_view> &filename,
-      filterT &&filter_lambda = {}) -> FIFLFS<false> const
+      filterT &&filter_lambda = {}) const -> FIFLFS<false>
   {
     FIFLFS<false> archive = {};
     const auto    items   = get_all_pairs_from_fl(filename);
