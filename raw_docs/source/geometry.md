@@ -27,4 +27,4 @@ Geometry
 ```{eval-rst}
 .. doxygenstruct:: open_viii::battle::stage::Geometry
     :members:
-``
+```
