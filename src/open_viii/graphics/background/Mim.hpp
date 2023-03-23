@@ -138,7 +138,7 @@ private:
     const auto output_size       = std::ranges::size(image_buffer_bbp4) * 2U;
     const auto get_color_from_palette = [&](size_t i) {
       const auto    key       = image_buffer_bbp4[i >> 1];
-      const uint8_t color_key = i % 2U == 0 ? key.first() : key.second();
+      const uint8_t color_key = i % 2U == 0 ? key.first : key.second;
       return static_cast<T>(safe_get_color_from_palette(
         palette_buffer,
         get_palette_key(color_key, palette)));
@@ -510,7 +510,7 @@ public:
     const Bit4Values pair                = m_image_buffer_bbp4
       [(std::uint32_t{ x } + texture_page_offset) / 2U
        + (std::uint32_t{ y } * width)];
-    return x % 2U == 0 ? pair.first() : pair.second();
+    return x % 2U == 0 ? pair.first : pair.second;
   }
 
   [[nodiscard]] Color16ABGR

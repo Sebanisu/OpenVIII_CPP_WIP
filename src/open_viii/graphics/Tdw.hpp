@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_TDW_HPP
 #include "Bit4Values.hpp"
 #include "Tim.hpp"
+#include "Uint8Range.hpp"
 namespace open_viii::graphics {
 /**
  * @brief Stores bitmap font character widths for an included TIM image.
@@ -113,9 +114,9 @@ public:
     bool first = (i % 2U == 0U);
     i /= 2U;
     if (first) {
-      return m_widths.at(i).first();
+      return m_widths.at(i).first;
     }
-    return m_widths.at(i).second();
+    return m_widths.at(i).second;
   }
 
   /**
@@ -160,7 +161,7 @@ public:
    *
    * @return A const reference to the vector of character widths.
    */
-  [[nodiscard]] const std::vector<Bit4Values> &
+  [[nodiscard]] Uint8Range<std::vector<Bit4Values>>
     widths() const noexcept
   {
     return m_widths;
@@ -178,8 +179,8 @@ inline std::ostream &
   operator<<(std::ostream &os, const Tdw &t)
 {
   os << t.size() << " char widths: ";
-  for (const auto &[first, second] : t.widths()) {
-    os << +first << ", " << +second << ", ";
+  for (const auto & width : t.widths()) {
+    os << +width << ", ";
   }
   return os << '\n' << t.tim();
 }

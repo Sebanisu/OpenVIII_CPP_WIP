@@ -14,107 +14,89 @@
 #define VIIIARCHIVE_4BITVALUES_H
 #include <cstring>
 namespace open_viii::graphics {
+/**
+ * @brief Class to represent two 4-bit values stored in a single byte.
+ *
+ * This class provides functionality for extracting and manipulating two 4-bit
+ * values stored in a single byte. It also allows structured binding of the two
+ * 4-bit values. An object of this class can be converted to an 8-bit unsigned
+ * integer, which returns the 4-bit values packed into the byte.
+ */
 struct Bit4Values
 {
 private:
   static constexpr std::uint8_t MASK_4_BIT        = 0xFU;
   static constexpr std::uint8_t OFFSET_MASK_4_BIT = 0xF0U;
   static constexpr std::uint8_t SHIFT_4_BITS      = 4U;
-  std::uint8_t                  m_first  : 4U {};
-  std::uint8_t                  m_second : 4U {};
 
 public:
+
+  std::uint8_t                  first  : 4U {};///< The first 4-bit value.
+  std::uint8_t                  second : 4U {};///< The second 4-bit value.
+  /**
+   * @brief Default constructor.
+   */
   constexpr Bit4Values() = default;
 
-  static Bit4Values
+  /**
+   * @brief Creates a Bit4Values object from a single byte.
+   *
+   * This function extracts the two 4-bit values from a single byte and returns
+   * a Bit4Values object.
+   *
+   * @param in_raw The byte from which to extract the 4-bit values.
+   * @return The Bit4Values object with the extracted 4-bit values.
+   */
+  constexpr static Bit4Values
     create(const std::uint8_t in_raw)
   {
-    Bit4Values out{};
-    std::memcpy(&out, &in_raw, sizeof(out));
-    return out;
+    return std::bit_cast<Bit4Values>(in_raw);
   }
-  static Bit4Values
+
+  /**
+   * @brief Creates a Bit4Values object from two 4-bit values.
+   *
+   * This function creates a Bit4Values object from two 4-bit values and returns
+   * the object.
+   *
+   * @param in_first The first 4-bit value.
+   * @param in_second The second 4-bit value.
+   * @return The Bit4Values object with the two 4-bit values.
+   */
+  constexpr static Bit4Values
     create(const std::uint8_t in_first, const std::uint8_t in_second)
   {
     return create(
       static_cast<uint8_t>((in_first & MASK_4_BIT) << SHIFT_4_BITS)
       | (in_second & MASK_4_BIT));
   }
-  //  constexpr Bit4Values(const std::uint8_t in_first,
-  //                       const std::uint8_t in_second)
-  //    : m_first(in_first & MASK_4_BIT), m_second(in_second & MASK_4_BIT)
-  //  {}
-  //  constexpr explicit Bit4Values(const std::uint8_t in_raw)
-  //    : m_first(static_cast<std::uint8_t>((in_raw >> SHIFT_4_BITS)) &
-  //    MASK_4_BIT),
-  //      m_second((in_raw & MASK_4_BIT))
-  //  {}
+
+  /**
+   * @brief Conversion operator to an 8-bit unsigned integer.
+   *
+   * This function returns an 8-bit unsigned integer with the two 4-bit values
+   * packed into a byte.
+   *
+   * @note The operator returns a copy of the packed 4-bit values as an 8-bit
+   * unsigned integer. Therefore, the return value cannot be used as a
+   * reference.
+   *
+   * @return The 8-bit unsigned integer with the packed 4-bit values.
+   */
   constexpr explicit operator std::uint8_t() const noexcept
   {
     return static_cast<std::uint8_t>(
       static_cast<std::uint8_t>(
-        static_cast<std::uint8_t>(m_first << SHIFT_4_BITS) & OFFSET_MASK_4_BIT)
-      | (m_second));
+        static_cast<std::uint8_t>(first << SHIFT_4_BITS) & OFFSET_MASK_4_BIT)
+      | (second));
   }
-  /**
-   * Get Value
-   *@note required to structured binding support
-   * @note can't be reference because it's a copy of 4 bits to 8 bits.
-   */
-  template<std::size_t I>
-  requires(I < 2U) [[nodiscard]] constexpr auto get() const noexcept
-  {
-    if constexpr (I == 0U) {
-      return m_first;
-    }
-    else if constexpr (I == 1U) {
-      return m_second;
-    }
-  }
-  //  template<int I>
-  //  [[nodiscard]] std::tuple_element_t<I, std::uint8_t> get(){
-  //    static_assert(I < 2,"only 2 items");
-  //    if      constexpr(I == 0) return first;
-  //    else if constexpr(I == 1) return second;
-  //  }
-  [[nodiscard]] constexpr std::uint8_t
-    first() const noexcept
-  {
-    return m_first;
-  }
-  [[nodiscard]] constexpr std::uint8_t
-    second() const noexcept
-  {
-    return m_second;
-  }
-  //  std::uint8_t first(const std::uint8_t &value) noexcept
-  //  {
-  //    return m_first = value & MASK_4_BIT;
-  //  }
-  //  std::uint8_t second(const std::uint8_t &value) noexcept
-  //  {
-  //    return m_second = value & MASK_4_BIT;
-  //  }
   static constexpr std::size_t EXPECTED_SIZE = 1U;
 };
+
+/**
+ * @brief Asserts that the size of Bit4Values is equal to its expected size.
+ */
 static_assert(sizeof(Bit4Values) == Bit4Values::EXPECTED_SIZE);
+
 }// namespace open_viii::graphics
-/**
- * number of arguments
- * @note required to structured binding support
- */
-template<>
-struct [[maybe_unused]] std::tuple_size<open_viii::graphics::Bit4Values>
-  : std::integral_constant<size_t, 2>
-{
-};
-/**
- * type of arguments
- * @note required to structured binding support
- */
-template<size_t I>
-struct [[maybe_unused]] std::tuple_element<I, open_viii::graphics::Bit4Values>
-{
-  using type = uint8_t;
-};
 #endif// VIIIARCHIVE_4BITVALUES_H

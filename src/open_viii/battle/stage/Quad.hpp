@@ -47,7 +47,7 @@ public:
   [[nodiscard]] std::uint8_t
     texture_page() const noexcept
   {
-    return m_raw_texture_page.second();
+    return m_raw_texture_page.second;
   }
   [[nodiscard]] auto
     color() const noexcept
