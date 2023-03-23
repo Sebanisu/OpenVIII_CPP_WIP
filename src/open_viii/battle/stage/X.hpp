@@ -4,6 +4,9 @@
 #ifndef VIIIARCHIVE_X_HPP
 #define VIIIARCHIVE_X_HPP
 #include "Camera.hpp"
+#include "Geometries.hpp"
+#include "GeometryGroupPointers.hpp"
+#include "GeometryPointers.hpp"
 #include "open_viii/graphics/Tim.hpp"
 namespace open_viii::battle::stage {
 /**
@@ -128,13 +131,47 @@ private:
   {
     const auto camera_size = m_camera.camera_header().camera_data_size();
     const auto model_start = camera_start + camera_size;
-    const auto size        = std::distance(model_start, tim_start);
+    assert(model_start < tim_start);
+    const auto size = std::distance(model_start, tim_start);
     std::cout << "\tSIZE: " << size << " bytes" << std::endl;
     offset(buffer_begin, model_start);
-    [[maybe_unused]] Geometry &geometry
-      = m_geometries.m_geometries.emplace_back(
-        Geometry{ buffer_begin,
-                  std::span<const char>{ model_start, tim_start } });
+    auto span
+      = std::span<const char>{ model_start, static_cast<std::size_t>(size) };
+    {
+      std::array<char, sizeof(std::uint32_t)> tmp{};
+      std::ranges::copy(span.subspan(0, sizeof(std::uint32_t)), tmp.begin());
+      [[maybe_unused]] const auto section_counter
+        = std::bit_cast<std::uint32_t>(tmp);
+      span = span.subspan(sizeof(std::uint32_t));
+      assert(section_counter == 6);
+    }
+    GeometryPointers geometry_pointers;
+    {
+      std::array<char, sizeof(GeometryOffsets)> tmp{};
+      std::ranges::copy(span.subspan(0, sizeof(GeometryOffsets)), tmp.begin());
+      geometry_pointers
+        = std::bit_cast<GeometryOffsets>(tmp) + (span.data() - 4U);
+      // span = span.subspan(sizeof(GeometryOffsets));
+    }
+    std::array<GeometryGroupPointers, 4> group_pointers{};
+    for (std::uint8_t i{};
+         const auto  *ptr : std::array{ geometry_pointers.group_1_pointer,
+                                       geometry_pointers.group_2_pointer,
+                                       geometry_pointers.group_3_pointer,
+                                       geometry_pointers.group_4_pointer }) {
+      std::array<char, sizeof(GeometryGroupOffsets)> tmp{};
+      std::ranges::copy(
+        std::span(ptr, sizeof(GeometryGroupOffsets)),
+        tmp.begin());
+      group_pointers[i++] = std::bit_cast<GeometryGroupOffsets>(tmp) + ptr;
+      // span = span.subspan(sizeof(GeometryOffsets));
+    }
+
+    for (const auto &group_pointer : group_pointers) {
+      m_geometries.m_geometries.emplace_back(
+        buffer_begin,
+        std::span(group_pointer.object_list_pointer, tim_start));
+    }
   }
 
 public:
