@@ -19,38 +19,38 @@ private:
   using point = graphics::Point<std::uint8_t>;
 
   /// Face index A
-  std::uint16_t                                  m_face_indice_a{};
+  std::uint16_t                 m_face_indice_a{};
   /// Face index B
-  std::uint16_t                                  m_face_indice_b{};
+  std::uint16_t                 m_face_indice_b{};
   /// Face index C
-  std::uint16_t                                  m_face_indice_c{};
+  std::uint16_t                 m_face_indice_c{};
   /// Face index D
-  std::uint16_t                                  m_face_indice_d{};
+  std::uint16_t                 m_face_indice_d{};
 
   /// UV coordinate 1
-  point                                          m_uv1{};
+  point                         m_uv1{};
   /// Raw CLUT value
-  std::uint16_t                                  m_raw_clut{};
+  std::uint16_t                 m_raw_clut{};
   /// UV coordinate 2
-  point                                          m_uv2{};
+  point                         m_uv2{};
   /// Raw texture page value
-  graphics::Bit4Values                           m_raw_texture_page{};
+  graphics::Bit4Values          m_raw_texture_page{};
   /// Raw hide value
-  std::uint8_t                                   m_raw_hide{};
+  std::uint8_t                  m_raw_hide{};
   /// UV coordinate 3
-  point                                          m_uv3{};
+  point                         m_uv3{};
   /// UV coordinate 4
-  point                                          m_uv4{};
+  point                         m_uv4{};
 
   /// Color value
-  graphics::Color24<graphics::ColorLayoutT::RGB> m_color{};
+  graphics::Color24RGB          m_color{};
   /// Raw GPU flags
-  GpuFlags                                       m_raw_gpu{};
+  GpuFlags                      m_raw_gpu{};
 
   /// Mask value for 4 bits
-  static constexpr std::uint8_t                  MASK_4_BIT  = 0xFU;
+  static constexpr std::uint8_t MASK_4_BIT  = 0xFU;
   /// Shift value for 2 bits
-  static constexpr int                           SHIFT_2_BIT = 2;
+  static constexpr int          SHIFT_2_BIT = 2;
 
 public:
   static constexpr std::size_t COUNT = 4U;
