@@ -585,7 +585,7 @@ public:
   {
     if (clut_rows() == 0) {
       const auto &data = get_colors<Color16<ColorLayoutT::ABGR>>();
-      Ppm::save(data, width(), height(), filename);
+      //Ppm::save(data, width(), height(), filename);
       Png::save(
         data,
         width(),
@@ -608,7 +608,7 @@ public:
                             + path.extension().string();
         const auto &data
           = get_colors<Color16<ColorLayoutT::ABGR>>(i, clut_dims);
-        Ppm::save(data, width(), height(), out_path);
+        //Ppm::save(data, width(), height(), out_path);
         Png::save(data, width(), height(), out_path, out_path);
         if (clut >= 0)
           return;
@@ -618,11 +618,11 @@ public:
       auto       path     = std::filesystem::path(filename);
       const auto out_path = (path.parent_path() / path.stem()).string()
                           + "_clut" + path.extension().string();
-      Ppm::save(
-        m_tim_clut_data,
-        m_tim_clut_header.rectangle().width(),
-        m_tim_clut_header.rectangle().height(),
-        out_path);
+//      Ppm::save(
+//        m_tim_clut_data,
+//        m_tim_clut_header.rectangle().width(),
+//        m_tim_clut_header.rectangle().height(),
+//        out_path);
       Png::save(
         m_tim_clut_data,
         m_tim_clut_header.rectangle().width(),

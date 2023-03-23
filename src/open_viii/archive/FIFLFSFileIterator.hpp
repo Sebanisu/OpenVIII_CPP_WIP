@@ -49,6 +49,11 @@ public:
   {
     return m_fiflfs_false.get().get_entry_by_index(m_file_id);
   }
+  std::string_view
+    file_name() const
+  {
+    return m_file_name;
+  }
   value_type
     get() const
   {

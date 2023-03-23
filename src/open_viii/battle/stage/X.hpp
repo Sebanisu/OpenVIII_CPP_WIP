@@ -16,7 +16,8 @@ private:
   std::vector<char> m_buffer{};///< @brief Buffer holding the file content.
   std::string       m_path{};  ///< @brief Path to the X file.
   Camera            m_camera{};///< @brief Camera object from the X file.
-  graphics::Tim     m_tim{};   ///< @brief TIM texture from the X file.
+  Geometries    m_geometries{};///< @brief Geometries object from the X file.
+  graphics::Tim m_tim{};       ///< @brief TIM texture from the X file.
 
   /**
    * @brief Searches for a needle in the buffer and executes a lambda function
@@ -127,10 +128,13 @@ private:
   {
     const auto camera_size = m_camera.camera_header().camera_data_size();
     const auto model_start = camera_start + camera_size;
-    const auto size
-      = static_cast<int>(camera_size) - std::distance(camera_start, tim_start);
+    const auto size        = std::distance(model_start, tim_start);
     std::cout << "\tSIZE: " << size << " bytes" << std::endl;
     offset(buffer_begin, model_start);
+    [[maybe_unused]] Geometry &geometry
+      = m_geometries.m_geometries.emplace_back(
+        Geometry{ buffer_begin,
+                  std::span<const char>{ model_start, tim_start } });
   }
 
 public:
@@ -192,7 +196,7 @@ public:
    * @return const std::string& The path to the X file.
    */
   const std::string &
-    path()
+    path() const
   {
     return m_path;
   }
@@ -202,7 +206,7 @@ public:
    * @return const Camera& The Camera object from the X file.
    */
   const Camera &
-    camera()
+    camera() const
   {
     return m_camera;
   }
@@ -211,7 +215,7 @@ public:
    * @return const graphics::Tim& The TIM texture from the X file.
    */
   const graphics::Tim &
-    tim()
+    tim() const
   {
     return m_tim;
   }

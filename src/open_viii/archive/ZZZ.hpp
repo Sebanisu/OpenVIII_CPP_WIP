@@ -121,7 +121,7 @@ public:
       std::size_t                                index = 0)
       : m_path(path), m_offsets(offsets), m_sizes(sizes), m_index(index)
     {
-      assert(m_offsets.get().size() + 1U == m_sizes.get().size());
+      assert(m_offsets.get().size() == m_sizes.get().size() + 1U);
       [[maybe_unused]] const auto checkone
         = [](const std::filesystem::path &in) {
             std::error_code ec;

@@ -49,11 +49,11 @@
 {
   constexpr open_viii::battle::stage::Triangle triangle{};
   constexpr open_viii::battle::stage::Quad     quad{};
-  [[maybe_unused]] constexpr auto              testmin =
-    open_viii::graphics::min_uv(triangle);
+  [[maybe_unused]] constexpr auto              testmin
+    = open_viii::graphics::min_uv(triangle);
   [[maybe_unused]] constexpr auto testmax = open_viii::graphics::max_uv(quad);
-  [[maybe_unused]] constexpr auto rect =
-    open_viii::graphics::rectangle(triangle);
+  [[maybe_unused]] constexpr auto rect
+    = open_viii::graphics::rectangle(triangle);
 }
 int
   main()
@@ -63,19 +63,35 @@ int
     std::cout << path << std::endl;
     static constexpr auto coo      = open_viii::LangT::en;
     const auto            archives = open_viii::archive::Archives(
-      path, open_viii::LangCommon::to_string<coo>());
+      path,
+      open_viii::LangCommon::to_string<coo>());
     if (!static_cast<bool>(archives)) {
       std::cerr << "Failed to load path: " << path.string() << '\n';
       return;
     }
-    const auto &battle =
-      archives.get<open_viii::archive::ArchiveTypeT::battle>();
-    battle.execute_on({ open_viii::battle::stage::X::EXT },
-                      []([[maybe_unused]] std::vector<char> &&rvalue_buffer,
-                         std::string                          rvalue_path) {
-                        open_viii::battle::stage::X(std::move(rvalue_buffer),
-                                                    std::move(rvalue_path));
-                      });
+    //    const auto &battle =
+    //      archives.get<open_viii::archive::ArchiveTypeT::battle>();
+    //    battle.execute_on({ open_viii::battle::stage::X::EXT },
+    //                      []([[maybe_unused]] std::vector<char>
+    //                      &&rvalue_buffer,
+    //                         std::string                          rvalue_path)
+    //                         {
+    //                        open_viii::battle::stage::X(std::move(rvalue_buffer),
+    //                                                    std::move(rvalue_path));
+    //                      });
+    const auto &battle_archive
+      = archives.get<open_viii::archive::ArchiveTypeT::battle>();
+    for (const auto &battle_fetch : battle_archive) {
+      if (!battle_fetch.file_name().ends_with(
+            open_viii::battle::stage::X::EXT)) {
+        continue;
+      }
+      const auto x = open_viii::battle::stage::X(
+        std::move(battle_fetch.get()),
+        static_cast<std::string>(std::move(battle_fetch.file_name())));
+      std::ignore = std::getchar();
+      //x.tim().save(x.path());
+    }
   });
   const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;

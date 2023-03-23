@@ -10,6 +10,7 @@
 namespace open_viii::battle::stage {
 struct GeometryHeader1
 {
+
 private:
   static constexpr std::uint16_t CONSTANT_VALUE = 0x0100;
   std::uint16_t m_always_1_0_1{ CONSTANT_VALUE };///< @brief Always 0x0100.
