@@ -83,6 +83,61 @@ public:
       return m_face_indice_c;
     }
   }
+
+  /**
+   * @brief Generates a range view of face indices for the Quad.
+   *
+   * @return A range view representing the face indices.
+   */
+  auto
+    face_indices() const noexcept
+  {
+    return std::views::iota(std::uint8_t{}, std::uint8_t{ 3 })
+         | std::views::transform([this](std::uint8_t m_index) -> std::uint16_t {
+             {
+               switch (m_index) {
+               case 0:
+                 return face_indice<0U>();
+               case 1:
+                 return face_indice<1U>();
+               case 2:
+                 return face_indice<2U>();
+               default:
+                 return {};// Invalid index, return a
+                           // default-constructed value,
+                           // handle as desired
+               }
+             }
+           });
+  }
+
+  /**
+   * @brief Generates a range view of UV coordinates for the Quad.
+   *
+   * @return A range view representing the UV coordinates.
+   */
+  auto
+    uvs() const noexcept
+  {
+    return std::views::iota(std::uint8_t{}, std::uint8_t{ 3 })
+         | std::views::transform(
+             [this](std::uint8_t m_index) -> graphics::Point<std::uint8_t> {
+               {
+                 switch (m_index) {
+                 case 0:
+                   return uv<0U>();
+                 case 1:
+                   return uv<1U>();
+                 case 2:
+                   return uv<2U>();
+                 default:
+                   return {};// Invalid index, return a
+                             // default-constructed value,
+                             // handle as desired
+                 }
+               }
+             });
+  }
   static constexpr std::size_t EXPECTED_SIZE = 20U;
 };
 static_assert(sizeof(Triangle) == Triangle::EXPECTED_SIZE);

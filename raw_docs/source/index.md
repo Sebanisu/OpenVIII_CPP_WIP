@@ -14,6 +14,7 @@ Yep, it still needs a new name. :)
 ```{toctree}
 getting_started
 archive
+battle
 graphics
 versions
 applications
