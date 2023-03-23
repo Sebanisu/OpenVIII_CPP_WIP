@@ -45,12 +45,13 @@ private:
   static constexpr int          SHIFT_2_BIT = 2;
 
 public:
+  static constexpr std::size_t COUNT = 3U;
+  
   /**
    * @brief Calculate the CLUT from raw CLUT value.
    * @param in_clut_raw The raw CLUT value.
    * @return The calculated CLUT value.
    */
-  static constexpr std::size_t COUNT = 3U;
   [[nodiscard]] static constexpr std::uint8_t
     clut(const std::uint16_t &in_clut_raw) noexcept
   {
