@@ -5,4 +5,5 @@ Battle
 
 ```{toctree}
 quad
+triangle
 ```
