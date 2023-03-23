@@ -1,7 +1,7 @@
-Graphics Library
+Battle
 =====
 
-## Battle Stage
+## Stage
 
 ```{toctree}
 quad
