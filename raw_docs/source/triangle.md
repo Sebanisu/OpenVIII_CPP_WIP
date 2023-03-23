@@ -1,4 +1,4 @@
-Triangle file
+Triangle
 =====
 [Triangle](https://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Triangle)
 

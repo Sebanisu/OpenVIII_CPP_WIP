@@ -1,4 +1,4 @@
-Quad file
+Quad
 =====
 [Quad](https://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Quad)
 

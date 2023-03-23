@@ -6,4 +6,5 @@ Battle
 ```{toctree}
 quad
 triangle
+gpuflags
 ```
