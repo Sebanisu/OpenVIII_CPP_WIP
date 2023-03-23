@@ -7,95 +7,213 @@
 #include "open_viii/graphics/Tim.hpp"
 namespace open_viii::battle::stage {
 /**
- * X File format
+ * @brief Represents the X file format for battle stages in Final Fantasy VIII.
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X
  */
 struct X
 {
 private:
-  std::vector<char>                     m_buffer{};
-  std::string                           m_path{};
-  Camera                                m_camera{};
-  graphics::Tim                         m_tim{};
-  static constexpr std::array<char, 5U> TIM_START{ 0x10, 0x0, 0x0, 0x0, 0x09 };
-  static constexpr std::array<char, 4U> MODEL_START{ 0x06, 0x0, 0x0, 0x0 };
-  static constexpr std::array<char, 6U> CAMERA_START{ 0x02, 0x0,  0x08,
-                                                      0x0,  0x20, 0x0 };
+  std::vector<char> m_buffer{};///< @brief Buffer holding the file content.
+  std::string       m_path{};  ///< @brief Path to the X file.
+  Camera            m_camera{};///< @brief Camera object from the X file.
+  graphics::Tim     m_tim{};   ///< @brief TIM texture from the X file.
+
+  /**
+   * @brief Searches for a needle in the buffer and executes a lambda function
+   * if found.
+   * @param needle The needle to search for in the buffer.
+   * @param buffer_begin Pointer to the beginning of the buffer.
+   * @param buffer_end Pointer to the end of the buffer.
+   * @param lambda Lambda function to execute if the needle is found.
+   * @return Pointer to the start of the needle if found, or buffer_end if not
+   * found.
+   */
+  const auto
+    search(
+      const std::span<const char> &needle,
+      const char                  *buffer_begin,
+      const char                  *buffer_end,
+      auto                         lambda)
+  {
+    const auto start = std::search(
+      buffer_begin,
+      buffer_end,
+      std::ranges::begin(needle),
+      std::ranges::end(needle));
+    const auto match   = start == buffer_end;
+    const auto message = [&match]() {
+      if (match) {
+        return "Couldn't find it.";
+      }
+      // return "Found it.";
+      return "";
+    };
+    std::cout << message() << '\n';
+    if (!match) {
+      lambda(start);
+    }
+    return start;
+  }
+
+  /**
+   * @brief Prints the offset of the start pointer relative to the buffer_begin
+   * pointer.
+   * @param buffer_begin Pointer to the beginning of the buffer.
+   * @param start Pointer to the start position to calculate the offset.
+   */
+  void
+    offset(const char *buffer_begin, const char *start)
+  {
+    std::cout << "\tOffset: " << std::hex << std::uppercase
+              << std::distance(buffer_begin, start) << std::dec
+              << std::nouppercase
+              << '\n';// base() isn't in visual studio so i might need to
+                      // cast buffer_begin to a span so they are the same
+                      // type. base() converts the iterator to the pointer.
+  };
+
+  /**
+   * @brief Processes the TIM data from the buffer.
+   * @param buffer_begin Pointer to the beginning of the buffer.
+   * @param buffer_end Pointer to the end of the buffer.
+   */
+  void
+    process_tim(const char *buffer_begin, const char *buffer_end)
+  {
+    const auto tim_start = search(
+      TIM_START,
+      buffer_begin,
+      buffer_end,
+      [this, &buffer_end](const auto &start) {
+        const auto &span = std::span<const char>(start, buffer_end);
+        m_tim            = graphics::Tim(span);
+        std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
+        std::cout << "\tINFO: " << m_tim << std::endl;
+      });
+    offset(buffer_begin, tim_start);
+  }
+
+  /**
+   * @brief Processes the camera data from the buffer.
+   * @param buffer_begin Pointer to the beginning of the buffer.
+   * @param tim_start Pointer to the start of the TIM data.
+   */
+  void
+    process_camera(const char *buffer_begin, const char *tim_start)
+  {
+    const auto camera_start = search(
+      CAMERA_START,
+      buffer_begin,
+      tim_start,
+      [this, &tim_start](const auto &start) {
+        auto span = std::span<const char>(start, tim_start);
+        m_camera  = Camera(span);
+        std::cout << "\tINFO: " << m_camera << std::endl;
+      });
+    offset(buffer_begin, camera_start);
+  }
+
+  /**
+   * @brief Processes the model data from the buffer.
+   * @param buffer_begin Pointer to the beginning of the buffer.
+   * @param tim_start Pointer to the start of the TIM data.
+   * @param camera_start Pointer to the start of the camera data.
+   */
+  void
+    process_model(
+      const char *buffer_begin,
+      const char *tim_start,
+      const char *camera_start)
+  {
+    const auto camera_size = m_camera.camera_header().camera_data_size();
+    const auto model_start = camera_start + camera_size;
+    const auto size
+      = static_cast<int>(camera_size) - std::distance(camera_start, tim_start);
+    std::cout << "\tSIZE: " << size << " bytes" << std::endl;
+    offset(buffer_begin, model_start);
+  }
 
 public:
-  static constexpr auto EXT = std::string_view(".x");
-  X()                       = default;
+  /// @brief MIPS start marker.
+  static constexpr auto MIPS_START
+    = std::span{ "\xE8\xFF\xBD\x27\x01\x00\x02", 7 };
+  /// @brief TIM start marker.
+  static constexpr auto TIM_START   = std::span{ "\x10\x00\x00\x00\x09", 5 };
+  /// @brief Model start marker.
+  static constexpr auto MODEL_START = std::span{ "\x06\x00\x00\x00", 4 };
+  /// @brief Camera start marker.
+  static constexpr auto CAMERA_START
+    = std::span{ "\x02\x00\x08\x00\x20\x00", 6 };
+  static constexpr auto EXT
+    = std::string_view(".x");///< @brief File extension for the X file format.
+
+  /**
+   * @brief Default constructor.
+   */
+  X() = default;
+
+  /**
+   * @brief Construct an X object by taking ownership of the given buffer and
+   * path.
+   * @param rvalue_buffer Buffer holding the file content.
+   * @param rvalue_path Path to the X file.
+   */
   X(std::vector<char> &&rvalue_buffer, std::string &&rvalue_path)
     : m_buffer(std::move(rvalue_buffer)), m_path(std::move(rvalue_path))
   {
     std::cout << '\n' << m_path << '\n';
-    {
-      const char *buffer_begin = std::ranges::data(m_buffer);
-      const char *buffer_end   = std::ranges::data(m_buffer)
-                             + std::distance(
-                                 std::ranges::begin(m_buffer),
-                                 std::ranges::end(m_buffer));
-      const auto search
-        = [&buffer_begin,
-           &buffer_end](const std::span<const char> &needle, auto lambda) {
-            const auto start = std::search(
-              buffer_begin,
-              buffer_end,
-              std::ranges::begin(needle),
-              std::ranges::end(needle));
-            const auto match   = start == buffer_end;
-            const auto message = [&match]() {
-              if (match) {
-                return "Couldn't find it.";
-              }
-              // return "Found it.";
-              return "";
-            };
-            std::cout << message() << '\n';
-            if (!match) {
-              lambda(start);
-            }
-            return start;
-          };
-      const auto offset = [&buffer_begin](const char *start) {
-        std::cout << "\tOffset: " << std::hex << std::uppercase
-                  << std::distance(buffer_begin, start) << std::dec
-                  << std::nouppercase
-                  << '\n';// base() isn't in visual studio so i might need to
-                          // cast buffer_begin to a span so they are the same
-                          // type. base() converts the iterator to the pointer.
-      };
-      std::cout << "TIM: ";
-      const auto tim_start
-        = search(TIM_START, [this, &buffer_end](const auto &start) {
-            const auto &span = std::span<const char>(start, buffer_end);
-            m_tim            = graphics::Tim(span);
-            std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
-            std::cout << "\tINFO: " << m_tim << std::endl;
-          });
-      offset(tim_start);
-      std::cout << "CAMERA: ";
-      const auto camera_start
-        = search(CAMERA_START, [this, &tim_start](const auto &start) {
-            auto span = std::span<const char>(start, tim_start);
-            m_camera  = Camera(span);
-            std::cout << "\tINFO: " << m_camera << std::endl;
-          });
-      offset(camera_start);
-      const auto camera_size = m_camera.camera_header().camera_data_size();
-      std::cout << "\tSIZE: " << camera_size << " bytes" << std::endl;
-      std::cout << "MODEL: \n";
-      const auto model_start = [&tim_start, &camera_size, &camera_start]() {
-        const auto size = static_cast<int>(camera_size)
-                        - std::distance(camera_start, tim_start);
-        std::cout << "\tSIZE: " << size << " bytes" << std::endl;
-        return camera_start + camera_size;
-      }();
-      offset(model_start);
-      if (m_tim.check()) {
-        // m_tim.save(m_path);
-      }
+
+    const char *buffer_begin = std::ranges::data(m_buffer);
+    const char *buffer_end
+      = std::ranges::data(m_buffer)
+      + std::distance(std::ranges::begin(m_buffer), std::ranges::end(m_buffer));
+
+    process_tim(buffer_begin, buffer_end);
+    const auto tim_start = std::ranges::find_end(
+      buffer_begin,
+      buffer_end,
+      TIM_START.begin(),
+      TIM_START.end());
+    process_camera(buffer_begin, tim_start.data());
+    const auto camera_start = std::ranges::find_end(
+      buffer_begin,
+      tim_start.begin(),
+      CAMERA_START.begin(),
+      CAMERA_START.end());
+    process_model(buffer_begin, tim_start.begin(), camera_start.begin());
+
+    if (m_tim.check()) {
+      // m_tim.save(m_path);
     }
+  }
+
+  /**
+   * @brief Get the path to the X file.
+   * @return const std::string& The path to the X file.
+   */
+  const std::string &
+    path()
+  {
+    return m_path;
+  }
+
+  /**
+   * @brief Get the Camera object from the X file.
+   * @return const Camera& The Camera object from the X file.
+   */
+  const Camera &
+    camera()
+  {
+    return m_camera;
+  }
+  /**
+   * @brief Get the TIM texture from the X file.
+   * @return const graphics::Tim& The TIM texture from the X file.
+   */
+  const graphics::Tim &
+    tim()
+  {
+    return m_tim;
   }
 };
 }// namespace open_viii::battle::stage

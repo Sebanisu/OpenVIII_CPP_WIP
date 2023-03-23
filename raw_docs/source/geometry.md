@@ -28,3 +28,35 @@ Geometry
 .. doxygenstruct:: open_viii::battle::stage::Geometry
     :members:
 ```
+
+#### First Header
+
+Total Size: 6 bytes
+
+| Offset (bytes) | Size (bytes) | Name                | Description           |
+|----------------|--------------|---------------------|-----------------------|
+| 0              | 2            | m_always_1_0_1      | Always 0x0100         |
+| 2              | 2            | m_always_1_0_2      | Always 0x0100         |
+| 4              | 2            | m_number_vertices   | Number of vertices    |
+
+
+```{eval-rst}
+.. doxygenstruct:: open_viii::battle::stage::GeometryHeader1
+    :members:
+```
+
+#### Second Header
+
+Total Size: 8 bytes
+
+| Offset (bytes) | Size (bytes) | Name             | Description                 |
+|----------------|--------------|------------------|-----------------------------|
+| 0              | 2            | m_triangle_count | Number of triangles         |
+| 2              | 2            | m_quad_count     | Number of quads             |
+| 4              | 4            | m_padding        | Padding to maintain alignment |
+
+
+```{eval-rst}
+.. doxygenstruct:: open_viii::battle::stage::GeometryHeader2
+    :members:
+```
