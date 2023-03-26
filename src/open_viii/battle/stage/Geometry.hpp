@@ -14,6 +14,16 @@ namespace open_viii::battle::stage {
  */
 struct Geometry
 {
+  template<typename T>
+  T
+    read_val(std::span<const char> &span)
+  {
+    std::array<char, sizeof(T)> tmp{};
+    std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
+    span = span.subspan(sizeof(T));
+    return std::bit_cast<T>(tmp);
+  }
+
 public:
   GeometryHeader1
     m_geometry_header1{};///< @brief First header of the geometry object.
@@ -34,12 +44,7 @@ public:
     std::cout << "\t\t Assigned Offset: " << std::hex << std::uppercase
               << std::distance(buffer_begin, span.data()) << std::dec
               << std::nouppercase << std::endl;
-    const auto model_count = [&]() {
-      std::array<char, sizeof(std::uint32_t)> tmp{};
-      std::ranges::copy(span.subspan(0, sizeof(std::uint32_t)), tmp.begin());
-      span = span.subspan(sizeof(std::uint32_t));
-      return std::bit_cast<std::uint32_t>(tmp);
-    }();
+    const auto model_count = read_val<std::uint32_t>(span);
     std::cout << "\t\t Model Count: " << model_count << std::endl;
     std::vector<const char *> m_model_pointers{};
     m_model_pointers.reserve(model_count);
@@ -47,17 +52,11 @@ public:
       std::views::iota(std::uint32_t{}, model_count),
       std::back_inserter(m_model_pointers),
       [&](auto &&) -> const char * {
-        std::array<char, sizeof(std::uint32_t)> tmp{};
-        std::ranges::copy(span.subspan(0, sizeof(std::uint32_t)), tmp.begin());
-        span = span.subspan(sizeof(std::uint32_t));
-        return model_group_ptr + std::bit_cast<std::uint32_t>(tmp);
+        return model_group_ptr + read_val<std::uint32_t>(span);
       });
     span = std::span(m_model_pointers.front(), model_group_end_ptr);
     {
-      std::array<char, sizeof(GeometryHeader1)> tmp{};
-      std::ranges::copy(span.subspan(0, sizeof(GeometryHeader1)), tmp.begin());
-      m_geometry_header1 = std::bit_cast<GeometryHeader1>(tmp);
-      span               = span.subspan(sizeof(GeometryHeader1));
+      m_geometry_header1 = read_val<GeometryHeader1>(span);
     }
     std::cout << "\t\t\t Number of Vertices: "
               << m_geometry_header1.number_vertices() << std::endl;
@@ -68,22 +67,14 @@ public:
     for ([[maybe_unused]] const int i : std::views::iota(
            std::uint16_t{},
            m_geometry_header1.number_vertices())) {
-      std::array<char, sizeof(graphics::Vertice<std::int16_t>)> tmp{};
-      std::ranges::copy(
-        span.subspan(0, sizeof(graphics::Vertice<std::int16_t>)),
-        tmp.begin());
-      m_vertices.push_back(std::bit_cast<graphics::Vertice<std::int16_t>>(tmp));
-      span = span.subspan(sizeof(graphics::Vertice<std::int16_t>));
+      m_vertices.push_back(read_val<graphics::Vertice<std::int16_t>>(span));
     }
     {
       const auto padding = (std::distance(buffer_begin, span.data())) % 4 + 4;
       span               = span.subspan(padding);
     }
     {
-      std::array<char, sizeof(GeometryHeader2)> tmp{};
-      std::ranges::copy(span.subspan(0, sizeof(GeometryHeader2)), tmp.begin());
-      m_geometry_header2 = std::bit_cast<GeometryHeader2>(tmp);
-      span               = span.subspan(sizeof(GeometryHeader2));
+      m_geometry_header2 = read_val<GeometryHeader2>(span);
     }
     std::cout << "\t\t\t Number of Triangles: "
               << m_geometry_header2.triangle_count() << std::endl;
@@ -93,18 +84,12 @@ public:
     for ([[maybe_unused]] const int i : std::views::iota(
            std::uint16_t{},
            m_geometry_header2.triangle_count())) {
-      std::array<char, sizeof(Triangle)> tmp{};
-      std::ranges::copy(span.subspan(0, sizeof(Triangle)), tmp.begin());
-      m_triangles.push_back(std::bit_cast<Triangle>(tmp));
-      span = span.subspan(sizeof(Triangle));
+      m_triangles.push_back(read_val<Triangle>(span));
     }
     m_quads.reserve(m_geometry_header2.quad_count());
     for ([[maybe_unused]] const int i :
          std::views::iota(std::uint16_t{}, m_geometry_header2.quad_count())) {
-      std::array<char, sizeof(Quad)> tmp{};
-      std::ranges::copy(span.subspan(0, sizeof(Quad)), tmp.begin());
-      m_quads.push_back(std::bit_cast<Quad>(tmp));
-      span = span.subspan(sizeof(Quad));
+      m_quads.push_back(read_val<Quad>(span));
     }
   }
   /**
