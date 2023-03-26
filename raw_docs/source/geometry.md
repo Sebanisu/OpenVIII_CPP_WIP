@@ -33,11 +33,11 @@ Geometry
 
 Total Size: 6 bytes
 
-| Offset (bytes) | Size (bytes) | Name                | Description           |
-|----------------|--------------|---------------------|-----------------------|
-| 0              | 2            | m_always_1_0_1      | Always 0x0100         |
-| 2              | 2            | m_always_1_0_2      | Always 0x0100         |
-| 4              | 2            | m_number_vertices   | Number of vertices    |
+| Offset (bytes) | Size (bytes) | Name                | Description        |
+|----------------|--------------|---------------------|--------------------|
+| 0              | 2            | m_always_1_0_1      | Always 0x0001      |
+| 2              | 2            | m_always_1_0_2      | Always 0x0001      |
+| 4              | 2            | m_number_vertices   | Number of vertices |
 
 
 ```{eval-rst}
