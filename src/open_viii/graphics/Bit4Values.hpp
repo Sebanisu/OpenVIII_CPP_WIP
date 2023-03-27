@@ -24,15 +24,15 @@ namespace open_viii::graphics {
  */
 struct Bit4Values
 {
+  static constexpr std::uint8_t MASK_4_BIT = 0xFU;
+
 private:
-  static constexpr std::uint8_t MASK_4_BIT        = 0xFU;
   static constexpr std::uint8_t OFFSET_MASK_4_BIT = 0xF0U;
   static constexpr std::uint8_t SHIFT_4_BITS      = 4U;
 
 public:
-
-  std::uint8_t                  first  : 4U {};///< The first 4-bit value.
-  std::uint8_t                  second : 4U {};///< The second 4-bit value.
+  std::uint8_t first  : 4U {};///< The first 4-bit value.
+  std::uint8_t second : 4U {};///< The second 4-bit value.
   /**
    * @brief Default constructor.
    */
@@ -91,6 +91,39 @@ public:
       | (second));
   }
   static constexpr std::size_t EXPECTED_SIZE = 1U;
+};
+template<bool second>
+class [[nodiscard]] Bit4ValuesProxy
+{
+private:
+  std::reference_wrapper<Bit4Values> m_raw;
+
+public:
+  constexpr Bit4ValuesProxy(Bit4Values &raw) : m_raw(raw) {}
+
+  // Overload the assignment operator
+  constexpr Bit4ValuesProxy &
+    operator=(std::uint8_t value) noexcept
+  {
+    if constexpr (second) {
+      m_raw.get().second = value & Bit4Values::MASK_4_BIT;
+    }
+    else {
+      m_raw.get().first = value & Bit4Values::MASK_4_BIT;
+    }
+    return *this;
+  }
+
+  // Implicit conversion to std::uint8_t
+  [[nodiscard]] constexpr operator std::uint8_t() const noexcept
+  {
+    if constexpr (second) {
+      return m_raw.get().second;
+    }
+    else {
+      return m_raw.get().first;
+    }
+  }
 };
 
 /**

@@ -19,7 +19,8 @@ private:
   std::vector<char> m_buffer{};///< @brief Buffer holding the file content.
   std::string       m_path{};  ///< @brief Path to the X file.
   Camera            m_camera{};///< @brief Camera object from the X file.
-  Geometries    m_geometries{};///< @brief Geometries object from the X file.
+  std::vector<Geometries>
+                m_geometries{};///< @brief Geometries object from the X file.
   graphics::Tim m_tim{};       ///< @brief TIM texture from the X file.
 
   /**
@@ -32,7 +33,7 @@ private:
    * @return Pointer to the start of the needle if found, or buffer_end if not
    * found.
    */
-  const auto
+  auto
     search(
       const std::span<const char> &needle,
       const char                  *buffer_begin,
@@ -166,9 +167,9 @@ private:
       group_pointers[i++] = std::bit_cast<GeometryGroupOffsets>(tmp) + ptr;
       // span = span.subspan(sizeof(GeometryOffsets));
     }
-
+    m_geometries.reserve(4);
     for (const auto &group_pointer : group_pointers) {
-      m_geometries.m_geometries.emplace_back(
+      m_geometries.emplace_back(
         buffer_begin,
         std::span(group_pointer.object_list_pointer, tim_start));
     }
@@ -222,7 +223,25 @@ public:
       CAMERA_START.begin(),
       CAMERA_START.end());
     process_model(buffer_begin, tim_start.begin(), camera_start.begin());
-
+    for (std::size_t i{}; const auto &geometries : m_geometries) {
+      for (std::size_t j{}; const auto &model : geometries.m_geometries) {
+        std::stringstream           ss{};
+        const std::filesystem::path x_path = std::filesystem::path(path());
+        ss << x_path.stem().string() << "_" << i << "_" << j << ".obj";
+        model.export_mesh_to_obj(
+          std::filesystem::absolute("tmp" / x_path.parent_path()) / ss.str());
+        //        model.export_mesh_to_obj(
+        //          std::filesystem::absolute(
+        //            "tmp" / std::filesystem::path(path()).parent_path())
+        //          / std::format(
+        //            "{}_{}_{}.obj",
+        //            std::filesystem::path(path()).stem().string(),
+        //            i,
+        //            j));
+        ++j;
+      }
+      ++i;
+    }
     if (m_tim.check()) {
       // m_tim.save(m_path);
     }

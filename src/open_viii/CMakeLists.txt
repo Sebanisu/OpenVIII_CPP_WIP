@@ -6,13 +6,16 @@ add_library(${PROJECT_NAME}_VIIICommon INTERFACE)
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_compile_options(${PROJECT_NAME}_VIIICommon
             INTERFACE "-stdlib=libc++"
-            INTERFACE "-march=native"
+            #            INTERFACE "-march=native"
             INTERFACE "-fexperimental-library" ##new in clang15 for things like std::ranges and std::format
             )
     target_link_options(${PROJECT_NAME}_VIIICommon
             INTERFACE "-stdlib=libc++"
-            INTERFACE "-fuse-ld=lld"
-            INTERFACE "-Wl") #,--gdb-index
+            INTERFACE "-fexperimental-library"
+            INTERFACE "-v"
+            ##            INTERFACE "-fuse-ld=lld"
+            ##            INTERFACE "-Wl"
+            ) #,--gdb-index
     target_compile_features(${PROJECT_NAME}_VIIICommon
             INTERFACE cxx_std_23
             INTERFACE cxx_std_20)

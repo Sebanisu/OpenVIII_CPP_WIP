@@ -3,9 +3,10 @@
 //
 #ifndef VIIIARCHIVE_BITOPS_HPP
 #define VIIIARCHIVE_BITOPS_HPP
+#include <concepts>
 #include <cstdint>
 #include <limits>
-#include <concepts>
+#include <type_traits>
 namespace open_viii::tools {
 static constexpr auto bits_per_byte = 8U;
 /**
@@ -73,7 +74,7 @@ static constexpr auto get_mask = []() {
   [[maybe_unused]] constexpr auto bit_count_8  = number_of_bits<std::uint8_t>;
   [[maybe_unused]] constexpr auto bit_count_16 = number_of_bits<std::uint16_t>;
   [[maybe_unused]] constexpr auto bit_count_32 = number_of_bits<std::uint32_t>;
-  //bug in msvc 2022 [[maybe_unused]] to silence error message.
+  // bug in msvc 2022 [[maybe_unused]] to silence error message.
   if constexpr (bit_count <= 0) {
     return uint8_t(0U);
   }

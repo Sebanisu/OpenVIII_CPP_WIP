@@ -7,6 +7,7 @@
 #include "GeometryHeader2.hpp"
 #include "open_viii/graphics/Vertice.hpp"
 #include "Shapes.hpp"
+// #include <format>
 namespace open_viii::battle::stage {
 /**
  * @brief Represents a geometry object in the battle stage.
@@ -49,22 +50,6 @@ public:
   Geometry() = default;
   explicit Geometry(const char *const buffer_begin, std::span<const char> span)
   {
-    const char *const model_group_ptr     = span.data();
-    const char *const model_group_end_ptr = span.data() + span.size();
-
-    std::cout << "\t\t Assigned Offset: " << std::hex << std::uppercase
-              << std::distance(buffer_begin, span.data()) << std::dec
-              << std::nouppercase << std::endl;
-    const auto model_count = read_val<std::uint32_t>(span);
-    std::cout << "\t\t Model Count: " << model_count << std::endl;
-    const auto m_model_offsets = read_vals<std::uint32_t>(span, model_count);
-    auto       m_model_pointers
-      = m_model_offsets
-      | std::views::transform([&](std::uint32_t offset) -> const char * {
-          return model_group_ptr + offset;
-        });
-    span = std::span(m_model_pointers.front(), model_group_end_ptr);
-
     m_geometry_header1 = read_val<GeometryHeader1>(span);
 
     std::cout << "\t\t\t Number of Vertices: "
@@ -77,7 +62,7 @@ public:
       m_geometry_header1.number_vertices());
 
     const auto padding = calc_pad(std::distance(buffer_begin, span.data()));
-    span               = span.subspan(padding);
+    span = span.subspan(static_cast<std::span<const char>::size_type>(padding));
 
     m_geometry_header2 = read_val<GeometryHeader2>(span);
 
@@ -101,6 +86,78 @@ public:
     calc_pad(numT position)
   {
     return static_cast<numT>((position % 4) + 4);
+  }
+
+  void
+    export_mesh_to_obj(const std::filesystem::path &file_name) const
+  {
+    std::error_code ec{};
+    std::filesystem::create_directories(file_name.parent_path(), ec);
+    if (ec) {
+      std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
+                << ec.message() << " - " << file_name << std::endl;
+      ec.clear();
+    }
+    std::ofstream obj_file(file_name);
+    // puts(std::format("saving {}", file_name.string()).c_str());
+    std::cout << "saving " << file_name.string() << std::endl;
+    // Write vertices
+    for (const auto vertice : m_vertices) {
+      //      obj_file
+      //        << std::format("v {} {} {}\n", vertice.x(), vertice.y(),
+      //        vertice.z());
+      obj_file << "v " << vertice.x() << " " << vertice.y() << " "
+               << vertice.z() << "\n";
+    }
+
+    // Write UVs
+    for (const auto &triangle : m_triangles) {
+      for (const auto uv : triangle.uvs()) {
+        // obj_file << std::format("vt {} {}\n", uv.x(), uv.y());
+        obj_file << "vt " << uv.x() << " " << uv.y() << "\n";
+      }
+    }
+    for (const auto &quad : m_quads) {
+      for (const auto uv : quad.uvs()) {
+        // obj_file << std::format("vt {} {}\n", uv.x(), uv.y());
+        obj_file << "vt " << uv.x() << " " << uv.y() << "\n";
+      }
+    }
+
+    const auto write_triangle = [&obj_file](
+                                  const Triangle            &triangle,
+                                  std::array<std::size_t, 3> uv_index) {
+      //      obj_file << std::format(
+      //        "f {0}/{3} {1}/{4} {2}/{5}\n",
+      //        triangle.face_indice<0>(),
+      //        triangle.face_indice<1>(),
+      //        triangle.face_indice<2>(),
+      //        uv_index[0],
+      //        uv_index[1],
+      //        uv_index[2]);
+      obj_file << "f " << triangle.face_indice<0>() << "/" << uv_index[0] << " "
+               << triangle.face_indice<1>() << "/" << uv_index[1] << " "
+               << triangle.face_indice<2>() << "/" << uv_index[2] << "\n";
+    };
+
+    // Write triangle faces
+    for (std::size_t i{}; const auto &triangle : m_triangles) {
+      write_triangle(triangle, { i, i + 1, i + 2 });
+      i += 3;
+    }
+
+    // Write quad faces
+    for (std::size_t i{ m_triangles.size() * 3U }; const auto &quad : m_quads) {
+
+      const auto triangles = quad_to_triangles(quad);
+      // Triangle 1: 0, 1, 3
+      write_triangle(triangles[0], { i, i + 1, i + 3 });
+      // Triangle 2: 0, 2, 3
+      write_triangle(triangles[1], { i, i + 2, i + 3 });
+      i += 4;
+    }
+
+    obj_file.close();
   }
 };
 }// namespace open_viii::battle::stage

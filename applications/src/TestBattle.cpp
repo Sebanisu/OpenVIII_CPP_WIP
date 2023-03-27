@@ -32,7 +32,7 @@
     0x003EU, 0x403EU, 0x803EU, 0xC03EU, 0x003FU, 0x403FU, 0x803FU, 0xC03FU,
   };
   for (const auto &clutid : clutids) {
-    std::cout << static_cast<uint16_t>(open_viii::battle::stage::Triangle::clut(
+    std::cout << +static_cast<std::uint8_t>(open_viii::battle::stage::RawClut(
       clutid)) << '\n';
   }
 }
@@ -87,10 +87,10 @@ int
         continue;
       }
       const auto x = open_viii::battle::stage::X(
-        std::move(battle_fetch.get()),
+        battle_fetch.get(),
         static_cast<std::string>(std::move(battle_fetch.file_name())));
       std::ignore = std::getchar();
-      //x.tim().save(x.path());
+      // x.tim().save(x.path());
     }
   });
   const auto end  = std::chrono::steady_clock::now();

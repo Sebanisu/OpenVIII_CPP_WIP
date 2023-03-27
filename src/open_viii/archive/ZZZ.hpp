@@ -262,6 +262,12 @@ public:
       return m_index == m_sizes.get().size();
     }
 
+    friend bool
+      operator==(sentinel, const iterator &other)
+    {
+      return other.m_index == other.m_sizes.get().size();
+    }
+
     bool
       operator!=(const iterator &other) const
     {
