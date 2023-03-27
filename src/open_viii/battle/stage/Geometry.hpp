@@ -87,9 +87,29 @@ public:
   {
     return static_cast<numT>((position % 4) + 4);
   }
+  static void
+    write_material_mtl(
+      std::ofstream     &output,
+      const std::string &basename,
+      int                palette_id)
+  {
+    output << "newmtl " << basename << "_" << palette_id << std::endl;
+    output << "map_Kd " << basename << "_" << palette_id << "_x.png"
+           << std::endl;
+  }
 
+  static void
+    write_material_obj(
+      std::ofstream     &output,
+      const std::string &basename,
+      int                palette_id)
+  {
+    output << "usemtl " << basename << "_" << palette_id << std::endl;
+  }
   void
-    export_mesh_to_obj(const std::filesystem::path &file_name) const
+    export_mesh_to_obj(
+      const std::filesystem::path &file_name,
+      const std::string           &image_base_name) const
   {
     std::error_code ec{};
     std::filesystem::create_directories(file_name.parent_path(), ec);
@@ -98,57 +118,91 @@ public:
                 << ec.message() << " - " << file_name << std::endl;
       ec.clear();
     }
+    auto mtl_name = file_name;
+    mtl_name.replace_extension(".mtl");
     std::ofstream obj_file(file_name);
+    std::ofstream mtl_file(mtl_name);
+    obj_file << "mtllib " << mtl_name.filename().string() << std::endl;
     // puts(std::format("saving {}", file_name.string()).c_str());
     std::cout << "saving " << file_name.string() << std::endl;
+    std::vector<std::uint8_t> cluts{};
+    std::uint16_t             max_value = {};
+    for (const auto &tmp : m_triangles) {
+      cluts.push_back(tmp.clut());
+      for (const auto &face : tmp.face_indices()) {
+        if (face + 1 > max_value) {
+          max_value = face + 1;
+        }
+      }
+    }
+
+    for (const auto &tmp : m_quads) {
+      cluts.push_back(tmp.clut());
+      for (const auto &face : tmp.face_indices()) {
+        if (face + 1 > max_value) {
+          max_value = face + 1;
+        }
+      }
+    }
+    const auto remove_range = std::ranges::unique(cluts);
+    cluts.erase(remove_range.begin(), remove_range.end());
+
+    for (auto clut : cluts) {
+      write_material_mtl(mtl_file, image_base_name, clut);
+    }
+
     // Write vertices
-    for (const auto vertice : m_vertices) {
+    for (const auto vertice : m_vertices) {//| std::views::take(max_value)
       //      obj_file
       //        << std::format("v {} {} {}\n", vertice.x(), vertice.y(),
       //        vertice.z());
-      obj_file << "v " << vertice.x() << " " << vertice.y() << " "
-               << vertice.z() << "\n";
+      const float scale = 100.F;
+      obj_file << "v " << vertice.x() / scale << " " << vertice.y() / scale
+               << " " << vertice.z() / scale << "\n";
     }
 
     // Write UVs
     for (const auto &triangle : m_triangles) {
       for (const auto uv : triangle.uvs()) {
         // obj_file << std::format("vt {} {}\n", uv.x(), uv.y());
-        obj_file << "vt " << uv.x() << " " << uv.y() << "\n";
+        obj_file << "vt " << +uv.x() << " " << +uv.y() << "\n";
       }
     }
     for (const auto &quad : m_quads) {
       for (const auto uv : quad.uvs()) {
         // obj_file << std::format("vt {} {}\n", uv.x(), uv.y());
-        obj_file << "vt " << uv.x() << " " << uv.y() << "\n";
+        obj_file << "vt " << +uv.x() << " " << +uv.y() << "\n";
       }
     }
 
-    const auto write_triangle = [&obj_file](
-                                  const Triangle            &triangle,
-                                  std::array<std::size_t, 3> uv_index) {
-      //      obj_file << std::format(
-      //        "f {0}/{3} {1}/{4} {2}/{5}\n",
-      //        triangle.face_indice<0>(),
-      //        triangle.face_indice<1>(),
-      //        triangle.face_indice<2>(),
-      //        uv_index[0],
-      //        uv_index[1],
-      //        uv_index[2]);
-      obj_file << "f " << triangle.face_indice<0>() << "/" << uv_index[0] << " "
-               << triangle.face_indice<1>() << "/" << uv_index[1] << " "
-               << triangle.face_indice<2>() << "/" << uv_index[2] << "\n";
-    };
-
+    const auto write_triangle
+      = [&obj_file](
+          const Triangle                             &triangle,
+          [[maybe_unused]] std::array<std::size_t, 3> uv_index) {
+          //      obj_file << std::format(
+          //        "f {0}/{3} {1}/{4} {2}/{5}\n",
+          //        triangle.face_indice<0>(),
+          //        triangle.face_indice<1>(),
+          //        triangle.face_indice<2>(),
+          //        uv_index[0],
+          //        uv_index[1],
+          //        uv_index[2]);
+          obj_file << "f " << triangle.face_indice<0>() + 1 << "/"
+                   << uv_index[0] << " " << triangle.face_indice<1>() + 1 << "/"
+                   << uv_index[1] << " " << triangle.face_indice<2>() + 1 << "/"
+                   << uv_index[2] << "\n";
+        };
+    std::size_t i{ 1 };
     // Write triangle faces
-    for (std::size_t i{}; const auto &triangle : m_triangles) {
+    for (const auto &triangle : m_triangles) {
+      write_material_obj(obj_file, image_base_name, triangle.clut());
       write_triangle(triangle, { i, i + 1, i + 2 });
       i += 3;
     }
 
     // Write quad faces
-    for (std::size_t i{ m_triangles.size() * 3U }; const auto &quad : m_quads) {
-
+    for (const auto &quad : m_quads) {
+      write_material_obj(obj_file, image_base_name, quad.clut());
       const auto triangles = quad_to_triangles(quad);
       // Triangle 1: 0, 1, 3
       write_triangle(triangles[0], { i, i + 1, i + 3 });

@@ -229,7 +229,8 @@ public:
         const std::filesystem::path x_path = std::filesystem::path(path());
         ss << x_path.stem().string() << "_" << i << "_" << j << ".obj";
         model.export_mesh_to_obj(
-          std::filesystem::absolute("tmp" / x_path.parent_path()) / ss.str());
+          std::filesystem::absolute("tmp" / x_path.parent_path()) / ss.str(),
+          x_path.stem().string());
         //        model.export_mesh_to_obj(
         //          std::filesystem::absolute(
         //            "tmp" / std::filesystem::path(path()).parent_path())

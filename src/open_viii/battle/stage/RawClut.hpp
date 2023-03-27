@@ -12,7 +12,7 @@ class RawClut
 private:
   std::uint16_t                  m_clut_raw{};
   static constexpr std::uint16_t MASK_4_BIT  = 0xFU;
-  static constexpr std::int32_t  SHIFT_2_BIT = 2;
+  static constexpr std::int32_t  SHIFT_6_BIT = 6;
 
 public:
   RawClut() = default;
@@ -25,8 +25,8 @@ public:
     m_clut_raw
       = static_cast<std::uint16_t>(
           m_clut_raw
-          & static_cast<std::uint16_t>(~std::rotr(MASK_4_BIT, SHIFT_2_BIT)))
-      | std::rotr(static_cast<std::uint16_t>(value & MASK_4_BIT), SHIFT_2_BIT);
+          & static_cast<std::uint16_t>(~std::rotl(MASK_4_BIT, SHIFT_6_BIT)))
+      | std::rotl(static_cast<std::uint16_t>(value & MASK_4_BIT), SHIFT_6_BIT);
 
     return *this;
   }
@@ -39,7 +39,7 @@ public:
    */
   operator std::uint8_t() const noexcept
   {
-    return (std::rotl(m_clut_raw, SHIFT_2_BIT) & MASK_4_BIT);
+    return (std::rotr(m_clut_raw, SHIFT_6_BIT) & MASK_4_BIT);
   }
 };
 }// namespace open_viii::battle::stage
