@@ -14,8 +14,9 @@ namespace open_viii::battle::stage {
  */
 struct Geometry
 {
+public:
   template<typename T>
-  T
+  static T
     read_val(std::span<const char> &span)
   {
     std::array<char, sizeof(T)> tmp{};
@@ -23,8 +24,18 @@ struct Geometry
     span = span.subspan(sizeof(T));
     return std::bit_cast<T>(tmp);
   }
-
-public:
+  template<typename T, std::unsigned_integral numT>
+  static std::vector<T>
+    read_vals(std::span<const char> &span, numT count)
+  {
+    std::vector<T> return_val{};
+    return_val.reserve(count);
+    auto iota = std::views::iota(numT{}, count);
+    std::ranges::transform(iota, std::back_inserter(return_val), [&span](numT) {
+      return read_val<T>(span);
+    });
+    return return_val;
+  }
   GeometryHeader1
     m_geometry_header1{};///< @brief First header of the geometry object.
   std::vector<graphics::Vertice<std::int16_t>>
@@ -46,61 +57,50 @@ public:
               << std::nouppercase << std::endl;
     const auto model_count = read_val<std::uint32_t>(span);
     std::cout << "\t\t Model Count: " << model_count << std::endl;
-    std::vector<const char *> m_model_pointers{};
-    m_model_pointers.reserve(model_count);
-    std::ranges::transform(
-      std::views::iota(std::uint32_t{}, model_count),
-      std::back_inserter(m_model_pointers),
-      [&](auto &&) -> const char * {
-        return model_group_ptr + read_val<std::uint32_t>(span);
-      });
+    const auto m_model_offsets = read_vals<std::uint32_t>(span, model_count);
+    auto       m_model_pointers
+      = m_model_offsets
+      | std::views::transform([&](std::uint32_t offset) -> const char * {
+          return model_group_ptr + offset;
+        });
     span = std::span(m_model_pointers.front(), model_group_end_ptr);
-    {
-      m_geometry_header1 = read_val<GeometryHeader1>(span);
-    }
+
+    m_geometry_header1 = read_val<GeometryHeader1>(span);
+
     std::cout << "\t\t\t Number of Vertices: "
               << m_geometry_header1.number_vertices() << std::endl;
     if (!m_geometry_header1.test()) {
       return;
     }
-    m_vertices.reserve(m_geometry_header1.number_vertices());
-    for ([[maybe_unused]] const int i : std::views::iota(
-           std::uint16_t{},
-           m_geometry_header1.number_vertices())) {
-      m_vertices.push_back(read_val<graphics::Vertice<std::int16_t>>(span));
-    }
-    {
-      const auto padding = (std::distance(buffer_begin, span.data())) % 4 + 4;
-      span               = span.subspan(padding);
-    }
-    {
-      m_geometry_header2 = read_val<GeometryHeader2>(span);
-    }
+    m_vertices = read_vals<graphics::Vertice<std::int16_t>>(
+      span,
+      m_geometry_header1.number_vertices());
+
+    const auto padding = calc_pad(std::distance(buffer_begin, span.data()));
+    span               = span.subspan(padding);
+
+    m_geometry_header2 = read_val<GeometryHeader2>(span);
+
     std::cout << "\t\t\t Number of Triangles: "
               << m_geometry_header2.triangle_count() << std::endl;
     std::cout << "\t\t\t Number of Quads: " << m_geometry_header2.quad_count()
               << std::endl;
-    m_triangles.reserve(m_geometry_header2.triangle_count());
-    for ([[maybe_unused]] const int i : std::views::iota(
-           std::uint16_t{},
-           m_geometry_header2.triangle_count())) {
-      m_triangles.push_back(read_val<Triangle>(span));
-    }
+
+    m_triangles
+      = read_vals<Triangle>(span, m_geometry_header2.triangle_count());
+    m_quads = read_vals<Quad>(span, m_geometry_header2.quad_count());
     m_quads.reserve(m_geometry_header2.quad_count());
-    for ([[maybe_unused]] const int i :
-         std::views::iota(std::uint16_t{}, m_geometry_header2.quad_count())) {
-      m_quads.push_back(read_val<Quad>(span));
-    }
   }
   /**
    * @brief Calculate the padding after reading vertices.
    * @param position The current position in bytes.
    * @return The number of bytes to skip.
    */
-  static long
-    calc_pad(long position)
+  template<std::integral numT>
+  static numT
+    calc_pad(numT position)
   {
-    return (position % 4) + 4;
+    return static_cast<numT>((position % 4) + 4);
   }
 };
 }// namespace open_viii::battle::stage
