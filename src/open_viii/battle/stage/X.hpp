@@ -85,6 +85,7 @@ private:
   void
     process_tim(const char *buffer_begin, const char *buffer_end)
   {
+    puts("TIM");
     const auto tim_start = search(
       TIM_START,
       buffer_begin,
@@ -106,6 +107,7 @@ private:
   void
     process_camera(const char *buffer_begin, const char *tim_start)
   {
+    puts("CAMERA");
     const auto camera_start = search(
       CAMERA_START,
       buffer_begin,
@@ -130,6 +132,7 @@ private:
       const char *tim_start,
       const char *camera_start)
   {
+    puts("MODEL");
     const auto camera_size = m_camera.camera_header().camera_data_size();
     const auto model_start = camera_start + camera_size;
     assert(model_start < tim_start);
@@ -222,31 +225,11 @@ public:
       tim_start.begin(),
       CAMERA_START.begin(),
       CAMERA_START.end());
-    process_model(buffer_begin, tim_start.begin(), camera_start.begin());
-    for (std::size_t i{}; const auto &geometries : m_geometries) {
-      for (std::size_t j{}; const auto &model : geometries.m_geometries) {
-        std::stringstream           ss{};
-        const std::filesystem::path x_path = std::filesystem::path(path());
-        ss << x_path.stem().string() << "_" << i << "_" << j << ".obj";
-        model.export_mesh_to_obj(
-          std::filesystem::absolute("tmp" / x_path.parent_path()) / ss.str(),
-          x_path.stem().string(),
-          m_tim);
-        //        model.export_mesh_to_obj(
-        //          std::filesystem::absolute(
-        //            "tmp" / std::filesystem::path(path()).parent_path())
-        //          / std::format(
-        //            "{}_{}_{}.obj",
-        //            std::filesystem::path(path()).stem().string(),
-        //            i,
-        //            j));
-        ++j;
-      }
-      ++i;
-    }
-    if (m_tim.check()) {
-      // m_tim.save(m_path);
-    }
+    process_model(buffer_begin, tim_start.begin(), camera_start.begin());    
+  }
+  const std::vector<Geometries>& geometries() const
+  {
+      return m_geometries;
   }
 
   /**
