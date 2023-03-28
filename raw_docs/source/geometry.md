@@ -6,7 +6,7 @@ Geometry
 
 | Offset (bytes) | Size (bytes) | Name         | Description                                                |
 |:--------------:|:------------:|--------------|------------------------------------------------------------|
-|       0        |    varies    | m_geometries | Vector of Geometry objects (usually one, but can be more). |
+|       0        |    varies    | nested_geometries | Vector of Geometry objects (usually one, but can be more). |
 
 ```{eval-rst}
 .. doxygenstruct:: open_viii::battle::stage::Geometries
@@ -17,12 +17,12 @@ Geometry
 
 | Offset (bytes) | Size (bytes) | Name               | Description                                                                                    |
 |:--------------:|:------------:|--------------------|------------------------------------------------------------------------------------------------|
-|       0        |      6       | m_geometry_header1 | First header of the geometry object.                                                           |
-|       6        |    varies    | m_vertices         | Vector of vertices.                                                                            |
+|       0        |      6       | geometry_header1 | First header of the geometry object.                                                           |
+|       6        |    varies    | vertices         | Vector of vertices.                                                                            |
 |     varies     |     4-7      | padding            | Padding formula. </br>Position after read the vertices. </br>{math}`(position \; \% \; 4) + 4` |
-|     varies     |      8       | m_geometry_header2 | second header of the geometry object.                                                          |
-|     varies     |    varies    | m_triangles        | Vector of triangles.                                                                           |
-|     varies     |    varies    | m_quads            | Vector of quads.                                                                               |
+|     varies     |      8       | geometry_header2 | second header of the geometry object.                                                          |
+|     varies     |    varies    | triangles        | Vector of triangles.                                                                           |
+|     varies     |    varies    | quads            | Vector of quads.                                                                               |
 
 ```{eval-rst}
 .. doxygenstruct:: open_viii::battle::stage::Geometry

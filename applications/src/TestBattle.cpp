@@ -4,6 +4,7 @@
 #include "TestBattle.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/battle/stage/Geometries.hpp"
+#include "open_viii/battle/stage/StageToObj.hpp"
 #include "open_viii/battle/stage/X.hpp"
 #include "open_viii/paths/Paths.hpp"
 #include <array>
@@ -69,16 +70,6 @@ int
       std::cerr << "Failed to load path: " << path.string() << '\n';
       return;
     }
-    //    const auto &battle =
-    //      archives.get<open_viii::archive::ArchiveTypeT::battle>();
-    //    battle.execute_on({ open_viii::battle::stage::X::EXT },
-    //                      []([[maybe_unused]] std::vector<char>
-    //                      &&rvalue_buffer,
-    //                         std::string                          rvalue_path)
-    //                         {
-    //                        open_viii::battle::stage::X(std::move(rvalue_buffer),
-    //                                                    std::move(rvalue_path));
-    //                      });
     const auto &battle_archive
       = archives.get<open_viii::archive::ArchiveTypeT::battle>();
     for (const auto &battle_fetch : battle_archive) {
@@ -86,11 +77,13 @@ int
             open_viii::battle::stage::X::EXT)) {
         continue;
       }
+      std::cout << "Begin Processing: " << battle_fetch.file_name() << "\n";
       const auto x = open_viii::battle::stage::X(
         battle_fetch.get(),
         static_cast<std::string>(std::move(battle_fetch.file_name())));
-      std::ignore = std::getchar();
-      // x.tim().save(x.path());
+
+      open_viii::battle::stage::StageToObj::export_x_to_obj(x);
+      std::cout << "End Processing\n";
     }
   });
   const auto end  = std::chrono::steady_clock::now();

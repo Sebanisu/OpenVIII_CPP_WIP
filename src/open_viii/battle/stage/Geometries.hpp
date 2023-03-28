@@ -14,7 +14,8 @@ namespace open_viii::battle::stage {
 struct Geometries
 {
 public:
-  std::vector<Geometry> m_geometries{};///< @brief Vector of Geometry objects
+  std::vector<Geometry>
+    nested_geometries{};///< @brief Vector of Geometry objects
                                        ///< (usually one, but can be more).
 
   Geometries() =default;
@@ -40,9 +41,9 @@ public:
           return model_group_ptr + offset;
         });
     span = std::span<const char>(m_model_pointers.front(), model_group_end_ptr);
-    m_geometries.reserve(model_count);
+    nested_geometries.reserve(model_count);
     auto m_model_spans = m_model_pointers | std::views::transform([model_group_end_ptr](const char * const ptr){return std::span(ptr, model_group_end_ptr);});
-    std::ranges::transform(m_model_spans,std::back_inserter(m_geometries),[buffer_begin](std::span<const char> out_span){return Geometry(buffer_begin,out_span);});
+    std::ranges::transform(m_model_spans,std::back_inserter(nested_geometries),[buffer_begin](std::span<const char> out_span){return Geometry(buffer_begin,out_span);});
   }
 
   static constexpr std::array<char, 4> START_OF_HEADER
