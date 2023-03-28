@@ -4,6 +4,7 @@
 #include "TestBattle.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/battle/stage/Geometries.hpp"
+#include "open_viii/graphics/Vertice.hpp"
 #include "open_viii/battle/stage/StageToObj.hpp"
 #include "open_viii/battle/stage/X.hpp"
 #include "open_viii/paths/Paths.hpp"

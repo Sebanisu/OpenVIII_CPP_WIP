@@ -209,6 +209,10 @@ public:
   static constexpr auto CAMERA_START
     = std::span{ "\x02\x00\x08\x00\x20\x00", 6 };
 
+  /**
+   * @brief A constexpr array containing two spans representing the starting
+   * sequence of the camera data.
+   */
   static constexpr auto CAMERA_START_ARR
     = std::array{ std::span{ "\x02\x00\x08\x00\x20\x00", 6 },
                   std::span{ "\x02\x00\x08\x00\x18\x00", 6 } };

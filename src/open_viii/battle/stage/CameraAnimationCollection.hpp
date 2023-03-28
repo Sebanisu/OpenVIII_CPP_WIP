@@ -7,21 +7,52 @@
 #include "CameraAnimationSet.hpp"
 #include "open_viii/tools/Tools.hpp"
 namespace open_viii::battle::stage {
-/**
- * @see
- * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Camera_Animations_Collection
- */
+  /**
+ * @brief Main struct representing a collection of camera animations for a battle stage.
+ * @details Each BattleCameraSet holds 8 animations.
+ * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Camera_Animations_Collection
+ * @see https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Camera/BattleCameraCollection.cs
+   */
 struct CameraAnimationCollection
 {
 private:
+  /**
+   * @brief The number of camera animation sets.
+   */
   std::uint16_t                             m_set_count{};
+
+  /**
+   * @brief A vector containing the offsets for each camera animation set.
+   */
   std::vector<std::uint16_t>                m_set_offsets{};
+
+  /**
+   * @brief The end position of the camera data.
+   */
   std::uint16_t                             m_camera_end{};
+
+  /**
+   * @brief A vector containing the camera animation sets.
+   */
   std::vector<CameraAnimationSet>           m_camera_animation_set{};
+
+  /**
+   * @brief A vector containing vectors of camera animations for each set.
+   */
   std::vector<std::vector<CameraAnimation>> m_camera_animation{};
 
 public:
+
+  /**
+   * @brief Default constructor for CameraAnimationCollection.
+   */
   constexpr CameraAnimationCollection() = default;
+
+
+  /**
+   * @brief Constructs a CameraAnimationCollection from a span of bytes.
+   * @param span The span of bytes to parse the CameraAnimationCollection from.
+   */
   explicit CameraAnimationCollection(std::span<const char> span)
   {
     // const auto start = span.begin();
@@ -61,32 +92,64 @@ public:
     // TODO rework this. It does not work
     //    }
   }
+
+  /**
+   * @brief Get the number of camera animation sets.
+   * @return The number of camera animation sets.
+   */
   [[nodiscard]] std::uint16_t
     set_count() const noexcept
   {
     return m_set_count;
   }
+
+  /**
+   * @brief Get the vector of set offsets.
+   * @return A reference to the vector of set offsets.
+   */
   [[nodiscard]] const std::vector<std::uint16_t> &
     set_offsets() const noexcept
   {
     return m_set_offsets;
   }
+
+  /**
+   * @brief Get the camera end position.
+   * @return The camera end position.
+   */
   [[nodiscard]] std::uint16_t
     camera_end() const noexcept
   {
     return m_camera_end;
   }
+
+  /**
+   * @brief Get the vector of camera animation sets.
+   * @return A reference to the vector of camera animation sets.
+   */
   [[nodiscard]] const std::vector<CameraAnimationSet> &
     camera_animation_set() const noexcept
   {
     return m_camera_animation_set;
   }
+
+  /**
+   * @brief Get the vector of vectors of camera animations.
+   * @return A reference to the vector of vectors of camera animations.
+   */
   [[nodiscard]] const std::vector<std::vector<CameraAnimation>> &
     camera_animation() const noexcept
   {
     return m_camera_animation;
   }
 };
+
+/**
+ * @brief Output stream operator for CameraAnimationCollection.
+ * @param os The output stream to write the CameraAnimationCollection to.
+ * @param in The CameraAnimationCollection to write to the output stream.
+ * @return A reference to the output stream.
+ */
 inline std::ostream &
   operator<<(std::ostream &os, const CameraAnimationCollection &in)
 {

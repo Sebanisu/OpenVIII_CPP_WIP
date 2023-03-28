@@ -9,8 +9,13 @@
 #include <filesystem>
 #include <iostream>
 namespace open_viii::battle::stage {
-namespace StageToObj
-{
+namespace StageToObj {
+  /**
+   * @brief Writes material information to the output MTL file.
+   * @param output Output file stream for the MTL file.
+   * @param basename Base name of the material.
+   * @param palette_id Palette ID for the material.
+   */
   static void
     write_material_mtl(
       std::ofstream     &output,
@@ -22,6 +27,12 @@ namespace StageToObj
            << std::endl;
   }
 
+  /**
+   * @brief Writes material usage information to the output OBJ file.
+   * @param output Output file stream for the OBJ file.
+   * @param basename Base name of the material.
+   * @param palette_id Palette ID for the material.
+   */
   static void
     write_material_obj(
       std::ofstream     &output,
@@ -30,6 +41,46 @@ namespace StageToObj
   {
     output << "usemtl " << basename << "_" << palette_id << std::endl;
   }
+
+  /**
+   * @brief Handles directory creation and error checking.
+   * @param file_name The output file path for the OBJ file.
+   */
+  static void
+    create_directory_if_needed(const std::filesystem::path &file_name)
+  {
+    std::error_code ec{};
+    std::filesystem::create_directories(file_name.parent_path(), ec);
+    if (ec) {
+      std::cout << std::flush;
+      std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
+                << ec.message() << " - " << file_name << std::endl;
+      ec.clear();
+    }
+  }
+
+  /**
+   * @brief Write vertices to the OBJ file.
+   * @param self The Geometry object containing the model data.
+   * @param obj_file The output OBJ file stream.
+   */
+  static void
+    write_vertices_to_obj(const Geometry &self, std::ofstream &obj_file)
+  {
+    const float scale = 128.F;
+    for (const auto vertice : self.vertices) {
+      obj_file << "v " << vertice.x() / scale << " " << vertice.y() / scale
+               << " " << vertice.z() / scale << "\n";
+    }
+  }
+
+  /**
+   * @brief Exports geometry data to an OBJ file.
+   * @param self The Geometry object containing the model data.
+   * @param file_name The output file path for the OBJ file.
+   * @param image_base_name The base name of the image file.
+   * @param tim The graphics::Tim object containing texture information.
+   */
   static void
     export_geometry_to_obj(
       const Geometry              &self,
@@ -37,13 +88,7 @@ namespace StageToObj
       const std::string           &image_base_name,
       const graphics::Tim         &tim)
   {
-    std::error_code ec{};
-    std::filesystem::create_directories(file_name.parent_path(), ec);
-    if (ec) {
-      std::cout << std::flush; std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
-                << ec.message() << " - " << file_name << std::endl;
-      ec.clear();
-    }
+    create_directory_if_needed(file_name.parent_path());
     auto mtl_name = file_name;
     mtl_name.replace_extension(".mtl");
     std::ofstream obj_file(file_name);
@@ -77,12 +122,7 @@ namespace StageToObj
       write_material_mtl(mtl_file, image_base_name, clut);
     }
 
-    // Write vertices
-    for (const auto vertice : self.vertices) {
-      const float scale = 128.F;
-      obj_file << "v " << vertice.x() / scale << " " << vertice.y() / scale
-               << " " << vertice.z() / scale << "\n";
-    }
+    write_vertices_to_obj(self, obj_file);
 
     const auto convert_uv =
       [&tim](graphics::Point<std::uint8_t> uv, std::uint8_t texture_page) {
@@ -142,6 +182,11 @@ namespace StageToObj
     }
     obj_file.close();
   }
+
+  /**
+   * @brief Exports battle stage X file geometry data to an OBJ file.
+   * @param self The battle stage X object containing the model data.
+   */
   static void
     export_x_to_obj(const X &self)
   {
@@ -163,6 +208,6 @@ namespace StageToObj
       ++i;
     }
   }
-}
+}// namespace StageToObj
 }// namespace open_viii::battle::stage
 #endif// OPENVIII_CPP_WIP_STAGETOOBJ_HPP

@@ -49,7 +49,7 @@ private:
   };
 
 public:
-  
+
   /**
    * @brief Check if the header fields have expected values.
    * @return true if all fields have expected values, false otherwise.

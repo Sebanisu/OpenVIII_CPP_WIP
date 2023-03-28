@@ -5,6 +5,9 @@
 #define VIIIARCHIVE_SHAPES_HPP
 #include "Quad.hpp"
 #include "Triangle.hpp"
+#include <array>
+#include <concepts>
+#include <cstdint>
 namespace open_viii::graphics {
 /**
  * run operation on uvs and return a uv.
@@ -19,7 +22,8 @@ template<
   Point_Like                         pointT  = graphics::Point<std::uint8_t>,
   Shape_Like                         shapeT,
   TakesTwoPointsReturnsPoint<pointT> lambdaT>
-requires(current < shapeT::COUNT) [[nodiscard]] constexpr static pointT
+  requires(current < shapeT::COUNT)
+[[nodiscard]] constexpr static pointT
   for_each_uv(const shapeT &shape, const lambdaT &lambda)
 {
   if constexpr (current + 1U < shapeT::COUNT) {
@@ -69,13 +73,11 @@ template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
   return Rectangle(min_uv_value, max_uv(shape) - min_uv_value);
 }
 }// namespace open_viii::graphics
-#include <array>
-#include <cstdint>
-#include <concepts>
 
 namespace open_viii::battle::stage {
 
-std::array<Triangle, 2> quad_to_triangles(const Quad& quad)
+std::array<Triangle, 2>
+  quad_to_triangles(const Quad &quad)
 {
   std::array<Triangle, 2> triangles;
 
@@ -84,32 +86,32 @@ std::array<Triangle, 2> quad_to_triangles(const Quad& quad)
   triangles[0].face_indice<1>() = quad.face_indice<1>();
   triangles[0].face_indice<2>() = quad.face_indice<3>();
 
-  triangles[0].uv<0>() = quad.uv<0>();
-  triangles[0].uv<1>() = quad.uv<1>();
-  triangles[0].uv<2>() = quad.uv<3>();
+  triangles[0].uv<0>()          = quad.uv<0>();
+  triangles[0].uv<1>()          = quad.uv<1>();
+  triangles[0].uv<2>()          = quad.uv<3>();
 
-  triangles[0].clut() = quad.clut();
-  triangles[0].texture_page() = quad.texture_page(); //discarding 4 bits.
-  triangles[0].raw_hide() = quad.raw_hide();
-  triangles[0].gpu() = quad.gpu();
+  triangles[0].clut()           = quad.clut();
+  triangles[0].texture_page()   = quad.texture_page();// discarding 4 bits.
+  triangles[0].raw_hide()       = quad.raw_hide();
+  triangles[0].gpu()            = quad.gpu();
 
   // Triangle 2: 0, 2, 3
   triangles[1].face_indice<0>() = quad.face_indice<0>();
   triangles[1].face_indice<1>() = quad.face_indice<2>();
   triangles[1].face_indice<2>() = quad.face_indice<3>();
 
-  triangles[1].uv<0>() = quad.uv<0>();
-  triangles[1].uv<1>() = quad.uv<2>();
-  triangles[1].uv<2>() = quad.uv<3>();
+  triangles[1].uv<0>()          = quad.uv<0>();
+  triangles[1].uv<1>()          = quad.uv<2>();
+  triangles[1].uv<2>()          = quad.uv<3>();
 
-  triangles[1].clut() = quad.clut();
-  triangles[1].texture_page() = quad.texture_page(); //discarding 4 bits.
-  triangles[1].raw_hide() = quad.raw_hide();
-  triangles[1].gpu() = quad.gpu();
+  triangles[1].clut()           = quad.clut();
+  triangles[1].texture_page()   = quad.texture_page();// discarding 4 bits.
+  triangles[1].raw_hide()       = quad.raw_hide();
+  triangles[1].gpu()            = quad.gpu();
 
   return triangles;
 }
 
-} // namespace open_viii::battle::stage
+}// namespace open_viii::battle::stage
 
 #endif// VIIIARCHIVE_SHAPES_HPP
