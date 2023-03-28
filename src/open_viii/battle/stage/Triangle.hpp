@@ -74,14 +74,14 @@ public:
   [[nodiscard]] constexpr std::uint8_t
     texture_page() const noexcept
   {
-    return m_raw_texture_page.second;
+    return m_raw_texture_page.first;
   }
 
   /**
    * @brief Get the texture page value.
    * @return The texture page value.
    */
-  [[nodiscard]] constexpr graphics::Bit4ValuesProxy<true>
+  [[nodiscard]] constexpr graphics::Bit4ValuesProxy<false>
     texture_page() noexcept
   {
     return m_raw_texture_page;

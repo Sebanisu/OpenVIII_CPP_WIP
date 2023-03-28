@@ -5,6 +5,7 @@
 #define VIIIARCHIVE_GEOMETRY_HPP
 #include "GeometryHeader1.hpp"
 #include "GeometryHeader2.hpp"
+#include "open_viii/graphics/Tim.hpp"
 #include "open_viii/graphics/Vertice.hpp"
 #include "Shapes.hpp"
 // #include <format>
@@ -109,7 +110,8 @@ public:
   void
     export_mesh_to_obj(
       const std::filesystem::path &file_name,
-      const std::string           &image_base_name) const
+      const std::string           &image_base_name,
+      const graphics::Tim         &tim) const
   {
     std::error_code ec{};
     std::filesystem::create_directories(file_name.parent_path(), ec);
@@ -156,22 +158,37 @@ public:
       //      obj_file
       //        << std::format("v {} {} {}\n", vertice.x(), vertice.y(),
       //        vertice.z());
-      const float scale = 100.F;
+      const float scale = 128.F;
       obj_file << "v " << vertice.x() / scale << " " << vertice.y() / scale
                << " " << vertice.z() / scale << "\n";
     }
 
+    const auto convert_uv =
+      [&tim](graphics::Point<std::uint8_t> uv, std::uint8_t texture_page) {
+        //      float U = (float)uv.x() / (float)(tim.width() * 2.F) +
+        //      ((float)texture_page/(tim.width() * 2.F)); float V =
+        //      (float)uv.y() / (float)(tim.height() * 2.F);
+        // return graphics::Point<float>(U,V);
+        const float texPageWidth = 128.F;
+
+        return graphics::Point<float>(
+          ((static_cast<float>(uv.x())
+            + (static_cast<float>(texture_page) * texPageWidth)))
+            / static_cast<float>(tim.width()),
+          static_cast<float>(tim.height())
+            - (static_cast<float>(uv.y()) / static_cast<float>(tim.height())));
+      };
     // Write UVs
     for (const auto &triangle : m_triangles) {
       for (const auto uv : triangle.uvs()) {
-        // obj_file << std::format("vt {} {}\n", uv.x(), uv.y());
-        obj_file << "vt " << +uv.x() << " " << +uv.y() << "\n";
+        const auto new_uv = convert_uv(uv, triangle.texture_page());
+        obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
       }
     }
     for (const auto &quad : m_quads) {
       for (const auto uv : quad.uvs()) {
-        // obj_file << std::format("vt {} {}\n", uv.x(), uv.y());
-        obj_file << "vt " << +uv.x() << " " << +uv.y() << "\n";
+        const auto new_uv = convert_uv(uv, quad.texture_page());
+        obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
       }
     }
 
@@ -196,7 +213,7 @@ public:
     // Write triangle faces
     for (const auto &triangle : m_triangles) {
       write_material_obj(obj_file, image_base_name, triangle.clut());
-      write_triangle(triangle, { i, i + 1, i + 2 });
+      write_triangle(triangle, { i + 1, i + 2, i });
       i += 3;
     }
 

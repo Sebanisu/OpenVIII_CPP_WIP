@@ -29,12 +29,17 @@ public:
     const auto model_count = Geometry::read_val<std::uint32_t>(span);
     std::cout << "\t\t Model Count: " << model_count << std::endl;
     const auto m_model_offsets = Geometry::read_vals<std::uint32_t>(span, model_count);
+    if (m_model_offsets.empty())
+    {
+        std::cerr << __FILE__ << ':' << __LINE__ << " m_model_offsets is empty\n";
+        return;
+    }
     auto       m_model_pointers
       = m_model_offsets
       | std::views::transform([&](std::uint32_t offset) -> const char * {
           return model_group_ptr + offset;
         });
-    span = std::span(m_model_pointers.front(), model_group_end_ptr);
+    span = std::span<const char>(m_model_pointers.front(), model_group_end_ptr);
     m_geometries.reserve(model_count);
     auto m_model_spans = m_model_pointers | std::views::transform([model_group_end_ptr](const char * const ptr){return std::span(ptr, model_group_end_ptr);});
     std::ranges::transform(m_model_spans,std::back_inserter(m_geometries),[buffer_begin](std::span<const char> out_span){return Geometry(buffer_begin,out_span);});
