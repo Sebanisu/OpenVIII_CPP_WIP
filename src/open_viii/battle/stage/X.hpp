@@ -126,7 +126,7 @@ private:
    * @param tim_start Pointer to the start of the TIM data.
    * @param camera_start Pointer to the start of the camera data.
    */
-  void
+  int
     process_model(
       const char *buffer_begin,
       const char *tim_start,
@@ -147,7 +147,13 @@ private:
       [[maybe_unused]] const auto section_counter
         = std::bit_cast<std::uint32_t>(tmp);
       span = span.subspan(sizeof(std::uint32_t));
-      assert(section_counter == 6);
+      if (section_counter != 6) {
+        std::cerr << "Error in " << __FILE__ << ":" << __LINE__
+                  << ": section_counter is " << section_counter
+                  << ". We're probably reading the wrong offset or this file "
+                     "is in a different format.\n";
+        return 1;// Return with an error code
+      }
     }
     GeometryPointers geometry_pointers;
     {
@@ -176,6 +182,7 @@ private:
         buffer_begin,
         std::span(group_pointer.object_list_pointer, tim_start));
     }
+    return 0;
   }
 
 public:
@@ -225,11 +232,12 @@ public:
       tim_start.begin(),
       CAMERA_START.begin(),
       CAMERA_START.end());
-    process_model(buffer_begin, tim_start.begin(), camera_start.begin());    
+    process_model(buffer_begin, tim_start.begin(), camera_start.begin());
   }
-  const std::vector<Geometries>& geometries() const
+  const std::vector<Geometries> &
+    geometries() const
   {
-      return m_geometries;
+    return m_geometries;
   }
 
   /**
