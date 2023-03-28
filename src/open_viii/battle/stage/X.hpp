@@ -45,19 +45,17 @@ private:
       buffer_end,
       std::ranges::begin(needle),
       std::ranges::end(needle));
-    const auto match   = start == buffer_end;
-    const auto message = [&match]() {
-      if (match) {
-        return "Couldn't find it.";
-      }
-      // return "Found it.";
-      return "";
-    };
-    std::cout << message() << '\n';
-    if (!match) {
+    const auto no_match = start == buffer_end;
+    using ret_t         = std::optional<decltype(start)>;
+    if (!no_match) {
       lambda(start);
+      return ret_t{ start };
     }
-    return start;
+    else {
+      std::cout << std::flush;
+      std::cerr << "Couldn't find camera start." << '\n';
+      return ret_t{};
+    }
   }
 
   /**
@@ -96,7 +94,8 @@ private:
         std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
         std::cout << "\tINFO: " << m_tim << std::endl;
       });
-    offset(buffer_begin, tim_start);
+    if (tim_start.has_value())
+      offset(buffer_begin, tim_start.value());
   }
 
   /**
@@ -104,20 +103,32 @@ private:
    * @param buffer_begin Pointer to the beginning of the buffer.
    * @param tim_start Pointer to the start of the TIM data.
    */
-  void
+  const char *
     process_camera(const char *buffer_begin, const char *tim_start)
   {
-    puts("CAMERA");
-    const auto camera_start = search(
-      CAMERA_START,
-      buffer_begin,
-      tim_start,
-      [this, &tim_start](const auto &start) {
-        auto span = std::span<const char>(start, tim_start);
-        m_camera  = Camera(span);
-        std::cout << "\tINFO: " << m_camera << std::endl;
-      });
-    offset(buffer_begin, camera_start);
+    const auto generate = [this, &tim_start](const auto &start) {
+      auto span = std::span<const char>(start, tim_start);
+      m_camera  = Camera(span);
+      std::cout << "\tINFO: " << m_camera << std::endl;
+    };
+    puts("CAMERA1");
+    const auto camera_start
+      = search(CAMERA_START_ARR[0], buffer_begin, tim_start, generate);
+    if (camera_start.has_value()) {
+      offset(buffer_begin, camera_start.value());
+      puts("CAMERA2");
+      const auto camera_start2 = search(
+        CAMERA_START_ARR[1],
+        camera_start.value(),
+        tim_start,
+        generate);
+      if (camera_start2.has_value()) {
+        offset(buffer_begin, camera_start2.value());
+        return camera_start2.value();
+      }
+      return camera_start.value();
+    }
+    return nullptr;
   }
 
   /**
@@ -148,6 +159,7 @@ private:
         = std::bit_cast<std::uint32_t>(tmp);
       span = span.subspan(sizeof(std::uint32_t));
       if (section_counter != 6) {
+        std::cout << std::flush;
         std::cerr << "Error in " << __FILE__ << ":" << __LINE__
                   << ": section_counter is " << section_counter
                   << ". We're probably reading the wrong offset or this file "
@@ -196,6 +208,10 @@ public:
   /// @brief Camera start marker.
   static constexpr auto CAMERA_START
     = std::span{ "\x02\x00\x08\x00\x20\x00", 6 };
+
+  static constexpr auto CAMERA_START_ARR
+    = std::array{ std::span{ "\x02\x00\x08\x00\x20\x00", 6 },
+                  std::span{ "\x02\x00\x08\x00\x18\x00", 6 } };
   static constexpr auto EXT
     = std::string_view(".x");///< @brief File extension for the X file format.
 
@@ -226,13 +242,9 @@ public:
       buffer_end,
       TIM_START.begin(),
       TIM_START.end());
-    process_camera(buffer_begin, tim_start.data());
-    const auto camera_start = std::ranges::find_end(
-      buffer_begin,
-      tim_start.begin(),
-      CAMERA_START.begin(),
-      CAMERA_START.end());
-    process_model(buffer_begin, tim_start.begin(), camera_start.begin());
+    const char *camera_start = process_camera(buffer_begin, tim_start.data());
+    if (camera_start != nullptr)
+      process_model(buffer_begin, tim_start.begin(), camera_start);
   }
   const std::vector<Geometries> &
     geometries() const

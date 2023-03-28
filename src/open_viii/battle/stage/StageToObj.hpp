@@ -40,7 +40,7 @@ namespace StageToObj
     std::error_code ec{};
     std::filesystem::create_directories(file_name.parent_path(), ec);
     if (ec) {
-      std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
+      std::cout << std::flush; std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
                 << ec.message() << " - " << file_name << std::endl;
       ec.clear();
     }
