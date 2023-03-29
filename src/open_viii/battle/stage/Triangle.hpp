@@ -157,6 +157,28 @@ public:
     }
   }
 
+
+  /**
+   * @brief Get the UV value for a specific vertex.
+   * @tparam I The index of the vertex.
+   * @return The UV value for the specified vertex.
+   */
+  template<std::size_t I>
+      requires(I < COUNT)
+  [[nodiscard]] constexpr auto &
+      uv() noexcept
+  {
+      if constexpr (I == 0U) {
+          return m_uv1;
+      }
+      else if constexpr (I == 1U) {
+          return m_uv2;
+      }
+      else if constexpr (I == 2U) {
+          return m_uv3;
+      }
+  }
+
   /**
    * @brief Get the face index value for a specific vertex.
    * @tparam I The index of the vertex.

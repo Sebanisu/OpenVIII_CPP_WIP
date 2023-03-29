@@ -16,7 +16,7 @@ namespace StageToObj {
    * @param basename Base name of the material.
    * @param palette_id Palette ID for the material.
    */
-  static void
+  inline void
     write_material_mtl(
       std::ofstream     &output,
       const std::string &basename,
@@ -33,7 +33,7 @@ namespace StageToObj {
    * @param basename Base name of the material.
    * @param palette_id Palette ID for the material.
    */
-  static void
+  inline void
     write_material_obj(
       std::ofstream     &output,
       const std::string &basename,
@@ -46,7 +46,7 @@ namespace StageToObj {
    * @brief Handles directory creation and error checking.
    * @param file_name The output file path for the OBJ file.
    */
-  static void
+  inline void
     create_directory_if_needed(const std::filesystem::path &file_name)
   {
     std::error_code ec{};
@@ -64,7 +64,7 @@ namespace StageToObj {
    * @param self The Geometry object containing the model data.
    * @param obj_file The output OBJ file stream.
    */
-  static void
+  inline void
     write_vertices_to_obj(const Geometry &self, std::ofstream &obj_file)
   {
     const float scale = 128.F;
@@ -81,7 +81,7 @@ namespace StageToObj {
    * @param image_base_name The base name of the image file.
    * @param tim The graphics::Tim object containing texture information.
    */
-  static void
+  inline void
     export_geometry_to_obj(
       const Geometry              &self,
       const std::filesystem::path &file_name,
@@ -187,7 +187,7 @@ namespace StageToObj {
    * @brief Exports battle stage X file geometry data to an OBJ file.
    * @param self The battle stage X object containing the model data.
    */
-  static void
+  inline void
     export_x_to_obj(const X &self)
   {
     if (self.tim().check()) {
