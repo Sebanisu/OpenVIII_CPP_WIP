@@ -84,7 +84,7 @@ int
         battle_fetch.get(),
         static_cast<std::string>(std::move(battle_fetch.file_name())));
 
-     // open_viii::battle::stage::StageToObj::export_x_to_obj(x);
+      open_viii::battle::stage::StageToObj::export_x_to_obj(x);
       open_viii::battle::stage::FlattenBattleTim::extract_used_colors(x);
       std::cout << "End Processing\n";
     }
