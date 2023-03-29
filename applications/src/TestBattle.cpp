@@ -31,12 +31,13 @@
   test_clut_ids()
 {
   static constexpr std::array<std::uint16_t, 16U> clutids = {
-    0x003CU, 0x403CU, 0x803CU, 0xC03CU, 0x003DU, 0x403DU, 0x803DU, 0xC03DU,
-    0x003EU, 0x403EU, 0x803EU, 0xC03EU, 0x003FU, 0x403FU, 0x803FU, 0xC03FU,
+    0x3C00U, 0x3C40U, 0x3C80U, 0x3CC0U, 0x3D00U, 0x3D40U, 0x3D80U, 0x3DC0U,
+    0x3E00U, 0x3E40U, 0x3E80U, 0x3EC0U, 0x3F00U, 0x3F40U, 0x3F80U, 0x3FC0U,
   };
-  for (const auto &clutid : clutids) {
-    std::cout << +static_cast<std::uint8_t>(open_viii::battle::stage::RawClut(
-      clutid)) << '\n';
+  for (int i = 0; const auto &clutid : clutids) {
+    std::cout << +static_cast<std::uint8_t>(
+      open_viii::battle::stage::RawClut(clutid))
+              << " == " << i++ << '\n';
   }
 }
 [[maybe_unused]] void
@@ -61,6 +62,7 @@
 int
   main()
 {
+  test_clut_ids();
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
     std::cout << path << std::endl;
