@@ -22,28 +22,54 @@ inline graphics::Point<float>
    (static_cast<float>(uv.y())));
 }
 
-bool
-  is_point_in_triangle(
-    const graphics::Point<float>                &p,
-    const std::array<graphics::Point<float>, 3> &triangle)
-{
-  const auto &a = triangle[0];
-  const auto &b = triangle[1];
-  const auto &c = triangle[2];
-  double      alpha, beta, gamma;
+bool is_point_in_triangle(const graphics::Point<float>& p, const std::array<graphics::Point<float>, 3>& triangle, float margin = 0.25F) {
+    // Calculate the bounding box of the triangle
+    float min_x = std::min(std::min(triangle[0].x(), triangle[1].x()), triangle[2].x()) - margin;
+    float max_x = std::max(std::max(triangle[0].x(), triangle[1].x()), triangle[2].x()) + margin;
+    float min_y = std::min(std::min(triangle[0].y(), triangle[1].y()), triangle[2].y()) - margin;
+    float max_y = std::max(std::max(triangle[0].y(), triangle[1].y()), triangle[2].y()) + margin;
 
-  double      det
-    = (b.y() - c.y()) * (a.x() - c.x()) + (c.x() - b.x()) * (a.y() - c.y());
+    // If the point is outside the bounding box, it can't be inside the triangle
+    if (p.x() < min_x || p.x() > max_x || p.y() < min_y || p.y() > max_y) {
+        return false;
+    }
 
-  alpha
-    = ((b.y() - c.y()) * (p.x() - c.x()) + (c.x() - b.x()) * (p.y() - c.y()))
-    / det;
-  beta = ((c.y() - a.y()) * (p.x() - c.x()) + (a.x() - c.x()) * (p.y() - c.y()))
-       / det;
-  gamma = 1.0 - alpha - beta;
+    // Check if the point is inside the triangle
+    double alpha, beta, gamma;
+    double det = (triangle[1].y() - triangle[2].y()) * (triangle[0].x() - triangle[2].x()) +
+        (triangle[2].x() - triangle[1].x()) * (triangle[0].y() - triangle[2].y());
+    alpha = ((triangle[1].y() - triangle[2].y()) * (p.x() - triangle[2].x()) +
+        (triangle[2].x() - triangle[1].x()) * (p.y() - triangle[2].y())) / det;
+    beta = ((triangle[2].y() - triangle[0].y()) * (p.x() - triangle[2].x()) +
+        (triangle[0].x() - triangle[2].x()) * (p.y() - triangle[2].y())) / det;
+    gamma = 1.0 - alpha - beta;
 
-  return alpha >= 0 && beta >= 0 && gamma >= 0;
+    return alpha >= -margin && beta >= -margin && gamma >= -margin;
 }
+
+
+//bool
+//  is_point_in_triangle(
+//    const graphics::Point<float>                &p,
+//    const std::array<graphics::Point<float>, 3> &triangle)
+//{
+//  const auto &a = triangle[0];
+//  const auto &b = triangle[1];
+//  const auto &c = triangle[2];
+//  double      alpha, beta, gamma;
+//
+//  double      det
+//    = (b.y() - c.y()) * (a.x() - c.x()) + (c.x() - b.x()) * (a.y() - c.y());
+//
+//  alpha
+//    = ((b.y() - c.y()) * (p.x() - c.x()) + (c.x() - b.x()) * (p.y() - c.y()))
+//    / det;
+//  beta = ((c.y() - a.y()) * (p.x() - c.x()) + (a.x() - c.x()) * (p.y() - c.y()))
+//       / det;
+//  gamma = 1.0 - alpha - beta;
+//
+//  return alpha >= 0 && beta >= 0 && gamma >= 0;
+//}
 // float
 //   area(float x0, float y0, float x1, float y1, float x2, float y2)
 //{
