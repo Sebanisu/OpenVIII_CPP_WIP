@@ -1,25 +1,49 @@
 ---
-Checks:'*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-readability-qualified-auto,-llvm-*,-cppcoreguidelines-pro-type-reinterpret-cast,-llvmlibc*,readability-identifier-naming,-hicpp-multiway-paths-covered,-readability-convert-member-functions-to-static,-altera-struct-pack-align'
+Checks: "*,
+        -abseil-*,
+        -altera-*,
+        -android-*,
+        -fuchsia-*,
+        -google-*,
+        -llvm*,
+        -modernize-use-trailing-return-type,
+        -zircon-*,
+        -readability-else-after-return,
+        -readability-static-accessed-through-instance,
+        -readability-avoid-const-params-in-decls,
+        -cppcoreguidelines-non-private-member-variables-in-classes,
+        -misc-non-private-member-variables-in-classes,
+"
 CheckOptions:
-  - { key: readability-identifier-naming.NamespaceCase,            value: lower_case }
-  - { key: readability-identifier-naming.ClassCase,                value: CamelCase }
-  - { key: readability-identifier-naming.EnumCase,                 value: CamelCase }
-  - { key: readability-identifier-naming.EnumSuffix,               value: T }
-  - { key: readability-identifier-naming.EnumConstantCase,         value: lower_case }
-  - { key: readability-identifier-naming.PrivateMemberCase,        value: lower_case }
-  - { key: readability-identifier-naming.PrivateMemberPrefix,      value: m_ }
-  - { key: readability-identifier-naming.StructCase,               value: CamelCase }
-  - { key: readability-identifier-naming.FunctionCase,             value: lower_case }
-  - { key: readability-identifier-naming.VariableCase,             value: lower_case }
-  - { key: readability-identifier-naming.GlobalConstantCase,       value: UPPER_CASE }
-  - { key: readability-identifier-naming.ParameterCase,            value: lower_case }
-  - { key: readability-identifier-naming.ConstantParameterCase,    value: lower_case }
-  - { key: readability-identifier-naming.LocalVariableCase,        value: lower_case }
-  - { key: readability-identifier-naming.LocalConstantCase,        value: lower_case }
-  - { key: readability-identifier-naming.LocalConstantPointerCase, value: lower_case }
-  - { key: readability-identifier-naming.LocalPointerCase,         value: lower_case }
-  - { key: modernize-use-auto.RemoveStars,                         value: 1 }
-  - { key: modernize-use-auto.MinTypeNameLength,                   value: 0 }
+  - key: readability-identifier-naming.MinimumVariableNameLength
+    value: '1'
+  - key: readability-identifier-naming.MinimumParameterNameLength
+    value: '1'
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
 FormatStyle: none
+#---
+#Checks:'*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-readability-qualified-auto,-llvm-*,-cppcoreguidelines-pro-type-reinterpret-cast,-llvmlibc*,readability-identifier-naming,-hicpp-multiway-paths-covered,-readability-convert-member-functions-to-static,-altera-struct-pack-align'
+#CheckOptions:
+#  - { key: readability-identifier-naming.NamespaceCase,            value: lower_case }
+#  - { key: readability-identifier-naming.ClassCase,                value: CamelCase }
+#  - { key: readability-identifier-naming.EnumCase,                 value: CamelCase }
+#  - { key: readability-identifier-naming.EnumSuffix,               value: T }
+#  - { key: readability-identifier-naming.EnumConstantCase,         value: lower_case }
+#  - { key: readability-identifier-naming.PrivateMemberCase,        value: lower_case }
+#  - { key: readability-identifier-naming.PrivateMemberPrefix,      value: m_ }
+#  - { key: readability-identifier-naming.StructCase,               value: CamelCase }
+#  - { key: readability-identifier-naming.FunctionCase,             value: lower_case }
+#  - { key: readability-identifier-naming.VariableCase,             value: lower_case }
+#  - { key: readability-identifier-naming.GlobalConstantCase,       value: UPPER_CASE }
+#  - { key: readability-identifier-naming.ParameterCase,            value: lower_case }
+#  - { key: readability-identifier-naming.ConstantParameterCase,    value: lower_case }
+#  - { key: readability-identifier-naming.LocalVariableCase,        value: lower_case }
+#  - { key: readability-identifier-naming.LocalConstantCase,        value: lower_case }
+#  - { key: readability-identifier-naming.LocalConstantPointerCase, value: lower_case }
+#  - { key: readability-identifier-naming.LocalPointerCase,         value: lower_case }
+#  - { key: modernize-use-auto.RemoveStars,                         value: 1 }
+#  - { key: modernize-use-auto.MinTypeNameLength,                   value: 0 }
+#WarningsAsErrors: ''
+#HeaderFilterRegex: ''
+#FormatStyle: none
