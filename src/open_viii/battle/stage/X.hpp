@@ -19,7 +19,7 @@ private:
   std::vector<char> m_buffer{};///< @brief Buffer holding the file content.
   std::string       m_path{};  ///< @brief Path to the X file.
   Camera            m_camera{};///< @brief Camera object from the X file.
-  std::vector<Geometries>
+  std::array<Geometries, 4>
                 m_geometries{};///< @brief Geometries object from the X file.
   graphics::Tim m_tim{};       ///< @brief TIM texture from the X file.
 
@@ -188,12 +188,13 @@ private:
       group_pointers[i++] = std::bit_cast<GeometryGroupOffsets>(tmp) + ptr;
       // span = span.subspan(sizeof(GeometryOffsets));
     }
-    m_geometries.reserve(4);
-    for (const auto &group_pointer : group_pointers) {
-      m_geometries.emplace_back(
-        buffer_begin,
-        std::span(group_pointer.object_list_pointer, tim_start));
-    }
+    std::ranges::transform(
+      group_pointers,
+      m_geometries.begin(),
+      [tim_start, buffer_begin](const auto &group_pointer) -> Geometries {
+        return { buffer_begin,
+                 std::span(group_pointer.object_list_pointer, tim_start) };
+      });
     return 0;
   }
 
@@ -250,7 +251,11 @@ public:
     if (camera_start != nullptr)
       process_model(buffer_begin, tim_start.begin(), camera_start);
   }
-  const std::vector<Geometries> &
+  /**
+   * @brief Returns a constant reference to the array of geometries.
+   * @return A constant reference to the array of geometries.
+   */
+  const std::array<Geometries, 4> &
     geometries() const
   {
     return m_geometries;
