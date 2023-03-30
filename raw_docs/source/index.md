@@ -14,8 +14,8 @@ Yep, it still needs a new name. :)
 ```{toctree}
 getting_started
 archive
-battle
-graphics
+battle/index
+graphics/index
 versions
 applications
 credits

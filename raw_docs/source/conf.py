@@ -61,15 +61,19 @@ html_sidebars = {'**': [
 myst_linkify_fuzzy_links = False
 myst_enable_extensions = [
     "amsmath",
+    "attrs_inline",
     #"colon_fence",
     #"deflist",
     "dollarmath",
+    #"fieldlist",
     #"html_admonition",
     #"html_image",
     "linkify",
     #"replacements",
     #"smartquotes",
-    #"substitution"
+    #"strikethrough",
+    #"substitution",
+    #"tasklist",
 ]
 html_theme_options = {
     # # Options of read the docs theme
