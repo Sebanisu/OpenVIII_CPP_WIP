@@ -1,12 +1,8 @@
-Battle
+Battle Library
 =====
 
-## Stage
-
 ```{toctree}
-x
-geometry
-quad
-triangle
-gpuflags
+stage/index
+dat/index
+magic/index
 ```

@@ -5,7 +5,7 @@ X File
 
 The filenames start with "a0stg" followed by a three-digit number, ranging from 000 to 162, and end with the ".x"
 extension.
-The regular expression `a0stg\d{3}\.x`{l=regex} matches filenames that start with "a0stg", followed by three digits, and
+The regular expression `a0stg\d{3}\.x`{l=regexp} matches filenames that start with "a0stg", followed by three digits, and
 ending with ".x".
 
 ## Layout
@@ -15,7 +15,7 @@ ending with ".x".
 | PlayStation MIPS assembly           | Used only in PS version; skipped in PC.</br>Usually starts with `E8 FF BD 27 01 00 02`.                                                           |
 | [Camera data + movement](camera.md) | Contains camera animations and movement (pre-keyed).</br>Usually starts with `02 00 08 00 20 00`.</br>Stage 147 has  `02 00 08 00 18 00` as well. |
 | [Model section](geometry.md)        | Contains object (group) and its sub-objects, vertex/triangle grouping.</br>Usually starts with `06 00 00 00`.                                     |
-| [Texture](../graphics/tim.md)	      | Contains one .TIM texture, 8 BPP.</br>Always starts with `10 00 00 00 09`.                                                                        |
+| [Texture](../../graphics/tim.md)	      | Contains one .TIM texture, 8 BPP.</br>Always starts with `10 00 00 00 09`.                                                                        |
 
 Note that battle stages do not contain pointers to the next sections. All pointers
 are [hardcoded](https://wiki.ffrtt.ru/index.php/FF8/BattleStage/Pointers) in `FF8.EXE`.

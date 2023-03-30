@@ -1,0 +1,6 @@
+Magic
+=====
+
+```{toctree}
+magic
+```
