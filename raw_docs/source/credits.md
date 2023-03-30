@@ -1,12 +1,33 @@
 Credits
 ======
-- [MaKiPL](https://github.com/MaKiPL)
-- [myst6re](https://github.com/myst6re)
-- [antiquechrono](https://github.com/antiquechrono)
-- [DarkShinryu](https://github.com/DarkShinryu)
-- [julianxhokaxhiu](https://github.com/julianxhokaxhiu)
-- [niemasd](https://github.com/niemasd/PyFF7)
-- [kaspar01](https://forums.qhimm.com/index.php?action=profileu=11468)
-- [Mirex](https://forums.qhimm.com/index.php?action=profile;u=171)
-- [JWP](https://forums.qhimm.com/index.php?action=profile;u=3772)
-- [random_npc](https://forums.qhimm.com/index.php?action=profile;u=8248)
+
+- MaKiPL
+  - [github](https://github.com/MaKiPL)
+  - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=23937)
+- myst6re
+  - [github](https://github.com/myst6re)
+  - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=4778)
+- antiquechrono
+  - [github](https://github.com/antiquechrono)
+- DarkShinryu
+  - [github](https://github.com/DarkShinryu)
+- TrueOdin
+  - [github](https://github.com/julianxhokaxhiu)
+  - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=31045)
+- niemasd
+  - [githum](https://github.com/niemasd/PyFF7)
+- kaspar01
+  - [qhimm](https://forums.qhimm.com/index.php?action=profileu=11468)
+- Mirex
+  - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=171)
+- JWP
+  - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=3772)
+- random_npc
+  - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=8248)
+- gjoerulv:
+  - [github](https://github.com/gjoerulv)
+  - [ifirit](https://sourceforge.net/u/gjoerulv/profile/)
+  - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=3668)
+- Sebanisu (セバニス)
+  - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=22866)
+  - [github](https://github.com/Sebanisu)
