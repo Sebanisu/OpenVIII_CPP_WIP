@@ -5,7 +5,7 @@ X File
 
 The filenames start with "a0stg" followed by a three-digit number, ranging from 000 to 162, and end with the ".x"
 extension.
-The regular expression `a0stg\d{3}\.x`{l.regex} matches filenames that start with "a0stg", followed by three digits, and
+The regular expression `a0stg\d{3}\.x`{l=regex} matches filenames that start with "a0stg", followed by three digits, and
 ending with ".x".
 
 ## Layout
