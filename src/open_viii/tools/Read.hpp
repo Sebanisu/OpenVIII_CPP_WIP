@@ -9,6 +9,76 @@
 #include <optional>
 #include <thread>
 namespace open_viii::tools {
+
+/**
+ * @brief Read a value of type T from a given span.
+ * @tparam T The data type to read from the span.
+ * @param span The span of characters to read from.
+ * @return The value of type T read from the span.
+ */
+template<typename T>
+inline T
+  read_val(const std::span<const char> &span)
+{
+  std::array<char, sizeof(T)> tmp{};
+  std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
+  return std::bit_cast<T>(tmp);
+}
+
+/**
+ * @brief Read a value of type T from a given span and update the span.
+ * @tparam T The data type to read from the span.
+ * @param span The span of characters to read from and update.
+ * @return The value of type T read from the span.
+ */
+template<typename T>
+inline T
+  read_val(std::span<const char> &span)
+{
+  std::array<char, sizeof(T)> tmp{};
+  std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
+  span = span.subspan(sizeof(T));
+  return std::bit_cast<T>(tmp);
+}
+
+/**
+ * @brief Read a specified number of values of type T from a given span and update the span.
+ * @tparam T The data type to read from the span.
+ * @tparam numT The unsigned integral type for count.
+ * @param span The span of characters to read from and update.
+ * @param count The number of values of type T to read.
+ * @return A vector of values of type T read from the span.
+ */
+template<typename T, std::unsigned_integral numT>
+inline std::vector<T>
+  read_vals(std::span<const char> &span, const numT count)
+{
+  std::vector<T> return_val{};
+  return_val.reserve(count);
+  auto iota = std::views::iota(numT{}, count);
+  std::ranges::transform(iota, std::back_inserter(return_val), [&span](numT) {
+    return read_val<T>(span);
+  });
+  return return_val;
+}
+
+/**
+ * @brief Read a specified number of values of type T from a given span.
+ * @tparam T The data type to read from the span.
+ * @tparam numT The unsigned integral type for count.
+ * @param span The span of characters to read from.
+ * @param count The number of values of type T to read.
+ * @return A vector of values of type T read from the span.
+ */
+template<typename T, std::unsigned_integral numT>
+inline std::vector<T>
+  read_vals(const std::span<const char> &span, const numT count)
+{
+  auto span_copy = span;
+  return read_vals<T, numT>(span_copy, count);
+}
+
+
 // TODO anything that requires memcpy could maybe be replaced with std::bitcast
 // then the functions could be changes to constexpr.
 /**
@@ -23,11 +93,11 @@ namespace open_viii::tools {
 template<
   is_trivially_copyable_and_default_constructible fixed_size_rangeT,
   std::integral auto                              sizeOfType>
-requires(
-  sizeOfType > 0
-  && (has_data_and_size<fixed_size_rangeT>)&&(
-    !has_reserve<fixed_size_rangeT>)&&(!has_resize<fixed_size_rangeT>))
-  [[nodiscard]] inline fixed_size_rangeT read_val2(std::istream &fp)
+  requires(
+    sizeOfType > 0 && (has_data_and_size<fixed_size_rangeT>)
+    && (!has_reserve<fixed_size_rangeT>) && (!has_resize<fixed_size_rangeT>))
+[[nodiscard]] inline fixed_size_rangeT
+  read_val2(std::istream &fp)
 {
   fixed_size_rangeT            item{};
   std::array<char, sizeOfType> tmp{};
@@ -118,7 +188,8 @@ template<is_trivially_copyable_and_default_constructible trivialType>
 template<
   is_trivially_copyable_and_default_constructible trivialT,
   std::integral auto                              sizeOfType>
-requires(sizeOfType > 0) [[nodiscard]] inline trivialT
+  requires(sizeOfType > 0)
+[[nodiscard]] inline trivialT
   read_val(std::istream &fp)
 {
   std::array<char, sizeOfType> tmp{};
@@ -149,7 +220,8 @@ template<is_trivially_copyable_and_default_constructible trivialType>
 template<
   is_trivially_copyable_and_default_constructible trivialT_or_rangeT,
   std::integral auto                              sizeOfType>
-requires(sizeOfType > 0) [[nodiscard]] inline trivialT_or_rangeT
+  requires(sizeOfType > 0)
+[[nodiscard]] inline trivialT_or_rangeT
   safe_read_val(std::istream &fp)
 {
   const auto current_pos = fp.tellg();
@@ -185,7 +257,7 @@ template<is_trivially_copyable_and_default_constructible trivialType>
  * @todo test?
  */
 template<has_data_and_size trivialType>
-requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType>
+  requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType>
 inline void
   read_val(
     const std::span<const char> &span,
@@ -264,7 +336,7 @@ template<is_default_constructible_has_data_and_size rangeT>
 template<
   std::ranges::contiguous_range dstT = std::vector<char>,
   std::integral                 sizeT>
-requires has_resize<dstT>
+  requires has_resize<dstT>
 [[maybe_unused]] inline auto
   read_val(std::istream &fp, const sizeT &s)
 {
@@ -335,10 +407,9 @@ template<typename dstT = std::vector<char>>
  * @todo test?
  */
 template<typename lambdaT>
-requires(std::invocable<lambdaT, std::istream &>)
-  [[maybe_unused]] inline bool read_from_file(
-    const lambdaT               &lambda,
-    const std::filesystem::path &path)
+  requires(std::invocable<lambdaT, std::istream &>)
+[[maybe_unused]] inline bool
+  read_from_file(const lambdaT &lambda, const std::filesystem::path &path)
 {
   auto ofp = open_file(path);
   if (ofp.has_value() && ofp->is_open()) {// check might be redundant.

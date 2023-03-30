@@ -27,9 +27,9 @@ public:
     std::cout << "\t\t Assigned Offset: " << std::hex << std::uppercase
               << std::distance(buffer_begin, span.data()) << std::dec
               << std::nouppercase << std::endl;
-    const auto model_count = Geometry::read_val<std::uint32_t>(span);
+    const auto model_count = tools::read_val<std::uint32_t>(span);
     std::cout << "\t\t Model Count: " << model_count << std::endl;
-    const auto m_model_offsets = Geometry::read_vals<std::uint32_t>(span, model_count);
+    const auto m_model_offsets = tools::read_vals<std::uint32_t>(span, model_count);
     if (m_model_offsets.empty())
     {
         std::cerr << __FILE__ << ':' << __LINE__ << " m_model_offsets is empty\n";
