@@ -120,8 +120,24 @@ if read_the_docs_build:
     subprocess.call('doxygen', shell=True)
     breathe_projects['OpenVIII_CPP_WIP'] = output_dir + '/xml'
 
+from pygments.lexer import RegexLexer
+from pygments.token import *
 from sphinx.highlighting import lexers
-from regex_lexer import RegexLexer
 
-lexers['regexp'] = RegexLexer()
-lexers['regex'] = RegexLexer()
+class CustomRegexLexer(RegexLexer):
+    name = 'regex'
+    aliases = ['regex']
+    filenames = ['*.regex']
+
+    tokens = {
+        'root': [
+            (r'\s+', Text),
+            (r'\\.', String.Escape),
+            (r'(\^|\$|\+|\{|\}|\?|\*|\.|\||\(|\)|\[|\])', Operator),
+            (r'\d+', Number),
+            (r'\w', Keyword),
+            (r'\s', Text),
+        ]
+    }
+lexers['regex'] = CustomRegexLexer()
+lexers['regexp'] = CustomRegexLexer()
