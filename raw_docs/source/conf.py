@@ -133,11 +133,12 @@ class CustomRegexLexer(RegexLexer):
         'root': [
             (r'\s+', Text),
             (r'\\.', String.Escape),
-            (r'(\^|\$|\+|\{|\}|\?|\*|\.|\||\(|\)|\[|\])', Operator),
+            (r'(\^|\$|\+|\{|\}|\?|\*|\.|\||\(|\)|\[|\]|\-)', Operator),
             (r'\d+', Number),
             (r'\w', Keyword),
             (r'\s', Text),
         ]
     }
+
 lexers['regex'] = CustomRegexLexer()
 lexers['regexp'] = CustomRegexLexer()
