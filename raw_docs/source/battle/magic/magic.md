@@ -12,7 +12,7 @@ Magic Files
 
 ### Regular Expressions
 
-1. All Files:  
+1. All Files:
    `^mag\d{3}_[a-z]\.([0-9a-z]+|dat)$`{l=regexp}
 1. Basename:
    `^mag\d{3}_[a-z]`{l=regexp}

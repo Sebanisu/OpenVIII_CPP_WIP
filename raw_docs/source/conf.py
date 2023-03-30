@@ -119,3 +119,9 @@ if read_the_docs_build:
     output_dir = 'build'
     subprocess.call('doxygen', shell=True)
     breathe_projects['OpenVIII_CPP_WIP'] = output_dir + '/xml'
+
+from sphinx.highlighting import lexers
+from regex_lexer import RegexLexer
+
+lexers['regexp'] = RegexLexer()
+lexers['regex'] = RegexLexer()
