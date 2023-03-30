@@ -53,15 +53,15 @@ Here is a summary of the groups, characters, and weapons:
 
 ```{eval-rst}
 .. doxygenenum:: open_viii::CharacterID
-    :project:
+    :project: open_viii
 ```
 
 ```{eval-rst}
 .. doxygenenum:: open_viii::CharacterModelID
-    :project:
+    :project: open_viii
 ```
 
 ```{eval-rst}
 .. doxygenenum:: open_viii::WeaponModelID
-    :project:
+    :project: open_viii
 ```
