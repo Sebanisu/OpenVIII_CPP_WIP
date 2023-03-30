@@ -26,7 +26,7 @@ Credits
   - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=8248)
 - gjoerulv:
   - [github](https://github.com/gjoerulv)
-  - [ifirit](https://sourceforge.net/u/gjoerulv/profile/)
+  - [sourceforge](https://sourceforge.net/u/gjoerulv/profile/)
   - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=3668)
 - Sebanisu (セバニス)
   - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=22866)
