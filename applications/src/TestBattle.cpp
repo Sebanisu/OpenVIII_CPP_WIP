@@ -3,6 +3,7 @@
 //
 #include "TestBattle.hpp"
 #include "open_viii/archive/Archives.hpp"
+#include "open_viii/battle/dat/DatFile.hpp"
 #include "open_viii/battle/stage/FlattenBattleTim.hpp"
 #include "open_viii/battle/stage/Geometries.hpp"
 #include "open_viii/battle/stage/StageToObj.hpp"
@@ -76,19 +77,34 @@ int
     }
     const auto &battle_archive
       = archives.get<open_viii::archive::ArchiveTypeT::battle>();
+    //    for (const auto &battle_fetch : battle_archive) {
+    //      if (!battle_fetch.file_name().ends_with(
+    //            open_viii::battle::stage::X::EXT)) {
+    //        continue;
+    //      }
+    //      std::cout << "Begin Processing: " << battle_fetch.file_name() <<
+    //      "\n"; const auto x = open_viii::battle::stage::X(
+    //        battle_fetch.get(),
+    //        static_cast<std::string>(std::move(battle_fetch.file_name())));
+    //
+    //      open_viii::battle::stage::StageToObj::export_x_to_obj(x);
+    //      open_viii::battle::stage::FlattenBattleTim::extract_used_colors(x);
+    //      std::cout << "End Processing\n";
+    //    }
+
     for (const auto &battle_fetch : battle_archive) {
-      if (!battle_fetch.file_name().ends_with(
-            open_viii::battle::stage::X::EXT)) {
+      const std::filesystem::path &as_path
+        = std::filesystem::path(battle_fetch.file_name());
+      if (
+        !battle_fetch.file_name().ends_with(".dat") || !as_path.has_stem()
+        || !as_path.stem().string().starts_with("c0m")) {
         continue;
       }
-      std::cout << "Begin Processing: " << battle_fetch.file_name() << "\n";
-      const auto x = open_viii::battle::stage::X(
+      std::cout << battle_fetch.file_name() << std::endl;
+      const auto dat = open_viii::battle::DatFile(
         battle_fetch.get(),
-        static_cast<std::string>(std::move(battle_fetch.file_name())));
-
-      open_viii::battle::stage::StageToObj::export_x_to_obj(x);
-      open_viii::battle::stage::FlattenBattleTim::extract_used_colors(x);
-      std::cout << "End Processing\n";
+        battle_fetch.file_name());
+      std::cout << dat.section_7().name() << std::endl;
     }
   });
   const auto end  = std::chrono::steady_clock::now();
