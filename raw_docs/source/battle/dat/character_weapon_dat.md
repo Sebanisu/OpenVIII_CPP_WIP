@@ -50,3 +50,18 @@ Here is a summary of the groups, characters, and weapons:
 * Group __A__ _(10)_ (Ward Zabac):
     * Character Model: Default (021), Uniform (022)
     * Weapon Model: Harpoon (039)
+
+```{eval-rst}
+.. doxygenstruct:: open_viii::CharacterID
+    :members:
+```
+
+```{eval-rst}
+.. doxygenstruct:: open_viii::CharacterModelID
+    :members:
+```
+
+```{eval-rst}
+.. doxygenstruct:: open_viii::WeaponModelID
+    :members:
+```
