@@ -16,6 +16,7 @@ getting_started
 archive
 battle/index
 graphics/index
+cards
 versions
 applications
 credits

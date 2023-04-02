@@ -142,11 +142,9 @@ enum class CardID : std::uint8_t
   Squall,
 
   Card_Back,
-  /// <summary>
-  /// for using in battle if a enemy is immune the value will be 0xff
-  /// </summary>
-  Immune = 0xff,
-  Fail   = 0xfe
+  Immune
+    = 0xff,///< for using in battle if a enemy is immune the value will be 0xff
+  Fail = 0xfe
 };
 }// namespace open_viii
 #endif// OPENVIII_CPP_WIP_CARDID_HPP
