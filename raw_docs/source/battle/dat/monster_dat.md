@@ -6,7 +6,7 @@ Monster DAT
 These files follow a pattern of "c0m" followed by a three-digit number that ranges from 000 to 199, and then the file
 extension ".dat".
 The regular expression `c0m\d{3}\.dat`{l=regexp} matches filenames that start with "c0m", followed by three digits, and
-ending with ".x".
+ending with ".dat".
 
 WIP on the monster list.
 
