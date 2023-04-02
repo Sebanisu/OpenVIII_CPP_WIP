@@ -28,6 +28,10 @@ Credits
   - [github](https://github.com/gjoerulv)
   - [sourceforge](https://sourceforge.net/u/gjoerulv/profile/)
   - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=3668)
+- strife98:
+  - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=11307)
+  - [twitch](https://twitch.tv/strife98)
+  - [github](https://github.com/strife98)
 - Sebanisu (セバニス)
   - [qhimm](https://forums.qhimm.com/index.php?action=profile;u=22866)
   - [github](https://github.com/Sebanisu)

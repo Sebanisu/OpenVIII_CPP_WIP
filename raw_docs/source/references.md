@@ -2,6 +2,8 @@ Reference
 ======
 - [Final Fantasy Inside Wiki - FF8](http://wiki.ffrtt.ru/index.php?title=FF8)
 - [Final Fantasy Inside Wiki - LZSS format](http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format)
+- [FF8 | Qhimm Modding Wiki](https://qhimm-modding.fandom.com/wiki/FF8)
+- [Final Fantasy VIII | Final Fantasy Wiki](https://finalfantasy.fandom.com/wiki/Category:Final_Fantasy_VIII)
 - [Doomtrain Wiki](https://github.com/DarkShinryu/doomtrain/wiki)
 - [OpenVIII-monogame](https://github.com/MaKiPL/OpenVIII-monogame)
 - [Deling](https://github.com/myst6re/deling)
