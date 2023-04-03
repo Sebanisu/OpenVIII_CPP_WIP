@@ -73,25 +73,17 @@ public:
   [[nodiscard]] constexpr std::span<const char>
     get_span() const
   {
-    if (std::ranges::empty(m_buffer)) {
-      return std::span<const char>{};
+    if (static_cast<std::size_t>(sectionType) + 1U < m_section_offsets.size()) {
+      return std::span<const char>(
+        m_section_offsets.at(static_cast<std::size_t>(sectionType))
+          + m_buffer.data(),
+        m_section_offsets.at(static_cast<std::size_t>(sectionType) + 1)
+          + m_buffer.data());
     }
-    auto length = [this]() {
-      if constexpr (
-        static_cast<int>(sectionType)
-        >= (static_cast<int>(SectionTypesT::count) - 1)) {
-        return std::ranges::size(m_buffer)
-             - m_section_offsets.at(static_cast<size_t>(sectionType));
-      }
-      else {
-        return static_cast<size_t>(
-          m_section_offsets.at(static_cast<size_t>(sectionType) + 1)
-          - m_section_offsets.at(static_cast<size_t>(sectionType)));
-      }
-    }();
-    return std::span<const char>(m_buffer).subspan(
-      m_section_offsets.at(static_cast<size_t>(sectionType)),
-      length);
+    return std::span<const char>(
+      m_section_offsets.at(static_cast<std::size_t>(sectionType))
+        + m_buffer.data(),
+      m_buffer.data() + m_buffer.size());
   }
   template<SectionTypesT sectionType>
     requires(section_type_test<sectionType>)
@@ -281,32 +273,18 @@ public:
   {
     return {};
   }
-  auto
+  [[nodiscard]] std::vector<std::uint32_t>
     get_section_offsets() const
   {
-    auto local_offsets = decltype(m_section_offsets){};
-    auto buffer_span   = std::span<const char>(m_buffer);
-    if (std::ranges::size(buffer_span) < sizeof(uint32_t)) {
-      return local_offsets;
+    if (std::ranges::size(m_buffer) < sizeof(uint32_t)) {
+      return {};
     }
-    uint32_t section_count{};
-    memcpy(
-      &section_count,
-      std::ranges::data(buffer_span),
-      sizeof(section_count));
-    if (
-      std::ranges::size(buffer_span) < sizeof(uint32_t) * (section_count + 1)) {
-      return local_offsets;
+    auto buffer_span = std::span<const char>(m_buffer);
+    auto section_count = tools::read_val<std::uint32_t>(buffer_span);
+    if (std::ranges::size(buffer_span) < sizeof(uint32_t) * (section_count)) {
+      return {};
     }
-    local_offsets.reserve(section_count);
-    while (section_count-- > 0) {
-      buffer_span = buffer_span.subspan(sizeof(section_count));
-      memcpy(
-        &local_offsets.emplace_back(),
-        std::ranges::data(buffer_span),
-        sizeof(section_count));
-    }
-    return local_offsets;
+    return tools::read_vals<std::uint32_t>(buffer_span, section_count);
   }
   template<FIFLFS_Has_get_entry_data mainT>
   explicit Header(const mainT &main)
