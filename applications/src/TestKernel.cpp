@@ -271,6 +271,7 @@ int
     }
     [[maybe_unused]] const auto &main
       = archives.get<open_viii::archive::ArchiveTypeT::main>();
+
     std::cout << main << std::endl;
     auto &kernel = kernels.emplace_back(path, main).second;
     [[maybe_unused]] const auto &buffer = kernel.buffer();
@@ -288,7 +289,7 @@ int
         if (entry != decltype(entry){}) {
           std::cout << i << ": ";
           //todo fix cout<coo> broken with clang
-          //out<coo>(entry, std::cout, data.text_span());
+          out<coo>(entry, std::cout, data.text_span());
           std::cout << '\n';
         }
       }
