@@ -22,10 +22,9 @@ inline graphics::Point<float>
 {
   const float texPageWidth = 128.F;
 
-  return graphics::Point<float>(
-    ((static_cast<float>(uv.x())
-      + (static_cast<float>(texture_page) * texPageWidth))),
-    (static_cast<float>(uv.y())));
+  return { ((static_cast<float>(uv.x())
+             + (static_cast<float>(texture_page) * texPageWidth))),
+           (static_cast<float>(uv.y())) };
 }
 
 /**
@@ -96,13 +95,12 @@ inline void
   extract_used_colors(const X &self)
 {
   const graphics::Tim                               &tim = self.tim();
-  std::array<std::vector<graphics::Color16ABGR>, 16> source_colors;
+  std::array<std::vector<graphics::Color32RGBA>, 16> source_colors;
   std::ranges::transform(
-    std::views::iota(0, 16),
+    std::views::iota(std::uint16_t{}, std::uint16_t{ 16 }),
     source_colors.begin(),
-    [&tim](auto i) {
-      return tim.get_colors<graphics::Color16ABGR>(
-        static_cast<std::uint16_t>(i));
+    [&tim](std::uint16_t i) {
+      return tim.get_colors<graphics::Color32RGBA>(i);
     });
 
   std::vector<graphics::Color32RGBA> used_colors(
@@ -116,16 +114,16 @@ inline void
                                   bool           &found) {
     std::array<graphics::Point<float>, 3> triangle_uvs;
     for (std::uint32_t i = 0; const auto &uv : triangle.uvs()) {
-      triangle_uvs[i] = uv_to_pixel_position(uv, triangle.texture_page());
+      triangle_uvs.at(i) = uv_to_pixel_position(uv, triangle.texture_page());
       ++i;
     }
 
     if (is_point_in_triangle(
           { static_cast<float>(x), static_cast<float>(y) },
           triangle_uvs)) {
-      std::uint32_t index = y * tim.width() + x;
-      used_colors[index]  = static_cast<graphics::Color32RGBA>(
-        source_colors[triangle.clut()][index]);
+      std::uint32_t const index = y * tim.width() + x;
+      used_colors[index]        = static_cast<graphics::Color32RGBA>(
+        source_colors.at(triangle.clut())[index]);
       found = true;
       return;
     }
@@ -138,8 +136,9 @@ inline void
           bool found = false;
           for (const Triangle &triangle : geometry.triangles) {
             process_triangle(triangle, y, x, found);
-            if (found)
+            if (found) {
               break;
+            }
           }
 
           if (!found) {
@@ -147,11 +146,13 @@ inline void
               const auto triangles = quad_to_triangles(quad);
               for (const auto &triangle : triangles) {
                 process_triangle(triangle, y, x, found);
-                if (found)
+                if (found) {
                   break;
+                }
               }
-              if (found)
+              if (found) {
                 break;
+              }
             }
           }
         }
