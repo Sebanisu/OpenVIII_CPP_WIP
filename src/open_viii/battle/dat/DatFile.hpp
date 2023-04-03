@@ -18,6 +18,8 @@
 #include <vector>
 namespace open_viii::battle {
 /**
+ * @brief Represents a DAT file containing battle-related data.
+ *
  * @see https://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT
  * @see https://forums.qhimm.com/index.php?topic=11137.msg154834
  * @see
@@ -27,14 +29,31 @@ namespace open_viii::battle {
 class DatFile
 {
 private:
+  /**
+   * @brief Buffer to store the data read from the DAT file.
+   */
   std::vector<char>     m_buffer{};
+
+  /**
+   * @brief Path to the DAT file.
+   */
   std::filesystem::path m_path{};
-  // Header Begin:
+
+  /**
+   * @brief Header structure for the DAT file.
+   */
   struct DatHeader
   {
+    /**
+     * @brief Number of sections in the DAT file. Typically 11 or 2.
+     */
     std::uint32_t              m_count{};///< 11 or 2;
     std::vector<std::uint32_t> m_offsets{};
     DatHeader() = default;
+
+    /**
+     * @brief Offsets of each section in the DAT file.
+     */
     DatHeader(std::span<const char> buffer)
       : m_count(open_viii::tools::read_val<std::uint32_t>(buffer)),
         m_offsets(open_viii::tools::read_vals<std::uint32_t>(buffer, m_count))
