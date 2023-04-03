@@ -42,39 +42,49 @@ inline bool
     const std::array<graphics::Point<float>, 3> &triangle,
     float                                        margin = 0.25F)
 {
-  // Calculate the bounding box of the triangle
-  float min_x
-    = std::min(std::min(triangle[0].x(), triangle[1].x()), triangle[2].x())
-    - margin;
-  float max_x
-    = std::max(std::max(triangle[0].x(), triangle[1].x()), triangle[2].x())
-    + margin;
-  float min_y
-    = std::min(std::min(triangle[0].y(), triangle[1].y()), triangle[2].y())
-    - margin;
-  float max_y
-    = std::max(std::max(triangle[0].y(), triangle[1].y()), triangle[2].y())
-    + margin;
+  {
+    // Calculate the bounding box of the triangle
+    const float min_x
+      = std::min(std::min(triangle[0].x(), triangle[1].x()), triangle[2].x())
+      - margin;
+    const float max_x
+      = std::max(std::max(triangle[0].x(), triangle[1].x()), triangle[2].x())
+      + margin;
+    const float min_y
+      = std::min(std::min(triangle[0].y(), triangle[1].y()), triangle[2].y())
+      - margin;
+    const float max_y
+      = std::max(std::max(triangle[0].y(), triangle[1].y()), triangle[2].y())
+      + margin;
 
-  // If the point is outside the bounding box, it can't be inside the triangle
-  if (p.x() < min_x || p.x() > max_x || p.y() < min_y || p.y() > max_y) {
-    return false;
+    // If the point is outside the bounding box, it can't be inside the triangle
+    if (p.x() < min_x || p.x() > max_x || p.y() < min_y || p.y() > max_y) {
+      return false;
+    }
   }
 
   // Check if the point is inside the triangle
-  double alpha, beta, gamma;
-  double det
-    = (triangle[1].y() - triangle[2].y()) * (triangle[0].x() - triangle[2].x())
-    + (triangle[2].x() - triangle[1].x()) * (triangle[0].y() - triangle[2].y());
-  alpha = ((triangle[1].y() - triangle[2].y()) * (p.x() - triangle[2].x())
-           + (triangle[2].x() - triangle[1].x()) * (p.y() - triangle[2].y()))
-        / det;
-  beta = ((triangle[2].y() - triangle[0].y()) * (p.x() - triangle[2].x())
-          + (triangle[0].x() - triangle[2].x()) * (p.y() - triangle[2].y()))
-       / det;
-  gamma = 1.0 - alpha - beta;
+  const double det = static_cast<double>(triangle[1].y() - triangle[2].y())
+                     * static_cast<double>(triangle[0].x() - triangle[2].x())
+                   + static_cast<double>(triangle[2].x() - triangle[1].x())
+                       * static_cast<double>(triangle[0].y() - triangle[2].y());
+  const double alpha = ((static_cast<double>(triangle[1].y())
+                         - static_cast<double>(triangle[2].y()))
+                          * static_cast<double>(p.x() - triangle[2].x())
+                        + static_cast<double>(triangle[2].x() - triangle[1].x())
+                            * static_cast<double>(p.y() - triangle[2].y()))
+                     / det;
+  const double beta = ((static_cast<double>(triangle[2].y())
+                        - static_cast<double>(triangle[0].y()))
+                         * static_cast<double>(p.x() - triangle[2].x())
+                       + static_cast<double>(triangle[0].x() - triangle[2].x())
+                           * static_cast<double>(p.y() - triangle[2].y()))
+                    / det;
+  const double gamma = 1.0 - alpha - beta;
 
-  return alpha >= -margin && beta >= -margin && gamma >= -margin;
+  return alpha >= -static_cast<double>(margin)
+      && beta >= -static_cast<double>(margin)
+      && gamma >= -static_cast<double>(margin);
 }
 
 /**
