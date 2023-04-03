@@ -17,6 +17,16 @@ struct vector_wrapper
   constexpr vector_wrapper(std::vector<T> in_value) : value(std::move(in_value))
   {}
   constexpr decltype(auto)
+    data()
+  {
+    return std::ranges::data(value);
+  }
+  constexpr decltype(auto)
+    data() const
+  {
+    return std::ranges::data(value);
+  }
+  constexpr decltype(auto)
     begin()
   {
     return std::ranges::begin(value);
