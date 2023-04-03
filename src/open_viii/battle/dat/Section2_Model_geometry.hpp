@@ -9,31 +9,34 @@
 #include "open_viii/graphics/Vertice.hpp"
 #include <array>
 namespace open_viii::battle {
+/**
+ * @see https://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT#Section_2:_Model_geometry
+ */
 struct Section2_Model_geometry
 {
   DatHeader m_header{};
   struct triangle
   {
     std::array<std::uint16_t, 3U>
-      vertex_indexes;// vertex_indexes[0] &= 0xFFF, other bits are unknown
-    open_viii::graphics::Point<std::uint8_t> texCoords1;
-    open_viii::graphics::Point<std::uint8_t> texCoords2;
-    std::uint16_t                            textureID_related;
-    open_viii::graphics::Point<std::uint8_t> texCoords3;
-    std::uint16_t                            u;// textureID_related2
+      m_raw_face_indeces{};///< vertex_indexes[i] & 0xFFF, other bits are unknown
+    open_viii::graphics::Point<std::uint8_t> m_uv1;
+    open_viii::graphics::Point<std::uint8_t> m_uv2;
+    std::uint16_t                            m_raw_texture_id{}; ///< m_raw_texture_id >> 6 & 0b111U
+    open_viii::graphics::Point<std::uint8_t> m_uv3;
+    std::uint16_t                            u{};// textureID_related2
     static constexpr std::size_t             EXPECTED_SIZE = 16U;
   };
   static_assert(sizeof(triangle) == triangle::EXPECTED_SIZE);
   struct quad
   {
     std::array<std::uint16_t, 4U>
-      vertex_indexes;// vertex_indexes[0] &= 0xFFF, other bits are unknown
-    open_viii::graphics::Point<std::uint8_t> texCoords1;
-    std::uint16_t                            textureID_related;
-    open_viii::graphics::Point<std::uint8_t> texCoords2;
-    std::uint16_t                            u;// textureID_related2
-    open_viii::graphics::Point<std::uint8_t> texCoords3;
-    open_viii::graphics::Point<std::uint8_t> texCoords4;
+                                             m_raw_face_indeces{};// vertex_indexes[0] &= 0xFFF, other bits are unknown
+    open_viii::graphics::Point<std::uint8_t> m_uv1;
+    std::uint16_t                            m_raw_texture_id{};  ///< m_raw_texture_id >> 6 & 0b111U
+    open_viii::graphics::Point<std::uint8_t> m_uv2;
+    std::uint16_t                            u{};// textureID_related2
+    open_viii::graphics::Point<std::uint8_t> m_uv3;
+    open_viii::graphics::Point<std::uint8_t> m_uv4;
     static constexpr std::size_t             EXPECTED_SIZE = 20U;
   };
   static_assert(sizeof(quad) == quad::EXPECTED_SIZE);

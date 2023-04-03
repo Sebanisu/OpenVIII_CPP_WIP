@@ -97,7 +97,7 @@ int
         = std::filesystem::path(battle_fetch.file_name());
       if (
         !battle_fetch.file_name().ends_with(".dat") || !as_path.has_stem()
-        || !as_path.stem().string().starts_with("c0m")) {
+        || !(as_path.stem().string().starts_with("c0m")|| as_path.stem().string().starts_with("d"))) {
         continue;
       }
       std::cout << battle_fetch.file_name() << std::endl;
@@ -105,6 +105,17 @@ int
         battle_fetch.get(),
         battle_fetch.file_name());
       std::cout << dat.section_7().name() << std::endl;
+      const auto dat_path = std::filesystem::path(battle_fetch.file_name());
+      const auto parent = dat_path.parent_path();
+      const auto stem = dat_path.stem().string();
+      const auto ext = dat_path.extension().string();
+
+      for (int i = 0; const open_viii::graphics::Tim & tim : dat.section_11().m_tims) {
+        if (tim.check()) {
+          tim.save((parent / (stem + '_' + std::to_string(i) + ext)).string());
+        }
+        ++i;
+      }
     }
   });
   const auto end  = std::chrono::steady_clock::now();

@@ -36,8 +36,11 @@ inline T
   read_val(std::span<const char> &span)
 {
   std::array<char, sizeof(T)> tmp{};
-  std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
-  span = span.subspan(sizeof(T));
+  if (span.size() >= sizeof(T))
+  {
+      std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
+      span = span.subspan(sizeof(T));
+  }
   return std::bit_cast<T>(tmp);
 }
 

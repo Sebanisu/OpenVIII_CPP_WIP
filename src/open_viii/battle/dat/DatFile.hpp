@@ -10,6 +10,8 @@
 #include "open_viii/kernel/MagicSpell.hpp"
 #include "open_viii/strings/FF8String.hpp"
 #include "open_viii/tools/Read.hpp"
+#include "Section11_Textures.hpp"
+#include "Section2_Model_geometry.hpp"
 #include "Section7_Information_and_Stats.hpp"
 #include <cstdint>
 #include <filesystem>
@@ -31,19 +33,23 @@ private:
   /**
    * @brief Buffer to store the data read from the DAT file.
    */
-  std::vector<char>     m_buffer{};
+  std::vector<char>       m_buffer{};
 
   /**
    * @brief Path to the DAT file.
    */
-  std::filesystem::path m_path{};
+  std::filesystem::path   m_path{};
 
-  DatHeader m_header{};///< The header data of the .dat file.
+  DatHeader               m_header{};///< The header data of the .dat file.
+
+  Section2_Model_geometry m_section2{};
 
   /**
    * @brief Contains information and statistics about a character in the game.
    */
   Section7_Information_and_Stats m_section7{};
+
+  Section11_Textures             m_section11{};
 
 public:
   /**
@@ -66,8 +72,43 @@ public:
         std::span(m_buffer).subspan(m_header.m_offsets.front()));
       return;
     }
-    m_section7 = open_viii::tools::read_val<Section7_Information_and_Stats>(
-      std::span(m_buffer).subspan(m_header.m_offsets[6]));
+    if (m_header.m_count == 11)
+    {
+        m_section7 = open_viii::tools::read_val<Section7_Information_and_Stats>(
+            std::span(m_buffer).subspan(m_header.m_offsets[6]));
+        m_section11
+            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[10]));
+        return;
+    }
+    if(m_header.m_count == 7)
+    {
+        //index 0 = 1;
+        //index 1 = 2;
+        //index 2 = 3;
+        //index 5 = 11;
+        m_section11
+            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[5]));
+        return;
+    }
+    if (m_header.m_count == 8) //weapon
+    {
+        m_section11
+            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[6]));
+        return;
+    }
+    if (m_header.m_count == 5) //weapon 2
+    {
+        m_section11
+            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[4]));
+        return;
+    }
+    if (m_header.m_count == 10) //edna
+    {
+        m_section11
+            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[8]));
+        return;
+    }
+    std::cout << m_header.m_count << std::endl;
   }
 
   /**
@@ -91,6 +132,24 @@ public:
     section_7()
   {
     return m_section7;
+  }
+
+  [[nodiscard]] Section2_Model_geometry &
+    section_2()
+  {
+    return m_section2;
+  }
+
+  [[nodiscard]] const Section2_Model_geometry &
+    section_2() const
+  {
+    return m_section2;
+  }
+
+  [[nodiscard]] const Section11_Textures &
+    section_11() const
+  {
+    return m_section11;
   }
 };
 }// namespace open_viii::battle

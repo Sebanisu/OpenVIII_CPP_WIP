@@ -254,7 +254,7 @@ public:
   [[nodiscard]] static TimHeader
     get_tim_header(std::span<const char> &buffer)
   {
-    return tools::read_val_safe_mutate<TimHeader>(buffer);
+    return tools::read_val<TimHeader>(buffer);
   }
 
   /**
@@ -270,7 +270,7 @@ public:
       || !m_tim_header.bpp().color_lookup_table_present()) {
       return {};
     }
-    return tools::read_val_safe_mutate<TimClutHeader>(buffer);
+    return tools::read_val<TimClutHeader>(buffer);
   }
 
   /**
@@ -284,10 +284,9 @@ public:
     if (!m_tim_clut_header.check() || m_tim_clut_header.data_size() == 0U) {
       return {};
     }
-    return tools::read_val_safe_mutate<
-      std::vector<Color16<ColorLayoutT::ABGR>>>(
+    return tools::read_vals<Color16ABGR>(
       buffer,
-      m_tim_clut_header.data_size());
+      m_tim_clut_header.data_size()/2U);
   }
 
   /**
@@ -301,7 +300,7 @@ public:
     if (!m_tim_header.check()) {
       return {};
     }
-    return tools::read_val_safe_mutate<TimImageHeader>(buffer);
+    return tools::read_val<TimImageHeader>(buffer);
   }
   /**
    * @brief Get the TIM image data from the buffer.
@@ -321,26 +320,24 @@ public:
     }
     switch (static_cast<int>(m_tim_header.bpp())) {
     case 4: {
-      return tools::read_val_safe_mutate<std::vector<Bit4Values>>(
+      return tools::read_vals<Bit4Values>(
         buffer,
         m_tim_image_header.data_size());
     }
     case 8: {
-      return tools::read_val_safe_mutate<std::vector<std::uint8_t>>(
+      return tools::read_vals<std::uint8_t>(
         buffer,
         m_tim_image_header.data_size());
     }
     case 16: {
-      return tools::read_val_safe_mutate<
-        std::vector<Color16<ColorLayoutT::ABGR>>>(
+      return tools::read_vals<Color16ABGR>(
         buffer,
-        m_tim_image_header.data_size());
+        m_tim_image_header.data_size()/2);
     }
     case 24: {
-      return tools::read_val_safe_mutate<
-        std::vector<Color24<ColorLayoutT::BGR>>>(
+      return tools::read_vals<Color24BGR>(
         buffer,
-        m_tim_image_header.data_size());
+        m_tim_image_header.data_size()/3);
     }
     }
     assert(false);
