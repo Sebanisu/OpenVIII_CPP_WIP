@@ -1,5 +1,6 @@
 Reference
 ======
+
 - [Final Fantasy Inside Wiki - FF8](http://wiki.ffrtt.ru/index.php?title=FF8)
 - [Final Fantasy Inside Wiki - LZSS format](http://wiki.ffrtt.ru/index.php?title=FF7/LZSS_format)
 - [FF8 | Qhimm Modding Wiki](https://qhimm-modding.fandom.com/wiki/FF8)
@@ -14,3 +15,4 @@ Reference
 - [FFNx](https://github.com/julianxhokaxhiu/FFNx)
 - [PyFF7](https://github.com/niemasd/PyFF7)
 - [q-gears](https://github.com/q-gears/q-gears)
+- [gjoerulv](https://sourceforge.net/u/gjoerulv/profile/)

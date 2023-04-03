@@ -17,6 +17,13 @@
 #include <span>
 #include <vector>
 namespace open_viii::battle {
+/**
+ * @see https://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT
+ * @see https://forums.qhimm.com/index.php?topic=11137.msg154834
+ * @see
+ * https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/DatFile.cs
+ * @see https://sourceforge.net/projects/ifrit/
+ */
 class DatFile
 {
 private:
@@ -105,6 +112,11 @@ private:
 
   /**
    * @brief Contains information and statistics about a character in the game.
+   * @see
+   * https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/Information.cs
+   * @see
+   * http://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT#Section_7:_Informations_.26_stats
+   * @see https://sourceforge.net/projects/ifrit/
    */
   struct Section7_Information_and_Stats
   {

@@ -1,7 +1,8 @@
 Monster DAT
 ======
 [DAT](https://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT),
-[Qhimm](https://forums.qhimm.com/index.php?topic=11137.msg154834)
+[Qhimm](https://forums.qhimm.com/index.php?topic=11137.msg154834),
+[Ifirit](https://sourceforge.net/projects/ifrit/)
 
 These files follow a pattern of "c0m" followed by a three-digit number that ranges from 000 to 199, and then the file
 extension ".dat".
