@@ -52,7 +52,7 @@ Here is a summary of the groups, characters, and weapons:
     * Weapon Model: Harpoon (039)
 
 ```{eval-rst}
-.. doxygenenum:: open_viii::kernel::charactersT
+.. doxygenenum:: open_viii::kernel::CharactersT
 ```
 
 ```{eval-rst}
