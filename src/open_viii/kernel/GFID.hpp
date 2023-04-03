@@ -5,7 +5,7 @@
 #ifndef OPENVIII_CPP_WIP_GFID_HPP
 #define OPENVIII_CPP_WIP_GFID_HPP
 #include <cstdint>
-namespace open_viii {
+namespace open_viii::kernel {
 enum class GFID : std::uint8_t
 {
   Quezacotl,
@@ -24,6 +24,7 @@ enum class GFID : std::uint8_t
   Cactuar,
   Tonberry,
   Eden,
+  Count,
   Blank = 0xFE,
   All   = 0xFF,
 };
