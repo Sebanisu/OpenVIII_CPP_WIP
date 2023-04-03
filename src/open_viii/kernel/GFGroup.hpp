@@ -13,114 +13,95 @@
 #ifndef VIIIARCHIVE_GFGROUP_HPP
 #define VIIIARCHIVE_GFGROUP_HPP
 #include "open_viii/tools/array_wrapper.hpp"
+#include "GFID.hpp"
 namespace open_viii::kernel {
 template<typename T>
   requires(std::unsigned_integral<T> || std::ranges::contiguous_range<T>)
 struct GFGroup
 {
 public:
-  enum
-  {
-    QUETZALCOATL,
-    SHIVA,
-    IFRIT,
-    SIREN,
-    BROTHERS,
-    DIABLOS,
-    CARBUNCLE,
-    LEVIATHAN,
-    PANDEMONA,
-    CERBERUS,
-    ALEXANDER,
-    DOOMTRAIN,
-    BAHAMUT,
-    CACTUAR,
-    TONBERRY,
-    EDEN,
-    MAX_GFS
-  };
   constexpr auto
     operator<=>(const GFGroup<T> &right) const noexcept
     = default;
   [[nodiscard]] constexpr T
     quetzalcoatl() const noexcept
   {
-    return m_gfs.at(QUETZALCOATL);
+    return m_gfs.at(GFID::Quezacotl);
   }
   [[nodiscard]] constexpr T
     shiva() const noexcept
   {
-    return m_gfs.at(SHIVA);
+    return m_gfs.at(GFID::Shiva);
   }
   [[nodiscard]] constexpr T
     ifrit() const noexcept
   {
-    return m_gfs.at(IFRIT);
+    return m_gfs.at(GFID::Ifrit);
   }
   [[nodiscard]] constexpr T
     siren() const noexcept
   {
-    return m_gfs.at(SIREN);
+    return m_gfs.at(GFID::Siren);
   }
   [[nodiscard]] constexpr T
     brothers() const noexcept
   {
-    return m_gfs.at(BROTHERS);
+    return m_gfs.at(GFID::Brothers);
   }
   [[nodiscard]] constexpr T
     diablos() const noexcept
   {
-    return m_gfs.at(DIABLOS);
+    return m_gfs.at(GFID::Diablos);
   }
   [[nodiscard]] constexpr T
     carbuncle() const noexcept
   {
-    return m_gfs.at(CARBUNCLE);
+    return m_gfs.at(GFID::Carbuncle);
   }
   [[nodiscard]] constexpr T
     leviathan() const noexcept
   {
-    return m_gfs.at(LEVIATHAN);
+    return m_gfs.at(GFID::Leviathan);
   }
   [[nodiscard]] constexpr T
     pandemona() const noexcept
   {
-    return m_gfs.at(PANDEMONA);
+    return m_gfs.at(GFID::Pandemona);
   }
   [[nodiscard]] constexpr T
     cerberus() const noexcept
   {
-    return m_gfs.at(CERBERUS);
+    return m_gfs.at(GFID::Cerberus);
   }
   [[nodiscard]] constexpr T
     alexander() const noexcept
   {
-    return m_gfs.at(ALEXANDER);
+    return m_gfs.at(GFID::Alexander);
   }
   [[nodiscard]] constexpr T
     doomtrain() const noexcept
   {
-    return m_gfs.at(DOOMTRAIN);
+    return m_gfs.at(GFID::Doomtrain);
   }
   [[nodiscard]] constexpr T
     bahamut() const noexcept
   {
-    return m_gfs.at(BAHAMUT);
+    return m_gfs.at(GFID::Bahamut);
   }
   [[nodiscard]] constexpr T
     cactuar() const noexcept
   {
-    return m_gfs.at(CACTUAR);
+    return m_gfs.at(GFID::Cactuar);
   }
   [[nodiscard]] constexpr T
     tonberry() const noexcept
   {
-    return m_gfs.at(TONBERRY);
+    return m_gfs.at(GFID::Tonberry);
   }
   [[nodiscard]] constexpr T
     eden() const noexcept
   {
-    return m_gfs.at(EDEN);
+    return m_gfs.at(GFID::Eden);
   }
   friend auto &
     operator<<(std::ostream &os, const GFGroup<T> &in)
@@ -145,7 +126,7 @@ public:
   }
 
 private:
-  tools::array_wrapper<T, MAX_GFS> m_gfs{};
+  tools::array_wrapper<T, static_cast<std::uint8_t>(GFID::Eden)+1> m_gfs{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_GFGROUP_HPP
