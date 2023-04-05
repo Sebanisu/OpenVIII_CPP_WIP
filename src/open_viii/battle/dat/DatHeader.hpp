@@ -22,9 +22,24 @@ struct DatHeader
   /**
    * @brief Offsets of each section in the DAT file.
    */
-  DatHeader(std::span<const char> buffer)
+  explicit DatHeader(std::span<const char> &buffer)
     : m_count(open_viii::tools::read_val<std::uint32_t>(buffer)),
       m_offsets(open_viii::tools::read_vals<std::uint32_t>(buffer, m_count))
+  {
+    // if count == 2 then only Section 7 and 8 exist.
+  }
+
+  /**
+   * @brief Offsets of each section in the DAT file.
+   */
+  explicit DatHeader(const std::span<const char> &buffer)
+    : m_count(open_viii::tools::read_val<std::uint32_t>(buffer)),
+      m_offsets(
+        (buffer.size() > sizeof(std::uint32_t))
+          ? (open_viii::tools::read_vals<std::uint32_t>(
+            buffer.subspan(sizeof(std::uint32_t)),
+            m_count))
+          : std::vector<std::uint32_t>{})
   {
     // if count == 2 then only Section 7 and 8 exist.
   }

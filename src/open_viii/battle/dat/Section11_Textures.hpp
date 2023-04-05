@@ -9,21 +9,23 @@
 namespace open_viii::battle {
 struct Section11_Textures
 {
+  std::span<const char>      m_section_span{};
   DatHeader                  m_section_header{};
   std::uint32_t              m_EOF_offset{};
   std::vector<graphics::Tim> m_tims{};
 
   Section11_Textures() = default;
-  explicit Section11_Textures([[maybe_unused]]const char *const section_start, std::span<const char> span)
-    : m_section_header(span),
-      m_EOF_offset(tools::read_val<std::uint32_t>(
-        span.subspan(sizeof(std::uint32_t) * (m_section_header.m_count + 1))))
+  explicit Section11_Textures(
+    [[maybe_unused]] const char *const section_start,
+    std::span<const char>              span)
+    : m_section_span(span), m_section_header(span),
+      m_EOF_offset(tools::read_val<std::uint32_t>(span))
   {
-    //const char *const section_start = span.data();
-    //const char *const section_end   = span.data() + span.size();
+    // const char *const section_start = span.data();
+    // const char *const section_end   = span.data() + span.size();
 
     for (const std::uint32_t offset : m_section_header.m_offsets) {
-      m_tims.emplace_back(span.subspan(offset));
+      m_tims.emplace_back(m_section_span.subspan(offset));
     }
   }
 };

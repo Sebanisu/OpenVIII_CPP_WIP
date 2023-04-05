@@ -16,6 +16,7 @@ namespace open_viii::battle::stage {
 struct CameraAnimationCollection
 {
 private:
+    std::span<const char> backup_span{};
   /**
    * @brief The number of camera animation sets.
    */
@@ -54,23 +55,16 @@ public:
    * @param span The span of bytes to parse the CameraAnimationCollection from.
    */
   explicit CameraAnimationCollection(std::span<const char> span)
+      :backup_span(span),m_set_count(tools::read_val<decltype(m_set_count)>(span)),
+      m_set_offsets( tools::read_vals<std::ranges::range_value_t<decltype(m_set_offsets)>>(span, m_set_count)),
+      m_camera_end ( tools::read_val<decltype(m_camera_end)>(span))
   {
-    // const auto start = span.begin();
-    const auto backup_span = span;
-    // std::ranges::data
-    tools::read_val(span, m_set_count);
-    span = span.subspan(sizeof(std::uint16_t));
-    tools::read_val(span, m_set_offsets, m_set_count);
-    span = span.subspan(sizeof(std::uint16_t) * m_set_count);
-    tools::read_val(span, m_camera_end);
-    // const auto size{sizeof(CameraAnimationSet) * m_set_count};
-    span = span.subspan(sizeof(std::uint16_t));
     // TODO sets aren't grouped together will need to use offsets
     m_camera_animation_set.reserve(m_set_count);
     std::ranges::transform(
       m_set_offsets,
       std::back_inserter(m_camera_animation_set),
-      [&backup_span](const std::uint16_t &offset) {
+      [this](const std::uint16_t &offset) {
         return tools::read_val<CameraAnimationSet>(backup_span.subspan(
           offset + 2U));// skipping 2U makes it match the values in open_viii
       });

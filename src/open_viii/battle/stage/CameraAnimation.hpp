@@ -31,13 +31,11 @@ public:
   {
     // read methods
     const auto read = [&span]<typename T>(T &val) -> T & {
-      tools::read_val(span, val);
-      span = span.subspan(sizeof(T));
+      val = tools::read_val<T>(span);
       return val;
     };
     const auto r_read = [&span]<typename T>() -> T {
       const auto res = tools::read_val<T>(span);
-      span           = span.subspan(sizeof(T));
       return res;
     };
     // start reading
@@ -77,7 +75,7 @@ public:
     }
     case RollTypeT::different_roll: {
       read(m_starting_fov);
-      span = span.subspan(sizeof(m_starting_fov));
+      //span = span.subspan(sizeof(m_starting_fov));
       read(m_ending_fov);
       break;
     }

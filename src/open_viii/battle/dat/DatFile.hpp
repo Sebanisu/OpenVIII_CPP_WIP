@@ -11,7 +11,11 @@
 #include "open_viii/strings/FF8String.hpp"
 #include "open_viii/tools/Read.hpp"
 #include "Section11_Textures.hpp"
-#include "Section2_Model_geometry.hpp"
+
+#include "Section1_Skeleton.hpp"
+#include "Section2_Model_Geometry.hpp"
+#include "Section3_Model_Animation.hpp"
+#include "Section5_Animation_Sequences.hpp"
 #include "Section7_Information_and_Stats.hpp"
 #include <cstdint>
 #include <filesystem>
@@ -33,16 +37,19 @@ private:
   /**
    * @brief Buffer to store the data read from the DAT file.
    */
-  std::vector<char>       m_buffer{};
+  std::vector<char>            m_buffer{};
 
   /**
    * @brief Path to the DAT file.
    */
-  std::filesystem::path   m_path{};
+  std::filesystem::path        m_path{};
 
-  DatHeader               m_header{};///< The header data of the .dat file.
+  DatHeader                    m_header{};///< The header data of the .dat file.
 
-  Section2_Model_geometry m_section2{};
+  Section1_Skeleton            m_section1{};
+  Section2_Model_Geometry      m_section2{};
+  Section3_Model_Animation     m_section3{};
+  Section5_Animation_Sequences m_section5{};
 
   /**
    * @brief Contains information and statistics about a character in the game.
@@ -57,6 +64,16 @@ public:
    */
   DatFile() = default;
 
+  [[nodiscard]] auto
+    get_span(std::size_t index) const
+  {
+    if (index + 1 == m_header.m_count) {
+      return std::span(m_buffer).subspan(m_header.m_offsets[index]);
+    }
+    return std::span(m_buffer).subspan(
+      m_header.m_offsets[index],
+      m_header.m_offsets[index + 1] - m_header.m_offsets[index]);
+  }
   /**
    * @brief Constructs a DatFile with the given buffer and file path.
    *
@@ -67,46 +84,69 @@ public:
     : m_buffer(std::move(in_buffer)), m_path(std::move(path)),
       m_header(m_buffer)
   {
-    if (m_header.m_count == 2) {
+    if (m_header.m_count == 2)// monster 127
+    {
       m_section7 = open_viii::tools::read_val<Section7_Information_and_Stats>(
         std::span(m_buffer).subspan(m_header.m_offsets.front()));
       return;
     }
-    if (m_header.m_count == 11)
+    if (m_header.m_count == 11)// monster
     {
-        m_section7 = open_viii::tools::read_val<Section7_Information_and_Stats>(
-            std::span(m_buffer).subspan(m_header.m_offsets[6]));
-        m_section11
-            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[10]));
-        return;
+      m_section1 = Section1_Skeleton(m_buffer.data(), get_span(0));
+      m_section3 = Section3_Model_Animation(m_buffer.data(), get_span(2));
+      m_section2 = Section2_Model_Geometry(m_buffer.data(), get_span(1));
+      m_section5 = Section5_Animation_Sequences(
+        m_buffer.data(),
+        get_span(4),
+        get_span(5));
+      m_section7 = open_viii::tools::read_val<Section7_Information_and_Stats>(
+        get_span(6));
+      m_section11 = Section11_Textures(m_buffer.data(), get_span(10));
+      return;
     }
-    if(m_header.m_count == 7)
+    if (m_header.m_count == 7)// character
     {
-        //index 0 = 1;
-        //index 1 = 2;
-        //index 2 = 3;
-        //index 5 = 11;
-        m_section11
-            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[5]));
-        return;
+      m_section1  = Section1_Skeleton(m_buffer.data(), get_span(0));
+      m_section3  = Section3_Model_Animation(m_buffer.data(), get_span(2));
+      m_section2  = Section2_Model_Geometry(m_buffer.data(), get_span(1));
+      m_section11 = Section11_Textures(m_buffer.data(), get_span(5));
+      return;
     }
-    if (m_header.m_count == 8) //weapon
+    if (m_header.m_count == 8)// weapon rest
     {
-        m_section11
-            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[6]));
-        return;
+
+      m_section1 = Section1_Skeleton(m_buffer.data(), get_span(0));
+      m_section3 = Section3_Model_Animation(m_buffer.data(), get_span(2));
+      m_section2 = Section2_Model_Geometry(m_buffer.data(), get_span(1));
+      m_section5 = Section5_Animation_Sequences(
+        m_buffer.data(),
+        get_span(3),
+        get_span(4));
+      m_section11 = Section11_Textures(m_buffer.data(), get_span(6));
+      return;
     }
-    if (m_header.m_count == 5) //weapon 2
+    if (m_header.m_count == 5)// weapon fists
     {
-        m_section11
-            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[4]));
-        return;
+      // Skeleton and Animations from character.
+      m_section2 = Section2_Model_Geometry(m_buffer.data(), get_span(0));
+      m_section5 = Section5_Animation_Sequences(
+        m_buffer.data(),
+        get_span(1),
+        get_span(2));
+      m_section11 = Section11_Textures(m_buffer.data(), get_span(4));
+      return;
     }
-    if (m_header.m_count == 10) //edna
+    if (m_header.m_count == 10)// edna
     {
-        m_section11
-            = Section11_Textures(m_buffer.data(), std::span(m_buffer).subspan(m_header.m_offsets[8]));
-        return;
+      m_section1 = Section1_Skeleton(m_buffer.data(), get_span(0));
+      m_section3 = Section3_Model_Animation(m_buffer.data(), get_span(2));
+      m_section2 = Section2_Model_Geometry(m_buffer.data(), get_span(1));
+      m_section5 = Section5_Animation_Sequences(
+        m_buffer.data(),
+        get_span(5),
+        get_span(6));
+      m_section11 = Section11_Textures(m_buffer.data(), get_span(8));
+      return;
     }
     std::cout << m_header.m_count << std::endl;
   }
@@ -134,13 +174,13 @@ public:
     return m_section7;
   }
 
-  [[nodiscard]] Section2_Model_geometry &
+  [[nodiscard]] Section2_Model_Geometry &
     section_2()
   {
     return m_section2;
   }
 
-  [[nodiscard]] const Section2_Model_geometry &
+  [[nodiscard]] const Section2_Model_Geometry &
     section_2() const
   {
     return m_section2;

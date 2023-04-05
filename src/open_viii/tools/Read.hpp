@@ -21,7 +21,11 @@ inline T
   read_val(const std::span<const char> &span)
 {
   std::array<char, sizeof(T)> tmp{};
-  std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
+  if (sizeof(T) <= span.size())
+  {
+      std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
+      //if reading off head maybe bug?
+  }
   return std::bit_cast<T>(tmp);
 }
 
@@ -152,34 +156,34 @@ inline void
   fp.read(std::ranges::data(tmp), static_cast<long>(size));
   memcpy(std::ranges::data(item), std::ranges::data(tmp), size);
 }
-/**
- *
- * @tparam trivialType
- * @param span
- * @param item
- * @todo test?
- */
-template<is_trivially_copyable trivialType>
-inline void
-  read_val(const std::span<const char> &span, trivialType &item)
-{
-  memcpy(&item, std::ranges::data(span), sizeof(trivialType));
-}
-/**
- *
- * @tparam trivialType
- * @param span
- * @return
- * @todo test?
- */
-template<is_trivially_copyable_and_default_constructible trivialType>
-[[nodiscard]] inline trivialType
-  read_val(const std::span<const char> &span)
-{
-  trivialType item{};
-  read_val<trivialType>(span, item);
-  return item;
-}
+///**
+// *
+// * @tparam trivialType
+// * @param span
+// * @param item
+// * @todo test?
+// */
+//template<is_trivially_copyable trivialType>
+//inline void
+//  read_val(const std::span<const char> &span, trivialType &item)
+//{
+//  memcpy(&item, std::ranges::data(span), sizeof(trivialType));
+//}
+///**
+// *
+// * @tparam trivialType
+// * @param span
+// * @return
+// * @todo test?
+// */
+//template<is_trivially_copyable_and_default_constructible trivialType>
+//[[nodiscard]] inline trivialType
+//  read_val(const std::span<const char> &span)
+//{
+//  trivialType item{};
+//  read_val<trivialType>(span, item);
+//  return item;
+//}
 /**
  *
  * @tparam trivialT
@@ -251,33 +255,33 @@ template<is_trivially_copyable_and_default_constructible trivialType>
 {
   return read_val<trivialType>(span.subspan(offset));
 }
-/**
- *
- * @tparam trivialType
- * @param span
- * @param item
- * @param size
- * @todo test?
- */
-template<has_data_and_size trivialType>
-  requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType>
-inline void
-  read_val(
-    const std::span<const char> &span,
-    trivialType                 &item,
-    std::size_t                  size)
-{
-  const auto  element_size = sizeof(decltype(*std::ranges::data(item)));
-  // std::ranges::size(span) / element_size
-  std::size_t size_of_span = std::ranges::size(span);
-  item.resize((std::min)(size, element_size * size_of_span));
-  if (size != 0) {
-    memcpy(
-      std::ranges::data(item),
-      std::ranges::data(span),
-      std::ranges::size(item));
-  }
-}
+///**
+// *
+// * @tparam trivialType
+// * @param span
+// * @param item
+// * @param size
+// * @todo test?
+// */
+//template<has_data_and_size trivialType>
+//  requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType>
+//inline void
+//  read_val(
+//    const std::span<const char> &span,
+//    trivialType                 &item,
+//    std::size_t                  size)
+//{
+//  const auto  element_size = sizeof(decltype(*std::ranges::data(item)));
+//  // std::ranges::size(span) / element_size
+//  std::size_t size_of_span = std::ranges::size(span);
+//  item.resize((std::min)(size, element_size * size_of_span));
+//  if (size != 0) {
+//    memcpy(
+//      std::ranges::data(item),
+//      std::ranges::data(span),
+//      std::ranges::size(item));
+//  }
+//}
 /**
  *
  * @tparam trivialType

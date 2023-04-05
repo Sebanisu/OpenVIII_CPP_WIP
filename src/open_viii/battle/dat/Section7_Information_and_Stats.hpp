@@ -25,7 +25,6 @@ namespace open_viii::battle {
  */
 struct Section7_Information_and_Stats
 {
-
   std::array<char, 24> encoded_name;///< Encoded name of the character.
   std::int32_t         hp;          ///< Character's HP.
   std::int32_t         str;         ///< Character's strength.
