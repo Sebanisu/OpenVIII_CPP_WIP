@@ -18,8 +18,8 @@ Geometry
 | Offset (bytes) | Size (bytes) | Name               | Description                                                                                    |
 |:--------------:|:------------:|--------------------|------------------------------------------------------------------------------------------------|
 |       0        |      6       | geometry_header1 | First header of the geometry object.                                                           |
-|       6        |    varies    | vertices         | Vector of vertices.                                                                            |
-|     varies     |     4-7      | padding            | Padding formula. </br>Position after read the vertices. </br>{math}`(position \; \% \; 4) + 4` |
+|       6        |    varies    | vertice         | Vector of vertice.                                                                            |
+|     varies     |     4-7      | padding            | Padding formula. </br>Position after read the vertice. </br>{math}`(position \; \% \; 4) + 4` |
 |     varies     |      8       | geometry_header2 | second header of the geometry object.                                                          |
 |     varies     |    varies    | triangles        | Vector of triangles.                                                                           |
 |     varies     |    varies    | quads            | Vector of quads.                                                                               |
@@ -37,7 +37,7 @@ Total Size: 6 bytes
 |----------------|--------------|---------------------|--------------------|
 | 0              | 2            | m_always_1_0_1      | Always 0x0001      |
 | 2              | 2            | m_always_1_0_2      | Always 0x0001      |
-| 4              | 2            | m_number_vertices   | Number of vertices |
+| 4              | 2            | m_number_vertices   | Number of vertice |
 
 
 ```{eval-rst}

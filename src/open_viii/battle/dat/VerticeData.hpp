@@ -11,7 +11,7 @@ struct VerticeData
 {
   std::uint16_t                              bone_id{};
   std::uint16_t                              vertices_count{};
-  open_viii::graphics::Vertice<std::int16_t> vertices{};
+  open_viii::graphics::Vertice<std::int16_t> vertice{};
 };
 }// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_VERTICEDATA_HPP

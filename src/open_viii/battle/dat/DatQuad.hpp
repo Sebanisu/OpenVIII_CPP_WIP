@@ -171,6 +171,7 @@ public:
     triangles[0].u()          = u();
     triangles[1].texture_id() = texture_id();
     triangles[1].u()          = u();
+    return triangles;
   }
   static constexpr std::size_t EXPECTED_SIZE = 20U;
 };

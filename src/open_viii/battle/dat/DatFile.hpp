@@ -127,7 +127,7 @@ public:
     }
     if (m_header.m_count == 5)// weapon fists
     {
-      // Skeleton and Animations from character.
+      //todo get Skeleton and Animations from character.
       m_section2 = Section2_Model_Geometry(m_buffer.data(), get_span(0));
       m_section5 = Section5_Animation_Sequences(
         m_buffer.data(),
@@ -150,14 +150,17 @@ public:
     }
     std::cout << m_header.m_count << std::endl;
   }
-
+  [[nodiscard]] const auto & path() const noexcept
+  {
+    return m_path;
+  }
   /**
    * @brief Get a const reference to the Section7_Information_and_Stats object.
    *
    * @return Const reference to the Section7_Information_and_Stats object.
    */
   [[nodiscard]] const Section7_Information_and_Stats &
-    section_7() const
+    section_7() const noexcept
   {
     return m_section7;
   }
@@ -169,7 +172,7 @@ public:
    * @return Non-const reference to the Section7_Information_and_Stats object.
    */
   Section7_Information_and_Stats &
-    section_7()
+    section_7() noexcept
   {
     return m_section7;
   }

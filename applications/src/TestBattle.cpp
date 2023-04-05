@@ -6,6 +6,7 @@
 #include "open_viii/battle/dat/DatFile.hpp"
 #include "open_viii/battle/stage/FlattenBattleTim.hpp"
 #include "open_viii/battle/stage/Geometries.hpp"
+#include "open_viii/battle/dat/DatToObj.hpp"
 #include "open_viii/battle/stage/StageToObj.hpp"
 #include "open_viii/battle/stage/X.hpp"
 #include "open_viii/graphics/Vertice.hpp"
@@ -93,44 +94,6 @@ int
     //      open_viii::battle::stage::FlattenBattleTim::extract_used_colors(x);
     //      std::cout << "End Processing\n";
     //    }
-    const auto hd_battle_path
-      = std::filesystem::path("textures") / "battle.fs" / "hd_new";
-    const auto out_path = [&]() {
-      for (const auto &battle_fetch : battle_archive) {
-        const std::filesystem::path &as_path
-          = std::filesystem::path(battle_fetch.file_name());
-        if (
-          !battle_fetch.file_name().ends_with(".dat") || !as_path.has_stem()
-          || !(
-            as_path.stem().string().starts_with("c0m")
-            || as_path.stem().string().starts_with("d"))) {
-          continue;
-        }
-        return (std::filesystem::path("tmp") / battle_fetch.file_name())
-          .parent_path();
-      }
-      return std::filesystem::path("tmp");
-    }();
-    open_viii::battle::stage::StageToObj::create_directory_if_needed(out_path);
-    if (main_zzz) {
-      for (const auto &main_zzz_fetch : main_zzz.value()) {
-
-        const auto &file_path = main_zzz_fetch.get_file_info().get_path();
-        if (
-          !file_path.has_extension() || file_path.extension().string() != ".png"
-          || !file_path.has_stem()
-          || !(
-            file_path.stem().string().starts_with("c0m")
-            || file_path.stem().string().starts_with("d"))|| !file_path.string().contains(hd_battle_path.string())) {
-          continue;
-        }
-        const auto out_name = out_path / file_path.filename();
-        open_viii::tools::write_buffer(
-          main_zzz_fetch.get(),
-          out_name.string(),
-          "");
-      }
-    }
     for (const auto &battle_fetch : battle_archive) {
       const std::filesystem::path &as_path
         = std::filesystem::path(battle_fetch.file_name());
@@ -146,18 +109,7 @@ int
         battle_fetch.get(),
         battle_fetch.file_name());
       std::cout << dat.section_7().name() << std::endl;
-      const auto dat_path = std::filesystem::path(battle_fetch.file_name());
-      const auto parent   = dat_path.parent_path();
-      const auto stem     = dat_path.stem().string();
-      const auto ext      = dat_path.extension().string();
-
-      for (int                             i = 0;
-           const open_viii::graphics::Tim &tim : dat.section_11().m_tims) {
-        if (tim.check()) {
-          tim.save((parent / (stem + '_' + std::to_string(i) + ext)).string());
-        }
-        ++i;
-      }
+      open_viii::battle::dat::DatToObj::export_dat_to_obj(dat,main_zzz);
     }
   });
   const auto end  = std::chrono::steady_clock::now();
