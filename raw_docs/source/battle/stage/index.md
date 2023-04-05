@@ -4,7 +4,7 @@ Stage
 ```{toctree}
 x
 geometry
-quad
-triangle
+Quad
+Triangle
 gpuflags
 ```

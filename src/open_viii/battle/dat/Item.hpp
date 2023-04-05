@@ -5,7 +5,7 @@
 #ifndef OPENVIII_CPP_WIP_ITEM_HPP
 #define OPENVIII_CPP_WIP_ITEM_HPP
 #include <cstdint>
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 /**
    * @brief Represents an item with an ID and quantity.
  */

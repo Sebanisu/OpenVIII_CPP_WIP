@@ -5,7 +5,7 @@
 #ifndef OPENVIII_CPP_WIP_SECTION3_MODEL_ANIMATION_HPP
 #define OPENVIII_CPP_WIP_SECTION3_MODEL_ANIMATION_HPP
 #include <span>
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 struct Section3_Model_Animation
 {
 

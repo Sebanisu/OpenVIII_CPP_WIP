@@ -8,7 +8,7 @@
 #include "open_viii/kernel/PersistentStatusesT.hpp"
 #include <cstdint>
 #include <stdexcept>
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 /**
  * @brief Represents mental resistances for a character.
  */

@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <ranges>
 #include <stdexcept>
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 /**
  * @brief Represents elemental resistances for a character.
  */

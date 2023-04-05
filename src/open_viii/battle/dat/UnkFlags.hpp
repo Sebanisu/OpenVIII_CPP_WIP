@@ -5,7 +5,7 @@
 #ifndef OPENVIII_CPP_WIP_UNKFLAGS_HPP
 #define OPENVIII_CPP_WIP_UNKFLAGS_HPP
 #include <cstdint>
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 /**
  * @brief Enumeration of unknown flags.
  */

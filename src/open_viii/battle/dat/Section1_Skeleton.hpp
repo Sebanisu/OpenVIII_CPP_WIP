@@ -5,7 +5,7 @@
 #ifndef OPENVIII_CPP_WIP_SECTION1_SKELETON_HPP
 #define OPENVIII_CPP_WIP_SECTION1_SKELETON_HPP
 #include <span>
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 struct Section1_Skeleton
 {
 

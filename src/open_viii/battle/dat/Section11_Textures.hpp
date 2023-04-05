@@ -6,7 +6,7 @@
 #define OPENVIII_CPP_WIP_SECTION11_TEXTURES_HPP
 #include "DatHeader.hpp"
 #include "open_viii/graphics/Tim.hpp"
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 struct Section11_Textures
 {
   std::span<const char>      m_section_span{};

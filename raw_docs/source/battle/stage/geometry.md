@@ -52,7 +52,7 @@ Total Size: 8 bytes
 | Offset (bytes) | Size (bytes) | Name             | Description                 |
 |----------------|--------------|------------------|-----------------------------|
 | 0              | 2            | m_triangle_count | Number of triangles         |
-| 2              | 2            | m_quad_count     | Number of quads             |
+| 2              | 2            | quad_count     | Number of quads             |
 | 4              | 4            | m_padding        | Padding to maintain alignment |
 
 

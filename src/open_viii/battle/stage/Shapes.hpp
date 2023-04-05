@@ -73,22 +73,38 @@ template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
   return Rectangle(min_uv_value, max_uv(shape) - min_uv_value);
 }
 }// namespace open_viii::graphics
+namespace open_viii::battle {
+template<typename triangle_type,typename quad_type>
+std::array<triangle_type, 2> common_quad_to_triangle(const quad_type & quad)
+{
+  std::array<triangle_type, 2> triangles;
+  // Triangle 1: 0, 1, 3
+  triangles[0].template face_indice<0>() = quad.template face_indice<0>();
+  triangles[0].template face_indice<1>() = quad.template face_indice<1>();
+  triangles[0].template face_indice<2>() = quad.template face_indice<3>();
 
+  triangles[0].template uv<0>()          = quad.template uv<0>();
+  triangles[0].template uv<1>()          = quad.template uv<1>();
+  triangles[0].template uv<2>()          = quad.template uv<3>();
+  // Triangle 2: 0, 2, 3
+  triangles[1].template face_indice<0>() = quad.template face_indice<0>();
+  triangles[1].template face_indice<1>() = quad.template face_indice<2>();
+  triangles[1].template face_indice<2>() = quad.template face_indice<3>();
+
+  triangles[1].template uv<0>()          = quad.template uv<0>();
+  triangles[1].template uv<1>()          = quad.template uv<2>();
+  triangles[1].template uv<2>()          = quad.template uv<3>();
+  return triangles;
+}
+}
 namespace open_viii::battle::stage {
 
 std::array<Triangle, 2>
   quad_to_triangles(const Quad &quad)
 {
-  std::array<Triangle, 2> triangles;
+  auto triangles =  common_quad_to_triangle<Triangle>(quad);
 
   // Triangle 1: 0, 1, 3
-  triangles[0].face_indice<0>() = quad.face_indice<0>();
-  triangles[0].face_indice<1>() = quad.face_indice<1>();
-  triangles[0].face_indice<2>() = quad.face_indice<3>();
-
-  triangles[0].uv<0>()          = quad.uv<0>();
-  triangles[0].uv<1>()          = quad.uv<1>();
-  triangles[0].uv<2>()          = quad.uv<3>();
 
   triangles[0].clut()           = quad.clut();
   triangles[0].texture_page()   = quad.texture_page();// discarding 4 bits.
@@ -96,14 +112,6 @@ std::array<Triangle, 2>
   triangles[0].gpu()            = quad.gpu();
 
   // Triangle 2: 0, 2, 3
-  triangles[1].face_indice<0>() = quad.face_indice<0>();
-  triangles[1].face_indice<1>() = quad.face_indice<2>();
-  triangles[1].face_indice<2>() = quad.face_indice<3>();
-
-  triangles[1].uv<0>()          = quad.uv<0>();
-  triangles[1].uv<1>()          = quad.uv<2>();
-  triangles[1].uv<2>()          = quad.uv<3>();
-
   triangles[1].clut()           = quad.clut();
   triangles[1].texture_page()   = quad.texture_page();// discarding 4 bits.
   triangles[1].raw_hide()       = quad.raw_hide();

@@ -6,7 +6,7 @@
 #define OPENVIII_CPP_WIP_DATHEADER_HPP
 #include <cstdint>
 #include <vector>
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 /**
  * @brief Header structure for the DAT file.
  */

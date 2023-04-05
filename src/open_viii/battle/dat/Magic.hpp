@@ -6,7 +6,7 @@
 #define OPENVIII_CPP_WIP_MAGIC_HPP
 #include <cstdint>
 #include "open_viii/kernel/MagicSpell.hpp"
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 /**
    * @brief Represents a magic with an ID, an unknown value, and an overloaded
    * operator to cast to GFID.

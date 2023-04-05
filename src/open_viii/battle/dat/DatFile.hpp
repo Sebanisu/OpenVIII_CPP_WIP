@@ -21,7 +21,7 @@
 #include <filesystem>
 #include <span>
 #include <vector>
-namespace open_viii::battle {
+namespace open_viii::battle::dat {
 /**
  * @brief Represents a DAT file containing battle-related data.
  *

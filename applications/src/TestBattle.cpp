@@ -142,7 +142,7 @@ int
         continue;
       }
       std::cout << battle_fetch.file_name() << std::endl;
-      const auto dat = open_viii::battle::DatFile(
+      const auto dat = open_viii::battle::dat::DatFile(
         battle_fetch.get(),
         battle_fetch.file_name());
       std::cout << dat.section_7().name() << std::endl;

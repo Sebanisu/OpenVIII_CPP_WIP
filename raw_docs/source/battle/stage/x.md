@@ -14,7 +14,7 @@ ending with ".x".
 |-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
 | PlayStation MIPS assembly           | Used only in PS version; skipped in PC.</br>Usually starts with `E8 FF BD 27 01 00 02`.                                                           |
 | [Camera data + movement](camera.md) | Contains camera animations and movement (pre-keyed).</br>Usually starts with `02 00 08 00 20 00`.</br>Stage 147 has  `02 00 08 00 18 00` as well. |
-| [Model section](geometry.md)        | Contains object (group) and its sub-objects, vertex/triangle grouping.</br>Usually starts with `06 00 00 00`.                                     |
+| [Model section](geometry.md)        | Contains object (group) and its sub-objects, vertex/Triangle grouping.</br>Usually starts with `06 00 00 00`.                                     |
 | [Texture](../../graphics/tim.md)	      | Contains one .TIM texture, 8 BPP.</br>Always starts with `10 00 00 00 09`.                                                                        |
 
 Note that battle stages do not contain pointers to the next sections. All pointers

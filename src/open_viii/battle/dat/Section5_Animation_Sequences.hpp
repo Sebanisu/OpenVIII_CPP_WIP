@@ -5,6 +5,7 @@
 #ifndef OPENVIII_CPP_WIP_SECTION5_ANIMATION_SEQUENCES_HPP
 #define OPENVIII_CPP_WIP_SECTION5_ANIMATION_SEQUENCES_HPP
 #include <span>
+namespace open_viii::battle::dat {
 struct Section5_Animation_Sequences
 {
 
@@ -15,4 +16,5 @@ struct Section5_Animation_Sequences
     [[maybe_unused]] std::span<const char> span_2)
   {}
 };
+}
 #endif// OPENVIII_CPP_WIP_SECTION5_ANIMATION_SEQUENCES_HPP
