@@ -100,8 +100,9 @@ int
       if (
         !battle_fetch.file_name().ends_with(".dat") || !as_path.has_stem()
         || !(
-          as_path.stem().string().starts_with("c0m")
-          || as_path.stem().string().starts_with("d"))) {
+          //as_path.stem().string().starts_with("c0m")
+          //||
+            as_path.stem().string().starts_with("d"))) {
         continue;
       }
       std::cout << battle_fetch.file_name() << std::endl;
@@ -111,6 +112,8 @@ int
       std::cout << dat.section_7().name() << std::endl;
       open_viii::battle::dat::DatToObj::export_dat_to_obj(dat,main_zzz);
     }
+
+    std::exit(0);
   });
   const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;

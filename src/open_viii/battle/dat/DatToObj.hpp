@@ -11,6 +11,68 @@
 #include <optional>
 namespace open_viii::battle::dat::DatToObj {
 
+    /*
+    * begin stupid hacks to fix Rinoa and Ward in remaster. might break when going above 3X upscale
+    * if you choose to upscale more crop off dead bottom 128 pixels from SE's render.
+    * also hack adjusts aspect ratio to handle the eye closing animation frames.
+    * in remaster you just need to shift all the uv's to the right when eyes close.
+    */
+    graphics::Point<float> calculate_dimensions(std::uint32_t classicWidth, std::uint32_t  classicHeight, std::uint32_t width, std::uint32_t height) {
+        auto x =  static_cast<float>(width) / static_cast<float>(classicWidth);
+        auto y = static_cast<float>(height) / static_cast<float>(classicHeight);
+
+        float scaledHeight;
+        if (x > y) {
+            scaledHeight = static_cast<float>(height / std::floor(y));
+        }
+        else {
+            scaledHeight = static_cast<float>(height / std::floor(x));
+        }
+
+        float newAR = static_cast<float>(width) / static_cast<float>(height);
+        float oldAR = static_cast<float>(classicWidth) / scaledHeight;
+
+        float adjustedWidth;
+        if (std::abs(newAR - oldAR) < std::numeric_limits<float>::epsilon()) {
+            adjustedWidth = static_cast<float>(classicWidth);
+        }
+        else {
+            adjustedWidth = scaledHeight * newAR;
+        }
+
+        return { adjustedWidth, scaledHeight };
+    }
+
+    graphics::Point<float> calculate_scaling_factors(std::uint32_t classicWidth, std::uint32_t classicHeight, std::uint32_t width, std::uint32_t height) {
+        auto x = static_cast<float>(width) / static_cast<float>(classicWidth);
+        auto y = static_cast<float>(height) / static_cast<float>(classicHeight);
+
+        float scaledHeight;
+        if (x > y) {
+            scaledHeight = static_cast<float>(height / std::floor(y));
+        }
+        else {
+            scaledHeight = static_cast<float>(height / std::floor(x));
+        }
+
+        float newAR = static_cast<float>(width) / static_cast<float>(height);
+        float oldAR = static_cast<float>(classicWidth) / scaledHeight;
+
+        float adjustedWidth;
+        if (std::abs(newAR - oldAR) < std::numeric_limits<float>::epsilon()) {
+            adjustedWidth = static_cast<float>(classicWidth);
+        }
+        else {
+            adjustedWidth = scaledHeight * newAR;
+        }
+
+        float uScalingFactor = adjustedWidth / classicWidth;
+        float vScalingFactor = scaledHeight / classicHeight;
+
+        return { uScalingFactor, vScalingFactor };
+    }
+
+
 std::optional<std::uint8_t>
   extractNumberFromStem(const std::string &fileStem)
 {
@@ -111,25 +173,25 @@ inline void
   for (const auto vertice_data : self.vertice_datas) {
       for (const auto vertice : vertice_data.vertices)
       {
-          obj_file << "v " << static_cast<float>(vertice.x()) / scale << " "
-              << static_cast<float>(vertice.y()) / scale << " "
-              << static_cast<float>(vertice.z()) / scale << "\n";
+          obj_file << "v " << static_cast<float>(vertice.y()) / scale << " "
+              << static_cast<float>(-vertice.z()) / scale << " "
+              << static_cast<float>(vertice.x()) / scale << "\n";
       }
   }
 }
-template<typename ImageT>
+
 [[nodiscard]] inline auto
   convert_uv(
     const graphics::Point<std::uint8_t> uv,
-    const ImageT                       &image,
+    const graphics::Point<float> &image_dims,
     [[maybe_unused]] const bool         remaster) -> graphics::Point<float>
 {
   // on images that aren't square you have to split the uv in half I think.
   // two images have glitches extra garbage
   return {
-    static_cast<float>(uv.x()) / static_cast<float>(image.width()),
-    static_cast<float>(image.height())// flip the Y coord.
-      - (static_cast<float>(uv.y()) / static_cast<float>(image.height()))
+    static_cast<float>(uv.x()) / static_cast<float>(image_dims.x()),
+    static_cast<float>(image_dims.y())// flip the Y coord.
+      - (static_cast<float>(uv.y()) / static_cast<float>(image_dims.y()))
   };
 }
 
@@ -151,11 +213,16 @@ inline void
         continue;// todo is this an error?
       }
       const auto new_uv = [&]() {
-        if (pngs[texture_id])
-          return convert_uv(uv, pngs[texture_id].value(), true);
-        else {
-          return convert_uv(uv, tims[texture_id], false);
-        }
+          if (pngs[texture_id])
+          {
+              const auto& tim = tims[texture_id];
+              const auto& png = pngs[texture_id];
+              return convert_uv(uv, { static_cast<float>(tim.width()),static_cast<float>(tim.height()) }, false) * calculate_scaling_factors(tim.width(), tim.height(), png->width(), png->height());
+          }
+          else {
+              const auto& tim = tims[texture_id];
+              return convert_uv(uv, { static_cast<float>(tim.width()),static_cast<float>(tim.height()) }, false);
+          }
       }();
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
     }
@@ -172,10 +239,15 @@ inline void
         continue;// todo is this an error?
       }
       const auto new_uv = [&]() {
-        if (pngs[texture_id])
-          return convert_uv(uv, pngs[texture_id].value(), true);
+          if (pngs[texture_id])
+          {
+              const auto& tim = tims[texture_id];
+              const auto& png = pngs[texture_id];
+              return convert_uv(uv, { static_cast<float>(tim.width()),static_cast<float>(tim.height()) }, false) * calculate_scaling_factors(tim.width(), tim.height(), png->width(), png->height());
+          }
         else {
-          return convert_uv(uv, tims[texture_id], false);
+            const auto& tim = tims[texture_id];
+          return convert_uv(uv, {static_cast<float>(tim.width()),static_cast<float>(tim.height())}, false);
         }
       }();
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
@@ -186,27 +258,15 @@ inline void
 inline void
   write_texture_ids_to_mtl(
     std::ofstream                                   &mtl_file,
-    const ObjectData                                &self,
     const std::string                               &image_base_name,
     const std::vector<std::optional<graphics::Png>> &pngs)
-{
-  std::vector<uint8_t> texture_ids{};
-  for (const auto &tmp : self.triangles) {
-    texture_ids.push_back(tmp.texture_id());
-  }
-  for (const auto &tmp : self.quads) {
-    texture_ids.push_back(tmp.texture_id());
-  }
-  const auto remove_range = std::ranges::unique(texture_ids);
-  texture_ids.erase(remove_range.begin(), remove_range.end());
-  std::ranges::sort(texture_ids);
-  for (auto texture_id : texture_ids) {
-    // check for remaster! change bool in argument if remaster image exists.
+{  
+    for (std::uint8_t i{}; const auto & png: pngs) {
     write_material_mtl(
       mtl_file,
       image_base_name,
-      texture_id,
-      (texture_id < pngs.size()) && pngs[texture_id]);
+      i++,
+      png.has_value());
   }
 }
 
@@ -279,7 +339,6 @@ inline void
 }
 inline auto
   create_mtl_file(
-    const ObjectData                                &self,
     const std::filesystem::path                     &obj_file_name,
     const std::string                               &image_base_name,
     const std::vector<std::optional<graphics::Png>> &pngs)
@@ -288,7 +347,7 @@ inline auto
   auto mtl_name = obj_file_name;
   mtl_name.replace_extension(".mtl");
   std::ofstream mtl_file(mtl_name);
-  write_texture_ids_to_mtl(mtl_file, self, image_base_name, pngs);
+  write_texture_ids_to_mtl(mtl_file, image_base_name, pngs);
   return mtl_name;
 }
 /**
@@ -309,7 +368,7 @@ inline void
 {
   create_directory_if_needed(file_name.parent_path());
   const std::filesystem::path mtl_name
-    = create_mtl_file(self, file_name, image_base_name, pngs);
+    = create_mtl_file(file_name, image_base_name, pngs);
   std::ofstream obj_file(file_name);
   obj_file << "mtllib " << mtl_name.filename().string() << std::endl;
   std::cout << "saving " << file_name.string() << std::endl;
