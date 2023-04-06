@@ -109,10 +109,12 @@ inline void
 {
   const float scale = 128.F;
   for (const auto vertice_data : self.vertice_datas) {
-    const auto &vertice = vertice_data.vertice;
-    obj_file << "v " << static_cast<float>(vertice.x()) / scale << " "
-             << static_cast<float>(vertice.y()) / scale << " "
-             << static_cast<float>(vertice.z()) / scale << "\n";
+      for (const auto vertice : vertice_data.vertices)
+      {
+          obj_file << "v " << static_cast<float>(vertice.x()) / scale << " "
+              << static_cast<float>(vertice.y()) / scale << " "
+              << static_cast<float>(vertice.z()) / scale << "\n";
+      }
   }
 }
 template<typename ImageT>
