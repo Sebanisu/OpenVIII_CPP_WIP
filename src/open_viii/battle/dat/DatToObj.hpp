@@ -63,7 +63,7 @@ inline void
     output << "map_Kd " << hd_name << std::endl;
     return;
   }
-  std::string name = basename + "_" + std::to_string(texture_id) + "_dat.png";
+  std::string name = basename + "_" + std::to_string(texture_id) + "_0_dat.png";
   output << "map_Kd " << name << std::endl;
 }
 
@@ -141,10 +141,10 @@ inline void
     const std::vector<std::optional<graphics::Png>> &pngs)
 {// Write UVs
   for (const auto &triangle : self.triangles) {
-      if (std::ranges::all_of(triangle.uvs(), [](const auto& uv)-> bool {return uv == decltype(uv){}; }))
-      {
-          continue;
-      }
+  //    if (std::ranges::all_of(triangle.uvs(), [](const auto& uv)-> bool {return uv == decltype(uv){}; }))
+  //    {
+  //        continue;
+  //    }
     for (const auto uv : triangle.uvs()) {
       std::uint8_t texture_id = triangle.texture_id();
       if (texture_id >= pngs.size()) {
@@ -161,10 +161,10 @@ inline void
     }
   }
   for (const auto &quad : self.quads) {
-      if (std::ranges::all_of(quad.uvs(), [](const auto& uv)-> bool {return uv == decltype(uv){}; }))
-      {
-          continue;
-      }
+      //if (std::ranges::all_of(quad.uvs(), [](const auto& uv)-> bool {return uv == decltype(uv){}; }))
+      //{
+      //    continue;
+      //}
     for (const auto uv : quad.uvs()) {
 
       std::uint8_t texture_id = quad.texture_id();
@@ -216,10 +216,10 @@ inline void
     const DatTriangle         &triangle,
     std::array<std::size_t, 3> uv_index)
 {
-    if (std::ranges::any_of(triangle.indeces(), [](std::uint16_t index) {return index == 0; }))
-    {
-        return;
-    }
+    //if (std::ranges::any_of(triangle.indeces(), [](std::uint16_t index) {return index == 0; }))
+    //{
+    //    return;
+    //}
   obj_file << "f " << triangle.face_indice<0>() + 1 << "/" << uv_index[0] << " "
            << triangle.face_indice<1>() + 1 << "/" << uv_index[1] << " "
            << triangle.face_indice<2>() + 1 << "/" << uv_index[2] << "\n";
@@ -232,10 +232,10 @@ inline auto
 {
   std::size_t uv_index = { 1 };// Write triangle faces
   for (const auto &triangle : self.triangles) {
-      if (std::ranges::all_of(triangle.uvs(), [](const auto& uv)-> bool {return uv == decltype(uv){}; }))
-      {
-          continue;
-      }
+      //if (std::ranges::all_of(triangle.uvs(), [](const auto& uv)-> bool {return uv == decltype(uv){}; }))
+      //{
+      //    continue;
+      //}
     write_material_obj(obj_file, image_base_name, triangle.texture_id());
     // order of Triangle, 0,1,2
     // order of UV 1,2,0, note! different order!!
@@ -256,10 +256,10 @@ inline void
 {// Write quad faces
   for (const auto &quad : self.quads) {
 
-      if (std::ranges::all_of(quad.uvs(), [](const auto& uv)-> bool {return uv == decltype(uv){}; }))
-      {
-          continue;
-      }
+      //if (std::ranges::all_of(quad.uvs(), [](const auto& uv)-> bool {return uv == decltype(uv){}; }))
+      //{
+      //    continue;
+      //}
     write_material_obj(obj_file, image_base_name, quad.texture_id());
     const auto triangles = quad.get_triangles();
     // Triangle 1: 0, 1, 3
@@ -366,12 +366,6 @@ inline void
     }
   }
 
-  if (std::ranges::any_of(
-        self.section_11().m_tims,
-        [](const graphics::Tim &tim) {
-          return tim.check();
-        })) {
-
     for (int                             i = 0;
          const open_viii::graphics::Tim &tim : self.section_11().m_tims) {
       if (tim.check()) {
@@ -379,7 +373,7 @@ inline void
       }
       ++i;
     }
-  }
+  
   for (std::size_t i{};
        const auto &object_data : self.section_2().object_data) {
 
