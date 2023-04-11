@@ -282,22 +282,22 @@ template<is_trivially_copyable_and_default_constructible trivialType>
 //      std::ranges::size(item));
 //  }
 //}
-/**
- *
- * @tparam trivialType
- * @param span
- * @param size
- * @return
- * @todo test?
- */
-template<is_default_constructible_has_data_and_size trivialType>
-[[nodiscard]] inline trivialType
-  read_val(const std::span<const char> &span, std::size_t size)
-{
-  trivialType item{};
-  read_val(span, item, size);
-  return item;
-}
+///**
+// *
+// * @tparam trivialType
+// * @param span
+// * @param size
+// * @return
+// * @todo test?
+// */
+//template<is_default_constructible_has_data_and_size trivialType>
+//[[nodiscard]] inline trivialType
+//  read_val(const std::span<const char> &span, std::size_t size)
+//{
+//  trivialType item{};
+//  read_val(span, item, size);
+//  return item;
+//}
 /**
  *
  * @tparam rangeT

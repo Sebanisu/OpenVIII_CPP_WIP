@@ -122,9 +122,8 @@ inline void
           { static_cast<float>(x), static_cast<float>(y) },
           triangle_uvs)) {
       std::uint32_t const index = y * tim.width() + x;
-      used_colors[index]        = static_cast<graphics::Color32RGBA>(
-        source_colors.at(triangle.clut())[index]);
-      found = true;
+      used_colors[index]        = source_colors.at(triangle.clut())[index];
+      found                     = true;
       return;
     }
   };
