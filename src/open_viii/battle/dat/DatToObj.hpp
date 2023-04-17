@@ -135,14 +135,14 @@ inline void
     int                texture_id,
     bool               remaster)
 {
-  output << "newmtl " << basename << "_" << texture_id << std::endl;
+  output << "newmtl " << basename << "_" << texture_id << '\n';
   if (remaster) {
     std::string hd_name = basename + "_" + std::to_string(texture_id) + ".png";
-    output << "map_Kd " << hd_name << std::endl;
+    output << "map_Kd " << hd_name << '\n';
     return;
   }
   std::string name = basename + "_" + std::to_string(texture_id) + "_0_dat.png";
-  output << "map_Kd " << name << std::endl;
+  output << "map_Kd " << name << '\n';
 }
 
 /**
@@ -157,7 +157,7 @@ inline void
     const std::string &basename,
     int                palette_id)
 {
-  output << "usemtl " << basename << "_" << palette_id << std::endl;
+  output << "usemtl " << basename << "_" << palette_id << '\n';
 }
 
 /**
@@ -172,7 +172,7 @@ inline void
   if (ec) {
     std::cout << std::flush;
     std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
-              << ec.message() << " - " << file_name << std::endl;
+              << ec.message() << " - " << file_name << '\n';
     ec.clear();
   }
 }
@@ -240,7 +240,8 @@ inline void
  * @return The converted UV coordinates as a graphics::Point<float>.
  */
 [[nodiscard]] inline auto
-  convert_uv(const graphics::Point<std::uint8_t> uv, const std::uint32_t height)
+  convert_uv(const graphics::Point<std::uint8_t> uv, const std::uint32_t
+  height)
     -> graphics::Point<float>
 {
   constexpr auto max_u = 128;
@@ -248,6 +249,38 @@ inline void
            1.F
              - static_cast<float>(convert_v(uv.y(), height))
                  / static_cast<float>(height) };
+}
+
+graphics::Point<float>
+  convert_uv2(
+    const graphics::Point<std::uint8_t> &raw_uv,
+    const graphics::Tim                  &tim,
+    const std::optional<graphics::Png>   &png)
+{
+  const auto scale_factor = [&]() {
+    if (png) {
+      return calculate_scaling_factors(
+        tim.width(),
+        tim.height(),
+        png->width(),
+        png->height());
+    }
+    return graphics::Point<float>{ 1.F, 1.F };
+  }();
+
+  const auto uv_scaled_before_divide_by_tim_dims
+    = graphics::Point<float>(
+        static_cast<float>(raw_uv.x()),
+        static_cast<float>(convert_v(raw_uv.y(), tim.height())))
+    / scale_factor;
+  const auto tim_dims = graphics::Point<float>(
+    static_cast<float>(tim.width()),
+    static_cast<float>(tim.height()));
+  const auto new_scaled_uv = uv_scaled_before_divide_by_tim_dims / tim_dims;
+  const auto flipped_y
+    = graphics::Point<float>(new_scaled_uv.x(), 1.F - new_scaled_uv.y());
+
+  return flipped_y;
 }
 
 inline void
@@ -259,7 +292,7 @@ inline void
 {
 
   if (!csv_file.is_open()) {
-    std::cerr << "Failed to open CSV file for writing." << std::endl;
+    std::cerr << "Failed to open CSV file for writing." << '\n';
     return;
   }
 
@@ -364,20 +397,21 @@ inline void
         continue;// todo is this an error?
       }
       const auto &tim    = tims[texture_id];
-      const auto  new_uv = [&]() {
-        if (pngs[texture_id]) {
-          const auto &png = pngs[texture_id];
-          return convert_uv(uv, tim.height())
-               / calculate_scaling_factors(
-                   tim.width(),
-                   tim.height(),
-                   png->width(),
-                   png->height());
-        }
-        else {
-          return convert_uv(uv, tim.height());
-        }
-      }();
+      const auto &png    = pngs[texture_id];
+      const auto  new_uv = convert_uv2(uv, tim, png);
+      //        [&]() {
+      //        if (pngs[texture_id]) {
+      //          return convert_uv(uv, tim.height())
+      //               / calculate_scaling_factors(
+      //                   tim.width(),
+      //                   tim.height(),
+      //                   png->width(),
+      //                   png->height());
+      //        }
+      //        else {
+      //          return convert_uv(uv, tim.height());
+      //        }
+      //      }();
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
     }
   }
@@ -394,20 +428,22 @@ inline void
         continue;// todo is this an error?
       }
       const auto &tim    = tims[texture_id];
-      const auto  new_uv = [&]() {
-        if (pngs[texture_id]) {
-          const auto &png = pngs[texture_id];
-          return convert_uv(uv, tim.height())
-               / calculate_scaling_factors(
-                   tim.width(),
-                   tim.height(),
-                   png->width(),
-                   png->height());
-        }
-        else {
-          return convert_uv(uv, tim.height());
-        }
-      }();
+      const auto &png    = pngs[texture_id];
+      const auto  new_uv = convert_uv2(uv, tim, png);
+//      const auto  new_uv = [&]() {
+//        if (pngs[texture_id]) {
+//          const auto &png = pngs[texture_id];
+//          return convert_uv(uv, tim.height())
+//               / calculate_scaling_factors(
+//                   tim.width(),
+//                   tim.height(),
+//                   png->width(),
+//                   png->height());
+//        }
+//        else {
+//          return convert_uv(uv, tim.height());
+//        }
+//      }();
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
     }
   }
@@ -503,7 +539,7 @@ inline auto
 {
   const auto mtl_name
     = std::filesystem::path(obj_file_name).replace_extension(".mtl");
-  std::cout << "saving " << mtl_name.string() << std::endl;
+  std::cout << "saving " << mtl_name.string() << '\n';
   std::ofstream mtl_file(mtl_name);
   write_texture_ids_to_mtl(mtl_file, image_base_name, pngs);
   return mtl_name;
@@ -530,10 +566,10 @@ inline void
   const std::filesystem::path csv_name
     = std::filesystem::path(file_name).replace_extension(".csv");
   std::ofstream obj_file(file_name);
-  std::cout << "saving " << csv_name.string() << std::endl;
+  std::cout << "saving " << csv_name.string() << '\n';
   write_uvs_to_csv(csv_name, self, tims, pngs);
-  obj_file << "mtllib " << mtl_name.filename().string() << std::endl;
-  std::cout << "saving " << file_name.string() << std::endl;
+  obj_file << "mtllib " << mtl_name.filename().string() << '\n';
+  std::cout << "saving " << file_name.string() << '\n';
   write_vertices_to_obj(self, obj_file);
   write_uvs_to_obj(obj_file, self, tims, pngs);
   write_quads_to_obj(
