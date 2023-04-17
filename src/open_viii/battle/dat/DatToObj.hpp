@@ -194,20 +194,157 @@ inline void
     }
   }
 }
-
+/**
+ * @brief Convert the V coordinate for battle models in Final Fantasy VIII
+ *        based on the texture's height.
+ *
+ * The U coordinate ranges between 0 and 127, while the V coordinate is
+ * calculated based on the texture's height. There is a noted correlation
+ * between V values and texture ID for all heights, with even texture IDs
+ * corresponding to V values in the range of 0-127 and odd texture IDs in the
+ * range of 128-255. For height 96 or 97, the V range is 128 to 223, and
+ * for height 32, the V range is 96 to 127.
+ *
+ * @param v The V coordinate.
+ * @param height The height of the texture.
+ * @return The converted V coordinate as a std::uint8_t.
+ */
 [[nodiscard]] inline auto
-  convert_uv(
-    const graphics::Point<std::uint8_t> uv,
-    const graphics::Point<float>       &image_dims,
-    [[maybe_unused]] const bool         remaster) -> graphics::Point<float>
+  convert_v(const std::uint8_t v, const std::uint32_t height) -> std::uint8_t
 {
-  // on images that aren't square you have to split the uv in half I think.
-  // two images have glitches extra garbage
-  return { static_cast<float>(uv.x()) / image_dims.x(),
-           image_dims.y()// flip the Y coord.
-             - (static_cast<float>(uv.y()) / image_dims.y()) };
+  // on the psx they are probably stacking these textures in a vtable of
+  // 128x256 pixels.
+  if (height >= 96) {
+    // if height is 128, and texture id is odd (1,3,5), range is 128-255
+    // if height is 128, and texture id is even (0,2,4), range is 0-127.
+    // if height is 96 or 97, and texture id is odd (probably 1), range is
+    // 128-223
+    return v % 128;
+  }
+  // if height is 32 and texture id is even (probably 0), range is 96-127
+  return v - 96;
+}
+/**
+ * @brief Convert the UV coordinates for battle models in Final Fantasy VIII
+ *        based on the texture's height.
+ *
+ * The U coordinate ranges between 0 and 127, while the V coordinate is
+ * calculated based on the texture's height. There is a noted correlation
+ * between V values and texture ID for all heights, with even texture IDs
+ * corresponding to V values in the range of 0-127 and odd texture IDs in the
+ * range of 128-255. For height 96 or 97, the V range is 128 to 223, and
+ * for height 32, the V range is 96 to 127.
+ *
+ * @param uv The UV coordinates as a graphics::Point<std::uint8_t>.
+ * @param height The height of the texture.
+ * @return The converted UV coordinates as a graphics::Point<float>.
+ */
+[[nodiscard]] inline auto
+  convert_uv(const graphics::Point<std::uint8_t> uv, const std::uint32_t height)
+    -> graphics::Point<float>
+{
+  constexpr auto max_u = 128;
+  return { static_cast<float>(uv.x()) / static_cast<float>(max_u),
+           1.F
+             - static_cast<float>(convert_v(uv.y(), height))
+                 / static_cast<float>(height) };
 }
 
+inline void
+  write_uvs_to_csv(
+    std::ofstream                                   &csv_file,
+    const ObjectData                                &self,
+    const std::vector<graphics::Tim>                &tims,
+    const std::vector<std::optional<graphics::Png>> &pngs)
+{
+
+  if (!csv_file.is_open()) {
+    std::cerr << "Failed to open CSV file for writing." << std::endl;
+    return;
+  }
+
+  // Write CSV header
+  csv_file
+    << "Texture ID,Raw U,Raw V,Corrected V,Converted U,Converted V,Scale "
+       "Factor U,Scale Factor V,Scaled U before divide,Scaled V before "
+       "divide,Scaled U,Scaled V,New Scaled U,New Scaled V,New Flipped Scaled "
+       "U,New Flipped Scaled V,TIM Width,TIM Height,PNG Width,PNG "
+       "Height,Width Scale, Height Scale\n";
+
+  auto write_uv_data = [&](const auto &primitive) {
+    for (const auto uv : primitive.uvs()) {
+      std::uint8_t texture_id = primitive.texture_id();
+      if (texture_id >= pngs.size()) {
+        continue;// todo is this an error?
+      }
+      const auto &tim          = tims[texture_id];
+      const auto  scale_factor = [&]() {
+        if (pngs[texture_id]) {
+          const auto &png = pngs[texture_id];
+          return calculate_scaling_factors(
+            tim.width(),
+            tim.height(),
+            png->width(),
+            png->height());
+        }
+        return graphics::Point<float>{ 1.F, 1.F };
+      }();
+      const auto new_uv = convert_uv(uv, tim.height());
+
+      const auto uv_scaled_before_divide_by_tim_dims
+        = graphics::Point<float>(
+            static_cast<float>(uv.x()),
+            static_cast<float>(convert_v(uv.y(), tim.height())))
+        / scale_factor;
+      const auto tim_dims = graphics::Point<float>(
+        static_cast<float>(tim.width()),
+        static_cast<float>(tim.height()));
+      const auto new_scaled_uv = uv_scaled_before_divide_by_tim_dims / tim_dims;
+      const auto flipped_y
+        = graphics::Point<float>(new_scaled_uv.x(), 1.F - new_scaled_uv.y());
+      const auto scaled_uv  = new_uv / scale_factor;
+      const auto png_width  = pngs[texture_id] ? pngs[texture_id]->width() : 0;
+      const auto png_height = pngs[texture_id] ? pngs[texture_id]->height() : 0;
+      csv_file << +texture_id << "," << +uv.x() << "," << +uv.y() << ","
+               << +convert_v(uv.y(), tim.height()) << "," << new_uv.x() << ","
+               << new_uv.y() << "," << scale_factor.x() << ","
+               << scale_factor.y() << ","
+               << uv_scaled_before_divide_by_tim_dims.x() << ","
+               << uv_scaled_before_divide_by_tim_dims.y() << ","
+               << scaled_uv.x() << "," << scaled_uv.y() << ","
+               << new_scaled_uv.x() << "," << new_scaled_uv.y() << ","
+               << flipped_y.x() << "," << flipped_y.y() << "," << tim.width()
+               << "," << tim.height() << "," << png_width << "," << png_height
+               << ","
+               << static_cast<float>(png_width)
+                    / static_cast<float>(tim.width())
+               << ","
+               << static_cast<float>(png_height)
+                    / static_cast<float>(tim.height())
+               << "\n";
+    }
+  };
+
+  for (const auto &triangle : self.triangles) {
+    write_uv_data(triangle);
+  }
+
+  for (const auto &quad : self.quads) {
+    write_uv_data(quad);
+  }
+}
+
+inline void
+  write_uvs_to_csv(
+    const std::filesystem::path                     &csv_filename,
+    const ObjectData                                &self,
+    const std::vector<graphics::Tim>                &tims,
+    const std::vector<std::optional<graphics::Png>> &pngs)
+{
+  std::ofstream csv_file;
+  csv_file.open(csv_filename);
+  write_uvs_to_csv(csv_file, self, tims, pngs);
+}
 inline void
   write_uvs_to_obj(
     std::ofstream                                   &obj_file,
@@ -226,28 +363,19 @@ inline void
       if (texture_id >= pngs.size()) {
         continue;// todo is this an error?
       }
-      const auto new_uv = [&]() {
+      const auto &tim    = tims[texture_id];
+      const auto  new_uv = [&]() {
         if (pngs[texture_id]) {
-          const auto &tim = tims[texture_id];
           const auto &png = pngs[texture_id];
-          return convert_uv(
-                   uv,
-                   { static_cast<float>(tim.width()),
-                     static_cast<float>(tim.height()) },
-                   false)
-               * calculate_scaling_factors(
+          return convert_uv(uv, tim.height())
+               / calculate_scaling_factors(
                    tim.width(),
                    tim.height(),
                    png->width(),
                    png->height());
         }
         else {
-          const auto &tim = tims[texture_id];
-          return convert_uv(
-            uv,
-            { static_cast<float>(tim.width()),
-              static_cast<float>(tim.height()) },
-            false);
+          return convert_uv(uv, tim.height());
         }
       }();
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
@@ -265,28 +393,19 @@ inline void
       if (texture_id >= pngs.size()) {
         continue;// todo is this an error?
       }
-      const auto new_uv = [&]() {
+      const auto &tim    = tims[texture_id];
+      const auto  new_uv = [&]() {
         if (pngs[texture_id]) {
-          const auto &tim = tims[texture_id];
           const auto &png = pngs[texture_id];
-          return convert_uv(
-                   uv,
-                   { static_cast<float>(tim.width()),
-                     static_cast<float>(tim.height()) },
-                   false)
-               * calculate_scaling_factors(
+          return convert_uv(uv, tim.height())
+               / calculate_scaling_factors(
                    tim.width(),
                    tim.height(),
                    png->width(),
                    png->height());
         }
         else {
-          const auto &tim = tims[texture_id];
-          return convert_uv(
-            uv,
-            { static_cast<float>(tim.width()),
-              static_cast<float>(tim.height()) },
-            false);
+          return convert_uv(uv, tim.height());
         }
       }();
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
@@ -382,8 +501,9 @@ inline auto
     const std::vector<std::optional<graphics::Png>> &pngs)
     -> std::filesystem::path
 {
-  auto mtl_name = obj_file_name;
-  mtl_name.replace_extension(".mtl");
+  const auto mtl_name
+    = std::filesystem::path(obj_file_name).replace_extension(".mtl");
+  std::cout << "saving " << mtl_name.string() << std::endl;
   std::ofstream mtl_file(mtl_name);
   write_texture_ids_to_mtl(mtl_file, image_base_name, pngs);
   return mtl_name;
@@ -407,7 +527,11 @@ inline void
   create_directory_if_needed(file_name.parent_path());
   const std::filesystem::path mtl_name
     = create_mtl_file(file_name, image_base_name, pngs);
+  const std::filesystem::path csv_name
+    = std::filesystem::path(file_name).replace_extension(".csv");
   std::ofstream obj_file(file_name);
+  std::cout << "saving " << csv_name.string() << std::endl;
+  write_uvs_to_csv(csv_name, self, tims, pngs);
   obj_file << "mtllib " << mtl_name.filename().string() << std::endl;
   std::cout << "saving " << file_name.string() << std::endl;
   write_vertices_to_obj(self, obj_file);
@@ -420,29 +544,21 @@ inline void
   obj_file.close();
 }
 
-/**
- * @brief Exports battle stage X file geometry data to an OBJ file.
- * @param self The battle stage X object containing the model data.
- */
-inline void
-  export_dat_to_obj(
-    const DatFile                     &self,
-    const std::optional<archive::ZZZ> &main_zzz)
+[[nodiscard]] std::vector<std::optional<graphics::Png>>
+  fetch_pngs(const DatFile &self, const std::optional<archive::ZZZ> &main_zzz)
 {
-  std::vector<std::optional<graphics::Png>> pngs = {};
+  std::vector<std::optional<graphics::Png>> pngs;
   pngs.resize(self.section_11().m_tims.size());
-  const auto dat_path = std::filesystem::path(self.path());
-  const auto parent   = dat_path.parent_path();
-  const auto stem     = dat_path.stem().string();
-  const auto ext      = dat_path.extension().string();
-  // todo check for remaster png images here.
-  const auto hd_battle_path
+  const static auto hd_battle_path
     = std::filesystem::path("textures") / "battle.fs" / "hd_new";
-  const auto out_path = std::filesystem::path("tmp") / parent;
-  create_directory_if_needed(out_path);
-  if (main_zzz) {
-    for (const auto &main_zzz_fetch : main_zzz.value()) {
 
+  if (main_zzz) {
+
+    const auto dat_path = std::filesystem::path(self.path());
+    const auto parent   = dat_path.parent_path();
+    const auto stem     = dat_path.stem().string();
+    const auto out_path = std::filesystem::path("tmp") / parent;
+    for (const auto &main_zzz_fetch : main_zzz.value()) {
       const auto &file_path = main_zzz_fetch.get_file_info().get_path();
       if (
         !file_path.has_extension() || file_path.extension().string() != ".png"
@@ -462,6 +578,27 @@ inline void
       }
     }
   }
+  return pngs;
+}
+
+/**
+ * @brief Exports battle stage X file geometry data to an OBJ file.
+ * @param self The battle stage X object containing the model data.
+ */
+inline void
+  export_dat_to_obj(
+    const DatFile                                   &self,
+    const std::vector<std::optional<graphics::Png>> &pngs)
+{
+  const auto dat_path = std::filesystem::path(self.path());
+  const auto parent   = dat_path.parent_path();
+  const auto stem     = dat_path.stem().string();
+  const auto ext      = dat_path.extension().string();
+  // todo check for remaster png images here.
+  const auto hd_battle_path
+    = std::filesystem::path("textures") / "battle.fs" / "hd_new";
+  const auto out_path = std::filesystem::path("tmp") / parent;
+  create_directory_if_needed(out_path);
 
   for (int                             i = 0;
        const open_viii::graphics::Tim &tim : self.section_11().m_tims) {
@@ -485,9 +622,8 @@ inline void
        const auto &object_data : self.section_2().object_data) {
     std::string output_filename{};
     output_filename.reserve(
-      stem.size() + 1 + 4
-      + 10);// Optional: reserve space for string, assuming max 10 digits for
-            // index
+      stem.size() + 1 + 4 + 10);// Optional: reserve space for string, assuming
+                                // max 10 digits for index
     output_filename.append(stem)
       .append(1, '_')
       .append(std::to_string(i))

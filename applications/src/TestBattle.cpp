@@ -4,9 +4,9 @@
 #include "TestBattle.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/battle/dat/DatFile.hpp"
+#include "open_viii/battle/dat/DatToObj.hpp"
 #include "open_viii/battle/stage/FlattenBattleTim.hpp"
 #include "open_viii/battle/stage/Geometries.hpp"
-#include "open_viii/battle/dat/DatToObj.hpp"
 #include "open_viii/battle/stage/StageToObj.hpp"
 #include "open_viii/battle/stage/X.hpp"
 #include "open_viii/graphics/Vertice.hpp"
@@ -94,23 +94,38 @@ int
     //      open_viii::battle::stage::FlattenBattleTim::extract_used_colors(x);
     //      std::cout << "End Processing\n";
     //    }
+    const static auto all_csv = std::filesystem::path("tmp") / "ff8" / "data"
+                              / "eng" / "battle" / "_all_.csv";
+    auto all_csv_out = std::ofstream(all_csv);
+
     for (const auto &battle_fetch : battle_archive) {
       const std::filesystem::path &as_path
         = std::filesystem::path(battle_fetch.file_name());
       if (
         !battle_fetch.file_name().ends_with(".dat") || !as_path.has_stem()
         || !(
-          //as_path.stem().string().starts_with("c0m")
-          //||
-            as_path.stem().string().starts_with("d"))) {
+          as_path.stem().string().starts_with("c0m")
+          || as_path.stem().string().starts_with("d"))) {
         continue;
       }
       std::cout << battle_fetch.file_name() << std::endl;
       const auto dat = open_viii::battle::dat::DatFile(
         battle_fetch.get(),
         battle_fetch.file_name());
+      const auto pngs
+        = open_viii::battle::dat::DatToObj::fetch_pngs(dat, main_zzz);
+      if (all_csv_out) {
+        for (const auto &object_data : dat.section_2().object_data) {
+          open_viii::battle::dat::DatToObj::write_uvs_to_csv(
+            all_csv_out,
+            object_data,
+            dat.section_11().m_tims,
+            pngs);
+        }
+      }
       std::cout << dat.section_7().name() << std::endl;
-      open_viii::battle::dat::DatToObj::export_dat_to_obj(dat,main_zzz);
+
+      open_viii::battle::dat::DatToObj::export_dat_to_obj(dat, pngs);
     }
 
     std::exit(0);
