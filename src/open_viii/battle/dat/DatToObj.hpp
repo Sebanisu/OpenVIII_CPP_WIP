@@ -10,48 +10,23 @@
 #include <iostream>
 #include <optional>
 namespace open_viii::battle::dat::DatToObj {
-
-/*
- * begin stupid hacks to fix Rinoa and Ward in remaster. might break when going
- * above 3X upscale if you choose to upscale more crop off dead bottom 128
- * pixels from SE's render. also hack adjusts aspect ratio to handle the eye
- * closing animation frames. in remaster you just need to shift all the uv's to
- * the right when eyes close.
+/**
+ * @brief Calculates the scaling factors for texture coordinates to fix specific
+ * issues in the remastered version of Final Fantasy VIII characters, such as
+ * Rinoa and Ward.
+ *
+ * This function calculates the scaling factors for the U and V coordinates of
+ * the texture based on the classic texture dimensions and the new texture
+ * dimensions. It adjusts the aspect ratio to handle specific animations like
+ * the eye-closing frames. It is designed to work with up to 3X upscale and may
+ * require modifications for higher upscales.
+ *
+ * @param classicWidth The width of the classic texture.
+ * @param classicHeight The height of the classic texture.
+ * @param width The width of the new texture.
+ * @param height The height of the new texture.
+ * @return A graphics::Point<float> representing the U and V scaling factors.
  */
-graphics::Point<float>
-  calculate_dimensions(
-    const std::uint32_t classicWidth,
-    const std::uint32_t classicHeight,
-    const std::uint32_t width,
-    const std::uint32_t height)
-{
-  const auto x = static_cast<float>(width) / static_cast<float>(classicWidth);
-  const auto y = static_cast<float>(height) / static_cast<float>(classicHeight);
-
-  const float scaledHeight = [=]() {
-    if (x > y) {
-      return static_cast<float>(height) / std::floor(y);
-    }
-    else {
-      return static_cast<float>(height) / std::floor(x);
-    }
-  }();
-
-  const float newAR = static_cast<float>(width) / static_cast<float>(height);
-  const float oldAR = static_cast<float>(classicWidth) / scaledHeight;
-
-  const float adjustedWidth = [=]() {
-    if (std::abs(newAR - oldAR) < std::numeric_limits<float>::epsilon()) {
-      return static_cast<float>(classicWidth);
-    }
-    else {
-      return scaledHeight * newAR;
-    }
-  }();
-
-  return { adjustedWidth, scaledHeight };
-}
-
 graphics::Point<float>
   calculate_scaling_factors(
     const std::uint32_t classicWidth,
@@ -89,6 +64,19 @@ graphics::Point<float>
   return { uScalingFactor, vScalingFactor };
 }
 
+/**
+ * @brief Extracts an optional number from the stem of a given file name.
+ *
+ * This function searches for the last underscore in the file stem and attempts
+ * to extract a number following the underscore. If the substring following the
+ * last underscore consists only of digits, it converts the substring to a
+ * std::uint8_t. If no number is found or the conversion is not possible, the
+ * function returns an empty std::optional.
+ *
+ * @param fileStem The file stem to extract the number from.
+ * @return An std::optional<std::uint8_t> containing the extracted number, if
+ * present and valid.
+ */
 std::optional<std::uint8_t>
   extractNumberFromStem(const std::string &fileStem)
 {
@@ -123,10 +111,22 @@ std::optional<std::uint8_t>
 }
 
 /**
- * @brief Writes material information to the output MTL file.
- * @param output Output file stream for the MTL file.
- * @param basename Base name of the material.
- * @param palette_id Palette ID for the material.
+ * @brief Writes material information to an output MTL file, specifying the
+ * material name and texture map.
+ *
+ * This function writes a new material entry to the provided MTL file stream. It
+ * generates the material name using the given basename and texture ID, and
+ * creates a texture map entry depending on whether the input material is from
+ * the remastered version or not.
+ *
+ * @param output An output file stream for the MTL file to which the material
+ * information will be written.
+ * @param basename The base name of the material, used to generate the material
+ * name and texture map entry.
+ * @param texture_id The texture ID for the material, used to generate the
+ * material name and texture map entry.
+ * @param remaster A boolean flag indicating if the material is from the
+ * remastered version of the game.
  */
 inline void
   write_material_mtl(
@@ -146,10 +146,20 @@ inline void
 }
 
 /**
- * @brief Writes material usage information to the output OBJ file.
- * @param output Output file stream for the OBJ file.
- * @param basename Base name of the material.
- * @param palette_id Palette ID for the material.
+ * @brief Writes material usage information to an output OBJ file, specifying
+ * the material to be used.
+ *
+ * This function writes a material usage entry to the provided OBJ file stream.
+ * It generates the material usage command using the given basename and palette
+ * ID, which helps assign the corresponding material to the subsequent geometry
+ * in the OBJ file.
+ *
+ * @param output An output file stream for the OBJ file to which the material
+ * usage information will be written.
+ * @param basename The base name of the material, used to generate the material
+ * usage command.
+ * @param palette_id The palette ID for the material, used to generate the
+ * material usage command.
  */
 inline void
   write_material_obj(
@@ -161,8 +171,15 @@ inline void
 }
 
 /**
- * @brief Handles directory creation and error checking.
- * @param file_name The output file path for the OBJ file.
+ * @brief Creates the necessary directory structure for a given file path, if it
+ * does not already exist.
+ *
+ * This function checks if the directories for the specified file path exist,
+ * and creates them if needed. It also handles error checking and outputs error
+ * messages to the standard error stream in case of issues.
+ *
+ * @param file_name The output file path for which the directory structure needs
+ * to be created.
  */
 inline void
   create_directory_if_needed(const std::filesystem::path &file_name)
@@ -178,9 +195,15 @@ inline void
 }
 
 /**
- * @brief Write vertices to the OBJ file.
- * @param self The Geometry object containing the model data.
- * @param obj_file The output OBJ file stream.
+ * @brief Writes vertex data from a Geometry object to an output OBJ file.
+ *
+ * This function iterates through the vertices in a given ObjectData instance
+ * and writes the vertex data to the provided output OBJ file stream. The vertex
+ * data is scaled and transformed as required before being written to the file.
+ *
+ * @param self The ObjectData object containing the model data.
+ * @param obj_file The output OBJ file stream to which the vertex data will be
+ * written.
  */
 inline void
   write_vertices_to_obj(const ObjectData &self, std::ofstream &obj_file)
@@ -194,6 +217,7 @@ inline void
     }
   }
 }
+
 /**
  * @brief Convert the V coordinate for battle models in Final Fantasy VIII
  *        based on the texture's height.
@@ -224,9 +248,10 @@ inline void
   // if height is 32 and texture id is even (probably 0), range is 96-127
   return v - 96;
 }
+
 /**
- * @brief Convert the UV coordinates for battle models in Final Fantasy VIII
- *        based on the texture's height.
+ * @brief Converts the UV coordinates for battle models in Final Fantasy VIII
+ *        based on the texture's dimensions and format (TIM or PNG).
  *
  * The U coordinate ranges between 0 and 127, while the V coordinate is
  * calculated based on the texture's height. There is a noted correlation
@@ -235,27 +260,17 @@ inline void
  * range of 128-255. For height 96 or 97, the V range is 128 to 223, and
  * for height 32, the V range is 96 to 127.
  *
- * @param uv The UV coordinates as a graphics::Point<std::uint8_t>.
- * @param height The height of the texture.
+ * @param raw_uv The raw UV coordinates as a graphics::Point<std::uint8_t>.
+ * @param tim The TIM texture to consider for the conversion.
+ * @param png The optional PNG texture to consider for the conversion (if
+ * available).
  * @return The converted UV coordinates as a graphics::Point<float>.
  */
-[[nodiscard]] inline auto
-  convert_uv(const graphics::Point<std::uint8_t> uv, const std::uint32_t
-  height)
-    -> graphics::Point<float>
-{
-  constexpr auto max_u = 128;
-  return { static_cast<float>(uv.x()) / static_cast<float>(max_u),
-           1.F
-             - static_cast<float>(convert_v(uv.y(), height))
-                 / static_cast<float>(height) };
-}
-
 graphics::Point<float>
-  convert_uv2(
+  convert_uv(
     const graphics::Point<std::uint8_t> &raw_uv,
-    const graphics::Tim                  &tim,
-    const std::optional<graphics::Png>   &png)
+    const graphics::Tim                 &tim,
+    const std::optional<graphics::Png>  &png)
 {
   const auto scale_factor = [&]() {
     if (png) {
@@ -283,6 +298,23 @@ graphics::Point<float>
   return flipped_y;
 }
 
+/**
+ * @brief Writes UV data from an ObjectData instance and associated textures to
+ * an output CSV file stream.
+ *
+ * This function iterates through the UV data in a given ObjectData instance and
+ * writes the associated data, including texture ID, raw and converted UV
+ * coordinates, scaling factors, TIM and PNG dimensions, and width and height
+ * scale ratios, to the provided output CSV file stream.
+ *
+ * @param csv_file The output CSV file stream to which the UV data will be
+ * written.
+ * @param self The ObjectData object containing the model data.
+ * @param tims A vector of graphics::Tim objects representing the original
+ * textures.
+ * @param pngs A vector of std::optional<graphics::Png> objects representing the
+ * remastered textures.
+ */
 inline void
   write_uvs_to_csv(
     std::ofstream                                   &csv_file,
@@ -299,9 +331,7 @@ inline void
   // Write CSV header
   csv_file
     << "Texture ID,Raw U,Raw V,Corrected V,Converted U,Converted V,Scale "
-       "Factor U,Scale Factor V,Scaled U before divide,Scaled V before "
-       "divide,Scaled U,Scaled V,New Scaled U,New Scaled V,New Flipped Scaled "
-       "U,New Flipped Scaled V,TIM Width,TIM Height,PNG Width,PNG "
+       "Factor U,Scale Factor V,TIM Width,TIM Height,PNG Width,PNG "
        "Height,Width Scale, Height Scale\n";
 
   auto write_uv_data = [&](const auto &primitive) {
@@ -322,33 +352,15 @@ inline void
         }
         return graphics::Point<float>{ 1.F, 1.F };
       }();
-      const auto new_uv = convert_uv(uv, tim.height());
-
-      const auto uv_scaled_before_divide_by_tim_dims
-        = graphics::Point<float>(
-            static_cast<float>(uv.x()),
-            static_cast<float>(convert_v(uv.y(), tim.height())))
-        / scale_factor;
-      const auto tim_dims = graphics::Point<float>(
-        static_cast<float>(tim.width()),
-        static_cast<float>(tim.height()));
-      const auto new_scaled_uv = uv_scaled_before_divide_by_tim_dims / tim_dims;
-      const auto flipped_y
-        = graphics::Point<float>(new_scaled_uv.x(), 1.F - new_scaled_uv.y());
-      const auto scaled_uv  = new_uv / scale_factor;
-      const auto png_width  = pngs[texture_id] ? pngs[texture_id]->width() : 0;
-      const auto png_height = pngs[texture_id] ? pngs[texture_id]->height() : 0;
+      const auto &png        = pngs[texture_id];
+      const auto  new_uv     = convert_uv(uv, tim, png);
+      const auto  png_width  = png ? png->width() : 0;
+      const auto  png_height = png ? png->height() : 0;
       csv_file << +texture_id << "," << +uv.x() << "," << +uv.y() << ","
                << +convert_v(uv.y(), tim.height()) << "," << new_uv.x() << ","
                << new_uv.y() << "," << scale_factor.x() << ","
-               << scale_factor.y() << ","
-               << uv_scaled_before_divide_by_tim_dims.x() << ","
-               << uv_scaled_before_divide_by_tim_dims.y() << ","
-               << scaled_uv.x() << "," << scaled_uv.y() << ","
-               << new_scaled_uv.x() << "," << new_scaled_uv.y() << ","
-               << flipped_y.x() << "," << flipped_y.y() << "," << tim.width()
-               << "," << tim.height() << "," << png_width << "," << png_height
-               << ","
+               << scale_factor.y() << "," << tim.width() << "," << tim.height()
+               << "," << png_width << "," << png_height << ","
                << static_cast<float>(png_width)
                     / static_cast<float>(tim.width())
                << ","
@@ -367,6 +379,21 @@ inline void
   }
 }
 
+/**
+ * @brief Writes UV data from an ObjectData instance and associated textures to
+ * an output CSV file.
+ *
+ * This function creates and opens a CSV file with the specified file name, and
+ * then calls the write_uvs_to_csv function to write the UV data from the given
+ * ObjectData instance and associated textures to the CSV file.
+ *
+ * @param csv_filename The file name of the output CSV file.
+ * @param self The ObjectData object containing the model data.
+ * @param tims A vector of graphics::Tim objects representing the original
+ * textures.
+ * @param pngs A vector of std::optional<graphics::Png> objects representing the
+ * remastered textures.
+ */
 inline void
   write_uvs_to_csv(
     const std::filesystem::path                     &csv_filename,
@@ -378,6 +405,23 @@ inline void
   csv_file.open(csv_filename);
   write_uvs_to_csv(csv_file, self, tims, pngs);
 }
+
+/**
+ * @brief Writes the UV data from an ObjectData instance to an output OBJ file
+ * stream.
+ *
+ * This function iterates through the UV data in the given ObjectData instance
+ * and writes the associated converted UV coordinates to the provided output OBJ
+ * file stream.
+ *
+ * @param obj_file The output OBJ file stream to which the UV data will be
+ * written.
+ * @param self The ObjectData object containing the model data.
+ * @param tims A vector of graphics::Tim objects representing the original
+ * textures.
+ * @param pngs A vector of std::optional<graphics::Png> objects representing the
+ * remastered textures.
+ */
 inline void
   write_uvs_to_obj(
     std::ofstream                                   &obj_file,
@@ -398,7 +442,7 @@ inline void
       }
       const auto &tim    = tims[texture_id];
       const auto &png    = pngs[texture_id];
-      const auto  new_uv = convert_uv2(uv, tim, png);
+      const auto  new_uv = convert_uv(uv, tim, png);
       //        [&]() {
       //        if (pngs[texture_id]) {
       //          return convert_uv(uv, tim.height())
@@ -429,26 +473,39 @@ inline void
       }
       const auto &tim    = tims[texture_id];
       const auto &png    = pngs[texture_id];
-      const auto  new_uv = convert_uv2(uv, tim, png);
-//      const auto  new_uv = [&]() {
-//        if (pngs[texture_id]) {
-//          const auto &png = pngs[texture_id];
-//          return convert_uv(uv, tim.height())
-//               / calculate_scaling_factors(
-//                   tim.width(),
-//                   tim.height(),
-//                   png->width(),
-//                   png->height());
-//        }
-//        else {
-//          return convert_uv(uv, tim.height());
-//        }
-//      }();
+      const auto  new_uv = convert_uv(uv, tim, png);
+      //      const auto  new_uv = [&]() {
+      //        if (pngs[texture_id]) {
+      //          const auto &png = pngs[texture_id];
+      //          return convert_uv(uv, tim.height())
+      //               / calculate_scaling_factors(
+      //                   tim.width(),
+      //                   tim.height(),
+      //                   png->width(),
+      //                   png->height());
+      //        }
+      //        else {
+      //          return convert_uv(uv, tim.height());
+      //        }
+      //      }();
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
     }
   }
 }
 
+/**
+ * @brief Writes texture IDs to an MTL file stream.
+ *
+ * This function writes the material information for each texture in the pngs
+ * vector to the provided output MTL file stream. It calls the
+ * write_material_mtl function to write the material data for each texture.
+ *
+ * @param mtl_file The output MTL file stream to which the texture IDs will be
+ * written.
+ * @param image_base_name The base name of the image files.
+ * @param pngs A vector of std::optional<graphics::Png> objects representing the
+ * remastered textures.
+ */
 inline void
   write_texture_ids_to_mtl(
     std::ofstream                                   &mtl_file,
@@ -460,6 +517,18 @@ inline void
   }
 }
 
+/**
+ * @brief Writes a single triangle face to an OBJ file stream.
+ *
+ * This function writes the vertex indices and associated UV indices of the
+ * input triangle face to the output OBJ file stream.
+ *
+ * @param obj_file The output OBJ file stream to which the triangle face will be
+ * written.
+ * @param triangle The DatTriangle object representing the input triangle face.
+ * @param uv_index An array containing the UV indices associated with the
+ * triangle face.
+ */
 inline void
   write_triangle_to_obj(
     std::ofstream             &obj_file,
@@ -475,6 +544,21 @@ inline void
            << triangle.face_indice<1>() + 1 << "/" << uv_index[1] << " "
            << triangle.face_indice<2>() + 1 << "/" << uv_index[2] << "\n";
 };
+
+/**
+ * @brief Writes all triangle faces from an ObjectData instance to an OBJ file
+ * stream.
+ *
+ * This function iterates through the triangles in the given ObjectData instance
+ * and writes the associated triangle faces and material information to the
+ * provided output OBJ file stream.
+ *
+ * @param obj_file The output OBJ file stream to which the triangle faces will
+ * be written.
+ * @param self The ObjectData object containing the model data.
+ * @param image_base_name The base name of the image files.
+ * @return The index of the last written UV data.
+ */
 inline auto
   write_triangles_to_obj(
     std::ofstream     &obj_file,
@@ -499,6 +583,21 @@ inline auto
   }
   return uv_index;
 }
+
+/**
+ * @brief Writes all quad faces from an ObjectData instance to an OBJ file
+ * stream.
+ *
+ * This function iterates through the quads in the given ObjectData instance and
+ * writes the associated quad faces (as triangles) and material information to
+ * the provided output OBJ file stream.
+ *
+ * @param obj_file The output OBJ file stream to which the quad faces will be
+ * written.
+ * @param self The ObjectData object containing the model data.
+ * @param image_base_name The base name of the image files.
+ * @param uv_index The starting index for the UV data.
+ */
 inline void
   write_quads_to_obj(
     std::ofstream     &obj_file,
@@ -530,6 +629,21 @@ inline void
     uv_index += 4;
   }
 }
+
+/**
+ * @brief Creates an MTL file and writes texture ID information to it.
+ *
+ * This function creates an MTL file using the provided OBJ file name, and
+ * writes texture ID information to it using the given image base name and
+ * vector of remastered textures.
+ *
+ * @param obj_file_name The name of the OBJ file associated with the MTL file to
+ * be created.
+ * @param image_base_name The base name of the image files.
+ * @param pngs A vector of std::optional<graphics::Png> objects representing the
+ * remastered textures.
+ * @return The filesystem path of the created MTL file.
+ */
 inline auto
   create_mtl_file(
     const std::filesystem::path                     &obj_file_name,
@@ -544,14 +658,22 @@ inline auto
   write_texture_ids_to_mtl(mtl_file, image_base_name, pngs);
   return mtl_name;
 }
-/**
- * @brief Exports geometry data to an OBJ file.
- * @param self The Geometry object containing the model data.
- * @param file_name The output file path for the OBJ file.
- * @param image_base_name The base name of the image file.
- * @param tim The graphics::Tim object containing texture information.
- */
 
+/**
+ * @brief Exports geometry data from an ObjectData instance to an OBJ file.
+ *
+ * This function exports the model data stored in the input ObjectData instance
+ * to an OBJ file. It writes vertices, UVs, and face information to the output
+ * file.
+ *
+ * @param self The ObjectData object containing the model data.
+ * @param file_name The output file path for the OBJ file.
+ * @param image_base_name The base name of the image files.
+ * @param tims The vector of graphics::Tim objects containing texture
+ * information.
+ * @param pngs The vector of std::optional<graphics::Png> objects representing
+ * the remastered textures.
+ */
 inline void
   export_geometry_to_obj(
     const ObjectData                                &self,
@@ -580,6 +702,18 @@ inline void
   obj_file.close();
 }
 
+/**
+ * @brief Fetches PNG textures associated with a DatFile object.
+ *
+ * This function retrieves the PNG textures associated with the given DatFile
+ * object and stores them in a vector of std::optional<graphics::Png> objects.
+ *
+ * @param self The DatFile object containing the model data.
+ * @param main_zzz An optional archive::ZZZ object containing information about
+ * the main texture archive.
+ * @return A vector of std::optional<graphics::Png> objects representing the
+ * retrieved PNG textures.
+ */
 [[nodiscard]] std::vector<std::optional<graphics::Png>>
   fetch_pngs(const DatFile &self, const std::optional<archive::ZZZ> &main_zzz)
 {
@@ -618,8 +752,15 @@ inline void
 }
 
 /**
- * @brief Exports battle stage X file geometry data to an OBJ file.
- * @param self The battle stage X object containing the model data.
+ * @brief Exports battle stage DAT file geometry data to an OBJ file.
+ *
+ * This function exports the model data stored in the input battle stage DAT
+ * file to an OBJ file. It writes vertices, UVs, and face information to the
+ * output file.
+ *
+ * @param self The DatFile object containing the model data.
+ * @param pngs The vector of std::optional<graphics::Png> objects representing
+ * the remastered textures.
  */
 inline void
   export_dat_to_obj(
