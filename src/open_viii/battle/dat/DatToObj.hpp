@@ -2,8 +2,8 @@
 // Created by pcvii on 3/28/2023.
 //
 
-#ifndef OPENVIII_CPP_WIP_STAGETOOBJ_HPP
-#define OPENVIII_CPP_WIP_STAGETOOBJ_HPP
+#ifndef OPENVIII_CPP_WIP_DATTOOBJ_HPP
+#define OPENVIII_CPP_WIP_DATTOOBJ_HPP
 #include "DatFile.hpp"
 #include "open_viii/archive/ZZZ.hpp"
 #include <filesystem>
@@ -815,4 +815,4 @@ inline void
   }
 }
 }// namespace open_viii::battle::dat::DatToObj
-#endif// OPENVIII_CPP_WIP_STAGETOOBJ_HPP
+#endif// OPENVIII_CPP_WIP_DATTOOBJ_HPP
