@@ -122,7 +122,7 @@ int
 {
   test_clut_ids();
   const auto start = std::chrono::steady_clock::now();
-  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
+  open_viii::Paths::for_each_path([&](const std::filesystem::path &path) {
     std::cout << path << std::endl;
     static constexpr auto coo      = open_viii::LangT::en;
     const auto            archives = open_viii::archive::Archives(
@@ -140,12 +140,13 @@ int
     all_stage_to_obj(battle_archive);
     all_dat_to_obj(battle_archive, main_zzz);
 
+    const auto end  = std::chrono::steady_clock::now();
+    const auto diff = end - start;
+    std::cout << std::chrono::duration<double, std::milli>(diff).count()
+              << " ms" << '\n';
     std::exit(0);// because we don't want to extract from two or more archives
                  // at the same time.
   });
-  const auto end  = std::chrono::steady_clock::now();
-  const auto diff = end - start;
-  std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"
-            << '\n';
+
   return 0;
 }
