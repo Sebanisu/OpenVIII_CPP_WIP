@@ -84,12 +84,9 @@ add_executable(${PROJECT_NAME}_TestExtractPAK
         TestExtractPAK.cpp TestExtractPAK.hpp)
 apply_common_operations(TestExtractPAK)
 
-##test battle, uses new code to extract files instead of old versions.
-add_executable(${PROJECT_NAME}_TestBattle
-        TestBattle.cpp TestBattle.hpp)
-apply_common_operations(TestBattle)
+add_subdirectory(TestBattle)
 
-##test battle, uses new code to extract files instead of old versions.
+##test JSM, uses new code to extract files instead of old versions.
 add_executable(${PROJECT_NAME}_TestJSM
         TestJSM.cpp TestJSM.hpp)
 apply_common_operations(TestJSM)
