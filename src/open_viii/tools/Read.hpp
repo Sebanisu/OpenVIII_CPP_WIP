@@ -4,9 +4,12 @@
 #ifndef VIIIARCHIVE_READ_HPP
 #define VIIIARCHIVE_READ_HPP
 #include "open_viii/Concepts.hpp"
+#include <algorithm>
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <optional>
+#include <ranges>
 #include <thread>
 namespace open_viii::tools {
 
@@ -21,10 +24,9 @@ inline T
   read_val(const std::span<const char> &span)
 {
   std::array<char, sizeof(T)> tmp{};
-  if (sizeof(T) <= span.size())
-  {
-      std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
-      //if reading off head maybe bug?
+  if (sizeof(T) <= span.size()) {
+    std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
+    // if reading off head maybe bug?
   }
   return std::bit_cast<T>(tmp);
 }
@@ -40,16 +42,16 @@ inline T
   read_val(std::span<const char> &span)
 {
   std::array<char, sizeof(T)> tmp{};
-  if (span.size() >= sizeof(T))
-  {
-      std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
-      span = span.subspan(sizeof(T));
+  if (span.size() >= sizeof(T)) {
+    std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
+    span = span.subspan(sizeof(T));
   }
   return std::bit_cast<T>(tmp);
 }
 
 /**
- * @brief Read a specified number of values of type T from a given span and update the span.
+ * @brief Read a specified number of values of type T from a given span and
+ * update the span.
  * @tparam T The data type to read from the span.
  * @tparam numT The unsigned integral type for count.
  * @param span The span of characters to read from and update.
@@ -84,7 +86,6 @@ inline std::vector<T>
   auto span_copy = span;
   return read_vals<T, numT>(span_copy, count);
 }
-
 
 // TODO anything that requires memcpy could maybe be replaced with std::bitcast
 // then the functions could be changes to constexpr.
@@ -163,8 +164,8 @@ inline void
 // * @param item
 // * @todo test?
 // */
-//template<is_trivially_copyable trivialType>
-//inline void
+// template<is_trivially_copyable trivialType>
+// inline void
 //  read_val(const std::span<const char> &span, trivialType &item)
 //{
 //  memcpy(&item, std::ranges::data(span), sizeof(trivialType));
@@ -176,7 +177,7 @@ inline void
 // * @return
 // * @todo test?
 // */
-//template<is_trivially_copyable_and_default_constructible trivialType>
+// template<is_trivially_copyable_and_default_constructible trivialType>
 //[[nodiscard]] inline trivialType
 //  read_val(const std::span<const char> &span)
 //{
@@ -263,9 +264,10 @@ template<is_trivially_copyable_and_default_constructible trivialType>
 // * @param size
 // * @todo test?
 // */
-//template<has_data_and_size trivialType>
-//  requires std::ranges::contiguous_range<trivialType> && has_resize<trivialType>
-//inline void
+// template<has_data_and_size trivialType>
+//  requires std::ranges::contiguous_range<trivialType> &&
+//  has_resize<trivialType>
+// inline void
 //  read_val(
 //    const std::span<const char> &span,
 //    trivialType                 &item,
@@ -290,7 +292,7 @@ template<is_trivially_copyable_and_default_constructible trivialType>
 // * @return
 // * @todo test?
 // */
-//template<is_default_constructible_has_data_and_size trivialType>
+// template<is_default_constructible_has_data_and_size trivialType>
 //[[nodiscard]] inline trivialType
 //  read_val(const std::span<const char> &span, std::size_t size)
 //{

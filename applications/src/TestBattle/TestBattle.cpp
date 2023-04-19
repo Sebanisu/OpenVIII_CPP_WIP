@@ -2,15 +2,15 @@
 // Created by pcvii on 11/17/2020.
 //
 #include "TestBattle.hpp"
+#include "DatToObj.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/battle/dat/DatFile.hpp"
-#include "open_viii/battle/dat/DatToObj.hpp"
 #include "open_viii/battle/stage/FlattenBattleTim.hpp"
 #include "open_viii/battle/stage/Geometries.hpp"
-#include "open_viii/battle/stage/StageToObj.hpp"
 #include "open_viii/battle/stage/X.hpp"
 #include "open_viii/graphics/Vertice.hpp"
 #include "open_viii/paths/Paths.hpp"
+#include "StageToObj.hpp"
 #include <array>
 #include <iostream>
 inline void
@@ -69,7 +69,6 @@ inline void
     open_viii::battle::dat::DatToObj::export_dat_to_obj(dat, pngs);
   }
 }
-
 
 int
   main()

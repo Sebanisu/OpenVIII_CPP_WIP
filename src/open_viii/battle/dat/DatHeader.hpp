@@ -4,7 +4,9 @@
 
 #ifndef OPENVIII_CPP_WIP_DATHEADER_HPP
 #define OPENVIII_CPP_WIP_DATHEADER_HPP
+#include "open_viii/tools/Read.hpp"
 #include <cstdint>
+#include <span>
 #include <vector>
 namespace open_viii::battle::dat {
 /**
@@ -44,5 +46,5 @@ struct DatHeader
     // if count == 2 then only Section 7 and 8 exist.
   }
 };
-}// namespace open_viii::battle
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_DATHEADER_HPP

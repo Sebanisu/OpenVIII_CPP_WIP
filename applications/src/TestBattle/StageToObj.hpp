@@ -4,8 +4,8 @@
 
 #ifndef OPENVIII_CPP_WIP_STAGETOOBJ_HPP
 #define OPENVIII_CPP_WIP_STAGETOOBJ_HPP
-#include "Geometry.hpp"
-#include "X.hpp"
+#include "open_viii/battle/stage/Geometry.hpp"
+#include "open_viii/battle/stage/X.hpp"
 #include <filesystem>
 #include <iostream>
 namespace open_viii::battle::stage::StageToObj {

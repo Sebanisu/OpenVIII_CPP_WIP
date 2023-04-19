@@ -4,7 +4,7 @@
 
 #ifndef OPENVIII_CPP_WIP_DATTOOBJ_HPP
 #define OPENVIII_CPP_WIP_DATTOOBJ_HPP
-#include "DatFile.hpp"
+#include "open_viii/battle/dat/DatFile.hpp"
 #include "open_viii/archive/ZZZ.hpp"
 #include <filesystem>
 #include <iostream>
