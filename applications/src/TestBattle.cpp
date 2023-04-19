@@ -140,7 +140,7 @@ int
     all_stage_to_obj(battle_archive);
     all_dat_to_obj(battle_archive, main_zzz);
 
-    std::exit(0);
+    std::exit(0); // because we don't want to extract from two or more archives at the same time.
   });
   const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;
