@@ -5,11 +5,13 @@
 #define VIIIARCHIVE_READ_HPP
 #include "open_viii/Concepts.hpp"
 #include <algorithm>
+#include <bit>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <optional>
 #include <ranges>
+#include <span>
 #include <thread>
 namespace open_viii::tools {
 

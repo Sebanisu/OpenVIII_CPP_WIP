@@ -9,8 +9,9 @@
 #include <array>
 namespace open_viii::battle::dat {
 /**
- * @see
- * https://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT#Section_2:_Model_geometry
+ * @brief Model Geometry struct containing header and object data.
+ * @see https://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT#Section_2:_Model_geometry
+ * @see https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/Geometry.cs
  */
 struct Section2_Model_Geometry
 {

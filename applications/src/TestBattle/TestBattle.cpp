@@ -89,7 +89,7 @@ int
     const auto &main_zzz
       = archives.get<open_viii::archive::ArchiveTypeT::zzz_main>();
 
-    all_stage_to_obj(battle_archive);
+    //all_stage_to_obj(battle_archive);
     all_dat_to_obj(battle_archive, main_zzz);
 
     const auto end  = std::chrono::steady_clock::now();

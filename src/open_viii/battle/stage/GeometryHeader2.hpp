@@ -36,6 +36,12 @@ public:
     return m_quad_count;
   }
 
+  [[nodiscard]] const auto &
+    padding() const noexcept
+  {
+    return m_padding;
+  }
+
   static constexpr std::size_t EXPECTED_SIZE
     = 8U;///< @brief Expected size of the GeometryHeader2 struct in bytes.
 };

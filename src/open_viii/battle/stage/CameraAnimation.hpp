@@ -75,7 +75,7 @@ public:
     }
     case RollTypeT::different_roll: {
       read(m_starting_fov);
-      //span = span.subspan(sizeof(m_starting_fov));
+      // span = span.subspan(sizeof(m_starting_fov));
       read(m_ending_fov);
       break;
     }
@@ -198,6 +198,11 @@ public:
     ending_fov() const noexcept
   {
     return m_ending_fov;// ~006
+  }
+  [[nodiscard]] const std::uint16_t &
+    ending_roll() const noexcept
+  {
+    return m_ending_roll;
   }
 };
 }// namespace open_viii::battle::stage
