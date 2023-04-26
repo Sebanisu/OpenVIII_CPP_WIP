@@ -58,41 +58,41 @@ public:
       tl::string::replace_slashes(R"(d:\tim)"s)
 #endif
     };
-    std::error_code   ec{};
+    std::error_code   error_code{};
     static const auto path_file
-      = std::filesystem::current_path(ec) / "paths.conf";
-    if (ec) {
+      = std::filesystem::current_path(error_code) / "paths.conf";
+    if (error_code) {
       std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                << ec.value() << ": " << ec.message() << ec.value()
+                << error_code.value() << ": " << error_code.message() << error_code.value()
                 << " - path: " << path_file << std::endl;
-      ec.clear();
+      error_code.clear();
     }
     static bool read_file = true;
     if (read_file) {
-      auto fs = std::ifstream(path_file, std::ios::in | std::ios::binary);
-      if (fs.is_open()) {
+      auto file_stream = std::ifstream(path_file, std::ios::in | std::ios::binary);
+      if (file_stream.is_open()) {
         read_file = false;
         std::string line{};
-        while (std::getline(fs, line)) {
+        while (std::getline(file_stream, line)) {
           paths.emplace_back(tl::string::replace_slashes(std::move(line)));
         }
       }
     }
     const auto [first, last]
-      = std::ranges::remove_if(paths, [&ec](const std::filesystem::path path) {
-          const bool      found = std::filesystem::exists(path, ec);
-          if (ec) {
+      = std::ranges::remove_if(paths, [&error_code](const std::filesystem::path & path) {
+          const bool found = std::filesystem::exists(path, error_code);
+          if (error_code) {
             std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                      << ec.value() << ": " << ec.message() << ec.value()
+                      << error_code.value() << ": " << error_code.message() << error_code.value()
                       << " - path: " << path << std::endl;
-            ec.clear();
+            error_code.clear();
           }
-          const bool is_dir = std::filesystem::is_directory(path, ec);
-          if (ec) {
+          const bool is_dir = std::filesystem::is_directory(path, error_code);
+          if (error_code) {
             std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                      << ec.value() << ": " << ec.message()
+                      << error_code.value() << ": " << error_code.message()
                       << " - path: " << path << std::endl;
-            ec.clear();
+            error_code.clear();
           }
           return !found || !is_dir;
         });
@@ -100,28 +100,40 @@ public:
     return paths;
   }
   template<std::invocable<std::filesystem::path> lambdaT>
-  static auto
+  static void
     for_each_path(const lambdaT &lambda)
   {
-    std::ranges::for_each(get(), [&lambda](const std::string &path) {
+    constexpr bool is_invocable_and_returns_bool
+      = std::is_invocable_r_v<bool, lambdaT, std::filesystem::path>;
+
+    for (const std::string &path : get()) {
       const auto      fs_path = std::filesystem::path(path);
-      std::error_code   ec{};
-      const bool      found = std::filesystem::exists(fs_path, ec);
-      if (ec) {
+      std::error_code error_code{};
+      const bool      found = std::filesystem::exists(fs_path, error_code);
+      if (error_code) {
         std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                  << ec.value() << ": " << ec.message() << std::endl;
-        ec.clear();
+                  << error_code.value() << ": " << error_code.message()
+                  << std::endl;
+        error_code.clear();
       }
-      const bool is_dir = std::filesystem::is_directory(fs_path, ec);
-      if (ec) {
+      const bool is_dir = std::filesystem::is_directory(fs_path, error_code);
+      if (error_code) {
         std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                  << ec.value() << ": " << ec.message() << std::endl;
-        ec.clear();
+                  << error_code.value() << ": " << error_code.message()
+                  << std::endl;
+        error_code.clear();
       }
       if (found && is_dir) {
-        lambda(fs_path);
+        if constexpr (is_invocable_and_returns_bool) {
+          if (!lambda(fs_path)) {
+            break;
+          }
+        }
+        else {
+          lambda(fs_path);
+        }
       }
-    });
+    }
   }
 };
 
