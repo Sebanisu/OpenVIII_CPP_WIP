@@ -4,8 +4,8 @@
 
 #ifndef OPENVIII_CPP_WIP_DATTOOBJ_HPP
 #define OPENVIII_CPP_WIP_DATTOOBJ_HPP
-#include "open_viii/battle/dat/DatFile.hpp"
 #include "open_viii/archive/ZZZ.hpp"
+#include "open_viii/battle/dat/DatFile.hpp"
 #include <filesystem>
 #include <iostream>
 #include <optional>
@@ -34,15 +34,15 @@ graphics::Point<float>
     const std::uint32_t width,
     const std::uint32_t height)
 {
-  const auto x = static_cast<float>(width) / static_cast<float>(classicWidth);
-  const auto y = static_cast<float>(height) / static_cast<float>(classicHeight);
+  const auto x_scale = static_cast<float>(width) / static_cast<float>(classicWidth);
+  const auto y_scale = static_cast<float>(height) / static_cast<float>(classicHeight);
 
   const float scaledHeight = [=]() {
-    if (x > y) {
-      return static_cast<float>(height) / std::floor(y);
+    if (x_scale > y_scale) {
+      return static_cast<float>(height) / std::floor(y_scale);
     }
     else {
-      return static_cast<float>(height) / std::floor(x);
+      return static_cast<float>(height) / std::floor(x_scale);
     }
   }();
 
@@ -81,7 +81,7 @@ std::optional<std::uint8_t>
   extractNumberFromStem(const std::string &fileStem)
 {
   // Find the last underscore in the string
-  std::size_t pos = fileStem.rfind('_');
+  std::size_t const pos = fileStem.rfind('_');
 
   // Check if an underscore was found
   if (pos == std::string::npos) {
@@ -137,11 +137,13 @@ inline void
 {
   output << "newmtl " << basename << "_" << texture_id << '\n';
   if (remaster) {
-    std::string hd_name = basename + "_" + std::to_string(texture_id) + ".png";
+    std::string const hd_name
+      = basename + "_" + std::to_string(texture_id) + ".png";
     output << "map_Kd " << hd_name << '\n';
     return;
   }
-  std::string name = basename + "_" + std::to_string(texture_id) + "_0_dat.png";
+  std::string const name
+    = basename + "_" + std::to_string(texture_id) + "_0_dat.png";
   output << "map_Kd " << name << '\n';
 }
 
@@ -184,13 +186,13 @@ inline void
 inline void
   create_directory_if_needed(const std::filesystem::path &file_name)
 {
-  std::error_code ec{};
-  std::filesystem::create_directories(file_name.parent_path(), ec);
-  if (ec) {
+  std::error_code error_code{};
+  std::filesystem::create_directories(file_name.parent_path(), error_code);
+  if (error_code) {
     std::cout << std::flush;
-    std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
-              << ec.message() << " - " << file_name << '\n';
-    ec.clear();
+    std::cerr << __FILE__ << ":" << __LINE__ << " - " << error_code.value()
+              << ": " << error_code.message() << " - " << file_name << '\n';
+    error_code.clear();
   }
 }
 
@@ -230,23 +232,25 @@ inline void
  * for height 32, the V range is 96 to 127.
  *
  * @param v The V coordinate.
- * @param height The height of the texture.
+ * @param height The height of the tim texture.
  * @return The converted V coordinate as a std::uint8_t.
  */
 [[nodiscard]] inline auto
-  convert_v(const std::uint8_t v, const std::uint32_t height) -> std::uint8_t
+  convert_v(const std::uint8_t v_cord, const std::uint32_t tim_height) -> std::uint8_t
 {
   // on the psx they are probably stacking these textures in a vtable of
   // 128x256 pixels.
-  if (height >= 96) {
+  constexpr std::uint8_t ninty_six        = 96;
+  constexpr std::uint8_t one_twenty_eight = 128;
+  if (tim_height >= ninty_six) {
     // if height is 128, and texture id is odd (1,3,5), range is 128-255
     // if height is 128, and texture id is even (0,2,4), range is 0-127.
     // if height is 96 or 97, and texture id is odd (probably 1), range is
     // 128-223
-    return v % 128;
+    return v_cord % one_twenty_eight;
   }
   // if height is 32 and texture id is even (probably 0), range is 96-127
-  return v - 96;
+  return v_cord - ninty_six;
 }
 
 /**
@@ -335,7 +339,7 @@ inline void
        "Height,Width Scale, Height Scale\n";
 
   auto write_uv_data = [&](const auto &primitive) {
-    for (const auto uv : primitive.uvs()) {
+    for (const auto uv_cord : primitive.uvs()) {
       std::uint8_t texture_id = primitive.texture_id();
       if (texture_id >= pngs.size()) {
         continue;// todo is this an error?
@@ -353,14 +357,14 @@ inline void
         return graphics::Point<float>{ 1.F, 1.F };
       }();
       const auto &png        = pngs[texture_id];
-      const auto  new_uv     = convert_uv(uv, tim, png);
+      const auto  new_uv     = convert_uv(uv_cord, tim, png);
       const auto  png_width  = png ? png->width() : 0;
       const auto  png_height = png ? png->height() : 0;
-      csv_file << +texture_id << "," << +uv.x() << "," << +uv.y() << ","
-               << +convert_v(uv.y(), tim.height()) << "," << new_uv.x() << ","
-               << new_uv.y() << "," << scale_factor.x() << ","
-               << scale_factor.y() << "," << tim.width() << "," << tim.height()
-               << "," << png_width << "," << png_height << ","
+      csv_file << +texture_id << "," << +uv_cord.x() << "," << +uv_cord.y()
+               << "," << +convert_v(uv_cord.y(), tim.height()) << ","
+               << new_uv.x() << "," << new_uv.y() << "," << scale_factor.x()
+               << "," << scale_factor.y() << "," << tim.width() << ","
+               << tim.height() << "," << png_width << "," << png_height << ","
                << static_cast<float>(png_width)
                     / static_cast<float>(tim.width())
                << ","
@@ -430,65 +434,28 @@ inline void
     const std::vector<std::optional<graphics::Png>> &pngs)
 {// Write UVs
   for (const auto &triangle : self.triangles) {
-    //    if (std::ranges::all_of(triangle.uvs(), [](const auto& uv)-> bool
-    //    {return uv == decltype(uv){}; }))
-    //    {
-    //        continue;
-    //    }
-    for (const auto uv : triangle.uvs()) {
-      std::uint8_t texture_id = triangle.texture_id();
+    for (const auto uv_cord : triangle.uvs()) {
+      std::uint8_t const texture_id = triangle.texture_id();
       if (texture_id >= pngs.size()) {
         continue;// todo is this an error?
       }
       const auto &tim    = tims[texture_id];
       const auto &png    = pngs[texture_id];
-      const auto  new_uv = convert_uv(uv, tim, png);
-      //        [&]() {
-      //        if (pngs[texture_id]) {
-      //          return convert_uv(uv, tim.height())
-      //               / calculate_scaling_factors(
-      //                   tim.width(),
-      //                   tim.height(),
-      //                   png->width(),
-      //                   png->height());
-      //        }
-      //        else {
-      //          return convert_uv(uv, tim.height());
-      //        }
-      //      }();
+      const auto  new_uv = convert_uv(uv_cord, tim, png);
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
     }
   }
   for (const auto &quad : self.quads) {
-    // if (std::ranges::all_of(quad.uvs(), [](const auto& uv)-> bool {return uv
-    // == decltype(uv){}; }))
-    //{
-    //     continue;
-    // }
-    for (const auto uv : quad.uvs()) {
+    for (const auto uv_cord : quad.uvs()) {
 
-      std::uint8_t texture_id = quad.texture_id();
+      std::uint8_t const texture_id = quad.texture_id();
       if (texture_id >= pngs.size()) {
         continue;// todo is this an error?
       }
-      const auto &tim    = tims[texture_id];
-      const auto &png    = pngs[texture_id];
-      const auto  new_uv = convert_uv(uv, tim, png);
-      //      const auto  new_uv = [&]() {
-      //        if (pngs[texture_id]) {
-      //          const auto &png = pngs[texture_id];
-      //          return convert_uv(uv, tim.height())
-      //               / calculate_scaling_factors(
-      //                   tim.width(),
-      //                   tim.height(),
-      //                   png->width(),
-      //                   png->height());
-      //        }
-      //        else {
-      //          return convert_uv(uv, tim.height());
-      //        }
-      //      }();
-      obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
+      const auto &tim         = tims[texture_id];
+      const auto &png         = pngs[texture_id];
+      const auto  new_uv_cord = convert_uv(uv_cord, tim, png);
+      obj_file << "vt " << new_uv_cord.x() << " " << new_uv_cord.y() << "\n";
     }
   }
 }
@@ -512,8 +479,8 @@ inline void
     const std::string                               &image_base_name,
     const std::vector<std::optional<graphics::Png>> &pngs)
 {
-  for (std::uint8_t i{}; const auto &png : pngs) {
-    write_material_mtl(mtl_file, image_base_name, i++, png.has_value());
+  for (std::uint8_t index{}; const auto &png : pngs) {
+    write_material_mtl(mtl_file, image_base_name, index++, png.has_value());
   }
 }
 
@@ -651,7 +618,7 @@ inline auto
     const std::vector<std::optional<graphics::Png>> &pngs)
     -> std::filesystem::path
 {
-  const auto mtl_name
+  auto mtl_name
     = std::filesystem::path(obj_file_name).replace_extension(".mtl");
   std::cout << "saving " << mtl_name.string() << '\n';
   std::ofstream mtl_file(mtl_name);
@@ -771,47 +738,42 @@ inline void
   const auto parent   = dat_path.parent_path();
   const auto stem     = dat_path.stem().string();
   const auto ext      = dat_path.extension().string();
-  // todo check for remaster png images here.
   const auto hd_battle_path
     = std::filesystem::path("textures") / "battle.fs" / "hd_new";
   const auto out_path = std::filesystem::path("tmp") / parent;
   create_directory_if_needed(out_path);
-
-  for (int                             i = 0;
+  // Optional: reserve space for string, assuming max 10 digits for index
+  constexpr static std::uint8_t digits          = 10;
+  std::string                   output_filename = {};
+  output_filename.reserve(stem.size() + 1 + ext.size() + digits);
+  for (int                             index = 0;
        const open_viii::graphics::Tim &tim : self.section_11().m_tims) {
     if (tim.check()) {
-      std::string output_filename{};
-      output_filename.reserve(
-        stem.size() + 1 + ext.size()
-        + 10);// Optional: reserve space for string, assuming max 10 digits for
-              // index
       output_filename.append(stem)
         .append(1, '_')
-        .append(std::to_string(i))
+        .append(std::to_string(index))
         .append(ext);
       std::filesystem::path const output_path = parent / output_filename;
       tim.save(output_path.string());
     }
-    ++i;
+    ++index;
+    output_filename.clear();
   }
-
-  for (std::size_t i{};
+  constexpr static std::string_view obj_ext = ".obj";
+  for (std::size_t index{};
        const auto &object_data : self.section_2().object_data) {
-    std::string output_filename{};
-    output_filename.reserve(
-      stem.size() + 1 + 4 + 10);// Optional: reserve space for string, assuming
-                                // max 10 digits for index
     output_filename.append(stem)
       .append(1, '_')
-      .append(std::to_string(i))
-      .append(".obj");
+      .append(std::to_string(index))
+      .append(obj_ext);
     export_geometry_to_obj(
       object_data,
       out_path / output_filename,
       stem,
       self.section_11().m_tims,
       pngs);
-    ++i;
+    ++index;
+    output_filename.clear();
   }
 }
 }// namespace open_viii::battle::dat::DatToObj

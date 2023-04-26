@@ -47,13 +47,14 @@ inline void
 inline void
   create_directory_if_needed(const std::filesystem::path &file_name)
 {
-  std::error_code ec{};
-  std::filesystem::create_directories(file_name.parent_path(), ec);
-  if (ec) {
+  std::error_code error_code{};
+  std::filesystem::create_directories(file_name.parent_path(), error_code);
+  if (error_code) {
     std::cout << std::flush;
-    std::cerr << __FILE__ << ":" << __LINE__ << " - " << ec.value() << ": "
-              << ec.message() << " - " << file_name << std::endl;
-    ec.clear();
+    std::cerr << __FILE__ << ":" << __LINE__ << " - " << error_code.value()
+              << ": " << error_code.message() << " - " << file_name
+              << std::endl;
+    error_code.clear();
   }
 }
 
@@ -74,18 +75,18 @@ inline void
 }
 [[nodiscard]] inline auto
   convert_uv(
-    const graphics::Point<std::uint8_t> uv,
+    const graphics::Point<std::uint8_t> uv_cord,
     const std::uint8_t                  texture_page,
     const graphics::Tim                &tim) -> graphics::Point<float>
 {
   const float texPageWidth = 128.F;
 
   return {
-    ((static_cast<float>(uv.x())
+    ((static_cast<float>(uv_cord.x())
       + (static_cast<float>(texture_page) * texPageWidth)))
       / static_cast<float>(tim.width()),
     static_cast<float>(tim.height())// flip the Y coord.
-      - (static_cast<float>(uv.y()) / static_cast<float>(tim.height()))
+      - (static_cast<float>(uv_cord.y()) / static_cast<float>(tim.height()))
   };
 }
 
@@ -96,14 +97,14 @@ inline void
     const graphics::Tim &tim)
 {// Write UVs
   for (const auto &triangle : self.triangles) {
-    for (const auto uv : triangle.uvs()) {
-      const auto new_uv = convert_uv(uv, triangle.texture_page(), tim);
+    for (const auto uv_cord : triangle.uvs()) {
+      const auto new_uv = convert_uv(uv_cord, triangle.texture_page(), tim);
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
     }
   }
   for (const auto &quad : self.quads) {
-    for (const auto uv : quad.uvs()) {
-      const auto new_uv = convert_uv(uv, quad.texture_page(), tim);
+    for (const auto uv_cord : quad.uvs()) {
+      const auto new_uv = convert_uv(uv_cord, quad.texture_page(), tim);
       obj_file << "vt " << new_uv.x() << " " << new_uv.y() << "\n";
     }
   }
@@ -211,7 +212,8 @@ inline void
     const graphics::Tim         &tim)
 {
   create_directory_if_needed(file_name.parent_path());
-  const std::filesystem::path mtl_name = create_mtl_file(self, file_name, image_base_name);
+  const std::filesystem::path mtl_name
+    = create_mtl_file(self, file_name, image_base_name);
   std::ofstream obj_file(file_name);
   obj_file << "mtllib " << mtl_name.filename().string() << std::endl;
   std::cout << "saving " << file_name.string() << std::endl;
@@ -236,19 +238,30 @@ inline void
   if (self.tim().check()) {
     self.tim().save(self.path());
   }
-  for (std::size_t i{}; const auto &geometries : self.geometries()) {
-    for (std::size_t j{}; const auto &model : geometries.nested_geometries) {
-      std::stringstream           ss{};
-      const std::filesystem::path x_path = std::filesystem::path(self.path());
-      ss << x_path.stem().string() << "_" << i << "_" << j << ".obj";
+  std::string                       out_string = {};
+  static constexpr std::string_view obj_ext    = ".obj";
+  constexpr std::uint32_t           digits     = 10;
+  const std::filesystem::path       x_path = std::filesystem::path(self.path());
+  out_string.reserve(
+    x_path.stem().string().size() + 2 + (digits * 2) + obj_ext.size());
+  for (std::size_t geo_index{}; const auto &geometries : self.geometries()) {
+    for (std::size_t model_index{};
+         const auto &model : geometries.nested_geometries) {
+      out_string.append(x_path.stem().string())
+        .append(1, '_')
+        .append(std::to_string(geo_index))
+        .append(1, '_')
+        .append(std::to_string(model_index))
+        .append(obj_ext);
       export_geometry_to_obj(
         model,
-        std::filesystem::absolute("tmp" / x_path.parent_path()) / ss.str(),
+        std::filesystem::absolute("tmp" / x_path.parent_path()) / out_string,
         x_path.stem().string(),
         self.tim());
-      ++j;
+      ++model_index;
+      out_string.clear();
     }
-    ++i;
+    ++geo_index;
   }
 }
 }// namespace open_viii::battle::stage::StageToObj
