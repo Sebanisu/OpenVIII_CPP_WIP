@@ -127,7 +127,7 @@ public:
     }
     if (m_header.m_count == 5)// weapon fists
     {
-      //todo get Skeleton and Animations from character.
+      // todo get Skeleton and Animations from character.
       m_section2 = Section2_Model_Geometry(m_buffer.data(), get_span(0));
       m_section5 = Section5_Animation_Sequences(
         m_buffer.data(),
@@ -150,7 +150,8 @@ public:
     }
     std::cout << m_header.m_count << std::endl;
   }
-  [[nodiscard]] const auto & path() const noexcept
+  [[nodiscard]] const auto &
+    path() const noexcept
   {
     return m_path;
   }
@@ -194,6 +195,16 @@ public:
   {
     return m_section11;
   }
+  const Section3_Model_Animation &
+    section3() const noexcept
+  {
+    return m_section3;
+  }
+  const Section1_Skeleton &
+    section_1() const noexcept
+  {
+    return m_section1;
+  }
 };
-}// namespace open_viii::battle
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_DATFILE_HPP

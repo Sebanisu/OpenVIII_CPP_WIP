@@ -40,7 +40,7 @@ inline T
  * @return The value of type T read from the span.
  */
 template<typename T>
-inline T
+[[nodiscard]] inline T
   read_val(std::span<const char> &span)
 {
   std::array<char, sizeof(T)> tmp{};
@@ -61,7 +61,7 @@ inline T
  * @return A vector of values of type T read from the span.
  */
 template<typename T, std::unsigned_integral numT>
-inline std::vector<T>
+[[nodiscard]] inline std::vector<T>
   read_vals(std::span<const char> &span, const numT count)
 {
   std::vector<T> return_val{};

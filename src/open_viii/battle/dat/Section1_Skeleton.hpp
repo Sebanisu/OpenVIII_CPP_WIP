@@ -81,8 +81,8 @@ struct Section1_Skeleton
     [[maybe_unused]] const char *const     section_start,
     [[maybe_unused]] std::span<const char> span)
   {
-    tools::read_val<SkeletonHeader>(span);
-    tools::read_vals<Bone>(span,m_header.numBones);
+    m_header = tools::read_val<SkeletonHeader>(span);
+    m_bones = tools::read_vals<Bone>(span,m_header.numBones);
   }
 };
 
