@@ -56,6 +56,13 @@ public:
                              static_cast<numberT>(m_y) + lhs,
                              static_cast<numberT>(m_z) + lhs };
   }
+  auto
+    operator+(const Vertice<mainNumberT> &lhs)
+  {
+    return Vertice<mainNumberT>{ static_cast<mainNumberT>(m_x + lhs.m_x),
+                                 static_cast<mainNumberT>(m_y + lhs.m_y),
+                                 static_cast<mainNumberT>(m_z + lhs.m_z) };
+  }
   [[nodiscard]] constexpr auto
     x() const noexcept
   {

@@ -11,6 +11,7 @@
 #include "open_viii/graphics/Vertice.hpp"
 #include "open_viii/paths/Paths.hpp"
 #include "StageToObj.hpp"
+#include "BitReader.hpp"
 #include <array>
 #include <iostream>
 
