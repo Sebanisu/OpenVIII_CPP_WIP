@@ -9,6 +9,7 @@
 #include <array>
 namespace open_viii::pak {
 /**
+ * @brief CamFrame represents a camera frame in the PAK format.
  * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK#CAM_files
  */
 struct CamFrame
@@ -66,7 +67,8 @@ public:
    */
   static constexpr auto EXPECTED_SIZE{ 44U };
   /**
-   * Camera Vector X axis
+   * @brief Get the Camera Vector X axis.
+   * @return The X-axis camera vector.
    */
   [[nodiscard]] constexpr auto
     x() const noexcept
@@ -74,7 +76,7 @@ public:
     return m_x;
   }
   /**
-   * Camera Vector Y axis
+   * @brief Get the Camera Vector Y axis
    */
   [[nodiscard]] constexpr auto
     y() const noexcept
@@ -82,7 +84,7 @@ public:
     return m_y;
   }
   /**
-   * Camera Vector Z axis
+   * @brief Get the Camera Vector Z axis
    */
   [[nodiscard]] constexpr auto
     z() const noexcept
@@ -90,7 +92,7 @@ public:
     return m_z;
   }
   /**
-   * Camera Vector Z.z (copy)
+   * @brief Get the Camera Vector Z.z (copy)
    */
   [[nodiscard]] constexpr auto
     z_z() const noexcept
@@ -98,7 +100,7 @@ public:
     return m_z_z;
   }
   /**
-   * Camera Space Vector
+   * @brief Get the Camera Space Vector
    */
   [[nodiscard]] constexpr auto
     space() const noexcept
@@ -106,7 +108,7 @@ public:
     return m_space;
   }
   /**
-   * Camera Pan
+   * @brief Get the Camera Pan
    */
   [[nodiscard]] constexpr auto
     pan() const noexcept
@@ -114,7 +116,7 @@ public:
     return m_pan;
   }
   /**
-   * Zoom
+   * @brief Get the Zoom
    */
   [[nodiscard]] constexpr auto
     zoom() const noexcept
@@ -122,7 +124,7 @@ public:
     return m_zoom;
   }
   /**
-   * Zoom (Repeated)
+   * @brief Get the Zoom (Repeated)
    */
   [[nodiscard]] constexpr auto
     zoom2() const noexcept
@@ -130,7 +132,7 @@ public:
     return m_zoom2;
   }
   /**
-   * Render Mode ('0x08','0x10','0x11' or '0x50')
+   * @brief Get the Render Mode ('0x08','0x10','0x11' or '0x50')
    */
   [[nodiscard]] constexpr auto
     render_mode() const noexcept
@@ -138,7 +140,7 @@ public:
     return m_render_mode;
   }
   /**
-   * "END" marker 3 bytes
+   * @brief Get the "END" marker 3 bytes
    */
   [[nodiscard]] constexpr auto
     end() const noexcept
@@ -146,19 +148,23 @@ public:
     return m_end;
   }
   /**
-   * Camera Vector X axis
+   * @brief Create a new CamFrame instance with an updated Camera Vector X axis.
+   * @param in_x The new X-axis camera vector to set.
+   * @return A new CamFrame instance with the updated X-axis camera vector,
+   * while keeping the other properties unchanged.
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     with_x(graphics::Vertice<std::int16_t> in_x) const noexcept
   {
     auto ret = *this;
     ret.m_x  = in_x;
     return ret;
   }
+
   /**
    * Camera Vector Y axis
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     with_y(graphics::Vertice<std::int16_t> in_y) const noexcept
   {
     auto ret = *this;
@@ -168,7 +174,7 @@ public:
   /**
    * Camera Vector Z axis
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     with_z(graphics::Vertice<std::int16_t> in_z) const noexcept
   {
     auto ret = *this;
@@ -178,7 +184,7 @@ public:
   /**
    * Camera Vector Z.z (copy)
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     with_z_z(std::int16_t in_z_z) const noexcept
   {
     auto ret  = *this;
@@ -188,7 +194,7 @@ public:
   /**
    * Camera Space Vector
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     with_space(graphics::Vertice<std::int32_t> in_space) const noexcept
   {
     auto ret    = *this;
@@ -198,7 +204,7 @@ public:
   /**
    * Camera Pan
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     with_pan(graphics::Point<std::int16_t> in_pan) const noexcept
   {
     auto ret  = *this;
@@ -208,7 +214,7 @@ public:
   /**
    * Zoom
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     with_zoom(std::int16_t in_zoom) const noexcept
   {
     auto ret   = *this;
@@ -218,7 +224,7 @@ public:
   /**
    * Zoom (Repeated)
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     with_zoom2(std::int16_t in_zoom2) const noexcept
   {
     auto ret    = *this;
@@ -228,7 +234,7 @@ public:
   /**
    * Render Mode ('0x08','0x10','0x11' or '0x50')
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     with_render_mode(std::uint8_t in_render_mode) const noexcept
   {
     auto ret          = *this;
@@ -238,7 +244,7 @@ public:
   /**
    * "END" marker 3 bytes
    */
-  constexpr auto
+  [[nodiscard]] constexpr auto
     end(std::array<char, 3U> in_end) const noexcept
   {
     auto ret  = *this;
@@ -254,30 +260,40 @@ public:
     return std::ranges::equal(m_end, CamFrame::EXPECTED_END);
   }
   friend std::ostream &
-    operator<<(std::ostream &os, const CamFrame &cam_frame)
+    operator<<(std::ostream &out_stream, const CamFrame &cam_frame)
   {
-    return os
+    static constexpr auto mask = 0xFFU;
+    return out_stream
         << '{' << cam_frame.m_x << ',' << cam_frame.m_y << ',' << cam_frame.m_z
         << ',' << cam_frame.m_z_z << ',' << cam_frame.m_space << ','
         << cam_frame.m_pan << ',' << cam_frame.m_zoom << ','
         << cam_frame.m_zoom2 << ',' << std::hex << std::uppercase << "0x"
-        << (static_cast<uint16_t>(cam_frame.m_render_mode) & 0xFFU) << std::dec
+        << (static_cast<uint16_t>(cam_frame.m_render_mode) & mask) << std::dec
         << std::nouppercase << ','
         << std::string_view(cam_frame.m_end.begin(), cam_frame.m_end.end())
         << '}';
   }
-  constexpr auto
+
+  /**
+   * @brief Get the midpoint between two camera frames.
+   * @param other The other camera frame to calculate the midpoint with.
+   * @return A new CamFrame with values set to the midpoint between this and the
+   * other frame.
+   */
+  [[nodiscard]] constexpr auto
     midpoint(const CamFrame other) const noexcept
   {
-    return with_x(m_x.midpoint(other.x()))
-      .with_y(m_y.midpoint(other.y()))
-      .with_z(m_z.midpoint(other.z()))
-      .with_z_z(std::midpoint(m_z_z, other.z_z()))
-      .with_space(m_space.midpoint(other.space()))
-      .with_pan(m_pan.midpoint(other.pan()))
-      .with_zoom(std::midpoint(m_zoom, other.zoom()))
-      .with_zoom2(std::midpoint(m_zoom2, other.zoom2()));
+    auto ret    = *this;
+    ret.m_x     = m_x.midpoint(other.x());
+    ret.m_y     = m_y.midpoint(other.y());
+    ret.m_z     = m_z.midpoint(other.z());
+    ret.m_z_z   = std::midpoint(m_z_z, other.z_z());
+    ret.m_space = m_space.midpoint(other.space());
+    ret.m_pan   = m_pan.midpoint(other.pan());
+    ret.m_zoom  = std::midpoint(m_zoom, other.zoom());
+    ret.m_zoom2 = std::midpoint(m_zoom2, other.zoom2());
     // m_render_mode has set values. We may want to choose based on min or max.
+    return ret;
   }
 };
 static_assert(sizeof(CamFrame) == CamFrame::EXPECTED_SIZE);
