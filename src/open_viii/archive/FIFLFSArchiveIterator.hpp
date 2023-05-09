@@ -72,7 +72,7 @@ public:
         return true;
       });
   }
-  
+
   /**
    * @brief Retrieve the map name.
    *
