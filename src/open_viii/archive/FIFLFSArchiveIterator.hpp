@@ -72,11 +72,24 @@ public:
         return true;
       });
   }
+  
+  /**
+   * @brief Retrieve the map name.
+   *
+   * This function returns the map name as a string_view.
+   *
+   * @return The map name as a std::string_view.
+   */
+  std::string_view
+    map_name() const noexcept
+  {
+    return m_map_name;
+  }
 
 private:
   std::string_view m_map_name;///< Name of the map to fetch
   std::reference_wrapper<const FIFLFS<true>>
-    m_fiflfs_true;///< Reference to the FIFLFS<true> instance
+    m_fiflfs_true;            ///< Reference to the FIFLFS<true> instance
 };
 /**
  * @class FIFLFSArchiveIterator
