@@ -4,7 +4,7 @@ skip_commits:
 environment:
   matrix:
     - job_name: Windows MSVC build
-      appveyor_build_worker_image: Visual Studio 2019
+      appveyor_build_worker_image: Visual Studio 2022
 
     # - job_name: Linux GCC build and docs
     #   appveyor_build_worker_image: Ubuntu2004
@@ -156,28 +156,23 @@ for:
       only:
         - job_name: Windows MSVC build
     init:
-      - cmd: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"'
-    build_script:
       - cmd: >-
+          "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat"
+
           git clone https://github.com/microsoft/vcpkg
 
-          .\\vcpkg\\bootstrap-vcpkg.bat
-          
-          .\\vcpkg\\vcpkg install libpng
-          
-          .\\vcpkg\\vcpkg install bext-ut
-          
+          .\vcpkg\bootstrap-vcpkg.bat
+
           set VCPKG_DEFAULT_TRIPLET=x64-windows
-          
-          .\\vcpkg\\vcpkg install libpng
-          
-          .\\vcpkg\\vcpkg install bext-ut
-          
-          cmake --version
-          
-          cmake --debug-output -G "CodeBlocks - NMake Makefiles" -B build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_TOOLCHAIN_FILE=.\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake
-          
-          cmake --build build --target all
+
+          .\vcpkg\vcpkg install libpng
+
+          .\vcpkg\vcpkg install bext-ut
+    build_script:
+      - cmd: >-
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake ..
+
+          cmake --build build
     test_script:
       - cmd:
           cd build
