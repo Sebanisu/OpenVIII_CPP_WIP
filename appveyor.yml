@@ -29,12 +29,6 @@ for:
 
           echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
 
-          wget https://apt.llvm.org/llvm.sh
-          
-          chmod +x llvm.sh
-
-          "" | sudo ./llvm.sh 16 all
-
           sudo apt-get -y update
 
           sudo apt-get -y install libpng-dev ninja-build cmake
@@ -42,9 +36,14 @@ for:
           #sudo apt-get -y upgrade
 
           #sudo apt -y autoremove
-
     build_script:
       - sh: >-
+          wget https://apt.llvm.org/llvm.sh
+          
+          chmod +x llvm.sh
+
+          "" | sudo ./llvm.sh 16 all
+
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/clang-16 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-16 -B build
 
           ninja -C build
@@ -158,7 +157,8 @@ for:
     init:
       - cmd: >-
           "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat"
-
+    build_script:
+      - cmd: >-
           git clone https://github.com/microsoft/vcpkg
 
           .\vcpkg\bootstrap-vcpkg.bat
@@ -168,8 +168,7 @@ for:
           .\vcpkg\vcpkg install libpng
 
           .\vcpkg\vcpkg install bext-ut
-    build_script:
-      - cmd: >-
+
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake ..
 
           cmake --build build
