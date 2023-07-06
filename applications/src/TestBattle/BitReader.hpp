@@ -61,7 +61,7 @@ public:
   std::uint16_t
     ReadPositionType()
   {
-    std::uint8_t const countIndex = ReadBits(2);
+    auto const countIndex = static_cast<std::uint8_t>(ReadBits(2));
     return ReadBits(PositionReadHelper.at(countIndex));
   }
 
@@ -85,7 +85,7 @@ public:
       return 0;
     }
 
-    std::uint8_t const countIndex = ReadBits(2);
+    auto const countIndex = static_cast<std::uint8_t>(ReadBits(2));
     return ReadBits(RotationReadHelper.at(countIndex));
   }
 };
