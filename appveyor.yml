@@ -3,8 +3,8 @@ skip_commits:
   message: /UPDATE_DOCS/      # Regex for matching commit message
 environment:
   matrix:
-    # - job_name: Windows MSVC build
-    #   appveyor_build_worker_image: Visual Studio 2022
+    - job_name: Windows MSVC build
+      appveyor_build_worker_image: Visual Studio 2022
 
     # - job_name: Linux GCC build and docs
     #   appveyor_build_worker_image: Ubuntu2004
@@ -13,8 +13,8 @@ environment:
     #   appveyor_build_worker_image: Ubuntu2004
     # gcc is broken on 11.2 and less atleast. and Ubuntu 20.04 only supports up to 11.1
 
-    - job_name: Linux Clang build
-      appveyor_build_worker_image: Ubuntu2004
+    # - job_name: Linux Clang build
+    #   appveyor_build_worker_image: Ubuntu2004
 for:
   - matrix:
       only:
