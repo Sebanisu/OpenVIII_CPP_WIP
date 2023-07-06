@@ -6,11 +6,14 @@ environment:
     - job_name: Windows MSVC build
       appveyor_build_worker_image: Visual Studio 2019
 
-    - job_name: Linux GCC build and docs
+    # - job_name: Linux GCC build and docs
+    #   appveyor_build_worker_image: Ubuntu2004
+
+    - job_name: Linux GCC build
       appveyor_build_worker_image: Ubuntu2004
 
-#    - job_name: Linux Clang build
-#      appveyor_build_worker_image: Ubuntu2004
+    - job_name: Linux Clang build
+      appveyor_build_worker_image: Ubuntu2004
 # clang is missing <ranges> and <concepts>
 for:
   - matrix:
@@ -18,40 +21,65 @@ for:
         - job_name: Linux Clang build
     init:
       - sh: >-
-          sudo apt-get update
-          
-          sudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common wget
-          
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
-          
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          
-          sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
-          
           sudo apt-get -y update
+
+          sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget
+
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+
+          echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
+
+          wget https://apt.llvm.org/llvm.sh
           
-          sudo apt-get -y install libpng-dev clang-11 clang++-11 ninja-build cmake
-          
+          chmod +x llvm.sh
+
+          "" | sudo ./llvm.sh 16 all
+
+          sudo apt-get -y update
+
+          sudo apt-get -y install libpng-dev ninja-build cmake
+
           #sudo apt-get -y upgrade
-          
-          sudo update-alternatives --remove-all clang
-          
-          sudo update-alternatives --remove-all clang++
-          
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 90
-          
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 90
-          
-          sudo apt -y autoremove
-          
-          export CC=clang
-          
-          export CXX=clang++
+
+          #sudo apt -y autoremove
+
     build_script:
       - sh: >-
-          cmake -G "Ninja Multi-Config" -B build
-          
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/clang-16 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-16 -B build
+
           ninja -C build
+    test_script:
+      - sh: "cd build && ctest -C debug --verbose && cd .."
+
+  - matrix:
+      only:
+        - job_name: Linux GCC build
+    init:
+      - sh: >-
+        sudo apt-get update
+
+        sudo apt-get install -y apt-transport-https ca-certificates gnupg software-properties-common wget
+
+        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+
+        echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
+
+        sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+
+        sudo apt-add-repository -y 'deb https://apt.kitware.com/ubuntu/ focal main'
+        
+        sudo apt-get update
+
+        sudo apt-get install -y libpng-dev gcc-11 g++-11 ninja-build cmake
+    build_script:
+      - sh: >-
+          mkdir build
+
+          cd build
+
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/gcc-11 -DCMAKE_CXX_COMPILER=/usr/bin/g++-11 ..
+
+          ninja
     test_script:
       - sh: "cd build && ctest -C debug --verbose && cd .."
 
