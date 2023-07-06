@@ -11,11 +11,13 @@
 class BitReader
 {
 private:
-  static constexpr inline auto PositionReadHelper = std::array{ 3, 6, 9, 16 };
-  static constexpr inline auto RotationReadHelper = std::array{ 3, 6, 8, 12 };
-  std::uint8_t                 _bitPosition{ 0 };
-  std::vector<std::uint8_t>    data{};
-  std::size_t                  position{ 0 };
+  static constexpr inline auto PositionReadHelper
+    = std::array<std::uint8_t, 4>{ 3, 6, 9, 16 };
+  static constexpr inline auto RotationReadHelper
+    = std::array<std::uint8_t, 4>{ 3, 6, 8, 12 };
+  std::uint8_t              _bitPosition{ 0 };
+  std::vector<std::uint8_t> data{};
+  std::size_t               position{ 0 };
 
 public:
   explicit BitReader(std::vector<std::uint8_t> inputData)
