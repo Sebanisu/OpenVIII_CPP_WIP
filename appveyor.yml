@@ -156,7 +156,7 @@ for:
         - job_name: Windows MSVC build
     init:
       - cmd: >-
-          "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat"
+          "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat" x64
     build_script:
       - cmd: >-
           git clone https://github.com/microsoft/vcpkg
@@ -173,7 +173,7 @@ for:
 
           cd ..
 
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake -T host=x64 .
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake .
 
           cmake --build build
     test_script:
