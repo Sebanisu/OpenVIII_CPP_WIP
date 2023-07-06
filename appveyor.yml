@@ -156,7 +156,7 @@ for:
         - job_name: Windows MSVC build
     init:
       - cmd: >-
-          "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat" x64
+          "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
     build_script:
       - cmd: >-
           git clone https://github.com/microsoft/vcpkg
