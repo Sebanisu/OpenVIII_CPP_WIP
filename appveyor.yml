@@ -46,7 +46,7 @@ for:
 
           sudo apt-get -y update
 
-          sudo apt-get -y install clang-16 clang++-16 libc++-16-dev
+          sudo apt-get -y install clang-16 clang++-16 libc++-dev
 
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/clang-16 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-16 -B build
 
