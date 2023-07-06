@@ -173,9 +173,7 @@ for:
 
           cd ..
 
-          dir
-
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake ..
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake .
 
           cmake --build build
     test_script:
