@@ -161,13 +161,19 @@ for:
       - cmd: >-
           git clone https://github.com/microsoft/vcpkg
 
-          .\vcpkg\bootstrap-vcpkg.bat
+          cd vcpkg
+
+          bootstrap-vcpkg.bat
 
           set VCPKG_DEFAULT_TRIPLET=x64-windows
 
-          .\vcpkg\vcpkg install libpng
+          vcpkg install libpng
 
-          .\vcpkg\vcpkg install bext-ut
+          vcpkg install bext-ut
+
+          cd ..
+
+          dir
 
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake ..
 
