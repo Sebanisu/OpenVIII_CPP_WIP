@@ -44,6 +44,10 @@ for:
 
           "" | sudo ./llvm.sh 16 all
 
+          sudo apt-get -y update
+
+          sudo apt-get -y install clang-16 clang++-16
+
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/clang-16 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-16 -B build
 
           ninja -C build
