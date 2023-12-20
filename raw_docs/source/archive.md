@@ -17,6 +17,8 @@ followed by [FileData](#filedata) entries. [File Source](#file-source) functions
 
 ## Archives
 
+The Archives object plays a crucial role in locating and organizing archives within a specified directory. Its primary function involves indexing these archives and facilitating a straightforward interface for reading the contained files.
+
 ```{eval-rst}
 .. doxygenstruct:: open_viii::archive::Archives
     :members:
@@ -24,17 +26,23 @@ followed by [FileData](#filedata) entries. [File Source](#file-source) functions
 
 ### ArchiveTypeT
 
+The ArchiveTypeT enum encapsulates identifiers for different archive types in Final Fantasy VIII. There are six primary FIFLFS archives: battle, field, magic, main, menu, and world. Additionally, there are two main zzz archives for the FF8 remaster: zzz_main and zzz_other. These enums serve as convenient references for utilizing the "get<>" function in archives, allowing users to specify the desired archive type when interacting with the archives in the game code. The enum also provides utility constants such as 'count,' 'first,' 'last,' 'begin,' and 'end' for easy enumeration management.
+
 ```{eval-rst}
 .. doxygenenum:: open_viii::archive::ArchiveTypeT
 ```
 
 ### FIFLFS
 
+The FIFLFS archive format in Final Fantasy VIII for PC consists of three main components: File Index (FI), File Source (FS), and File List (FL). FI stores offset and size information, FS contains raw bytes, and FL holds virtual file paths. These elements collectively structure the archive, facilitating organized storage and retrieval of game assets.
+
 ```{eval-rst}
 .. doxygenstruct:: open_viii::archive::FIFLFS
 ```
 
 #### Grouping
+
+Grouping is essentially an object that stores information about different components of the archive, serving as a reference for later reading. This includes details like file paths and offsets, enabling easy retrieval and interpretation.
 
 ```{eval-rst}
 .. doxygenstruct:: open_viii::archive::Grouping
@@ -69,12 +77,17 @@ File Source (FS) files store raw bytes of entries. For LZSS entries, the file be
 
 ### ZZZ
 
+
+ZZZ files initiate with a 4-byte file count, representing the number of File Data entries that follow. All entries within a ZZZ file remain uncompressed. To access an FS file within the ZZZ file, combine a given FI offset with the corresponding File Data offset.
+
 ```{eval-rst}
 .. doxygenstruct:: open_viii::archive::ZZZ
     :members:
 ```
 
-#### FileData
+#### File Data
+
+File Data entries feature variable sizes, requiring a one-at-a-time reading approach. To streamline this process, caching is employed. Each entry commences with a 32-bit size of the virtual file paths, where these paths are relative, such as `data\disk\disk1`. The entry then includes the corresponding virtual file paths, a 64-bit file offset, and a 32-bit file size.
 
 ```{eval-rst}
 .. doxygenstruct:: open_viii::archive::FileData
