@@ -43,11 +43,16 @@ followed by [FileData](#filedata) entries. [File Source](#file-source) functions
 
 ##### File List
 
+
+The File List (FL) consists of entries with virtual paths starting with c:\ff8\. Each path is separated by a new line in Windows format (CRLF), maintaining the same order as the File Index (FI) entries.
+
 ```{eval-rst}
 .. doxygennamespace:: open_viii::archive::fl
 ```
 
 ##### File Index
+
+The File Index (FI) contains information such as the offset, uncompressed file size, and compression type, with each entry occupying 12 bytes. To determine the total number of files, divide the size of the FI file by 12.
 
 ```{eval-rst}
 .. doxygenstruct:: open_viii::archive::FI
@@ -55,6 +60,8 @@ followed by [FileData](#filedata) entries. [File Source](#file-source) functions
 ```
 
 ##### File Source
+
+File Source (FS) files store raw bytes of entries. For LZSS entries, the file begins with 4 bytes indicating the compressed file size. L4Z entries have a 12-byte header, including section size, an unused 4 bytes, and uncompressed size. The compressed size can be calculated by subtracting 8 from the section size.
 
 ```{eval-rst}
 .. doxygennamespace:: open_viii::archive::FS
