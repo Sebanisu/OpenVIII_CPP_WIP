@@ -14,6 +14,7 @@
 #define VIIICOMPRESSION_LZSS_H
 #include <algorithm>
 #include <ranges>
+#include <array>
 namespace open_viii::compression {
 struct LZSS
 {
@@ -338,16 +339,20 @@ public:
    */
   template<typename dstT = std::vector<char>>
   [[nodiscard]] static dstT
-    decompress(std::span<const char> src, size_t dst_size = 0)
+      decompress(std::span<const char> src, size_t dst_size = 0)
   {
-    // warning C6262: Function uses '16560' bytes of stack:  exceeds
-    // /analyze:stacksize '16384'.  Consider moving some data to heap. warning
-    // C6262: Function uses '16568' bytes of stack:  exceeds /analyze:stacksize
-    // '16384'.  Consider moving some data to heap.
-    dstT dst{};
-    if (dst_size > 0) {
-      dst.reserve(dst_size);
-    }
+      // warning C6262: Function uses '16560' bytes of stack:  exceeds
+      // /analyze:stacksize '16384'.  Consider moving some data to heap. warning
+      // C6262: Function uses '16568' bytes of stack:  exceeds /analyze:stacksize
+      // '16384'.  Consider moving some data to heap.
+      dstT dst{};
+      if (src.empty())
+      {
+          return dst;
+      }
+      if (dst_size > 0) {
+          dst.reserve(dst_size);
+      }
     auto       iterator  = src.begin();
     auto       textBuf   = std::array<std::uint32_t, N_MINUS1 + F>();
     // ring buffer of size N, with extra F-1 bytes to facilitate string
