@@ -103,17 +103,15 @@ add_executable(${PROJECT_NAME}_lzss_ff8
         lz4_lzss_common_ff8.hpp)
 apply_common_operations(lzss_ff8)
 
-#fiflfs files extract not nested
-add_executable(${PROJECT_NAME}_fiflfs_extract
-        fiflfs_extract.cpp
-        fiflfs_extract.hpp)
-apply_common_operations(fiflfs_extract)
 
-#fiflfs files create not nested
-add_executable(${PROJECT_NAME}_fiflfs_create
-        fiflfs_create.cpp
-        fiflfs_create.hpp)
-apply_common_operations(fiflfs_create)
+#compress file with lzss like ff8 would. or uncompress
+add_executable(${PROJECT_NAME}_test_lzss_for_rust
+        test_lzss_for_rust.cpp)
+apply_common_operations(test_lzss_for_rust)
+
+add_subdirectory(fiflfs_create)
+
+add_subdirectory(fiflfs_extract)
 
 #convert tile map to csv
 add_executable(${PROJECT_NAME}_tile_map_to_csv
