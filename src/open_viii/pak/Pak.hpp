@@ -22,7 +22,7 @@ private:
   /**
    * If false don't extract low res videos!
    */
-  static constexpr auto ENABLE_EXTRACT_LOW_RES = false;
+  static constexpr auto ENABLE_EXTRACT_LOW_RES = true;
   /**
    *  Known valid Bink video formats "a,d,f,g,h,i"
    */
