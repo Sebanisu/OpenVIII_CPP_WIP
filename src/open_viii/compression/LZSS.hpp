@@ -197,7 +197,7 @@ private:
     void
       insert_node(const std::uint32_t &item)
     {
-      int  cmp              = 1U;
+      int  cmp              = 1;
       auto key              = std::span<std::uint8_t>(m_text_buf);
       key                   = key.subspan(item);
       // auto key = text_buf.begin() + item;
@@ -228,11 +228,11 @@ private:
         {
           std::uint32_t node_index = 1;
           for (; node_index < NODE_SIZE;
-               ++node_index) {// if ((cmp = key.subspan(node_index)[0] -
-                              // (text_buf.at(p + node_index))) != 0) {
+               ++node_index) {
+                              
             if (
-              (cmp = key[node_index]
-                   - (m_text_buf.at(std::size_t{ p } + node_index)))
+              (cmp = +key[node_index]
+                   - +(m_text_buf.at(std::size_t{ p } + node_index)))
               != 0) {
               break;
             }
