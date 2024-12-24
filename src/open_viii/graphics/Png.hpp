@@ -29,11 +29,14 @@ private:
               m_background_color{};///< The background color of the PNG.
   png_uint_32 bytes_per_pixel = 4;///< The number of bytes per pixel in the PNG.
 
+  static constexpr auto fclose_wrapper = [](FILE *fp) -> int {
+    return fclose(fp);
+  };
   /**
    * @brief Alias for a unique pointer to a FILE, with a custom deleter that
    * uses fclose().
    */
-  using safe_fp               = std::unique_ptr<FILE, decltype(&fclose)>;
+  using safe_fp = std::unique_ptr<FILE, decltype(fclose_wrapper)>;
 
   /**
    * @brief Deleter for a PNG read structure that uses
@@ -109,7 +112,7 @@ private:
 #elif defined(sgi)
       /* there doesn't seem to be any documented function to
        * get the "gamma" value, so we do it the hard way */
-      auto infile = safe_fp = {fopen("/etc/config/system.glGammaVal", "r"),fclose);
+      auto infile = safe_fp = {fopen("/etc/config/system.glGammaVal", "r"),{});
       if (infile) {
         double sgi_gamma;
 
@@ -210,7 +213,7 @@ public:
   Png(const std::filesystem::path &filename, bool flipv = false)
   {
     auto fp = safe_fp{ fopen(filename.string().c_str(), "rb"),
-                       fclose };// todo do I need fopen?
+                       {} };// todo do I need fopen?
 
     if (fp) {
       uint8_t     sig[8]     = {};
@@ -383,7 +386,7 @@ public:
         + ".png";
     }
     auto fp = safe_fp{ fopen(filename.string().c_str(), "wb"),
-                       fclose };// todo do I need fopen?
+                       {} };// todo do I need fopen?
 
     if (!fp) {
       std::cerr << "Could not open file " << filename.string()
