@@ -18,6 +18,7 @@
 #include "FileData.hpp"
 #include "open_viii/strings/LangCommon.hpp"
 #include "ZZZ.hpp"
+#include <functional>
 #include <future>
 #include <utility>
 namespace open_viii::archive {
@@ -25,11 +26,10 @@ template<typename T>
 concept does_have_has_value = requires(T a) { a.has_value(); };
 template<typename T, typename lambdaT, typename filterT>
 concept does_have_execute_with_nested = requires(T a, lambdaT l, filterT f) {
-                                          a.execute_with_nested({}, l, {}, f);
-                                        };
+  a.execute_with_nested({}, l, {}, f);
+};
 template<ArchiveTypeT... aT>
-concept not_zero = sizeof
-...(aT) > 0U;
+concept not_zero = sizeof...(aT) > 0U;
 
 struct ArchiveSentinel
 {
@@ -478,7 +478,8 @@ public:
    * convert to bool
    * @return
    */
-  [[nodiscard]] explicit operator bool() const noexcept
+  [[nodiscard]] explicit
+    operator bool() const noexcept
   {
     return test_set();
   }
@@ -490,13 +491,13 @@ public:
   using ZZZConstRef     = std::reference_wrapper<const std::optional<ZZZ>>;
 
   using MyVariant       = std::variant<
-    std::monostate,
-    FIFLFSRef,
-    FIFLFSConstRef,
-    FIFLFSRef2,
-    FIFLFSConstRef2,
-    ZZZRef,
-    ZZZConstRef>;
+          std::monostate,
+          FIFLFSRef,
+          FIFLFSConstRef,
+          FIFLFSRef2,
+          FIFLFSConstRef2,
+          ZZZRef,
+          ZZZConstRef>;
 
   [[nodiscard]] MyVariant
     get(const std::string_view &name, bool zzz = false) const
@@ -821,7 +822,7 @@ public:
     operator++(int)
   {
     ArchiveIterator it(*this);
-                    operator+=(1);
+    operator+=(1);
     return it;
   }
 
@@ -836,7 +837,7 @@ public:
     operator--(int)
   {
     ArchiveIterator it(*this);
-                    operator+=(-1);
+    operator+=(-1);
     return it;
   }
 
