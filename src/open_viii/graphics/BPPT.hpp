@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_BPPT_HPP
 #define VIIIARCHIVE_BPPT_HPP
 #include <compare>
+#include <cstdint>
 #include <iostream>
 #include <string_view>
 namespace open_viii::graphics {
@@ -27,18 +28,18 @@ namespace open_viii::graphics {
 struct BPPT
 {
 private:
-  bool                  m_bpp8                       : 1 { false };
-  bool                  m_bpp16                      : 1 { false };
+  bool m_bpp8                       : 1 { false };
+  bool m_bpp16                      : 1 { false };
   /**
    * might be used sometimes. for some files. I think it could be for multi
    * format
    */
-  bool                  m_unused1                    : 1 { false };
-  bool                  m_color_lookup_table_present : 1 { false };
-  bool                  m_unused2                    : 1 { false };
-  bool                  m_unused3                    : 1 { false };
-  bool                  m_unused4                    : 1 { false };
-  bool                  m_unused5                    : 1 { false };
+  bool m_unused1                    : 1 { false };
+  bool m_color_lookup_table_present : 1 { false };
+  bool m_unused2                    : 1 { false };
+  bool m_unused3                    : 1 { false };
+  bool m_unused4                    : 1 { false };
+  bool m_unused5                    : 1 { false };
 
 public:
   constexpr static auto RAW4_VALUE  = 0b0000U;
@@ -46,12 +47,13 @@ public:
   constexpr static auto RAW16_VALUE = 0b0010U;
   constexpr static auto RAW24_VALUE = RAW16_VALUE | RAW8_VALUE;
   constexpr static auto CLP_VALUE   = 0b1000U;
-  constexpr static auto BPP4  = 4U;
-  constexpr static auto BPP8  = 8U;
-  constexpr static auto BPP16 = 16U;
-  constexpr static auto BPP24 = 24U;
+  constexpr static auto BPP4        = 4U;
+  constexpr static auto BPP8        = 8U;
+  constexpr static auto BPP16       = 16U;
+  constexpr static auto BPP24       = 24U;
   auto
-    operator<=>(const BPPT &) const = default;
+    operator<=>(const BPPT &) const
+    = default;
   [[nodiscard]] constexpr bool
     unused() const noexcept
   {
@@ -116,11 +118,13 @@ public:
   {
     return bpp4() || bpp8() || bpp16() || bpp24();
   }
-  [[nodiscard]] constexpr explicit operator bool() const noexcept
+  [[nodiscard]] constexpr explicit
+    operator bool() const noexcept
   {
     return check();
   }
-  [[nodiscard]] constexpr explicit operator int() const
+  [[nodiscard]] constexpr explicit
+    operator int() const
   {
     //[[maybe_unused]] static constexpr auto size_ = sizeof(BPPT);
     if (bpp4()) {
@@ -137,7 +141,8 @@ public:
     }
     return 0;
   }
-  [[nodiscard]] constexpr explicit operator unsigned int() const
+  [[nodiscard]] constexpr explicit
+    operator unsigned int() const
   {
     //[[maybe_unused]] static constexpr auto size_ = sizeof(BPPT);
     if (bpp4()) {
@@ -209,7 +214,8 @@ inline std::ostream &
             << ", CLP: " << input.color_lookup_table_present() << '}';
 }
 namespace literals {
-  consteval BPPT operator""_bpp(const char *const value)
+  consteval BPPT
+    operator""_bpp(const char *const value)
   {
     const auto sv = std::string_view(value);
 
