@@ -62,7 +62,7 @@ namespace LangCommon {
    * @tparam langVal
    * @return
    */
-  [[nodiscard]] constexpr std::string_view
+  [[nodiscard]] constexpr const std::string_view
     to_string(LangT langVal)
   {
     if (langVal == LangT::en) {
@@ -90,7 +90,7 @@ namespace LangCommon {
    * @tparam langVal
    * @return
    */
-  [[nodiscard]] constexpr std::string_view
+  [[nodiscard]] constexpr const std::string_view
     to_string_3_char(LangT langVal)
   {
     if (langVal == LangT::en) {
