@@ -13,10 +13,6 @@
       "default-features": true
     },
     {
-      "name": "python3",
-      "default-features": true
-    },
-    {
       "name": "lz4",
       "default-features": true
     }
