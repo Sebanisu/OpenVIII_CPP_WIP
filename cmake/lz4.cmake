@@ -15,4 +15,3 @@
 #     set_target_properties(${PROJECT_NAME}_External_lz4 PROPERTIES LINKER_LANGUAGE CXX)
 #     target_include_directories(${PROJECT_NAME}_External_lz4 INTERFACE ${lz4_lib_SOURCE_DIR})
 # endif ()
-find_package(lz4 CONFIG REQUIRED)
