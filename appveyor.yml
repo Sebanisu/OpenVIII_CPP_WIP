@@ -172,13 +172,9 @@ for:
 
           bootstrap-vcpkg.bat
 
+          cd..
+
           set VCPKG_DEFAULT_TRIPLET=x64-windows
-
-          vcpkg install libpng
-
-          vcpkg install bext-ut
-
-          cd ..
 
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake .
 
