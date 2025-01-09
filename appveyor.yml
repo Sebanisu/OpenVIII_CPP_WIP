@@ -6,195 +6,47 @@ environment:
     - job_name: Windows MSVC build
       appveyor_build_worker_image: Visual Studio 2022
 
-    # - job_name: Linux GCC build and docs
-    #   appveyor_build_worker_image: Ubuntu2004
+cache:
+  - vcpkg
 
-    # - job_name: Linux GCC build
-    #   appveyor_build_worker_image: Ubuntu2004
-    # gcc is broken on 11.2 and less atleast. and Ubuntu 20.04 only supports up to 11.1
+init:
+  - cmd: >-
+      "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
 
-    # - job_name: Linux Clang build
-    #   appveyor_build_worker_image: Ubuntu2004
-for:
-  - matrix:
-      only:
-        - job_name: Linux Clang build
-    init:
-      - sh: >-
-          sudo apt-get -y update
+      git clone https://github.com/microsoft/vcpkg vcpkg
 
-          sudo apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget
+      cd vcpkg
 
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+      bootstrap-vcpkg.bat
 
-          echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
+      cd ..
 
-          
-          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+      set VCPKG_DEFAULT_TRIPLET=x64-windows
 
-          sudo apt-get -y update
+build_script:
+  - cmd: >-
+      cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake .
 
-          sudo apt-get -y install libpng-dev ninja-build cmake libc++-dev
-          
-          #sudo apt-get -y upgrade
+      cmake --build build
 
-          #sudo apt -y autoremove
-    build_script:
-      - sh: >-
-          wget https://apt.llvm.org/llvm.sh
-          
-          chmod +x llvm.sh
+test_script:
+  - cmd:
+      cd build
 
-          "" | sudo ./llvm.sh 15 all
+      ctest -C debug --extra-verbose
+      
+      cd ..
 
-          sudo apt-get -y update
+artifacts:
+  - path: 'bin/*.exe'
+    name: Canary
 
-          sudo apt-get -y install clang-15 clang++-15
-
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/clang-15 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-15 -B build
-
-          ninja -C build
-    test_script:
-      - sh: "cd build && ctest -C debug --verbose && cd .."
-
-  - matrix:
-      only:
-        - job_name: Linux GCC build
-    init:
-      - sh: >-
-          sudo apt-get update
-
-          sudo apt-get install -y apt-transport-https ca-certificates gnupg software-properties-common wget
-
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-
-          echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
-
-          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-
-          sudo apt-add-repository -y 'deb https://apt.kitware.com/ubuntu/ focal main'
-          
-          sudo apt-get update
-
-          sudo apt-get install -y libpng-dev gcc-11 g++-11 ninja-build cmake
-    build_script:
-      - sh: >-
-          mkdir build
-
-          cd build
-
-          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/gcc-11 -DCMAKE_CXX_COMPILER=/usr/bin/g++-11 ..
-
-          ninja
-    test_script:
-      - sh: "cd build && ctest -C debug --verbose && cd .."
-
-  - matrix:
-      only:
-        - job_name: Linux GCC build and docs
-    init:
-      - sh: >-
-          sudo update-alternatives --remove-all gcc
-          
-          sudo update-alternatives --remove-all g++
-          
-          sudo apt-get update
-          
-          sudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common wget
-          
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
-          
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          
-          sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
-          
-          sudo apt-get -y update
-          
-          sudo apt-get -y install libpng-dev gcc-11 g++-11 ninja-build cmake doxygen graphviz python3-dev python3-pip
-          
-          pip3 install sphinx
-          
-          pip3 install sphinx-inline-tabs
-          
-          pip3 install furo
-          
-          pip3 install breathe
-          
-          pip3 install myst_parser
-          
-          pip3 install linkify-it-py
-          
-          sudo update-alternatives --remove-all gcc
-          
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 90
-          
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 90
-          
-          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 30
-          
-          sudo update-alternatives --set cc /usr/bin/gcc
-          
-          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 30
-          
-          sudo update-alternatives --set c++ /usr/bin/g++
-          
-          #sudo apt -y autoremove
-          
-          export CC=gcc
-          
-          export CXX=g++
-    #    before_build:
-    #      - sh: "cd docs && rm *.* && cd .."
-    build_script:
-      - sh: >-
-          mkdir build
-          
-          cmake -G "Ninja Multi-Config" -B build
-          
-          #-DDOCS:STRING=YES
-          
-          ninja -C build
-    #    after_build:
-    #      - sh: "cd docs && git add --all && git commit -m 'UPDATE_DOCS' && cd .." # cannot commit?
-    test_script:
-      - sh: "cd build && ctest -C debug --verbose && cd .."
-  - matrix:
-      only:
-        - job_name: Windows MSVC build
-    init:
-      - cmd: >-
-          "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-    build_script:
-      - cmd: >-
-          git clone https://github.com/microsoft/vcpkg
-
-          cd vcpkg
-
-          bootstrap-vcpkg.bat
-
-          cd..
-
-          set VCPKG_DEFAULT_TRIPLET=x64-windows
-
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake .
-
-          cmake --build build
-    test_script:
-      - cmd:
-          cd build
-
-          ctest -C debug --extra-verbose
-          
-          cd ..
-    artifacts:
-      - path: 'bin/*.exe'
-        name: Canary
-    deploy:
-      - provider: GitHub
-        release: Canary
-        description: Automatic Test build version($(APPVEYOR_BUILD_VERSION)). [Documentation](https://sebanisu.github.io/OpenVIII_CPP_WIP/applications.html#)
-        auth_token:
-          secure: 5giEwDYEP975x3C+JYDNGukTupBCPcmez7GbulvUX40/2C5cgs5ta8Gyq6IYpFmW
-        artifact: Canary
-        prerelease: true
-        force_update: true
+deploy:
+  - provider: GitHub
+    release: Canary
+    description: Automatic Test build version($(APPVEYOR_BUILD_VERSION)). [Documentation](https://sebanisu.github.io/OpenVIII_CPP_WIP/applications.html#)
+    auth_token:
+      secure: 5giEwDYEP975x3C+JYDNGukTupBCPcmez7GbulvUX40/2C5cgs5ta8Gyq6IYpFmW
+    artifact: Canary
+    prerelease: true
+    force_update: true
