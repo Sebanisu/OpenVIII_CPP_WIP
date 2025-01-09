@@ -12,8 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIICOMPRESSION_L4Z_H
 #define VIIICOMPRESSION_L4Z_H
-#include "lib/lz4.h"
 #include "open_viii/Concepts.hpp"
+#include <lz4.h>
 #include <span>
 namespace open_viii::compression::l4z {
 /**

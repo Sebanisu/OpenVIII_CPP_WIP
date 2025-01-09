@@ -1,0 +1,24 @@
+{
+  "name": "openviii-cpp-wip",
+  "version": "0.1.0",
+  "description": "A WIP project for OPENVIII in C++",
+  "builtin-baseline": "b322364f06308bdd24823f9d8f03fe0cc86fd46f",
+  "dependencies": [
+    {
+      "name": "libpng",
+      "default-features": true
+    },
+    {
+      "name": "bext-ut",
+      "default-features": true
+    },
+    {
+      "name": "python3",
+      "default-features": true
+    },
+    {
+      "name": "lz4",
+      "default-features": true
+    }
+  ]
+}
