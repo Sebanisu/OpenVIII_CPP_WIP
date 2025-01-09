@@ -7,25 +7,21 @@ environment:
       appveyor_build_worker_image: Visual Studio 2022
 
 cache:
-  - vcpkg
+  - c:\vcpkg
 
 init:
   - cmd: >-
       "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
 
-      git clone https://github.com/microsoft/vcpkg vcpkg
+      git clone https://github.com/microsoft/vcpkg c:\vcpkg
 
-      cd vcpkg
-
-      bootstrap-vcpkg.bat
-
-      cd ..
+      c:\vckpg\bootstrap-vcpkg.bat
 
       set VCPKG_DEFAULT_TRIPLET=x64-windows
 
 build_script:
   - cmd: >-
-      cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=.\vcpkg\scripts\buildsystems\vcpkg.cmake .
+      cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B build -DCMAKE_TOOLCHAIN_FILE=c:\vcpkg\scripts\buildsystems\vcpkg.cmake .
 
       cmake --build build
 
@@ -34,7 +30,7 @@ test_script:
       cd build
 
       ctest -C debug --extra-verbose
-      
+
       cd ..
 
 artifacts:
