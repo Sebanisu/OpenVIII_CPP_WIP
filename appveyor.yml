@@ -15,7 +15,7 @@ init:
 
       git clone https://github.com/microsoft/vcpkg c:\vcpkg
 
-      c:\vckpg\bootstrap-vcpkg.bat
+      c:\vcpkg\bootstrap-vcpkg.bat
 
       set VCPKG_DEFAULT_TRIPLET=x64-windows
 
