@@ -10,7 +10,7 @@ if(VCPKG_TOOLCHAIN)
     )
 else()
     # Assume Conan if vcpkg is not found
-    find_package(LZ4 REQUIRED)
+    find_package(lz4 REQUIRED)
     target_link_libraries(${PROJECT_NAME}_VIIICompression
         INTERFACE LZ4::lz4_static
         INTERFACE ${PROJECT_NAME}_VIIICommon
