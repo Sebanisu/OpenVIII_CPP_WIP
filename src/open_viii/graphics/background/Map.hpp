@@ -19,6 +19,8 @@
 #include "Tile2.hpp"
 #include "Tile3.hpp"
 #include "tl/write.hpp"
+#include <limits>
+#include <ranges>
 #include <utility>
 #include <variant>
 namespace open_viii::graphics::background {
@@ -78,9 +80,15 @@ public:
     filter_invalid() noexcept
   {
     return [](const is_tile auto &tile) {
-      static constexpr auto end_x{ 0x7FFFU };
+      static constexpr auto end_x{ std::numeric_limits<std::int16_t>::max() };
       return (std::cmp_not_equal(tile.x(), end_x));// && tile.draw();
     };
+  }
+
+  static constexpr auto
+    filter_view_invalid() noexcept
+  {
+    return std::ranges::views::filter(Map::filter_invalid());
   }
   [[nodiscard]] auto
     offset() const noexcept
@@ -425,10 +433,10 @@ public:
     bool                 sort_remove = true,
     bool                 shift       = true)
     : Map(
-      static_cast<MimType>(mim_type),
-      std::forward<decltype(buffer)>(buffer),
-      sort_remove,
-      shift)
+        static_cast<MimType>(mim_type),
+        std::forward<decltype(buffer)>(buffer),
+        sort_remove,
+        shift)
   {}
   template<typename tile_funcT>
     requires(std::is_invocable_r_v<
