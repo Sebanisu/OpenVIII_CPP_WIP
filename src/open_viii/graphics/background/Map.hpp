@@ -80,7 +80,7 @@ public:
     filter_invalid() noexcept
   {
     return [](const is_tile auto &tile) {
-      static constexpr auto end_x{ std::numeric_limits<std::int16_t>::max() };
+      static constexpr auto end_x{ (std::numeric_limits<std::int16_t>::max)() };
       return (std::cmp_not_equal(tile.x(), end_x));// && tile.draw();
     };
   }
