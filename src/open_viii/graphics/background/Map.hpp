@@ -79,9 +79,18 @@ public:
   static constexpr auto
     filter_invalid() noexcept
   {
-    return [](const is_tile auto &tile) {
+    return [](const auto &...args) {
       static constexpr auto end_x{ (std::numeric_limits<std::int16_t>::max)() };
-      return (std::cmp_not_equal(tile.x(), end_x));// && tile.draw();
+      return (([](const auto &arg) {
+               if constexpr (is_tile<std::remove_cvref<decltype(arg)>>) {
+                 return std::cmp_not_equal(arg.x(), end_x);
+               }
+               else
+               {
+                return true;
+               }
+             }(args))
+          && ...);
     };
   }
 
