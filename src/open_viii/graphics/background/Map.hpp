@@ -81,16 +81,16 @@ public:
   {
     return [](const auto &...args) {
       static constexpr auto end_x{ (std::numeric_limits<std::int16_t>::max)() };
-      return (([](const auto &arg) {
-               if constexpr (is_tile<std::remove_cvref<decltype(arg)>>) {
-                 return std::cmp_not_equal(arg.x(), end_x);
-               }
-               else
-               {
-                return true;
-               }
-             }(args))
-          && ...);
+      return (
+        ([](const auto &arg) {
+          if constexpr (is_tile<std::remove_cvref_t<decltype(arg)>>) {
+            return std::cmp_not_equal(arg.x(), end_x);
+          }
+          else {
+            return true;
+          }
+        }(args))
+        && ...);
     };
   }
 
