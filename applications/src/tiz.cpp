@@ -86,6 +86,7 @@ int
   }
   else {
     std::cerr << "file failed to write.\n";
+    return 1;
   }
 
   return 0;
