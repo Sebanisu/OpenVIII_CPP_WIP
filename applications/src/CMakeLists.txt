@@ -136,3 +136,9 @@ endif ()
 add_executable(${PROJECT_NAME}_double_cam
         double_cam.cpp double_cam.hpp)
 apply_common_operations(double_cam)
+
+#compress file with lzss like ff8 would. or uncompress
+add_executable(${PROJECT_NAME}_tiz
+        tiz.cpp
+        lz4_lzss_common_ff8.hpp)
+apply_common_operations(tiz)
