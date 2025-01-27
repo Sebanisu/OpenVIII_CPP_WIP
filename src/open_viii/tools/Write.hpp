@@ -3,6 +3,7 @@
 //
 #ifndef VIIIARCHIVE_WRITE_HPP
 #define VIIIARCHIVE_WRITE_HPP
+#include <iostream>
 #include "open_viii/Concepts.hpp"
 namespace open_viii::tools {
 template<typename lambdaT>
