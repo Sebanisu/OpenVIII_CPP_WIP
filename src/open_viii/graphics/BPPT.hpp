@@ -176,8 +176,8 @@ public:
   }
   constexpr BPPT() = default;
   explicit constexpr BPPT(std::uint8_t raw_in)
-    : m_bpp8(raw_in & RAW8_VALUE != 0), m_bpp16(raw_in & RAW16_VALUE != 0),
-      m_color_lookup_table_present(raw_in & CLP_VALUE != 0)
+    : m_bpp8((raw_in & RAW8_VALUE) != 0), m_bpp16((raw_in & RAW16_VALUE) != 0),
+      m_color_lookup_table_present((raw_in & CLP_VALUE) != 0)
   {}
   explicit constexpr BPPT(
     bool in_bpp8,
@@ -189,25 +189,25 @@ public:
   static consteval BPPT
     BPP4_CONST() noexcept
   {
-    return { false, false, true };
+    return BPPT{ false, false, true };
   }
 
   static consteval BPPT
     BPP8_CONST() noexcept
   {
-    return { true, false, true };
+    return BPPT{ true, false, true };
   }
 
   static consteval BPPT
     BPP16_CONST() noexcept
   {
-    return { false, true, false };
+    return BPPT{ false, true, false };
   }
 
   static consteval BPPT
     BPP24_CONST() noexcept
   {
-    return { true, true, false };
+    return BPPT{ true, true, false };
   };
 };
 
