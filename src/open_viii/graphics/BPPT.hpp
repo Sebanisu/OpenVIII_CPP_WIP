@@ -175,7 +175,11 @@ public:
       + (m_color_lookup_table_present ? CLP_VALUE : 0U));
   }
   constexpr BPPT() = default;
-  constexpr BPPT(
+  explicit constexpr BPPT(std::uint8_t raw_in)
+    : m_bpp8(raw_in & RAW8_VALUE != 0), m_bpp16(raw_in & RAW16_VALUE != 0),
+      m_color_lookup_table_present(raw_in & CLP_VALUE != 0)
+  {}
+  explicit constexpr BPPT(
     bool in_bpp8,
     bool in_bpp16,
     bool in_color_lookup_table_present)
