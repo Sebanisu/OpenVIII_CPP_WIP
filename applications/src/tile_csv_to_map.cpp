@@ -76,14 +76,10 @@ void
   [[maybe_unused]] std::string headers{};
   std::getline(is, headers);
   puts(headers.c_str());
-  using variant_tiles = std::variant<
-    open_viii::graphics::background::Tile1,
-    open_viii::graphics::background::Tile2,
-    open_viii::graphics::background::Tile3,
-    std::monostate>;
+  using namespace open_viii::graphics::background;
 
-  const auto map = open_viii::graphics::background::Map(
-    [&is, &tile_type_view]() -> variant_tiles {
+  const auto map = Map(
+    [&is, &tile_type_view]() -> typename Map::variant_tile {
       std::string line{};
       std::getline(is, line);
       if (std::empty(line))
@@ -98,7 +94,7 @@ void
         exit(EXIT_FAILURE);
       }
       const auto raw_bytes    = out_hex_to_vector(results.get<2>());
-      auto       variant_tile = open_viii::graphics::background::get_tile(
+      auto       variant_tile = get_tile(
         tile_type_view[0],
         raw_bytes);
       std::visit(
@@ -128,7 +124,7 @@ void
       num.has_value())                                                         \
   tile = tile.with_##arg(*num)
 #define concept_common_code(arg)                                               \
-  if constexpr (open_viii::graphics::background::has_with_##arg<               \
+  if constexpr (has_with_##arg<               \
                   decltype(tile)>)                                             \
   common_code(arg)
             common_code(z);
@@ -145,19 +141,19 @@ void
             concept_common_code(layer_id);
 #undef concept_common_code
 #undef common_code
-            if constexpr (open_viii::graphics::background::has_with_blend_mode<
+            if constexpr (has_with_blend_mode<
                             decltype(tile)>) {
               tile = tile.with_blend_mode([](const std::string_view sv) {
                 if (open_viii::tools::i_equals(sv, "Half Add"))
-                  return open_viii::graphics::background::BlendModeT::half_add;
+                  return BlendModeT::half_add;
                 if (open_viii::tools::i_equals(sv, "Add"))
-                  return open_viii::graphics::background::BlendModeT::add;
+                  return BlendModeT::add;
                 if (open_viii::tools::i_equals(sv, "Subtract"))
-                  return open_viii::graphics::background::BlendModeT::subtract;
+                  return BlendModeT::subtract;
                 if (open_viii::tools::i_equals(sv, "Quarter Add"))
-                  return open_viii::graphics::background::BlendModeT::
+                  return BlendModeT::
                     quarter_add;
-                return open_viii::graphics::background::BlendModeT::none;
+                return BlendModeT::none;
               }(re_blend_mode.to_view()));
             }
 
