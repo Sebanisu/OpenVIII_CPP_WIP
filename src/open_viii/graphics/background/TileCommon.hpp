@@ -47,6 +47,7 @@ private:
   }
 
 public:
+using impl_type = tileT;
   TileCommon() = default;
   explicit TileCommon(const std::vector<char> &buffer)
     : TileCommon(copy_tile(buffer))

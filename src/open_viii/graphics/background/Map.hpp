@@ -25,12 +25,14 @@
 #include <variant>
 namespace open_viii::graphics::background {
 template<typename T>
-concept is_tile = std::is_same_v<Tile1, std::decay_t<T>>
-               || std::is_same_v<Tile2, std::decay_t<T>>
-               || std::is_same_v<Tile3, std::decay_t<T>>;
+concept is_tile = requires { typename std::remove_cvref_t<T>::impl_type; }
+               && std::derived_from<
+                    std::remove_cvref_t<T>,
+                    TileCommon<typename std::remove_cvref_t<T>::impl_type>>;
 
 template<typename T>
-concept is_tiles = is_tile<typename T::value_type>;
+concept is_tiles = is_tile<std::ranges::range_value_t<std::remove_cvref_t<T>>>
+                && std::ranges::range<std::remove_cvref_t<T>>;
 
 struct Map
 {
