@@ -288,7 +288,8 @@ public:
    * @brief Explicit conversion operator to check if all groupings are set.
    * @return True if all groupings are set, false otherwise.
    */
-  explicit operator bool() const noexcept
+  explicit
+    operator bool() const noexcept
   {
     return all_set();
   }
@@ -345,18 +346,52 @@ public:
     case fiflfsT::none:
       return TryAddT::not_part_of_archive;
     case fiflfsT::fl: {
-      m_fl = decltype(m_fl)(
-        fl::clean_buffer(FS::get_entry<std::string>(src, fi, src_offset)),
-        "",
-        file_entry);
+      if constexpr (std::same_as<
+                      std::remove_cvref_t<srcT>,
+                      std::filesystem::path>) {
+        m_fl = decltype(m_fl)(
+          fl::clean_buffer(FS::get_entry<std::string>(src, fi, src_offset)),
+          "",
+          file_entry);
+      }
+      else {
+        m_fl = decltype(m_fl)(
+          fl::clean_buffer(
+            FS::get_entry<std::string>(std::span{ src }, fi, src_offset)),
+          "",
+          file_entry);
+      }
       break;
     }
     case fiflfsT::fs: {
-      m_fs = decltype(m_fs)(FS::get_entry(src, fi, src_offset), "", file_entry);
+
+      if constexpr (std::same_as<
+                      std::remove_cvref_t<srcT>,
+                      std::filesystem::path>) {
+        m_fs
+          = decltype(m_fs)(FS::get_entry(src, fi, src_offset), "", file_entry);
+      }
+      else {
+        m_fs = decltype(m_fs)(
+          FS::get_entry(std::span{ src }, fi, src_offset),
+          "",
+          file_entry);
+      }
       break;
     }
     case fiflfsT::fi: {
-      m_fi = decltype(m_fi)(FS::get_entry(src, fi, src_offset), "", file_entry);
+      if constexpr (std::same_as<
+                      std::remove_cvref_t<srcT>,
+                      std::filesystem::path>) {
+        m_fi
+          = decltype(m_fi)(FS::get_entry(src, fi, src_offset), "", file_entry);
+      }
+      else {
+        m_fi = decltype(m_fi)(
+          FS::get_entry(std::span{ src }, fi, src_offset),
+          "",
+          file_entry);
+      }
       get_count();
       break;
     }
@@ -382,19 +417,19 @@ public:
     get_entry_buffer(const fiT &fi) const
   {
     if (!std::ranges::empty(m_fs.data())) {
-      return FS::get_entry<dstT>(m_fs.data(), fi, m_fs.offset());
+      return FS::get_entry<dstT>(std::span{ m_fs.data() }, fi, m_fs.offset());
     }
     else {
       return FS::get_entry<dstT>(m_fs.path(), fi, m_fs.offset());
     }
   }
   /**
-   * @brief Compare base names of the archive components and exit if they don't
-   * match.
+   * @brief Compare base names of the archive components and exit if they
+   * don't match.
    *
    * This function checks if the base names of the file information (FI),
-   * file data (FS), and file paths (FL) match. If they don't match, the program
-   * will print an error message and exit.
+   * file data (FS), and file paths (FL) match. If they don't match, the
+   * program will print an error message and exit.
    */
   void
     compare_base_names() const
@@ -442,8 +477,8 @@ public:
    * the base names of the file information (FI), file data (FS), and
    * file paths (FL).
    *
-   * @return A std::string_view representing the base name of the archive. If no
-   * base name is found, an empty view is returned.
+   * @return A std::string_view representing the base name of the archive. If
+   * no base name is found, an empty view is returned.
    */
   [[nodiscard]] std::string_view
     get_base_name() const
@@ -482,7 +517,7 @@ public:
           m_fs.offset());
       }
       return open_viii::archive::FS::get_entry<outT>(
-        m_fs.data(),
+        std::span{ m_fs.data() },
         fi,
         m_fs.offset());
     }();
@@ -532,8 +567,8 @@ public:
   /**
    * @brief Retrieve the file entry data given its filename.
    *
-   * This function searches the archive for the specified filename and retrieves
-   * the file entry data.
+   * This function searches the archive for the specified filename and
+   * retrieves the file entry data.
    *
    * @tparam outT The type of the buffer to store the data (defaults to
    * std::vector<char>).
@@ -550,8 +585,8 @@ public:
   /**
    * @brief Retrieve the file entry data given a list of filenames.
    *
-   * This function searches the archive for the first matching filename from the
-   * provided list and retrieves the file entry data.
+   * This function searches the archive for the first matching filename from
+   * the provided list and retrieves the file entry data.
    *
    * @tparam outT The type of the buffer to store the data (defaults to
    * std::vector<char>).
@@ -596,8 +631,9 @@ public:
   /**
    * @brief Get a vector of pairs containing entry IDs and file paths.
    *
-   * This function searches the archive for the specified filenames and returns
-   * a vector of pairs containing the entry IDs and the full paths of the files.
+   * This function searches the archive for the specified filenames and
+   * returns a vector of pairs containing the entry IDs and the full paths of
+   * the files.
    *
    * @param filename An initializer_list of string_views of the filenames to
    * search for.
@@ -621,7 +657,8 @@ public:
    * This function returns a lambda function that takes an entry and fills the
    * given archive based on the entry's data.
    *
-   * @param[out] archive A reference to an FIFLFSBase object to fill with data.
+   * @param[out] archive A reference to an FIFLFSBase object to fill with
+   * data.
    * @return A lambda function for filling the archive.
    */
   auto
@@ -810,9 +847,9 @@ struct FIFLFS : public FIFLFSBase
   /**
    * @brief Iterate through a list of results and apply a processing function.
    *
-   * This function iterates through the given list of results (pairs of unsigned
-   * int and std::string) and applies the provided processing function (lambda)
-   * to each result.
+   * This function iterates through the given list of results (pairs of
+   * unsigned int and std::string) and applies the provided processing
+   * function (lambda) to each result.
    *
    * @param results A std::vector of std::pair<unsigned int, std::string>
    * representing the results.
@@ -827,8 +864,8 @@ struct FIFLFS : public FIFLFSBase
    * @brief Execute a given lambda function on nested archives.
    *
    * This function is only enabled for nested archives, and executes the
-   * provided lambda function on the specified nested archives, filtered by the
-   * provided filter lambda function.
+   * provided lambda function on the specified nested archives, filtered by
+   * the provided filter lambda function.
    *
    * @param filename A std::initializer_list of std::string_view representing
    * the filenames to search.
@@ -874,8 +911,8 @@ struct FIFLFS : public FIFLFSBase
    * @brief Execute a given lambda function on nested archives.
    *
    * This function is only enabled for nested archives, and executes the
-   * provided lambda function on the specified nested archives, filtered by the
-   * provided filter lambda function.
+   * provided lambda function on the specified nested archives, filtered by
+   * the provided filter lambda function.
    *
    * @tparam lambdaT The type of the lambda function to be executed on the
    * nested archives.
@@ -926,9 +963,9 @@ struct FIFLFS : public FIFLFSBase
   /**
    * @brief No-op function for non-nested archives.
    *
-   * This function does nothing and is only enabled for non-nested archives. It
-   * serves as a placeholder for the execute_with_nested() function to ensure
-   * compatibility with non-nested archives.
+   * This function does nothing and is only enabled for non-nested archives.
+   * It serves as a placeholder for the execute_with_nested() function to
+   * ensure compatibility with non-nested archives.
    *
    * @tparam lambdaT The type of the lambda function (unused).
    * @tparam filterT The type of the filter lambda function (unused, default:
@@ -938,7 +975,8 @@ struct FIFLFS : public FIFLFSBase
    * @param lambda A lambda function (unused).
    * @param nested_filename A std::initializer_list of std::string_view
    * representing the nested filenames (unused, default: empty).
-   * @param filter_lambda A filter lambda function (unused, default: no filter).
+   * @param filter_lambda A filter lambda function (unused, default: no
+   * filter).
    * @param limit_once A boolean indicating whether to limit the execution
    * (unused, default: false).
    */
@@ -953,8 +991,7 @@ struct FIFLFS : public FIFLFSBase
       = {},
       [[maybe_unused]] filterT &&filter_lambda = {},
       [[maybe_unused]] bool      limit_once    = false) const
-  {
-  }
+  {}
   /**
    * @brief Get an archive with nested files.
    *
@@ -985,8 +1022,8 @@ struct FIFLFS : public FIFLFSBase
   /**
    * @brief Execute a given lambda function on the specified files.
    *
-   * This function executes the provided lambda function on the specified files,
-   * filtered by the provided filter lambda function.
+   * This function executes the provided lambda function on the specified
+   * files, filtered by the provided filter lambda function.
    *
    * @tparam lambdaT The type of the lambda function to be executed on the
    * specified files.
@@ -1024,14 +1061,18 @@ struct FIFLFS : public FIFLFSBase
     for_each_sans_nested(results, process);
   }
   /**
-   * @brief Execute a given lambda function on each element of the results vector.
+   * @brief Execute a given lambda function on each element of the results
+   * vector.
    *
-   * This function executes the provided lambda function on each element of the results vector
-   * for the non-nested case (requires(!HasNested)).
+   * This function executes the provided lambda function on each element of
+   * the results vector for the non-nested case (requires(!HasNested)).
    *
-   * @tparam lambdaT The type of the lambda function to be executed on each element of the results vector.
-   * @param results A vector of std::pair<unsigned int, std::string> to process.
-   * @param process The lambda function to be executed on each element of the results vector.
+   * @tparam lambdaT The type of the lambda function to be executed on each
+   * element of the results vector.
+   * @param results A vector of std::pair<unsigned int, std::string> to
+   * process.
+   * @param process The lambda function to be executed on each element of the
+   * results vector.
    */
   template<executable_on_pair_of_int_string lambdaT>
     requires(!HasNested)
@@ -1043,14 +1084,19 @@ struct FIFLFS : public FIFLFSBase
     std::ranges::for_each(results, process);
   }
   /**
-   * @brief Execute a given lambda function on each element of the results vector.
+   * @brief Execute a given lambda function on each element of the results
+   * vector.
    *
-   * This function executes the provided lambda function on each element of the results vector
-   * for the nested case (requires(HasNested)). It filters out nested archives before processing.
+   * This function executes the provided lambda function on each element of
+   * the results vector for the nested case (requires(HasNested)). It filters
+   * out nested archives before processing.
    *
-   * @tparam lambdaT The type of the lambda function to be executed on each element of the results vector.
-   * @param results A vector of std::pair<unsigned int, std::string> to process.
-   * @param process The lambda function to be executed on each element of the results vector.
+   * @tparam lambdaT The type of the lambda function to be executed on each
+   * element of the results vector.
+   * @param results A vector of std::pair<unsigned int, std::string> to
+   * process.
+   * @param process The lambda function to be executed on each element of the
+   * results vector.
    */
   template<executable_on_pair_of_int_string lambdaT>
     requires(HasNested)

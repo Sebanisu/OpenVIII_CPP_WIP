@@ -42,9 +42,11 @@ static constexpr auto EXT = std::string_view(".fs");
  * used to reserve the memory before uncompressing.
  */
 template<
-  is_default_constructible_has_data_size_resize outputT = std::vector<char>>
+  is_default_constructible_has_data_size_resize outputT = std::vector<char>,
+  typename input_t                                      = tl::read::input>
 static outputT
-  get_entry_lzss(tl::read::input &input, const std::uint32_t uncompressed_size)
+  get_entry_lzss(input_t &input, const std::uint32_t uncompressed_size)
+  requires(std::same_as<std::remove_cvref_t<input_t>, tl::read::input>)
 {
   const auto compSize = input.template output<uint32_t>();
   outputT    buffer   = input.template output<outputT>(compSize);
@@ -63,9 +65,11 @@ static outputT
  * a uint32 of the uncompressed size.
  */
 template<
-  is_default_constructible_has_data_size_resize outputT = std::vector<char>>
+  is_default_constructible_has_data_size_resize outputT = std::vector<char>,
+  typename input_t                                      = tl::read::input>
 static outputT
-  get_entry_lz4(tl::read::input &input)
+  get_entry_lz4(input_t &input)
+  requires(std::same_as<std::remove_cvref_t<input_t>, tl::read::input>)
 {
   constexpr static auto skip_size       = 8;
   const auto            section_size    = input.template output<uint32_t>();
@@ -90,9 +94,11 @@ static outputT
  */
 template<
   is_default_constructible_has_data_size_resize outputT = std::vector<char>,
-  FI_Like                                       fiT     = FI>
+  FI_Like                                       fiT     = FI,
+  typename input_t                                      = tl::read::input>
 [[nodiscard]] static outputT
-  get_entry(tl::read::input input, const fiT fi, const std::size_t offset = 0U)
+  get_entry(input_t input, const fiT fi, const std::size_t offset = 0U)
+  requires(std::same_as<std::remove_cvref_t<input_t>, tl::read::input>)
 {
   input.seek(static_cast<long>(offset + fi.offset()), std::ios::beg);
   // if compressed will keep decompressing till get size
@@ -123,12 +129,14 @@ template<
  */
 template<
   is_default_constructible_has_data_size_resize outputT = std::vector<char>,
-  FI_Like                                       fiT     = FI>
+  FI_Like                                       fiT     = FI,
+  typename path_t                                       = std::filesystem::path>
 [[nodiscard]] static outputT
   get_entry(
     const std::filesystem::path &path,
     const fiT                   &fi,
     const size_t                &offset = 0U)
+  requires(std::same_as<std::remove_cvref_t<path_t>, std::filesystem::path>)
 {
   if (fi.uncompressed_size() == 0) {
     return {};
@@ -151,9 +159,13 @@ template<
  */
 template<
   is_default_constructible_has_data_size_resize outputT = std::vector<char>,
-  FI_Like                                       fiT     = FI>
+  FI_Like                                       fiT     = FI,
+  typename span_t                                       = std::span<const char>>
 [[nodiscard]] static outputT
-  get_entry(std::span<const char> data, const fiT &fi, const size_t offset = 0U)
+  get_entry(span_t data, const fiT &fi, const size_t offset = 0U)
+  requires(
+    std::same_as<std::remove_cvref_t<span_t>, std::span<const char>>
+    || std::same_as<std::remove_cvref_t<span_t>, std::span<char>>)
 {
   // it shouldn't be empty
   if (data.empty() || fi.uncompressed_size() == 0) {

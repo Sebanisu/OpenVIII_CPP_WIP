@@ -9,10 +9,7 @@
 #include <span>
 #include <string_view>
 template<typename fdT>
-concept can_be_span_of_char = requires(fdT fd)
-{
-  std::span<const char>(fd);
-};
+concept can_be_span_of_char = requires(fdT fd) { std::span<const char>(fd); };
 /**
  * Mock span data, this is grouping values together for tests. The raw data is
  * in a string_view and the span points to the same data. Because if you pass a
@@ -54,10 +51,10 @@ public:
     open_viii::CompressionTypeT compression_type
     = open_viii::CompressionTypeT::none)
     : mock_span_data(
-      std::string_view(std::data(string_view), std::size(string_view)),
-      offset,
-      size,
-      compression_type)
+        std::string_view(std::data(string_view), std::size(string_view)),
+        offset,
+        size,
+        compression_type)
   {}
   constexpr auto
     string_view() const noexcept
@@ -88,8 +85,8 @@ int
   static constexpr mock_span_data   mock1(test_string, 0, 5);
   static constexpr mock_span_data   mock2(test_string, 6, 6);
   static constexpr mock_span_data   mock3(
-      test_string,
-      static_cast<std::uint32_t>(std::size(test_string) - 10));
+    test_string,
+    static_cast<std::uint32_t>(std::size(test_string) - 10));
   const auto temp_file
     = tl::utility::create_temp_file("FS_test_uncompressed.tmp", test_string);
   static constexpr auto check_fs
@@ -273,4 +270,52 @@ int
       check_fs2(string_buffer, mock3, fi_buffer[2]);
     };
   }
+  using namespace open_viii;
+  static constexpr std::string_view test_data = "TEST DATA FOR FS";
+  static constexpr mock_span_data   mock(test_data);
+  "FS get_entry uncompressed"_test = [] {
+    std::vector<char> buffer(test_data.begin(), test_data.end());
+    FI   fi(static_cast<uint32_t>(buffer.size()), 0, CompressionTypeT::none);
+    auto result = FS::get_entry(std::span{ buffer }, fi);
+    expect(std::equal(result.begin(), result.end(), test_data.begin()));
+  };
+
+  "FS append_entry uncompressed"_test = [] {
+    std::vector<char> output;
+    FI fi = append_entry(output, mock.span(), CompressionTypeT::none);
+    expect(fi.uncompressed_size() == mock.span().size());
+    expect(std::equal(output.begin(), output.end(), mock.span().begin()));
+  };
+
+  "FS append and read LZSS compressed entry"_test = [] {
+    std::vector<char> compressed_output;
+    FI                fi
+      = append_entry(compressed_output, mock.span(), CompressionTypeT::lzss);
+    auto decompressed = FS::get_entry(std::span{ compressed_output }, fi);
+    expect(std::equal(
+      decompressed.begin(),
+      decompressed.end(),
+      mock.span().begin()));
+  };
+
+  "FS append and read L4Z compressed entry"_test = [] {
+    std::vector<char> compressed_output;
+    FI fi = append_entry(compressed_output, mock.span(), CompressionTypeT::lz4);
+    auto decompressed = FS::get_entry(std::span{ compressed_output }, fi);
+    expect(std::equal(
+      decompressed.begin(),
+      decompressed.end(),
+      mock.span().begin()));
+  };
+
+  "FS read entry from file"_test = [] {
+    const auto    tmp_file = std::filesystem::temp_directory_path() / "test.fs";
+    std::ofstream file(tmp_file, std::ios::binary);
+    file.write(test_data.data(), test_data.size());
+    file.close();
+    FI   fi(static_cast<uint32_t>(test_data.size()), 0, CompressionTypeT::none);
+    auto result = FS::get_entry(tmp_file, fi);
+    expect(std::equal(result.begin(), result.end(), test_data.begin()));
+    std::remove(tmp_file.string().c_str());
+  };
 }
