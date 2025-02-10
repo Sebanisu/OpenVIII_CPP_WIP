@@ -179,16 +179,18 @@ inline void
   std::ranges::sort(vector);
   return vector;
 }
-
+template<typename path_t>
 // Get all entries from the FL file sorted and cleaned.
 [[nodiscard]] [[maybe_unused]] inline auto
   get_all_entry_strings(
-    const std::filesystem::path                   &path,
+    const path_t                                  &path,
     const size_t                                  &offset,
     const size_t                                  &size   = 0U,
     const size_t                                  &count  = 0U,
     const std::initializer_list<std::string_view> &needle = {},
     const size_t                                  &limit  = 0U)
+  requires(std::same_as<std::remove_cvref_t<path_t>, std::filesystem::path>)
+
 {
 
   std::vector<std::string> vector{};
