@@ -218,19 +218,27 @@ inline void
  * @param limit max matches; 0 == unlimited
  * @return matches
  */
+template<typename path_t>
 [[nodiscard]] [[maybe_unused]] inline std::vector<std::string>
   get_all_entry_strings(
-    const std::filesystem::path                   &path,
+    const path_t                                  &path,
     const std::string                             &data,
     const std::size_t                             &offset,
     const std::size_t                             &size   = 0U,
     const std::size_t                             &count  = 0U,
     const std::initializer_list<std::string_view> &needle = {},
     const std::size_t                             &limit  = 0U)
+  requires(std::same_as<std::remove_cvref_t<path_t>, std::filesystem::path>)
 {
 
   if (!std::empty(data) && data.front() != '\0') {
-    return get_all_entry_strings(data, offset, size, count, needle, limit);
+    return get_all_entry_strings(
+      tl::read::input{ data },
+      offset,
+      size,
+      count,
+      needle,
+      limit);
   }
   else {}
   return get_all_entry_strings(path, offset, size, count, needle, limit);
@@ -380,7 +388,7 @@ template<typename path_t>
  * @param count is max results returned. 0 is unlimited.
  */
 template<typename T>
-[[nodiscard]] [[maybe_unused]] inline auto
+[[nodiscard]] [[maybe_unused]] inline auto &&
   get_entry(
     const T                                       &data,
     const std::initializer_list<std::string_view> &needle,
@@ -388,12 +396,25 @@ template<typename T>
     const size_t                                  &size   = 0U,
     const size_t                                  &count  = 0U)
 {
-  auto vector  = get_all_entries(data, offset, size, count, needle, 1U);
+  auto vector = [&]() {
+    if constexpr (std::same_as<std::remove_cvref_t<T>, std::filesystem::path>) {
+      return get_all_entries(data, offset, size, count, needle, 1U);
+    }
+    else {
+      return get_all_entries(
+        tl::read::input{ data },
+        offset,
+        size,
+        count,
+        needle,
+        1U);
+    }
+  }();
   using valueT = typename decltype(vector)::value_type;
   if (std::empty(vector)) {
     return valueT{};
   }
-  return vector.front();
+  return std::move(vector.front());
 }
 
 /**
@@ -405,7 +426,7 @@ template<typename T>
  * @param size is max number of bytes. 0 is unlimited.
  * @param count is max results returned. 0 is unlimited.
  */
-[[nodiscard]] [[maybe_unused]] inline auto
+[[nodiscard]] [[maybe_unused]] inline decltype(auto)
   get_entry(
     const std::filesystem::path                   &path,
     const std::string                             &data,
