@@ -388,7 +388,7 @@ template<typename path_t>
  * @param count is max results returned. 0 is unlimited.
  */
 template<typename T>
-[[nodiscard]] [[maybe_unused]] inline auto &&
+[[nodiscard]] [[maybe_unused]] inline std::pair<std::uint32_t, std::string>
   get_entry(
     const T                                       &data,
     const std::initializer_list<std::string_view> &needle,
@@ -414,7 +414,7 @@ template<typename T>
   if (std::empty(vector)) {
     return valueT{};
   }
-  return std::move(vector.front());
+  return vector.front();
 }
 
 /**
@@ -426,7 +426,7 @@ template<typename T>
  * @param size is max number of bytes. 0 is unlimited.
  * @param count is max results returned. 0 is unlimited.
  */
-[[nodiscard]] [[maybe_unused]] inline decltype(auto)
+[[nodiscard]] [[maybe_unused]] inline std::pair<std::uint32_t, std::string>
   get_entry(
     const std::filesystem::path                   &path,
     const std::string                             &data,
@@ -438,7 +438,7 @@ template<typename T>
   if (std::ranges::empty(data)) {
     return get_entry(path, needle, offset, size, count);
   }
-  return get_entry(data, needle, offset, size, count);
+  return get_entry(tl::read::input{ data }, needle, offset, size, count);
 }
 }// namespace open_viii::archive::fl
 namespace open_viii::archive {
