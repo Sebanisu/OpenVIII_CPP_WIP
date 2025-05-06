@@ -477,15 +477,15 @@ public:
    * the base names of the file information (FI), file data (FS), and
    * file paths (FL).
    *
-   * @return A std::string_view representing the base name of the archive. If
-   * no base name is found, an empty view is returned.
+   * @return A std::string representing the base name of the archive. If
+   * no base name is found, an empty string is returned.
    */
-  [[nodiscard]] std::string_view
+  [[nodiscard]] std::string
     get_base_name() const
   {
-    for (const auto &path : { std::string_view{ m_fi.base() },
-                              std::string_view{ m_fl.base() },
-                              std::string_view{ m_fs.base() } }) {
+    for (const auto &path : { m_fi.base() ,
+                              m_fl.base() ,
+                              m_fs.base() }) {
       if (!std::ranges::empty(path)) {
         return path;
       }
