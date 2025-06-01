@@ -51,27 +51,20 @@ public:
   using this_type         = CommonColor<T>;
   constexpr CommonColor() = default;
   template<typename... Ts>
-  requires(std::integral<std::decay_t<Ts>>
-             &&...) constexpr explicit CommonColor(Ts &&...ts)
-    : T{ std::forward<Ts>(ts)... }
+    requires(std::integral<std::decay_t<Ts>> && ...)
+  constexpr explicit CommonColor(Ts &&...ts) : T{ std::forward<Ts>(ts)... }
   {}
   template<Color cT>
-  requires(
-    has_alpha
-    && !std::is_same_v<
-       std::decay_t<cT>,
-       this_type>) constexpr explicit CommonColor(cT &&color)
+    requires(has_alpha && !std::is_same_v<std::decay_t<cT>, this_type>)
+  constexpr explicit CommonColor(cT &&color)
     : CommonColor{ swap_index<0>(color),
                    swap_index<1>(color),
                    swap_index<2>(color),
                    swap_index<3>(color) }
   {}
   template<Color cT>
-  requires(
-    !has_alpha
-    && !std::is_same_v<
-       std::decay_t<cT>,
-       this_type>) constexpr explicit CommonColor(cT &&color)
+    requires(!has_alpha && !std::is_same_v<std::decay_t<cT>, this_type>)
+  constexpr explicit CommonColor(cT &&color)
     : CommonColor{ swap_index<0>(color),
                    swap_index<1>(color),
                    swap_index<2>(color) }
@@ -101,7 +94,7 @@ public:
       if constexpr (alpha_size == 1U) {
         if (
           operator[](red_index) == 0 && operator[](green_index) == 0
-          &&                            operator[](blue_index) == 0)
+          && operator[](blue_index) == 0 && operator[](alpha_index) == 0)
           return 0U;
         else
           return (std::numeric_limits<std::uint8_t>::max)();
@@ -152,7 +145,8 @@ public:
     return tmp;
   }
   constexpr this_type
-    with_a(const std::uint8_t change) const noexcept requires(has_alpha)
+    with_a(const std::uint8_t change) const noexcept
+    requires(has_alpha)
   {
     this_type tmp{};
     tmp.value = with(alpha_index, change);
@@ -230,7 +224,8 @@ public:
   }
 
   template<struct_of_color32_byte cT>
-  constexpr operator cT() const
+  constexpr
+    operator cT() const
   {
     cT ret{};
     ret.r = r();
@@ -246,7 +241,8 @@ private:
 
 public:
   template<struct_of_color32_float cT>
-  constexpr operator cT() const
+  constexpr
+    operator cT() const
   {
     cT ret{};
     ret.r = std::clamp(static_cast<float>(r()) / byte_max, 0.F, 1.F);
