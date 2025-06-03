@@ -72,12 +72,8 @@ struct Map
     std::vector<Tile1>,
     std::vector<Tile2>,
     std::vector<Tile3>>;
-    
-  using variant_tile = std::variant<
-    std::monostate,
-    Tile1,
-    Tile2,
-    Tile3>;
+
+  using variant_tile = std::variant<std::monostate, Tile1, Tile2, Tile3>;
 
 private:
   variant_tiles       m_tiles{};
@@ -794,6 +790,10 @@ public:
   void
     shift_to_origin() noexcept
   {
+    if (m_offset != decltype(m_offset){})// already shifted
+    {
+      return;
+    }
     m_offset = Point(min_x(), min_y());
     if (m_offset.x() < 0 || m_offset.y() < 0) {
       shift(m_offset.abs());
@@ -922,8 +922,8 @@ public:
  * invalid type is provided.
  */
 auto
-  get_tile(char tile_type, std::ranges::range auto &&data, auto &&...misc)
-    -> typename Map::variant_tile
+  get_tile(char tile_type, std::ranges::range auto &&data, auto &&...misc) ->
+  typename Map::variant_tile
 {
   switch (tile_type) {
   case 1:
