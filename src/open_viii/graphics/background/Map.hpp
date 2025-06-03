@@ -593,6 +593,38 @@ private:
     return tiles;
   }
 
+  /**
+   * @brief Shifts all tile positions by a given offset.
+   *
+   * @param x Horizontal shift.
+   * @param y Vertical shift.
+   */
+  void
+    shift(const std::int16_t &x, const std::int16_t &y) noexcept
+  {
+    const auto xy = Point(x, y);
+    visit_tiles([&xy](auto &tiles) {
+      auto filtered = tiles | std::views::filter(filter_invalid());
+      std::ranges::transform(
+        filtered,
+        std::ranges::begin(tiles),
+        [&xy](const auto &t) {
+          return t.shift_xy(xy);
+        });
+    });
+  }
+
+  /**
+   * @brief Shifts all tile positions by a given point.
+   *
+   * @param point The shift offset as a Point object.
+   */
+  void
+    shift(const Point<std::int16_t> &point) noexcept
+  {
+    shift(point.x(), point.y());
+  }
+
 public:
   constexpr static auto EXT = std::string_view(".map");
 
@@ -617,6 +649,7 @@ public:
       shift_to_origin();
     }
   }
+
 
   /**
    * @brief Constructs a `Map` from a file.
@@ -760,27 +793,6 @@ public:
   }
 
   /**
-   * @brief Shifts all tile positions by a given offset.
-   *
-   * @param x Horizontal shift.
-   * @param y Vertical shift.
-   */
-  void
-    shift(const std::int16_t &x, const std::int16_t &y) noexcept
-  {
-    const auto xy = Point(x, y);
-    visit_tiles([&xy](auto &tiles) {
-      auto filtered = tiles | std::views::filter(filter_invalid());
-      std::ranges::transform(
-        filtered,
-        std::ranges::begin(tiles),
-        [&xy](const auto &t) {
-          return t.shift_xy(xy);
-        });
-    });
-  }
-
-  /**
    * @brief Shifts all tiles so that their minimum X and Y coordinates start
    * from (0,0).
    *
@@ -801,14 +813,28 @@ public:
   }
 
   /**
-   * @brief Shifts all tile positions by a given point.
+   * @brief Reverses a previous shift operation to restore points to their
+   * original positions.
    *
-   * @param point The shift offset as a Point object.
+   * This function undoes the effect of a prior `shift_to_origin` operation. If
+   * the stored offset has negative x or y components, it shifts all points by
+   * the stored offset to restore their original coordinates. The offset is then
+   * reset to its default state (zero).
+   *
+   * @note This function assumes the `shift` method can handle the stored offset
+   * to reverse the translation.
+   * @pre The `m_offset` member variable must be properly initialized.
+   * @post The points are restored to their original positions, and `m_offset`
+   * is reset to (0, 0).
+   * @throws None (noexcept).
    */
   void
-    shift(const Point<std::int16_t> &point) noexcept
+    unshift_from_origin() noexcept
   {
-    shift(point.x(), point.y());
+    if (m_offset.x() < 0 || m_offset.y() < 0) {
+      shift(m_offset);
+      m_offset = {};
+    }
   }
 
   /**
