@@ -557,22 +557,6 @@ private:
   }
 
   /**
-   * @brief Shifts all tiles so that their minimum X and Y coordinates start
-   * from (0,0).
-   *
-   * Some tiles are drawn off-screen to create a texture; this function shifts
-   * all tiles to ensure the minimum coordinates are at least (0,0).
-   */
-  void
-    shift_to_origin() noexcept
-  {
-    m_offset = Point(min_x(), min_y());
-    if (m_offset.x() < 0 || m_offset.y() < 0) {
-      shift(m_offset.abs());
-    }
-  }
-
-  /**
    * @brief Initializes the tile variant based on the given MimType.
    *
    * Allocates storage for the appropriate tile type and fills it using the
@@ -798,6 +782,22 @@ public:
           return t.shift_xy(xy);
         });
     });
+  }
+
+  /**
+   * @brief Shifts all tiles so that their minimum X and Y coordinates start
+   * from (0,0).
+   *
+   * Some tiles are drawn off-screen to create a texture; this function shifts
+   * all tiles to ensure the minimum coordinates are at least (0,0).
+   */
+  void
+    shift_to_origin() noexcept
+  {
+    m_offset = Point(min_x(), min_y());
+    if (m_offset.x() < 0 || m_offset.y() < 0) {
+      shift(m_offset.abs());
+    }
   }
 
   /**
