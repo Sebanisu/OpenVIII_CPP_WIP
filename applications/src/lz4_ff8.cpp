@@ -1,5 +1,6 @@
 #include "lz4_lzss_common_ff8.hpp"
 #include "open_viii/compression/L4Z.hpp"
+#include <iostream>
 
 void
   compress(std::string_view in, std::string_view out)
@@ -10,8 +11,8 @@ void
     std::exit(1);
   }
   std::ofstream os = open_file(out);
-  const auto    compressed =
-    open_viii::compression::l4z::compress<std::vector<char>>(decompressed);
+  const auto    compressed
+    = open_viii::compression::l4z::compress<std::vector<char>>(decompressed);
   // write int size+8
   write_value(os, static_cast<std::uint32_t>(std::size(compressed) + 8U));
   // write string
@@ -36,17 +37,18 @@ void
   std::ofstream os        = open_file(out);
   const auto    input     = tl::read::input(compressed);
   const auto    comp_size = input.output<std::uint32_t>();
-  const auto    expected_size =
-    input.seek(4, std::ios::cur).output<std::uint32_t>();
+  const auto    expected_size
+    = input.seek(4, std::ios::cur).output<std::uint32_t>();
   if (std::size(compressed) != comp_size + 4U) {
     std::cerr << "Size of file mismatch: per header file size "
               << std::size(compressed) << " should equal " << comp_size + 4U
               << " !!\n";
     std::exit(1);
   }
-  const auto decompressed =
-    open_viii::compression::l4z::decompress<std::vector<char>>(
-      std::span(compressed).subspan(12U), expected_size);
+  const auto decompressed
+    = open_viii::compression::l4z::decompress<std::vector<char>>(
+      std::span(compressed).subspan(12U),
+      expected_size);
   os.write(std::data(decompressed), static_cast<long>(std::size(decompressed)));
 }
 
