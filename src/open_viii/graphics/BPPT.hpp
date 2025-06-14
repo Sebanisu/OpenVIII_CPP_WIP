@@ -67,7 +67,7 @@ public:
   [[nodiscard]] constexpr bool
     bpp4() const noexcept
   {
-    return !unused() && !m_bpp8 && !m_bpp16 && m_color_lookup_table_present;
+    return !unused() && !m_bpp8 && !m_bpp16;//&& m_color_lookup_table_present;
   }
   /**
    * Test bits to check if color lookup table is present and 8bpp is set and
@@ -77,7 +77,7 @@ public:
   [[nodiscard]] constexpr bool
     bpp8() const noexcept
   {
-    return !unused() && m_bpp8 && !m_bpp16 && m_color_lookup_table_present;
+    return !unused() && m_bpp8 && !m_bpp16;// && m_color_lookup_table_present;
   }
   /**
    * Test bits to check if color lookup table is not present and 8bpp is not set
@@ -87,7 +87,7 @@ public:
   [[nodiscard]] constexpr bool
     bpp16() const noexcept
   {
-    return !unused() && !m_bpp8 && m_bpp16 && !m_color_lookup_table_present;
+    return !unused() && !m_bpp8 && m_bpp16;// && !m_color_lookup_table_present;
   }
   /**
    * Test bits to check if color lookup table is not present and 8bpp is set and
@@ -97,7 +97,7 @@ public:
   [[nodiscard]] constexpr bool
     bpp24() const noexcept
   {
-    return !unused() && m_bpp8 && m_bpp16 && !m_color_lookup_table_present;
+    return !unused() && m_bpp8 && m_bpp16;// && !m_color_lookup_table_present;
   }
   /**
    * Test bits to check if color lookup table is present and 8bpp is ignored and
@@ -107,7 +107,9 @@ public:
   [[nodiscard]] constexpr bool
     color_lookup_table_present() const
   {
-    return !unused() && !m_bpp16 && m_color_lookup_table_present;
+    return !unused() && m_color_lookup_table_present;
+    //! m_bpp16 &&
+    //! m_color_lookup_table_present;
   }
   /**
    * Test that one of the valid states is true.
