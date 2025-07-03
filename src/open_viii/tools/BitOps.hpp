@@ -68,7 +68,7 @@ static consteval retT
  * @note largest_bit_value is same as get_mask but it get_mask chooses the
  * return type.
  */
-template<int bit_count>
+template<std::uint64_t bit_count>
 static constexpr auto get_mask = []() {
   static_assert(bit_count <= number_of_bits<std::uint64_t> && bit_count > 0);
   [[maybe_unused]] constexpr auto bit_count_8  = number_of_bits<std::uint8_t>;
