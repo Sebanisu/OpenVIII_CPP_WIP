@@ -96,7 +96,7 @@ public:
       add_uint<2>(3U);
     }
   }
-  template<int bit_count, std::unsigned_integral input>
+  template<std::uint64_t bit_count, std::unsigned_integral input>
   void
     add_uint(const input &value) const noexcept
   {
@@ -137,7 +137,7 @@ public:
   {
     return m_data;
   }
-  template<int bit_count>
+  template<std::uint64_t bit_count>
   auto
     extract_uint() const noexcept
   {
