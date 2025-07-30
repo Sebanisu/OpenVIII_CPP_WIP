@@ -13,6 +13,9 @@
 #ifndef VIIIARCHIVE_LANGCOMMON_HPP
 #define VIIIARCHIVE_LANGCOMMON_HPP
 #include "LangT.hpp"
+#include <array>
+#include <ranges>
+#include <utility>
 namespace open_viii {
 /**
  * Lang Common for conversion from enum to 2 letter language code
@@ -133,7 +136,7 @@ namespace LangCommon {
   [[nodiscard]] consteval auto
     to_string_array_3_char()
   {
-    auto                                              coos = to_array();
+    constexpr auto                                    coos = to_array();
     std::array<std::string_view, std::size(coos) + 1> coos_c_str{};
     std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
       return to_string_3_char(coo);// I hope these are null terminated.
@@ -141,6 +144,24 @@ namespace LangCommon {
     coos_c_str.back() = MISC;
     return coos_c_str;
   }
+
+  [[nodiscard]] constexpr LangT
+    from_string_3_char(std::string_view input)
+  {
+    constexpr auto coos        = to_array();
+    constexpr auto coos_3_char = to_string_array_3_char();
+    if (const auto it = std::ranges::find(coos_3_char, input);
+        it != coos_3_char.end()) {
+      const auto dist = std::ranges::distance(coos_3_char.begin(), it);
+      if (std::cmp_less(dist, std::ranges::size(coos))) {
+        auto out = coos.begin();
+        std::ranges::advance(out, dist);
+        return *out;
+      }
+    }
+    return LangT::generic;
+  }
+
   /**
    * Get an array of const char *
    */
