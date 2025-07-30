@@ -150,7 +150,11 @@ namespace LangCommon {
   {
     constexpr auto coos        = to_array();
     constexpr auto coos_3_char = to_string_array_3_char();
-    if (const auto it = std::ranges::find(coos_3_char, input);
+    if (const auto it = std::ranges::find_if(
+          coos_3_char,
+          [&](const auto &coo) -> bool {
+            return open_viii::tools::i_equals(coo, input);
+          });
         it != coos_3_char.end()) {
       const auto dist = std::ranges::distance(coos_3_char.begin(), it);
       if (std::cmp_less(dist, std::ranges::size(coos))) {
