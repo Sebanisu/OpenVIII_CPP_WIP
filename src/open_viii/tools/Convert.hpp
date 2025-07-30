@@ -52,6 +52,25 @@ static constexpr auto upper = [](auto ch) {
 };
 static_assert(upper('a') == 'A');
 static_assert(upper('a') != 'Z');
+
+/**
+ * Convert character to uppercase version
+ * @param ch lowercase character and such.
+ * @return uppercase character
+ * @note ::toupper is not constexpr
+ * @see https://en.cppreference.com/w/cpp/string/byte/toupper
+ */
+static constexpr auto lower = [](auto ch) {
+  if (std::is_constant_evaluated()) {
+    constexpr char upper_offset = 'a' - 'A';
+    // this is really basic but should cover everything we do.
+    return static_cast<decltype(ch)>(
+      (ch >= 'A' && ch <= 'Z') ? ch + upper_offset : ch);
+  }
+  return static_cast<decltype(ch)>(::tolower(ch));
+};
+static_assert(lower('A') == 'a');
+static_assert(lower('Z') != 'a');
 /**
  * use std::to_string and pad the value.
  * @param value initial integer value.
