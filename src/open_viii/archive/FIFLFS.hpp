@@ -16,7 +16,10 @@
 #include "fiflfsT.hpp"
 #include "FIOutIterator.hpp"
 #include "Grouping.hpp"
+#include "open_viii/strings/LangCommon.hpp"
 #include "TryAddT.hpp"
+#include <cstring>
+#include <optional>
 #include <sstream>
 #include <string>
 namespace open_viii::archive {
@@ -483,9 +486,7 @@ public:
   [[nodiscard]] std::string
     get_base_name() const
   {
-    for (const auto &path : { m_fi.base() ,
-                              m_fl.base() ,
-                              m_fs.base() }) {
+    for (const auto &path : { m_fi.base(), m_fl.base(), m_fs.base() }) {
       if (!std::ranges::empty(path)) {
         return path;
       }
@@ -705,6 +706,33 @@ public:
       m_count,
       filename);
   }
+  std::optional<open_viii::LangT>
+    get_lang_from_fl_paths() const
+  {
+    static constexpr auto lang_codes
+      = open_viii::LangCommon::to_string_array_3_char();
+
+    for (const auto &path : get_all_paths_from_fl({})) {
+      const auto components
+        = std::filesystem::path(path);// or std::filesystem-style split
+      auto it = std::ranges::find_if(components, [](const auto &part) {
+        // Could also lower-case if needed
+        return std::ranges::any_of(lang_codes, [&](const auto &code) {
+          return open_viii::tools::i_equals(
+            code,
+            part.string());// case-insensitive compare
+        });
+      });
+
+      if (it != components.end()) {
+        return open_viii::LangCommon::from_string_3_char(
+          it->string());// Use your existing mapping function
+      }
+    }
+
+    return std::nullopt;
+  }
+
   /**
    * @brief Get all pairs of entry IDs and file paths from the archive.
    *
