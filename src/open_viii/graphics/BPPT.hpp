@@ -176,6 +176,13 @@ public:
       (m_bpp8 ? RAW8_VALUE : 0U) + (m_bpp16 ? RAW16_VALUE : 0U)
       + (m_color_lookup_table_present ? CLP_VALUE : 0U));
   }
+
+  [[nodiscard]] constexpr explicit
+    operator std::uint8_t() const noexcept
+  {
+    return raw();
+  }
+
   constexpr BPPT() = default;
   explicit constexpr BPPT(std::uint8_t raw_in)
     : m_bpp8((raw_in & RAW8_VALUE) != 0), m_bpp16((raw_in & RAW16_VALUE) != 0),
