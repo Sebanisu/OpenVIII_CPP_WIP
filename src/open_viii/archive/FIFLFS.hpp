@@ -733,6 +733,21 @@ public:
     return std::nullopt;
   }
 
+  bool
+    is_remaster_from_fl_paths() const
+  {
+    for (const auto &path : get_all_paths_from_fl({})) {
+      const auto components
+        = std::filesystem::path(path);// or std::filesystem-style split
+      const auto it = std::ranges::find_if(components, [](const auto &part) {
+        return open_viii::tools::i_equals(part.string(), "x");
+      });
+      if (it != components.end())
+        return true;
+    }
+    return false;
+  }
+
   /**
    * @brief Get all pairs of entry IDs and file paths from the archive.
    *
