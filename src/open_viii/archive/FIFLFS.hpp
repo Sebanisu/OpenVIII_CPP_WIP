@@ -713,20 +713,21 @@ public:
       = open_viii::LangCommon::to_string_array_3_char();
 
     for (const auto &path : get_all_paths_from_fl({})) {
-      const auto components
-        = std::filesystem::path(path);// or std::filesystem-style split
-      auto it = std::ranges::find_if(components, [](const auto &part) {
-        // Could also lower-case if needed
+      const auto components = std::filesystem::path(path);
+      auto       it = std::ranges::find_if(components, [](const auto &part) {
         return std::ranges::any_of(lang_codes, [&](const auto &code) {
-          return open_viii::tools::i_equals(
-            code,
-            part.string());// case-insensitive compare
+          return open_viii::tools::i_equals(code, part.string());
         });
       });
 
       if (it != components.end()) {
-        return open_viii::LangCommon::from_string_3_char(
-          it->string());// Use your existing mapping function
+        const auto val
+          = open_viii::LangCommon::from_string_3_char(it->string());
+        if (
+          std::to_underlying(val)
+          < std::to_underlying(open_viii::LangT::generic)) {
+          return val;
+        }
       }
     }
 
@@ -737,8 +738,7 @@ public:
     is_remaster_from_fl_paths() const
   {
     for (const auto &path : get_all_paths_from_fl({})) {
-      const auto components
-        = std::filesystem::path(path);// or std::filesystem-style split
+      const auto components = std::filesystem::path(path);
       const auto it = std::ranges::find_if(components, [](const auto &part) {
         return open_viii::tools::i_equals(part.string(), "x");
       });
