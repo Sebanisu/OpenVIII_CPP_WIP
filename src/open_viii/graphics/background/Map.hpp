@@ -650,7 +650,6 @@ public:
     }
   }
 
-
   /**
    * @brief Constructs a `Map` from a file.
    *
@@ -843,51 +842,66 @@ public:
    * @param in_path The output file path.
    */
   void
-    save_csv(const std::string_view &in_path) const
+    save_csv(
+      const std::string_view          &in_path,
+      const std::vector<std::uint32_t> pupu_numbers = {}) const
   {
     auto path = std::filesystem::path(in_path);
     tools::write_buffer(
-      [this](std::ostream &os) {
+      [&](std::ostream &os) {
         os
-          << R"("Index","Raw bytes","Draw","BPP","Blend Mode","Blend Other","Layer","Texture Page","Palette","Animation","Animation Frame","Source X","Source Y","X","Y","Z")"
+          << R"("Index","Raw bytes","Draw","BPP","Blend Mode","Blend Other","Layer","Texture Page","Palette","Animation","Animation Frame","Source X","Source Y","X","Y","Z","Pupu")"
           << '\n';
         std::size_t i{};
-        visit_tiles([&i, &os](auto &&tiles) {
-          std::for_each(
-            std::ranges::cbegin(tiles),
-            std::ranges::cend(tiles),
-            [&os, &i](const auto &t) {
-              os << i++ << ',' << '"';
-              t.to_hex(os);
-              os << "\"," << t.draw() << ',' << int{ t.depth() } << ",\"" <<
-                [&t]() {
-                  switch (t.blend_mode()) {
-                  case BlendModeT::half_add:
-                    return "Half Add";
-                  case BlendModeT::add:
-                    return "Add";
-                  case BlendModeT::subtract:
-                    return "Subtract";
-                  case BlendModeT::quarter_add:
-                    return "Quarter Add";
-                  case BlendModeT::none:
-                  default:
-                    return "None";
-                  }
-                }()
-                 << "\"," << static_cast<uint16_t>(t.blend()) << ','
-                 << static_cast<uint16_t>(t.layer_id()) << ','
-                 << static_cast<uint16_t>(t.texture_id()) << ','
-                 << static_cast<uint16_t>(t.palette_id()) << ','
-                 << static_cast<uint16_t>(t.animation_id()) << ','
-                 << static_cast<uint16_t>(t.animation_state()) << ','
-                 << static_cast<uint16_t>(t.source_x()) << ','
-                 << static_cast<uint16_t>(t.source_y()) << ','
-                 << static_cast<int16_t>(t.x()) << ','
-                 << static_cast<int16_t>(t.y()) << ','
-                 << static_cast<int16_t>(t.z()) << ','//<< Pupu(t)
-                 << '\n';// std::nouppercase << std::dec << std::setw(0U)
-            });
+        visit_tiles([&](auto &&tiles) {
+          const auto action
+            = [&](const auto &t, const std::uint32_t pupu_number = 0) {
+                os << i++ << ',' << '"';
+                t.to_hex(os);
+                os << "\"," << t.draw() << ',' << int{ t.depth() } << ",\"" <<
+                  [&t]() {
+                    switch (t.blend_mode()) {
+                    case BlendModeT::half_add:
+                      return "Half Add";
+                    case BlendModeT::add:
+                      return "Add";
+                    case BlendModeT::subtract:
+                      return "Subtract";
+                    case BlendModeT::quarter_add:
+                      return "Quarter Add";
+                    case BlendModeT::none:
+                    default:
+                      return "None";
+                    }
+                  }()
+                   << "\"," << static_cast<uint16_t>(t.blend()) << ','
+                   << static_cast<uint16_t>(t.layer_id()) << ','
+                   << static_cast<uint16_t>(t.texture_id()) << ','
+                   << static_cast<uint16_t>(t.palette_id()) << ','
+                   << static_cast<uint16_t>(t.animation_id()) << ','
+                   << static_cast<uint16_t>(t.animation_state()) << ','
+                   << static_cast<uint16_t>(t.source_x()) << ','
+                   << static_cast<uint16_t>(t.source_y()) << ','
+                   << static_cast<int16_t>(t.x()) << ','
+                   << static_cast<int16_t>(t.y()) << ','
+                   << static_cast<int16_t>(t.z()) << ','
+                   << std::hex << std::setw(8) << std::setfill('0')
+                   << std::uppercase << pupu_number << std::dec
+                   << std::setfill(' ') << std::nouppercase << ","
+                   << '\n';
+              };
+
+          if (pupu_numbers.empty()) {
+            for (const auto &tile : tiles) {
+              action(tile);
+            }
+          }
+          else {
+            for (const auto &[tile, pupu_number] :
+                 std::views::zip(tiles, pupu_numbers)) {
+              action(tile, pupu_number);
+            }
+          }
         });
       },
       (path.parent_path() / path.stem()).string() + ".csv");
