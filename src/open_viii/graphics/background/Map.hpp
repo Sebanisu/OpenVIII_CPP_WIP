@@ -896,7 +896,7 @@ public:
                    << static_cast<uint16_t>(t.source_y()) << ','
                    << static_cast<int16_t>(t.x()) << ','
                    << static_cast<int16_t>(t.y()) << ','
-                   << static_cast<int16_t>(t.z()) << ',' << '"' << std::hex
+                   << static_cast<int16_t>(t.z()) << ',' << "\"0x" << std::hex
                    << std::setw(8) << std::setfill('0') << std::uppercase
                    << pupu_number << std::dec << std::setfill(' ')
                    << std::nouppercase << '"' << "," << '\n';
