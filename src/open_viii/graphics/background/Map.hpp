@@ -842,9 +842,21 @@ public:
    * @param in_path The output file path.
    */
   void
+    save_csv(const std::string_view &in_path) const
+  {
+    save_csv(in_path, {});
+  }
+
+  /**
+   * @brief Saves the tile data as a CSV file.
+   *
+   * @param in_path The output file path.
+   * @param pupu_numbers raw pupu ids as 32bit unsigned ints.
+   */
+  void
     save_csv(
-      const std::string_view          &in_path,
-      const std::vector<std::uint32_t> pupu_numbers = {}) const
+      const std::string_view           &in_path,
+      const std::vector<std::uint32_t> &pupu_numbers) const
   {
     auto path = std::filesystem::path(in_path);
     tools::write_buffer(
@@ -884,11 +896,10 @@ public:
                    << static_cast<uint16_t>(t.source_y()) << ','
                    << static_cast<int16_t>(t.x()) << ','
                    << static_cast<int16_t>(t.y()) << ','
-                   << static_cast<int16_t>(t.z()) << ','
-                   << std::hex << std::setw(8) << std::setfill('0')
-                   << std::uppercase << pupu_number << std::dec
-                   << std::setfill(' ') << std::nouppercase << ","
-                   << '\n';
+                   << static_cast<int16_t>(t.z()) << ',' << std::hex
+                   << std::setw(8) << std::setfill('0') << std::uppercase
+                   << pupu_number << std::dec << std::setfill(' ')
+                   << std::nouppercase << "," << '\n';
               };
 
           if (pupu_numbers.empty()) {
