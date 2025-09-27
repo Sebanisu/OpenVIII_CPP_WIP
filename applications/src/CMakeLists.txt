@@ -24,10 +24,13 @@ function(apply_common_operations target_name)
     if (MSVC)
         target_compile_definitions(${PROJECT_NAME}_${target_name}
                 PUBLIC _CRT_SECURE_NO_WARNINGS) # required by libpng
-        target_compile_options(${PROJECT_NAME}_${target_name} PUBLIC "/bigobj")
+        target_compile_options(${PROJECT_NAME}_${target_name} 
+                PUBLIC "/bigobj"
+                PUBLIC "/Qpar"
+                PUBLIC "/MP")
         target_link_options(${PROJECT_NAME}_${target_name} PUBLIC "/PROFILE")
         
-        # ✅ Force static runtime (/MT in Release, /MTd in Debug)
+        # Force static runtime (/MT in Release, /MTd in Debug)
         set_property(TARGET ${PROJECT_NAME}_${target_name}
                 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif ()
@@ -128,8 +131,9 @@ add_executable(${PROJECT_NAME}_tile_csv_to_map
         tile_csv_to_map.cpp
         tile_csv_to_map.hpp)
 apply_common_operations(tile_csv_to_map)
+find_package(ctre CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME}_tile_csv_to_map
-        PRIVATE ctre
+        PRIVATE ctre::ctre
         )
 if (MSVC)
     target_compile_options(${PROJECT_NAME}_tile_csv_to_map
