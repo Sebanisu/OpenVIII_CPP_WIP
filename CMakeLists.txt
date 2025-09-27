@@ -26,8 +26,6 @@ include(cmake/CompilerWarnings.cmake)
 set_project_warnings(${PROJECT_NAME}_project_warnings ON)
 
 # get external dependencies.
-include(cmake/lz4.cmake) # used by compression library
-include(cmake/libpng.cmake) #used by graphics library
 include(cmake/tools_library.cmake) # general use library
 
 set(DOCS "NO" CACHE STRING "Build documentation")
@@ -38,7 +36,6 @@ endif ()
 # include source folders
 add_subdirectory(src)
 if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME))
-    include(cmake/ctre.cmake)
     add_subdirectory(applications)
 endif ()
 if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)

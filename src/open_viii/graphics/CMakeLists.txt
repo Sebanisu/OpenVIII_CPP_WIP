@@ -10,6 +10,7 @@ target_link_libraries(${PROJECT_NAME}_VIIIGraphics
         INTERFACE ${PROJECT_NAME}_VIIITools
         INTERFACE ${PROJECT_NAME}_VIIICommon
         )
+find_package(PNG REQUIRED)
 target_include_directories(${PROJECT_NAME}_VIIIGraphics INTERFACE ${PNG_INCLUDE_DIRS})
 #target_precompile_headers(
 #        ${PROJECT_NAME}_VIIIGraphics INTERFACE
