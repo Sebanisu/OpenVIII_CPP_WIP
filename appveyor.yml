@@ -17,7 +17,7 @@ init:
 
       c:\\vcpkg\\bootstrap-vcpkg.bat
 
-      set VCPKG_DEFAULT_TRIPLET=x64-windows
+      set VCPKG_DEFAULT_TRIPLET=x64-windows-static
 
 build_script:
   - cmd: >-

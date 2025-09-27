@@ -26,6 +26,10 @@ function(apply_common_operations target_name)
                 PUBLIC _CRT_SECURE_NO_WARNINGS) # required by libpng
         target_compile_options(${PROJECT_NAME}_${target_name} PUBLIC "/bigobj")
         target_link_options(${PROJECT_NAME}_${target_name} PUBLIC "/PROFILE")
+        
+        # ✅ Force static runtime (/MT in Release, /MTd in Debug)
+        set_property(TARGET ${PROJECT_NAME}_${target_name}
+                PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif ()
 
     # Set target paths
