@@ -60,8 +60,8 @@ private:
   std::random_device                        rd{};
   std::mt19937                              gen;
   std::uniform_int_distribution<value_type> dis{};
-  value_type                                m_current {}
-  value_type                                m_random_value{};
+  value_type m_current {}
+  value_type m_random_value{};
 };
 struct RandomIOTA
 {

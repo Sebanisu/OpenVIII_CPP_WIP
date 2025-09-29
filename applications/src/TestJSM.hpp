@@ -3,5 +3,6 @@
 //
 #ifndef VIIIARCHIVE_TESTJSM_HPP
 #define VIIIARCHIVE_TESTJSM_HPP
-int main();
+int
+  main();
 #endif// VIIIARCHIVE_TESTJSM_HPP

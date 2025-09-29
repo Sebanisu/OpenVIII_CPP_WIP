@@ -6,7 +6,8 @@
 #define OPENVIII_CPP_WIP_FIFLFST_HPP
 
 /**
- * @brief Enumeration representing the type of an archive component (fi, fl, or fs).
+ * @brief Enumeration representing the type of an archive component (fi, fl, or
+ * fs).
  *
  * This enum class defines the type of an archive component, which can be:
  * 1. none: The component is not of any supported type.

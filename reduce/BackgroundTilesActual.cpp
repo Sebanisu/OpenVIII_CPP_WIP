@@ -8,12 +8,14 @@
 int
   main()
 {
-  using v_tile = std::variant<open_viii::graphics::background::Tile1,
-                              open_viii::graphics::background::Tile2,
-                              open_viii::graphics::background::Tile3>;
-  using t_tile = std::tuple<open_viii::graphics::background::Tile1,
-                            open_viii::graphics::background::Tile2,
-                            open_viii::graphics::background::Tile3>;
+  using v_tile = std::variant<
+    open_viii::graphics::background::Tile1,
+    open_viii::graphics::background::Tile2,
+    open_viii::graphics::background::Tile3>;
+  using t_tile = std::tuple<
+    open_viii::graphics::background::Tile1,
+    open_viii::graphics::background::Tile2,
+    open_viii::graphics::background::Tile3>;
   static constexpr auto tile_test = [](v_tile tile_var) {
     std::visit(
       [](auto tile) {
@@ -30,12 +32,14 @@ int
           expect(eq(tile.y(), 0));
           expect(eq(tile.z(), 0U));
           expect(eq(tile.blend(), 0U));
-          expect(eq(static_cast<std::uint16_t>(tile.blend_mode()),
-                    static_cast<std::uint16_t>(
-                      open_viii::graphics::background::BlendModeT::none)));
+          expect(eq(
+            static_cast<std::uint16_t>(tile.blend_mode()),
+            static_cast<std::uint16_t>(
+              open_viii::graphics::background::BlendModeT::none)));
           expect(eq(tile.draw(), false));
-          expect(eq(static_cast<std::uint16_t>(tile.animation_id()),
-                    static_cast<std::uint16_t>(0xFFU)));
+          expect(eq(
+            static_cast<std::uint16_t>(tile.animation_id()),
+            static_cast<std::uint16_t>(0xFFU)));
           expect(eq(tile.animation_state(), 0U));
           expect(eq(tile.depth(), 4_bpp));
           expect(eq(tile.texture_id(), 0U));
@@ -105,17 +109,18 @@ int
             bool{ eq(static_cast<std::uint16_t>(tile.layer_id()), 1U) }
             or bool{ eq(static_cast<std::uint16_t>(tile.layer_id()), 0U) });
           expect(
-            bool{
-              eq(static_cast<std::uint16_t>(tile.blend_mode()),
-                 static_cast<std::uint16_t>(
-                   open_viii::graphics::background::BlendModeT::quarter_add)) }
+            bool{ eq(
+              static_cast<std::uint16_t>(tile.blend_mode()),
+              static_cast<std::uint16_t>(
+                open_viii::graphics::background::BlendModeT::quarter_add)) }
+            or bool{ eq(
+              static_cast<std::uint16_t>(tile.blend_mode()),
+              static_cast<std::uint16_t>(
+                open_viii::graphics::background::BlendModeT::none)) });
+          expect(
+            bool{ eq(static_cast<std::uint16_t>(tile.animation_id()), 1U) }
             or bool{
-              eq(static_cast<std::uint16_t>(tile.blend_mode()),
-                 static_cast<std::uint16_t>(
-                   open_viii::graphics::background::BlendModeT::none)) });
-          expect(bool{ eq(static_cast<std::uint16_t>(tile.animation_id()), 1U) }
-                 or bool{
-                   eq(static_cast<std::uint16_t>(tile.animation_id()), 255U) });
+              eq(static_cast<std::uint16_t>(tile.animation_id()), 255U) });
           expect(
             bool{ eq(static_cast<std::uint16_t>(tile.animation_state()), 1U) }
             or bool{
@@ -126,9 +131,10 @@ int
     {
       using namespace boost::ut;
       auto tile1 = open_viii::graphics::background::Tile1{};
-      memcpy(&tile1,
-             "\x08\x00\x68\x00\x04\x00\x34\x00\x40\x3E\xD0\xC0\x00\x01\xFF\x00",
-             sizeof(tile1));
+      memcpy(
+        &tile1,
+        "\x08\x00\x68\x00\x04\x00\x34\x00\x40\x3E\xD0\xC0\x00\x01\xFF\x00",
+        sizeof(tile1));
       using namespace open_viii::graphics::literals;
       auto tile1_gamma
         = tile1.with_source_xy({ 208, 192 })

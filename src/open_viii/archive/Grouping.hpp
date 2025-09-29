@@ -222,7 +222,8 @@ public:
    * convert to bool
    * @return true means value is set and loaded.
    */
-  explicit operator bool() const
+  explicit
+    operator bool() const
   {
     std::error_code ec{};
     const bool      match

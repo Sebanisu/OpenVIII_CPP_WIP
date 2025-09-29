@@ -5,7 +5,6 @@
 #ifndef OPENVIII_CPP_WIP_TILE_CSV_TO_MAP_HPP
 #define OPENVIII_CPP_WIP_TILE_CSV_TO_MAP_HPP
 #include "open_viii/graphics/background/Map.hpp"
-#include <stdlib.h>
 #include <charconv>
 #include <ctre.hpp>
 #include <filesystem>
@@ -13,6 +12,7 @@
 #include <functional>
 #include <iostream>
 #include <optional>
+#include <stdlib.h>
 #include <string>
 #include <string_view>
 #include <variant>

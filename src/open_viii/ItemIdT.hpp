@@ -14,7 +14,8 @@
 #define VIIIARCHIVE_ITEMIDT_HPP
 #include "cstdint"
 namespace open_viii {
-enum struct [[maybe_unused]] ItemIdT : std::uint8_t{
+enum struct [[maybe_unused]] ItemIdT : std::uint8_t
+{
   none              = 0x00,
   potion            = 0x01,
   potion_plus       = 0x02,
@@ -215,5 +216,5 @@ enum struct [[maybe_unused]] ItemIdT : std::uint8_t{
   occult_fan_iii    = 0xC5,
   occult_fan_iv     = 0xC6,
 };
-}
+}// namespace open_viii
 #endif// VIIIARCHIVE_ITEMIDT_HPP

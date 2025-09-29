@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestMenuGroup.hpp"
-#include "open_viii/BulkSectionData.hpp"
 #include "open_viii/archive/Archives.hpp"
+#include "open_viii/BulkSectionData.hpp"
 #include "open_viii/menu_group/MenuGroupFile.hpp"
 #include "open_viii/menu_group/MenuGroupHeader.hpp"
 #include "open_viii/menu_group/MenuMessages.hpp"
@@ -29,13 +29,14 @@ int
     std::cout << path << std::endl;
     static constexpr auto coo      = open_viii::LangT::en;
     const auto            archives = open_viii::archive::Archives(
-      path, open_viii::LangCommon::to_string<coo>());
+      path,
+      open_viii::LangCommon::to_string<coo>());
     if (!static_cast<bool>(archives)) {
       std::cerr << "Failed to load path: " << path.string() << '\n';
       return;
     }
-    [[maybe_unused]] const auto &menu =
-      archives.get<open_viii::archive::ArchiveTypeT::menu>();
+    [[maybe_unused]] const auto &menu
+      = archives.get<open_viii::archive::ArchiveTypeT::menu>();
     std::cout << menu << std::endl;
     auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };
     //    auto buffer = mngrpfile.GetSectionBuffer<3>();

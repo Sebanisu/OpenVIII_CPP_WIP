@@ -16,5 +16,5 @@ struct Section5_Animation_Sequences
     [[maybe_unused]] std::span<const char> span_2)
   {}
 };
-}
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_SECTION5_ANIMATION_SEQUENCES_HPP

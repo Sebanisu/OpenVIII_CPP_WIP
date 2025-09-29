@@ -30,8 +30,10 @@ void
   os.write(std::data(tmp), 4);
 }
 // forward declare for unique code to be in the .cpp
-void compress(std::string_view in, std::string_view out);
-void decompress(std::string_view in, std::string_view out);
+void
+  compress(std::string_view in, std::string_view out);
+void
+  decompress(std::string_view in, std::string_view out);
 int
   common_main(int argc, [[maybe_unused]] char *argv[])
 {

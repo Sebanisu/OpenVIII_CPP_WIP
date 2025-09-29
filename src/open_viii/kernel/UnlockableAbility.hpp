@@ -30,7 +30,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const UnlockableAbility_impl &right) const noexcept = default;
+    operator<=>(const UnlockableAbility_impl &right) const noexcept
+    = default;
 };
 using UnlockableAbility = CommonKernel<UnlockableAbility_impl>;
 static_assert(UnlockableAbility::EXPECTED_SIZE == sizeof(UnlockableAbility));

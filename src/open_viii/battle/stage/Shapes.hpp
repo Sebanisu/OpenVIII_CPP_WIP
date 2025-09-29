@@ -74,8 +74,9 @@ template<Point_Like pointT = graphics::Point<std::uint8_t>, Shape_Like shapeT>
 }
 }// namespace open_viii::graphics
 namespace open_viii::battle {
-template<typename triangle_type,typename quad_type>
-std::array<triangle_type, 2> common_quad_to_triangle(const quad_type & quad)
+template<typename triangle_type, typename quad_type>
+std::array<triangle_type, 2>
+  common_quad_to_triangle(const quad_type &quad)
 {
   std::array<triangle_type, 2> triangles;
   // Triangle 1: 0, 1, 3
@@ -96,26 +97,26 @@ std::array<triangle_type, 2> common_quad_to_triangle(const quad_type & quad)
   triangles[1].template uv<2>()          = quad.template uv<3>();
   return triangles;
 }
-}
+}// namespace open_viii::battle
 namespace open_viii::battle::stage {
 
 std::array<Triangle, 2>
   quad_to_triangles(const Quad &quad)
 {
-  auto triangles =  common_quad_to_triangle<Triangle>(quad);
+  auto triangles              = common_quad_to_triangle<Triangle>(quad);
 
   // Triangle 1: 0, 1, 3
 
-  triangles[0].clut()           = quad.clut();
-  triangles[0].texture_page()   = quad.texture_page();// discarding 4 bits.
-  triangles[0].raw_hide()       = quad.raw_hide();
-  triangles[0].gpu()            = quad.gpu();
+  triangles[0].clut()         = quad.clut();
+  triangles[0].texture_page() = quad.texture_page();// discarding 4 bits.
+  triangles[0].raw_hide()     = quad.raw_hide();
+  triangles[0].gpu()          = quad.gpu();
 
   // Triangle 2: 0, 2, 3
-  triangles[1].clut()           = quad.clut();
-  triangles[1].texture_page()   = quad.texture_page();// discarding 4 bits.
-  triangles[1].raw_hide()       = quad.raw_hide();
-  triangles[1].gpu()            = quad.gpu();
+  triangles[1].clut()         = quad.clut();
+  triangles[1].texture_page() = quad.texture_page();// discarding 4 bits.
+  triangles[1].raw_hide()     = quad.raw_hide();
+  triangles[1].gpu()          = quad.gpu();
 
   return triangles;
 }

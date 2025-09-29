@@ -9,9 +9,9 @@
 
 void
   fiflfs_create(
-    const std::filesystem::path& src,
-    const std::filesystem::path& dst,
-    const std::string_view      archive_name);
+    const std::filesystem::path &src,
+    const std::filesystem::path &dst,
+    const std::string_view       archive_name);
 auto
   check(std::string_view in, bool create = false) -> std::string_view;
 

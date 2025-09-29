@@ -34,8 +34,10 @@ graphics::Point<float>
     const std::uint32_t width,
     const std::uint32_t height)
 {
-  const auto x_scale = static_cast<float>(width) / static_cast<float>(classicWidth);
-  const auto y_scale = static_cast<float>(height) / static_cast<float>(classicHeight);
+  const auto x_scale
+    = static_cast<float>(width) / static_cast<float>(classicWidth);
+  const auto y_scale
+    = static_cast<float>(height) / static_cast<float>(classicHeight);
 
   const float scaledHeight = [=]() {
     if (x_scale > y_scale) {
@@ -236,7 +238,8 @@ inline void
  * @return The converted V coordinate as a std::uint8_t.
  */
 [[nodiscard]] inline auto
-  convert_v(const std::uint8_t v_cord, const std::uint32_t tim_height) -> std::uint8_t
+  convert_v(const std::uint8_t v_cord, const std::uint32_t tim_height)
+    -> std::uint8_t
 {
   // on the psx they are probably stacking these textures in a vtable of
   // 128x256 pixels.

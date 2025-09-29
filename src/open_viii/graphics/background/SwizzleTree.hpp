@@ -73,11 +73,11 @@ private:
     return {};
   }
   template<typename map_type>
-  requires(
-    std::is_same_v<
-      map_type,
-      Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void reswizzle_with_type()
-    const
+    requires(
+      std::is_same_v<map_type, Tile1> || std::is_same_v<map_type, Tile2>
+      || std::is_same_v<map_type, Tile3>)
+  void
+    reswizzle_with_type() const
   {
     const auto r = Reswizzle(
       m_mim_type,
@@ -88,11 +88,11 @@ private:
     r.process();
   }
   template<typename map_type>
-  requires(
-    std::is_same_v<
-      map_type,
-      Tile1> || std::is_same_v<map_type, Tile2> || std::is_same_v<map_type, Tile3>) void deswizzle_with_type()
-    const
+    requires(
+      std::is_same_v<map_type, Tile1> || std::is_same_v<map_type, Tile2>
+      || std::is_same_v<map_type, Tile3>)
+  void
+    deswizzle_with_type() const
   {
     // const auto mim = Mim(get_mim_buffer(),m_mim_filename);
     const auto mim
@@ -125,7 +125,8 @@ public:
    * true if archive is set and full. false if invalid.
    * @return bool
    */
-  [[nodiscard]] explicit operator bool() const noexcept
+  [[nodiscard]] explicit
+    operator bool() const noexcept
   {
     return static_cast<bool>(m_archive);
   }

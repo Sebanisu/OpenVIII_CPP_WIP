@@ -3,5 +3,6 @@
 //
 #ifndef VIIIARCHIVE_TESTBATTLE_HPP
 #define VIIIARCHIVE_TESTBATTLE_HPP
-int main();
+int
+  main();
 #endif// VIIIARCHIVE_TESTBATTLE_HPP

@@ -33,8 +33,9 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const QuistisBlueMagicLimitBreakParams_impl &right)
-      const noexcept = default;
+    operator<=>(
+      const QuistisBlueMagicLimitBreakParams_impl &right) const noexcept
+    = default;
   [[nodiscard]] const auto *
     operator->() const noexcept
   {

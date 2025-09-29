@@ -40,7 +40,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const GFAbilities_impl &right) const noexcept = default;
+    operator<=>(const GFAbilities_impl &right) const noexcept
+    = default;
 };
 using GFAbilities = CommonKernel<GFAbilities_impl>;
 static_assert(GFAbilities::EXPECTED_SIZE == sizeof(GFAbilities));

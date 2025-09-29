@@ -158,5 +158,5 @@ inline constexpr bool
   return WeaponModelIDToCharacterID(model_id) == character_id;
 }
 static_assert(WeaponModelID::Flail != CharacterID::SquallLeonhart);
-}
+}// namespace open_viii
 #endif// OPENVIII_CPP_WIP_WEAPONMODELID_HPP

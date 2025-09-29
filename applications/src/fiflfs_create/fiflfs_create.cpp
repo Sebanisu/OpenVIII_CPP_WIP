@@ -90,11 +90,12 @@ void
     std::cout << "Source directory compressed data: \n\t" << source_compress_dat
               << '\n';
     std::error_code error_code{};
-    const bool      found = std::filesystem::exists(source_compress_dat, error_code);
+    const bool found = std::filesystem::exists(source_compress_dat, error_code);
     if (error_code) {
       std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                << error_code.value() << ": " << error_code.message() << error_code.value()
-                << " - path: " << source_compress_dat << std::endl;
+                << error_code.value() << ": " << error_code.message()
+                << error_code.value() << " - path: " << source_compress_dat
+                << std::endl;
       error_code.clear();
       exit(1);
     }

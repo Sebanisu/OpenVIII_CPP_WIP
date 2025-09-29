@@ -31,20 +31,20 @@ public:
   }
 #define WITH(value_name)                                                       \
   [[nodiscard]] constexpr auto with_##value_name(                              \
-    const auto &new_val) &&noexcept                                            \
+    const auto &new_val) && noexcept                                           \
     requires(requires(this_type t) { t.m_##value_name; })                      \
   {                                                                            \
     T::m_##value_name = new_val;                                               \
     return *this;                                                              \
   }                                                                            \
   [[nodiscard]] constexpr auto with_##value_name(const auto &new_val)          \
-    const &noexcept                                                            \
+    const & noexcept                                                           \
     requires(requires(this_type t) { t.m_##value_name; })                      \
   {                                                                            \
     return this_type{ *this }.with_##value_name(new_val);                      \
   }                                                                            \
   [[nodiscard]] constexpr auto with_##value_name(const auto &new_val)          \
-    const &&noexcept                                                           \
+    const && noexcept                                                          \
     requires(requires(this_type t) { t.m_##value_name; })                      \
   {                                                                            \
     return this_type{ *this }.with_##value_name(new_val);                      \

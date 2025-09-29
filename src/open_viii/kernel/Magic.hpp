@@ -113,7 +113,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const Magic_impl &right) const noexcept = default;
+    operator<=>(const Magic_impl &right) const noexcept
+    = default;
 };
 using Magic = CommonKernel<Magic_impl>;
 static_assert(Magic::EXPECTED_SIZE == sizeof(Magic));

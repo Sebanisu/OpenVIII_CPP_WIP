@@ -21,5 +21,5 @@ enum class StatusFlags2 : std::uint8_t
   DiablosMissed = 0x40,///< Diablos missed status flag.
   AlwaysCard    = 0x80,///< Always card status flag.
 };
-}// namespace open_viii::battle
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_STATUSFLAGS2_HPP

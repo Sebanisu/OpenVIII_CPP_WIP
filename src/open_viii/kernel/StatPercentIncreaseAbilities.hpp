@@ -39,8 +39,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(
-      const StatPercentIncreaseAbilities_impl &right) const noexcept = default;
+    operator<=>(const StatPercentIncreaseAbilities_impl &right) const noexcept
+    = default;
 };
 using StatPercentIncreaseAbilities
   = CommonKernel<StatPercentIncreaseAbilities_impl>;

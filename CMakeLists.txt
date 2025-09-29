@@ -33,6 +33,55 @@ set(DOCS "NO" CACHE STRING "Build documentation")
 if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND ${DOCS} STREQUAL "YES")
     add_subdirectory(raw_docs)
 endif ()
+
+find_package(Threads REQUIRED)
+##test app for trying to extract a single file from the FIFLFS archives.
+function(apply_common_operations target_name)
+    # Find required Threads package
+    find_package(Threads REQUIRED)
+
+    # Set target properties
+    set_target_properties(${PROJECT_NAME}_${target_name} PROPERTIES
+        LINKER_LANGUAGE CXX
+        OUTPUT_NAME ${target_name}
+    )
+
+     # Only link libraries if this is not VIIIPaths
+    if(NOT target_name STREQUAL "VIIIPaths")
+        target_link_libraries(${PROJECT_NAME}_${target_name}
+            PUBLIC ${PROJECT_NAME}_VIIIArchive
+            PUBLIC ${PROJECT_NAME}_VIIIPaths
+            PUBLIC ${PROJECT_NAME}_project_warnings
+            PUBLIC ToolsLibrary_tl
+            PUBLIC Threads::Threads
+            PRIVATE ${PROJECT_NAME}_VIIIGraphics
+        )
+    endif()
+
+    target_compile_features(${PROJECT_NAME}_${target_name}
+        PUBLIC cxx_std_23
+        PUBLIC cxx_std_20
+    )
+
+    if(MSVC)
+        target_compile_definitions(${PROJECT_NAME}_${target_name}
+            PUBLIC _CRT_SECURE_NO_WARNINGS
+        )
+        target_compile_options(${PROJECT_NAME}_${target_name} 
+            PUBLIC "/bigobj"
+            PUBLIC "/Qpar"
+            PUBLIC "/MP"
+        )
+        target_link_options(${PROJECT_NAME}_${target_name} PUBLIC "/PROFILE")
+
+        set_property(TARGET ${PROJECT_NAME}_${target_name}
+            PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+        )
+    endif()
+
+    SET_TARGET_PATHS(${PROJECT_NAME}_${target_name})
+endfunction()
+
 # include source folders
 add_subdirectory(src)
 if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME))

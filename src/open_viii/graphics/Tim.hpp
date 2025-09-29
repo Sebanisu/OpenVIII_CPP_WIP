@@ -286,7 +286,7 @@ public:
     }
     return tools::read_vals<Color16ABGR>(
       buffer,
-      m_tim_clut_header.data_size()/2U);
+      m_tim_clut_header.data_size() / 2U);
   }
 
   /**
@@ -332,12 +332,12 @@ public:
     case 16: {
       return tools::read_vals<Color16ABGR>(
         buffer,
-        m_tim_image_header.data_size()/2);
+        m_tim_image_header.data_size() / 2);
     }
     case 24: {
       return tools::read_vals<Color24BGR>(
         buffer,
-        m_tim_image_header.data_size()/3);
+        m_tim_image_header.data_size() / 3);
     }
     }
     assert(false);
@@ -475,7 +475,8 @@ public:
    * @brief Check if the TIM object is valid.
    * @return True if the TIM object is valid, false otherwise.
    */
-  [[nodiscard]] explicit operator bool() const
+  [[nodiscard]] explicit
+    operator bool() const
   {
     return check();
   }
@@ -582,7 +583,7 @@ public:
   {
     if (clut_rows() == 0) {
       const auto &data = get_colors<Color16<ColorLayoutT::ABGR>>();
-      //Ppm::save(data, width(), height(), filename);
+      // Ppm::save(data, width(), height(), filename);
       Png::save(
         data,
         width(),
@@ -605,7 +606,7 @@ public:
                             + path.extension().string();
         const auto &data
           = get_colors<Color16<ColorLayoutT::ABGR>>(i, clut_dims);
-        //Ppm::save(data, width(), height(), out_path);
+        // Ppm::save(data, width(), height(), out_path);
         Png::save(data, width(), height(), out_path, out_path);
         if (clut >= 0)
           return;
@@ -615,11 +616,11 @@ public:
       auto       path     = std::filesystem::path(filename);
       const auto out_path = (path.parent_path() / path.stem()).string()
                           + "_clut" + path.extension().string();
-//      Ppm::save(
-//        m_tim_clut_data,
-//        m_tim_clut_header.rectangle().width(),
-//        m_tim_clut_header.rectangle().height(),
-//        out_path);
+      //      Ppm::save(
+      //        m_tim_clut_data,
+      //        m_tim_clut_header.rectangle().width(),
+      //        m_tim_clut_header.rectangle().height(),
+      //        out_path);
       Png::save(
         m_tim_clut_data,
         m_tim_clut_header.rectangle().width(),

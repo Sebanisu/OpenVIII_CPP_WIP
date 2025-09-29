@@ -30,8 +30,10 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const MiscText_impl &right) const noexcept = default;
-  constexpr explicit operator EncodedStringOffset() const noexcept
+    operator<=>(const MiscText_impl &right) const noexcept
+    = default;
+  constexpr explicit
+    operator EncodedStringOffset() const noexcept
   {// todo keep?
     return m_name_offset;
   }

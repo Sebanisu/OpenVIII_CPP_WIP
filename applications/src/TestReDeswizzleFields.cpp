@@ -12,18 +12,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "TestReDeswizzleFields.hpp"
 #include "open_viii/archive/Archives.hpp"
-#include "open_viii/graphics/Ppm.hpp"
 #include "open_viii/graphics/background/Map.hpp"
 #include "open_viii/graphics/background/SwizzleTree.hpp"
+#include "open_viii/graphics/Ppm.hpp"
 #include "open_viii/paths/Paths.hpp"
 static void
-  save_and_clear(std::vector<open_viii::graphics::Color24<
-                   open_viii::graphics::ColorLayoutT::RGB>> &out,
-                 const std::unsigned_integral auto &         width,
-                 const std::unsigned_integral auto &         height,
-                 const std::unsigned_integral auto &         tex_id,
-                 const std::unsigned_integral auto &         bpp,
-                 const std::string &                         output_prefix)
+  save_and_clear(
+    std::vector<
+      open_viii::graphics::Color24<open_viii::graphics::ColorLayoutT::RGB>>
+                                      &out,
+    const std::unsigned_integral auto &width,
+    const std::unsigned_integral auto &height,
+    const std::unsigned_integral auto &tex_id,
+    const std::unsigned_integral auto &bpp,
+    const std::string                 &output_prefix)
 {
   std::string output_name
     = output_prefix + "_" + std::to_string(bpp) + "_" + std::to_string(tex_id);
@@ -38,10 +40,10 @@ int
 {
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
-    static constexpr auto coo = open_viii::LangT::en;
-    const auto            archives
-      = open_viii::archive::Archives(path,
-                                     open_viii::LangCommon::to_string<coo>());
+    static constexpr auto coo      = open_viii::LangT::en;
+    const auto            archives = open_viii::archive::Archives(
+      path,
+      open_viii::LangCommon::to_string<coo>());
     if (!static_cast<bool>(archives)) {
       std::cerr << "Failed to load path: " << path.string() << '\n';
       return;

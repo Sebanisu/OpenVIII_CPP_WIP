@@ -130,11 +130,12 @@ static void
  */
 template<typename lambdaT>
   requires(std::invocable<lambdaT, std::filesystem::path>)
-[[maybe_unused]] static void execute_on_directory(
-  const std::filesystem::path            &dir,
-  std::initializer_list<std::string_view> filenames,
-  std::initializer_list<std::string_view> extensions,
-  const lambdaT                          &lambda)
+[[maybe_unused]] static void
+  execute_on_directory(
+    const std::filesystem::path            &dir,
+    std::initializer_list<std::string_view> filenames,
+    std::initializer_list<std::string_view> extensions,
+    const lambdaT                          &lambda)
 {
   execute_on_directory(
     dir,
@@ -166,10 +167,11 @@ template<typename lambdaT>
  */
 template<typename lambdaT>
   requires(std::invocable<lambdaT, std::filesystem::path>)
-[[maybe_unused]] static void execute_on_directories(
-  const std::filesystem::path            &dir,
-  std::initializer_list<std::string_view> path_contains,
-  const lambdaT                          &lambda)
+[[maybe_unused]] static void
+  execute_on_directories(
+    const std::filesystem::path            &dir,
+    std::initializer_list<std::string_view> path_contains,
+    const lambdaT                          &lambda)
 {
   execute_on_directory(
     dir,

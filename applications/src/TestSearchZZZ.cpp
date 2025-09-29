@@ -31,15 +31,19 @@ int
     for (const auto &zzz_file_pair :
          open_viii::archive::ZZZ::get_files_from_path(path)) {
       std::cout << "Searching: " << path << "\n";
-      zzz_file_pair.second.execute_on({},[&needle](const open_viii::archive::FileData& data_item){
-        const auto path_string = data_item.get_path_string();
-        if (open_viii::tools::i_ends_with_any(path_string, extensions)
-            != 0U) {
-          std::cout << "  nested: {" << path_string << "}\n";
-        } else if (open_viii::tools::i_find(path_string, needle)) {
-          std::cout << "  {" << path_string << "}\n";
-        }
-      },{});
+      zzz_file_pair.second.execute_on(
+        {},
+        [&needle](const open_viii::archive::FileData &data_item) {
+          const auto path_string = data_item.get_path_string();
+          if (
+            open_viii::tools::i_ends_with_any(path_string, extensions) != 0U) {
+            std::cout << "  nested: {" << path_string << "}\n";
+          }
+          else if (open_viii::tools::i_find(path_string, needle)) {
+            std::cout << "  {" << path_string << "}\n";
+          }
+        },
+        {});
     }
   });
   return 0;

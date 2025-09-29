@@ -139,7 +139,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const Misc_impl &right) const noexcept = default;
+    operator<=>(const Misc_impl &right) const noexcept
+    = default;
 };
 using Misc = CommonKernel<Misc_impl>;
 static_assert(Misc::EXPECTED_SIZE == sizeof(Misc));

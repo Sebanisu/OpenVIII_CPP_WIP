@@ -129,7 +129,8 @@ public:
     pupu_writer.add_uint<BIT16>(m_z);
     return pupu_writer.get_id();
   }
-  [[nodiscard]] explicit operator std::uint64_t() const
+  [[nodiscard]] explicit
+    operator std::uint64_t() const
   {
     return generate();
   }

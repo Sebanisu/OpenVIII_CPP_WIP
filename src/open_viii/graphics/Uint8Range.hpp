@@ -46,7 +46,7 @@ public:
     reference
       operator*() const
     {
-      const auto[first,second] = *m_inner_it;
+      const auto [first, second] = *m_inner_it;
       return m_first ? first : second;
     }
 
@@ -104,38 +104,44 @@ public:
       return !(*this == other);
     }
 
-    iterator & operator+=(difference_type n)
+    iterator &
+      operator+=(difference_type n)
     {
-      auto pos = m_first ? 0 : 1;
+      auto pos   = m_first ? 0 : 1;
       auto steps = (pos + n) / 2;
       m_inner_it += steps;
       m_first = ((pos + n) % 2 == 0);
       return *this;
     }
 
-    iterator operator+(difference_type n) const
+    iterator
+      operator+(difference_type n) const
     {
       iterator temp = *this;
       return temp += n;
     }
 
-    iterator friend operator+(difference_type n, iterator temp)
+    iterator friend
+      operator+(difference_type n, iterator temp)
     {
       return temp += n;
     }
 
-    iterator & operator-=(difference_type n)
+    iterator &
+      operator-=(difference_type n)
     {
       return *this += -n;
     }
 
-    iterator operator-(difference_type n) const
+    iterator
+      operator-(difference_type n) const
     {
       iterator temp = *this;
       return temp -= n;
     }
 
-    difference_type operator-(const iterator &other) const
+    difference_type
+      operator-(const iterator &other) const
     {
       auto distance = std::distance(other.m_inner_it, m_inner_it) * 2;
       if (!other.m_first) {
@@ -147,27 +153,33 @@ public:
       return distance;
     }
 
-    reference operator[](difference_type n) const
+    reference
+      operator[](difference_type n) const
     {
       return *(*this + n);
     }
 
-    bool operator<(const iterator &other) const
+    bool
+      operator<(const iterator &other) const
     {
-      return m_inner_it < other.m_inner_it || (m_inner_it == other.m_inner_it && !m_first && other.m_first);
+      return m_inner_it < other.m_inner_it
+          || (m_inner_it == other.m_inner_it && !m_first && other.m_first);
     }
 
-    bool operator>(const iterator &other) const
+    bool
+      operator>(const iterator &other) const
     {
       return other < *this;
     }
 
-    bool operator<=(const iterator &other) const
+    bool
+      operator<=(const iterator &other) const
     {
       return !(other < *this);
     }
 
-    bool operator>=(const iterator &other) const
+    bool
+      operator>=(const iterator &other) const
     {
       return !(*this < other);
     }
@@ -208,8 +220,6 @@ public:
   {
     return iterator(std::ranges::cend(m_input_range), false);
   }
-
-
 };
 static_assert(
   std::random_access_iterator<Uint8Range<std::vector<Bit4Values>>::iterator>);

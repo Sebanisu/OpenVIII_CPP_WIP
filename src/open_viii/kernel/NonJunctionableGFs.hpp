@@ -121,7 +121,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const NonJunctionableGFs_impl &right) const noexcept = default;
+    operator<=>(const NonJunctionableGFs_impl &right) const noexcept
+    = default;
 };
 using NonJunctionableGFs = CommonKernel<NonJunctionableGFs_impl>;
 static_assert(sizeof(NonJunctionableGFs) == NonJunctionableGFs::EXPECTED_SIZE);

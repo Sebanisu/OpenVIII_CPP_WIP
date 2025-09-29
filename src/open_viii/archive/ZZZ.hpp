@@ -176,7 +176,7 @@ public:
       operator++(int)
     {
       iterator tmp(*this);
-               operator++();
+      operator++();
       return tmp;
     }
 
@@ -191,7 +191,7 @@ public:
       operator--(int)
     {
       iterator tmp(*this);
-               operator--();
+      operator--();
       return tmp;
     }
 
@@ -587,14 +587,15 @@ public:
   void
     execute_with_nested(
       [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
-      [[maybe_unused]] lambdaT                                      && = {},
+      [[maybe_unused]] lambdaT &&                                      = {},
       [[maybe_unused]] const std::initializer_list<std::string_view> & = {},
       FilterT && = {}) const
   {
     // only nested archives are handled in the other functions. maybe delete
     // this.
   }
-  explicit operator bool() const
+  explicit
+    operator bool() const
   {
     return !std::ranges::empty(m_paths);
   }

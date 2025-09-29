@@ -18,11 +18,12 @@ static void
     static_cast<unsigned short>(0U));// msvc says cannot be char.
   size_t            i{ 0 };
   static const auto run_once = [&callback](const size_t &size) {
-    return callback(make_container<std::vector<char>>(
-      [] {
-        return static_cast<char>(dis(gen));
-      },
-      size));
+    return callback(
+      make_container<std::vector<char>>(
+        [] {
+          return static_cast<char>(dis(gen));
+        },
+        size));
   };
   while (!stop && run_once(++i)) {}// inplace lambda
 }

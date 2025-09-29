@@ -71,10 +71,11 @@ inline constexpr void
   clean_buffer(std::string &&in_buffer)
 {
   return tl::string::replace_slashes(
-    tl::string::remove_carriage_return(tl::string::erase_string_from_string(
-      std::move(in_buffer),
-      std::string_view(R"(c:\)"),
-      std::string_view(R"(C:\)"))));
+    tl::string::remove_carriage_return(
+      tl::string::erase_string_from_string(
+        std::move(in_buffer),
+        std::string_view(R"(c:\)"),
+        std::string_view(R"(C:\)"))));
 }
 
 /**

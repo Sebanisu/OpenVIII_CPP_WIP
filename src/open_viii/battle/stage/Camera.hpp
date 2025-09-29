@@ -10,8 +10,10 @@
 namespace open_viii::battle::stage {
 
 /**
- * @brief Represents the camera object in the battle stage, containing the camera header, settings, and animation collection.
- * @see https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Camera/Camera.cs
+ * @brief Represents the camera object in the battle stage, containing the
+ * camera header, settings, and animation collection.
+ * @see
+ * https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Camera/Camera.cs
  * @see https://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Camera_data
  */
 struct Camera
@@ -23,7 +25,8 @@ private:
   CameraHeader              m_camera_header{};
 
   /**
-   * @brief The camera settings containing various flags and variables used in the stage.
+   * @brief The camera settings containing various flags and variables used in
+   * the stage.
    */
   CameraSettings            m_camera_settings{};
 
@@ -33,7 +36,6 @@ private:
   CameraAnimationCollection m_camera_animation_collection{};
 
 public:
-
   /**
    * @brief Default constructor for Camera.
    */

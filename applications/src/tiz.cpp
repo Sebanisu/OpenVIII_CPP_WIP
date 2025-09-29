@@ -72,9 +72,8 @@ int
 
   const auto uncompressed_bytes = LZSS::decompress(tiz_span);
 
-  const auto tim = Tim(uncompressed_bytes);
-  if(!tim.check())
-  {
+  const auto tim                = Tim(uncompressed_bytes);
+  if (!tim.check()) {
     std::cerr << "This not a valid tim file\n";
     return 1;
   }

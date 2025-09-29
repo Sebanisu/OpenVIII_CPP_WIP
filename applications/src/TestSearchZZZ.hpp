@@ -17,5 +17,6 @@
 #include <filesystem>
 #include <map>
 #include <string>
-int main();
+int
+  main();
 #endif// VIIIARCHIVE_TESTSEARCHZZZ_HPP

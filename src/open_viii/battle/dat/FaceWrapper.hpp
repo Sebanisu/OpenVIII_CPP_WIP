@@ -25,5 +25,5 @@ struct FaceWrapper
 private:
   std::uint16_t raw_value = {};
 };
-}
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_FACEWRAPPER_HPP

@@ -16,7 +16,8 @@ namespace open_viii::battle::dat {
 /**
  * @brief Bone struct for Skeleton
  * @see https://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT#Bone_struct
- * @see https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/Bone.cs
+ * @see
+ * https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/Bone.cs
  */
 struct Bone
 {
@@ -39,7 +40,8 @@ static_assert(sizeof(Bone) == Bone::SIZE);
 /**
  * @brief Header struct for Skeleton
  * @see https://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT#Section_1:_Skeleton
- * @see https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/Skeleton.cs
+ * @see
+ * https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/Skeleton.cs
  */
 struct SkeletonHeader
 {
@@ -60,7 +62,8 @@ static_assert(sizeof(SkeletonHeader) == SkeletonHeader::SIZE);
 /**
  * @brief Skeleton struct containing header and bone data
  * @see https://wiki.ffrtt.ru/index.php/FF8/FileFormat_DAT#Section_1:_Skeleton
- * @see https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/Skeleton.cs
+ * @see
+ * https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/Skeleton.cs
  */
 struct Section1_Skeleton
 {
@@ -82,7 +85,7 @@ struct Section1_Skeleton
     [[maybe_unused]] std::span<const char> span)
   {
     m_header = tools::read_val<SkeletonHeader>(span);
-    m_bones = tools::read_vals<Bone>(span,m_header.numBones);
+    m_bones  = tools::read_vals<Bone>(span, m_header.numBones);
   }
 };
 

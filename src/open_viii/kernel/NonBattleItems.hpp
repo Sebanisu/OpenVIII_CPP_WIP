@@ -30,7 +30,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const NonBattleItems_impl &right) const noexcept = default;
+    operator<=>(const NonBattleItems_impl &right) const noexcept
+    = default;
 };
 using NonBattleItems = CommonKernel<NonBattleItems_impl>;
 static_assert(NonBattleItems::EXPECTED_SIZE == sizeof(NonBattleItems));

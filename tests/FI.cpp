@@ -10,16 +10,18 @@ int
   using namespace open_viii::archive;
   using namespace open_viii;
   [[maybe_unused]] suite tests = [] {
-    static constexpr auto check_fi =
-      [](const std::uint32_t &              size,
-         const std::uint32_t &              offset,
-         const open_viii::CompressionTypeT &compression_type) {
-        const FI fi{ size, offset, compression_type };
-        expect(eq(fi.uncompressed_size(), size));
-        expect(eq(fi.offset(), offset));
-        expect(eq(static_cast<std::uint32_t>(fi.compression_type()),
-                  static_cast<std::uint32_t>(compression_type)));
-      };
+    static constexpr auto check_fi
+      = [](
+          const std::uint32_t               &size,
+          const std::uint32_t               &offset,
+          const open_viii::CompressionTypeT &compression_type) {
+          const FI fi{ size, offset, compression_type };
+          expect(eq(fi.uncompressed_size(), size));
+          expect(eq(fi.offset(), offset));
+          expect(eq(
+            static_cast<std::uint32_t>(fi.compression_type()),
+            static_cast<std::uint32_t>(compression_type)));
+        };
     static constexpr auto check_count = [](const std::size_t &expected_count) {
       expect(eq(FI::get_count(expected_count * FI::SIZE), expected_count));
     };

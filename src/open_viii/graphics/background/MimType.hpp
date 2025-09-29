@@ -40,7 +40,7 @@ public:
   // really only useful forcing a type.
   explicit constexpr MimType(std::integral auto type)
     : MimType(
-      TEXTURE_TYPES().front().with_type(static_cast<std::uint8_t>(type)))
+        TEXTURE_TYPES().front().with_type(static_cast<std::uint8_t>(type)))
   {}
   constexpr MimType() = default;
   constexpr MimType(
@@ -58,13 +58,13 @@ public:
     return m_type;
   }
   [[nodiscard]] constexpr MimType
-    with_type(std::uint8_t new_type) &&noexcept
+    with_type(std::uint8_t new_type) && noexcept
   {
     m_type = new_type;
     return *this;
   }
   [[nodiscard]] constexpr MimType
-    with_type(std::uint8_t new_type) const &noexcept
+    with_type(std::uint8_t new_type) const & noexcept
   {
     return MimType(*this).with_type(new_type);
   }
@@ -108,7 +108,8 @@ public:
     return OUT_HEIGHT;
   }
   [[nodiscard]] constexpr auto
-    canvas(unsigned int bpp = DEFAULT_BPP, std::uint8_t scale = 1) const noexcept
+    canvas(unsigned int bpp = DEFAULT_BPP, std::uint8_t scale = 1)
+      const noexcept
   {
     return Rectangle<std::uint32_t>(0, 0, width(bpp) * scale, height() * scale);
   }

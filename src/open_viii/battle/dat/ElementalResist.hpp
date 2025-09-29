@@ -148,5 +148,5 @@ struct ElementalResist
     }
   }
 };
-}// namespace open_viii::battle
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_ELEMENTALRESIST_HPP

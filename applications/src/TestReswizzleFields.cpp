@@ -59,22 +59,23 @@ int
         std::filesystem::current_path(),
         {},
         [&field, &threads](const std::filesystem::path &directory_path) {
-          threads.emplace_back(std::async(
-            std::launch::async,
-            [](const auto in_field, const auto in_directory_path) {
-              const auto reswizzle_tree
-                = open_viii::graphics::background::SwizzleTree{
-                    in_field,
-                    in_directory_path
-                  };
-              if (!static_cast<bool>(reswizzle_tree)) {
-                return;
-              }
-              std::cout << in_directory_path << std::endl;
-              reswizzle_tree.reswizzle();
-            },
-            field,
-            directory_path));
+          threads.emplace_back(
+            std::async(
+              std::launch::async,
+              [](const auto in_field, const auto in_directory_path) {
+                const auto reswizzle_tree
+                  = open_viii::graphics::background::SwizzleTree{
+                      in_field,
+                      in_directory_path
+                    };
+                if (!static_cast<bool>(reswizzle_tree)) {
+                  return;
+                }
+                std::cout << in_directory_path << std::endl;
+                reswizzle_tree.reswizzle();
+              },
+              field,
+              directory_path));
           //          while (threads.size() > 64) {
           //            threads.front().join();
           //            threads.erase(threads.begin());

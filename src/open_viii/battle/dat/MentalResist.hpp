@@ -153,5 +153,5 @@ struct MentalResist
     }
   }
 };
-}// namespace open_viii::battle
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_MENTALRESIST_HPP

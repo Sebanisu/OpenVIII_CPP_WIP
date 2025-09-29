@@ -45,7 +45,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const impl_Tile2 &) const = default;
+    operator<=>(const impl_Tile2 &) const
+    = default;
 };
 using Tile2 = TileCommon<impl_Tile2>;
 static_assert(sizeof(Tile2) == Tile2::EXPECTED_SIZE);

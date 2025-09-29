@@ -65,8 +65,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(
-      const IrvineShotLimitBreak_impl &right) const noexcept = default;
+    operator<=>(const IrvineShotLimitBreak_impl &right) const noexcept
+    = default;
 };
 using IrvineShotLimitBreak = CommonKernel<IrvineShotLimitBreak_impl>;
 static_assert(

@@ -22,7 +22,8 @@ private:
 
 public:
   constexpr auto
-    operator<=>(const CameraChange &right) const noexcept = default;
+    operator<=>(const CameraChange &right) const noexcept
+    = default;
   [[nodiscard]] constexpr bool
     checked() const noexcept
   {

@@ -52,8 +52,9 @@ template<ColorLayoutT test, ColorLayoutT... flag>
 consteval bool
   has_one_flag()
 {
-  return std::popcount(static_cast<std::underlying_type_t<ColorLayoutT>>(
-           test & (flag | ...)))
+  return std::popcount(
+           static_cast<std::underlying_type_t<ColorLayoutT>>(
+             test & (flag | ...)))
       == 1;
 }
 static_assert(has_one_flag<ColorLayoutT::RGB, ColorLayoutT::RGB>());

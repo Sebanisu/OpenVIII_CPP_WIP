@@ -14,17 +14,24 @@ namespace open_viii::battle::dat {
  */
 struct Animation
 {
-  std::uint8_t frames_count{};
+  std::uint8_t              frames_count{};
   /**
-   * @brief Animation Frame buffer wip need understand the structure of the data.
-   * @see https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/AnimationFrame.cs
+   * @brief Animation Frame buffer wip need understand the structure of the
+   * data.
+   * @see
+   * https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Dat/AnimationFrame.cs
    */
   std::vector<std::uint8_t> buffer{};
   Animation() = default;
   Animation(std::span<const char> span)
-  : frames_count(tools::read_val<std::uint8_t>(span))
+    : frames_count(tools::read_val<std::uint8_t>(span))
   {
-    std::ranges::transform(span,std::back_inserter(buffer),[](const char val){return static_cast<std::uint8_t>(val);});
+    std::ranges::transform(
+      span,
+      std::back_inserter(buffer),
+      [](const char val) {
+        return static_cast<std::uint8_t>(val);
+      });
   }
 };
 /**
@@ -67,8 +74,9 @@ struct Section3_Model_Animation
   {
     auto distances = offsets_to_distances(m_section_header.m_offsets);
     m_animations.reserve(m_section_header.m_count);
-    distances.push_back(static_cast<std::uint32_t>(
-      span.size() - m_section_header.m_offsets.back()));
+    distances.push_back(
+      static_cast<std::uint32_t>(
+        span.size() - m_section_header.m_offsets.back()));
     std::ranges::transform(
       m_section_header.m_offsets,
       distances,

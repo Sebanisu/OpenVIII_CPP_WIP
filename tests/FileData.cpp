@@ -158,12 +158,12 @@ int
             658U,
             252U,
             true);
-//          expect(throws([] {
-//            FileData(FI(658U, 252U, CompressionTypeT::lzss));
-//          }));
-//          expect(throws([] {
-//            FileData(FI(658U, 252U, CompressionTypeT::lz4));
-//          }));
+          //          expect(throws([] {
+          //            FileData(FI(658U, 252U, CompressionTypeT::lzss));
+          //          }));
+          //          expect(throws([] {
+          //            FileData(FI(658U, 252U, CompressionTypeT::lz4));
+          //          }));
         };
       };
       given("raw_buffer") = [] {

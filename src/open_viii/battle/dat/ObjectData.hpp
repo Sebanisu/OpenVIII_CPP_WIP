@@ -35,8 +35,9 @@ struct ObjectData
       vertice_datas.emplace_back(span);
     }
     if ((std::distance(file_start, span.data()) % 4) != 0) {
-      span = span.subspan(static_cast<std::span<const char>::size_type>(
-        4 - (std::distance(file_start, span.data()) % 4)));
+      span = span.subspan(
+        static_cast<std::span<const char>::size_type>(
+          4 - (std::distance(file_start, span.data()) % 4)));
     }
     triangle_count = tools::read_val<std::uint16_t>(span);
 

@@ -46,8 +46,9 @@ private:
   std::ofstream ofs_;
 };
 /**
- * Verify that the iterator type for FIOutIterator meets the requirements of an output iterator.
+ * Verify that the iterator type for FIOutIterator meets the requirements of an
+ * output iterator.
  */
 static_assert(std::output_iterator<FIOutIterator, FI>);
-}
+}// namespace open_viii::archive
 #endif// OPENVIII_CPP_WIP_FIOUTITERATOR_HPP

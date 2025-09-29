@@ -68,7 +68,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const Weapons_impl &right) const noexcept = default;
+    operator<=>(const Weapons_impl &right) const noexcept
+    = default;
 };
 using Weapons = CommonKernel<Weapons_impl>;
 static_assert(Weapons::EXPECTED_SIZE == sizeof(Weapons));

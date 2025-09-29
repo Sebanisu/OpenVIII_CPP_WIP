@@ -62,8 +62,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(
-      const RinoaLimitBreakPart2_impl &right) const noexcept = default;
+    operator<=>(const RinoaLimitBreakPart2_impl &right) const noexcept
+    = default;
 };
 using RinoaLimitBreakPart2 = CommonKernel<RinoaLimitBreakPart2_impl>;
 static_assert(

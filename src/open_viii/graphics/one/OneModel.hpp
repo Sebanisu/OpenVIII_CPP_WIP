@@ -20,7 +20,7 @@ struct OneModel
     buffer = buffer.subspan(sizeof(temp));
     return temp;
   }
-  //todo check if this function can be void.
+  // todo check if this function can be void.
   std::vector<std::uint32_t>
     get_tim_offsets(std::span<const char> &buffer) const
   {

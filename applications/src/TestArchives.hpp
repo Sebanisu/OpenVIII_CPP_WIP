@@ -12,5 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TESTARCHIVES_HPP
 #define VIIIARCHIVE_TESTARCHIVES_HPP
-int main();
+int
+  main();
 #endif// VIIIARCHIVE_TESTARCHIVES_HPP

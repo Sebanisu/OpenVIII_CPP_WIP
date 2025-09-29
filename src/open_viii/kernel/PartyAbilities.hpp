@@ -38,7 +38,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const PartyAbilities_impl &right) const noexcept = default;
+    operator<=>(const PartyAbilities_impl &right) const noexcept
+    = default;
 };
 using PartyAbilities = CommonKernel<PartyAbilities_impl>;
 static_assert(sizeof(PartyAbilities) == PartyAbilities::EXPECTED_SIZE);

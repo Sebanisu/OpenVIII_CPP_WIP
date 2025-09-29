@@ -83,7 +83,8 @@ public:
    *
    * @return The 8-bit unsigned integer with the packed 4-bit values.
    */
-  constexpr explicit operator std::uint8_t() const noexcept
+  constexpr explicit
+    operator std::uint8_t() const noexcept
   {
     return static_cast<std::uint8_t>(
       static_cast<std::uint8_t>(
@@ -115,7 +116,8 @@ public:
   }
 
   // Implicit conversion to std::uint8_t
-  [[nodiscard]] constexpr operator std::uint8_t() const noexcept
+  [[nodiscard]] constexpr
+    operator std::uint8_t() const noexcept
   {
     if constexpr (second) {
       return m_raw.get().second;

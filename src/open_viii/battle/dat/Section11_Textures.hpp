@@ -29,5 +29,5 @@ struct Section11_Textures
     }
   }
 };
-}// namespace open_viii::battle
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_SECTION11_TEXTURES_HPP

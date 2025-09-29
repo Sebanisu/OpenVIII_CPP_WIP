@@ -111,8 +111,8 @@ public:
    */
   FIFLFSWriter(std::filesystem::path filePath)
     : m_fs(
-      filePath.replace_extension(FS::EXT),
-      std::ios::binary | std::ios::out | std::ios::trunc),
+        filePath.replace_extension(FS::EXT),
+        std::ios::binary | std::ios::out | std::ios::trunc),
       m_fi(filePath.replace_extension(FI::EXT)),
       m_fl(
         filePath.replace_extension(fl::EXT),

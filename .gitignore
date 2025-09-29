@@ -53,3 +53,9 @@ docs/.doctrees/environment.pickle
 *.tcl
 *CTestTestfile.cmake
 CMakeCache.txt
+/.cmake
+*.tlog
+*.obj
+*.recipe
+/vcpkg_installed
+vcpkg-manifest-install.log

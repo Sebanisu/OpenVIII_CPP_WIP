@@ -15,9 +15,8 @@
 #include "open_viii/tools/array_wrapper.hpp"
 namespace open_viii::kernel {
 template<typename T>
-requires(
-  std::unsigned_integral<
-    T> || std::ranges::contiguous_range<T>) struct StatGroup
+  requires(std::unsigned_integral<T> || std::ranges::contiguous_range<T>)
+struct StatGroup
 {
 public:
   static constexpr auto STAT_COUNT = 9U;
@@ -31,7 +30,8 @@ public:
   static constexpr auto HIT{ 7U };
   static constexpr auto LUCK{ 8U };
   constexpr auto
-    operator<=>(const StatGroup<T> &right) const noexcept = default;
+    operator<=>(const StatGroup<T> &right) const noexcept
+    = default;
   [[maybe_unused]] [[nodiscard]] constexpr T
     hp() const noexcept
   {

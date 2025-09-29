@@ -89,7 +89,7 @@ public:
 private:
   std::string_view m_map_name;///< Name of the map to fetch
   std::reference_wrapper<const FIFLFS<true>>
-    m_fiflfs_true;            ///< Reference to the FIFLFS<true> instance
+    m_fiflfs_true;///< Reference to the FIFLFS<true> instance
 };
 /**
  * @class FIFLFSArchiveIterator

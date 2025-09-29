@@ -30,16 +30,17 @@ private:
 public:
   constexpr Rectangle() = default;
   constexpr auto
-    operator<=>(const Rectangle<dimT> &right) const noexcept = default;
+    operator<=>(const Rectangle<dimT> &right) const noexcept
+    = default;
   constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw)
     : m_top_left(xy), m_width_height(hw)
   {}
   template<Number T>
-  requires(!std::is_same_v<T, dimT>) constexpr explicit Rectangle(
-    const Rectangle<T> &r)
+    requires(!std::is_same_v<T, dimT>)
+  constexpr explicit Rectangle(const Rectangle<T> &r)
     : Rectangle(
-      static_cast<Point<dimT>>(r.top_left()),
-      static_cast<Point<dimT>>(r.width_height()))
+        static_cast<Point<dimT>>(r.top_left()),
+        static_cast<Point<dimT>>(r.width_height()))
   {}
   constexpr Rectangle(
     const dimT &in_x,

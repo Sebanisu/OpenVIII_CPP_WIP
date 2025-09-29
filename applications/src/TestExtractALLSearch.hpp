@@ -12,5 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TESTEXTRACTALLSEARCH_HPP
 #define VIIIARCHIVE_TESTEXTRACTALLSEARCH_HPP
-int main();
+int
+  main();
 #endif// VIIIARCHIVE_TESTEXTRACTALLSEARCH_HPP

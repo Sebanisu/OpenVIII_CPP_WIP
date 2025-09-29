@@ -210,13 +210,15 @@ private:
 };
 
 /**
- * Verify that the iterator type for FIMemoryRange meets the requirements of a random access iterator.
+ * Verify that the iterator type for FIMemoryRange meets the requirements of a
+ * random access iterator.
  */
 static_assert(std::random_access_iterator<FIMemoryRange::iterator>);
 
 /**
- * Verify that the type for FIMemoryRange meets the requirements of a random access range.
+ * Verify that the type for FIMemoryRange meets the requirements of a random
+ * access range.
  */
 static_assert(std::ranges::random_access_range<FIMemoryRange>);
-}
+}// namespace open_viii::archive
 #endif// OPENVIII_CPP_WIP_FIMEMORYRANGE_HPP

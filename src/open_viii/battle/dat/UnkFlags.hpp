@@ -21,5 +21,5 @@ enum class UnkFlags : std::uint8_t
   Unk6 = 0x40,///< Unknown flag 6.
   Unk7 = 0x80,///< Unknown flag 7.
 };
-}// namespace open_viii::battle
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_UNKFLAGS_HPP

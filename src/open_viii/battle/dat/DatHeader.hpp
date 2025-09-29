@@ -39,8 +39,8 @@ struct DatHeader
       m_offsets(
         (buffer.size() > sizeof(std::uint32_t))
           ? (open_viii::tools::read_vals<std::uint32_t>(
-            buffer.subspan(sizeof(std::uint32_t)),
-            m_count))
+              buffer.subspan(sizeof(std::uint32_t)),
+              m_count))
           : std::vector<std::uint32_t>{})
   {
     // if count == 2 then only Section 7 and 8 exist.

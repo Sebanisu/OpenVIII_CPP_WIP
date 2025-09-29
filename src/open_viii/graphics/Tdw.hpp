@@ -179,7 +179,7 @@ inline std::ostream &
   operator<<(std::ostream &os, const Tdw &t)
 {
   os << t.size() << " char widths: ";
-  for (const auto & width : t.widths()) {
+  for (const auto &width : t.widths()) {
     os << +width << ", ";
   }
   return os << '\n' << t.tim();

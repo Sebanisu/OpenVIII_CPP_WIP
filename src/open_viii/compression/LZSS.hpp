@@ -13,8 +13,8 @@
 #ifndef VIIICOMPRESSION_LZSS_H
 #define VIIICOMPRESSION_LZSS_H
 #include <algorithm>
-#include <ranges>
 #include <array>
+#include <ranges>
 #include <vector>
 namespace open_viii::compression {
 struct LZSS
@@ -168,7 +168,7 @@ private:
           }
         }
       }
-      while (len > 0);     // until length of string to be processed is zero
+      while (len > 0);// until length of string to be processed is zero
       if (code_buf_ptr > 1)// Send remaining code.
       {
         //		for(i = 0; i < code_buf_ptr ; ++i)
@@ -228,9 +228,8 @@ private:
         }
         {
           std::uint32_t node_index = 1;
-          for (; node_index < NODE_SIZE;
-               ++node_index) {
-                              
+          for (; node_index < NODE_SIZE; ++node_index) {
+
             if (
               (cmp = +key[node_index]
                    - +(m_text_buf.at(std::size_t{ p } + node_index)))
@@ -340,30 +339,30 @@ public:
    */
   template<typename dstT = std::vector<char>>
   [[nodiscard]] static dstT
-      decompress(std::span<const char> src, size_t dst_size = 0)
+    decompress(std::span<const char> src, size_t dst_size = 0)
   {
-      // warning C6262: Function uses '16560' bytes of stack:  exceeds
-      // /analyze:stacksize '16384'.  Consider moving some data to heap. warning
-      // C6262: Function uses '16568' bytes of stack:  exceeds /analyze:stacksize
-      // '16384'.  Consider moving some data to heap.
-      dstT dst{};
-      if (src.empty())
-      {
-          return dst;
-      }
-      if (dst_size > 0) {
-          dst.reserve(dst_size);
-      }
-    auto       iterator  = src.begin();
-    auto       textBuf   = std::array<std::uint32_t, N_MINUS1 + F>();
+    // warning C6262: Function uses '16560' bytes of stack:  exceeds
+    // /analyze:stacksize '16384'.  Consider moving some data to heap. warning
+    // C6262: Function uses '16568' bytes of stack:  exceeds /analyze:stacksize
+    // '16384'.  Consider moving some data to heap.
+    dstT dst{};
+    if (src.empty()) {
+      return dst;
+    }
+    if (dst_size > 0) {
+      dst.reserve(dst_size);
+    }
+    auto       iterator = src.begin();
+    auto       textBuf  = std::array<std::uint32_t, N_MINUS1 + F>();
     // ring buffer of size N, with extra F-1 bytes to facilitate string
     // comparison
-    auto       r         = N - F;
-    auto       flags     = 0U;
-    const auto testAtEnd = [the_end_minus_1 = std::ranges::end(src)-1, &iterator](){
-      return iterator > the_end_minus_1;
-    };
-    const auto next = [&iterator](){
+    auto       r        = N - F;
+    auto       flags    = 0U;
+    const auto testAtEnd
+      = [the_end_minus_1 = std::ranges::end(src) - 1, &iterator]() {
+          return iterator > the_end_minus_1;
+        };
+    const auto next = [&iterator]() {
       return static_cast<std::uint8_t>(*iterator++);
     };
     while (!testAtEnd()) {
@@ -371,8 +370,7 @@ public:
         if (testAtEnd()) {
           break;
         }
-        flags = next()
-              | FLAGS_BITS;// uses higher byte cleverly to Count eight
+        flags = next() | FLAGS_BITS;// uses higher byte cleverly to Count eight
       }
       if ((flags & 1U) == 1) {// raw value
         if (testAtEnd()) {
@@ -399,7 +397,8 @@ public:
         // read from ring buffer
         // for (std::uint32_t k = 0; k <= count; ++k) {
         // for (auto k : std::ranges::iota_view(std::uint32_t{}, count + 1)) {
-        for (const auto k : std::ranges::iota_view(std::uint32_t{}, count + 1)) {
+        for (const auto k :
+             std::ranges::iota_view(std::uint32_t{}, count + 1)) {
           // get value
           std::uint32_t current = textBuf.at((offset + k) & N_MINUS1);
           // assign value

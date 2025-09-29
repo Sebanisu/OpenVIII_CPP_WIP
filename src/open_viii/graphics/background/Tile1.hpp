@@ -45,7 +45,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const impl_Tile1 &) const = default;
+    operator<=>(const impl_Tile1 &) const
+    = default;
 };
 using Tile1 = TileCommon<impl_Tile1>;
 static_assert(has_with_animation_state<Tile1>);

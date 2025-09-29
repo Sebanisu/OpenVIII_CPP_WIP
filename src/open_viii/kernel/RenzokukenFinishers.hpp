@@ -63,7 +63,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const RenzokukenFinishers_impl &right) const noexcept = default;
+    operator<=>(const RenzokukenFinishers_impl &right) const noexcept
+    = default;
 };
 using RenzokukenFinishers = CommonKernel<RenzokukenFinishers_impl>;
 static_assert(

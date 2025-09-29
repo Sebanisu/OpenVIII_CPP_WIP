@@ -66,8 +66,9 @@ public:
   explicit FileData(
     tl::read::input                   input,
     const std::unsigned_integral auto string_length)
-    : m_filename(tl::string::replace_slashes(
-      input.output<decltype(m_filename)>(std::string(string_length, '\0')))),
+    : m_filename(
+        tl::string::replace_slashes(input.output<decltype(m_filename)>(
+          std::string(string_length, '\0')))),
       m_offset(input.output<decltype(m_offset)>()),
       m_size(input.output<decltype(m_size)>())
   {}
@@ -84,9 +85,8 @@ public:
   template<FI_Like fiT>
     requires(!std::is_same_v<fiT, FileData>)
   constexpr explicit FileData(const fiT &fi)
-    : m_offset{ static_cast<decltype(m_offset)>(fi.offset()) }, m_size{
-        static_cast<decltype(m_size)>(fi.uncompressed_size())
-      }
+    : m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
+      m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
   {
     if (fi.compression_type() != CompressionTypeT::none) {
       throw std::invalid_argument(
@@ -98,9 +98,8 @@ public:
     requires(!std::is_same_v<fiT, FileData>)
   explicit FileData(std::string filename, const fiT &fi)
     : m_filename(tl::string::replace_slashes(std::move(filename))),
-      m_offset{ static_cast<decltype(m_offset)>(fi.offset()) }, m_size{
-        static_cast<decltype(m_size)>(fi.uncompressed_size())
-      }
+      m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
+      m_size{ static_cast<decltype(m_size)>(fi.uncompressed_size()) }
   {
     if (fi.compression_type() != CompressionTypeT::none) {
       throw std::invalid_argument(

@@ -48,7 +48,8 @@ public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE = 2U;
   constexpr TexIdBuffer()                              = default;
   constexpr auto
-    operator<=>(const TexIdBuffer &) const = default;
+    operator<=>(const TexIdBuffer &) const
+    = default;
   [[nodiscard]] constexpr TexIdBuffer
     with_id(std::uint8_t in_id) const noexcept
   {
@@ -132,7 +133,8 @@ public:
     return static_cast<std::uint8_t>(
       static_cast<std::uint16_t>(m_data & UNK_MASK) >> UNK_SHIFT);
   }
-  [[nodiscard]] explicit operator std::uint16_t() const noexcept
+  [[nodiscard]] explicit
+    operator std::uint16_t() const noexcept
   {
     return m_data;
   }

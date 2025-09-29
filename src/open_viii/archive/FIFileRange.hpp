@@ -1,9 +1,9 @@
 /**
-* @file FIFileRange.hpp
-* @author pcvii
-* @date 3/21/2023
-* @brief A container class for reading FI records from a file.
-*/
+ * @file FIFileRange.hpp
+ * @author pcvii
+ * @date 3/21/2023
+ * @brief A container class for reading FI records from a file.
+ */
 #ifndef OPENVIII_CPP_WIP_FIFILERANGE_HPP
 #define OPENVIII_CPP_WIP_FIFILERANGE_HPP
 #include "FI.hpp"
@@ -14,10 +14,10 @@ namespace open_viii::archive {
  */
 class FIFileRange
 {
-public:/**
-* @class iterator
-* @brief Random access iterator for FI records.
-      */
+public: /**
+         * @class iterator
+         * @brief Random access iterator for FI records.
+         */
   class iterator
   {
   public:
@@ -212,12 +212,12 @@ public:/**
     : m_file_path(std::move(in_file_path))
   {}
 
-    /**
-     * @brief Construct FIFileRange with file path, begin, and size.
-     * @param in_file_path Input file path.
-     * @param in_begin Beginning offset of range.
-     * @param in_size Size of range.
-     */
+  /**
+   * @brief Construct FIFileRange with file path, begin, and size.
+   * @param in_file_path Input file path.
+   * @param in_begin Beginning offset of range.
+   * @param in_size Size of range.
+   */
   FIFileRange(
     std::filesystem::path     in_file_path,
     iterator::difference_type in_begin,

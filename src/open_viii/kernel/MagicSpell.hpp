@@ -65,7 +65,7 @@ enum class MagicSpell : std::uint8_t
   Percent     = 54,
   Catastrophe = 55,
   TheEnd      = 56,
-  //For drawing Guardian Forces.
+  // For drawing Guardian Forces.
   Quezacotl   = 64,
   Shiva       = 65,
   Ifrit       = 66,

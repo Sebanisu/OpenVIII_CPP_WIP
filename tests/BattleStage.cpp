@@ -12,16 +12,16 @@ void
   };
   for (std::uint8_t i = 0; const auto &clutid : clutids) {
     boost::ut::expect(
-    boost::ut::eq(
-      +static_cast<std::uint8_t>(open_viii::battle::stage::RawClut(clutid)),
-      i++));
+      boost::ut::eq(
+        +static_cast<std::uint8_t>(open_viii::battle::stage::RawClut(clutid)),
+        i++));
   }
 }
-int main()
+int
+  main()
 {
   using namespace boost::ut::literals;
-    "test_clut_ids"_test = []()
-    {
-        test_clut_ids();
-    };
+  "test_clut_ids"_test = []() {
+    test_clut_ids();
+  };
 }

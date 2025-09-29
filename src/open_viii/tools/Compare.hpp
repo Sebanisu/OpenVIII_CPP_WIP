@@ -4,15 +4,12 @@
 #ifndef VIIIARCHIVE_COMPARE_HPP
 #define VIIIARCHIVE_COMPARE_HPP
 #include "Convert.hpp"
+#include <array>
 #include <span>
 #include <string_view>
-#include <array>
 namespace open_viii::tools {
 template<typename t1, typename t2>
-concept can_upper = requires(t1 c1, t2 c2)
-{
-  upper(c1) == upper(c2);
-};
+concept can_upper = requires(t1 c1, t2 c2) { upper(c1) == upper(c2); };
 
 /**
  * Check if two characters are equal case insensitive

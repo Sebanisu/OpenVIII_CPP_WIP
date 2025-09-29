@@ -14,7 +14,8 @@ struct GeometryHeader1
 private:
   /**
    * @brief Constant Value compared to m_always_1_0_1 and m_always_1_0_2
-   * @note the hex in code is in big endian 0001. In the hex editor it shows in little endian 0100.
+   * @note the hex in code is in big endian 0001. In the hex editor it shows in
+   * little endian 0100.
    */
   static constexpr std::uint16_t CONSTANT_VALUE = 0x0001;
   std::uint16_t m_always_1_0_1{ CONSTANT_VALUE };///< @brief Always 0x0100.

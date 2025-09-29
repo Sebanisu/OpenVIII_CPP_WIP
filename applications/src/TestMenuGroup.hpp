@@ -12,5 +12,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_TESTMENUGROUP_HPP
 #define VIIIARCHIVE_TESTMENUGROUP_HPP
-int main();
+int
+  main();
 #endif// VIIIARCHIVE_TESTMENUGROUP_HPP

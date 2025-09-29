@@ -2,6 +2,7 @@
 // Created by pcvii on 11/17/2020.
 //
 #include "TestBattle.hpp"
+#include "BitReader.hpp"
 #include "DatToObj.hpp"
 #include "open_viii/archive/Archives.hpp"
 #include "open_viii/battle/dat/DatFile.hpp"
@@ -11,7 +12,6 @@
 #include "open_viii/graphics/Vertice.hpp"
 #include "open_viii/paths/Paths.hpp"
 #include "StageToObj.hpp"
-#include "BitReader.hpp"
 #include <array>
 #include <iostream>
 

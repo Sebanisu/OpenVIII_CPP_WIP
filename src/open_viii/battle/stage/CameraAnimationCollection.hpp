@@ -7,16 +7,19 @@
 #include "CameraAnimationSet.hpp"
 #include "open_viii/tools/Tools.hpp"
 namespace open_viii::battle::stage {
-  /**
- * @brief Main struct representing a collection of camera animations for a battle stage.
+/**
+ * @brief Main struct representing a collection of camera animations for a
+ * battle stage.
  * @details Each BattleCameraSet holds 8 animations.
- * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Camera_Animations_Collection
- * @see https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Camera/BattleCameraCollection.cs
-   */
+ * @see
+ * http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_X#Camera_Animations_Collection
+ * @see
+ * https://github.com/MaKiPL/OpenVIII-monogame/blob/master/Core/Battle/Camera/BattleCameraCollection.cs
+ */
 struct CameraAnimationCollection
 {
 private:
-    std::span<const char> backup_span{};
+  std::span<const char>                     backup_span{};
   /**
    * @brief The number of camera animation sets.
    */
@@ -43,21 +46,23 @@ private:
   std::vector<std::vector<CameraAnimation>> m_camera_animation{};
 
 public:
-
   /**
    * @brief Default constructor for CameraAnimationCollection.
    */
   constexpr CameraAnimationCollection() = default;
-
 
   /**
    * @brief Constructs a CameraAnimationCollection from a span of bytes.
    * @param span The span of bytes to parse the CameraAnimationCollection from.
    */
   explicit CameraAnimationCollection(std::span<const char> span)
-      :backup_span(span),m_set_count(tools::read_val<decltype(m_set_count)>(span)),
-      m_set_offsets( tools::read_vals<std::ranges::range_value_t<decltype(m_set_offsets)>>(span, m_set_count)),
-      m_camera_end ( tools::read_val<decltype(m_camera_end)>(span))
+    : backup_span(span),
+      m_set_count(tools::read_val<decltype(m_set_count)>(span)),
+      m_set_offsets(
+        tools::read_vals<std::ranges::range_value_t<decltype(m_set_offsets)>>(
+          span,
+          m_set_count)),
+      m_camera_end(tools::read_val<decltype(m_camera_end)>(span))
   {
     // TODO sets aren't grouped together will need to use offsets
     m_camera_animation_set.reserve(m_set_count);

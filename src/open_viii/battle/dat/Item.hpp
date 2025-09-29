@@ -7,12 +7,12 @@
 #include <cstdint>
 namespace open_viii::battle::dat {
 /**
-   * @brief Represents an item with an ID and quantity.
+ * @brief Represents an item with an ID and quantity.
  */
 struct Item
 {
   uint8_t ID;      ///< The unique identifier for the item.
   uint8_t quantity;///< The quantity of the item.
 };
-}
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_ITEM_HPP

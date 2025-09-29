@@ -308,15 +308,15 @@ AnimationFrame::AnimationFrame(
     return std::make_tuple(calc(), calc(), calc());
   };
 
-  float const x       = bit_reader.ReadPositionType() * 0.01F;
-  float const y       = bit_reader.ReadPositionType() * 0.01F;
-  float const z       = bit_reader.ReadPositionType() * 0.01F;
+  float const x = bit_reader.ReadPositionType() * 0.01F;
+  float const y = bit_reader.ReadPositionType() * 0.01F;
+  float const z = bit_reader.ReadPositionType() * 0.01F;
 
-  position      = previous == nullptr ? open_viii::graphics::Vertice<float>(x, y, z)
-                            : open_viii::graphics::Vertice<float>(
-                         previous->position.x() + x,
-                         previous->position.y() + y,
-                         previous->position.z() + z);
+  position = previous == nullptr ? open_viii::graphics::Vertice<float>(x, y, z)
+                                 : open_viii::graphics::Vertice<float>(
+                                     previous->position.x() + x,
+                                     previous->position.y() + y,
+                                     previous->position.z() + z);
 
   auto modeTest = static_cast<uint8_t>(bit_reader.ReadBits(1));
 

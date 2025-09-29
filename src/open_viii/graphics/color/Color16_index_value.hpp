@@ -4,8 +4,8 @@
 
 #ifndef OPENVIII_CPP_WIP_COLOR16_INDEX_VALUE_HPP
 #define OPENVIII_CPP_WIP_COLOR16_INDEX_VALUE_HPP
-#include <cassert>
 #include <bit>
+#include <cassert>
 namespace open_viii::graphics {
 struct Color16_index_value
 {
@@ -21,8 +21,8 @@ public:
     : CONVERT_SHIFT{ static_cast<std::uint16_t>(8 - std::popcount(maskT)) },
       GET_HIGH_BIT_SHIFT{ static_cast<std::uint16_t>(
         std::popcount(maskT) - CONVERT_SHIFT) },
-      mask{ maskT }, shift{ shiftT }, inverse_mask{ static_cast<std::uint16_t>(
-                                        ~maskT) }
+      mask{ maskT }, shift{ shiftT },
+      inverse_mask{ static_cast<std::uint16_t>(~maskT) }
   {
     assert(std::popcount(maskT) < 8 && shiftT < 16U);
   }

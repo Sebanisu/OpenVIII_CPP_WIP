@@ -51,8 +51,9 @@ public:
     std::cout << "\t\t\t Number of Quads: " << geometry_header2.quad_count()
               << std::endl;
 
-    triangles = tools::read_vals<Triangle>(span, geometry_header2.triangle_count());
-    quads     = tools::read_vals<Quad>(span, geometry_header2.quad_count());
+    triangles
+      = tools::read_vals<Triangle>(span, geometry_header2.triangle_count());
+    quads = tools::read_vals<Quad>(span, geometry_header2.quad_count());
     quads.reserve(geometry_header2.quad_count());
   }
   /**

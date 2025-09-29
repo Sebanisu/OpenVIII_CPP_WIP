@@ -16,9 +16,8 @@
 #include "CommonColor.hpp"
 namespace open_viii::graphics {
 template<ColorLayoutT layoutT>
-requires(
-  layoutT == ColorLayoutT::BGR
-  || layoutT == ColorLayoutT::RGB) struct Color24_impl : ColorByteArray<3U>
+  requires(layoutT == ColorLayoutT::BGR || layoutT == ColorLayoutT::RGB)
+struct Color24_impl : ColorByteArray<3U>
 {
 protected:
   constexpr static auto current_layout = layoutT;

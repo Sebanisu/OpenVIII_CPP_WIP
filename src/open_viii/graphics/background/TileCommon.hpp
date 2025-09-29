@@ -47,15 +47,16 @@ private:
   }
 
 public:
-using impl_type = tileT;
-  TileCommon() = default;
+  using impl_type = tileT;
+  TileCommon()    = default;
   explicit TileCommon(const std::vector<char> &buffer)
     : TileCommon(copy_tile(buffer))
   {}
   using tileT::EXPECTED_SIZE;
   using tileT::FORCE_TYPE_VALUES;
   auto
-    operator<=>(const this_type &) const = default;
+    operator<=>(const this_type &) const
+    = default;
   template<typename return_type = constants_type>
   [[nodiscard]] static constexpr return_type
     height() noexcept
@@ -365,28 +366,21 @@ using impl_type = tileT;
   }
 };
 template<typename T>
-concept has_with_layer_id = requires(std::decay_t<T> t)
-{
-  t = t.with_layer_id(1U);
-};
+concept has_with_layer_id
+  = requires(std::decay_t<T> t) { t = t.with_layer_id(1U); };
 
 template<typename T>
-concept has_with_blend_mode = requires(std::decay_t<T> t)
-{
+concept has_with_blend_mode = requires(std::decay_t<T> t) {
   t = t.with_blend_mode(
     open_viii::graphics::background::BlendModeT::quarter_add);
 };
 
 template<typename T>
-concept has_with_animation_id = requires(std::decay_t<T> t)
-{
-  t = t.with_animation_id(1U);
-};
+concept has_with_animation_id
+  = requires(std::decay_t<T> t) { t = t.with_animation_id(1U); };
 
 template<typename T>
-concept has_with_animation_state = requires(std::decay_t<T> t)
-{
-  t = t.with_animation_state(1U);
-};
+concept has_with_animation_state
+  = requires(std::decay_t<T> t) { t = t.with_animation_state(1U); };
 }// namespace open_viii::graphics::background
 #endif// OPENVIII_CPP_WIP_TILECOMMON_HPP

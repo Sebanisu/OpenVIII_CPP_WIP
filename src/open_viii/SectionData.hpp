@@ -14,7 +14,8 @@
 #define VIIIARCHIVE_SECTIONDATA_HPP
 namespace open_viii {
 template<typename spanT>
-requires(sizeof(spanT) > 0U) struct SectionData
+  requires(sizeof(spanT) > 0U)
+struct SectionData
 {
 private:
   // data

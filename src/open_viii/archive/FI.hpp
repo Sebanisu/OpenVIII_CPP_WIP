@@ -180,7 +180,7 @@ public:
     requires(!std::is_same_v<std::remove_cvref<fiT>, FI>)
   constexpr explicit FI(const fiT &fi) noexcept
     : m_uncompressed_size{ static_cast<decltype(m_uncompressed_size)>(
-      fi.uncompressed_size()) },
+        fi.uncompressed_size()) },
       m_offset{ static_cast<decltype(m_offset)>(fi.offset()) },
       m_compression_type{ static_cast<decltype(m_compression_type)>(
         fi.compression_type()) }
@@ -258,8 +258,8 @@ public:
     requires std::same_as<std::filesystem::path, std::remove_cvref_t<T>>
   FI(const T &path, std::size_t id, std::size_t offset)
     : FI(read_from_file(
-      path,
-      static_cast<std::ifstream::off_type>(get_fi_entry_offset(id, offset))))
+        path,
+        static_cast<std::ifstream::off_type>(get_fi_entry_offset(id, offset))))
   {}
 
   /**

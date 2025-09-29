@@ -39,7 +39,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const MenuAbilities_impl &right) const noexcept = default;
+    operator<=>(const MenuAbilities_impl &right) const noexcept
+    = default;
 };
 using MenuAbilities = CommonKernel<MenuAbilities_impl>;
 static_assert(MenuAbilities::EXPECTED_SIZE == sizeof(MenuAbilities));

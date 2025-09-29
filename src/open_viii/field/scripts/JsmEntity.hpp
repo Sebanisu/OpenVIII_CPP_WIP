@@ -44,7 +44,9 @@ public:
 
    */
   template<std::size_t I>
-  requires(I < 2U) [[nodiscard]] constexpr auto get() const noexcept
+    requires(I < 2U)
+  [[nodiscard]] constexpr auto
+    get() const noexcept
   {
     if constexpr (I == 0U) {
       return count();

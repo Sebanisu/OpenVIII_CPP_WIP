@@ -38,7 +38,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const CommandAbilities_impl &right) const noexcept = default;
+    operator<=>(const CommandAbilities_impl &right) const noexcept
+    = default;
 };
 using CommandAbilities = CommonKernel<CommandAbilities_impl>;
 static_assert(sizeof(CommandAbilities) == CommandAbilities::EXPECTED_SIZE);

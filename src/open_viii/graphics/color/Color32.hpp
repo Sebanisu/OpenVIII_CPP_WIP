@@ -16,12 +16,10 @@
 #include "CommonColor.hpp"
 namespace open_viii::graphics {
 template<ColorLayoutT layoutT>
-requires(
-  has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
-  && has_one_flag<
-    layoutT,
-    ColorLayoutT::PREA,
-    ColorLayoutT::POSTA>()) struct Color32_impl : ColorByteArray<4U>
+  requires(
+    has_one_flag<layoutT, ColorLayoutT::BGR, ColorLayoutT::RGB>()
+    && has_one_flag<layoutT, ColorLayoutT::PREA, ColorLayoutT::POSTA>())
+struct Color32_impl : ColorByteArray<4U>
 {
 protected:
   constexpr static auto current_layout = layoutT;

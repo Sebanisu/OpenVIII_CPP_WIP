@@ -26,7 +26,8 @@ public:
   static constexpr auto SPD{ 5U };
   static constexpr auto LUCK{ 6U };
   constexpr auto
-    operator<=>(const StatGroupNoEVANoHIT<T> &right) const noexcept = default;
+    operator<=>(const StatGroupNoEVANoHIT<T> &right) const noexcept
+    = default;
   [[nodiscard]] constexpr T
     hp() const noexcept
   {

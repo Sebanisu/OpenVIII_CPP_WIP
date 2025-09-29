@@ -123,7 +123,8 @@ public:
    * @brief Implicit conversion to bool, calls check() method.
    * @return true if Check test passes.
    */
-  [[nodiscard]] explicit constexpr operator bool() const
+  [[nodiscard]] explicit constexpr
+    operator bool() const
   {
     return check();
   }

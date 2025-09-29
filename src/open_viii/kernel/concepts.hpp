@@ -8,13 +8,9 @@
 namespace open_viii::kernel {
 #define HAS(function_name)                                                     \
   template<typename T>                                                         \
-  concept has_##function_name = requires(T t)                                  \
-  {                                                                            \
-    t.function_name();                                                         \
-  };                                                                           \
+  concept has_##function_name = requires(T t) { t.function_name(); };          \
   template<typename T>                                                         \
-  concept has_with_##function_name = has_##function_name<T> &&requires(T t)    \
-  {                                                                            \
+  concept has_with_##function_name = has_##function_name<T> && requires(T t) { \
     t.with_##function_name(t.function_name());                                 \
   }
 HAS(name_offset);

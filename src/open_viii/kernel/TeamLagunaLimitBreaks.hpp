@@ -66,8 +66,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(
-      const TeamLagunaLimitBreaks_impl &right) const noexcept = default;
+    operator<=>(const TeamLagunaLimitBreaks_impl &right) const noexcept
+    = default;
 };
 using TeamLagunaLimitBreaks = CommonKernel<TeamLagunaLimitBreaks_impl>;
 static_assert(

@@ -279,7 +279,7 @@ public:
     if (std::ranges::size(m_buffer) < sizeof(uint32_t)) {
       return {};
     }
-    auto buffer_span = std::span<const char>(m_buffer);
+    auto buffer_span   = std::span<const char>(m_buffer);
     auto section_count = tools::read_val<std::uint32_t>(buffer_span);
     if (std::ranges::size(buffer_span) < sizeof(uint32_t) * (section_count)) {
       return {};

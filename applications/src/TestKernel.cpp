@@ -32,8 +32,8 @@
     return std::nullptr_t{};
   }
   else if constexpr (
-    std::ranges::range<
-      valueT> && !std::is_convertible_v<valueT, std::string_view>) {
+    std::ranges::range<valueT>
+    && !std::is_convertible_v<valueT, std::string_view>) {
     return value;
   }
   else {
@@ -232,9 +232,10 @@ void
  */
 template<open_viii::LangT langVal, typename KernelElementT>
 static void
-  out(KernelElementT               kernel_element,
-      std::ostream                &os,
-      const std::span<const char> &buffer)
+  out(
+    KernelElementT               kernel_element,
+    std::ostream                &os,
+    const std::span<const char> &buffer)
 {
   bool first = true;
 #define IF_EXIST_WRITE_DECODE_STRING(function_name)                            \
@@ -262,9 +263,9 @@ int
   static constexpr auto coo   = open_viii::LangT::en;
   const auto execution_lambda = [&kernels](const std::filesystem::path &path) {
     std::cout << path << std::endl;
-    const auto archives
-      = open_viii::archive::Archives(path,
-                                     open_viii::LangCommon::to_string<coo>());
+    const auto archives = open_viii::archive::Archives(
+      path,
+      open_viii::LangCommon::to_string<coo>());
     if (!static_cast<bool>(archives)) {
       std::cerr << "Failed to load path: " << path.string() << '\n';
       return;
@@ -279,16 +280,17 @@ int
               << kernel.section_count() << " section count\n";
     std::cout << static_cast<int>(open_viii::kernel::SectionTypesT::count)
               << std::endl;
-    kernel.static_for([](const std::string_view      &string,
-                         const std::span<const char> &span,
-                         const auto                  &data) {
+    kernel.static_for([](
+                        const std::string_view      &string,
+                        const std::span<const char> &span,
+                        const auto                  &data) {
       std::cout << string << " ( " << std::ranges::size(span) << "bytes) has "
                 << std::ranges::size(data) << " entries\n";
       for (size_t i = 0; i < data.size(); i++) {
         auto entry = data.at(i);
         if (entry != decltype(entry){}) {
           std::cout << i << ": ";
-          //todo fix cout<coo> broken with clang
+          // todo fix cout<coo> broken with clang
           out<coo>(entry, std::cout, data.text_span());
           std::cout << '\n';
         }
@@ -302,10 +304,11 @@ int
          kernels | std::views::drop(++i)) {
       std::cout << "Comparing " << open_viii::kernel::Header::FILE_NAME << " {"
                 << path.string() << ", " << other_path.string() << "}:\n";
-      std::cout << (std::ranges::equal(kernel.buffer(), other_kernel.buffer())
-                      ? "equal"
-                      : "not equal")
-                << '\n';
+      std::cout
+        << (std::ranges::equal(kernel.buffer(), other_kernel.buffer())
+              ? "equal"
+              : "not equal")
+        << '\n';
     }
   }
   return 0;

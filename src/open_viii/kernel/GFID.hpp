@@ -28,5 +28,5 @@ enum class GFID : std::uint8_t
   Blank = 0xFE,
   All   = 0xFF,
 };
-}// namespace open_viii
+}// namespace open_viii::kernel
 #endif// OPENVIII_CPP_WIP_GFID_HPP

@@ -292,20 +292,22 @@ int
     FI                fi
       = append_entry(compressed_output, mock.span(), CompressionTypeT::lzss);
     auto decompressed = FS::get_entry(std::span{ compressed_output }, fi);
-    expect(std::equal(
-      decompressed.begin(),
-      decompressed.end(),
-      mock.span().begin()));
+    expect(
+      std::equal(
+        decompressed.begin(),
+        decompressed.end(),
+        mock.span().begin()));
   };
 
   "FS append and read L4Z compressed entry"_test = [] {
     std::vector<char> compressed_output;
     FI fi = append_entry(compressed_output, mock.span(), CompressionTypeT::lz4);
     auto decompressed = FS::get_entry(std::span{ compressed_output }, fi);
-    expect(std::equal(
-      decompressed.begin(),
-      decompressed.end(),
-      mock.span().begin()));
+    expect(
+      std::equal(
+        decompressed.begin(),
+        decompressed.end(),
+        mock.span().begin()));
   };
 
   "FS read entry from file"_test = [] {

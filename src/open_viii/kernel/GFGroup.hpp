@@ -12,8 +12,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_GFGROUP_HPP
 #define VIIIARCHIVE_GFGROUP_HPP
-#include "open_viii/tools/array_wrapper.hpp"
 #include "GFID.hpp"
+#include "open_viii/tools/array_wrapper.hpp"
 namespace open_viii::kernel {
 template<typename T>
   requires(std::unsigned_integral<T> || std::ranges::contiguous_range<T>)
@@ -126,7 +126,7 @@ public:
   }
 
 private:
-  tools::array_wrapper<T, static_cast<std::uint8_t>(GFID::Eden)+1> m_gfs{};
+  tools::array_wrapper<T, static_cast<std::uint8_t>(GFID::Eden) + 1> m_gfs{};
 };
 }// namespace open_viii::kernel
 #endif// VIIIARCHIVE_GFGROUP_HPP

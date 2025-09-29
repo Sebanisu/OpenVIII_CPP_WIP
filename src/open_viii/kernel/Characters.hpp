@@ -42,15 +42,15 @@ namespace open_viii::kernel {
 struct Characters_impl
 {
 protected:
-  EncodedStringOffset            m_name_offset                = {};
-  std::uint8_t                   m_crisis_level_hp_multiplier = {};
-  GenderT                        m_gender                     = {};
-  std::uint8_t                   m_limit_break_id             = {};
-  std::uint8_t                   m_limit_break_param          = {};
+  EncodedStringOffset                   m_name_offset                = {};
+  std::uint8_t                          m_crisis_level_hp_multiplier = {};
+  GenderT                               m_gender                     = {};
+  std::uint8_t                          m_limit_break_id             = {};
+  std::uint8_t                          m_limit_break_param          = {};
   tools::array_wrapper<std::uint8_t, 2> m_exp                        = {};
   StatGroupNoEVANoHIT<tools::array_wrapper<std::uint8_t, 4>> m_stats = {};
-  constexpr Characters_impl()                                 = default;
-  static constexpr std::size_t EXPECTED_SIZE                  = 36U;
+  constexpr Characters_impl()                                        = default;
+  static constexpr std::size_t EXPECTED_SIZE                         = 36U;
 
 public:
   constexpr auto

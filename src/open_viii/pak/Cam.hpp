@@ -28,11 +28,11 @@ public:
   }
   Cam(std::istream &is, const FileSection &fs)
     : Cam(
-      [&fs](std::istream &in_is) -> std::istream & {
-        in_is.seekg(fs.offset());
-        return in_is;
-      }(is),
-      fs.frames())
+        [&fs](std::istream &in_is) -> std::istream & {
+          in_is.seekg(fs.offset());
+          return in_is;
+        }(is),
+        fs.frames())
   {}
   explicit Cam(std::istream &is)
     : Cam(is, [&is]() {

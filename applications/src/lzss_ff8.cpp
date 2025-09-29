@@ -19,25 +19,25 @@ void
   os.close();
 }
 void
-decompress(std::string_view in, std::string_view out)
+  decompress(std::string_view in, std::string_view out)
 {
-    const auto compressed = tl::read::entire_file(in, std::vector<char>());
-    if (std::empty(compressed) || std::size(compressed) <= 4U) {
-        std::cerr << "file not found or unable to read: " << std::size(compressed)
-            << ", " << in << '\n';
-        std::exit(1);
-    }
-    std::ofstream os = open_file(out);
-    const auto    input = tl::read::input(compressed);
-    const auto    comp_size = input.output<std::uint32_t>();
-    if (std::size(compressed) != std::size_t{ comp_size } + std::size_t{ 4U }) {
+  const auto compressed = tl::read::entire_file(in, std::vector<char>());
+  if (std::empty(compressed) || std::size(compressed) <= 4U) {
+    std::cerr << "file not found or unable to read: " << std::size(compressed)
+              << ", " << in << '\n';
+    std::exit(1);
+  }
+  std::ofstream os        = open_file(out);
+  const auto    input     = tl::read::input(compressed);
+  const auto    comp_size = input.output<std::uint32_t>();
+  if (std::size(compressed) != std::size_t{ comp_size } + std::size_t{ 4U }) {
     std::cerr << "Size of file mismatch: per header file size "
               << std::size(compressed) << " should equal " << comp_size + 4U
               << " !!\n";
     std::exit(1);
   }
-  const auto decompressed =
-    open_viii::compression::LZSS::decompress<std::vector<char>>(
+  const auto decompressed
+    = open_viii::compression::LZSS::decompress<std::vector<char>>(
       std::span(compressed).subspan(4U));
   os.write(std::data(decompressed), static_cast<long>(std::size(decompressed)));
 }

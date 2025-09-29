@@ -7,7 +7,7 @@
 #include <cstdint>
 namespace open_viii::battle::dat {
 /**
-   * @brief Enumeration of status flags for a character.
+ * @brief Enumeration of status flags for a character.
  */
 enum class StatusFlags : std::uint8_t
 {
@@ -21,5 +21,5 @@ enum class StatusFlags : std::uint8_t
   AutoShell   = 0x40,///< Auto-Shell status flag.
   AutoProtect = 0x80,///< Auto-Protect status flag.
 };
-}
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_STATUSFLAGS_HPP

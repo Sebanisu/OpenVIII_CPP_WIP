@@ -8,7 +8,9 @@
 #include <string_view>
 
 int
-  main([[maybe_unused]] const int argc, [[maybe_unused]] const char *const argv[])
+  main(
+    [[maybe_unused]] const int         argc,
+    [[maybe_unused]] const char *const argv[])
 {
   const auto argspan = std::span<const char *const>(argv, argc);
   if (argc >= 3) {
@@ -70,7 +72,8 @@ void
   std::cout << "Loading Archive\n";
   const open_viii::archive::FIFLFS<false> archive(src);
   if (!archive.all_set()) {
-    throw std::runtime_error("Failed to open the archive files: " + src.string());
+    throw std::runtime_error(
+      "Failed to open the archive files: " + src.string());
   }
   std::cout << "Extracting " << src << " to " << dst << '\n';
   const auto   target_folder       = dst.string();

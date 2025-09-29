@@ -6,17 +6,19 @@
 #include "tile_map_to_csv.hpp"
 #include <variant>
 void
-  map_to_csv(const std::filesystem::path &mim_path,
-             const std::filesystem::path &map_path);
+  map_to_csv(
+    const std::filesystem::path &mim_path,
+    const std::filesystem::path &map_path);
 int
   main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 {
   static constexpr auto mim_ext   = std::string_view(".mim");
   static constexpr auto map_ext   = std::string_view(".map");
-  const auto            check_ext = [](const std::filesystem::path &in_path,
-                            const std::string_view       ext) -> bool {
+  const auto            check_ext = [](
+                           const std::filesystem::path &in_path,
+                           const std::string_view       ext) -> bool {
     std::cout << "path: \"" << in_path.string() << "\"\n";
-    const auto path_ext = in_path.extension().string();
+    const auto      path_ext = in_path.extension().string();
     std::error_code ec{};
     const bool      found = std::filesystem::exists(in_path, ec);
     if (ec) {
@@ -29,8 +31,8 @@ int
       std::cout << "does not exist!\n";
       return false;
     }
-    if (!in_path.has_extension()
-        || !open_viii::tools::i_equals(path_ext, ext)) {
+    if (
+      !in_path.has_extension() || !open_viii::tools::i_equals(path_ext, ext)) {
       std::cout << "wrong extension, expected: " << ext;
       return false;
     }
@@ -67,8 +69,9 @@ int
   return EXIT_SUCCESS;
 }
 void
-  map_to_csv(const std::filesystem::path &mim_path,
-             const std::filesystem::path &map_path)
+  map_to_csv(
+    const std::filesystem::path &mim_path,
+    const std::filesystem::path &map_path)
 {
   const auto mim     = open_viii::graphics::background::Mim{ mim_path };
   const auto process = [&map_path](open_viii::graphics::background::Map map) {
@@ -87,7 +90,6 @@ void
     out_path += std::string(".csv");
     map.save_csv(out_path);
   };
-  process(open_viii::graphics::background::Map{ mim.mim_type(),
-                                                map_path,
-                                                false });
+  process(
+    open_viii::graphics::background::Map{ mim.mim_type(), map_path, false });
 }

@@ -27,7 +27,7 @@ public:
   using value_type  = dimT;
   constexpr Point() = default;
   constexpr Point(const dimT &in_x, const dimT &in_y) noexcept
-    : m_x(in_x), m_y(in_y){};
+    : m_x(in_x), m_y(in_y) {};
   constexpr auto
     operator<=>(const Point<dimT> &right) const noexcept
     = default;

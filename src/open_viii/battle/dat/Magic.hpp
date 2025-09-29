@@ -4,26 +4,26 @@
 
 #ifndef OPENVIII_CPP_WIP_MAGIC_HPP
 #define OPENVIII_CPP_WIP_MAGIC_HPP
-#include <cstdint>
 #include "open_viii/kernel/MagicSpell.hpp"
+#include <cstdint>
 namespace open_viii::battle::dat {
 /**
-   * @brief Represents a magic with an ID, an unknown value, and an overloaded
-   * operator to cast to GFID.
+ * @brief Represents a magic with an ID, an unknown value, and an overloaded
+ * operator to cast to GFID.
  */
 struct Magic
 {
   kernel::MagicSpell ID; ///< The unique identifier for the magic.
   uint8_t            unk;///< An unknown value associated with the magic.
 
-                         /**
-     * @brief Casts the Magic object to a GFID object.
-     *
-     * This operator will return a Blank GFID if the ID is not within the valid
-     * range.
-     *
-     * @return A GFID object representing the Magic object.
-                          */
+  /**
+   * @brief Casts the Magic object to a GFID object.
+   *
+   * This operator will return a Blank GFID if the ID is not within the valid
+   * range.
+   *
+   * @return A GFID object representing the Magic object.
+   */
                      operator kernel::GFID() const noexcept
   {
     switch (ID) {
@@ -64,5 +64,5 @@ struct Magic
     }
   }
 };
-}
+}// namespace open_viii::battle::dat
 #endif// OPENVIII_CPP_WIP_MAGIC_HPP

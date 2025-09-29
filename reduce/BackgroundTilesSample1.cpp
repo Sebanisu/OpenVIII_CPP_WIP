@@ -1,14 +1,23 @@
 // https://godbolt.org/z/3TxGsGbYr
-struct a {
-  bool b();
+struct a
+{
+  bool
+    b();
 };
-template <typename c> struct d : c {
+template<typename c>
+struct d : c
+{
   c::e;
   using f = d;
-  constexpr f g(decltype(e.b())) { this; }
+  constexpr f
+    g(decltype(e.b()))
+  {
+    this;
+  }
 };
-struct h {
+struct h
+{
   a e;
 };
 using i = d<h>;
-auto j = i{}.g(1);
+auto j  = i{}.g(1);

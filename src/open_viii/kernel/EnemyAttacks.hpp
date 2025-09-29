@@ -61,7 +61,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const EnemyAttacks_impl &right) const noexcept = default;
+    operator<=>(const EnemyAttacks_impl &right) const noexcept
+    = default;
 };
 using EnemyAttacks = CommonKernel<EnemyAttacks_impl>;
 static_assert(sizeof(EnemyAttacks) == EnemyAttacks::EXPECTED_SIZE);
