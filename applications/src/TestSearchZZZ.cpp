@@ -27,24 +27,27 @@ int
     return 1;
   }
   // test ZZZ extract with FIFLFS
-  open_viii::Paths::for_each_path([&needle](const std::filesystem::path &path) {
-    for (const auto &zzz_file_pair :
-         open_viii::archive::ZZZ::get_files_from_path(path)) {
-      std::cout << "Searching: " << path << "\n";
-      zzz_file_pair.second.execute_on(
-        {},
-        [&needle](const open_viii::archive::FileData &data_item) {
-          const auto path_string = data_item.get_path_string();
-          if (
-            open_viii::tools::i_ends_with_any(path_string, extensions) != 0U) {
-            std::cout << "  nested: {" << path_string << "}\n";
-          }
-          else if (open_viii::tools::i_find(path_string, needle)) {
-            std::cout << "  {" << path_string << "}\n";
-          }
-        },
-        {});
-    }
-  });
+  open_viii::Paths::for_each_path(
+    [&needle](const std::filesystem::path &path) -> open_viii::Paths::Ops {
+      for (const auto &zzz_file_pair :
+           open_viii::archive::ZZZ::get_files_from_path(path)) {
+        std::cout << "Searching: " << path << "\n";
+        zzz_file_pair.second.execute_on(
+          {},
+          [&needle](const open_viii::archive::FileData &data_item) {
+            const auto path_string = data_item.get_path_string();
+            if (
+              open_viii::tools::i_ends_with_any(path_string, extensions)
+              != 0U) {
+              std::cout << "  nested: {" << path_string << "}\n";
+            }
+            else if (open_viii::tools::i_find(path_string, needle)) {
+              std::cout << "  {" << path_string << "}\n";
+            }
+          },
+          {});
+      }
+      return open_viii::Paths::Ops::Continue;
+    });
   return 0;
 }

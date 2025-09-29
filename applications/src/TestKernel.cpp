@@ -260,15 +260,16 @@ int
 {
   std::vector<std::pair<std::filesystem::path, open_viii::kernel::Header>>
                         kernels{};
-  static constexpr auto coo   = open_viii::LangT::en;
-  const auto execution_lambda = [&kernels](const std::filesystem::path &path) {
+  static constexpr auto coo = open_viii::LangT::en;
+  const auto            execution_lambda
+    = [&kernels](const std::filesystem::path &path) -> open_viii::Paths::Ops {
     std::cout << path << std::endl;
     const auto archives = open_viii::archive::Archives(
       path,
       open_viii::LangCommon::to_string<coo>());
     if (!static_cast<bool>(archives)) {
       std::cerr << "Failed to load path: " << path.string() << '\n';
-      return;
+      return open_viii::Paths::Ops::Continue;
     }
     [[maybe_unused]] const auto &main
       = archives.get<open_viii::archive::ArchiveTypeT::main>();
@@ -296,6 +297,7 @@ int
         }
       }
     });
+    return open_viii::Paths::Ops::Continue;
   };
   open_viii::Paths::for_each_path(execution_lambda);
   int i = 0;

@@ -37,12 +37,13 @@ int
   const auto coos    = open_viii::LangCommon::to_string_array();
   for (const auto &coo : coos)
     open_viii::Paths::for_each_path(
-      [&coo, &tracker](const std::filesystem::path &path) {
+      [&coo,
+       &tracker](const std::filesystem::path &path) -> open_viii::Paths::Ops {
         std::cout << path << std::endl;
         const auto archives = open_viii::archive::Archives(path, coo);
         if (!static_cast<bool>(archives)) {
           std::cerr << "Failed to load path: " << path.string() << '\n';
-          return;
+          return open_viii::Paths::Ops::Continue;
         }
         [[maybe_unused]] static constexpr auto dump
           = [](const std::vector<char> &in_buffer, const std::string &in_path) {
@@ -59,6 +60,7 @@ int
         };
         archives.execute_on({}, dump, filter);
         // archives.get<open_viii::archive::ArchiveTypeT::field>().execute_with_nested({},dump,{});
+        return open_viii::Paths::Ops::Continue;
       });
   const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;

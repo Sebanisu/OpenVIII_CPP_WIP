@@ -39,33 +39,35 @@ int
   main()
 {
   const auto start = std::chrono::steady_clock::now();
-  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
-    static constexpr auto coo      = open_viii::LangT::en;
-    const auto            archives = open_viii::archive::Archives(
-      path,
-      open_viii::LangCommon::to_string<coo>());
-    if (!static_cast<bool>(archives)) {
-      std::cerr << "Failed to load path: " << path.string() << '\n';
-      return;
-    }
-    [[maybe_unused]] const auto &field
-      = archives.get<open_viii::archive::ArchiveTypeT::field>();
-    {
-      open_viii::tools::execute_on_directories(
-        std::filesystem::current_path(),
-        {},
-        [&field](const std::filesystem::path &directory_path) {
-          const auto swizzle_tree
-            = open_viii::graphics::background::SwizzleTree{ field,
-                                                            directory_path };
-          if (!static_cast<bool>(swizzle_tree)) {
-            return;
-          }
-          std::cout << directory_path << std::endl;
-          swizzle_tree.deswizzle();
-        });
-    }
-  });
+  open_viii::Paths::for_each_path(
+    [](const std::filesystem::path &path) -> open_viii::Paths::Ops {
+      static constexpr auto coo      = open_viii::LangT::en;
+      const auto            archives = open_viii::archive::Archives(
+        path,
+        open_viii::LangCommon::to_string<coo>());
+      if (!static_cast<bool>(archives)) {
+        std::cerr << "Failed to load path: " << path.string() << '\n';
+        return open_viii::Paths::Ops::Continue;
+      }
+      [[maybe_unused]] const auto &field
+        = archives.get<open_viii::archive::ArchiveTypeT::field>();
+      {
+        open_viii::tools::execute_on_directories(
+          std::filesystem::current_path(),
+          {},
+          [&field](const std::filesystem::path &directory_path) {
+            const auto swizzle_tree
+              = open_viii::graphics::background::SwizzleTree{ field,
+                                                              directory_path };
+            if (!static_cast<bool>(swizzle_tree)) {
+              return;
+            }
+            std::cout << directory_path << std::endl;
+            swizzle_tree.deswizzle();
+          });
+      }
+      return open_viii::Paths::Ops::Continue;
+    });
   const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;
   std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"

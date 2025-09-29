@@ -42,52 +42,54 @@ int
   main()
 {
   const auto start = std::chrono::steady_clock::now();
-  open_viii::Paths::for_each_path([](const std::filesystem::path &path) {
-    static constexpr auto coo      = open_viii::LangT::en;
-    const auto            archives = open_viii::archive::Archives(
-      path,
-      open_viii::LangCommon::to_string<coo>());
-    if (!static_cast<bool>(archives)) {
-      std::cerr << "Failed to load path: " << path.string() << '\n';
-      return;
-    }
-    [[maybe_unused]] const auto &field
-      = archives.get<open_viii::archive::ArchiveTypeT::field>();
-    {
-      std::vector<std::future<void>> threads{};
-      open_viii::tools::execute_on_directories(
-        std::filesystem::current_path(),
-        {},
-        [&field, &threads](const std::filesystem::path &directory_path) {
-          threads.emplace_back(
-            std::async(
-              std::launch::async,
-              [](const auto in_field, const auto in_directory_path) {
-                const auto reswizzle_tree
-                  = open_viii::graphics::background::SwizzleTree{
-                      in_field,
-                      in_directory_path
-                    };
-                if (!static_cast<bool>(reswizzle_tree)) {
-                  return;
-                }
-                std::cout << in_directory_path << std::endl;
-                reswizzle_tree.reswizzle();
-              },
-              field,
-              directory_path));
-          //          while (threads.size() > 64) {
-          //            threads.front().join();
-          //            threads.erase(threads.begin());
-          //          }
+  open_viii::Paths::for_each_path(
+    [](const std::filesystem::path &path) -> open_viii::Paths::Ops {
+      static constexpr auto coo      = open_viii::LangT::en;
+      const auto            archives = open_viii::archive::Archives(
+        path,
+        open_viii::LangCommon::to_string<coo>());
+      if (!static_cast<bool>(archives)) {
+        std::cerr << "Failed to load path: " << path.string() << '\n';
+        return open_viii::Paths::Ops::Continue;
+      }
+      [[maybe_unused]] const auto &field
+        = archives.get<open_viii::archive::ArchiveTypeT::field>();
+      {
+        std::vector<std::future<void>> threads{};
+        open_viii::tools::execute_on_directories(
+          std::filesystem::current_path(),
+          {},
+          [&field, &threads](const std::filesystem::path &directory_path) {
+            threads.emplace_back(
+              std::async(
+                std::launch::async,
+                [](const auto in_field, const auto in_directory_path) {
+                  const auto reswizzle_tree
+                    = open_viii::graphics::background::SwizzleTree{
+                        in_field,
+                        in_directory_path
+                      };
+                  if (!static_cast<bool>(reswizzle_tree)) {
+                    return;
+                  }
+                  std::cout << in_directory_path << std::endl;
+                  reswizzle_tree.reswizzle();
+                },
+                field,
+                directory_path));
+            //          while (threads.size() > 64) {
+            //            threads.front().join();
+            //            threads.erase(threads.begin());
+            //          }
+          });
+        std::ranges::for_each(threads, [](std::future<void> &future) {
+          if (future.valid()) {
+            future.wait();
+          }
         });
-      std::ranges::for_each(threads, [](std::future<void> &future) {
-        if (future.valid()) {
-          future.wait();
-        }
-      });
-    }
-  });
+      }
+      return open_viii::Paths::Ops::Continue;
+    });
   const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;
   std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"

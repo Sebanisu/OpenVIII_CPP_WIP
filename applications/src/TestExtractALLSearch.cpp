@@ -26,22 +26,24 @@ int
     return 1;
   }
   const auto start = std::chrono::steady_clock::now();
-  open_viii::Paths::for_each_path([&needle](const std::filesystem::path &path) {
-    std::cout << path << std::endl;
-    static constexpr auto coo      = open_viii::LangT::en;
-    const auto            archives = open_viii::archive::Archives(
-      path,
-      open_viii::LangCommon::to_string<coo>());
-    if (!static_cast<bool>(archives)) {
-      std::cerr << "Failed to load path: " << path.string() << '\n';
-      return;
-    }
-    [[maybe_unused]] static constexpr auto dump
-      = [](const std::vector<char> &in_buffer, const std::string &in_path) {
-          open_viii::tools::write_buffer(in_buffer, in_path);
-        };
-    archives.execute_on({ needle }, dump);
-  });
+  open_viii::Paths::for_each_path(
+    [&needle](const std::filesystem::path &path) -> open_viii::Paths::Ops {
+      std::cout << path << std::endl;
+      static constexpr auto coo      = open_viii::LangT::en;
+      const auto            archives = open_viii::archive::Archives(
+        path,
+        open_viii::LangCommon::to_string<coo>());
+      if (!static_cast<bool>(archives)) {
+        std::cerr << "Failed to load path: " << path.string() << '\n';
+        return open_viii::Paths::Ops::Continue;
+      }
+      [[maybe_unused]] static constexpr auto dump
+        = [](const std::vector<char> &in_buffer, const std::string &in_path) {
+            open_viii::tools::write_buffer(in_buffer, in_path);
+          };
+      archives.execute_on({ needle }, dump);
+      return open_viii::Paths::Ops::Continue;
+    });
   const auto end  = std::chrono::steady_clock::now();
   const auto diff = end - start;
   std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"

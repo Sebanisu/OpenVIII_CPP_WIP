@@ -124,7 +124,7 @@ int
 {
   const auto start = std::chrono::steady_clock::now();
   open_viii::Paths::for_each_path(
-    [&](const std::filesystem::path &path) -> bool {
+    [&](const std::filesystem::path &path) -> open_viii::Paths::Ops {
       std::cout << path << std::endl;
       static constexpr auto coo      = open_viii::LangT::en;
       const auto            archives = open_viii::archive::Archives(
@@ -132,7 +132,7 @@ int
         open_viii::LangCommon::to_string<coo>());
       if (!static_cast<bool>(archives)) {
         std::cerr << "Failed to load path: " << path.string() << '\n';
-        return true;// true to continue;
+        return open_viii::Paths::Ops::Continue;
       }
       [[maybe_unused]] const auto &battle_archive
         = archives.get<open_viii::archive::ArchiveTypeT::battle>();
@@ -146,8 +146,9 @@ int
       const auto diff = end - start;
       std::cout << std::chrono::duration<double, std::milli>(diff).count()
                 << " ms" << '\n';
-      return false;// because we don't want to extract from two or more archives
-                   // at the same time.
+      // because we don't want to extract from two or more archives at the same
+      // time.
+      return open_viii::Paths::Ops::Stop;
     });
 
   return 0;

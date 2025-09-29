@@ -22,7 +22,7 @@ void
   scan_paths(const std::filesystem::path &dest_path)
 {
   open_viii::Paths::for_each_path(
-    [&dest_path](const std::filesystem::path &path) {
+    [&dest_path](const std::filesystem::path &path) -> open_viii::Paths::Ops {
       std::cout << path << std::endl;
       open_viii::tools::execute_on_directory(
         path,
@@ -47,6 +47,7 @@ void
             },
             p);
         });
+      return open_viii::Paths::Ops::Continue;
     });
 }
 
