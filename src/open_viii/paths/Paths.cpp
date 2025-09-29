@@ -20,57 +20,55 @@ std::vector<std::filesystem::path>
   }
 
   // 2. Check registry for FF8 2000
-  HKEY hKey;
-  if (
-    RegOpenKeyExA(
-      HKEY_LOCAL_MACHINE,
-      "SOFTWARE\\Square Soft, Inc\\FINAL FANTASY VIII\\1.00",
-      0,
-      KEY_READ,
-      &hKey)
-    == ERROR_SUCCESS) {
-    std::array<char, 512U> buffer     = {};
-    DWORD                  bufferSize = static_cast<DWORD>(buffer.size());
-    if (
-      RegQueryValueExA(
-        hKey,
-        "AppPath",
-        nullptr,
-        nullptr,
-        reinterpret_cast<LPBYTE>(buffer.data()),
-        &bufferSize)
-      == ERROR_SUCCESS) {
-      paths.push_back(std::string(buffer.data(), bufferSize - 1));
+  auto queryRegPath = [&](
+                        const HKEY  key,
+                        const char *subKey,
+                        const char *valueName) -> std::filesystem::path {
+    HKEY hKey;
+    if (RegOpenKeyExA(key, subKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+      std::array<char, 512U> buffer     = {};
+      DWORD                  bufferSize = static_cast<DWORD>(buffer.size());
+      if (
+        RegQueryValueExA(
+          hKey,
+          valueName,
+          nullptr,
+          nullptr,
+          reinterpret_cast<LPBYTE>(buffer.data()),
+          &bufferSize)
+        == ERROR_SUCCESS) {
+        RegCloseKey(hKey);
+        return std::string(buffer.data(), bufferSize - 1);
+      }
+      RegCloseKey(hKey);
     }
-    RegCloseKey(hKey);
+    return {};
+  };
+
+  // Original path
+  if (auto path = queryRegPath(
+        HKEY_LOCAL_MACHINE,
+        "SOFTWARE\\Square Soft, Inc\\FINAL FANTASY VIII\\1.00",
+        "AppPath");
+      !path.empty()) {
+    paths.emplace_back(std::move(path));
+  }
+
+  // WOW6432Node path
+  if (auto path = queryRegPath(
+        HKEY_LOCAL_MACHINE,
+        "SOFTWARE\\WOW6432Node\\Square Soft, Inc\\FINAL FANTASY VIII\\1.00",
+        "AppPath");
+      !path.empty()) {
+    paths.emplace_back(std::move(path));
   }
 
   // 3. Check Steam libraries for FF8 classic (39150) and remaster (1026680)
-  std::filesystem::path steam_path;
-  if (
-    RegOpenKeyExA(
-      HKEY_LOCAL_MACHINE,
-      "SOFTWARE\\Valve\\Steam",
-      0,
-      KEY_READ,
-      &hKey)
-    == ERROR_SUCCESS) {
-    std::array<char, 512U> buffer     = {};
-    DWORD                  bufferSize = static_cast<DWORD>(buffer.size());
-    if (
-      RegQueryValueExA(
-        hKey,
-        "SteamPath",
-        nullptr,
-        nullptr,
-        reinterpret_cast<LPBYTE>(buffer.data()),
-        &bufferSize)
-      == ERROR_SUCCESS) {
-      steam_path
-        = std::string(buffer.data(), bufferSize - 1);// Remove null terminator
-    }
-    RegCloseKey(hKey);
-  }
+  std::filesystem::path steam_path = queryRegPath(
+    HKEY_LOCAL_MACHINE,
+    "SOFTWARE\\WOW6432Node\\Valve\\Steam",
+    "InstallPath");
+
   if (!steam_path.empty()) {
     std::vector<std::filesystem::path> libraries;
     std::filesystem::path              main_steam_path
@@ -84,8 +82,14 @@ std::vector<std::filesystem::path>
       std::string   line;
       while (std::getline(vdf_file, line)) {
         if (auto match = ctre::search<R"ccc("path"\s+"([^"]+)")ccc">(line)) {
+          std::string tmp = match.get<1>().to_string();
+          size_t      pos = 0;
+          while ((pos = tmp.find("\\\\", pos)) != std::string::npos) {
+            tmp.replace(pos, 2, "\\");
+            ++pos;
+          }
           std::filesystem::path lib_path
-            = std::filesystem::path(match.get<1>().to_string()) / "steamapps";
+            = std::filesystem::path(tmp) / "steamapps";
           libraries.push_back(lib_path);
         }
       }
@@ -137,8 +141,6 @@ std::vector<std::filesystem::path>
   std::ranges::sort(paths);
   auto &&[rem_begin, rem_end] = std::ranges::unique(paths);
   paths.erase(rem_begin, rem_end);
-
-  // Convert set to vector
   return paths;
 #endif
 }

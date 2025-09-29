@@ -59,3 +59,4 @@ CMakeCache.txt
 *.recipe
 /vcpkg_installed
 vcpkg-manifest-install.log
+*.pdb
