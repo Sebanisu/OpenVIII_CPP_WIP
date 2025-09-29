@@ -1,5 +1,6 @@
 #include "Paths.hpp"
 #include <array>
+#include <cstdlib>// getenv
 #include <string>
 #ifdef _WIN32
 #include <ctre.hpp>
@@ -10,14 +11,14 @@ std::vector<std::filesystem::path>
   open_viii::Paths::get_windows_ff8_paths()
 {
   std::vector<std::filesystem::path> paths;
-#ifndef _WIN32
-  return paths;// Empty vector on non-Windows
-#else
 
   // 1. Check FF8_PATH env var
   if (const char *env_path = std::getenv("FF8_PATH")) {
     paths.push_back(env_path);
   }
+#ifndef _WIN32
+  return paths;// Empty vector on non-Windows
+#else
 
   // 2. Check registry for FF8 2000
   auto queryRegPath = [&](
@@ -123,16 +124,16 @@ std::vector<std::filesystem::path>
     [&error_code](const std::filesystem::path &path) {
       const bool found = std::filesystem::exists(path, error_code);
       if (error_code) {
-        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                  << error_code.value() << ": " << error_code.message()
-                  << error_code.value() << " - path: " << path << std::endl;
+        // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+        //           << error_code.value() << ": " << error_code.message()
+        //           << error_code.value() << " - path: " << path << std::endl;
         error_code.clear();
       }
       const bool is_dir = std::filesystem::is_directory(path, error_code);
       if (error_code) {
-        std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                  << error_code.value() << ": " << error_code.message()
-                  << " - path: " << path << std::endl;
+        // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+        //           << error_code.value() << ": " << error_code.message()
+        //           << " - path: " << path << std::endl;
         error_code.clear();
       }
       return !found || !is_dir;
@@ -186,24 +187,27 @@ std::vector<std::filesystem::path> &
       tl::string::replace_slashes(R"(d:\tim)"s)
     };
 
-    std::error_code   error_code{};
-    static const auto path_file
-      = std::filesystem::current_path(error_code) / "paths.conf";
-    if (error_code) {
-      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                << error_code.value() << ": " << error_code.message()
-                << error_code.value() << " - path: " << path_file << std::endl;
+    std::error_code error_code{};
+    if (static const auto path_file
+        = std::filesystem::current_path(error_code) / "paths.conf";
+        error_code) {
+      // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+      //           << error_code.value() << ": " << error_code.message()
+      //           << error_code.value() << " - path: " << path_file <<
+      //           std::endl;
       error_code.clear();
     }
-    static bool read_file = true;
-    if (read_file) {
-      auto file_stream
-        = std::ifstream(path_file, std::ios::in | std::ios::binary);
-      if (file_stream.is_open()) {
-        read_file = false;
-        std::string line{};
-        while (std::getline(file_stream, line)) {
-          paths.emplace_back(tl::string::replace_slashes(std::move(line)));
+    else {
+      static bool read_file = true;
+      if (read_file) {
+        auto file_stream
+          = std::ifstream(path_file, std::ios::in | std::ios::binary);
+        if (file_stream.is_open()) {
+          read_file = false;
+          std::string line{};
+          while (std::getline(file_stream, line)) {
+            paths.emplace_back(tl::string::replace_slashes(std::move(line)));
+          }
         }
       }
     }
@@ -212,16 +216,17 @@ std::vector<std::filesystem::path> &
       [&error_code](const std::filesystem::path &path) {
         const bool found = std::filesystem::exists(path, error_code);
         if (error_code) {
-          std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                    << error_code.value() << ": " << error_code.message()
-                    << error_code.value() << " - path: " << path << std::endl;
+          // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+          //           << error_code.value() << ": " << error_code.message()
+          //           << error_code.value() << " - path: " << path <<
+          //           std::endl;
           error_code.clear();
         }
         const bool is_dir = std::filesystem::is_directory(path, error_code);
         if (error_code) {
-          std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                    << error_code.value() << ": " << error_code.message()
-                    << " - path: " << path << std::endl;
+          // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
+          //           << error_code.value() << ": " << error_code.message()
+          //           << " - path: " << path << std::endl;
           error_code.clear();
         }
         return !found || !is_dir;
