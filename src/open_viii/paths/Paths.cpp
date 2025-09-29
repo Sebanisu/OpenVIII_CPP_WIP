@@ -227,7 +227,11 @@ std::vector<std::filesystem::path> &
         return !found || !is_dir;
       });
     paths.erase(first, last);
-    paths.insert_range(paths.end(), get_windows_ff8_paths());
+    auto tmp_win_paths = get_windows_ff8_paths();
+    paths.insert(
+      paths.end(),
+      std::make_move_iterator(tmp_win_paths.begin()),
+      std::make_move_iterator(tmp_win_paths.end()));
     std::ranges::sort(paths);
     auto &&[rem_begin, rem_end] = std::ranges::unique(paths);
     paths.erase(rem_begin, rem_end);
