@@ -605,25 +605,25 @@ public:
   /**
    * palettes selections
    */
-  static constexpr const std::array<std::uint8_t, 16U> &
+  static consteval const std::array<std::uint8_t, 16U> &
     palette_selections() noexcept
   {
-    static constexpr auto values
-      = std::array<std::uint8_t, 16U>{ 0u, 1u, 2u,  3u,  4u,  5u,  6u,  7u,
-                                       8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u };
+    static constexpr std::array<std::uint8_t, 16U> values = {
+      0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u
+    };
     return values;
   }
   /**
    * palettes selections strings
    */
-  static constexpr std::array<std::string_view, 16U> &
+  static consteval const std::array<std::string_view, 16U> &
     palette_selections_c_str() noexcept
   {
     using namespace std::string_view_literals;
-    static constexpr const std::array<std::string_view, 16U> values{
-      "0"sv, "1"sv, "2"sv,  "3"sv,  "4"sv,  "5"sv,  "6"sv,  "7"sv,
-      "8"sv, "9"sv, "10"sv, "11"sv, "12"sv, "13"sv, "14"sv, "15"sv
-    };
+    static constexpr const std::array values{ "0"sv,  "1"sv,  "2"sv,  "3"sv,
+                                              "4"sv,  "5"sv,  "6"sv,  "7"sv,
+                                              "8"sv,  "9"sv,  "10"sv, "11"sv,
+                                              "12"sv, "13"sv, "14"sv, "15"sv };
     return values;
   }
 };
