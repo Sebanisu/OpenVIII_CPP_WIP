@@ -588,6 +588,7 @@ public:
   static consteval const std::array<open_viii::graphics::BPPT, 3U> &
     bpp_selections() noexcept
   {
+    using namespace open_viii::graphics::literals;
     static constexpr std::array values{ 4_bpp, 8_bpp, 16_bpp };
     return values;
   }
