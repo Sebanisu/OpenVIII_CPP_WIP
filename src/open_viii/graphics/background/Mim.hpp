@@ -585,7 +585,7 @@ public:
   /**
    * bpp selections
    */
-  static consteval const std::array<open_viii::graphics::BPPT, 3U> &
+  static constexpr const std::array<open_viii::graphics::BPPT, 3U> &
     bpp_selections() noexcept
   {
     using namespace open_viii::graphics::literals;
@@ -595,7 +595,7 @@ public:
   /**
    * bpp selections strings
    */
-  static consteval const std::array<std::string_view, 3U> &
+  static constexpr const std::array<std::string_view, 3U> &
     bpp_selections_c_str() noexcept
   {
     using namespace std::string_view_literals;
@@ -605,7 +605,7 @@ public:
   /**
    * palettes selections
    */
-  static consteval const std::array<std::uint8_t, 16U> &
+  static constexpr const std::array<std::uint8_t, 16U> &
     palette_selections() noexcept
   {
     static constexpr std::array<std::uint8_t, 16U> values = {
@@ -616,7 +616,7 @@ public:
   /**
    * palettes selections strings
    */
-  static consteval const std::array<std::string_view, 16U> &
+  static constexpr const std::array<std::string_view, 16U> &
     palette_selections_c_str() noexcept
   {
     using namespace std::string_view_literals;
