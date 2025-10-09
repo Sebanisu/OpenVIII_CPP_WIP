@@ -585,36 +585,45 @@ public:
   /**
    * bpp selections
    */
-  static consteval std::array<open_viii::graphics::BPPT, 3U>
+  static consteval const std::array<open_viii::graphics::BPPT, 3U> &
     bpp_selections() noexcept
   {
-    using namespace open_viii::graphics::literals;
-    return { 4_bpp, 8_bpp, 16_bpp };
+    static constexpr std::array values{ 4_bpp, 8_bpp, 16_bpp };
+    return values;
   }
   /**
    * bpp selections strings
    */
-  static consteval std::array<const char *, 3U>
+  static consteval const std::array<std::string_view, 3U> &
     bpp_selections_c_str() noexcept
   {
-    return { "4", "8", "16" };
+    using namespace std::string_view_literals;
+    static constexpr std::array values{ "4"sv, "8"sv, "16"sv };
+    return values;
   }
   /**
    * palettes selections
    */
-  static constexpr std::array<int, 16U>
+  static constexpr const std::array<std::uint8_t, 16U> &
     palette_selections() noexcept
   {
-    return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+    static constexpr auto values
+      = std::array<std::uint8_t, 16U>{ 0u, 1u, 2u,  3u,  4u,  5u,  6u,  7u,
+                                       8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u };
+    return values;
   }
   /**
    * palettes selections strings
    */
-  static constexpr std::array<const char *, 16U>
+  static constexpr std::array<std::string_view, 16U>
     palette_selections_c_str() noexcept
   {
-    return { "0", "1", "2",  "3",  "4",  "5",  "6",  "7",
-             "8", "9", "10", "11", "12", "13", "14", "15" };
+    using namespace std::string_view_literals;
+    static constexpr const std::array<std::string_view, 16U> values{
+      "0"sv, "1"sv, "2"sv,  "3"sv,  "4"sv,  "5"sv,  "6"sv,  "7"sv,
+      "8"sv, "9"sv, "10"sv, "11"sv, "12"sv, "13"sv, "14"sv, "15"sv
+    };
+    return values;
   }
 };
 }// namespace open_viii::graphics::background
