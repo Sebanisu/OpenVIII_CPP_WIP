@@ -616,7 +616,7 @@ public:
   /**
    * palettes selections strings
    */
-  static constexpr std::array<std::string_view, 16U>
+  static constexpr std::array<std::string_view, 16U> &
     palette_selections_c_str() noexcept
   {
     using namespace std::string_view_literals;
