@@ -65,7 +65,7 @@ public:
       (m_data & ID_INVERSE_MASK) | ((in_id << ID_SHIFT) & ID_MASK));
     return out;
   }
-  [[nodiscard]] std::uint8_t
+  [[nodiscard]] constexpr std::uint8_t
     id() const noexcept
   {
     return static_cast<std::uint8_t>((m_data & ID_MASK) >> ID_SHIFT);

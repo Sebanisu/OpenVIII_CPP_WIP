@@ -72,7 +72,7 @@ public:
       | static_cast<std::uint16_t>(((in_blend << BLEND_SHIFT) & BLEND_MASK));
     return out;
   }
-  [[nodiscard]] std::uint8_t
+  [[nodiscard]] constexpr std::uint8_t
     blend() const noexcept
   {
     return static_cast<std::uint8_t>(
@@ -86,7 +86,7 @@ public:
                | (in_draw ? std::uint16_t{ DRAW_MASK } : std::uint16_t{ 0U });
     return out;
   }
-  [[nodiscard]] bool
+  [[nodiscard]] constexpr bool
     draw() const noexcept
   {
     return (m_data & DRAW_MASK) != 0U;
@@ -100,7 +100,7 @@ public:
                    (in_depth.raw() << DEPTH_SHIFT) & DEPTH_MASK);
     return out;
   }
-  [[nodiscard]] BPPT
+  [[nodiscard]] constexpr BPPT
     depth() const noexcept
   {
     auto raw = static_cast<std::uint8_t>(
