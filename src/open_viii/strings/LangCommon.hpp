@@ -88,6 +88,35 @@ namespace LangCommon {
     }
     return EMPTY;
   }
+
+  /**
+   * from langT to string
+   * @tparam langVal
+   * @return
+   */
+  [[nodiscard]] constexpr const std::string_view
+    to_string_full(LangT langVal)
+  {
+    if (langVal == LangT::en) {
+      return ENFULL;
+    }
+    if (langVal == LangT::fr) {
+      return FRFULL;
+    }
+    if (langVal == LangT::de) {
+      return DEFULL;
+    }
+    if (langVal == LangT::it) {
+      return ITFULL;
+    }
+    if (langVal == LangT::es) {
+      return ESFULL;
+    }
+    if (langVal == LangT::jp) {
+      return JPFULL;
+    }
+    return EMPTY;
+  }
   /**
    * from langT to string
    * @tparam langVal
@@ -205,6 +234,37 @@ namespace LangCommon {
     }
     else if constexpr (langVal == LangT::jp) {
       return JP;
+    }
+    else {
+      return EMPTY;
+    }
+  }
+  /**
+   * from langT to string
+   * @tparam langVal
+   * @return
+   */
+  template<LangT langVal>
+  [[nodiscard]] static consteval std::string_view
+    to_string_full() noexcept
+  {
+    if constexpr (langVal == LangT::en) {
+      return ENFULL;
+    }
+    else if constexpr (langVal == LangT::fr) {
+      return FRFULL;
+    }
+    else if constexpr (langVal == LangT::de) {
+      return DEFULL;
+    }
+    else if constexpr (langVal == LangT::it) {
+      return ITFULL;
+    }
+    else if constexpr (langVal == LangT::es) {
+      return ESFULL;
+    }
+    else if constexpr (langVal == LangT::jp) {
+      return JPFULL;
     }
     else {
       return EMPTY;
