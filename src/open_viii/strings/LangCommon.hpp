@@ -167,8 +167,8 @@ namespace LangCommon {
   [[nodiscard]] consteval auto
     to_string_array_3_char()
   {
-    constexpr auto                                    coos = to_array();
-    std::array<std::string_view, std::size(coos) + 1> coos_c_str{};
+    constexpr auto                                coos = to_array();
+    std::array<std::string_view, std::size(coos)> coos_c_str{};
     std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
       return to_string_3_char(coo);// I hope these are null terminated.
     });
@@ -182,8 +182,8 @@ namespace LangCommon {
   [[nodiscard]] consteval auto
     to_string_array_full()
   {
-    constexpr auto                                    coos = to_array();
-    std::array<std::string_view, std::size(coos) + 1> coos_c_str{};
+    constexpr auto                                coos = to_array();
+    std::array<std::string_view, std::size(coos)> coos_c_str{};
     std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
       return to_string_full(coo);// I hope these are null terminated.
     });
