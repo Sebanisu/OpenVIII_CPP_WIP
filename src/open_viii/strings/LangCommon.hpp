@@ -59,7 +59,8 @@ namespace LangCommon {
   static constexpr std::string_view ITA{ "ita" };
   static constexpr std::string_view SPA{ "spa" };
   static constexpr std::string_view MISC{ "x" };
-  static constexpr std::string_view EMPTY{};
+  static constexpr std::string_view MISCFULL{ "Generic" };
+  static constexpr std::string_view EMPTY{ "" };
   /**
    * from langT to string
    * @tparam langVal
@@ -156,6 +157,7 @@ namespace LangCommon {
     std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
       return to_string(coo);// I hope these are null terminated.
     });
+    coos_c_str.back() = MISC;
     return coos_c_str;
   }
 
@@ -171,6 +173,21 @@ namespace LangCommon {
       return to_string_3_char(coo);// I hope these are null terminated.
     });
     coos_c_str.back() = MISC;
+    return coos_c_str;
+  }
+
+  /**
+   * Get an array of string views
+   */
+  [[nodiscard]] consteval auto
+    to_string_array_full()
+  {
+    constexpr auto                                    coos = to_array();
+    std::array<std::string_view, std::size(coos) + 1> coos_c_str{};
+    std::ranges::transform(coos, coos_c_str.begin(), [](const auto &coo) {
+      return to_string_full(coo);// I hope these are null terminated.
+    });
+    coos_c_str.back() = MISCFULL;
     return coos_c_str;
   }
 
