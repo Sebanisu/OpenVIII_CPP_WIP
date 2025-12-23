@@ -34,7 +34,7 @@ test_script:
       cd ..
 
 artifacts:
-  - path: 'bin/*.exe'
+  - path: '.build/bin/*.exe'
     name: Canary
 
 deploy:
