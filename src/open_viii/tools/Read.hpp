@@ -25,12 +25,18 @@ template<typename T>
 inline T
   read_val(const std::span<const char> &span)
 {
-  std::array<char, sizeof(T)> tmp{};
-  if (sizeof(T) <= span.size()) {
-    std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
-    // if reading off head maybe bug?
-  }
-  return std::bit_cast<T>(tmp);
+    if (span.size() < sizeof(T)) {
+        throw std::out_of_range("Not enough bytes to read T");
+    }
+
+    // Create a fixed-size span view over the first sizeof(T) bytes
+    std::span<const char, sizeof(T)> view{span.data()};
+
+    // Advance the original span
+    span = span.subspan(sizeof(T));
+
+    // Bit-cast directly from the span
+    return std::bit_cast<T>(view);
 }
 
 /**
