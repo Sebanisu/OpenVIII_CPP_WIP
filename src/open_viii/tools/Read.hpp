@@ -28,14 +28,10 @@ inline T
     if (span.size() < sizeof(T)) {
         throw std::out_of_range("Not enough bytes to read T");
     }
-
-    // Create a fixed-size span view over the first sizeof(T) bytes
-    std::span<const char, sizeof(T)> view{span.data()};
-
-    // Bit-cast directly from the span
-    return std::bit_cast<T>(view);
+    alignas(Quad) char bytes[sizeof(Quad)];
+    std::memcpy(bytes, span.data(), sizeof(Quad));
+    return std::bit_cast<Quad>(bytes);
 }
-
 /**
  * @brief Read a value of type T from a given span and update the span.
  * @tparam T The data type to read from the span.
@@ -48,15 +44,10 @@ template<typename T>
     if (span.size() < sizeof(T)) {
         throw std::out_of_range("Not enough bytes to read T");
     }
-
-    // Create a fixed-size span view over the first sizeof(T) bytes
-    std::span<const char, sizeof(T)> view{span.data()};
-
-    // Advance the original span
-    span = span.subspan(sizeof(T));
-
-    // Bit-cast directly from the span
-    return std::bit_cast<T>(view);
+    alignas(Quad) char bytes[sizeof(Quad)];
+    std::memcpy(bytes, span.data(), sizeof(Quad));
+    span = span.subspan(sizeof(Quad));
+    return std::bit_cast<Quad>(bytes);
 }
 
 /**
