@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_4BITVALUES_H
 #define VIIIARCHIVE_4BITVALUES_H
 #include <cstring>
+#include <cstdint>
 namespace open_viii::graphics {
 /**
  * @brief Class to represent two 4-bit values stored in a single byte.
