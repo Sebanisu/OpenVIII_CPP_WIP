@@ -32,9 +32,6 @@ inline T
     // Create a fixed-size span view over the first sizeof(T) bytes
     std::span<const char, sizeof(T)> view{span.data()};
 
-    // Advance the original span
-    span = span.subspan(sizeof(T));
-
     // Bit-cast directly from the span
     return std::bit_cast<T>(view);
 }
