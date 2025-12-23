@@ -2,7 +2,7 @@
 build/
 out/
 cmake-build-*/
-
+.build/
 # IDE files
 .vs/
 .idea/workspace.xml*
