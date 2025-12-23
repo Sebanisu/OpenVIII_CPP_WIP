@@ -40,15 +40,20 @@ inline T
  * @return The value of type T read from the span.
  */
 template<typename T>
-[[nodiscard]] inline T
-  read_val(std::span<const char> &span)
+[[nodiscard]] inline T read_val(std::span<const char>& span)
 {
-  std::array<char, sizeof(T)> tmp{};
-  if (span.size() >= sizeof(T)) {
-    std::ranges::copy(span.subspan(0, sizeof(T)), tmp.begin());
+    if (span.size() < sizeof(T)) {
+        throw std::out_of_range("Not enough bytes to read T");
+    }
+
+    // Create a fixed-size span view over the first sizeof(T) bytes
+    std::span<const char, sizeof(T)> view{span.data()};
+
+    // Advance the original span
     span = span.subspan(sizeof(T));
-  }
-  return std::bit_cast<T>(tmp);
+
+    // Bit-cast directly from the span
+    return std::bit_cast<T>(view);
 }
 
 /**
