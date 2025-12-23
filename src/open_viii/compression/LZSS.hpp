@@ -16,6 +16,7 @@
 #include <array>
 #include <ranges>
 #include <vector>
+#include <cstdint>
 namespace open_viii::compression {
 struct LZSS
 {
