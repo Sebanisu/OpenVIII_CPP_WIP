@@ -2,8 +2,8 @@
 #include <array>
 #include <cstdlib>// getenv
 #include <string>
-#ifdef _WIN32
 #include <ctre.hpp>
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -150,42 +150,41 @@ std::vector<std::filesystem::path> &
   open_viii::Paths::get()
 {
   using namespace std::literals::string_literals;
+  namespace fs = std::filesystem;
   static std::vector<std::filesystem::path> ret = []() {
-    std::vector<std::filesystem::path> paths{
-      tl::string::replace_slashes(
-        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"s),
-      tl::string::replace_slashes(
-        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"s),
 
-      tl::string::replace_slashes(
-        R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII Remastered)"s),
-      tl::string::replace_slashes(
-        R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII Remastered)"s),
+    std::vector<fs::path> paths{
+    fs::path(R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"),
+    fs::path(R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"),
 
-      tl::string::replace_slashes(
-        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"s),
-      tl::string::replace_slashes(
-        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"s),
+    fs::path(R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII Remastered)"),
+    fs::path(R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII Remastered)"),
 
-      tl::string::replace_slashes(
-        R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII)"s),
-      tl::string::replace_slashes(
-        R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII)"s),
+    fs::path(R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"),
+    fs::path(R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"),
 
-      tl::string::replace_slashes(R"(/mnt/k/ff82000)"s),
-      tl::string::replace_slashes(R"(K:\ff82000)"s),
+    fs::path(R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII)"),
+    fs::path(R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII)"),
 
-      tl::string::replace_slashes(R"(/mnt/d/games/ff82000)"s),
-      tl::string::replace_slashes(R"(D:\games\ff82000)"s),
+    fs::path(R"(/mnt/k/ff82000)"),
+    fs::path(R"(K:\ff82000)"),
 
-      // CD
-      tl::string::replace_slashes(R"(/mnt/e/)"s),
-      tl::string::replace_slashes(R"(e:\)"s),
+    fs::path(R"(/mnt/d/games/ff82000)"),
+    fs::path(R"(D:\games\ff82000)"),
 
-      // folders with tim files in it
-      tl::string::replace_slashes(R"(/mnt/d/tim)"s),
-      tl::string::replace_slashes(R"(d:\tim)"s)
+    // CD
+    fs::path(R"(/mnt/e/)"),
+    fs::path(R"(E:\)"),
+
+    // folders with tim files in it
+    fs::path(R"(/mnt/d/tim)"),
+    fs::path(R"(D:\tim)")
     };
+
+    // normalize slashes to native
+    for (auto& p : paths) {
+      p.make_preferred();  // converts slashes to native format
+    }
 
     std::error_code error_code{};
     if (static const auto path_file

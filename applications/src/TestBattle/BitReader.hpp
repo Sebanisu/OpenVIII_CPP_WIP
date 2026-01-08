@@ -53,8 +53,9 @@ public:
     temp                     = (temp >> _bitPosition) & mask;
 
     // Update the position and bit position within the data vector
-    position                 = current_position + static_cast<size_t>(count + _bitPosition) / bit8;
-    _bitPosition             = (count + _bitPosition) % bit8;
+    position
+      = current_position + static_cast<size_t>(count + _bitPosition) / bit8;
+    _bitPosition = (count + _bitPosition) % bit8;
 
     // Return the extracted bits as a std::uint16_t
     return static_cast<std::uint16_t>(temp);

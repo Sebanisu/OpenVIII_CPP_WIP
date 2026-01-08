@@ -12,7 +12,8 @@ int
     [[maybe_unused]] const int         argc,
     [[maybe_unused]] const char *const argv[])
 {
-  const auto argspan = std::span<const char *const>(argv, static_cast<size_t>(argc));
+  const auto argspan
+    = std::span<const char *const>(argv, static_cast<size_t>(argc));
   if (argc >= 3) {
     const auto src = check(argspan[1]);
     const auto dst = check(argspan[2], true);

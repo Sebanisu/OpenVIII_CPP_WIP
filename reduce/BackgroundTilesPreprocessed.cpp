@@ -78535,7 +78535,7 @@ namespace std __attribute__((__visibility__("default"))) {
       {
         __xfer_bufptrs          __st{ __rhs, this };
         const __streambuf_type &__base = __rhs;
-        __streambuf_type::      operator=(__base);
+        __streambuf_type::operator=(__base);
         this->pubimbue(__rhs.getloc());
         _M_mode   = __rhs._M_mode;
         _M_string = std::move(__rhs._M_string);

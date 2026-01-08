@@ -14,9 +14,9 @@
 #define VIIICOMPRESSION_LZSS_H
 #include <algorithm>
 #include <array>
+#include <cstdint>
 #include <ranges>
 #include <vector>
-#include <cstdint>
 namespace open_viii::compression {
 struct LZSS
 {
