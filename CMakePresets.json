@@ -5,6 +5,7 @@
     "minor": 25,
     "patch": 0
   },
+
   "configurePresets": [
     {
       "name": "base",
@@ -16,70 +17,135 @@
       },
       "binaryDir": "${sourceDir}/.build",
       "installDir": "${sourceDir}/.install",
-      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    },
+
+    {
+      "name": "linux-base",
+      "hidden": true,
+      "inherits": "base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+        "VCPKG_TARGET_TRIPLET": "x64-linux"
       }
     },
+
     {
-      "name": "Release",
+      "name": "windows-base",
+      "hidden": true,
       "inherits": "base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": "Windows",
+          "intelliSenseMode": "windows-msvc-x64"
+        }
+      }
+    },
+
+    {
+      "name": "Release-linux",
+      "inherits": "linux-base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
     },
     {
-      "name": "RelWithDebInfo",
-      "inherits": "base",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-      }
-    },
-    {
-      "name": "Debug",
-      "inherits": "base",
+      "name": "Debug-linux",
+      "inherits": "linux-base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "MinSizeRel",
-      "inherits": "base",
+      "name": "RelWithDebInfo-linux",
+      "inherits": "linux-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "MinSizeRel-linux",
+      "inherits": "linux-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "MinSizeRel"
+      }
+    },
+
+    {
+      "name": "Release-windows",
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "Debug-windows",
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "RelWithDebInfo-windows",
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "MinSizeRel-windows",
+      "inherits": "windows-base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "MinSizeRel"
       }
     }
   ],
+
   "buildPresets": [
     {
-      "name": "Release",
-      "displayName": "Default",
-      "configurePreset": "Release",
-      "configuration": "Release"
+      "name": "Release-linux",
+      "configurePreset": "Release-linux"
     },
     {
-      "name": "RelWithDebInfo",
-      "displayName": "Default",
-      "configurePreset": "RelWithDebInfo",
-      "configuration": "RelWithDebInfo"
+      "name": "Debug-linux",
+      "configurePreset": "Debug-linux"
     },
     {
-      "name": "Debug",
-      "displayName": "Default",
-      "configurePreset": "Debug",
-      "configuration": "Debug"
+      "name": "RelWithDebInfo-linux",
+      "configurePreset": "RelWithDebInfo-linux"
     },
     {
-      "name": "MinSizeRel",
-      "displayName": "Default",
-      "configurePreset": "MinSizeRel",
-      "configuration": "MinSizeRel"
+      "name": "MinSizeRel-linux",
+      "configurePreset": "MinSizeRel-linux"
+    },
+
+    {
+      "name": "Release-windows",
+      "configurePreset": "Release-windows"
+    },
+    {
+      "name": "Debug-windows",
+      "configurePreset": "Debug-windows"
+    },
+    {
+      "name": "RelWithDebInfo-windows",
+      "configurePreset": "RelWithDebInfo-windows"
+    },
+    {
+      "name": "MinSizeRel-windows",
+      "configurePreset": "MinSizeRel-windows"
     }
-  ],
-  "vendor": {
-    "microsoft.com/VisualStudioSettings/CMake/1.0": {
-      "hostOS": "Windows",
-      "intelliSenseMode": "windows-msvc-x64"
-    }
-  }
+  ]
 }
