@@ -1,7 +1,4 @@
-# Only require ctre on Windows
-if(WIN32)
-    find_package(ctre CONFIG REQUIRED)
-endif()
+find_package(ctre CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME}_VIIIPaths STATIC
     Paths.cpp
@@ -13,9 +10,7 @@ target_link_libraries(${PROJECT_NAME}_VIIIPaths
 )
 
 # Only link ctre on Windows
-if(WIN32)
-    target_link_libraries(${PROJECT_NAME}_VIIIPaths PRIVATE ctre::ctre)
-endif()
+target_link_libraries(${PROJECT_NAME}_VIIIPaths PRIVATE ctre::ctre)
 
 apply_common_operations(VIIIPaths)
 
