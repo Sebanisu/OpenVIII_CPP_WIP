@@ -25,12 +25,12 @@ template<typename T>
 inline T
   read_val(const std::span<const char> &span)
 {
-    if (span.size() < sizeof(T)) {
-        throw std::out_of_range("Not enough bytes to read T");
-    }
-    alignas(T) char bytes[sizeof(T)];
-    std::memcpy(bytes, span.data(), sizeof(T));
-    return std::bit_cast<T>(bytes);
+  if (span.size() < sizeof(T)) {
+    throw std::out_of_range("Not enough bytes to read T");
+  }
+  alignas(T) char bytes[sizeof(T)];
+  std::memcpy(bytes, span.data(), sizeof(T));
+  return std::bit_cast<T>(bytes);
 }
 /**
  * @brief Read a value of type T from a given span and update the span.
@@ -39,15 +39,16 @@ inline T
  * @return The value of type T read from the span.
  */
 template<typename T>
-[[nodiscard]] inline T read_val(std::span<const char>& span)
+[[nodiscard]] inline T
+  read_val(std::span<const char> &span)
 {
-    if (span.size() < sizeof(T)) {
-        throw std::out_of_range("Not enough bytes to read T");
-    }
-    alignas(T) char bytes[sizeof(T)];
-    std::memcpy(bytes, span.data(), sizeof(T));
-    span = span.subspan(sizeof(T));
-    return std::bit_cast<T>(bytes);
+  if (span.size() < sizeof(T)) {
+    throw std::out_of_range("Not enough bytes to read T");
+  }
+  alignas(T) char bytes[sizeof(T)];
+  std::memcpy(bytes, span.data(), sizeof(T));
+  span = span.subspan(sizeof(T));
+  return std::bit_cast<T>(bytes);
 }
 
 /**
