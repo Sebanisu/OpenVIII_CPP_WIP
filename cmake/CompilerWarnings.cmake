@@ -74,6 +74,7 @@ function(set_project_warnings project_name)
             -Wuseless-cast # warn if you perform a cast to the same type
             -fconcepts-diagnostics-depth=5
             #   -Wfatal-errors
+            -fdiagnostics-color=never
             )
     set(GCC_SANITIZER
             ${CLANG_SANITIZER})
