@@ -29,8 +29,13 @@ public:
     Stop,
     Continue
   };
+
+  static std::vector<std::filesystem::path>
+    ff8_paths_in_steam_library(const std::filesystem::path &steam_path);
   static std::vector<std::filesystem::path>
     get_windows_ff8_paths();
+  static std::vector<std::filesystem::path>
+    get_linux_ff8_paths();
   static std::vector<std::filesystem::path> &
     get();
   static void

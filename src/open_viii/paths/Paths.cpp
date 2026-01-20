@@ -1,21 +1,128 @@
 #include "Paths.hpp"
 #include <array>
 #include <cstdlib>// getenv
-#include <string>
 #include <ctre.hpp>
+#include <string>
 #ifdef _WIN32
 #include <windows.h>
 #endif
+// Helper: verify path exists and is a directory
+inline bool
+  valid_dir(const std::filesystem::path &p)
+{
+  std::error_code ec;
+  return std::filesystem::exists(p, ec) && !ec
+      && std::filesystem::is_directory(p, ec) && !ec;
+}
+// Returns FF8 paths under a given Steam library root
+std::vector<std::filesystem::path>
+  open_viii::Paths::ff8_paths_in_steam_library(
+    const std::filesystem::path &steam_path)
+{
+  const std::array<std::string_view, 2> app_ids = { "39150", "1026680" };
+  std::vector<std::filesystem::path>    paths;
+
+  std::filesystem::path                 steamapps = steam_path / "steamapps";
+  if (!valid_dir(steamapps))
+    return paths;
+
+  // Parse libraryfolders.vdf for additional libraries
+  std::vector<std::filesystem::path> libraries;
+  libraries.push_back(steamapps);
+
+  std::filesystem::path vdf_path = steamapps / "libraryfolders.vdf";
+  if (std::filesystem::exists(vdf_path)) {
+    std::ifstream vdf_file(vdf_path);
+    std::string   line;
+    while (std::getline(vdf_file, line)) {
+      if (auto match = ctre::search<R"ccc("path"\s+"([^"]+)")ccc">(line)) {
+        std::string tmp = match.get<1>().to_string();
+
+        size_t      pos = 0;
+        while ((pos = tmp.find("\\\\", pos)) != std::string::npos) {
+          tmp.replace(pos, 2, "\\");
+          ++pos;
+        }
+
+        std::filesystem::path lib_path
+          = std::filesystem::path{ tmp } / "steamapps";
+        if (valid_dir(lib_path))
+          libraries.push_back(lib_path);
+      }
+    }
+  }
+
+  // Scan each library for FF8 manifests
+  for (const auto &app_id : app_ids) {
+    for (const auto &lib : libraries) {
+      std::filesystem::path manifest_path
+        = lib / (std::string("appmanifest_") + app_id.data() + ".acf");
+      if (!std::filesystem::exists(manifest_path))
+        continue;
+
+      std::ifstream manifest_file(manifest_path);
+      std::string   line;
+      while (std::getline(manifest_file, line)) {
+        if (
+          auto match
+          = ctre::search<R"ccc("installdir"\s+"([^"]+)")ccc">(line)) {
+          std::filesystem::path ff8_path
+            = lib / "common" / match.get<1>().to_string();
+          if (valid_dir(ff8_path))
+            paths.push_back(std::move(ff8_path));
+        }
+      }
+    }
+  }
+
+  // Deduplicate & sort
+  std::ranges::sort(paths);
+  auto [first, last] = std::ranges::unique(paths);
+  paths.erase(first, last);
+
+  return paths;
+}
+
+std::vector<std::filesystem::path>
+  open_viii::Paths::get_linux_ff8_paths()
+{
+  std::vector<std::filesystem::path> paths{};
+  // 1. Check FF8_PATH env var
+  // 2. Check Steam
+
+  static const std::filesystem::path home = []() -> std::filesystem::path {
+    if (const char *env_home_path = std::getenv("HOME")) {
+      return env_home_path;
+    }
+    return {};
+  }();
+  if (home.empty()) {
+    return paths;
+  }
+  static const auto SteamRelPaths = std::to_array<std::filesystem::path>(
+    { ".local/share/Steam",
+      ".steam/steam",
+      ".steam/root",
+      ".var/app/com.valvesoftware.Steam/.local/share/Steam",
+      ".var/app/com.valvesoftware.Steam/.steam",
+      "snap/steam/common/.local/share/Steam",
+      "snap/steam/common/.steam/steam",
+      ".steam" });
+
+  for (const auto &rel : SteamRelPaths) {
+    const auto full = home / rel;
+    std::ranges::move(
+      ff8_paths_in_steam_library(full),
+      std::back_inserter(paths));
+  }
+  return paths;
+}
 
 std::vector<std::filesystem::path>
   open_viii::Paths::get_windows_ff8_paths()
 {
   std::vector<std::filesystem::path> paths;
 
-  // 1. Check FF8_PATH env var
-  if (const char *env_path = std::getenv("FF8_PATH")) {
-    paths.push_back(env_path);
-  }
 #ifndef _WIN32
   return paths;// Empty vector on non-Windows
 #else
@@ -150,40 +257,45 @@ std::vector<std::filesystem::path> &
   open_viii::Paths::get()
 {
   using namespace std::literals::string_literals;
-  namespace fs = std::filesystem;
+  namespace fs                                  = std::filesystem;
   static std::vector<std::filesystem::path> ret = []() {
-
     std::vector<fs::path> paths{
-    fs::path(R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"),
-    fs::path(R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"),
+      fs::path(
+        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII Remastered)"),
+      fs::path(
+        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII Remastered)"),
 
-    fs::path(R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII Remastered)"),
-    fs::path(R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII Remastered)"),
+      fs::path(
+        R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII Remastered)"),
+      fs::path(
+        R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII Remastered)"),
 
-    fs::path(R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"),
-    fs::path(R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"),
+      fs::path(
+        R"(/mnt/c/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY VIII)"),
+      fs::path(
+        R"(C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY VIII)"),
 
-    fs::path(R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII)"),
-    fs::path(R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII)"),
+      fs::path(R"(D:\SteamLibrary\steamapps\common\FINAL FANTASY VIII)"),
+      fs::path(R"(/mnt/d/SteamLibrary/steamapps/common/FINAL FANTASY VIII)"),
 
-    fs::path(R"(/mnt/k/ff82000)"),
-    fs::path(R"(K:\ff82000)"),
+      fs::path(R"(/mnt/k/ff82000)"),
+      fs::path(R"(K:\ff82000)"),
 
-    fs::path(R"(/mnt/d/games/ff82000)"),
-    fs::path(R"(D:\games\ff82000)"),
+      fs::path(R"(/mnt/d/games/ff82000)"),
+      fs::path(R"(D:\games\ff82000)"),
 
-    // CD
-    fs::path(R"(/mnt/e/)"),
-    fs::path(R"(E:\)"),
+      // CD
+      fs::path(R"(/mnt/e/)"),
+      fs::path(R"(E:\)"),
 
-    // folders with tim files in it
-    fs::path(R"(/mnt/d/tim)"),
-    fs::path(R"(D:\tim)")
+      // folders with tim files in it
+      fs::path(R"(/mnt/d/tim)"),
+      fs::path(R"(D:\tim)")
     };
 
     // normalize slashes to native
-    for (auto& p : paths) {
-      p.make_preferred();  // converts slashes to native format
+    for (auto &p : paths) {
+      p.make_preferred();// converts slashes to native format
     }
 
     std::error_code error_code{};
@@ -231,11 +343,25 @@ std::vector<std::filesystem::path> &
         return !found || !is_dir;
       });
     paths.erase(first, last);
-    auto tmp_win_paths = get_windows_ff8_paths();
+
+    if (const char *env_path = std::getenv("FF8_PATH")) {
+      paths.push_back(env_path);
+    }
+#ifdef _WIN32
+    auto tmp_paths = get_windows_ff8_paths();
+#else
+    auto tmp_paths = get_linux_ff8_paths();
+#endif
     paths.insert(
       paths.end(),
-      std::make_move_iterator(tmp_win_paths.begin()),
-      std::make_move_iterator(tmp_win_paths.end()));
+      std::make_move_iterator(tmp_paths.begin()),
+      std::make_move_iterator(tmp_paths.end()));
+    // normalize paths to native separators
+    std::ranges::transform(paths, paths.begin(), [](std::filesystem::path p) {
+      p = std::filesystem::canonical(p);
+      p.make_preferred();
+      return p;
+    });
     std::ranges::sort(paths);
     auto &&[rem_begin, rem_end] = std::ranges::unique(paths);
     paths.erase(rem_begin, rem_end);

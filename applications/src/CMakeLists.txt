@@ -109,3 +109,8 @@ add_executable(${PROJECT_NAME}_tiz
         tiz.cpp
         lz4_lzss_common_ff8.hpp)
 apply_common_operations(tiz)
+
+
+add_executable(${PROJECT_NAME}_detected_ff8_paths
+        detected_ff8_paths.cpp)
+apply_common_operations(detected_ff8_paths)
