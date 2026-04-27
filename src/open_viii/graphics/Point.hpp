@@ -29,8 +29,7 @@ public:
   constexpr Point(const dimT &in_x, const dimT &in_y) noexcept
     : m_x(in_x), m_y(in_y) {};
   constexpr auto
-    operator<=>(const Point<dimT> &right) const noexcept
-    = default;
+    operator<=>(const Point<dimT> &right) const noexcept = default;
   template<typename T>
     requires(
       (std::integral<T> || std::floating_point<T>) && !std::is_same_v<T, dimT>)

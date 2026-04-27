@@ -48,8 +48,7 @@ public:
       m_animation_state(tile.animation_state())
   {}
   auto
-    operator<=>(const Pupu &) const
-    = default;
+    operator<=>(const Pupu &) const = default;
   auto
     operator==(const Pupu &right) const
   {

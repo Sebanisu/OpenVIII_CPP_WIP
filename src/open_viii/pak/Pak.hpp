@@ -322,10 +322,11 @@ public:
         MovieClip movie{};
         while (!is.eof()) {
           auto type = FileSectionTypeT::get_type(is);
-          if (FileSectionTypeT::valid_type(
-                type,
-                FileSectionTypeT::BIK,
-                FileSectionTypeT::KB2)) {
+          if (
+            FileSectionTypeT::valid_type(
+              type,
+              FileSectionTypeT::BIK,
+              FileSectionTypeT::KB2)) {
             get_bik(is, movie, type);
           }
           else if (std::ranges::equal(type, FileSectionTypeT::CAM)) {

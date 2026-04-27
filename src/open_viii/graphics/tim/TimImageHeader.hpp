@@ -44,8 +44,7 @@ public:
    * @brief Default three-way comparison.
    */
   constexpr auto
-    operator<=>(const TimImageHeader &) const
-    = default;
+    operator<=>(const TimImageHeader &) const = default;
 
   /**
    * @brief Get the total header and data size in bytes.

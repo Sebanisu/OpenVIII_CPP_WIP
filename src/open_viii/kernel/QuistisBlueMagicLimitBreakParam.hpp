@@ -28,9 +28,8 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(
-      const QuistisBlueMagicLimitBreakParam_impl &right) const noexcept
-    = default;
+    operator<=>(const QuistisBlueMagicLimitBreakParam_impl &right)
+      const noexcept = default;
 };
 using QuistisBlueMagicLimitBreakParam
   = CommonKernel<QuistisBlueMagicLimitBreakParam_impl>;

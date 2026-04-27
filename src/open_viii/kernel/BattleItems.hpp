@@ -67,8 +67,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const BattleItems_impl &right) const noexcept
-    = default;
+    operator<=>(const BattleItems_impl &right) const noexcept = default;
 };
 using BattleItems = CommonKernel<BattleItems_impl>;
 static_assert(sizeof(BattleItems) == BattleItems::EXPECTED_SIZE);

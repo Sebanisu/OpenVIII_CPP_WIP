@@ -21,8 +21,7 @@ struct GFGroup
 {
 public:
   constexpr auto
-    operator<=>(const GFGroup<T> &right) const noexcept
-    = default;
+    operator<=>(const GFGroup<T> &right) const noexcept = default;
   [[nodiscard]] constexpr T
     quetzalcoatl() const noexcept
   {

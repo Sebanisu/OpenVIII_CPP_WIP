@@ -91,8 +91,7 @@ public:
    * @brief Default three-way comparison.
    */
   constexpr auto
-    operator<=>(const TimHeader &) const
-    = default;
+    operator<=>(const TimHeader &) const = default;
 
   /**
    * @brief Get the bits per pixel flags and CLP flag.

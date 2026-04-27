@@ -3024,8 +3024,7 @@ namespace std __attribute__((__visibility__("default"))) {
     ~__nonesuch()                  = delete;
     __nonesuch(__nonesuch const &) = delete;
     void
-      operator=(__nonesuch const &)
-      = delete;
+      operator=(__nonesuch const &) = delete;
   };
 #pragma GCC diagnostic pop
 
@@ -3188,12 +3187,10 @@ namespace std __attribute__((__visibility__("default"))) {
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   template<typename _Tp>
   [[deprecated("use is_standard_layout_v && is_trivial_v instead")]]
-  inline constexpr bool is_pod_v
-    = is_pod<_Tp>::value;
+  inline constexpr bool is_pod_v = is_pod<_Tp>::value;
   template<typename _Tp>
   [[__deprecated__]]
-  inline constexpr bool is_literal_type_v
-    = is_literal_type<_Tp>::value;
+  inline constexpr bool is_literal_type_v = is_literal_type<_Tp>::value;
 #pragma GCC diagnostic pop
   template<typename _Tp>
   inline constexpr bool is_empty_v = is_empty<_Tp>::value;
@@ -3680,8 +3677,7 @@ namespace std __attribute__((__visibility__("default"))) {
     namespace __cust_swap {
       template<typename _Tp>
       void
-        swap(_Tp &, _Tp &)
-        = delete;
+        swap(_Tp &, _Tp &) = delete;
 
       template<typename _Tp, typename _Up>
       concept __adl_swap
@@ -3907,8 +3903,7 @@ public:
   }
 
   friend constexpr bool
-    operator==(partial_ordering, partial_ordering) noexcept
-    = default;
+    operator==(partial_ordering, partial_ordering) noexcept = default;
 
   friend constexpr bool
     operator<(partial_ordering __v, __cmp_cat::__unspec) noexcept
@@ -4013,8 +4008,7 @@ public:
   }
 
   friend constexpr bool
-    operator==(weak_ordering, weak_ordering) noexcept
-    = default;
+    operator==(weak_ordering, weak_ordering) noexcept = default;
 
   friend constexpr bool
     operator<(weak_ordering __v, __cmp_cat::__unspec) noexcept
@@ -4117,8 +4111,7 @@ public:
   }
 
   friend constexpr bool
-    operator==(strong_ordering, strong_ordering) noexcept
-    = default;
+    operator==(strong_ordering, strong_ordering) noexcept = default;
 
   friend constexpr bool
     operator<(strong_ordering __v, __cmp_cat::__unspec) noexcept
@@ -4794,8 +4787,7 @@ public:
   static constexpr auto EXPECTED_SIZE = 1U;
   constexpr LayerID()                 = default;
   constexpr auto
-    operator<=>(const LayerID &) const
-    = default;
+    operator<=>(const LayerID &) const = default;
   [[nodiscard]] constexpr auto
     id() const noexcept
   {
@@ -4840,8 +4832,7 @@ public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE = 2U;
   PaletteID()                                          = default;
   constexpr auto
-    operator<=>(const PaletteID &) const
-    = default;
+    operator<=>(const PaletteID &) const = default;
   [[nodiscard]] auto
     with_thirty(std::uint16_t in_thirty) const noexcept
   {
@@ -5775,9 +5766,8 @@ namespace std __attribute__((__visibility__("default"))) {
 
     fpos(const fpos &) = default;
     fpos &
-      operator=(const fpos &)
-      = default;
-    ~fpos() = default;
+      operator=(const fpos &) = default;
+    ~fpos()                   = default;
 
     operator streamoff() const
     {
@@ -6004,12 +5994,10 @@ namespace std {
 
     exception(const exception &) = default;
     exception &
-      operator=(const exception &)
-      = default;
-    exception(exception &&) = default;
+      operator=(const exception &) = default;
+    exception(exception &&)        = default;
     exception &
-      operator=(exception &&)
-      = default;
+      operator=(exception &&) = default;
 
     virtual const char *
       what() const noexcept;
@@ -6269,8 +6257,7 @@ namespace std {
 
     bad_alloc(const bad_alloc &) = default;
     bad_alloc &
-      operator=(const bad_alloc &)
-      = default;
+      operator=(const bad_alloc &) = default;
 
     virtual ~bad_alloc() throw();
 
@@ -6405,17 +6392,13 @@ template<typename _Ret, typename... _Args, bool _NE>
 void launder(_Ret (*)(_Args......) noexcept(_NE)) = delete;
 
 void
-  launder(void *)
-  = delete;
+  launder(void *) = delete;
 void
-  launder(const void *)
-  = delete;
+  launder(const void *) = delete;
 void
-  launder(volatile void *)
-  = delete;
+  launder(volatile void *) = delete;
 void
-  launder(const volatile void *)
-  = delete;
+  launder(const volatile void *) = delete;
 }// namespace std
 
 namespace std {
@@ -6717,8 +6700,7 @@ namespace std {
     nested_exception(const nested_exception &) noexcept = default;
 
     nested_exception &
-      operator=(const nested_exception &) noexcept
-      = default;
+      operator=(const nested_exception &) noexcept = default;
 
     virtual ~nested_exception() noexcept;
 
@@ -7891,8 +7873,7 @@ namespace std __attribute__((__visibility__("default"))) {
     ~__pair_base()                   = default;
     __pair_base(const __pair_base &) = default;
     __pair_base &
-      operator=(const __pair_base &)
-      = delete;
+      operator=(const __pair_base &) = delete;
   };
 # 210 "/usr/include/c++/11/bits/stl_pair.h" 3
   template<typename _T1, typename _T2>
@@ -7911,8 +7892,7 @@ namespace std __attribute__((__visibility__("default"))) {
         __and_<
           __is_implicitly_default_constructible<_U1>,
           __is_implicitly_default_constructible<_U2>>::value,
-        bool>::type
-      = true>
+        bool>::type = true>
 
     constexpr pair() : first(), second()
     {}
@@ -7927,8 +7907,7 @@ namespace std __attribute__((__visibility__("default"))) {
           __not_<__and_<
             __is_implicitly_default_constructible<_U1>,
             __is_implicitly_default_constructible<_U2>>>>::value,
-        bool>::type
-      = false>
+        bool>::type = false>
     explicit constexpr pair() : first(), second()
     {}
 # 256 "/usr/include/c++/11/bits/stl_pair.h" 3
@@ -7940,8 +7919,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename enable_if<
         _PCCP::template _ConstructiblePair<_U1, _U2>()
           && _PCCP::template _ImplicitlyConvertiblePair<_U1, _U2>(),
-        bool>::type
-      = true>
+        bool>::type = true>
     constexpr pair(const _T1 &__a, const _T2 &__b) : first(__a), second(__b)
     {}
 
@@ -7951,8 +7929,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename enable_if<
         _PCCP::template _ConstructiblePair<_U1, _U2>()
           && !_PCCP::template _ImplicitlyConvertiblePair<_U1, _U2>(),
-        bool>::type
-      = false>
+        bool>::type = false>
     explicit constexpr pair(const _T1 &__a, const _T2 &__b)
       : first(__a), second(__b)
     {}
@@ -7967,8 +7944,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename enable_if<
         _PCCFP<_U1, _U2>::template _ConstructiblePair<_U1, _U2>()
           && _PCCFP<_U1, _U2>::template _ImplicitlyConvertiblePair<_U1, _U2>(),
-        bool>::type
-      = true>
+        bool>::type = true>
     constexpr pair(const pair<_U1, _U2> &__p)
       : first(__p.first), second(__p.second)
     {}
@@ -7979,8 +7955,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename enable_if<
         _PCCFP<_U1, _U2>::template _ConstructiblePair<_U1, _U2>()
           && !_PCCFP<_U1, _U2>::template _ImplicitlyConvertiblePair<_U1, _U2>(),
-        bool>::type
-      = false>
+        bool>::type = false>
     explicit constexpr pair(const pair<_U1, _U2> &__p)
       : first(__p.first), second(__p.second)
     {}
@@ -7992,8 +7967,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename _U1,
       typename enable_if<
         _PCCP::template _MoveCopyPair<true, _U1, _T2>(),
-        bool>::type
-      = true>
+        bool>::type = true>
     constexpr pair(_U1 &&__x, const _T2 &__y)
       : first(std::forward<_U1>(__x)), second(__y)
     {}
@@ -8002,8 +7976,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename _U1,
       typename enable_if<
         _PCCP::template _MoveCopyPair<false, _U1, _T2>(),
-        bool>::type
-      = false>
+        bool>::type = false>
     explicit constexpr pair(_U1 &&__x, const _T2 &__y)
       : first(std::forward<_U1>(__x)), second(__y)
     {}
@@ -8012,8 +7985,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename _U2,
       typename enable_if<
         _PCCP::template _CopyMovePair<true, _T1, _U2>(),
-        bool>::type
-      = true>
+        bool>::type = true>
     constexpr pair(const _T1 &__x, _U2 &&__y)
       : first(__x), second(std::forward<_U2>(__y))
     {}
@@ -8022,8 +7994,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename _U2,
       typename enable_if<
         _PCCP::template _CopyMovePair<false, _T1, _U2>(),
-        bool>::type
-      = false>
+        bool>::type = false>
     explicit pair(const _T1 &__x, _U2 &&__y)
       : first(__x), second(std::forward<_U2>(__y))
     {}
@@ -8034,8 +8005,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename enable_if<
         _PCCP::template _MoveConstructiblePair<_U1, _U2>()
           && _PCCP::template _ImplicitlyMoveConvertiblePair<_U1, _U2>(),
-        bool>::type
-      = true>
+        bool>::type = true>
     constexpr pair(_U1 &&__x, _U2 &&__y)
       : first(std::forward<_U1>(__x)), second(std::forward<_U2>(__y))
     {}
@@ -8046,8 +8016,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename enable_if<
         _PCCP::template _MoveConstructiblePair<_U1, _U2>()
           && !_PCCP::template _ImplicitlyMoveConvertiblePair<_U1, _U2>(),
-        bool>::type
-      = false>
+        bool>::type = false>
     explicit constexpr pair(_U1 &&__x, _U2 &&__y)
       : first(std::forward<_U1>(__x)), second(std::forward<_U2>(__y))
     {}
@@ -8059,8 +8028,7 @@ namespace std __attribute__((__visibility__("default"))) {
         _PCCFP<_U1, _U2>::template _MoveConstructiblePair<_U1, _U2>()
           && _PCCFP<_U1, _U2>::
             template _ImplicitlyMoveConvertiblePair<_U1, _U2>(),
-        bool>::type
-      = true>
+        bool>::type = true>
     constexpr pair(pair<_U1, _U2> &&__p)
       : first(std::forward<_U1>(__p.first)),
         second(std::forward<_U2>(__p.second))
@@ -8073,8 +8041,7 @@ namespace std __attribute__((__visibility__("default"))) {
         _PCCFP<_U1, _U2>::template _MoveConstructiblePair<_U1, _U2>()
           && !_PCCFP<_U1, _U2>::
                template _ImplicitlyMoveConvertiblePair<_U1, _U2>(),
-        bool>::type
-      = false>
+        bool>::type = false>
     explicit constexpr pair(pair<_U1, _U2> &&__p)
       : first(std::forward<_U1>(__p.first)),
         second(std::forward<_U2>(__p.second))
@@ -8191,8 +8158,7 @@ namespace std __attribute__((__visibility__("default"))) {
   template<typename _T1, typename _T2>
   typename enable_if<
     !__and_<__is_swappable<_T1>, __is_swappable<_T2>>::value>::type
-    swap(pair<_T1, _T2> &, pair<_T1, _T2> &)
-    = delete;
+    swap(pair<_T1, _T2> &, pair<_T1, _T2> &) = delete;
 # 564 "/usr/include/c++/11/bits/stl_pair.h" 3
   template<typename _T1, typename _T2>
   constexpr pair<
@@ -9456,11 +9422,9 @@ namespace std __attribute__((__visibility__("default"))) {
     };
 
     void
-      begin(auto &)
-      = delete;
+      begin(auto &) = delete;
     void
-      begin(const auto &)
-      = delete;
+      begin(const auto &) = delete;
 
     template<typename _Tp>
     concept __adl_begin
@@ -9804,8 +9768,7 @@ namespace std __attribute__((__visibility__("default"))) {
     {}
 
     reverse_iterator &
-      operator=(const reverse_iterator &)
-      = default;
+      operator=(const reverse_iterator &) = default;
 
     template<typename _Iter>
 
@@ -10065,8 +10028,7 @@ namespace std __attribute__((__visibility__("default"))) {
     requires(!sized_sentinel_for<_Iterator1, _Iterator2>)
   inline constexpr bool disable_sized_sentinel_for<
     reverse_iterator<_Iterator1>,
-    reverse_iterator<_Iterator2>>
-    = true;
+    reverse_iterator<_Iterator2>> = true;
 
   template<typename _Iterator>
   constexpr auto __niter_base(reverse_iterator<_Iterator> __it)
@@ -13752,8 +13714,7 @@ namespace std __attribute__((__visibility__("default"))) {
     random_access_iterator_tag)
   {
     typename iterator_traits<_RandomAccessIterator>::difference_type
-      __trip_count
-      = (__last - __first) >> 2;
+      __trip_count = (__last - __first) >> 2;
 
     for (; __trip_count > 0; --__trip_count) {
       if (__pred(__first))
@@ -14874,11 +14835,11 @@ namespace std __attribute__((__visibility__("default"))) {
   typedef __locale_t __c_locale;
 
   inline int         __convert_from_v(
-            const __c_locale &__cloc __attribute__((__unused__)),
-            char             *__out,
-            const int         __size __attribute__((__unused__)),
-            const char       *__fmt,
-            ...)
+    const __c_locale &__cloc __attribute__((__unused__)),
+    char             *__out,
+    const int         __size __attribute__((__unused__)),
+    const char       *__fmt,
+    ...)
   {
 
     __c_locale __old = __gnu_cxx::__uselocale(__cloc);
@@ -16985,8 +16946,7 @@ namespace std __attribute__((__visibility__("default"))) {
     {}
 
     allocator &
-      operator=(const allocator &)
-      = default;
+      operator=(const allocator &) = default;
 
     template<typename _Tp1>
     constexpr allocator(const allocator<_Tp1> &) noexcept
@@ -17167,8 +17127,7 @@ class __forced_unwind
   virtual ~__forced_unwind() throw();
 
   virtual void
-    __pure_dummy()
-    = 0;
+    __pure_dummy() = 0;
 };
 }// namespace __cxxabiv1
 
@@ -21052,11 +21011,11 @@ namespace std __attribute__((__visibility__("default"))) {
   private:
     template<typename _ForwardIterator, typename _UniformRandomBitGenerator>
     void
-      __generate_impl(
-        _ForwardIterator            __f,
-        _ForwardIterator            __t,
-        _UniformRandomBitGenerator &__urng,
-        const param_type           &__p);
+               __generate_impl(
+                 _ForwardIterator            __f,
+                 _ForwardIterator            __t,
+                 _UniformRandomBitGenerator &__urng,
+                 const param_type           &__p);
 
     param_type _M_param;
 
@@ -27500,11 +27459,9 @@ namespace std __attribute__((__visibility__("default"))) {
       };
 
       void
-        end(auto &)
-        = delete;
+        end(auto &) = delete;
       void
-        end(const auto &)
-        = delete;
+        end(const auto &) = delete;
 
       template<typename _Tp>
       concept __adl_end
@@ -27589,11 +27546,9 @@ namespace std __attribute__((__visibility__("default"))) {
       };
 
       void
-        rbegin(auto &)
-        = delete;
+        rbegin(auto &) = delete;
       void
-        rbegin(const auto &)
-        = delete;
+        rbegin(const auto &) = delete;
 
       template<typename _Tp>
       concept __adl_rbegin
@@ -27651,11 +27606,9 @@ namespace std __attribute__((__visibility__("default"))) {
       };
 
       void
-        rend(auto &)
-        = delete;
+        rend(auto &) = delete;
       void
-        rend(const auto &)
-        = delete;
+        rend(const auto &) = delete;
 
       template<typename _Tp>
       concept __adl_rend
@@ -27737,11 +27690,9 @@ namespace std __attribute__((__visibility__("default"))) {
           };
 
       void
-        size(auto &)
-        = delete;
+        size(auto &) = delete;
       void
-        size(const auto &)
-        = delete;
+        size(const auto &) = delete;
 
       template<typename _Tp>
       concept __adl_size
@@ -28316,8 +28267,7 @@ namespace std __attribute__((__visibility__("default"))) {
     {}
 # 171 "/usr/include/c++/11/string_view" 3
     constexpr basic_string_view &
-      operator=(const basic_string_view &) noexcept
-      = default;
+      operator=(const basic_string_view &) noexcept = default;
 
     constexpr const_iterator
       begin() const noexcept
@@ -28914,8 +28864,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
     template<typename _CharT, typename _Traits>
     inline constexpr bool
-      enable_borrowed_range<basic_string_view<_CharT, _Traits>>
-      = true;
+      enable_borrowed_range<basic_string_view<_CharT, _Traits>> = true;
 
     template<typename _CharT, typename _Traits>
     inline constexpr bool enable_view<basic_string_view<_CharT, _Traits>>
@@ -33681,8 +33630,7 @@ namespace std __attribute__((__visibility__("default"))) {
     facet(const facet &) = delete;
 
     facet &
-      operator=(const facet &)
-      = delete;
+      operator=(const facet &) = delete;
 
   private:
     void
@@ -34357,12 +34305,10 @@ namespace std __attribute__((__visibility__("default"))) {
     explicit domain_error(const char *);
     domain_error(const domain_error &) = default;
     domain_error &
-      operator=(const domain_error &)
-      = default;
-    domain_error(domain_error &&) = default;
+      operator=(const domain_error &) = default;
+    domain_error(domain_error &&)     = default;
     domain_error &
-      operator=(domain_error &&)
-      = default;
+      operator=(domain_error &&) = default;
 
     virtual ~domain_error() noexcept;
   };
@@ -34375,12 +34321,10 @@ namespace std __attribute__((__visibility__("default"))) {
     explicit invalid_argument(const char *);
     invalid_argument(const invalid_argument &) = default;
     invalid_argument &
-      operator=(const invalid_argument &)
-      = default;
+      operator=(const invalid_argument &) = default;
     invalid_argument(invalid_argument &&) = default;
     invalid_argument &
-      operator=(invalid_argument &&)
-      = default;
+      operator=(invalid_argument &&) = default;
 
     virtual ~invalid_argument() noexcept;
   };
@@ -34393,12 +34337,10 @@ namespace std __attribute__((__visibility__("default"))) {
     explicit length_error(const char *);
     length_error(const length_error &) = default;
     length_error &
-      operator=(const length_error &)
-      = default;
-    length_error(length_error &&) = default;
+      operator=(const length_error &) = default;
+    length_error(length_error &&)     = default;
     length_error &
-      operator=(length_error &&)
-      = default;
+      operator=(length_error &&) = default;
 
     virtual ~length_error() noexcept;
   };
@@ -34411,12 +34353,10 @@ namespace std __attribute__((__visibility__("default"))) {
     explicit out_of_range(const char *);
     out_of_range(const out_of_range &) = default;
     out_of_range &
-      operator=(const out_of_range &)
-      = default;
-    out_of_range(out_of_range &&) = default;
+      operator=(const out_of_range &) = default;
+    out_of_range(out_of_range &&)     = default;
     out_of_range &
-      operator=(out_of_range &&)
-      = default;
+      operator=(out_of_range &&) = default;
 
     virtual ~out_of_range() noexcept;
   };
@@ -34452,12 +34392,10 @@ namespace std __attribute__((__visibility__("default"))) {
     explicit range_error(const char *);
     range_error(const range_error &) = default;
     range_error &
-      operator=(const range_error &)
-      = default;
-    range_error(range_error &&) = default;
+      operator=(const range_error &) = default;
+    range_error(range_error &&)      = default;
     range_error &
-      operator=(range_error &&)
-      = default;
+      operator=(range_error &&) = default;
 
     virtual ~range_error() noexcept;
   };
@@ -34470,12 +34408,10 @@ namespace std __attribute__((__visibility__("default"))) {
     explicit overflow_error(const char *);
     overflow_error(const overflow_error &) = default;
     overflow_error &
-      operator=(const overflow_error &)
-      = default;
-    overflow_error(overflow_error &&) = default;
+      operator=(const overflow_error &) = default;
+    overflow_error(overflow_error &&)   = default;
     overflow_error &
-      operator=(overflow_error &&)
-      = default;
+      operator=(overflow_error &&) = default;
 
     virtual ~overflow_error() noexcept;
   };
@@ -34488,12 +34424,10 @@ namespace std __attribute__((__visibility__("default"))) {
     explicit underflow_error(const char *);
     underflow_error(const underflow_error &) = default;
     underflow_error &
-      operator=(const underflow_error &)
-      = default;
-    underflow_error(underflow_error &&) = default;
+      operator=(const underflow_error &) = default;
+    underflow_error(underflow_error &&)  = default;
     underflow_error &
-      operator=(underflow_error &&)
-      = default;
+      operator=(underflow_error &&) = default;
 
     virtual ~underflow_error() noexcept;
   };
@@ -34539,12 +34473,10 @@ namespace std __attribute__((__visibility__("default"))) {
 
       error_category(const error_category &) = delete;
       error_category &
-        operator=(const error_category &)
-        = delete;
+        operator=(const error_category &) = delete;
 
       virtual const char *
-        name() const noexcept
-        = 0;
+        name() const noexcept = 0;
 
     private:
       __attribute((__abi_tag__("cxx11"))) virtual __cow_string
@@ -34552,8 +34484,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
     public:
       __attribute((__abi_tag__("cxx11"))) virtual string
-        message(int) const
-        = 0;
+        message(int) const = 0;
 # 125 "/usr/include/c++/11/system_error" 3
     public:
       virtual error_condition
@@ -34826,8 +34757,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
     system_error(const system_error &) = default;
     system_error &
-      operator=(const system_error &)
-      = default;
+      operator=(const system_error &) = default;
 
     virtual ~system_error() noexcept;
 
@@ -35241,8 +35171,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
       Init(const Init &) = default;
       Init &
-        operator=(const Init &)
-        = default;
+        operator=(const Init &) = default;
 
     private:
       static _Atomic_word _S_refcount;
@@ -35362,8 +35291,7 @@ namespace std __attribute__((__visibility__("default"))) {
     ios_base(const ios_base &) = delete;
 
     ios_base &
-      operator=(const ios_base &)
-      = delete;
+      operator=(const ios_base &) = delete;
 
   protected:
     void
@@ -35659,9 +35587,10 @@ namespace std __attribute__((__visibility__("default"))) {
       snextc()
     {
       int_type __ret = traits_type::eof();
-      if (__builtin_expect(
-            !traits_type::eq_int_type(this->sbumpc(), __ret),
-            true))
+      if (
+        __builtin_expect(
+          !traits_type::eq_int_type(this->sbumpc(), __ret),
+          true))
         __ret = this->sgetc();
       return __ret;
     }
@@ -35701,9 +35630,10 @@ namespace std __attribute__((__visibility__("default"))) {
     {
       int_type   __ret;
       const bool __testpos = this->eback() < this->gptr();
-      if (__builtin_expect(
-            !__testpos || !traits_type::eq(__c, this->gptr()[-1]),
-            false))
+      if (
+        __builtin_expect(
+          !__testpos || !traits_type::eq(__c, this->gptr()[-1]),
+          false))
         __ret = this->pbackfail(traits_type::to_int_type(__c));
       else {
         this->gbump(-1);
@@ -35921,8 +35851,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
   template<typename _CharT, typename _Traits>
   std::basic_streambuf<_CharT, _Traits>::basic_streambuf(
-    const basic_streambuf &)
-    = default;
+    const basic_streambuf &) = default;
 
   template<typename _CharT, typename _Traits>
   std::basic_streambuf<_CharT, _Traits> &
@@ -36389,8 +36318,7 @@ namespace std __attribute__((__visibility__("default"))) {
     {}
 
     istreambuf_iterator &
-      operator=(const istreambuf_iterator &) noexcept
-      = default;
+      operator=(const istreambuf_iterator &) noexcept = default;
 
     char_type
       operator*() const
@@ -36901,8 +36829,7 @@ namespace std __attribute__((__visibility__("default"))) {
     virtual ~__ctype_abstract_base() {}
 # 380 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual bool
-      do_is(mask __m, char_type __c) const
-      = 0;
+      do_is(mask __m, char_type __c) const = 0;
 # 399 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual const char_type *
       do_is(const char_type *__lo, const char_type *__hi, mask *__vec) const
@@ -36917,40 +36844,32 @@ namespace std __attribute__((__visibility__("default"))) {
       = 0;
 # 455 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual char_type
-      do_toupper(char_type __c) const
-      = 0;
+      do_toupper(char_type __c) const = 0;
 # 472 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual const char_type *
-      do_toupper(char_type *__lo, const char_type *__hi) const
-      = 0;
+      do_toupper(char_type *__lo, const char_type *__hi) const = 0;
 # 488 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual char_type
-      do_tolower(char_type __c) const
-      = 0;
+      do_tolower(char_type __c) const = 0;
 # 505 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual const char_type *
-      do_tolower(char_type *__lo, const char_type *__hi) const
-      = 0;
+      do_tolower(char_type *__lo, const char_type *__hi) const = 0;
 # 524 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual char_type
-      do_widen(char __c) const
-      = 0;
+      do_widen(char __c) const = 0;
 # 545 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual const char *
-      do_widen(const char *__lo, const char *__hi, char_type *__to) const
-      = 0;
+      do_widen(const char *__lo, const char *__hi, char_type *__to) const = 0;
 # 566 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual char
-      do_narrow(char_type __c, char __dfault) const
-      = 0;
+      do_narrow(char_type __c, char __dfault) const = 0;
 # 591 "/usr/include/c++/11/bits/locale_facets.h" 3
     virtual const char_type *
       do_narrow(
         const char_type *__lo,
         const char_type *__hi,
         char             __dfault,
-        char            *__to) const
-      = 0;
+        char            *__to) const = 0;
   };
 # 614 "/usr/include/c++/11/bits/locale_facets.h" 3
   template<typename _CharT>
@@ -39477,8 +39396,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
     basic_ios(const basic_ios &) = delete;
     basic_ios &
-      operator=(const basic_ios &)
-      = delete;
+      operator=(const basic_ios &) = delete;
 
     void
       move(basic_ios &__rhs)
@@ -39823,8 +39741,7 @@ namespace std __attribute__((__visibility__("default"))) {
     }
 
     basic_ostream &
-      operator=(const basic_ostream &)
-      = delete;
+      operator=(const basic_ostream &) = delete;
 
     basic_ostream &
       operator=(basic_ostream &&__rhs)
@@ -39920,44 +39837,37 @@ namespace std __attribute__((__visibility__("default"))) {
   template<typename _Traits>
   basic_ostream<char, _Traits> &operator<<(
     basic_ostream<char, _Traits> &,
-    wchar_t)
-    = delete;
+    wchar_t) = delete;
 
   template<typename _Traits>
   basic_ostream<char, _Traits> &operator<<(
     basic_ostream<char, _Traits> &,
-    char8_t)
-    = delete;
+    char8_t) = delete;
 
   template<typename _Traits>
   basic_ostream<char, _Traits> &operator<<(
     basic_ostream<char, _Traits> &,
-    char16_t)
-    = delete;
+    char16_t) = delete;
 
   template<typename _Traits>
   basic_ostream<char, _Traits> &operator<<(
     basic_ostream<char, _Traits> &,
-    char32_t)
-    = delete;
+    char32_t) = delete;
 
   template<typename _Traits>
   basic_ostream<wchar_t, _Traits> &operator<<(
     basic_ostream<wchar_t, _Traits> &,
-    char8_t)
-    = delete;
+    char8_t) = delete;
 
   template<typename _Traits>
   basic_ostream<wchar_t, _Traits> &operator<<(
     basic_ostream<wchar_t, _Traits> &,
-    char16_t)
-    = delete;
+    char16_t) = delete;
 
   template<typename _Traits>
   basic_ostream<wchar_t, _Traits> &operator<<(
     basic_ostream<wchar_t, _Traits> &,
-    char32_t)
-    = delete;
+    char32_t) = delete;
 # 587 "/usr/include/c++/11/ostream" 3
   template<typename _CharT, typename _Traits>
   inline basic_ostream<_CharT, _Traits> &operator<<(
@@ -40013,44 +39923,37 @@ namespace std __attribute__((__visibility__("default"))) {
   template<typename _Traits>
   basic_ostream<char, _Traits> &operator<<(
     basic_ostream<char, _Traits> &,
-    const wchar_t *)
-    = delete;
+    const wchar_t *) = delete;
 
   template<typename _Traits>
   basic_ostream<char, _Traits> &operator<<(
     basic_ostream<char, _Traits> &,
-    const char8_t *)
-    = delete;
+    const char8_t *) = delete;
 
   template<typename _Traits>
   basic_ostream<char, _Traits> &operator<<(
     basic_ostream<char, _Traits> &,
-    const char16_t *)
-    = delete;
+    const char16_t *) = delete;
 
   template<typename _Traits>
   basic_ostream<char, _Traits> &operator<<(
     basic_ostream<char, _Traits> &,
-    const char32_t *)
-    = delete;
+    const char32_t *) = delete;
 
   template<typename _Traits>
   basic_ostream<wchar_t, _Traits> &operator<<(
     basic_ostream<wchar_t, _Traits> &,
-    const char8_t *)
-    = delete;
+    const char8_t *) = delete;
 
   template<typename _Traits>
   basic_ostream<wchar_t, _Traits> &operator<<(
     basic_ostream<wchar_t, _Traits> &,
-    const char16_t *)
-    = delete;
+    const char16_t *) = delete;
 
   template<typename _Traits>
   basic_ostream<wchar_t, _Traits> &operator<<(
     basic_ostream<wchar_t, _Traits> &,
-    const char32_t *)
-    = delete;
+    const char32_t *) = delete;
 # 679 "/usr/include/c++/11/ostream" 3
   template<typename _CharT, typename _Traits>
   inline basic_ostream<_CharT, _Traits> &endl(
@@ -40102,7 +40005,7 @@ namespace std __attribute__((__visibility__("default"))) {
   {
   public:
     using type                  = __not_<is_void<
-                       typename __is_convertible_to_basic_ostream_impl<_Tp>::__ostream_type>>;
+      typename __is_convertible_to_basic_ostream_impl<_Tp>::__ostream_type>>;
     constexpr static bool value = type::value;
   };
 
@@ -40760,8 +40663,7 @@ namespace std __attribute__((__visibility__("default"))) {
     }
 
     basic_istream &
-      operator=(const basic_istream &)
-      = delete;
+      operator=(const basic_istream &) = delete;
 
     basic_istream &
       operator=(basic_istream &&__rhs)
@@ -40921,8 +40823,7 @@ namespace std __attribute__((__visibility__("default"))) {
     {}
 
     basic_iostream &
-      operator=(const basic_iostream &)
-      = delete;
+      operator=(const basic_iostream &) = delete;
 
     basic_iostream &
       operator=(basic_iostream &&__rhs)
@@ -40970,7 +40871,7 @@ namespace std __attribute__((__visibility__("default"))) {
   {
   public:
     using type                  = __not_<is_void<
-                       typename __is_convertible_to_basic_istream_impl<_Tp>::__istream_type>>;
+      typename __is_convertible_to_basic_istream_impl<_Tp>::__istream_type>>;
     constexpr static bool value = type::value;
   };
 
@@ -41998,8 +41899,7 @@ public:
   constexpr static auto BPP24 = 24U;
 
   auto
-    operator<=>(const BPPT &) const
-    = default;
+    operator<=>(const BPPT &) const = default;
   [[nodiscard]] constexpr bool
     unused() const noexcept
   {
@@ -42207,8 +42107,7 @@ public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE = 2U;
   constexpr TexIdBuffer()                              = default;
   constexpr auto
-    operator<=>(const TexIdBuffer &) const
-    = default;
+    operator<=>(const TexIdBuffer &) const = default;
   [[nodiscard]] constexpr TexIdBuffer
     with_id(std::uint8_t in_id) const noexcept
   {
@@ -44729,8 +44628,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
       _Bvector_impl_data(const _Bvector_impl_data &) = default;
       _Bvector_impl_data &
-        operator=(const _Bvector_impl_data &)
-        = default;
+        operator=(const _Bvector_impl_data &) = default;
 
       _Bvector_impl_data(_Bvector_impl_data &&__x) noexcept
         : _Bvector_impl_data(__x)
@@ -46988,17 +46886,13 @@ namespace std __attribute__((__visibility__("default"))) {
   {
     constexpr _Enable_default_constructor() noexcept = default;
     constexpr _Enable_default_constructor(
-      _Enable_default_constructor const &) noexcept
-      = default;
+      _Enable_default_constructor const &) noexcept = default;
     constexpr _Enable_default_constructor(
-      _Enable_default_constructor &&) noexcept
-      = default;
+      _Enable_default_constructor &&) noexcept = default;
     _Enable_default_constructor &
-      operator=(_Enable_default_constructor const &) noexcept
-      = default;
+      operator=(_Enable_default_constructor const &) noexcept = default;
     _Enable_default_constructor &
-      operator=(_Enable_default_constructor &&) noexcept
-      = default;
+      operator=(_Enable_default_constructor &&) noexcept = default;
 
     constexpr explicit _Enable_default_constructor(
       _Enable_default_constructor_tag)
@@ -47045,17 +46939,13 @@ namespace std __attribute__((__visibility__("default"))) {
   {
     constexpr _Enable_default_constructor() noexcept = delete;
     constexpr _Enable_default_constructor(
-      _Enable_default_constructor const &) noexcept
-      = default;
+      _Enable_default_constructor const &) noexcept = default;
     constexpr _Enable_default_constructor(
-      _Enable_default_constructor &&) noexcept
-      = default;
+      _Enable_default_constructor &&) noexcept = default;
     _Enable_default_constructor &
-      operator=(_Enable_default_constructor const &) noexcept
-      = default;
+      operator=(_Enable_default_constructor const &) noexcept = default;
     _Enable_default_constructor &
-      operator=(_Enable_default_constructor &&) noexcept
-      = default;
+      operator=(_Enable_default_constructor &&) noexcept = default;
 
     constexpr explicit _Enable_default_constructor(
       _Enable_default_constructor_tag)
@@ -47075,11 +46965,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = delete;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = default;
+      operator=(_Enable_copy_move const &) noexcept = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = default;
+      operator=(_Enable_copy_move &&) noexcept = default;
   };
 
   template<typename _Tag>
@@ -47089,11 +46977,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = default;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = delete;
+      operator=(_Enable_copy_move const &) noexcept = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = default;
+      operator=(_Enable_copy_move &&) noexcept = default;
   };
 
   template<typename _Tag>
@@ -47103,11 +46989,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = delete;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = delete;
+      operator=(_Enable_copy_move const &) noexcept = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = default;
+      operator=(_Enable_copy_move &&) noexcept = default;
   };
 
   template<typename _Tag>
@@ -47117,11 +47001,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = default;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = default;
+      operator=(_Enable_copy_move const &) noexcept = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = default;
+      operator=(_Enable_copy_move &&) noexcept = default;
   };
 
   template<typename _Tag>
@@ -47131,11 +47013,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = delete;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = default;
+      operator=(_Enable_copy_move const &) noexcept = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = default;
+      operator=(_Enable_copy_move &&) noexcept = default;
   };
 
   template<typename _Tag>
@@ -47145,11 +47025,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = default;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = delete;
+      operator=(_Enable_copy_move const &) noexcept = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = default;
+      operator=(_Enable_copy_move &&) noexcept = default;
   };
 
   template<typename _Tag>
@@ -47159,11 +47037,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = delete;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = delete;
+      operator=(_Enable_copy_move const &) noexcept = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = default;
+      operator=(_Enable_copy_move &&) noexcept = default;
   };
 
   template<typename _Tag>
@@ -47173,11 +47049,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = default;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = default;
+      operator=(_Enable_copy_move const &) noexcept = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = delete;
+      operator=(_Enable_copy_move &&) noexcept = delete;
   };
 
   template<typename _Tag>
@@ -47187,11 +47061,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = delete;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = default;
+      operator=(_Enable_copy_move const &) noexcept = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = delete;
+      operator=(_Enable_copy_move &&) noexcept = delete;
   };
 
   template<typename _Tag>
@@ -47201,11 +47073,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = default;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = delete;
+      operator=(_Enable_copy_move const &) noexcept = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = delete;
+      operator=(_Enable_copy_move &&) noexcept = delete;
   };
 
   template<typename _Tag>
@@ -47215,11 +47085,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = delete;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = delete;
+      operator=(_Enable_copy_move const &) noexcept = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = delete;
+      operator=(_Enable_copy_move &&) noexcept = delete;
   };
 
   template<typename _Tag>
@@ -47229,11 +47097,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = default;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = default;
+      operator=(_Enable_copy_move const &) noexcept = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = delete;
+      operator=(_Enable_copy_move &&) noexcept = delete;
   };
 
   template<typename _Tag>
@@ -47243,11 +47109,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = delete;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = default;
+      operator=(_Enable_copy_move const &) noexcept = default;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = delete;
+      operator=(_Enable_copy_move &&) noexcept = delete;
   };
 
   template<typename _Tag>
@@ -47257,11 +47121,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = default;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = delete;
+      operator=(_Enable_copy_move const &) noexcept = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = delete;
+      operator=(_Enable_copy_move &&) noexcept = delete;
   };
 
   template<typename _Tag>
@@ -47271,11 +47133,9 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Enable_copy_move(_Enable_copy_move const &) noexcept = delete;
     constexpr _Enable_copy_move(_Enable_copy_move &&) noexcept      = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move const &) noexcept
-      = delete;
+      operator=(_Enable_copy_move const &) noexcept = delete;
     _Enable_copy_move &
-      operator=(_Enable_copy_move &&) noexcept
-      = delete;
+      operator=(_Enable_copy_move &&) noexcept = delete;
   };
 
 }// namespace std
@@ -47628,9 +47488,9 @@ namespace std __attribute__((__visibility__("default"))) {
       using __digit       = _Digit<_Base, _Dig>;
       using __valid_digit = typename __digit::__valid;
       using __next        = _Number_help<
-               _Base,
+        _Base,
         __valid_digit::value ? _Pow / _Base : _Pow,
-               _Digs...>;
+        _Digs...>;
       using type = __ull_constant<_Pow * __digit::value + __next::type::value>;
       static_assert(
         (type::value / _Pow) == __digit::value,
@@ -48227,11 +48087,9 @@ namespace std __attribute__((__visibility__("default"))) {
 
         _Copy_ctor_base(_Copy_ctor_base &&) = default;
         _Copy_ctor_base &
-          operator=(const _Copy_ctor_base &)
-          = default;
+          operator=(const _Copy_ctor_base &) = default;
         _Copy_ctor_base &
-          operator=(_Copy_ctor_base &&)
-          = default;
+          operator=(_Copy_ctor_base &&) = default;
       };
 
       template<typename... _Types>
@@ -48278,11 +48136,9 @@ namespace std __attribute__((__visibility__("default"))) {
 
         _Move_ctor_base(const _Move_ctor_base &) = default;
         _Move_ctor_base &
-          operator=(const _Move_ctor_base &)
-          = default;
+          operator=(const _Move_ctor_base &) = default;
         _Move_ctor_base &
-          operator=(_Move_ctor_base &&)
-          = default;
+          operator=(_Move_ctor_base &&) = default;
       };
 
       template<typename... _Types>
@@ -48352,8 +48208,7 @@ namespace std __attribute__((__visibility__("default"))) {
         _Copy_assign_base(const _Copy_assign_base &) = default;
         _Copy_assign_base(_Copy_assign_base &&)      = default;
         _Copy_assign_base &
-          operator=(_Copy_assign_base &&)
-          = default;
+          operator=(_Copy_assign_base &&) = default;
       };
 
       template<typename... _Types>
@@ -48397,8 +48252,7 @@ namespace std __attribute__((__visibility__("default"))) {
         _Move_assign_base(const _Move_assign_base &) = default;
         _Move_assign_base(_Move_assign_base &&)      = default;
         _Move_assign_base &
-          operator=(const _Move_assign_base &)
-          = default;
+          operator=(const _Move_assign_base &) = default;
       };
 
       template<typename... _Types>
@@ -48433,11 +48287,9 @@ namespace std __attribute__((__visibility__("default"))) {
         _Variant_base(const _Variant_base &) = default;
         _Variant_base(_Variant_base &&)      = default;
         _Variant_base &
-          operator=(const _Variant_base &)
-          = default;
+          operator=(const _Variant_base &) = default;
         _Variant_base &
-          operator=(_Variant_base &&)
-          = default;
+          operator=(_Variant_base &&) = default;
       };
 
       template<typename _Tp, typename _Tuple>
@@ -49207,12 +49059,10 @@ namespace std __attribute__((__visibility__("default"))) {
     variant(const variant &__rhs) = default;
     variant(variant &&)           = default;
     variant &
-      operator=(const variant &)
-      = default;
+      operator=(const variant &) = default;
     variant &
-      operator=(variant &&)
-      = default;
-    ~variant() = default;
+      operator=(variant &&) = default;
+    ~variant()              = default;
 
     template<
       typename _Tp,
@@ -49383,10 +49233,8 @@ namespace std __attribute__((__visibility__("default"))) {
         "The index must be in [0, number of alternatives)");
       using type = variant_alternative_t<_Np, variant>;
 
-      if constexpr (is_nothrow_constructible_v<
-                      type,
-                      initializer_list<_Up> &,
-                      _Args...>) {
+      if constexpr (
+        is_nothrow_constructible_v<type, initializer_list<_Up> &, _Args...>) {
         this->_M_reset();
         __variant_construct_by_index<_Np>(
           *this,
@@ -49869,9 +49717,8 @@ namespace std __attribute__((__visibility__("default"))) {
     {}
 
     istream_iterator &
-      operator=(const istream_iterator &)
-      = default;
-    ~istream_iterator() = default;
+      operator=(const istream_iterator &) = default;
+    ~istream_iterator()                   = default;
 
     const _Tp &
       operator*() const
@@ -49978,8 +49825,7 @@ namespace std __attribute__((__visibility__("default"))) {
     {}
 
     ostream_iterator &
-      operator=(const ostream_iterator &)
-      = default;
+      operator=(const ostream_iterator &) = default;
 
     ostream_iterator &
       operator=(const _Tp &__value)
@@ -50024,8 +49870,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
       template<typename _Iterator, typename _Container>
       constexpr inline bool __is_normal_iterator<
-        __gnu_cxx::__normal_iterator<_Iterator, _Container>>
-        = true;
+        __gnu_cxx::__normal_iterator<_Iterator, _Container>> = true;
 
       template<typename _Tp>
       constexpr inline bool __is_reverse_iterator = false;
@@ -51471,10 +51316,11 @@ namespace std __attribute__((__visibility__("default"))) {
       {
         for (; __first1 != __last1; ++__first1)
           for (auto __iter = __first2; __iter != __last2; ++__iter)
-            if (std::__invoke(
-                  __pred,
-                  std::__invoke(__proj1, *__first1),
-                  std::__invoke(__proj2, *__iter)))
+            if (
+              std::__invoke(
+                __pred,
+                std::__invoke(__proj1, *__first1),
+                std::__invoke(__proj2, *__iter)))
               return __first1;
         return __first1;
       }
@@ -51711,10 +51557,11 @@ namespace std __attribute__((__visibility__("default"))) {
           for (;;) {
             if (__first1 == __last1)
               return { __first1, __first1 };
-            if (std::__invoke(
-                  __pred,
-                  std::__invoke(__proj1, *__first1),
-                  std::__invoke(__proj2, *__first2)))
+            if (
+              std::__invoke(
+                __pred,
+                std::__invoke(__proj1, *__first1),
+                std::__invoke(__proj2, *__first2)))
               break;
             ++__first1;
           }
@@ -51987,8 +51834,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj = identity,
         indirect_binary_predicate<
           projected<_Iter, _Proj>,
-          projected<_Iter, _Proj>> _Pred
-        = ranges::equal_to>
+          projected<_Iter, _Proj>> _Pred = ranges::equal_to>
       constexpr _Iter
         operator()(
           _Iter __first,
@@ -52000,10 +51846,11 @@ namespace std __attribute__((__visibility__("default"))) {
           return __first;
         auto __next = __first;
         for (; ++__next != __last; __first = __next) {
-          if (std::__invoke(
-                __pred,
-                std::__invoke(__proj, *__first),
-                std::__invoke(__proj, *__next)))
+          if (
+            std::__invoke(
+              __pred,
+              std::__invoke(__proj, *__first),
+              std::__invoke(__proj, *__next)))
             return __first;
         }
         return __next;
@@ -52014,8 +51861,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj = identity,
         indirect_binary_predicate<
           projected<iterator_t<_Range>, _Proj>,
-          projected<iterator_t<_Range>, _Proj>> _Pred
-        = ranges::equal_to>
+          projected<iterator_t<_Range>, _Proj>> _Pred = ranges::equal_to>
       constexpr borrowed_iterator_t<_Range>
         operator()(_Range &&__r, _Pred __pred = {}, _Proj __proj = {}) const
       {
@@ -52040,8 +51886,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj2 = identity,
         indirect_equivalence_relation<
           projected<_Iter1, _Proj1>,
-          projected<_Iter2, _Proj2>> _Pred
-        = ranges::equal_to>
+          projected<_Iter2, _Proj2>> _Pred = ranges::equal_to>
       constexpr bool
         operator()(
           _Iter1 __first1,
@@ -52108,8 +51953,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj2 = identity,
         indirect_equivalence_relation<
           projected<iterator_t<_Range1>, _Proj1>,
-          projected<iterator_t<_Range2>, _Proj2>> _Pred
-        = ranges::equal_to>
+          projected<iterator_t<_Range2>, _Proj2>> _Pred = ranges::equal_to>
       constexpr bool
         operator()(
           _Range1 &&__r1,
@@ -52876,8 +52720,7 @@ namespace std __attribute__((__visibility__("default"))) {
         forward_range _Range,
         typename _Proj = identity,
         indirect_equivalence_relation<projected<iterator_t<_Range>, _Proj>>
-          _Comp
-        = ranges::equal_to>
+          _Comp = ranges::equal_to>
         requires permutable<iterator_t<_Range>>
       constexpr borrowed_subrange_t<_Range>
         operator()(_Range &&__r, _Comp __comp = {}, _Proj __proj = {}) const
@@ -52965,8 +52808,7 @@ namespace std __attribute__((__visibility__("default"))) {
         weakly_incrementable _Out,
         typename _Proj = identity,
         indirect_equivalence_relation<projected<iterator_t<_Range>, _Proj>>
-          _Comp
-        = ranges::equal_to>
+          _Comp = ranges::equal_to>
         requires indirectly_copyable<iterator_t<_Range>, _Out>
               && (forward_iterator<iterator_t<_Range>>
                   || (input_iterator<_Out> && same_as<range_value_t<_Range>, iter_value_t<_Out>>)
@@ -53518,10 +53360,11 @@ namespace std __attribute__((__visibility__("default"))) {
         iter_difference_t<_Iter> __n      = ranges::distance(__first, __last);
         iter_difference_t<_Iter> __parent = 0, __child = 1;
         for (; __child < __n; ++__child)
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *(__first + __parent)),
-                std::__invoke(__proj, *(__first + __child))))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, *(__first + __parent)),
+              std::__invoke(__proj, *(__first + __child))))
             return __first + __child;
           else if ((__child & 1) == 0)
             ++__parent;
@@ -53693,10 +53536,11 @@ namespace std __attribute__((__visibility__("default"))) {
         ranges::make_heap(__first, __middle, __comp, __proj);
         auto __i = __middle;
         for (; __i != __last; ++__i)
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__i),
-                std::__invoke(__proj, *__first))) {
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, *__i),
+              std::__invoke(__proj, *__first))) {
             ranges::pop_heap(__first, __middle, __comp, __proj);
             ranges::iter_swap(__middle - 1, __i);
             ranges::push_heap(__first, __middle, __comp, __proj);
@@ -53773,10 +53617,11 @@ namespace std __attribute__((__visibility__("default"))) {
 
         ranges::make_heap(__result_first, __result_real_last, __comp, __proj2);
         for (; __first != __last; ++__first)
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj1, *__first),
-                std::__invoke(__proj2, *__result_first))) {
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj1, *__first),
+              std::__invoke(__proj2, *__result_first))) {
             ranges::pop_heap(
               __result_first,
               __result_real_last,
@@ -53849,10 +53694,11 @@ namespace std __attribute__((__visibility__("default"))) {
 
         auto __next = __first;
         for (++__next; __next != __last; __first = __next, (void)++__next)
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__next),
-                std::__invoke(__proj, *__first)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, *__next),
+              std::__invoke(__proj, *__first)))
             return __next;
         return __next;
       }
@@ -53895,10 +53741,11 @@ namespace std __attribute__((__visibility__("default"))) {
 
         auto __next = __first;
         for (++__next; __next != __last; __first = __next, (void)++__next)
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__next),
-                std::__invoke(__proj, *__first)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, *__next),
+              std::__invoke(__proj, *__first)))
             return false;
         return true;
       }
@@ -53992,10 +53839,8 @@ namespace std __attribute__((__visibility__("default"))) {
           auto __half   = __len / 2;
           auto __middle = __first;
           ranges::advance(__middle, __half);
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__middle),
-                __value)) {
+          if (
+            std::__invoke(__comp, std::__invoke(__proj, *__middle), __value)) {
             __first = __middle;
             ++__first;
             __len = __len - __half - 1;
@@ -54012,8 +53857,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj = identity,
         indirect_strict_weak_order<
           const _Tp *,
-          projected<iterator_t<_Range>, _Proj>> _Comp
-        = ranges::less>
+          projected<iterator_t<_Range>, _Proj>> _Comp = ranges::less>
       constexpr borrowed_iterator_t<_Range>
         operator()(
           _Range   &&__r,
@@ -54072,8 +53916,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj = identity,
         indirect_strict_weak_order<
           const _Tp *,
-          projected<iterator_t<_Range>, _Proj>> _Comp
-        = ranges::less>
+          projected<iterator_t<_Range>, _Proj>> _Comp = ranges::less>
       constexpr borrowed_iterator_t<_Range>
         operator()(
           _Range   &&__r,
@@ -54115,18 +53958,14 @@ namespace std __attribute__((__visibility__("default"))) {
           auto __half   = __len / 2;
           auto __middle = __first;
           ranges::advance(__middle, __half);
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__middle),
-                __value)) {
+          if (
+            std::__invoke(__comp, std::__invoke(__proj, *__middle), __value)) {
             __first = __middle;
             ++__first;
             __len = __len - __half - 1;
           }
-          else if (std::__invoke(
-                     __comp,
-                     __value,
-                     std::__invoke(__proj, *__middle)))
+          else if (
+            std::__invoke(__comp, __value, std::__invoke(__proj, *__middle)))
             __len = __half;
           else {
             auto __left
@@ -54150,8 +53989,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj = identity,
         indirect_strict_weak_order<
           const _Tp *,
-          projected<iterator_t<_Range>, _Proj>> _Comp
-        = ranges::less>
+          projected<iterator_t<_Range>, _Proj>> _Comp = ranges::less>
       constexpr borrowed_subrange_t<_Range>
         operator()(
           _Range   &&__r,
@@ -54201,8 +54039,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj = identity,
         indirect_strict_weak_order<
           const _Tp *,
-          projected<iterator_t<_Range>, _Proj>> _Comp
-        = ranges::less>
+          projected<iterator_t<_Range>, _Proj>> _Comp = ranges::less>
       constexpr bool
         operator()(
           _Range   &&__r,
@@ -54536,10 +54373,11 @@ namespace std __attribute__((__visibility__("default"))) {
           _Proj2 __proj2 = {}) const
       {
         while (__first1 != __last1 && __first2 != __last2) {
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj2, *__first2),
-                std::__invoke(__proj1, *__first1))) {
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj2, *__first2),
+              std::__invoke(__proj1, *__first1))) {
             *__result = *__first2;
             ++__first2;
           }
@@ -54661,8 +54499,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj2 = identity,
         indirect_strict_weak_order<
           projected<_Iter1, _Proj1>,
-          projected<_Iter2, _Proj2>> _Comp
-        = ranges::less>
+          projected<_Iter2, _Proj2>> _Comp = ranges::less>
       constexpr bool
         operator()(
           _Iter1 __first1,
@@ -54674,15 +54511,17 @@ namespace std __attribute__((__visibility__("default"))) {
           _Proj2 __proj2 = {}) const
       {
         while (__first1 != __last1 && __first2 != __last2)
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj2, *__first2),
-                std::__invoke(__proj1, *__first1)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj2, *__first2),
+              std::__invoke(__proj1, *__first1)))
             return false;
-          else if (std::__invoke(
-                     __comp,
-                     std::__invoke(__proj1, *__first1),
-                     std::__invoke(__proj2, *__first2)))
+          else if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj1, *__first1),
+              std::__invoke(__proj2, *__first2)))
             ++__first1;
           else {
             ++__first1;
@@ -54699,8 +54538,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj2 = identity,
         indirect_strict_weak_order<
           projected<iterator_t<_Range1>, _Proj1>,
-          projected<iterator_t<_Range2>, _Proj2>> _Comp
-        = ranges::less>
+          projected<iterator_t<_Range2>, _Proj2>> _Comp = ranges::less>
       constexpr bool
         operator()(
           _Range1 &&__r1,
@@ -54749,17 +54587,19 @@ namespace std __attribute__((__visibility__("default"))) {
           _Proj2 __proj2 = {}) const
       {
         while (__first1 != __last1 && __first2 != __last2) {
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj1, *__first1),
-                std::__invoke(__proj2, *__first2))) {
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj1, *__first1),
+              std::__invoke(__proj2, *__first2))) {
             *__result = *__first1;
             ++__first1;
           }
-          else if (std::__invoke(
-                     __comp,
-                     std::__invoke(__proj2, *__first2),
-                     std::__invoke(__proj1, *__first1))) {
+          else if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj2, *__first2),
+              std::__invoke(__proj1, *__first1))) {
             *__result = *__first2;
             ++__first2;
           }
@@ -54850,15 +54690,17 @@ namespace std __attribute__((__visibility__("default"))) {
           _Proj2 __proj2 = {}) const
       {
         while (__first1 != __last1 && __first2 != __last2)
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj1, *__first1),
-                std::__invoke(__proj2, *__first2)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj1, *__first1),
+              std::__invoke(__proj2, *__first2)))
             ++__first1;
-          else if (std::__invoke(
-                     __comp,
-                     std::__invoke(__proj2, *__first2),
-                     std::__invoke(__proj1, *__first1)))
+          else if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj2, *__first2),
+              std::__invoke(__proj1, *__first1)))
             ++__first2;
           else {
             *__result = *__first1;
@@ -54941,18 +54783,20 @@ namespace std __attribute__((__visibility__("default"))) {
           _Proj2 __proj2 = {}) const
       {
         while (__first1 != __last1 && __first2 != __last2)
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj1, *__first1),
-                std::__invoke(__proj2, *__first2))) {
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj1, *__first1),
+              std::__invoke(__proj2, *__first2))) {
             *__result = *__first1;
             ++__first1;
             ++__result;
           }
-          else if (std::__invoke(
-                     __comp,
-                     std::__invoke(__proj2, *__first2),
-                     std::__invoke(__proj1, *__first1)))
+          else if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj2, *__first2),
+              std::__invoke(__proj1, *__first1)))
             ++__first2;
           else {
             ++__first1;
@@ -55029,18 +54873,20 @@ namespace std __attribute__((__visibility__("default"))) {
           _Proj2 __proj2 = {}) const
       {
         while (__first1 != __last1 && __first2 != __last2)
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj1, *__first1),
-                std::__invoke(__proj2, *__first2))) {
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj1, *__first1),
+              std::__invoke(__proj2, *__first2))) {
             *__result = *__first1;
             ++__first1;
             ++__result;
           }
-          else if (std::__invoke(
-                     __comp,
-                     std::__invoke(__proj2, *__first2),
-                     std::__invoke(__proj1, *__first1))) {
+          else if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj2, *__first2),
+              std::__invoke(__proj1, *__first1))) {
             *__result = *__first2;
             ++__first2;
             ++__result;
@@ -55116,10 +54962,11 @@ namespace std __attribute__((__visibility__("default"))) {
           _Comp      __comp = {},
           _Proj      __proj = {}) const
       {
-        if (std::__invoke(
-              std::move(__comp),
-              std::__invoke(__proj, __b),
-              std::__invoke(__proj, __a)))
+        if (
+          std::__invoke(
+            std::move(__comp),
+            std::__invoke(__proj, __b),
+            std::__invoke(__proj, __a)))
           return __b;
         else
           return __a;
@@ -55152,10 +54999,11 @@ namespace std __attribute__((__visibility__("default"))) {
         auto __result = *__first;
         while (++__first != __last) {
           auto __tmp = *__first;
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, __tmp),
-                std::__invoke(__proj, __result)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, __tmp),
+              std::__invoke(__proj, __result)))
             __result = std::move(__tmp);
         }
         return __result;
@@ -55193,10 +55041,11 @@ namespace std __attribute__((__visibility__("default"))) {
           _Comp      __comp = {},
           _Proj      __proj = {}) const
       {
-        if (std::__invoke(
-              std::move(__comp),
-              std::__invoke(__proj, __a),
-              std::__invoke(__proj, __b)))
+        if (
+          std::__invoke(
+            std::move(__comp),
+            std::__invoke(__proj, __a),
+            std::__invoke(__proj, __b)))
           return __b;
         else
           return __a;
@@ -55229,10 +55078,11 @@ namespace std __attribute__((__visibility__("default"))) {
         auto __result = *__first;
         while (++__first != __last) {
           auto __tmp = *__first;
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, __result),
-                std::__invoke(__proj, __tmp)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, __result),
+              std::__invoke(__proj, __tmp)))
             __result = std::move(__tmp);
         }
         return __result;
@@ -55339,10 +55189,11 @@ namespace std __attribute__((__visibility__("default"))) {
           _Comp      __comp = {},
           _Proj      __proj = {}) const
       {
-        if (std::__invoke(
-              std::move(__comp),
-              std::__invoke(__proj, __b),
-              std::__invoke(__proj, __a)))
+        if (
+          std::__invoke(
+            std::move(__comp),
+            std::__invoke(__proj, __b),
+            std::__invoke(__proj, __a)))
           return { __b, __a };
         else
           return { __a, __b };
@@ -55375,10 +55226,11 @@ namespace std __attribute__((__visibility__("default"))) {
         minmax_result<range_value_t<_Range>> __result = { *__first, *__first };
         while (++__first != __last) {
           auto __tmp = *__first;
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, __tmp),
-                std::__invoke(__proj, __result.min)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, __tmp),
+              std::__invoke(__proj, __result.min)))
             __result.min = std::move(__tmp);
           if (!(bool)std::__invoke(
                 __comp,
@@ -55427,10 +55279,11 @@ namespace std __attribute__((__visibility__("default"))) {
 
         auto __i = __first;
         while (++__i != __last) {
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__i),
-                std::__invoke(__proj, *__first)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, *__i),
+              std::__invoke(__proj, *__first)))
             __first = __i;
         }
         return __first;
@@ -55474,10 +55327,11 @@ namespace std __attribute__((__visibility__("default"))) {
 
         auto __i = __first;
         while (++__i != __last) {
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__first),
-                std::__invoke(__proj, *__i)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, *__first),
+              std::__invoke(__proj, *__i)))
             __first = __i;
         }
         return __first;
@@ -55525,10 +55379,11 @@ namespace std __attribute__((__visibility__("default"))) {
         minmax_element_result<_Iter> __result = { __first, __first };
         auto                         __i      = __first;
         while (++__i != __last) {
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__i),
-                std::__invoke(__proj, *__result.min)))
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, *__i),
+              std::__invoke(__proj, *__result.min)))
             __result.min = __i;
           if (!(bool)std::__invoke(
                 __comp,
@@ -55568,8 +55423,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj2 = identity,
         indirect_strict_weak_order<
           projected<_Iter1, _Proj1>,
-          projected<_Iter2, _Proj2>> _Comp
-        = ranges::less>
+          projected<_Iter2, _Proj2>> _Comp = ranges::less>
       constexpr bool
         operator()(
           _Iter1 __first1,
@@ -55634,15 +55488,17 @@ namespace std __attribute__((__visibility__("default"))) {
 
           for (; __first1 != __last1 && __first2 != __last2;
                ++__first1, (void)++__first2) {
-            if (std::__invoke(
-                  __comp,
-                  std::__invoke(__proj1, *__first1),
-                  std::__invoke(__proj2, *__first2)))
+            if (
+              std::__invoke(
+                __comp,
+                std::__invoke(__proj1, *__first1),
+                std::__invoke(__proj2, *__first2)))
               return true;
-            if (std::__invoke(
-                  __comp,
-                  std::__invoke(__proj2, *__first2),
-                  std::__invoke(__proj1, *__first1)))
+            if (
+              std::__invoke(
+                __comp,
+                std::__invoke(__proj2, *__first2),
+                std::__invoke(__proj1, *__first1)))
               return false;
           }
           return __first1 == __last1 && __first2 != __last2;
@@ -55656,8 +55512,7 @@ namespace std __attribute__((__visibility__("default"))) {
         typename _Proj2 = identity,
         indirect_strict_weak_order<
           projected<iterator_t<_Range1>, _Proj1>,
-          projected<iterator_t<_Range2>, _Proj2>> _Comp
-        = ranges::less>
+          projected<iterator_t<_Range2>, _Proj2>> _Comp = ranges::less>
       constexpr bool
         operator()(
           _Range1 &&__r1,
@@ -55740,10 +55595,11 @@ namespace std __attribute__((__visibility__("default"))) {
         for (;;) {
           auto __ii = __i;
           --__i;
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__i),
-                std::__invoke(__proj, *__ii))) {
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, *__i),
+              std::__invoke(__proj, *__ii))) {
             auto __j = __lasti;
             while (!(bool)std::__invoke(
               __comp,
@@ -55812,10 +55668,11 @@ namespace std __attribute__((__visibility__("default"))) {
         for (;;) {
           auto __ii = __i;
           --__i;
-          if (std::__invoke(
-                __comp,
-                std::__invoke(__proj, *__ii),
-                std::__invoke(__proj, *__i))) {
+          if (
+            std::__invoke(
+              __comp,
+              std::__invoke(__proj, *__ii),
+              std::__invoke(__proj, *__i))) {
             auto __j = __lasti;
             while (!(bool)std::__invoke(
               __comp,
@@ -56268,8 +56125,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
   template<typename _Tp, std::size_t _Nm>
   typename enable_if<!__array_traits<_Tp, _Nm>::_Is_swappable::value>::type
-    swap(array<_Tp, _Nm> &, array<_Tp, _Nm> &)
-    = delete;
+    swap(array<_Tp, _Nm> &, array<_Tp, _Nm> &) = delete;
 
   template<std::size_t _Int, typename _Tp, std::size_t _Nm>
   constexpr _Tp &get(array<_Tp, _Nm> & __arr) noexcept
@@ -56739,8 +56595,7 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Tuple_impl(const _Tuple_impl &) = default;
 
     _Tuple_impl &
-      operator=(const _Tuple_impl &)
-      = delete;
+      operator=(const _Tuple_impl &) = delete;
 
     constexpr _Tuple_impl(_Tuple_impl &&__in) noexcept(
       __and_<
@@ -56905,8 +56760,7 @@ namespace std __attribute__((__visibility__("default"))) {
     constexpr _Tuple_impl(const _Tuple_impl &) = default;
 
     _Tuple_impl &
-      operator=(const _Tuple_impl &)
-      = delete;
+      operator=(const _Tuple_impl &) = delete;
 
     constexpr _Tuple_impl(_Tuple_impl &&__in) noexcept(
       is_nothrow_move_constructible<_Head>::value)
@@ -58232,8 +58086,7 @@ namespace std __attribute__((__visibility__("default"))) {
   template<typename... _Elements>
   constexpr
     typename enable_if<!__and_<__is_swappable<_Elements>...>::value>::type
-    swap(tuple<_Elements...> &, tuple<_Elements...> &)
-    = delete;
+    swap(tuple<_Elements...> &, tuple<_Elements...> &) = delete;
 
   struct _Swallow_assign
   {
@@ -58751,8 +58604,7 @@ namespace std __attribute__((__visibility__("default"))) {
     }
 
     static void
-      _S_fun(_Tp &&)
-      = delete;
+      _S_fun(_Tp &&) = delete;
 
     template<typename _Up, typename _Up2 = __remove_cvref_t<_Up>>
     using __not_same =
@@ -58773,8 +58625,7 @@ namespace std __attribute__((__visibility__("default"))) {
     reference_wrapper(const reference_wrapper &) = default;
 
     reference_wrapper &
-      operator=(const reference_wrapper &)
-      = default;
+      operator=(const reference_wrapper &) = default;
 
     constexpr
       operator _Tp &() const noexcept
@@ -59778,10 +59629,10 @@ namespace std __attribute__((__visibility__("default"))) {
       }
 
       std::pair<bool, std::size_t>
-        _M_need_rehash(
-          std::size_t __n_bkt,
-          std::size_t __n_elt,
-          std::size_t __n_ins) const;
+                          _M_need_rehash(
+                            std::size_t __n_bkt,
+                            std::size_t __n_elt,
+                            std::size_t __n_ins) const;
 
       typedef std::size_t _State;
 
@@ -60226,7 +60077,7 @@ namespace std __attribute__((__visibility__("default"))) {
       using __constant_iterators = typename _Traits::__constant_iterators;
 
       using __hashtable_alloc    = _Hashtable_alloc<
-           __alloc_rebind<_Alloc, _Hash_node<_Value, __hash_cached::value>>>;
+        __alloc_rebind<_Alloc, _Hash_node<_Value, __hash_cached::value>>>;
 
       using value_type        = typename __hashtable_base::value_type;
       using size_type         = typename __hashtable_base::size_type;
@@ -61585,9 +61436,10 @@ namespace std __attribute__((__visibility__("default"))) {
 
         __node_type *__y_n = static_cast<__node_type *>(__y_prev_n->_M_nxt);
         for (;;) {
-          if (__this->key_eq()(
-                _ExtractKey{}(__y_n->_M_v()),
-                _ExtractKey{}(*__itx)))
+          if (
+            __this->key_eq()(
+              _ExtractKey{}(__y_n->_M_v()),
+              _ExtractKey{}(*__itx)))
             break;
 
           auto __y_ref_n = __y_n;
@@ -61906,8 +61758,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
       _Optional_alloc(_Optional_alloc &&) = delete;
       _Optional_alloc &
-        operator=(_Optional_alloc &&)
-        = delete;
+        operator=(_Optional_alloc &&) = delete;
 
       _Optional_alloc(const _NodeAlloc &__alloc) noexcept : _M_alloc(__alloc) {}
 
@@ -61993,11 +61844,10 @@ namespace std __attribute__((__visibility__("default"))) {
     _Node_handle(_Node_handle &&) noexcept = default;
 
     _Node_handle &
-      operator=(_Node_handle &&) noexcept
-      = default;
+      operator=(_Node_handle &&) noexcept = default;
 
-    using key_type    = _Key;
-    using mapped_type = typename _Value::second_type;
+    using key_type                        = _Key;
+    using mapped_type                     = typename _Value::second_type;
 
     key_type &
       key() const noexcept
@@ -62120,10 +61970,9 @@ namespace std __attribute__((__visibility__("default"))) {
     _Node_handle(_Node_handle &&) noexcept = default;
 
     _Node_handle &
-      operator=(_Node_handle &&) noexcept
-      = default;
+      operator=(_Node_handle &&) noexcept = default;
 
-    using value_type = _Value;
+    using value_type                      = _Value;
 
     value_type &
       value() const noexcept
@@ -62307,16 +62156,16 @@ namespace std __attribute__((__visibility__("default"))) {
     using __buckets_ptr       = typename __hashtable_alloc::__buckets_ptr;
 
     using __insert_base       = __detail::_Insert<
-            _Key,
-            _Value,
-            _Alloc,
-            _ExtractKey,
-            _Equal,
-            _Hash,
-            _RangeHash,
-            _Unused,
-            _RehashPolicy,
-            _Traits>;
+      _Key,
+      _Value,
+      _Alloc,
+      _ExtractKey,
+      _Equal,
+      _Hash,
+      _RangeHash,
+      _Unused,
+      _RehashPolicy,
+      _Traits>;
 
   public:
     typedef _Key                                         key_type;
@@ -62374,16 +62223,16 @@ namespace std __attribute__((__visibility__("default"))) {
     using __ireturn_type   = typename __insert_base::__ireturn_type;
 
     using __map_base       = __detail::_Map_base<
-            _Key,
-            _Value,
-            _Alloc,
-            _ExtractKey,
-            _Equal,
-            _Hash,
-            _RangeHash,
-            _Unused,
-            _RehashPolicy,
-            _Traits>;
+      _Key,
+      _Value,
+      _Alloc,
+      _ExtractKey,
+      _Equal,
+      _Hash,
+      _RangeHash,
+      _Unused,
+      _RehashPolicy,
+      _Traits>;
 
     using __rehash_base = __detail::_Rehash_base<
       _Key,
@@ -62433,9 +62282,8 @@ namespace std __attribute__((__visibility__("default"))) {
       };
 
       _Scoped_node(const _Scoped_node &) = delete;
-      _Scoped_node &
-        operator=(const _Scoped_node &)
-        = delete;
+      _Scoped_node                  &
+        operator=(const _Scoped_node &) = delete;
 
       __hashtable_alloc *_M_h;
       __node_ptr         _M_node;
@@ -65446,12 +65294,10 @@ namespace std __attribute__((__visibility__("default"))) {
     {}
 
     unordered_map &
-      operator=(const unordered_map &)
-      = default;
+      operator=(const unordered_map &) = default;
 
     unordered_map &
-      operator=(unordered_map &&)
-      = default;
+      operator=(unordered_map &&) = default;
 # 289 "/usr/include/c++/11/bits/unordered_map.h" 3
     unordered_map &
       operator=(initializer_list<value_type> __l)
@@ -66232,12 +66078,10 @@ namespace std __attribute__((__visibility__("default"))) {
     {}
 
     unordered_multimap &
-      operator=(const unordered_multimap &)
-      = default;
+      operator=(const unordered_multimap &) = default;
 
     unordered_multimap &
-      operator=(unordered_multimap &&)
-      = default;
+      operator=(unordered_multimap &&) = default;
 # 1431 "/usr/include/c++/11/bits/unordered_map.h" 3
     unordered_multimap &
       operator=(initializer_list<value_type> __l)
@@ -67609,12 +67453,10 @@ namespace std __attribute__((__visibility__("default"))) {
     _Bind_front(const _Bind_front &) = default;
     _Bind_front(_Bind_front &&)      = default;
     _Bind_front &
-      operator=(const _Bind_front &)
-      = default;
+      operator=(const _Bind_front &) = default;
     _Bind_front &
-      operator=(_Bind_front &&)
-      = default;
-    ~_Bind_front() = default;
+      operator=(_Bind_front &&) = default;
+    ~_Bind_front()              = default;
 
     template<typename... _CallArgs>
     constexpr invoke_result_t<_Fd &, _BoundArgs &..., _CallArgs...>
@@ -71980,8 +71822,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
     template<typename _Up>
     void
-      __absu(bool)
-      = delete;
+      __absu(bool) = delete;
 
     template<typename _Tp>
     constexpr _Tp
@@ -72152,9 +71993,10 @@ namespace std __attribute__((__visibility__("default"))) {
     _BinaryOperation1 __binary_op1,
     _BinaryOperation2 __binary_op2)
   {
-    if constexpr (__and_v<
-                    __is_random_access_iter<_InputIterator1>,
-                    __is_random_access_iter<_InputIterator2>>) {
+    if constexpr (
+      __and_v<
+        __is_random_access_iter<_InputIterator1>,
+        __is_random_access_iter<_InputIterator2>>) {
       while ((__last1 - __first1) >= 4) {
         _Tp __v1 = __binary_op1(
           __binary_op2(__first1[0], __first2[0]),
@@ -72622,8 +72464,7 @@ public:
   constexpr Point(const dimT &in_x, const dimT &in_y) noexcept
     : m_x(in_x), m_y(in_y) {};
   constexpr auto
-    operator<=>(const Point<dimT> &right) const noexcept
-    = default;
+    operator<=>(const Point<dimT> &right) const noexcept = default;
   template<typename T>
     requires(
       (std::integral<T> || std::floating_point<T>) && !std::is_same_v<T, dimT>)
@@ -72847,8 +72688,7 @@ private:
 public:
   constexpr Rectangle() = default;
   constexpr auto
-    operator<=>(const Rectangle<dimT> &right) const noexcept
-    = default;
+    operator<=>(const Rectangle<dimT> &right) const noexcept = default;
   constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw)
     : m_top_left(xy), m_width_height(hw)
   {}
@@ -74942,16 +74782,14 @@ namespace std __attribute__((__visibility__("default"))) {
         const intern_type *&__from_next,
         extern_type        *__to,
         extern_type        *__to_end,
-        extern_type       *&__to_next) const
-      = 0;
+        extern_type       *&__to_next) const = 0;
 
     virtual result
       do_unshift(
         state_type   &__state,
         extern_type  *__to,
         extern_type  *__to_end,
-        extern_type *&__to_next) const
-      = 0;
+        extern_type *&__to_next) const = 0;
 
     virtual result
       do_in(
@@ -74961,28 +74799,23 @@ namespace std __attribute__((__visibility__("default"))) {
         const extern_type *&__from_next,
         intern_type        *__to,
         intern_type        *__to_end,
-        intern_type       *&__to_next) const
-      = 0;
+        intern_type       *&__to_next) const = 0;
 
     virtual int
-      do_encoding() const throw()
-      = 0;
+      do_encoding() const throw() = 0;
 
     virtual bool
-      do_always_noconv() const throw()
-      = 0;
+      do_always_noconv() const throw() = 0;
 
     virtual int
       do_length(
         state_type &,
         const extern_type *__from,
         const extern_type *__end,
-        size_t             __max) const
-      = 0;
+        size_t             __max) const = 0;
 
     virtual int
-      do_max_length() const throw()
-      = 0;
+      do_max_length() const throw() = 0;
   };
 # 276 "/usr/include/c++/11/bits/codecvt.h" 3
   template<typename _InternT, typename _ExternT, typename _StateT>
@@ -77091,8 +76924,7 @@ namespace std __attribute__((__visibility__("default"))) {
     using __uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl;
     __uniq_ptr_data(__uniq_ptr_data &&) = default;
     __uniq_ptr_data &
-      operator=(__uniq_ptr_data &&)
-      = default;
+      operator=(__uniq_ptr_data &&) = default;
   };
 
   template<typename _Tp, typename _Dp>
@@ -77101,8 +76933,7 @@ namespace std __attribute__((__visibility__("default"))) {
     using __uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl;
     __uniq_ptr_data(__uniq_ptr_data &&) = default;
     __uniq_ptr_data &
-      operator=(__uniq_ptr_data &&)
-      = delete;
+      operator=(__uniq_ptr_data &&) = delete;
   };
 
   template<typename _Tp, typename _Dp>
@@ -77111,8 +76942,7 @@ namespace std __attribute__((__visibility__("default"))) {
     using __uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl;
     __uniq_ptr_data(__uniq_ptr_data &&) = delete;
     __uniq_ptr_data &
-      operator=(__uniq_ptr_data &&)
-      = default;
+      operator=(__uniq_ptr_data &&) = default;
   };
 
   template<typename _Tp, typename _Dp>
@@ -77121,8 +76951,7 @@ namespace std __attribute__((__visibility__("default"))) {
     using __uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl;
     __uniq_ptr_data(__uniq_ptr_data &&) = delete;
     __uniq_ptr_data &
-      operator=(__uniq_ptr_data &&)
-      = delete;
+      operator=(__uniq_ptr_data &&) = delete;
   };
 
   template<typename _Tp, typename _Dp = default_delete<_Tp>>
@@ -77174,8 +77003,7 @@ namespace std __attribute__((__visibility__("default"))) {
       typename _DelUnref = typename remove_reference<_Del>::type>
     unique_ptr(
       pointer,
-      __enable_if_t<is_lvalue_reference<_Del>::value, _DelUnref &&>)
-      = delete;
+      __enable_if_t<is_lvalue_reference<_Del>::value, _DelUnref &&>) = delete;
 
     template<typename _Del = _Dp, typename = _DeleterConstraint<_Del>>
     constexpr unique_ptr(nullptr_t) noexcept : _M_t()
@@ -77219,8 +77047,7 @@ namespace std __attribute__((__visibility__("default"))) {
     }
 
     unique_ptr &
-      operator=(unique_ptr &&)
-      = default;
+      operator=(unique_ptr &&) = default;
 # 380 "/usr/include/c++/11/bits/unique_ptr.h" 3
     template<typename _Up, typename _Ep>
     typename enable_if<
@@ -77314,8 +77141,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
     unique_ptr(const unique_ptr &) = delete;
     unique_ptr &
-      operator=(const unique_ptr &)
-      = delete;
+      operator=(const unique_ptr &) = delete;
   };
 
   template<typename _Tp, typename _Dp>
@@ -77401,10 +77227,9 @@ namespace std __attribute__((__visibility__("default"))) {
       typename           = _Require<__safe_conversion_raw<_Up>>>
     unique_ptr(
       _Up,
-      __enable_if_t<is_lvalue_reference<_Del>::value, _DelUnref &&>)
-      = delete;
+      __enable_if_t<is_lvalue_reference<_Del>::value, _DelUnref &&>) = delete;
 
-    unique_ptr(unique_ptr &&) = default;
+    unique_ptr(unique_ptr &&)                                        = default;
 
     template<typename _Del = _Dp, typename = _DeleterConstraint<_Del>>
     constexpr unique_ptr(nullptr_t) noexcept : _M_t()
@@ -77432,8 +77257,7 @@ namespace std __attribute__((__visibility__("default"))) {
     }
 
     unique_ptr &
-      operator=(unique_ptr &&)
-      = default;
+      operator=(unique_ptr &&) = default;
 # 632 "/usr/include/c++/11/bits/unique_ptr.h" 3
     template<typename _Up, typename _Ep>
     typename enable_if<
@@ -77533,8 +77357,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
     unique_ptr(const unique_ptr &) = delete;
     unique_ptr &
-      operator=(const unique_ptr &)
-      = delete;
+      operator=(const unique_ptr &) = delete;
   };
 
   template<typename _Tp, typename _Dp>
@@ -77550,8 +77373,7 @@ namespace std __attribute__((__visibility__("default"))) {
   template<typename _Tp, typename _Dp>
   typename enable_if<!__is_swappable<_Dp>::value>::type swap(
     unique_ptr<_Tp, _Dp> &,
-    unique_ptr<_Tp, _Dp> &)
-    = delete;
+    unique_ptr<_Tp, _Dp> &) = delete;
 
   template<typename _Tp, typename _Dp, typename _Up, typename _Ep>
   [[__nodiscard__]] inline bool operator==(
@@ -77778,8 +77600,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
   template<typename _Tp, typename... _Args>
   typename _MakeUniq<_Tp>::__invalid_type make_unique_for_overwrite(
-    _Args && ...)
-    = delete;
+    _Args && ...) = delete;
 # 1001 "/usr/include/c++/11/bits/unique_ptr.h" 3
   template<typename _CharT, typename _Traits, typename _Tp, typename _Dp>
   inline basic_ostream<_CharT, _Traits> &operator<<(
@@ -77854,9 +77675,8 @@ namespace std __attribute__((__visibility__("default"))) {
       return false;
     }
 
-    if constexpr (is_same<
-                    typename _Codecvt::intern_type,
-                    typename _Codecvt::extern_type>())
+    if constexpr (
+      is_same<typename _Codecvt::intern_type, typename _Codecvt::extern_type>())
       if (__result == codecvt_base::noconv) {
         __outstr.assign(__first, __last);
         __count = __last - __first;
@@ -78061,8 +77881,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
       wstring_convert(const wstring_convert &) = delete;
       wstring_convert &
-        operator=(const wstring_convert &)
-        = delete;
+        operator=(const wstring_convert &) = delete;
 
       wide_string
         from_bytes(char __byte)
@@ -78090,13 +77909,8 @@ namespace std __attribute__((__visibility__("default"))) {
         if (!_M_with_cvtstate)
           _M_state = state_type();
         wide_string __out{ _M_wide_err_string.get_allocator() };
-        if (__str_codecvt_in(
-              __first,
-              __last,
-              __out,
-              *_M_cvt,
-              _M_state,
-              _M_count))
+        if (
+          __str_codecvt_in(__first, __last, __out, *_M_cvt, _M_state, _M_count))
           return __out;
         if (_M_with_strings)
           return _M_wide_err_string;
@@ -78129,13 +77943,14 @@ namespace std __attribute__((__visibility__("default"))) {
         if (!_M_with_cvtstate)
           _M_state = state_type();
         byte_string __out{ _M_byte_err_string.get_allocator() };
-        if (__str_codecvt_out(
-              __first,
-              __last,
-              __out,
-              *_M_cvt,
-              _M_state,
-              _M_count))
+        if (
+          __str_codecvt_out(
+            __first,
+            __last,
+            __out,
+            *_M_cvt,
+            _M_state,
+            _M_count))
           return __out;
         if (_M_with_strings)
           return _M_byte_err_string;
@@ -78203,8 +78018,7 @@ namespace std __attribute__((__visibility__("default"))) {
 
     wbuffer_convert(const wbuffer_convert &) = delete;
     wbuffer_convert &
-      operator=(const wbuffer_convert &)
-      = delete;
+      operator=(const wbuffer_convert &) = delete;
 
     streambuf *
       rdbuf() const noexcept
@@ -78425,8 +78239,8 @@ namespace std __attribute__((__visibility__("default"))) {
 
       using allocator_traits = std::allocator_traits<_Alloc>;
       using _Noexcept_swap   = __or_<
-          typename allocator_traits::propagate_on_container_swap,
-          typename allocator_traits::is_always_equal>;
+        typename allocator_traits::propagate_on_container_swap,
+        typename allocator_traits::is_always_equal>;
 
     public:
       typedef _CharT                                   char_type;
@@ -78527,8 +78341,7 @@ namespace std __attribute__((__visibility__("default"))) {
       }
 
       basic_stringbuf &
-        operator=(const basic_stringbuf &)
-        = delete;
+        operator=(const basic_stringbuf &) = delete;
 
       basic_stringbuf &
         operator=(basic_stringbuf &&__rhs)
@@ -78858,8 +78671,7 @@ namespace std __attribute__((__visibility__("default"))) {
       {}
 
       basic_istringstream &
-        operator=(const basic_istringstream &)
-        = delete;
+        operator=(const basic_istringstream &) = delete;
 
       basic_istringstream &
         operator=(basic_istringstream &&__rhs)
@@ -79019,8 +78831,7 @@ namespace std __attribute__((__visibility__("default"))) {
       {}
 
       basic_ostringstream &
-        operator=(const basic_ostringstream &)
-        = delete;
+        operator=(const basic_ostringstream &) = delete;
 
       basic_ostringstream &
         operator=(basic_ostringstream &&__rhs)
@@ -79180,8 +78991,7 @@ namespace std __attribute__((__visibility__("default"))) {
       {}
 
       basic_stringstream &
-        operator=(const basic_stringstream &)
-        = delete;
+        operator=(const basic_stringstream &) = delete;
 
       basic_stringstream &
         operator=(basic_stringstream &&__rhs)
@@ -79538,9 +79348,8 @@ namespace std __attribute__((__visibility__("default"))) {
         : _M_string(__str), _M_delim{ __del }, _M_escape{ __esc }
       {}
 
-      _Quoted_string &
-        operator=(_Quoted_string &)
-        = delete;
+      _Quoted_string       &
+        operator=(_Quoted_string &) = delete;
 
       _String _M_string;
       _CharT  _M_delim;
@@ -79557,9 +79366,8 @@ namespace std __attribute__((__visibility__("default"))) {
         : _M_string(__str), _M_delim{ __del }, _M_escape{ __esc }
       {}
 
-      _Quoted_string &
-        operator=(_Quoted_string &)
-        = delete;
+      _Quoted_string                                  &
+        operator=(_Quoted_string &) = delete;
 
       basic_string_view<_CharT, _Traits> _M_string;
       _CharT                             _M_delim;
@@ -79901,14 +79709,15 @@ namespace std __attribute__((__visibility__("default"))) {
         typedef money_put<_CharT, _Iter>             _MoneyPut;
 
         const _MoneyPut &__mp = use_facet<_MoneyPut>(__os.getloc());
-        if (__mp
-              .put(
-                _Iter(__os.rdbuf()),
-                __f._M_intl,
-                __os,
-                __os.fill(),
-                __f._M_mon)
-              .failed())
+        if (
+          __mp
+            .put(
+              _Iter(__os.rdbuf()),
+              __f._M_intl,
+              __os,
+              __os.fill(),
+              __f._M_mon)
+            .failed())
           __err |= ios_base::badbit;
       }
       catch (__cxxabiv1::__forced_unwind &) {
@@ -79953,15 +79762,16 @@ namespace std __attribute__((__visibility__("default"))) {
           = __f._M_fmt + _Traits::length(__f._M_fmt);
 
         const _TimePut &__mp = use_facet<_TimePut>(__os.getloc());
-        if (__mp
-              .put(
-                _Iter(__os.rdbuf()),
-                __os,
-                __os.fill(),
-                __f._M_tmb,
-                __f._M_fmt,
-                __fmt_end)
-              .failed())
+        if (
+          __mp
+            .put(
+              _Iter(__os.rdbuf()),
+              __os,
+              __os.fill(),
+              __f._M_tmb,
+              __f._M_fmt,
+              __fmt_end)
+            .failed())
           __err |= ios_base::badbit;
       }
       catch (__cxxabiv1::__forced_unwind &) {
@@ -80150,8 +79960,7 @@ public:
   using tileT::EXPECTED_SIZE;
   using tileT::FORCE_TYPE_VALUES;
   auto
-    operator<=>(const this_type &) const
-    = default;
+    operator<=>(const this_type &) const = default;
   template<typename return_type = constants_type>
   [[nodiscard]] static constexpr return_type
     height() noexcept
@@ -80498,8 +80307,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const impl_Tile1 &) const
-    = default;
+    operator<=>(const impl_Tile1 &) const = default;
 };
 using Tile1 = TileCommon<impl_Tile1>;
 static_assert(has_with_animation_state<Tile1>);
@@ -80534,8 +80342,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const impl_Tile2 &) const
-    = default;
+    operator<=>(const impl_Tile2 &) const = default;
 };
 using Tile2 = TileCommon<impl_Tile2>;
 static_assert(sizeof(Tile2) == Tile2::EXPECTED_SIZE);
@@ -80568,8 +80375,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const impl_Tile3 &) const
-    = default;
+    operator<=>(const impl_Tile3 &) const = default;
 };
 using Tile3 = TileCommon<impl_Tile3>;
 static_assert(sizeof(Tile3) == Tile3::EXPECTED_SIZE);
@@ -82486,11 +82292,9 @@ inline namespace ext {
           }
 
           constexpr function &
-            operator=(const function &)
-            = delete;
+            operator=(const function &) = delete;
           constexpr function &
-            operator=(function &&)
-            = delete;
+            operator=(function &&) = delete;
           [[nodiscard]] constexpr auto
             operator()(TArgs... args) -> R
           {
@@ -84271,8 +84075,7 @@ inline namespace ext {
           template<
             class Test,
             type_traits::requires_t<
-              not type_traits::is_convertible_v<Test, void (*)()>>
-            = 0>
+              not type_traits::is_convertible_v<Test, void (*)()>> = 0>
           constexpr auto
             operator=(Test test) ->
             typename type_traits::identity<Test, decltype(test())>::type
@@ -84296,8 +84099,7 @@ inline namespace ext {
             class Test,
             type_traits::requires_t<not type_traits::is_convertible_v<
               Test,
-              void (*)(std::string_view)>>
-            = 0>
+              void (*)(std::string_view)>> = 0>
           constexpr auto
             operator=(Test test)
               -> decltype(test(type_traits::declval<std::string_view>()))
@@ -84674,8 +84476,7 @@ inline namespace ext {
           class TLhs,
           class TRhs,
           type_traits::requires_t<
-            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-          = 0>
+            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
         [[nodiscard]] constexpr auto
           operator==(const TLhs &lhs, const TRhs &rhs)
         {
@@ -84686,8 +84487,7 @@ inline namespace ext {
           class TLhs,
           class TRhs,
           type_traits::requires_t<
-            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-          = 0>
+            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
         [[nodiscard]] constexpr auto
           operator!=(const TLhs &lhs, const TRhs &rhs)
         {
@@ -84698,8 +84498,7 @@ inline namespace ext {
           class TLhs,
           class TRhs,
           type_traits::requires_t<
-            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-          = 0>
+            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
         [[nodiscard]] constexpr auto
           operator>(const TLhs &lhs, const TRhs &rhs)
         {
@@ -84710,8 +84509,7 @@ inline namespace ext {
           class TLhs,
           class TRhs,
           type_traits::requires_t<
-            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-          = 0>
+            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
         [[nodiscard]] constexpr auto
           operator>=(const TLhs &lhs, const TRhs &rhs)
         {
@@ -84722,8 +84520,7 @@ inline namespace ext {
           class TLhs,
           class TRhs,
           type_traits::requires_t<
-            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-          = 0>
+            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
         [[nodiscard]] constexpr auto
           operator<(const TLhs &lhs, const TRhs &rhs)
         {
@@ -84734,8 +84531,7 @@ inline namespace ext {
           class TLhs,
           class TRhs,
           type_traits::requires_t<
-            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-          = 0>
+            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
         [[nodiscard]] constexpr auto
           operator<=(const TLhs &lhs, const TRhs &rhs)
         {
@@ -84746,8 +84542,7 @@ inline namespace ext {
           class TLhs,
           class TRhs,
           type_traits::requires_t<
-            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-          = 0>
+            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
         [[nodiscard]] constexpr auto
           operator and(const TLhs &lhs, const TRhs &rhs)
         {
@@ -84758,8 +84553,7 @@ inline namespace ext {
           class TLhs,
           class TRhs,
           type_traits::requires_t<
-            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-          = 0>
+            type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
         [[nodiscard]] constexpr auto
           operator or(const TLhs &lhs, const TRhs &rhs)
         {
@@ -85130,8 +84924,7 @@ inline namespace ext {
             class TLhs,
             class TRhs,
             type_traits::requires_t<
-              type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-            = 0>
+              type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
           constexpr auto
             operator and(const TLhs &lhs, const TRhs &rhs)
           {
@@ -85152,8 +84945,7 @@ inline namespace ext {
             class TLhs,
             class TRhs,
             type_traits::requires_t<
-              type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>>
-            = 0>
+              type_traits::is_op_v<TLhs> or type_traits::is_op_v<TRhs>> = 0>
           constexpr auto
             operator or(const TLhs &lhs, const TRhs &rhs)
           {
@@ -85194,8 +84986,7 @@ inline namespace ext {
         class TExpr,
         type_traits::requires_t<
           type_traits::is_op_v<TExpr>
-          or type_traits::is_convertible_v<TExpr, bool>>
-        = 0>
+          or type_traits::is_convertible_v<TExpr, bool>> = 0>
       constexpr auto
         expect(
           const TExpr                       &expr,

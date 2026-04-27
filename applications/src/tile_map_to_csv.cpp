@@ -12,11 +12,11 @@ void
 int
   main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 {
-  static constexpr auto mim_ext   = std::string_view(".mim");
-  static constexpr auto map_ext   = std::string_view(".map");
+  static constexpr auto mim_ext = std::string_view(".mim");
+  static constexpr auto map_ext = std::string_view(".map");
   const auto            check_ext = [](
-                           const std::filesystem::path &in_path,
-                           const std::string_view       ext) -> bool {
+                                      const std::filesystem::path &in_path,
+                                      const std::string_view       ext) -> bool {
     std::cout << "path: \"" << in_path.string() << "\"\n";
     const auto      path_ext = in_path.extension().string();
     std::error_code ec{};

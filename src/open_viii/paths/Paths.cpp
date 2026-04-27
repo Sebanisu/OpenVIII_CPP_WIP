@@ -9,18 +9,18 @@
 
 // std::vector<std::filesystem::path> Paths::_paths;
 
-std::filesystem::path open_viii::Paths::_home;
-std::filesystem::path open_viii::Paths::_dataHome;
-std::filesystem::path open_viii::Paths::_configHome;
-std::filesystem::path open_viii::Paths::_stateHome;
-std::filesystem::path open_viii::Paths::_cacheHome;
-std::filesystem::path open_viii::Paths::_runtimeDir;
-std::filesystem::path open_viii::Paths::_binHome;
+std::filesystem::path              open_viii::Paths::_home;
+std::filesystem::path              open_viii::Paths::_dataHome;
+std::filesystem::path              open_viii::Paths::_configHome;
+std::filesystem::path              open_viii::Paths::_stateHome;
+std::filesystem::path              open_viii::Paths::_cacheHome;
+std::filesystem::path              open_viii::Paths::_runtimeDir;
+std::filesystem::path              open_viii::Paths::_binHome;
 
 std::vector<std::filesystem::path> open_viii::Paths::_dataDirs;
 std::vector<std::filesystem::path> open_viii::Paths::_configDirs;
 
-std::once_flag open_viii::Paths::initFlag;
+std::once_flag                     open_viii::Paths::initFlag;
 
 // Helper: verify path exists and is a directory
 bool
@@ -31,83 +31,146 @@ bool
       && std::filesystem::is_directory(p, ec) && !ec;
 }
 
-
-void open_viii::Paths::initialize()
+void
+  open_viii::Paths::initialize()
 {
 #ifdef _WIN32
-    char* homeEnv = std::getenv("USERPROFILE");
-    _home = homeEnv ? homeEnv : "C:\\Users\\Default";
+  char *homeEnv = std::getenv("USERPROFILE");
+  _home         = homeEnv ? homeEnv : "C:\\Users\\Default";
 
-    _dataHome   = std::filesystem::path(std::getenv("XDG_DATA_HOME") ? std::getenv("XDG_DATA_HOME") : (_home / "AppData" / "Local"));
-    _configHome = std::filesystem::path(std::getenv("XDG_CONFIG_HOME") ? std::getenv("XDG_CONFIG_HOME") : (_home / "AppData" / "Roaming"));
-    _stateHome  = _configHome;
-    _cacheHome  = std::filesystem::path(std::getenv("XDG_CACHE_HOME") ? std::getenv("XDG_CACHE_HOME") : (_dataHome / "Cache"));
-    _runtimeDir = std::filesystem::path(std::getenv("XDG_RUNTIME_DIR") ? std::getenv("XDG_RUNTIME_DIR") : (_dataHome / "Runtime"));
-    _binHome    = std::filesystem::path(std::getenv("XDG_BIN_HOME") ? std::getenv("XDG_BIN_HOME") : (_home / "AppData" / "Local" / "bin"));
+  _dataHome     = std::filesystem::path(
+    std::getenv("XDG_DATA_HOME") ? std::getenv("XDG_DATA_HOME")
+                                 : (_home / "AppData" / "Local"));
+  _configHome = std::filesystem::path(
+    std::getenv("XDG_CONFIG_HOME") ? std::getenv("XDG_CONFIG_HOME")
+                                   : (_home / "AppData" / "Roaming"));
+  _stateHome = _configHome;
+  _cacheHome = std::filesystem::path(
+    std::getenv("XDG_CACHE_HOME") ? std::getenv("XDG_CACHE_HOME")
+                                  : (_dataHome / "Cache"));
+  _runtimeDir = std::filesystem::path(
+    std::getenv("XDG_RUNTIME_DIR") ? std::getenv("XDG_RUNTIME_DIR")
+                                   : (_dataHome / "Runtime"));
+  _binHome = std::filesystem::path(
+    std::getenv("XDG_BIN_HOME") ? std::getenv("XDG_BIN_HOME")
+                                : (_home / "AppData" / "Local" / "bin"));
 
-    _dataDirs = { _dataHome, "C:\\ProgramData" };
-    _configDirs = { _configHome, "C:\\ProgramData" };
+  _dataDirs   = { _dataHome, "C:\\ProgramData" };
+  _configDirs = { _configHome, "C:\\ProgramData" };
 
 #else
-    char* homeEnv = std::getenv("HOME");
-    _home = homeEnv ? homeEnv : "/home/user";
+  char *homeEnv = std::getenv("HOME");
+  _home         = homeEnv ? homeEnv : "/home/user";
 
-    _dataHome   = std::filesystem::path(std::getenv("XDG_DATA_HOME") ? std::getenv("XDG_DATA_HOME") : (_home / ".local" / "share"));
-    _configHome = std::filesystem::path(std::getenv("XDG_CONFIG_HOME") ? std::getenv("XDG_CONFIG_HOME") : (_home / ".config"));
-    _stateHome  = std::filesystem::path(std::getenv("XDG_STATE_HOME") ? std::getenv("XDG_STATE_HOME") : (_home / ".local" / "state"));
-    _cacheHome  = std::filesystem::path(std::getenv("XDG_CACHE_HOME") ? std::getenv("XDG_CACHE_HOME") : (_home / ".cache"));
-    _runtimeDir = std::filesystem::path(std::getenv("XDG_RUNTIME_DIR") ? std::getenv("XDG_RUNTIME_DIR") : (_home / ".run"));
-    _binHome    = std::filesystem::path(std::getenv("XDG_BIN_HOME") ? std::getenv("XDG_BIN_HOME") : (_home / ".local" / "bin"));
+  _dataHome     = std::filesystem::path(
+    std::getenv("XDG_DATA_HOME") ? std::getenv("XDG_DATA_HOME")
+                                 : (_home / ".local" / "share"));
+  _configHome = std::filesystem::path(
+    std::getenv("XDG_CONFIG_HOME") ? std::getenv("XDG_CONFIG_HOME")
+                                   : (_home / ".config"));
+  _stateHome = std::filesystem::path(
+    std::getenv("XDG_STATE_HOME") ? std::getenv("XDG_STATE_HOME")
+                                  : (_home / ".local" / "state"));
+  _cacheHome = std::filesystem::path(
+    std::getenv("XDG_CACHE_HOME") ? std::getenv("XDG_CACHE_HOME")
+                                  : (_home / ".cache"));
+  _runtimeDir = std::filesystem::path(
+    std::getenv("XDG_RUNTIME_DIR") ? std::getenv("XDG_RUNTIME_DIR")
+                                   : (_home / ".run"));
+  _binHome = std::filesystem::path(
+    std::getenv("XDG_BIN_HOME") ? std::getenv("XDG_BIN_HOME")
+                                : (_home / ".local" / "bin"));
 
-    const char* dataDirsEnv = std::getenv("XDG_DATA_DIRS");
-    if (dataDirsEnv)
-    {
-        std::string dirs = dataDirsEnv;
-        size_t pos = 0;
-        while ((pos = dirs.find(':')) != std::string::npos)
-        {
-            _dataDirs.push_back(dirs.substr(0, pos));
-            dirs.erase(0, pos + 1);
-        }
-        if (!dirs.empty()) _dataDirs.push_back(dirs);
+  const char *dataDirsEnv = std::getenv("XDG_DATA_DIRS");
+  if (dataDirsEnv) {
+    std::string dirs = dataDirsEnv;
+    size_t      pos  = 0;
+    while ((pos = dirs.find(':')) != std::string::npos) {
+      _dataDirs.push_back(dirs.substr(0, pos));
+      dirs.erase(0, pos + 1);
     }
-    else
-    {
-        _dataDirs = { "/usr/local/share", "/usr/share" };
-    }
+    if (!dirs.empty())
+      _dataDirs.push_back(dirs);
+  }
+  else {
+    _dataDirs = { "/usr/local/share", "/usr/share" };
+  }
 
-    const char* configDirsEnv = std::getenv("XDG_CONFIG_DIRS");
-    if (configDirsEnv)
-    {
-        std::string dirs = configDirsEnv;
-        size_t pos = 0;
-        while ((pos = dirs.find(':')) != std::string::npos)
-        {
-            _configDirs.push_back(dirs.substr(0, pos));
-            dirs.erase(0, pos + 1);
-        }
-        if (!dirs.empty()) _configDirs.push_back(dirs);
+  const char *configDirsEnv = std::getenv("XDG_CONFIG_DIRS");
+  if (configDirsEnv) {
+    std::string dirs = configDirsEnv;
+    size_t      pos  = 0;
+    while ((pos = dirs.find(':')) != std::string::npos) {
+      _configDirs.push_back(dirs.substr(0, pos));
+      dirs.erase(0, pos + 1);
     }
-    else
-    {
-        _configDirs = { "/etc/xdg" };
-    }
+    if (!dirs.empty())
+      _configDirs.push_back(dirs);
+  }
+  else {
+    _configDirs = { "/etc/xdg" };
+  }
 #endif
 }
 
 // Accessors with call_once
 #define INIT() std::call_once(initFlag, initialize)
 
-const std::filesystem::path& open_viii::Paths::home()      { INIT(); return _home; }
-const std::filesystem::path& open_viii::Paths::dataHome()  { INIT(); return _dataHome; }
-const std::filesystem::path& open_viii::Paths::configHome(){ INIT(); return _configHome; }
-const std::filesystem::path& open_viii::Paths::stateHome() { INIT(); return _stateHome; }
-const std::filesystem::path& open_viii::Paths::cacheHome() { INIT(); return _cacheHome; }
-const std::filesystem::path& open_viii::Paths::runtimeDir(){ INIT(); return _runtimeDir; }
-const std::filesystem::path& open_viii::Paths::binHome()   { INIT(); return _binHome; }
+const std::filesystem::path &
+  open_viii::Paths::home()
+{
+  INIT();
+  return _home;
+}
+const std::filesystem::path &
+  open_viii::Paths::dataHome()
+{
+  INIT();
+  return _dataHome;
+}
+const std::filesystem::path &
+  open_viii::Paths::configHome()
+{
+  INIT();
+  return _configHome;
+}
+const std::filesystem::path &
+  open_viii::Paths::stateHome()
+{
+  INIT();
+  return _stateHome;
+}
+const std::filesystem::path &
+  open_viii::Paths::cacheHome()
+{
+  INIT();
+  return _cacheHome;
+}
+const std::filesystem::path &
+  open_viii::Paths::runtimeDir()
+{
+  INIT();
+  return _runtimeDir;
+}
+const std::filesystem::path &
+  open_viii::Paths::binHome()
+{
+  INIT();
+  return _binHome;
+}
 
-const std::vector<std::filesystem::path>& open_viii::Paths::dataDirs()   { INIT(); return _dataDirs; }
-const std::vector<std::filesystem::path>& open_viii::Paths::configDirs() { INIT(); return _configDirs; }
+const std::vector<std::filesystem::path> &
+  open_viii::Paths::dataDirs()
+{
+  INIT();
+  return _dataDirs;
+}
+const std::vector<std::filesystem::path> &
+  open_viii::Paths::configDirs()
+{
+  INIT();
+  return _configDirs;
+}
 
 #undef INIT
 
@@ -251,20 +314,22 @@ std::vector<std::filesystem::path>
   };
 
   // Original path
-  if (auto path = queryRegPath(
-        HKEY_LOCAL_MACHINE,
-        "SOFTWARE\\Square Soft, Inc\\FINAL FANTASY VIII\\1.00",
-        "AppPath");
-      !path.empty()) {
+  if (
+    auto path = queryRegPath(
+      HKEY_LOCAL_MACHINE,
+      "SOFTWARE\\Square Soft, Inc\\FINAL FANTASY VIII\\1.00",
+      "AppPath");
+    !path.empty()) {
     paths.emplace_back(std::move(path));
   }
 
   // WOW6432Node path
-  if (auto path = queryRegPath(
-        HKEY_LOCAL_MACHINE,
-        "SOFTWARE\\WOW6432Node\\Square Soft, Inc\\FINAL FANTASY VIII\\1.00",
-        "AppPath");
-      !path.empty()) {
+  if (
+    auto path = queryRegPath(
+      HKEY_LOCAL_MACHINE,
+      "SOFTWARE\\WOW6432Node\\Square Soft, Inc\\FINAL FANTASY VIII\\1.00",
+      "AppPath");
+    !path.empty()) {
     paths.emplace_back(std::move(path));
   }
 
@@ -396,9 +461,10 @@ std::vector<std::filesystem::path> &
     }
 
     std::error_code error_code{};
-    if (static const auto path_file
-        = std::filesystem::current_path(error_code) / "paths.conf";
-        error_code) {
+    if (
+      static const auto path_file
+      = std::filesystem::current_path(error_code) / "paths.conf";
+      error_code) {
       // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
       //           << error_code.value() << ": " << error_code.message()
       //           << error_code.value() << " - path: " << path_file <<

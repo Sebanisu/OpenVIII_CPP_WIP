@@ -55,8 +55,7 @@ public:
   using tileT::EXPECTED_SIZE;
   using tileT::FORCE_TYPE_VALUES;
   auto
-    operator<=>(const this_type &) const
-    = default;
+    operator<=>(const this_type &) const = default;
   template<typename return_type = constants_type>
   [[nodiscard]] static constexpr return_type
     height() noexcept

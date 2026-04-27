@@ -458,8 +458,8 @@ private:
       static_cast<std::istream::off_type>(sizeof(uint32_t) * 2));
     std::error_code ec{};
     const bool      found = m_path.has_extension()
-                    && tools::i_equals(m_path.extension().string(), EXT)
-                    && std::filesystem::exists(m_path, ec);
+                         && tools::i_equals(m_path.extension().string(), EXT)
+                         && std::filesystem::exists(m_path, ec);
     if (ec) {
       std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
                 << ec.value() << ": " << ec.message() << ec.value()
@@ -626,9 +626,10 @@ public:
     operator[](std::string_view needle) const
   {
     for (auto item : m_paths) {
-      if (open_viii::tools::i_find(
-            item.get_file_info().get_path_string_view(),
-            needle)) {
+      if (
+        open_viii::tools::i_find(
+          item.get_file_info().get_path_string_view(),
+          needle)) {
         return item;
       }
     }

@@ -46,8 +46,7 @@ private:
 
 public:
   constexpr auto
-    operator<=>(const CharacterAbilities_impl &right) const noexcept
-    = default;
+    operator<=>(const CharacterAbilities_impl &right) const noexcept = default;
 };
 using CharacterAbilities = CommonKernel<CharacterAbilities_impl>;
 static_assert(sizeof(CharacterAbilities) == CharacterAbilities::EXPECTED_SIZE);

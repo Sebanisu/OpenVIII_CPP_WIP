@@ -259,8 +259,8 @@ template<typename path_t>
  * reads an empty line.
  * @todo make needle a predicate lambda.
  */
-[[nodiscard]] [[maybe_unused]] inline std::vector<
-  std::pair<std::uint32_t, std::string>>
+[[nodiscard]]
+[[maybe_unused]] inline std::vector<std::pair<std::uint32_t, std::string>>
   get_all_entries(
     const tl::read::input                         &cont,
     const size_t                                  &offset,
@@ -326,8 +326,8 @@ template<typename path_t>
   return vector;
 }
 
-[[nodiscard]] [[maybe_unused]] inline std::vector<
-  std::pair<std::uint32_t, std::string>>
+[[nodiscard]]
+[[maybe_unused]] inline std::vector<std::pair<std::uint32_t, std::string>>
   get_all_entries(
     const std::string                             &data,
     const size_t                                  &offset,
@@ -357,8 +357,8 @@ template<typename path_t>
  * @param limit max matches; 0 == unlimited
  * @return matches
  */
-[[nodiscard]] [[maybe_unused]] inline std::vector<
-  std::pair<std::uint32_t, std::string>>
+[[nodiscard]]
+[[maybe_unused]] inline std::vector<std::pair<std::uint32_t, std::string>>
   get_all_entries(
     const std::filesystem::path                   &path,
     const std::string                             &data,

@@ -230,18 +230,16 @@ public:
             MenuMessages{ section_buffer },
             section_buffer);
         }
-        else if constexpr (std::ranges::any_of(
-                             TIM_VALUE_ARRAY,
-                             [](const auto &item) {
-                               return item == sectionT;
-                             })) {
+        else if constexpr (
+          std::ranges::any_of(TIM_VALUE_ARRAY, [](const auto &item) {
+            return item == sectionT;
+          })) {
           return graphics::Tim(section_buffer);
         }
-        else if constexpr (std::ranges::any_of(
-                             MES_VALUE_ARRAY,
-                             [](const auto &item) {
-                               return item == sectionT;
-                             })) {
+        else if constexpr (
+          std::ranges::any_of(MES_VALUE_ARRAY, [](const auto &item) {
+            return item == sectionT;
+          })) {
           return SectionData<MenuMessagesSection>(
             MenuMessagesSection{ section_buffer },
             section_buffer);

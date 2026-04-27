@@ -180,8 +180,9 @@ template<bool Nested = false>
 
     // match found use the new file
     open_viii::archive::FI fi = [&]([[maybe_unused]] const auto &in_path_ref) {
-      if (auto match = find_match(paths, in_path_ref);
-          match != std::ranges::end(paths)) {
+      if (
+        auto match = find_match(paths, in_path_ref);
+        match != std::ranges::end(paths)) {
         return open_viii::archive::append_entry(
           fs_fs,
           *match,

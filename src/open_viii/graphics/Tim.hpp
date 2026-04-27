@@ -601,9 +601,9 @@ public:
           i      = static_cast<uint16_t>(clut);
           prefix = "F";
         }
-        const auto out_path = (path.parent_path() / path.stem()).string() + '_'
-                            + prefix + std::to_string(i)
-                            + path.extension().string();
+        const auto  out_path = (path.parent_path() / path.stem()).string() + '_'
+                             + prefix + std::to_string(i)
+                             + path.extension().string();
         const auto &data
           = get_colors<Color16<ColorLayoutT::ABGR>>(i, clut_dims);
         // Ppm::save(data, width(), height(), out_path);

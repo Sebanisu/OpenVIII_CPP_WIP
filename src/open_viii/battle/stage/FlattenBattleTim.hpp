@@ -73,12 +73,12 @@ inline bool
                         + static_cast<double>(triangle[2].x() - triangle[1].x())
                             * static_cast<double>(p.y() - triangle[2].y()))
                      / det;
-  const double beta = ((static_cast<double>(triangle[2].y())
-                        - static_cast<double>(triangle[0].y()))
-                         * static_cast<double>(p.x() - triangle[2].x())
-                       + static_cast<double>(triangle[0].x() - triangle[2].x())
-                           * static_cast<double>(p.y() - triangle[2].y()))
-                    / det;
+  const double beta  = ((static_cast<double>(triangle[2].y())
+                         - static_cast<double>(triangle[0].y()))
+                          * static_cast<double>(p.x() - triangle[2].x())
+                        + static_cast<double>(triangle[0].x() - triangle[2].x())
+                            * static_cast<double>(p.y() - triangle[2].y()))
+                     / det;
   const double gamma = 1.0 - alpha - beta;
 
   return alpha >= -static_cast<double>(margin)
@@ -118,9 +118,10 @@ inline void
       ++i;
     }
 
-    if (is_point_in_triangle(
-          { static_cast<float>(x), static_cast<float>(y) },
-          triangle_uvs)) {
+    if (
+      is_point_in_triangle(
+        { static_cast<float>(x), static_cast<float>(y) },
+        triangle_uvs)) {
       std::uint32_t const index = y * tim.width() + x;
       used_colors[index]        = source_colors.at(triangle.clut())[index];
       found                     = true;

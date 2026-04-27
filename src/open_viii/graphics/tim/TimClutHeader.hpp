@@ -70,8 +70,7 @@ public:
    * @brief Default three-way comparison.
    */
   constexpr auto
-    operator<=>(const TimClutHeader &) const
-    = default;
+    operator<=>(const TimClutHeader &) const = default;
 
   /**
    * @brief Get the dimensions of the color lookup table.

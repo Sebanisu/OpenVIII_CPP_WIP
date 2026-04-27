@@ -30,8 +30,7 @@ private:
 public:
   constexpr Rectangle() = default;
   constexpr auto
-    operator<=>(const Rectangle<dimT> &right) const noexcept
-    = default;
+    operator<=>(const Rectangle<dimT> &right) const noexcept = default;
   constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw)
     : m_top_left(xy), m_width_height(hw)
   {}

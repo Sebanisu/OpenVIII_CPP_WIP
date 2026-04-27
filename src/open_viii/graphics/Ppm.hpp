@@ -85,7 +85,7 @@ private:
     ss.seekg(0, std::ios::end);
     const auto end = ss.tellg();
     const auto sz  = static_cast<std::size_t>(end - start)
-                  / sizeof(Color24<ColorLayoutT::RGB>);
+                   / sizeof(Color24<ColorLayoutT::RGB>);
     if (sz != point.area()) {
       std::cerr << m_path << "\n\t" << sz << " != area of " << point
                 << std::endl;

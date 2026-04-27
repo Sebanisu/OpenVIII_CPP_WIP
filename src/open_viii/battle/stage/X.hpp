@@ -178,9 +178,9 @@ private:
     std::array<GeometryGroupPointers, 4> group_pointers{};
     for (std::uint8_t i{};
          const auto  *ptr : std::array{ geometry_pointers.group_1_pointer,
-                                       geometry_pointers.group_2_pointer,
-                                       geometry_pointers.group_3_pointer,
-                                       geometry_pointers.group_4_pointer }) {
+                                        geometry_pointers.group_2_pointer,
+                                        geometry_pointers.group_3_pointer,
+                                        geometry_pointers.group_4_pointer }) {
       std::array<char, sizeof(GeometryGroupOffsets)> tmp{};
       std::ranges::copy(
         std::span(ptr, sizeof(GeometryGroupOffsets)),

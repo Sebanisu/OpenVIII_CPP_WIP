@@ -349,9 +349,8 @@ public:
     case fiflfsT::none:
       return TryAddT::not_part_of_archive;
     case fiflfsT::fl: {
-      if constexpr (std::same_as<
-                      std::remove_cvref_t<srcT>,
-                      std::filesystem::path>) {
+      if constexpr (
+        std::same_as<std::remove_cvref_t<srcT>, std::filesystem::path>) {
         m_fl = decltype(m_fl)(
           fl::clean_buffer(FS::get_entry<std::string>(src, fi, src_offset)),
           "",
@@ -368,9 +367,8 @@ public:
     }
     case fiflfsT::fs: {
 
-      if constexpr (std::same_as<
-                      std::remove_cvref_t<srcT>,
-                      std::filesystem::path>) {
+      if constexpr (
+        std::same_as<std::remove_cvref_t<srcT>, std::filesystem::path>) {
         m_fs
           = decltype(m_fs)(FS::get_entry(src, fi, src_offset), "", file_entry);
       }
@@ -383,9 +381,8 @@ public:
       break;
     }
     case fiflfsT::fi: {
-      if constexpr (std::same_as<
-                      std::remove_cvref_t<srcT>,
-                      std::filesystem::path>) {
+      if constexpr (
+        std::same_as<std::remove_cvref_t<srcT>, std::filesystem::path>) {
         m_fi
           = decltype(m_fi)(FS::get_entry(src, fi, src_offset), "", file_entry);
       }
@@ -980,10 +977,9 @@ struct FIFLFS : public FIFLFSBase
       const std::initializer_list<std::string_view> &filename,
       lambdaT                                      &&lambda,
       [[maybe_unused]] const std::initializer_list<std::string_view>
-        &nested_filename
-      = {},
-      filterT &&filter_lambda = {},
-      bool      limit_once    = false) const
+               &nested_filename = {},
+      filterT &&filter_lambda   = {},
+      bool      limit_once      = false) const
   {
     FIFLFS<false> archive = {};
     const auto    items   = get_all_pairs_from_fl(filename);
@@ -1030,10 +1026,9 @@ struct FIFLFS : public FIFLFSBase
       [[maybe_unused]] const std::initializer_list<std::string_view> &filename,
       [[maybe_unused]] lambdaT                                      &&lambda,
       [[maybe_unused]] const std::initializer_list<std::string_view>
-        &nested_filename
-      = {},
-      [[maybe_unused]] filterT &&filter_lambda = {},
-      [[maybe_unused]] bool      limit_once    = false) const
+                                &nested_filename = {},
+      [[maybe_unused]] filterT &&filter_lambda   = {},
+      [[maybe_unused]] bool      limit_once      = false) const
   {}
   /**
    * @brief Get an archive with nested files.

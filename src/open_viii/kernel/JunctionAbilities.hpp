@@ -46,8 +46,7 @@ private:
 
 public:
   constexpr auto
-    operator<=>(const JunctionAbilities_impl &right) const noexcept
-    = default;
+    operator<=>(const JunctionAbilities_impl &right) const noexcept = default;
 };
 using JunctionAbilities = CommonKernel<JunctionAbilities_impl>;
 static_assert(JunctionAbilities::EXPECTED_SIZE == sizeof(JunctionAbilities));

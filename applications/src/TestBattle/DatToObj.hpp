@@ -711,9 +711,10 @@ inline void
         main_zzz_fetch.get(),
         out_name.string(),
         "");
-      if (const auto maybe_index
-          = extractNumberFromStem(file_path.stem().string());
-          maybe_index && maybe_index.value() < pngs.size()) {
+      if (
+        const auto maybe_index
+        = extractNumberFromStem(file_path.stem().string());
+        maybe_index && maybe_index.value() < pngs.size()) {
         pngs[maybe_index.value()] = graphics::Png(out_name);
       }
     }

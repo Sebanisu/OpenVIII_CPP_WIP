@@ -19,8 +19,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const Slot_impl &right) const noexcept
-    = default;
+    operator<=>(const Slot_impl &right) const noexcept = default;
 };
 using Slot = CommonKernel<Slot_impl>;
 static_assert(Slot::EXPECTED_SIZE == sizeof(Slot));

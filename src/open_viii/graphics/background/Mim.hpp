@@ -324,22 +324,21 @@ public:
     const auto path = std::filesystem::path(filename);
     if (dump_palette) {
       const auto m_palette_buffer = set_palette_span();
-      if constexpr (std::invocable<
-                      lambdaT,
-                      std::span<const Color16ABGR>,
-                      std::size_t,
-                      std::size_t,
-                      std::string>) {
+      if constexpr (
+        std::invocable<
+          lambdaT,
+          std::span<const Color16ABGR>,
+          std::size_t,
+          std::size_t,
+          std::string>) {
         lambda(
           m_palette_buffer,
           static_cast<std::size_t>(clut_width()),
           clut_height(),
           ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
       }
-      else if constexpr (std::invocable<
-                           lambdaT,
-                           std::span<const Color16ABGR>,
-                           std::size_t>) {
+      else if constexpr (
+        std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>) {
         lambda(m_palette_buffer, static_cast<std::size_t>(clut_width()));
       }
       return;
@@ -354,55 +353,54 @@ public:
         };
     if (bpp.bpp8()) {
       auto out = get_image_bpp8(palette);
-      if constexpr (std::invocable<
-                      lambdaT,
-                      std::span<const Color16ABGR>,
-                      std::size_t,
-                      std::size_t,
-                      std::string>) {
+      if constexpr (
+        std::invocable<
+          lambdaT,
+          std::span<const Color16ABGR>,
+          std::size_t,
+          std::size_t,
+          std::string>) {
         lambda(
           out,
           width,
           std::ranges::size(out) / width,
           out_path(BPPT::BPP8));
       }
-      else if (std::invocable<
-                 lambdaT,
-                 std::span<const Color16ABGR>,
-                 std::size_t>) {
+      else if (
+        std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>) {
         lambda(out, width);
       }
     }
     else if (bpp.bpp4()) {
       std::vector<Color16ABGR> out = get_image_bpp4(palette);
       width *= 2U;
-      if constexpr (std::invocable<
-                      lambdaT,
-                      std::span<const Color16ABGR>,
-                      std::size_t,
-                      std::size_t,
-                      std::string>) {
+      if constexpr (
+        std::invocable<
+          lambdaT,
+          std::span<const Color16ABGR>,
+          std::size_t,
+          std::size_t,
+          std::string>) {
         lambda(
           out,
           width,
           std::ranges::size(out) / width,
           out_path(BPPT::BPP4));
       }
-      else if (std::invocable<
-                 lambdaT,
-                 std::span<const Color16ABGR>,
-                 std::size_t>) {
+      else if (
+        std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>) {
         lambda(out, width);
       }
     }
     else if (bpp.bpp16()) {
       width /= 2U;
-      if constexpr (std::invocable<
-                      lambdaT,
-                      std::span<const Color16ABGR>,
-                      std::size_t,
-                      std::size_t,
-                      std::string>) {
+      if constexpr (
+        std::invocable<
+          lambdaT,
+          std::span<const Color16ABGR>,
+          std::size_t,
+          std::size_t,
+          std::string>) {
         const auto m_image_buffer_bbp16 = set_image_span_bpp16();
         lambda(
           m_image_buffer_bbp16,
@@ -410,10 +408,8 @@ public:
           std::ranges::size(m_image_buffer_bbp16) / width,
           out_path(BPPT::BPP16, false));
       }
-      else if (std::invocable<
-                 lambdaT,
-                 std::span<const Color16ABGR>,
-                 std::size_t>) {
+      else if (
+        std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>) {
         const auto m_image_buffer_bbp16 = set_image_span_bpp16();
         lambda(m_image_buffer_bbp16, width);
       }

@@ -103,10 +103,8 @@ static void
           return;
         }
       }
-      else if constexpr (std::is_invocable_r_v<
-                           bool,
-                           BinaryOperationT,
-                           std::filesystem::path>) {
+      else if constexpr (
+        std::is_invocable_r_v<bool, BinaryOperationT, std::filesystem::path>) {
         if (!binary_function(path)) {
           return;
         }
@@ -179,7 +177,7 @@ template<typename lambdaT>
     [&path_contains](const std::filesystem::path &path) {
       std::error_code ec{};
       const auto      match = std::filesystem::is_directory(path, ec)
-                      && tools::i_find_any(path.string(), path_contains);
+                           && tools::i_find_any(path.string(), path_contains);
       if (ec) {
         std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
                   << ec.value() << ": " << ec.message() << ec.value()

@@ -320,13 +320,14 @@ public:
         m_tex_header.num_colors_per_palette(),
         m_tex_header.num_palettes(),
         out_path);
-      if (const auto saved_path = Png::save(
-            m_palette_data,
-            m_tex_header.num_colors_per_palette(),
-            m_tex_header.num_palettes(),
-            out_path,
-            path.string());
-          saved_path) {
+      if (
+        const auto saved_path = Png::save(
+          m_palette_data,
+          m_tex_header.num_colors_per_palette(),
+          m_tex_header.num_palettes(),
+          out_path,
+          path.string());
+        saved_path) {
         const Png read_image = { *saved_path };
         assert(read_image.size() == m_palette_data.size());
         //        auto       b1 = read_image.begin();

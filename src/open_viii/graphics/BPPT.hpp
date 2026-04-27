@@ -52,8 +52,7 @@ public:
   constexpr static auto BPP16       = 16U;
   constexpr static auto BPP24       = 24U;
   auto
-    operator<=>(const BPPT &) const
-    = default;
+    operator<=>(const BPPT &) const = default;
   [[nodiscard]] constexpr bool
     unused() const noexcept
   {

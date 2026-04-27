@@ -41,8 +41,7 @@ public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE = 2U;
   PaletteID()                                          = default;
   constexpr auto
-    operator<=>(const PaletteID &) const
-    = default;
+    operator<=>(const PaletteID &) const = default;
   [[nodiscard]] auto
     with_thirty(std::uint16_t in_thirty) const noexcept
   {

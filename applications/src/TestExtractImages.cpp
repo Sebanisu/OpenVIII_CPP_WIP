@@ -79,9 +79,10 @@
         std::cout << p << '\n' << '\n';// t << '\n';
         t.save(p);
       }
-      else if (open_viii::tools::i_ends_with(
-                 p,
-                 open_viii::graphics::background::Mim::EXT)) {
+      else if (
+        open_viii::tools::i_ends_with(
+          p,
+          open_viii::graphics::background::Mim::EXT)) {
         auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
         std::cout << p << '\n' << t << '\n';
         // t.save(p);
