@@ -19,6 +19,9 @@
 #include "open_viii/graphics/tim/TimClutHeader.hpp"
 #include "open_viii/graphics/tim/TimHeader.hpp"
 #include "Png.hpp"
+#include <fmt/core.h>
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 namespace open_viii::graphics {
 /**
  * @brief TIM, or PSX TIM, is an uncompressed raster image file format
@@ -601,10 +604,14 @@ public:
           i      = static_cast<uint16_t>(clut);
           prefix = "F";
         }
-        const auto  out_path = (path.parent_path() / path.stem()).string() + '_'
-                             + prefix + std::to_string(i)
-                             + path.extension().string();
-        const auto &data
+        const std::filesystem::path out_path = path.parent_path()
+                                             / fmt::format(
+                                                 "{}_{}{}{}",
+                                                 path.stem().string(),
+                                                 prefix,
+                                                 i,
+                                                 path.extension().string());
+        const auto                 &data
           = get_colors<Color16<ColorLayoutT::ABGR>>(i, clut_dims);
         // Ppm::save(data, width(), height(), out_path);
         Png::save(data, width(), height(), out_path, out_path);
@@ -711,18 +718,40 @@ auto
   return std::get<3>(m_tim_image_data);
 }
 
-/**
- * @brief Stream insertion operator for Tim objects.
- * @param os The output stream to insert the Tim object into.
- * @param input The Tim object to insert into the output stream.
- * @return The output stream with the inserted Tim object.
- */
-inline std::ostream &
-  operator<<(std::ostream &os, const Tim &input)
-{
-  return os << '{' << input.tim_header() << ", " << input.tim_clut_header()
-            << ", " << input.tim_image_header()
-            << ", Corrected Width: " << input.width() << '}';
-}
+// /**
+//  * @brief Stream insertion operator for Tim objects.
+//  * @param os The output stream to insert the Tim object into.
+//  * @param input The Tim object to insert into the output stream.
+//  * @return The output stream with the inserted Tim object.
+//  */
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Tim &input)
+// {
+//   return os << '{' << input.tim_header() << ", " << input.tim_clut_header()
+//             << ", " << input.tim_image_header()
+//             << ", Corrected Width: " << input.width() << '}';
+// }
 }// namespace open_viii::graphics
+template<>
+struct fmt::formatter<open_viii::graphics::Tim>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Tim &input, FormatContext &ctx) const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{{}, {}, {}, Corrected Width: {}}}",
+      input.tim_header(),
+      input.tim_clut_header(),
+      input.tim_image_header(),
+      input.width());
+  }
+};
 #endif// VIIIARCHIVE_TIM_HPP

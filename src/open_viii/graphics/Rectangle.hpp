@@ -276,12 +276,36 @@ public:
     return r;
   }
 };
-template<typename dimT>
-inline std::ostream &
-  operator<<(std::ostream &os, const Rectangle<dimT> &input)
-{
-  return os << "{(X, Y) = " << input.top_left()
-            << ", (Width, Height) = " << input.width_height() << '}';
-}
+// template<typename dimT>
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Rectangle<dimT> &input)
+// {
+//   return os << "{(X, Y) = " << input.top_left()
+//             << ", (Width, Height) = " << input.width_height() << '}';
+// }
 }// namespace open_viii::graphics
+#include <fmt/format.h>
+
+template<typename dimT>
+struct fmt::formatter<open_viii::graphics::Rectangle<dimT>>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(
+      const open_viii::graphics::Rectangle<dimT> &input,
+      FormatContext                              &ctx) const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{(X, Y) = {}, (Width, Height) = {}}}",
+      input.top_left(),
+      input.width_height());
+  }
+};
 #endif// VIIIARCHIVE_RECTANGLE_HPP

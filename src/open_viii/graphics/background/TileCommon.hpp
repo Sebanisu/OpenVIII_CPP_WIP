@@ -345,24 +345,6 @@ public:
          << (static_cast<unsigned short>(c) & 0xFFU);
     os << std::dec << std::setfill(' ') << std::setw(1) << std::nouppercase;
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const this_type &tile)
-  {
-    os << "\t  ";
-    tile.to_hex(os);
-    os << ",\n\tSource: " << tile.source_rectangle()
-       << ",\n\tOutput: " << tile.output_rectangle() << ", Z: " << tile.z()
-       << ",\n\tDepth: " << tile.depth()
-       << ", Palette ID: " << +tile.palette_id()
-       << ", Texture ID: " << +tile.texture_id()
-       << ", Layer ID: " << +tile.layer_id()
-       << ",\n\tBlend Mode: " << static_cast<std::uint16_t>(tile.blend_mode())
-       << ", Blend Other: " << +tile.blend()
-       << ", Animation ID: " << +tile.animation_id()
-       << ", Animation State: " << +tile.animation_state()
-       << ", Draw: " << +tile.draw();
-    return os;
-  }
 };
 template<typename T>
 concept has_with_layer_id
@@ -382,4 +364,70 @@ template<typename T>
 concept has_with_animation_state
   = requires(std::decay_t<T> t) { t = t.with_animation_state(1U); };
 }// namespace open_viii::graphics::background
+
+#include <fmt/format.h>
+
+template<typename tileT>
+struct fmt::formatter<open_viii::graphics::background::TileCommon<tileT>>
+{
+  constexpr auto
+    parse(format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(
+      const open_viii::graphics::background::TileCommon<tileT> &tile,
+      FormatContext                                            &ctx) const
+  {
+    auto out = ctx.out();
+
+    // prefix
+    out      = fmt::format_to(out, "\t  ");
+
+    // hex output (still uses stream-style API)
+    {
+      std::string tmp;
+      {
+        std::back_insert_iterator<std::string> it(tmp);
+        std::ostringstream                     oss;
+        tile.to_hex(oss);
+        tmp = std::move(oss).str();
+      }
+      out = fmt::format_to(out, "{}", tmp);
+    }
+
+    // rest of fields (matches original exactly)
+    out = fmt::format_to(
+      out,
+      ", Source: {}"
+      ", Output: {}"
+      ", Z: {}"
+      ", Depth: {}"
+      ", Palette ID: {}"
+      ", Texture ID: {}"
+      ", Layer ID: {}"
+      ", Blend Mode: {}"
+      ", Blend Other: {}"
+      ", Animation ID: {}"
+      ", Animation State: {}"
+      ", Draw: {}",
+      tile.source_rectangle(),
+      tile.output_rectangle(),
+      tile.z(),
+      tile.depth(),
+      +tile.palette_id(),
+      +tile.texture_id(),
+      +tile.layer_id(),
+      static_cast<std::uint16_t>(tile.blend_mode()),
+      +tile.blend(),
+      +tile.animation_id(),
+      +tile.animation_state(),
+      +tile.draw());
+
+    return out;
+  }
+};
 #endif// OPENVIII_CPP_WIP_TILECOMMON_HPP

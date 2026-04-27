@@ -68,9 +68,9 @@ inline void
 {
   const float scale = 128.F;
   for (const auto vertice : self.vertices) {
-    obj_file << "v " << static_cast<float>(vertice.x()) / scale << " "
-             << static_cast<float>(vertice.y()) / scale << " "
-             << static_cast<float>(vertice.z()) / scale << "\n";
+    obj_file << "v " << static_cast<float>(vertice.x) / scale << " "
+             << static_cast<float>(vertice.y) / scale << " "
+             << static_cast<float>(vertice.z) / scale << "\n";
   }
 }
 [[nodiscard]] inline auto

@@ -50,7 +50,7 @@ private:
   uint16_t
     get_scaled_dim() const noexcept
   {
-    return MimType::height() * m_scale;
+    return MimType::height * m_scale;
   }
   void
     update_dims(std::uint8_t scale = 1U) const noexcept

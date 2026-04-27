@@ -21,6 +21,7 @@
 #include "TileCommon.hpp"
 #include <algorithm>
 #include <execution>
+#include <fmt/format.h>
 #include <version>
 namespace open_viii::graphics::background {
 
@@ -216,11 +217,11 @@ public:
     }
     return {};
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Mim &m)
-  {
-    return os << m.m_mim_type;
-  }
+  // friend std::ostream &
+  //   operator<<(std::ostream &os, const Mim &m)
+  // {
+  //   return os << m.m_mim_type;
+  // }
   std::uint32_t
     get_height(bool dump_palette = false) const
   {
@@ -231,7 +232,7 @@ public:
       return clut_height();
     }
     else {
-      return m_mim_type.height();
+      return m_mim_type.height;
     }
   }
   std::uint32_t
@@ -622,6 +623,25 @@ public:
                                               "12"sv, "13"sv, "14"sv, "15"sv };
     return values;
   }
+  friend struct fmt::formatter<Mim>;
 };
 }// namespace open_viii::graphics::background
+
+template<>
+struct fmt::formatter<open_viii::graphics::background::Mim>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::background::Mim &m, FormatContext &ctx)
+      const
+  {
+    return fmt::format_to(ctx.out(), "{}", m.m_mim_type);
+  }
+};
 #endif// VIIIARCHIVE_MIM_HPP

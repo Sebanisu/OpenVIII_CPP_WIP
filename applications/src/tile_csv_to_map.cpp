@@ -168,7 +168,7 @@ void
               }
               return 4_bpp;
             }(re_depth.to_view()));
-          std::cout << tile << '\n';
+          fmt::print("{}\n", tile);
         }
       },
       variant_tile);

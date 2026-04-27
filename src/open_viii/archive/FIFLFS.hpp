@@ -19,6 +19,7 @@
 #include "open_viii/strings/LangCommon.hpp"
 #include "TryAddT.hpp"
 #include <cstring>
+#include <fmt/format.h>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -1193,4 +1194,26 @@ static_assert(std::copyable<FIFLFS<true>>);
 }// namespace open_viii::archive
 #include "FIFLFSArchiveIterator.hpp"
 #include "FIFLFSFileIterator.hpp"
+
+template<bool HasNested>
+struct fmt::formatter<open_viii::archive::FIFLFS<HasNested>>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::archive::FIFLFS<HasNested> &f, FormatContext &ctx)
+      const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{FIFLFS<{}>: entries: {}}}",
+      HasNested ? "nested" : "flat",
+      f.count());
+  }
+};
 #endif// !VIIIARCHIVE_FIFLFS_HPP

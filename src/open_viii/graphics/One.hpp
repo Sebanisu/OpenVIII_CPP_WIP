@@ -5,6 +5,7 @@
 #define VIIIARCHIVE_ONE_HPP
 #include "Mch.hpp"
 #include "one/OneModel.hpp"
+#include <fmt/format.h>
 namespace open_viii::graphics {
 /**
  * @note world\esk\chara.one has 16 tim files
@@ -100,6 +101,28 @@ public:
       }
     }
   }
+  friend struct fmt::formatter<One>;
 };
 }// namespace open_viii::graphics
+
+template<>
+struct fmt::formatter<open_viii::graphics::One>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::One &o, FormatContext &ctx) const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{count: {}, buffer_size: {}}}",
+      o.m_count,
+      o.m_buffer.size());
+  }
+};
 #endif// VIIIARCHIVE_ONE_HPP

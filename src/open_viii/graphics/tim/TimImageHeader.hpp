@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #define VIIIARCHIVE_TIMIMAGEHEADER_HPP
 #include "open_viii/graphics/Rectangle.hpp"
+#include <fmt/format.h>
 namespace open_viii::graphics {
 /**
  * @brief Base header for the following raw 16-bit color image data.
@@ -60,8 +61,8 @@ public:
    * @brief Get the dimensions of the data.
    * @return The value of m_rectangle.
    */
-  [[nodiscard]] constexpr auto
-    rectangle() const
+  [[nodiscard]] constexpr const auto &
+    rectangle() const noexcept
   {
     return m_rectangle;
   }
@@ -99,17 +100,39 @@ public:
   }
 };
 
-/**
- * @brief Overloaded ostream operator for TimImageHeader.
- * @param os Output stream.
- * @param input TimImageHeader instance to output.
- * @return Modified output stream.
- */
-inline std::ostream &
-  operator<<(std::ostream &os, const TimImageHeader &input)
-{
-  return os << '{' << input.size() << " bytes, " << input.rectangle() << '}';
-}
+// /**
+//  * @brief Overloaded ostream operator for TimImageHeader.
+//  * @param os Output stream.
+//  * @param input TimImageHeader instance to output.
+//  * @return Modified output stream.
+//  */
+// inline std::ostream &
+//   operator<<(std::ostream &os, const TimImageHeader &input)
+// {
+//   return os << '{' << input.size() << " bytes, " << input.rectangle() << '}';
+// }
 
 }// namespace open_viii::graphics
+
+template<>
+struct fmt::formatter<open_viii::graphics::TimImageHeader>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::TimImageHeader &input, FormatContext &ctx)
+      const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{{} bytes, {}}}",
+      input.size(),
+      input.rectangle());
+  }
+};
 #endif// VIIIARCHIVE_TIMIMAGEHEADER_HPP

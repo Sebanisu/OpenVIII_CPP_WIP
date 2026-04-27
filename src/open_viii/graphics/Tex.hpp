@@ -19,6 +19,7 @@
 #include "open_viii/graphics/tex/TexPixelFormatHeader.hpp"
 #include "Png.hpp"
 #include "Ppm.hpp"
+#include <fmt/format.h>
 namespace open_viii::graphics {
 /**
  * @brief A structure representing a TEX file.
@@ -358,22 +359,53 @@ public:
   }
 };
 
-/**
- * @brief Output operator for the Tex class.
- * @param os The output stream.
- * @param t The Tex object to output.
- * @return The modified output stream.
- */
-inline std::ostream &
-  operator<<(std::ostream &os, const Tex &t)
-{
-  return os << "{Version: " << t.tex_header().version()
-            << ", Bits Per Pixel: " << t.tex_header().bits_per_pixel()
-            << ", Bits Per Index: " << t.tex_header().bits_per_index()
-            << ", Bytes Per Pixel: " << t.tex_header().bytes_per_pixel()
-            << ", Palette Count: " << t.tex_header().num_palettes()
-            << ", Width: " << t.tex_header().image_width()
-            << ", Height: " << t.tex_header().image_height() << "}\n";
-}
+// /**
+//  * @brief Output operator for the Tex class.
+//  * @param os The output stream.
+//  * @param t The Tex object to output.
+//  * @return The modified output stream.
+//  */
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Tex &t)
+// {
+//   return os << "{Version: " << t.tex_header().version()
+//             << ", Bits Per Pixel: " << t.tex_header().bits_per_pixel()
+//             << ", Bits Per Index: " << t.tex_header().bits_per_index()
+//             << ", Bytes Per Pixel: " << t.tex_header().bytes_per_pixel()
+//             << ", Palette Count: " << t.tex_header().num_palettes()
+//             << ", Width: " << t.tex_header().image_width()
+//             << ", Height: " << t.tex_header().image_height() << "}\n";
+// }
 }// namespace open_viii::graphics
+
+#include <fmt/format.h>
+
+template<>
+struct fmt::formatter<open_viii::graphics::Tex>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Tex &t, FormatContext &ctx) const
+  {
+    const auto &h = t.tex_header();
+
+    return fmt::format_to(
+      ctx.out(),
+      "{{Version: {}, Bits Per Pixel: {}, Bits Per Index: {}, "
+      "Bytes Per Pixel: {}, Palette Count: {}, Width: {}, Height: {}}}",
+      h.version(),
+      h.bits_per_pixel(),
+      h.bits_per_index(),
+      h.bytes_per_pixel(),
+      h.num_palettes(),
+      h.image_width(),
+      h.image_height());
+  }
+};
 #endif// VIIIARCHIVE_TEX_HPP

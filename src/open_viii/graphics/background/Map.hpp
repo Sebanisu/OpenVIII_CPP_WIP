@@ -569,7 +569,7 @@ private:
     init_tiles(const MimType &mim_type, const std::span<const char> buffer)
   {
     variant_tiles tiles{};
-    switch (mim_type.type()) {
+    switch (mim_type.type) {
     case 1:
       tiles = std::vector<Tile1>{};
       break;

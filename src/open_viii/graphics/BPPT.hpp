@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_BPPT_HPP
 #include <compare>
 #include <cstdint>
+#include <fmt/format.h>
 #include <iostream>
 #include <string_view>
 namespace open_viii::graphics {
@@ -219,12 +220,12 @@ public:
   };
 };
 
-inline std::ostream &
-  operator<<(std::ostream &os, [[maybe_unused]] const BPPT &input)
-{
-  return os << "{BPP: " << static_cast<int>(input)
-            << ", CLP: " << input.color_lookup_table_present() << '}';
-}
+// inline std::ostream &
+//   operator<<(std::ostream &os, [[maybe_unused]] const BPPT &input)
+// {
+//   return os << "{BPP: " << static_cast<int>(input)
+//             << ", CLP: " << input.color_lookup_table_present() << '}';
+// }
 namespace literals {
   consteval BPPT
     operator""_bpp(const char *const value)
@@ -255,4 +256,25 @@ namespace literals {
 }// namespace literals
 static_assert(sizeof(BPPT) == 1U);
 }// namespace open_viii::graphics
+
+template<>
+struct fmt::formatter<open_viii::graphics::BPPT>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::BPPT &input, FormatContext &ctx) const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{BPP: {}, CLP: {}}}",
+      static_cast<int>(input),
+      input.color_lookup_table_present());
+  }
+};
 #endif// VIIIARCHIVE_BPPT_HPP

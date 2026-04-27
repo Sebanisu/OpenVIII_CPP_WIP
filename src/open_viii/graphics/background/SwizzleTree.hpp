@@ -155,13 +155,13 @@ public:
   void
     reswizzle() const
   {
-    if (m_mim_type.type() == 1) {
+    if (m_mim_type.type == 1) {
       reswizzle_with_type<Tile1>();
     }
-    else if (m_mim_type.type() == 2) {
+    else if (m_mim_type.type == 2) {
       reswizzle_with_type<Tile2>();
     }
-    else if (m_mim_type.type() == 3) {
+    else if (m_mim_type.type == 3) {
       reswizzle_with_type<Tile3>();
     }
   }
@@ -172,13 +172,13 @@ public:
   void
     deswizzle() const
   {
-    if (m_mim_type.type() == 1) {
+    if (m_mim_type.type == 1) {
       deswizzle_with_type<Tile1>();
     }
-    else if (m_mim_type.type() == 2) {
+    else if (m_mim_type.type == 2) {
       deswizzle_with_type<Tile2>();
     }
-    else if (m_mim_type.type() == 3) {
+    else if (m_mim_type.type == 3) {
       deswizzle_with_type<Tile3>();
     }
   }

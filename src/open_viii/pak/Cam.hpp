@@ -8,32 +8,37 @@
 #include "FileSection.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include "tl/write.hpp"
+#include <filesystem>
+#include <fmt/format.h>
+#include <fstream>
+#include <vector>
+
 namespace open_viii::pak {
-/**
- * @see http://wiki.ffrtt.ru/index.php?title=FF8/FileFormat_PAK#CAM_files
- */
+
 struct Cam
 {
-private:
-  CamHeader             m_header{};
-  std::vector<CamFrame> m_frames{};
+  // Public data
+  CamHeader             header{};
+  std::vector<CamFrame> frames{};
 
-public:
   Cam() = default;
-  Cam(std::istream &is, const std::size_t &m_frame_count)
-    : m_header(tools::read_val<CamHeader>(is))
+
+  Cam(std::istream &is, const std::size_t &frame_count)
+    : header(tools::read_val<CamHeader>(is))
   {
-    m_frames.resize(m_frame_count);
-    tools::read_val(is, m_frames);
+    frames.resize(frame_count);
+    tools::read_val(is, frames);
   }
+
   Cam(std::istream &is, const FileSection &fs)
     : Cam(
         [&fs](std::istream &in_is) -> std::istream & {
-          in_is.seekg(fs.offset());
+          in_is.seekg(fs.offset);
           return in_is;
         }(is),
-        fs.frames())
+        fs.frames)
   {}
+
   explicit Cam(std::istream &is)
     : Cam(is, [&is]() {
         const auto cur = is.tellg();
@@ -43,53 +48,76 @@ public:
         return static_cast<std::size_t>(sz) / sizeof(CamFrame);
       }())
   {}
-  friend std::ostream &
-    operator<<(std::ostream &os, const Cam &cam)
-  {
-    os << cam.m_header << '\n';
-    os << '{';
-    std::ranges::for_each(
-      cam.m_frames,
-      [&os, not_first = false](const auto &frame) mutable {
-        if (!not_first) {
-          not_first = true;
-          os << ',';
-        }
-        os << frame << '\n';
-      });
-    os << '}';
-    return os;
-  }
+
+  // Iteration helpers
   auto
     begin() const noexcept
   {
-    return m_frames.begin();
+    return frames.begin();
   }
   auto
     end() const noexcept
   {
-    return m_frames.end();
+    return frames.end();
   }
   auto
     size() const noexcept
   {
-    return m_frames.size();
+    return frames.size();
   }
-  auto
+
+  // Immutable-style modifier
+  [[nodiscard]] Cam
     with_frames(std::vector<CamFrame> &&in_frames) const noexcept
   {
-    Cam ret      = {};
-    ret.m_header = m_header.with_count(static_cast<uint16_t>(in_frames.size()));
-    ret.m_frames = std::move(in_frames);
+    Cam ret{};
+    ret.header
+      = header.with_count(static_cast<std::uint16_t>(in_frames.size()));
+    ret.frames = std::move(in_frames);
     return ret;
   }
+
   void
     save(const std::filesystem::path &path) const
   {
     std::ofstream fp(path, std::ios::out | std::ios::trunc | std::ios::binary);
-    tl::write::append(fp, m_header);
-    tl::write::append(fp, m_frames);
+    tl::write::append(fp, header);
+    tl::write::append(fp, frames);
   }
 };
+
 }// namespace open_viii::pak
+
+// fmt formatter
+template<>
+struct fmt::formatter<open_viii::pak::Cam>
+{
+  constexpr auto
+    parse(format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::pak::Cam &v, FormatContext &ctx) const
+  {
+    auto out   = ctx.out();
+
+    // header
+    out        = fmt::format_to(out, "{}\n{{", v.header);
+
+    // frames
+    bool first = true;
+    for (const auto &f : v.frames) {
+      if (!first)
+        out = fmt::format_to(out, ",");
+      first = false;
+
+      out   = fmt::format_to(out, "{}\n", f);
+    }
+
+    return fmt::format_to(out, "}}");
+  }
+};
 #endif// VIIIARCHIVE_CAM_HPP

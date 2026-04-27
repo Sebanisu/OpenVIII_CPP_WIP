@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_TIMHEADER_HPP
 #define VIIIARCHIVE_TIMHEADER_HPP
 #include "open_viii/graphics/BPPT.hpp"
+#include <fmt/format.h>
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timHeader
@@ -74,6 +75,33 @@ private:
 
 public:
   /**
+   * @brief Gets the TIM file tag.
+   *
+   * The tag is the first byte of a TIM file and identifies the file type.
+   *
+   * @return The tag value as an 8-bit unsigned integer.
+   */
+  [[nodiscard]] constexpr std::uint8_t
+    tag() const noexcept
+  {
+    return m_tag;
+  }
+
+  /**
+   * @brief Gets the TIM file version.
+   *
+   * The version is the second byte of a TIM file and indicates the format
+   * version.
+   *
+   * @return The version value as an 8-bit unsigned integer.
+   */
+  [[nodiscard]] constexpr std::uint8_t
+    version() const noexcept
+  {
+    return m_version;
+  }
+
+  /**
    * @brief The size of the `TimHeader` struct in bytes.
    *
    * This constant stores the expected size of the `TimHeader` struct, in bytes.
@@ -97,8 +125,8 @@ public:
    * @brief Get the bits per pixel flags and CLP flag.
    * @return The value of m_bpp.
    */
-  [[nodiscard]] constexpr auto
-    bpp() const
+  [[nodiscard]] constexpr BPPT
+    bpp() const noexcept
   {
     return m_bpp;
   }
@@ -128,24 +156,48 @@ public:
     return check();
   }
 
-  /**
-   * @brief Overloaded ostream operator for TimHeader.
-   * @param os Output stream.
-   * @param input TimHeader instance to output.
-   * @return Modified output stream.
-   */
-  friend std::ostream &
-    operator<<(std::ostream &os, const TimHeader &input)
-  {
-    //[[maybe_unused]]static constexpr auto size_ = sizeof(input);
-    return os << "{ Tag: " << static_cast<uint32_t>(input.m_tag)
-              << ", Version: " << static_cast<uint32_t>(input.m_version) << ", "
-              << input.m_bpp << '}';
-  }
+  // /**
+  //  * @brief Overloaded ostream operator for TimHeader.
+  //  * @param os Output stream.
+  //  * @param input TimHeader instance to output.
+  //  * @return Modified output stream.
+  //  */
+  // friend std::ostream &
+  //   operator<<(std::ostream &os, const TimHeader &input)
+  // {
+  //   //[[maybe_unused]]static constexpr auto size_ = sizeof(input);
+  //   return os << "{ Tag: " << static_cast<uint32_t>(input.m_tag)
+  //             << ", Version: " << static_cast<uint32_t>(input.m_version) <<
+  //             ", "
+  //             << input.m_bpp << '}';
+  // }
 };
+
 /**
  * Ensures that the size of the TimHeader object matches its expected size.
  */
 static_assert(sizeof(TimHeader) == TimHeader::SIZE);
 }// namespace open_viii::graphics
+template<>
+struct fmt::formatter<open_viii::graphics::TimHeader>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::TimHeader &input, FormatContext &ctx)
+      const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{ Tag: {}, Version: {}, {} }}",
+      +input.tag(),
+      +input.version(),
+      input.bpp());
+  }
+};
 #endif// VIIIARCHIVE_TIMHEADER_HPP

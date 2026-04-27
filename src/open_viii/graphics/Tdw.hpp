@@ -168,21 +168,43 @@ public:
   }
 };
 
-/**
- * @brief Outputs a Tdw object to an ostream.
- *
- * @param os The ostream to output to.
- * @param t The Tdw object to be outputted.
- * @return A reference to the ostream after outputting the Tdw object.
- */
-inline std::ostream &
-  operator<<(std::ostream &os, const Tdw &t)
-{
-  os << t.size() << " char widths: ";
-  for (const auto &width : t.widths()) {
-    os << +width << ", ";
-  }
-  return os << '\n' << t.tim();
-}
+// /**
+//  * @brief Outputs a Tdw object to an ostream.
+//  *
+//  * @param os The ostream to output to.
+//  * @param t The Tdw object to be outputted.
+//  * @return A reference to the ostream after outputting the Tdw object.
+//  */
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Tdw &t)
+// {
+//   os << t.size() << " char widths: ";
+//   for (const auto &width : t.widths()) {
+//     os << +width << ", ";
+//   }
+//   return os << '\n' << t.tim();
+// }
 }// namespace open_viii::graphics
+
+template<>
+struct fmt::formatter<open_viii::graphics::Tdw>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Tdw &t, FormatContext &ctx) const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{} char widths: {}\n{}",
+      t.size(),
+      fmt::join(t.widths(), ", "),
+      t.tim());
+  }
+};
 #endif// VIIIARCHIVE_TDW_HPP

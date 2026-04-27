@@ -23,16 +23,18 @@
 #include "open_viii/graphics/Tex.hpp"
 #include "open_viii/menu_group/MenuGroupFile.hpp"
 #include "open_viii/paths/Paths.hpp"
+#include <fmt/format.h>
+#include <fmt/ostream.h>
 [[maybe_unused]] static constexpr auto dump_image
   = [](std::vector<char> &&buffer, const std::string &p) {
       if (open_viii::tools::i_ends_with(p, ".lzs")) {
         auto t = open_viii::graphics::Lzs(buffer);
-        std::cout << p << '\n' << t << '\n';
+        fmt::print("{}\n{}\n", p, t);
         t.save(p);
       }
       else if (open_viii::tools::i_ends_with(p, ".tim")) {
         auto t = open_viii::graphics::Tim(buffer);
-        std::cout << p << '\n' << t << '\n';
+        fmt::print("{}\n{}\n", p, t);
         if (t.width() == 0 || t.height() == 0) {
           open_viii::tools::write_buffer(buffer, p);
         }
@@ -47,36 +49,36 @@
           auto os = std::fstream(
             p + ".dat",
             std::ios::binary | std::ios::trunc | std::ios::out);
-          os << t;
+          fmt::print(os, "{}", t);
         }
       }
       else if (open_viii::tools::i_ends_with(p, ".tex")) {
         auto t = open_viii::graphics::Tex(buffer);
-        std::cout << p << '\n' << t << '\n';
+        fmt::print("{}\n{}\n", p, t);
         t.save(p);
       }
       else if (open_viii::tools::i_ends_with(p, ".tdw")) {
         open_viii::tools::write_buffer(buffer, p);
         auto t = open_viii::graphics::Tdw(buffer);
-        std::cout << p << '\n' << t << std::endl;
+        fmt::print("{}\n{}\n", p, t);
         t.save(p);
       }
       else if (open_viii::tools::i_ends_with(p, ".sp1")) {
         auto t = open_viii::graphics::Sp1(buffer);
-        std::cout << p << '\n' << t << '\n';
+        fmt::print("{}\n{}\n", p, t);
       }
       else if (open_viii::tools::i_ends_with(p, ".sp2")) {
         auto t = open_viii::graphics::Sp2(buffer);
-        std::cout << p << '\n' << t << '\n';
+        fmt::print("{}\n{}\n", p, t);
       }
       else if (open_viii::tools::i_ends_with(p, ".mch")) {
         auto t = open_viii::graphics::Mch(std::move(buffer));
-        std::cout << p << '\n' << '\n';// t << '\n';
+        fmt::print("{}\n{}\n", p, t);
         t.save(p);
       }
       else if (open_viii::tools::i_ends_with(p, ".one")) {
         auto t = open_viii::graphics::One(std::move(buffer));
-        std::cout << p << '\n' << '\n';// t << '\n';
+        fmt::print("{}\n{}\n", p, t);
         t.save(p);
       }
       else if (
@@ -84,7 +86,7 @@
           p,
           open_viii::graphics::background::Mim::EXT)) {
         auto t = open_viii::graphics::background::Mim(std::move(buffer), p);
-        std::cout << p << '\n' << t << '\n';
+        fmt::print("{}\n{}\n", p, t);
         // t.save(p);
       }
     };
@@ -125,7 +127,7 @@ void
 {
   [[maybe_unused]] const auto &menu
     = archives.get<open_viii::archive::ArchiveTypeT::menu>();
-  std::cout << menu << std::endl;
+  fmt::print("{}\n", menu);
   auto mngrpfile = open_viii::menu_group::MenuGroupFile{ menu };
   mngrpfile.test_tim(
     menu.get_full_path(open_viii::menu_group::MenuGroupFile::FILENAME));

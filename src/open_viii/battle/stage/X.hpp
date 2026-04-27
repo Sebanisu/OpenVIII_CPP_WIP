@@ -91,8 +91,9 @@ private:
       [this, &buffer_end](const auto &start) {
         const auto &span = std::span<const char>(start, buffer_end);
         m_tim            = graphics::Tim(span);
-        std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
-        std::cout << "\tINFO: " << m_tim << std::endl;
+
+        fmt::print("\tSIZE: {} bytes\n", span.size());
+        fmt::print("\tINFO: {}\n", m_tim);
       });
     if (tim_start.has_value())
       offset(buffer_begin, tim_start.value());

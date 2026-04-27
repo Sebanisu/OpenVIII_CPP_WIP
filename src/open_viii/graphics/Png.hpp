@@ -7,6 +7,10 @@
 #include "open_viii/graphics/Color.hpp"
 #include "open_viii/tools/Tools.hpp"
 #include "png.h"
+#include <cerrno>
+#include <cstring>
+#include <fmt/ranges.h>
+#include <spdlog/spdlog.h>
 namespace open_viii::graphics {
 
 /**
@@ -88,7 +92,7 @@ private:
     auto info_ptr = safe_png_info{ png_create_info_struct(png_ptr.get()),
                                    safe_png_info_deleter };
     if (!info_ptr) {
-      std::cerr << "Could not allocate info struct\n";
+      spdlog::error("Could not allocate info struct");
     }
     return info_ptr;
   }
@@ -220,18 +224,19 @@ public:
       std::size_t bytes_read = fread(sig, 1, 8, fp.get());
       if (bytes_read != 8U || png_sig_cmp(sig, 0, 8) != 0) {
 
-        std::cerr << "Bad signature \n" << filename.string() << '\n';
-        std::cerr << +sig[0] << ',' << +sig[1] << ',' << +sig[2] << ','
-                  << +sig[3] << ',' << +sig[4] << ',' << +sig[5] << ','
-                  << +sig[6] << ',' << +sig[7] << '\n';
-
+        spdlog::error(
+          "Bad signature\n{}\n{}",
+          filename.string(),
+          fmt::format("{:02X}", fmt::join(sig, " ")));
         return;
       }
     }
     else {
-      std::cerr << "Could not open file " << filename.string()
-                << " for reading\n";
 
+      spdlog::error(
+        "Could not open file {} for reading: {}",
+        filename.string(),
+        std::strerror(errno));
       return;
     }
 
@@ -241,13 +246,14 @@ public:
       safe_png_read_struct_deleter
     };
     if (!png_ptr) {
-      std::cerr << "Could not allocate read struct\n";
+      spdlog::critical("Could not allocate read struct");
       return;
     }
 
     // Initialize info structure
     auto info_ptr = create_info_struct(png_ptr);
     if (!info_ptr) {
+      spdlog::critical("Failed to create PNG info struct");
       return;
     }
     png_init_io(png_ptr.get(), fp.get());
@@ -385,12 +391,13 @@ public:
              : "")
         + ".png";
     }
-    auto fp = safe_fp{ fopen(filename.string().c_str(), "wb"),
-                       {} };// todo do I need fopen?
+    auto fp = safe_fp{ fopen(filename.string().c_str(), "wb"), {} };
 
     if (!fp) {
-      std::cerr << "Could not open file " << filename.string()
-                << " for writing\n";
+      spdlog::error(
+        "Could not open file {} for writing: {}",
+        filename.string(),
+        std::strerror(errno));
       return std::nullopt;
     }
     // Initialize write structure
@@ -399,12 +406,15 @@ public:
       safe_png_write_struct_deleter
     };
     if (!png_ptr) {
-      std::cerr << "Could not allocate write struct\n";
+      spdlog::critical("Could not allocate PNG write struct");
       return std::nullopt;
     }
     // Initialize info structure
     auto info_ptr = create_info_struct(png_ptr);
     if (!info_ptr) {
+      spdlog::critical(
+        "Failed to create PNG info struct for {}",
+        filename.string());
       return std::nullopt;
     }
     //    // Setup Exception handling
@@ -475,8 +485,7 @@ public:
       T &&...t) noexcept
   {
     if (std::cmp_less(data.size(), std::size_t{ width } * height)) {
-      std::cerr << "Size is wrong! " << data.size() << " != " << width << " x "
-                << height << '\n';
+      spdlog::error("Size is wrong! {} != {} x {}", data.size(), width, height);
       return std::nullopt;
     }
     return save<cT>(
