@@ -3,6 +3,7 @@
 //
 #ifndef VIIIARCHIVE_CAMHEADER_HPP
 #define VIIIARCHIVE_CAMHEADER_HPP
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <fmt/format.h>

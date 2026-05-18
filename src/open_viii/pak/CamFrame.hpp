@@ -5,6 +5,7 @@
 #define VIIIARCHIVE_CAMFRAME_HPP
 #include "open_viii/graphics/Point.hpp"
 #include "open_viii/graphics/Vertice.hpp"
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <fmt/format.h>
