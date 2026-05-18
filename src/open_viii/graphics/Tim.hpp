@@ -614,7 +614,7 @@ public:
         const auto                 &data
           = get_colors<Color16<ColorLayoutT::ABGR>>(i, clut_dims);
         // Ppm::save(data, width(), height(), out_path);
-        Png::save(data, width(), height(), out_path, out_path);
+        Png::save(data, width(), height(), out_path, std::string{});
         if (clut >= 0)
           return;
       }
