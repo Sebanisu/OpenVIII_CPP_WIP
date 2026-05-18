@@ -627,8 +627,9 @@ public:
    * @param path that contains FIFLFS files or ZZZ files.
    */
   Archives(const std::filesystem::path &path, std::string_view lang)
-    : m_lang(set_lang(path, lang)), m_path(set_path(path, m_lang, lang))
   {
+    m_lang = set_lang(path, lang);
+    m_path = set_path(path, m_lang, lang);
     populate_archives_from_path();
   }
   template<typename lambdaT>
