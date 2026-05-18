@@ -111,13 +111,13 @@ private:
   auto
     get_textures() const
   {
-    PalettesByTexturePages textures{};
+    PalettesByTexturePages result{};
 
     open_viii::tools::execute_on_directory(
       dir_path,
       { dir_name },
       { ".ppm" },
-      [&textures, this](const std::filesystem::path &file_path) {
+      [&result, this](const std::filesystem::path &file_path) {
         const auto filename = file_path.filename().stem().string();
 
         if (!filename.ends_with(')')) {
@@ -167,12 +167,12 @@ private:
           static_cast<uint16_t>(palette),
           file_path.string());
 
-        textures.set(texture_page, palette, Ppm(file_path));
+        result.set(texture_page, palette, Ppm(file_path));
       });
 
-    fmt::print("{}\n", textures);
+    fmt::print("{}\n", result);
 
-    return textures;
+    return result;
   }
 
 public:
