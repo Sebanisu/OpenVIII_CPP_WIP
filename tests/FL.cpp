@@ -280,27 +280,16 @@ C:\ff8\Data\eng\FIELD\mapdata\bc\bcform1a.fi)"s;
     };
 
     "append_entry"_test = [] {
-      static const auto check = [](
-                                  const std::filesystem::path &input,
-                                  const std::string           &expected_unix,
-                                  const std::string &expected_windows) {
-        std::string buffer;
-        open_viii::archive::append_entry(buffer, input);
-        if constexpr (std::filesystem::path::preferred_separator == '/') {
-          expect(eq(buffer, expected_unix));
-        }
-        else {
-          expect(eq(buffer, expected_windows));
-        }
-      };
-      check(
-        "test/test1.test",
-        "C:\\test/test1.test\r\n",
-        "C:\\test\\test1.test\r\n");
-      check(
-        "data/sample.fi",
-        "C:\\data/sample.fi\r\n",
-        "C:\\data\\sample.fi\r\n");
+      static const auto check
+        = [](const std::filesystem::path &input, const std::string &expected) {
+            std::string buffer;
+            open_viii::archive::append_entry(buffer, input);
+            expect(eq(buffer, expected));
+          };
+
+      check("test/test1.test", "C:\\test\\test1.test\r\n");
+
+      check("data/sample.fi", "C:\\data\\sample.fi\r\n");
     };
   };
 }

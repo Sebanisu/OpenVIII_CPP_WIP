@@ -57,12 +57,14 @@ int
 
       a                 = a.with_xy(0, 0);
 
-      a                 = a.with_xy(15, 15);
+      b                 = b.with_xy(15, 15);
 
       const auto first  = uniquify(a);
       const auto second = uniquify(b);
 
-      expect(eq(second.raw(), first.raw() + 1U));
+      expect(neq(first, second));
+      expect(second.is_x_not_aligned_to_grid());
+      expect(second.is_y_not_aligned_to_grid());
     };
 
     "UniquifyPupu different base ids do not collide"_test = [] {
