@@ -7,8 +7,16 @@
 #include "BlendModeT.hpp"
 #include "open_viii/graphics/Rectangle.hpp"
 #include <cstring>
+#include <fmt/format.h>
 #include <iomanip>
 namespace open_viii::graphics::background {
+template<typename tileT>
+struct TileCommon;
+
+template<typename tileT>
+std::ostream &
+  operator<<(std::ostream &os, const TileCommon<tileT> &tile);
+
 enum class TileCommonConstants : std::uint16_t
 {
 
@@ -365,8 +373,6 @@ concept has_with_animation_state
   = requires(std::decay_t<T> t) { t = t.with_animation_state(1U); };
 }// namespace open_viii::graphics::background
 
-#include <fmt/format.h>
-
 template<typename tileT>
 struct fmt::formatter<open_viii::graphics::background::TileCommon<tileT>>
 {
@@ -430,4 +436,12 @@ struct fmt::formatter<open_viii::graphics::background::TileCommon<tileT>>
     return out;
   }
 };
+template<typename tileT>
+inline std::ostream &
+  open_viii::graphics::background::operator<<(
+    std::ostream            &os,
+    const TileCommon<tileT> &tile)
+{
+  return os << fmt::format("{}", tile);
+}
 #endif// OPENVIII_CPP_WIP_TILECOMMON_HPP

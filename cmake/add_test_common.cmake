@@ -1,3 +1,4 @@
+find_package(ut CONFIG REQUIRED)
 function(add_test_common file_name)
     add_executable(${PROJECT_NAME}_UT_${file_name}
             ${file_name}.cpp)

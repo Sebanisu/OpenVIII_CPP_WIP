@@ -223,4 +223,13 @@ struct fmt::formatter<open_viii::graphics::background::PupuID> : fmt::formatter<
   }
 };
 
+namespace open_viii::graphics::background
+{
+inline std::ostream &
+operator<<(std::ostream &os, const PupuID &value)
+{
+  return os << fmt::format("{}", value);
+}
+}
+
 #endif// OPEN_VIII_GRAPHICS_BACKGROUND_PUPUID_HPP

@@ -220,12 +220,13 @@ public:
   };
 };
 
-// inline std::ostream &
-//   operator<<(std::ostream &os, [[maybe_unused]] const BPPT &input)
-// {
-//   return os << "{BPP: " << static_cast<int>(input)
-//             << ", CLP: " << input.color_lookup_table_present() << '}';
-// }
+inline std::ostream &
+  operator<<(std::ostream &os, const BPPT &input)
+{
+  return os << "{BPP: " << static_cast<int>(input)
+            << ", CLP: " << input.color_lookup_table_present() << '}';
+}
+
 namespace literals {
   consteval BPPT
     operator""_bpp(const char *const value)

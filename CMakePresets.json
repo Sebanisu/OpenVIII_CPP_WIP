@@ -17,7 +17,10 @@
       },
       "binaryDir": "${sourceDir}/.build",
       "installDir": "${sourceDir}/.install",
-      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "BUILD_TESTING": "ON"
+      }
     },
 
     {
