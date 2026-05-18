@@ -24,3 +24,8 @@ target_compile_features(${PROJECT_NAME}_VIIIGraphics
         PUBLIC cxx_std_23
         PUBLIC cxx_std_20
 )
+if (MSVC)
+    target_compile_options(${PROJECT_NAME}_VIIIGraphics
+        PUBLIC /utf-8
+    )
+endif()

@@ -211,12 +211,12 @@ private:
 };
 }// namespace open_viii::graphics::background
 template<>
-struct fmt::formatter<ff_8::PupuID> : fmt::formatter<std::string>
+struct fmt::formatter<open_viii::graphics::background::PupuID> : fmt::formatter<std::string>
 {
   // Formats value using the parsed format specification stored in this
   // formatter and writes the output to ctx.out().
   auto
-    format(const ff_8::PupuID &value, format_context &ctx) const
+    format(const open_viii::graphics::background::PupuID &value, format_context &ctx) const
     -> format_context::iterator
   {
     return fmt::format_to(ctx.out(), "{:08X}", value.raw());
