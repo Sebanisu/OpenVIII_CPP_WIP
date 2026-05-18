@@ -16,6 +16,7 @@
 #include "Tile1.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
+#include <fmt/format.h>
 namespace open_viii::graphics::background {
 /*
  * A disambiguation ID based on Pupu an application for descrambling and
@@ -188,4 +189,19 @@ public:
   }
 };
 }// namespace open_viii::graphics::background
+template<>
+struct fmt::formatter<open_viii::graphics::background::Pupu>
+  : fmt::formatter<std::string_view>
+{
+  template<typename FormatContext>
+  auto
+    format(
+      const open_viii::graphics::background::Pupu &pupu,
+      FormatContext                               &ctx) const
+  {
+    return fmt::formatter<std::string_view>::format(
+      fmt::format("{:016X}", static_cast<std::uint64_t>(pupu)),
+      ctx);
+  }
+};
 #endif// VIIIARCHIVE_PUPU_HPP
