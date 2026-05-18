@@ -1,5 +1,6 @@
 add_library(${PROJECT_NAME}_VIIIGraphics
     background/PupuID.cpp
+    background/UniquifyPupu.cpp
 )
 add_subdirectory(color)
 add_subdirectory(tim)
