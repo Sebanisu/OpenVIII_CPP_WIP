@@ -7,6 +7,8 @@
 #include "open_viii/battle/stage/X.hpp"
 #include "open_viii/graphics/Point.hpp"
 #include "open_viii/graphics/Tim.hpp"
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 namespace open_viii::battle::stage::FlattenBattleTim {
 
 /**
@@ -162,9 +164,14 @@ inline void
 
   auto path = "tmp" / std::filesystem::path(self.path());
   path.replace_extension(".png");
-  std::cout << "saving " << std::filesystem::absolute(path).string()
-            << std::endl;
-  graphics::Png::save(used_colors, tim.width(), tim.height(), path);
+  spdlog::info("Saving {}", std::filesystem::absolute(path).string());
+  if (!graphics::Png::save(
+        used_colors,
+        tim.width(),
+        tim.height(),
+        { .filename = std::move(path) })) {
+    spdlog::error("Failed to save extracted used colors image");
+  }
 }
 }// namespace open_viii::battle::stage::FlattenBattleTim
 

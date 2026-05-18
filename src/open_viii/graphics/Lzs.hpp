@@ -89,15 +89,14 @@ public:
     }
   }
   [[maybe_unused]] void
-    save(const std::string_view &filename) const
+    save(std::filesystem::path filename) const
   {
-    Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
+    // Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
     Png::save(
       m_colors,
       m_rectangle.width(),
       m_rectangle.height(),
-      filename,
-      std::string(filename));
+      { .filename = std::move(filename) });
   }
 
   [[nodiscard]] Rectangle<std::uint16_t>

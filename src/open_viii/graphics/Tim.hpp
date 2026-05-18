@@ -580,60 +580,62 @@ public:
    */
   [[maybe_unused]] void
     save(
-      std::string_view                                       filename,
+      std::filesystem::path                                  filename,
       decltype(m_tim_clut_header.rectangle().width_height()) clut_dims = {},
       const int                                              clut = -1) const
   {
     if (clut_rows() == 0) {
       const auto &data = get_colors<Color16<ColorLayoutT::ABGR>>();
-      // Ppm::save(data, width(), height(), filename);
-      Png::save(
-        data,
-        width(),
-        height(),
-        filename,
-        std::filesystem::path(filename).string());
+      if (!Png::save(
+            data,
+            width(),
+            height(),
+            { .filename = std::move(filename) })) {
+        spdlog::error("Failed to save TIM image");
+      }
     }
     else {
       if (clut_dims == decltype(clut_dims){})
         clut_dims = m_tim_clut_header.rectangle().width_height();
-      auto path = std::filesystem::path(filename);
       for (std::uint16_t i{}; i != clut_dims.y(); ++i) {
         std::string prefix = "";
         if (clut >= 0) {
           i      = static_cast<uint16_t>(clut);
           prefix = "F";
         }
-        const std::filesystem::path out_path = path.parent_path()
-                                             / fmt::format(
-                                                 "{}_{}{}{}",
-                                                 path.stem().string(),
-                                                 prefix,
-                                                 i,
-                                                 path.extension().string());
-        const auto                 &data
+        std::filesystem::path out_path = filename.parent_path()
+                                       / fmt::format(
+                                           "{}_{}{}{}",
+                                           filename.stem().string(),
+                                           prefix,
+                                           i,
+                                           filename.extension().string());
+        const auto           &data
           = get_colors<Color16<ColorLayoutT::ABGR>>(i, clut_dims);
-        // Ppm::save(data, width(), height(), out_path);
-        Png::save(data, width(), height(), out_path, std::string{});
+        if (!Png::save(
+              data,
+              width(),
+              height(),
+              { .filename = std::move(out_path) })) {
+          spdlog::error("Failed to save TIM palette image {}", i);
+        }
+
         if (clut >= 0)
           return;
       }
-    }
-    if (clut_rows() != 0) {
-      auto       path     = std::filesystem::path(filename);
-      const auto out_path = (path.parent_path() / path.stem()).string()
-                          + "_clut" + path.extension().string();
-      //      Ppm::save(
-      //        m_tim_clut_data,
-      //        m_tim_clut_header.rectangle().width(),
-      //        m_tim_clut_header.rectangle().height(),
-      //        out_path);
-      Png::save(
-        m_tim_clut_data,
-        m_tim_clut_header.rectangle().width(),
-        m_tim_clut_header.rectangle().height(),
-        out_path,
-        std::filesystem::path(filename).string());
+      auto out_path = filename.parent_path()
+                    / fmt::format(
+                        "{}_clut{}",
+                        filename.stem().string(),
+                        filename.extension().string());
+      if (!Png::save(
+            m_tim_clut_data,
+            m_tim_clut_header.rectangle().width(),
+            m_tim_clut_header.rectangle().height(),
+            { .filename = std::move(out_path) })) {
+
+        spdlog::error("Failed to save TIM clut image");
+      }
     }
   }
 
@@ -708,8 +710,8 @@ auto
 /**
  * @brief Get the 24bpp colors as a vector of Color24<ColorLayoutT::BGR>
  * objects.
- * @return A vector of Color24<ColorLayoutT::BGR> objects representing the 24bpp
- * colors.
+ * @return A vector of Color24<ColorLayoutT::BGR> objects representing the
+ * 24bpp colors.
  */
 template<>
 auto

@@ -18,6 +18,13 @@ namespace open_viii::graphics {
  */
 struct Png
 {
+  struct SaveSettings
+  {
+    std::filesystem::path filename{};
+    std::string           title{};
+    std::filesystem::path prefix{ "tmp" };
+  };
+
 private:
   std::filesystem::path m_filename{};  ///< The filename of the PNG file.
   png_uint_32           m_width{};     ///< The width of the PNG in pixels.
@@ -372,31 +379,32 @@ public:
   template<Color cT = Color32RGBA>
   static std::optional<std::filesystem::path>
     save(
-      const std::uint8_t   *data,
-      png_uint_32           width,
-      png_uint_32           height,
-      std::filesystem::path filename,
-      std::string           title  = "",
-      std::string           prefix = "tmp") noexcept
+      const std::uint8_t *data,
+      png_uint_32         width,
+      png_uint_32         height,
+      SaveSettings        settings) noexcept
   {
     if (width == 0U || height == 0U)
       return std::nullopt;
-    if (!open_viii::tools::i_ends_with(filename.string(), ".png")) {
-      filename
-        = (!filename.string().starts_with(prefix)
-             ? (prefix / filename.parent_path() / filename.stem()).string()
-             : (filename.parent_path() / filename.stem()).string())
-        + (filename.has_extension()
-             ? "_" + filename.extension().string().substr(1)
+    if (!open_viii::tools::i_ends_with(settings.filename.string(), ".png")) {
+      settings.filename
+        = (!settings.filename.string().starts_with(settings.prefix.string())
+             ? (settings.prefix / settings.filename.parent_path()
+                / settings.filename.stem())
+                 .string()
+             : (settings.filename.parent_path() / settings.filename.stem())
+                 .string())
+        + (settings.filename.has_extension()
+             ? "_" + settings.filename.extension().string().substr(1)
              : "")
         + ".png";
     }
-    auto fp = safe_fp{ fopen(filename.string().c_str(), "wb"), {} };
+    auto fp = safe_fp{ fopen(settings.filename.string().c_str(), "wb"), {} };
 
     if (!fp) {
       spdlog::error(
         "Could not open file {} for writing: {}",
-        filename.string(),
+        settings.filename.string(),
         std::strerror(errno));
       return std::nullopt;
     }
@@ -414,7 +422,7 @@ public:
     if (!info_ptr) {
       spdlog::critical(
         "Failed to create PNG info struct for {}",
-        filename.string());
+        settings.filename.string());
       return std::nullopt;
     }
     //    // Setup Exception handling
@@ -438,12 +446,16 @@ public:
       PNG_FILTER_TYPE_BASE);
 
     // Set title
-    if (!title.empty()) {
+    if (settings.title.empty()) {
+      settings.title = settings.filename.stem().string();
+    }
+
+    if (!settings.title.empty()) {
       static char k[] = "Title";
       png_text    title_text;
       title_text.compression = PNG_TEXT_COMPRESSION_NONE;
       title_text.key         = k;
-      title_text.text        = title.data();
+      title_text.text        = settings.title.data();
       png_set_text(png_ptr.get(), info_ptr.get(), &title_text, 1);
     }
 
@@ -462,7 +474,7 @@ public:
       png_write_row(png_ptr.get(), row.data());
     }
     png_write_end(png_ptr.get(), nullptr);
-    return filename;
+    return settings.filename;
   }
 
   /**
@@ -476,13 +488,13 @@ public:
    * @param t Variadic template parameters
    * @return The saved filename or std::nullopt if saving failed
    */
-  template<Color cT, typename... T>
+  template<Color cT>
   static std::optional<std::filesystem::path>
     save(
       const std::vector<cT> &data,
       png_uint_32            width,
       png_uint_32            height,
-      T &&...t) noexcept
+      SaveSettings           settings) noexcept
   {
     if (std::cmp_less(data.size(), std::size_t{ width } * height)) {
       spdlog::error("Size is wrong! {} != {} x {}", data.size(), width, height);
@@ -492,7 +504,7 @@ public:
       reinterpret_cast<const std::uint8_t *>(data.data()),
       width,
       height,
-      std::forward<T>(t)...);
+      std::move(settings));
   }
 
   /**
@@ -503,11 +515,14 @@ public:
    * @param t Variadic template parameters
    * @return The saved filename or std::nullopt if saving failed
    */
-  template<class... T>
   static std::optional<std::filesystem::path>
-    save(const Png &data, T &&...t) noexcept
+    save(
+      const Png   &data,
+      png_uint_32  width,
+      png_uint_32  height,
+      SaveSettings settings) noexcept
   {
-    return save(data.m_color, std::forward<T>(t)...);
+    return save(data.m_color, width, height, std::move(settings));
   }
 
   /**
