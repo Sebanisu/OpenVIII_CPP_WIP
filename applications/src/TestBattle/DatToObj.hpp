@@ -1,6 +1,7 @@
-//
-// Created by pcvii on 3/28/2023.
-//
+/**
+ * @file DatToObj.hpp
+ * @brief Utilities for exporting FFVIII battle DAT geometry to Wavefront OBJ.
+ */
 
 #ifndef OPENVIII_CPP_WIP_DATTOOBJ_HPP
 #define OPENVIII_CPP_WIP_DATTOOBJ_HPP
@@ -9,6 +10,10 @@
 #include <filesystem>
 #include <iostream>
 #include <optional>
+/**
+ * @namespace open_viii::battle::dat::DatToObj
+ * @brief OBJ export helpers for FFVIII battle DAT conversion.
+ */
 namespace open_viii::battle::dat::DatToObj {
 /**
  * @brief Calculates the scaling factors for texture coordinates to fix specific
@@ -25,7 +30,7 @@ namespace open_viii::battle::dat::DatToObj {
  * @param classicHeight The height of the classic texture.
  * @param width The width of the new texture.
  * @param height The height of the new texture.
- * @return A graphics::Point<float> representing the U and V scaling factors.
+ * @return Texture scaling factors for U and V coordinates.
  */
 graphics::Point<float>
   calculate_scaling_factors(
@@ -75,7 +80,7 @@ graphics::Point<float>
  * std::uint8_t. If no number is found or the conversion is not possible, the
  * function returns an empty std::optional.
  *
- * @param fileStem The file stem to extract the number from.
+ * @param fileStem File stem containing an optional numeric suffix.
  * @return An std::optional<std::uint8_t> containing the extracted number, if
  * present and valid.
  */
@@ -116,7 +121,7 @@ std::optional<std::uint8_t>
  * @brief Writes material information to an output MTL file, specifying the
  * material name and texture map.
  *
- * This function writes a new material entry to the provided MTL file stream. It
+ * Writes a material definition entry to the provided MTL stream. It
  * generates the material name using the given basename and texture ID, and
  * creates a texture map entry depending on whether the input material is from
  * the remastered version or not.
@@ -233,7 +238,7 @@ inline void
  * range of 128-255. For height 96 or 97, the V range is 128 to 223, and
  * for height 32, the V range is 96 to 127.
  *
- * @param v The V coordinate.
+ * @param v_cord The V texture coordinate.
  * @param height The height of the tim texture.
  * @return The converted V coordinate as a std::uint8_t.
  */
