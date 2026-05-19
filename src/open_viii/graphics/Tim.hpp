@@ -19,6 +19,9 @@
 #include "open_viii/graphics/tim/TimClutHeader.hpp"
 #include "open_viii/graphics/tim/TimHeader.hpp"
 #include "Png.hpp"
+#include <fmt/core.h>
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 namespace open_viii::graphics {
 /**
  * @brief TIM, or PSX TIM, is an uncompressed raster image file format
@@ -577,56 +580,62 @@ public:
    */
   [[maybe_unused]] void
     save(
-      std::string_view                                       filename,
+      std::filesystem::path                                  filename,
       decltype(m_tim_clut_header.rectangle().width_height()) clut_dims = {},
       const int                                              clut = -1) const
   {
     if (clut_rows() == 0) {
       const auto &data = get_colors<Color16<ColorLayoutT::ABGR>>();
-      // Ppm::save(data, width(), height(), filename);
-      Png::save(
-        data,
-        width(),
-        height(),
-        filename,
-        std::filesystem::path(filename).string());
+      if (!Png::save(
+            data,
+            width(),
+            height(),
+            { .filename = std::move(filename) })) {
+        spdlog::error("Failed to save TIM image");
+      }
     }
     else {
       if (clut_dims == decltype(clut_dims){})
         clut_dims = m_tim_clut_header.rectangle().width_height();
-      auto path = std::filesystem::path(filename);
       for (std::uint16_t i{}; i != clut_dims.y(); ++i) {
         std::string prefix = "";
         if (clut >= 0) {
           i      = static_cast<uint16_t>(clut);
           prefix = "F";
         }
-        const auto out_path = (path.parent_path() / path.stem()).string() + '_'
-                            + prefix + std::to_string(i)
-                            + path.extension().string();
-        const auto &data
+        std::filesystem::path out_path = filename.parent_path()
+                                       / fmt::format(
+                                           "{}_{}{}{}",
+                                           filename.stem().string(),
+                                           prefix,
+                                           i,
+                                           filename.extension().string());
+        const auto           &data
           = get_colors<Color16<ColorLayoutT::ABGR>>(i, clut_dims);
-        // Ppm::save(data, width(), height(), out_path);
-        Png::save(data, width(), height(), out_path, out_path);
+        if (!Png::save(
+              data,
+              width(),
+              height(),
+              { .filename = std::move(out_path) })) {
+          spdlog::error("Failed to save TIM palette image {}", i);
+        }
+
         if (clut >= 0)
           return;
       }
-    }
-    if (clut_rows() != 0) {
-      auto       path     = std::filesystem::path(filename);
-      const auto out_path = (path.parent_path() / path.stem()).string()
-                          + "_clut" + path.extension().string();
-      //      Ppm::save(
-      //        m_tim_clut_data,
-      //        m_tim_clut_header.rectangle().width(),
-      //        m_tim_clut_header.rectangle().height(),
-      //        out_path);
-      Png::save(
-        m_tim_clut_data,
-        m_tim_clut_header.rectangle().width(),
-        m_tim_clut_header.rectangle().height(),
-        out_path,
-        std::filesystem::path(filename).string());
+      auto out_path = filename.parent_path()
+                    / fmt::format(
+                        "{}_clut{}",
+                        filename.stem().string(),
+                        filename.extension().string());
+      if (!Png::save(
+            m_tim_clut_data,
+            m_tim_clut_header.rectangle().width(),
+            m_tim_clut_header.rectangle().height(),
+            { .filename = std::move(out_path) })) {
+
+        spdlog::error("Failed to save TIM clut image");
+      }
     }
   }
 
@@ -701,8 +710,8 @@ auto
 /**
  * @brief Get the 24bpp colors as a vector of Color24<ColorLayoutT::BGR>
  * objects.
- * @return A vector of Color24<ColorLayoutT::BGR> objects representing the 24bpp
- * colors.
+ * @return A vector of Color24<ColorLayoutT::BGR> objects representing the
+ * 24bpp colors.
  */
 template<>
 auto
@@ -711,18 +720,40 @@ auto
   return std::get<3>(m_tim_image_data);
 }
 
-/**
- * @brief Stream insertion operator for Tim objects.
- * @param os The output stream to insert the Tim object into.
- * @param input The Tim object to insert into the output stream.
- * @return The output stream with the inserted Tim object.
- */
-inline std::ostream &
-  operator<<(std::ostream &os, const Tim &input)
-{
-  return os << '{' << input.tim_header() << ", " << input.tim_clut_header()
-            << ", " << input.tim_image_header()
-            << ", Corrected Width: " << input.width() << '}';
-}
+// /**
+//  * @brief Stream insertion operator for Tim objects.
+//  * @param os The output stream to insert the Tim object into.
+//  * @param input The Tim object to insert into the output stream.
+//  * @return The output stream with the inserted Tim object.
+//  */
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Tim &input)
+// {
+//   return os << '{' << input.tim_header() << ", " << input.tim_clut_header()
+//             << ", " << input.tim_image_header()
+//             << ", Corrected Width: " << input.width() << '}';
+// }
 }// namespace open_viii::graphics
+template<>
+struct fmt::formatter<open_viii::graphics::Tim>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Tim &input, FormatContext &ctx) const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{{}, {}, {}, Corrected Width: {}}}",
+      input.tim_header(),
+      input.tim_clut_header(),
+      input.tim_image_header(),
+      input.width());
+  }
+};
 #endif// VIIIARCHIVE_TIM_HPP

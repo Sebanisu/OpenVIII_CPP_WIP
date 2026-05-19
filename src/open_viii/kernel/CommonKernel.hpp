@@ -15,8 +15,7 @@ public:
   constexpr CommonKernel() = default;
   using T::EXPECTED_SIZE;
   constexpr auto
-    operator<=>(const this_type &right) const noexcept
-    = default;
+    operator<=>(const this_type &right) const noexcept = default;
 #define GET(value_name)                                                        \
   [[nodiscard]] constexpr auto value_name() const noexcept                     \
     requires(requires(this_type t) { t.m_##value_name; })                      \

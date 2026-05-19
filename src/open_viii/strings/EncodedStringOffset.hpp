@@ -78,8 +78,7 @@ private:
 
 public:
   constexpr auto
-    operator<=>(const EncodedStringOffset &right) const noexcept
-    = default;
+    operator<=>(const EncodedStringOffset &right) const noexcept = default;
   [[nodiscard]] auto
     raw_bytes(
       const std::span<const char> &buffer,

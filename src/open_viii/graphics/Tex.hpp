@@ -19,6 +19,8 @@
 #include "open_viii/graphics/tex/TexPixelFormatHeader.hpp"
 #include "Png.hpp"
 #include "Ppm.hpp"
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 namespace open_viii::graphics {
 /**
  * @brief A structure representing a TEX file.
@@ -278,70 +280,46 @@ public:
    * @param filename The output filename.
    */
   [[maybe_unused]] void
-    save(std::string_view filename) const
+    save(std::filesystem::path filename) const
   {
     if (m_tex_header.num_palettes() == 0) {
       const auto data = get_colors();
-      Ppm::save(
-        data,
-        m_tex_header.image_width(),
-        m_tex_header.image_height(),
-        filename);
-      Png::save(
-        data,
-        m_tex_header.image_width(),
-        m_tex_header.image_height(),
-        filename,
-        std::string{ filename });
+      if (!Png::save(
+            data,
+            m_tex_header.image_width(),
+            m_tex_header.image_height(),
+            { .filename = std::move(filename) })) {
+        spdlog::error("Failed to save TEX image");
+      }
     }
     else {
-      auto path = std::filesystem::path(filename);
       for (std::uint16_t i = 0; i != m_tex_header.num_palettes(); ++i) {
-        auto ss = std::stringstream{};
-        ss << (path.parent_path() / path.stem()).string() << '_' << +i << '_'
-           << path.extension().string().substr(1);
-        const auto data = get_colors(i);
-        Ppm::save(
-          data,
-          m_tex_header.image_width(),
-          m_tex_header.image_height(),
-          ss.str());
-        Png::save(
-          data,
-          m_tex_header.image_width(),
-          m_tex_header.image_height(),
-          ss.str(),
-          path.string());
+        auto       out_path = filename.parent_path()
+                            / fmt::format(
+                                "{}_{}_{}",
+                                filename.stem().string(),
+                                i,
+                                filename.extension().string().substr(1));
+        const auto data     = get_colors(i);
+        if (!Png::save(
+              data,
+              m_tex_header.image_width(),
+              m_tex_header.image_height(),
+              { .filename = std::move(out_path) })) {
+          spdlog::error("Failed to save palette image {}", i);
+        }
       }
-      const auto out_path = (path.parent_path() / path.stem()).string()
-                          + "_clut" + path.extension().string();
-      Ppm::save(
-        m_palette_data,
-        m_tex_header.num_colors_per_palette(),
-        m_tex_header.num_palettes(),
-        out_path);
-      if (const auto saved_path = Png::save(
+      auto out_path = filename.parent_path()
+                    / fmt::format(
+                        "{}_clut{}",
+                        filename.stem().string(),
+                        filename.extension().string());
+      if (!Png::save(
             m_palette_data,
             m_tex_header.num_colors_per_palette(),
             m_tex_header.num_palettes(),
-            out_path,
-            path.string());
-          saved_path) {
-        const Png read_image = { *saved_path };
-        assert(read_image.size() == m_palette_data.size());
-        //        auto       b1 = read_image.begin();
-        //        const auto e1 = read_image.end();
-        //        auto       b2 = m_palette_data.begin();
-        //        const auto e2 = m_palette_data.end();
-        //        for (; b1 != e1 && b2 != e2; (void)++b1, ++b2) {
-        //          assert(*b1 == *b2);
-        //        }
-        Png::save(
-          read_image,
-          m_tex_header.num_colors_per_palette(),
-          m_tex_header.num_palettes(),
-          *saved_path,
-          path.string());
+            { .filename = std::move(out_path) })) {
+        spdlog::error("Failed to save CLUT image");
       }
     }
   }
@@ -357,22 +335,53 @@ public:
   }
 };
 
-/**
- * @brief Output operator for the Tex class.
- * @param os The output stream.
- * @param t The Tex object to output.
- * @return The modified output stream.
- */
-inline std::ostream &
-  operator<<(std::ostream &os, const Tex &t)
-{
-  return os << "{Version: " << t.tex_header().version()
-            << ", Bits Per Pixel: " << t.tex_header().bits_per_pixel()
-            << ", Bits Per Index: " << t.tex_header().bits_per_index()
-            << ", Bytes Per Pixel: " << t.tex_header().bytes_per_pixel()
-            << ", Palette Count: " << t.tex_header().num_palettes()
-            << ", Width: " << t.tex_header().image_width()
-            << ", Height: " << t.tex_header().image_height() << "}\n";
-}
+// /**
+//  * @brief Output operator for the Tex class.
+//  * @param os The output stream.
+//  * @param t The Tex object to output.
+//  * @return The modified output stream.
+//  */
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Tex &t)
+// {
+//   return os << "{Version: " << t.tex_header().version()
+//             << ", Bits Per Pixel: " << t.tex_header().bits_per_pixel()
+//             << ", Bits Per Index: " << t.tex_header().bits_per_index()
+//             << ", Bytes Per Pixel: " << t.tex_header().bytes_per_pixel()
+//             << ", Palette Count: " << t.tex_header().num_palettes()
+//             << ", Width: " << t.tex_header().image_width()
+//             << ", Height: " << t.tex_header().image_height() << "}\n";
+// }
 }// namespace open_viii::graphics
+
+#include <fmt/format.h>
+
+template<>
+struct fmt::formatter<open_viii::graphics::Tex>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Tex &t, FormatContext &ctx) const
+  {
+    const auto &h = t.tex_header();
+
+    return fmt::format_to(
+      ctx.out(),
+      "{{Version: {}, Bits Per Pixel: {}, Bits Per Index: {}, "
+      "Bytes Per Pixel: {}, Palette Count: {}, Width: {}, Height: {}}}",
+      h.version(),
+      h.bits_per_pixel(),
+      h.bits_per_index(),
+      h.bytes_per_pixel(),
+      h.num_palettes(),
+      h.image_width(),
+      h.image_height());
+  }
+};
 #endif// VIIIARCHIVE_TEX_HPP

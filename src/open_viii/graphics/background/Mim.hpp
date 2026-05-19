@@ -21,6 +21,7 @@
 #include "TileCommon.hpp"
 #include <algorithm>
 #include <execution>
+#include <fmt/format.h>
 #include <version>
 namespace open_viii::graphics::background {
 
@@ -216,11 +217,11 @@ public:
     }
     return {};
   }
-  friend std::ostream &
-    operator<<(std::ostream &os, const Mim &m)
-  {
-    return os << m.m_mim_type;
-  }
+  // friend std::ostream &
+  //   operator<<(std::ostream &os, const Mim &m)
+  // {
+  //   return os << m.m_mim_type;
+  // }
   std::uint32_t
     get_height(bool dump_palette = false) const
   {
@@ -231,7 +232,7 @@ public:
       return clut_height();
     }
     else {
-      return m_mim_type.height();
+      return m_mim_type.height;
     }
   }
   std::uint32_t
@@ -324,22 +325,21 @@ public:
     const auto path = std::filesystem::path(filename);
     if (dump_palette) {
       const auto m_palette_buffer = set_palette_span();
-      if constexpr (std::invocable<
-                      lambdaT,
-                      std::span<const Color16ABGR>,
-                      std::size_t,
-                      std::size_t,
-                      std::string>) {
+      if constexpr (
+        std::invocable<
+          lambdaT,
+          std::span<const Color16ABGR>,
+          std::size_t,
+          std::size_t,
+          std::string>) {
         lambda(
           m_palette_buffer,
           static_cast<std::size_t>(clut_width()),
           clut_height(),
           ((path.parent_path() / path.stem()).string()) + "_Clut.mim");
       }
-      else if constexpr (std::invocable<
-                           lambdaT,
-                           std::span<const Color16ABGR>,
-                           std::size_t>) {
+      else if constexpr (
+        std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>) {
         lambda(m_palette_buffer, static_cast<std::size_t>(clut_width()));
       }
       return;
@@ -354,55 +354,54 @@ public:
         };
     if (bpp.bpp8()) {
       auto out = get_image_bpp8(palette);
-      if constexpr (std::invocable<
-                      lambdaT,
-                      std::span<const Color16ABGR>,
-                      std::size_t,
-                      std::size_t,
-                      std::string>) {
+      if constexpr (
+        std::invocable<
+          lambdaT,
+          std::span<const Color16ABGR>,
+          std::size_t,
+          std::size_t,
+          std::string>) {
         lambda(
           out,
           width,
           std::ranges::size(out) / width,
           out_path(BPPT::BPP8));
       }
-      else if (std::invocable<
-                 lambdaT,
-                 std::span<const Color16ABGR>,
-                 std::size_t>) {
+      else if (
+        std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>) {
         lambda(out, width);
       }
     }
     else if (bpp.bpp4()) {
       std::vector<Color16ABGR> out = get_image_bpp4(palette);
       width *= 2U;
-      if constexpr (std::invocable<
-                      lambdaT,
-                      std::span<const Color16ABGR>,
-                      std::size_t,
-                      std::size_t,
-                      std::string>) {
+      if constexpr (
+        std::invocable<
+          lambdaT,
+          std::span<const Color16ABGR>,
+          std::size_t,
+          std::size_t,
+          std::string>) {
         lambda(
           out,
           width,
           std::ranges::size(out) / width,
           out_path(BPPT::BPP4));
       }
-      else if (std::invocable<
-                 lambdaT,
-                 std::span<const Color16ABGR>,
-                 std::size_t>) {
+      else if (
+        std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>) {
         lambda(out, width);
       }
     }
     else if (bpp.bpp16()) {
       width /= 2U;
-      if constexpr (std::invocable<
-                      lambdaT,
-                      std::span<const Color16ABGR>,
-                      std::size_t,
-                      std::size_t,
-                      std::string>) {
+      if constexpr (
+        std::invocable<
+          lambdaT,
+          std::span<const Color16ABGR>,
+          std::size_t,
+          std::size_t,
+          std::string>) {
         const auto m_image_buffer_bbp16 = set_image_span_bpp16();
         lambda(
           m_image_buffer_bbp16,
@@ -410,10 +409,8 @@ public:
           std::ranges::size(m_image_buffer_bbp16) / width,
           out_path(BPPT::BPP16, false));
       }
-      else if (std::invocable<
-                 lambdaT,
-                 std::span<const Color16ABGR>,
-                 std::size_t>) {
+      else if (
+        std::invocable<lambdaT, std::span<const Color16ABGR>, std::size_t>) {
         const auto m_image_buffer_bbp16 = set_image_span_bpp16();
         lambda(m_image_buffer_bbp16, width);
       }
@@ -626,6 +623,25 @@ public:
                                               "12"sv, "13"sv, "14"sv, "15"sv };
     return values;
   }
+  friend struct fmt::formatter<Mim>;
 };
 }// namespace open_viii::graphics::background
+
+template<>
+struct fmt::formatter<open_viii::graphics::background::Mim>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::background::Mim &m, FormatContext &ctx)
+      const
+  {
+    return fmt::format_to(ctx.out(), "{}", m.m_mim_type);
+  }
+};
 #endif// VIIIARCHIVE_MIM_HPP

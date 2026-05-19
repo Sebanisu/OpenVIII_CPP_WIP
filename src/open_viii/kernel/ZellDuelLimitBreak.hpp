@@ -88,8 +88,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const ZellDuelLimitBreak_impl &right) const noexcept
-    = default;
+    operator<=>(const ZellDuelLimitBreak_impl &right) const noexcept = default;
 };
 using ZellDuelLimitBreak = CommonKernel<ZellDuelLimitBreak_impl>;
 static_assert(ZellDuelLimitBreak::EXPECTED_SIZE == sizeof(ZellDuelLimitBreak));

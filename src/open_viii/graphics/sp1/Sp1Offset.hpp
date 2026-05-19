@@ -12,25 +12,38 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_SP1OFFSET_HPP
 #define VIIIARCHIVE_SP1OFFSET_HPP
+#include <cstdint>
+#include <fmt/format.h>
 namespace open_viii::graphics {
+
 struct Sp1Offset
 {
-private:
-  std::uint16_t m_offset{};
-  std::uint16_t m_count{};
+  std::uint16_t offset{};
+  std::uint16_t count{};
 
-public:
-  Sp1Offset() = default;
-  [[nodiscard]] auto
-    offset() const noexcept
+  constexpr Sp1Offset() = default;
+};
+
+}// namespace open_viii::graphics
+
+template<>
+struct fmt::formatter<open_viii::graphics::Sp1Offset>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
   {
-    return m_offset;
+    return ctx.begin();
   }
-  [[nodiscard]] auto
-    count() const noexcept
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Sp1Offset &o, FormatContext &ctx) const
   {
-    return m_count;
+    return fmt::format_to(
+      ctx.out(),
+      "{{offset: {}, count: {}}}",
+      o.offset,
+      o.count);
   }
 };
-}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP1OFFSET_HPP

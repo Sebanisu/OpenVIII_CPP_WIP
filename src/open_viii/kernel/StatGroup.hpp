@@ -30,8 +30,7 @@ public:
   static constexpr auto HIT{ 7U };
   static constexpr auto LUCK{ 8U };
   constexpr auto
-    operator<=>(const StatGroup<T> &right) const noexcept
-    = default;
+    operator<=>(const StatGroup<T> &right) const noexcept = default;
   [[maybe_unused]] [[nodiscard]] constexpr T
     hp() const noexcept
   {

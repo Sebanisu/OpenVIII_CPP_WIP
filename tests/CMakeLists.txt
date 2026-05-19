@@ -40,6 +40,14 @@ target_link_libraries(${PROJECT_NAME}_UT_BackgroundTiles
         PRIVATE ToolsLibrary_tl
         PRIVATE Threads::Threads
         )
+add_test_common(PupuID)
+target_link_libraries(${PROJECT_NAME}_UT_PupuID
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
+)
 
+add_test_common(UniquifyPupu)
+target_link_libraries(${PROJECT_NAME}_UT_UniquifyPupu
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
+)
 #PRIVATE ToolsLibrary_tl
 #PRIVATE Threads::Threads

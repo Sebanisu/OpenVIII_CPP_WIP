@@ -29,8 +29,7 @@ public:
   static constexpr auto EXPECTED_SIZE = 1U;
   constexpr LayerID()                 = default;
   constexpr auto
-    operator<=>(const LayerID &) const
-    = default;
+    operator<=>(const LayerID &) const = default;
   [[nodiscard]] constexpr auto
     id() const noexcept
   {

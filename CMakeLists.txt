@@ -13,6 +13,9 @@ endfunction()
 message(STATUS ${CMAKE_VERSION})
 message(STATUS ${CMAKE_PATCH_VERSION})
 
+find_package(spdlog REQUIRED)
+find_package(fmt REQUIRED)
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON) ## the value of the CXX_STANDARD target property is treated as a requirement
 set(CMAKE_CXX_EXTENSIONS OFF) ## on g++ this ensures: -std=c++11 and not -std=gnu++11
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) ## automatically create a module definition (.def) file with all global
@@ -54,6 +57,7 @@ function(apply_common_operations target_name)
             PUBLIC ${PROJECT_NAME}_project_warnings
             PUBLIC ToolsLibrary_tl
             PUBLIC Threads::Threads
+            PUBLIC spdlog::spdlog
             PRIVATE ${PROJECT_NAME}_VIIIGraphics
         )
     endif()
@@ -89,8 +93,6 @@ if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME))
 endif ()
 if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)
     include(CTest)
-    #include(cmake/googletest.cmake)
-    include(cmake/ut.cmake)
     add_subdirectory(tests)
 endif ()
 #add_subdirectory(g_tests)

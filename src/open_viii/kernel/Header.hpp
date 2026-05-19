@@ -60,8 +60,7 @@ private:
 public:
   static constexpr auto FILE_NAME = std::string_view{ "kernel.bin" };
   auto
-    operator<=>(const Header &right) const noexcept
-    = default;
+    operator<=>(const Header &right) const noexcept = default;
   template<SectionTypesT sectionType>
   static constexpr bool section_type_test = []() {
     return static_cast<int>(sectionType)

@@ -17,6 +17,7 @@
 #include "Png.hpp"
 #include "Ppm.hpp"
 #include "Rectangle.hpp"
+#include <spdlog/spdlog.h>
 namespace open_viii::graphics {
 /**
  * lzs images are LZSS images with a small header (X,Y,H,W) and 16bit colors.
@@ -38,9 +39,13 @@ public:
         return;
       }
       std::memcpy(&comp_size, std::ranges::data(buffer), sz32);
+
       if (comp_size + sz32 != std::ranges::size(buffer)) {
-        std::cout << "wrong size: " << comp_size << ", "
-                  << std::ranges::size(buffer) << '\n';
+        spdlog::error(
+          "wrong size: {} (expected {} incl header), buffer size {}",
+          comp_size,
+          comp_size + sz32,
+          std::ranges::size(buffer));
         return;
       }
       buffer = buffer.subspan(sz32, comp_size);// skip the size value.
@@ -52,14 +57,18 @@ public:
       if (szrec > std::ranges::size(adj)) {
         return;
       }
+
       std::memcpy(&m_rectangle, std::ranges::data(adj), szrec);
-      std::cout << "size of uncompressed before: " << std::ranges::size(adj)
-                << ", new size: ";
+
+      spdlog::debug("size of uncompressed before: {}", std::ranges::size(adj));
+
       adj = adj.subspan(szrec);
-      std::cout << std::ranges::size(adj) << '\n';
-      std::cout << m_rectangle << '\n';
+
+      spdlog::debug("new size: {}", std::ranges::size(adj));
+      spdlog::debug("rectangle: {}", m_rectangle);
+
       static constexpr size_t sz16 = sizeof(Color16<ColorLayoutT::ABGR>);
-      std::cout << sz16 << '\n';
+      spdlog::debug("Color16 size: {}", sz16);
       const size_t max_bytes = std::ranges::size(adj) / sz16;
       const size_t area      = m_rectangle.area();
       size_t       min_size  = (std::min)(max_bytes, area) * sz16;
@@ -68,7 +77,11 @@ public:
         return;
       }
       m_colors.resize(min_size);
-      std::cout << std::ranges::size(m_colors) << ", " << area << '\n';
+
+      spdlog::debug(
+        "colors size: {}, area: {}",
+        std::ranges::size(m_colors),
+        area);
       std::memcpy(
         std::ranges::data(m_colors),
         std::ranges::data(adj),
@@ -76,15 +89,14 @@ public:
     }
   }
   [[maybe_unused]] void
-    save(const std::string_view &filename) const
+    save(std::filesystem::path filename) const
   {
-    Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
+    // Ppm::save(m_colors, m_rectangle.width(), m_rectangle.height(), filename);
     Png::save(
       m_colors,
       m_rectangle.width(),
       m_rectangle.height(),
-      filename,
-      std::string(filename));
+      { .filename = std::move(filename) });
   }
 
   [[nodiscard]] Rectangle<std::uint16_t>
@@ -98,10 +110,27 @@ public:
     return m_colors;
   }
 };
-inline std::ostream &
-  operator<<(std::ostream &os, const Lzs &l)
-{
-  return os << '{' << l.rectangle() << "}\n";
-}
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Lzs &l)
+// {
+//   return os << '{' << l.rectangle() << "}\n";
+// }
 }// namespace open_viii::graphics
+
+template<>
+struct fmt::formatter<open_viii::graphics::Lzs>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Lzs &l, FormatContext &ctx) const
+  {
+    return fmt::format_to(ctx.out(), "{{{}}}", l.rectangle());
+  }
+};
 #endif// VIIIARCHIVE_LZS_HPP

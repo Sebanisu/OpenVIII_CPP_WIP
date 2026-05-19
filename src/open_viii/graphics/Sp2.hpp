@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_SP2_HPP
 #include "sp2/Sp2Entry.hpp"
 #include "sp2/Sp2Header.hpp"
+#include <fmt/format.h>
 namespace open_viii::graphics {
 /**
  * @see
@@ -29,9 +30,9 @@ public:
   explicit Sp2(std::span<const char> buffer)
   {
     const auto header = Sp2Header{ buffer };
-    m_entries.resize(header.size());
+    m_entries.resize(header.count);
     std::span<Sp2Entry> s{ m_entries };
-    for (const std::uint32_t offset : header.offsets()) {
+    for (const std::uint32_t offset : header.offsets) {
       std::memcpy(
         std::ranges::data(s),
         std::ranges::data(buffer.subspan(offset)),
@@ -55,14 +56,39 @@ public:
     return m_entries;
   }
 };
-inline std::ostream &
-  operator<<(std::ostream &os, const Sp2 &s)
-{
-  os << "{ Entry Count: " << s.size() << " {";
-  for (const auto &e : s.entries()) {
-    os << e;
-  }
-  return os << "}\n";
-}
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Sp2 &s)
+// {
+//   os << "{ Entry Count: " << s.size() << " {";
+//   for (const auto &e : s.entries()) {
+//     os << e;
+//   }
+//   return os << "}\n";
+// }
 }// namespace open_viii::graphics
+
+template<>
+struct fmt::formatter<open_viii::graphics::Sp2>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Sp2 &s, FormatContext &ctx) const
+  {
+    auto out = ctx.out();
+
+    out      = fmt::format_to(out, "{{ Entry Count: {} {{", s.size());
+
+    for (const auto &e : s.entries()) {
+      out = fmt::format_to(out, "{}", e);
+    }
+
+    return fmt::format_to(out, "}}}}");
+  }
+};
 #endif// VIIIARCHIVE_SP2_HPP

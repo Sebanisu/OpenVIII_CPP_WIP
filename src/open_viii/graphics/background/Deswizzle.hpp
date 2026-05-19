@@ -15,6 +15,8 @@
 #include "Map.hpp"
 #include "MimFromPath.hpp"
 #include "open_viii/graphics/Png.hpp"
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 namespace open_viii::graphics::background {
 /**
  * Deswizzle is a temporary struct that is used to take a map and mim and
@@ -77,31 +79,26 @@ private:
   {
     std::ranges::for_each(m_unique_palettes, lambda);
   }
+
   void
     save_out_buffer_and_clear(std::vector<outColorT> &out, const Pupu &pupu)
       const
   {
-    auto                  path_v = std::filesystem::path(m_path);
-    std::stringstream     ss{};
-    constexpr static auto hex_width = 16U;
-    ss << (path_v.parent_path() / path_v.stem()).string() << '_'
-       << std::uppercase << std::hex << std::setfill('0')
-       << std::setw(hex_width) << pupu << ".mimmap";
-    Ppm::save(
-      out,
-      static_cast<uint32_t>(m_canvas.width()),
-      static_cast<uint32_t>(m_canvas.height()),
-      ss.str(),
-      true);
-    // const std::vector<Color32RGBA> color32{out.begin(),out.end()};
-    Png::save(
-      out,
-      static_cast<uint32_t>(m_canvas.width()),
-      static_cast<uint32_t>(m_canvas.height()),
-      ss.str());
-    static constexpr auto blank = outColorT{};
-    std::ranges::fill(out, blank);
+    const auto width     = static_cast<uint32_t>(m_canvas.width());
+    const auto height    = static_cast<uint32_t>(m_canvas.height());
+
+    const auto base_path = std::filesystem::path(m_path).parent_path()
+                         / fmt::format(
+                             "{}_{}.mimmap",
+                             std::filesystem::path(m_path).stem().string(),
+                             pupu);
+    if (!Png::save(out, width, height, { .filename = base_path })) {
+      spdlog::error("Failed to save mimmap image");
+    }
+
+    std::ranges::fill(out, outColorT{});
   }
+
   template<Color cT, std::integral indT>
   bool
     set_color(

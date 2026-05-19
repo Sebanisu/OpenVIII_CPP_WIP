@@ -7,6 +7,8 @@
 #include "open_viii/battle/stage/X.hpp"
 #include "open_viii/graphics/Point.hpp"
 #include "open_viii/graphics/Tim.hpp"
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 namespace open_viii::battle::stage::FlattenBattleTim {
 
 /**
@@ -73,12 +75,12 @@ inline bool
                         + static_cast<double>(triangle[2].x() - triangle[1].x())
                             * static_cast<double>(p.y() - triangle[2].y()))
                      / det;
-  const double beta = ((static_cast<double>(triangle[2].y())
-                        - static_cast<double>(triangle[0].y()))
-                         * static_cast<double>(p.x() - triangle[2].x())
-                       + static_cast<double>(triangle[0].x() - triangle[2].x())
-                           * static_cast<double>(p.y() - triangle[2].y()))
-                    / det;
+  const double beta  = ((static_cast<double>(triangle[2].y())
+                         - static_cast<double>(triangle[0].y()))
+                          * static_cast<double>(p.x() - triangle[2].x())
+                        + static_cast<double>(triangle[0].x() - triangle[2].x())
+                            * static_cast<double>(p.y() - triangle[2].y()))
+                     / det;
   const double gamma = 1.0 - alpha - beta;
 
   return alpha >= -static_cast<double>(margin)
@@ -118,9 +120,10 @@ inline void
       ++i;
     }
 
-    if (is_point_in_triangle(
-          { static_cast<float>(x), static_cast<float>(y) },
-          triangle_uvs)) {
+    if (
+      is_point_in_triangle(
+        { static_cast<float>(x), static_cast<float>(y) },
+        triangle_uvs)) {
       std::uint32_t const index = y * tim.width() + x;
       used_colors[index]        = source_colors.at(triangle.clut())[index];
       found                     = true;
@@ -161,9 +164,14 @@ inline void
 
   auto path = "tmp" / std::filesystem::path(self.path());
   path.replace_extension(".png");
-  std::cout << "saving " << std::filesystem::absolute(path).string()
-            << std::endl;
-  graphics::Png::save(used_colors, tim.width(), tim.height(), path);
+  spdlog::info("Saving {}", std::filesystem::absolute(path).string());
+  if (!graphics::Png::save(
+        used_colors,
+        tim.width(),
+        tim.height(),
+        { .filename = std::move(path) })) {
+    spdlog::error("Failed to save extracted used colors image");
+  }
 }
 }// namespace open_viii::battle::stage::FlattenBattleTim
 

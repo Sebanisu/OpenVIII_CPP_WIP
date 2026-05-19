@@ -4,6 +4,8 @@
 #ifndef VIIIARCHIVE_MCH_HPP
 #define VIIIARCHIVE_MCH_HPP
 #include "Tim.hpp"
+#include <fmt/format.h>
+#include <fmt/ranges.h>
 namespace open_viii::graphics {
 struct Mch
 {
@@ -65,6 +67,33 @@ public:
       tim.save(out_path);
     }
   }
+  friend struct fmt::formatter<Mch>;
 };
 }// namespace open_viii::graphics
+
+#include <fmt/format.h>
+#include <fmt/ranges.h>
+
+template<>
+struct fmt::formatter<open_viii::graphics::Mch>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Mch &m, FormatContext &ctx) const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{TIM count: {}, TIM offsets: [{}], model_offset: {}, buffer_size: {}}}",
+      m.m_tim_offsets.size(),
+      fmt::join(m.m_tim_offsets, ", "),
+      m.m_model_offset,
+      m.m_buffer.size());
+  }
+};
 #endif// VIIIARCHIVE_MCH_HPP

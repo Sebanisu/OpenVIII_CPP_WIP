@@ -40,8 +40,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const BattleCommands_impl &right) const noexcept
-    = default;
+    operator<=>(const BattleCommands_impl &right) const noexcept = default;
 };
 using BattleCommands = CommonKernel<BattleCommands_impl>;
 static_assert(sizeof(BattleCommands) == BattleCommands::EXPECTED_SIZE);

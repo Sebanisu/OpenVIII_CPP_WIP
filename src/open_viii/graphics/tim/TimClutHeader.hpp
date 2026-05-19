@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_TIMCLUTHEADER_HPP
 #define VIIIARCHIVE_TIMCLUTHEADER_HPP
 #include "TimImageHeader.hpp"
+#include <fmt/format.h>
 namespace open_viii::graphics {
 /**
  * @struct open_viii::graphics::timClutHeader
@@ -67,11 +68,23 @@ public:
   {}
 
   /**
+   * @brief Gets the TIM image header.
+   *
+   * Provides read-only access to the image header associated with this object.
+   *
+   * @return Const reference to the TimImageHeader.
+   */
+  [[nodiscard]] constexpr const TimImageHeader &
+    image_header() const noexcept
+  {
+    return m_image_header;
+  }
+
+  /**
    * @brief Default three-way comparison.
    */
   constexpr auto
-    operator<=>(const TimClutHeader &) const
-    = default;
+    operator<=>(const TimClutHeader &) const = default;
 
   /**
    * @brief Get the dimensions of the color lookup table.
@@ -80,8 +93,8 @@ public:
    * are multiple groups of 16 in the table.
    * @return The dimensions of the color lookup table.
    */
-  [[nodiscard]] constexpr auto
-    rectangle() const
+  [[nodiscard]] constexpr const auto &
+    rectangle() const noexcept
   {
     return m_image_header.rectangle();
   }
@@ -128,22 +141,48 @@ public:
   {
     return check();
   }
-  /**
-   * @brief Overloaded ostream insertion operator to output TimClutHeader
-   * information.
-   * @param os The output stream to insert the TimClutHeader information into.
-   * @param input The TimClutHeader instance to be output.
-   * @return A reference to the output stream with the TimClutHeader information
-   * inserted.
-   */
-  friend std::ostream &
-    operator<<(std::ostream &os, const TimClutHeader &input)
-  {
-    return os << input.m_image_header
-              << " {Colors:" << input.m_image_header.rectangle().width()
-              << ", Tables: " << input.m_image_header.rectangle().height()
-              << '}';
-  }
+  // /**
+  //  * @brief Overloaded ostream insertion operator to output TimClutHeader
+  //  * information.
+  //  * @param os The output stream to insert the TimClutHeader information
+  //  into.
+  //  * @param input The TimClutHeader instance to be output.
+  //  * @return A reference to the output stream with the TimClutHeader
+  //  information
+  //  * inserted.
+  //  */
+  // friend std::ostream &
+  //   operator<<(std::ostream &os, const TimClutHeader &input)
+  // {
+  //   return os << input.m_image_header
+  //             << " {Colors:" << input.m_image_header.rectangle().width()
+  //             << ", Tables: " << input.m_image_header.rectangle().height()
+  //             << '}';
+  // }
 };
 }// namespace open_viii::graphics
+
+template<>
+struct fmt::formatter<open_viii::graphics::TimClutHeader>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::TimClutHeader &input, FormatContext &ctx)
+      const
+  {
+    const auto &rect = input.rectangle();
+    return fmt::format_to(
+      ctx.out(),
+      "{} {{Colors:{}, Tables:{}}}",
+      input.image_header(),
+      rect.width(),
+      rect.height());
+  }
+};
 #endif// VIIIARCHIVE_TIMCLUTHEADER_HPP

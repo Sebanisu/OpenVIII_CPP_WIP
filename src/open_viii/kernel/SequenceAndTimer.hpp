@@ -27,8 +27,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const SequenceAndTimer_impl &right) const noexcept
-    = default;
+    operator<=>(const SequenceAndTimer_impl &right) const noexcept = default;
 };
 using SequenceAndTimer = CommonKernel<SequenceAndTimer_impl>;
 static_assert(SequenceAndTimer::EXPECTED_SIZE == sizeof(SequenceAndTimer));

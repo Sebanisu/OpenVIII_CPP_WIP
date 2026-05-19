@@ -31,7 +31,7 @@ void
         [&dest_path](const std::filesystem::path &p) {
           std::cout << p << std::endl;
           open_viii::pak::Pak pak{ p };
-          std::cout << pak << std::endl;
+          fmt::print("{}\n", pak);
           pak.extract(dest_path);
         });
       open_viii::tools::execute_on_directory(
@@ -43,7 +43,7 @@ void
           open_viii::tools::read_from_file(
             [](std::istream &fp) {
               open_viii::pak::Cam cam{ fp };
-              std::cout << cam << std::endl;
+              fmt::print("{}\n", cam);
             },
             p);
         });
@@ -58,7 +58,7 @@ void
 {
   std::cout << "Processing file: " << pak_path << std::endl;
   open_viii::pak::Pak pak{ pak_path };
-  std::cout << pak << std::endl;
+  fmt::print("{}\n", pak);
   pak.extract(dest_path);
 }
 

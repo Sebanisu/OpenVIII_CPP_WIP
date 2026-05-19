@@ -13,8 +13,8 @@ struct CommonColor : T
 {
 private:
   template<std::size_t index, Color cT>
-  constexpr std::uint8_t
-    swap_index(const cT &color) const noexcept
+  static constexpr std::uint8_t
+    swap_index(const cT &color) noexcept
   {
     if constexpr (index == red_index) {
       return color.r();

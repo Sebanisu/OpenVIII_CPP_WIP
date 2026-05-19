@@ -30,8 +30,7 @@ private:
 public:
   constexpr Rectangle() = default;
   constexpr auto
-    operator<=>(const Rectangle<dimT> &right) const noexcept
-    = default;
+    operator<=>(const Rectangle<dimT> &right) const noexcept = default;
   constexpr Rectangle(const Point<dimT> &xy, const Point<dimT> &hw)
     : m_top_left(xy), m_width_height(hw)
   {}
@@ -277,12 +276,36 @@ public:
     return r;
   }
 };
-template<typename dimT>
-inline std::ostream &
-  operator<<(std::ostream &os, const Rectangle<dimT> &input)
-{
-  return os << "{(X, Y) = " << input.top_left()
-            << ", (Width, Height) = " << input.width_height() << '}';
-}
+// template<typename dimT>
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Rectangle<dimT> &input)
+// {
+//   return os << "{(X, Y) = " << input.top_left()
+//             << ", (Width, Height) = " << input.width_height() << '}';
+// }
 }// namespace open_viii::graphics
+#include <fmt/format.h>
+
+template<typename dimT>
+struct fmt::formatter<open_viii::graphics::Rectangle<dimT>>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(
+      const open_viii::graphics::Rectangle<dimT> &input,
+      FormatContext                              &ctx) const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{(X, Y) = {}, (Width, Height) = {}}}",
+      input.top_left(),
+      input.width_height());
+  }
+};
 #endif// VIIIARCHIVE_RECTANGLE_HPP

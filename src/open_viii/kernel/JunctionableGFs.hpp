@@ -168,8 +168,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const JunctionableGFs_impl &right) const noexcept
-    = default;
+    operator<=>(const JunctionableGFs_impl &right) const noexcept = default;
 };
 using JunctionableGFs = CommonKernel<JunctionableGFs_impl>;
 static_assert(JunctionableGFs::EXPECTED_SIZE == sizeof(JunctionableGFs));

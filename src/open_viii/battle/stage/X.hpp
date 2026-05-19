@@ -91,8 +91,9 @@ private:
       [this, &buffer_end](const auto &start) {
         const auto &span = std::span<const char>(start, buffer_end);
         m_tim            = graphics::Tim(span);
-        std::cout << "\tSIZE: " << span.size() << " bytes" << std::endl;
-        std::cout << "\tINFO: " << m_tim << std::endl;
+
+        fmt::print("\tSIZE: {} bytes\n", span.size());
+        fmt::print("\tINFO: {}\n", m_tim);
       });
     if (tim_start.has_value())
       offset(buffer_begin, tim_start.value());
@@ -178,9 +179,9 @@ private:
     std::array<GeometryGroupPointers, 4> group_pointers{};
     for (std::uint8_t i{};
          const auto  *ptr : std::array{ geometry_pointers.group_1_pointer,
-                                       geometry_pointers.group_2_pointer,
-                                       geometry_pointers.group_3_pointer,
-                                       geometry_pointers.group_4_pointer }) {
+                                        geometry_pointers.group_2_pointer,
+                                        geometry_pointers.group_3_pointer,
+                                        geometry_pointers.group_4_pointer }) {
       std::array<char, sizeof(GeometryGroupOffsets)> tmp{};
       std::ranges::copy(
         std::span(ptr, sizeof(GeometryGroupOffsets)),

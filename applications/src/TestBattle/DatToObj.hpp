@@ -215,9 +215,9 @@ inline void
   const float scale = 128.F;
   for (const auto &vertice_data : self.vertice_datas) {
     for (const auto vertice : vertice_data.vertices) {
-      obj_file << "v " << static_cast<float>(vertice.y()) / scale << " "
-               << static_cast<float>(-vertice.z()) / scale << " "
-               << static_cast<float>(vertice.x()) / scale << "\n";
+      obj_file << "v " << static_cast<float>(vertice.y) / scale << " "
+               << static_cast<float>(-vertice.z) / scale << " "
+               << static_cast<float>(vertice.x) / scale << "\n";
     }
   }
 }
@@ -711,9 +711,10 @@ inline void
         main_zzz_fetch.get(),
         out_name.string(),
         "");
-      if (const auto maybe_index
-          = extractNumberFromStem(file_path.stem().string());
-          maybe_index && maybe_index.value() < pngs.size()) {
+      if (
+        const auto maybe_index
+        = extractNumberFromStem(file_path.stem().string());
+        maybe_index && maybe_index.value() < pngs.size()) {
         pngs[maybe_index.value()] = graphics::Png(out_name);
       }
     }

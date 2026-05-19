@@ -13,6 +13,7 @@
 #ifndef VIIIARCHIVE_POINT_HPP
 #define VIIIARCHIVE_POINT_HPP
 #include "open_viii/Concepts.hpp"
+#include <fmt/format.h>
 #include <iostream>
 #include <numeric>
 namespace open_viii::graphics {
@@ -29,8 +30,7 @@ public:
   constexpr Point(const dimT &in_x, const dimT &in_y) noexcept
     : m_x(in_x), m_y(in_y) {};
   constexpr auto
-    operator<=>(const Point<dimT> &right) const noexcept
-    = default;
+    operator<=>(const Point<dimT> &right) const noexcept = default;
   template<typename T>
     requires(
       (std::integral<T> || std::floating_point<T>) && !std::is_same_v<T, dimT>)
@@ -258,11 +258,29 @@ template<Number dimT>
 {
   return { (std::min)(rhs.x(), lhs.x()), (std::min)(rhs.y(), lhs.y()) };
 }
-template<typename dimT>
-inline std::ostream &
-  operator<<(std::ostream &os, const Point<dimT> &input)
-{
-  return os << '{' << +input.x() << ", " << +input.y() << '}';
-}
+// template<typename dimT>
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Point<dimT> &input)
+// {
+//   return os << '{' << +input.x() << ", " << +input.y() << '}';
+// }
 }// namespace open_viii::graphics
+
+template<typename dimT>
+struct fmt::formatter<open_viii::graphics::Point<dimT>>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Point<dimT> &input, FormatContext &ctx)
+      const
+  {
+    return fmt::format_to(ctx.out(), "{{{}, {}}}", +input.x(), +input.y());
+  }
+};
 #endif// VIIIARCHIVE_POINT_HPP

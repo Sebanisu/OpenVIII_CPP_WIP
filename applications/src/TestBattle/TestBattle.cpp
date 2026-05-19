@@ -61,9 +61,9 @@ inline void
     const open_viii::archive::FIFLFS<false> &battle_archive,
     [[maybe_unused]] const std::optional<open_viii::archive::ZZZ> &main_zzz)
 {
-  const static auto all_csv = std::filesystem::path("tmp") / "ff8" / "data"
-                            / "eng" / "battle" / "_all_.csv";
-  auto all_csv_out = std::ofstream(all_csv);
+  const static auto all_csv     = std::filesystem::path("tmp") / "ff8" / "data"
+                                / "eng" / "battle" / "_all_.csv";
+  auto              all_csv_out = std::ofstream(all_csv);
 
   for (const auto &battle_fetch : battle_archive) {
     const std::filesystem::path &as_path

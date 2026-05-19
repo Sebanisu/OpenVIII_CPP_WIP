@@ -102,8 +102,7 @@ protected:
 
 public:
   constexpr auto
-    operator<=>(const Devour_impl &right) const noexcept
-    = default;
+    operator<=>(const Devour_impl &right) const noexcept = default;
 };
 using Devour = CommonKernel<Devour_impl>;
 static_assert(Devour::EXPECTED_SIZE == sizeof(Devour));

@@ -208,9 +208,10 @@ public:
         && other.visit_tiles([this](const is_tiles auto &other_tiles) -> bool {
              return visit_tiles(
                [&other_tiles](const is_tiles auto &tiles) -> bool {
-                 if constexpr (std::is_same_v<
-                                 std::remove_cvref<decltype(tiles)>,
-                                 std::remove_cvref<decltype(other_tiles)>>) {
+                 if constexpr (
+                   std::is_same_v<
+                     std::remove_cvref<decltype(tiles)>,
+                     std::remove_cvref<decltype(other_tiles)>>) {
                    return std::ranges::equal(tiles, other_tiles);
                  }
                  else {
@@ -249,9 +250,10 @@ public:
     return visit_tiles([&other](const is_tiles auto &tiles) -> bool {
       return other.visit_tiles(
         [&tiles](const is_tiles auto &other_tiles) -> bool {
-          if constexpr (std::is_same_v<
-                          std::remove_cvref_t<decltype(tiles)>,
-                          std::remove_cvref_t<decltype(other_tiles)>>) {
+          if constexpr (
+            std::is_same_v<
+              std::remove_cvref_t<decltype(tiles)>,
+              std::remove_cvref_t<decltype(other_tiles)>>) {
             return std::ranges::lexicographical_compare(tiles, other_tiles);
           }
           else {
@@ -567,7 +569,7 @@ private:
     init_tiles(const MimType &mim_type, const std::span<const char> buffer)
   {
     variant_tiles tiles{};
-    switch (mim_type.type()) {
+    switch (mim_type.type) {
     case 1:
       tiles = std::vector<Tile1>{};
       break;

@@ -14,6 +14,9 @@
 #define VIIIARCHIVE_SP1_HPP
 #include "open_viii/graphics/sp1/Sp1Entry.hpp"
 #include "open_viii/graphics/sp1/Sp1Header.hpp"
+#include <fmt/format.h>
+#include <ranges>
+#include <span>
 namespace open_viii::graphics {
 /**
  * SP1 file parsing. This file contains the coords for for the icons. These
@@ -31,19 +34,19 @@ public:
   explicit Sp1(std::span<const char> buffer)
   {
     const auto header = Sp1Header{ buffer };
-    m_entries.resize(header.size());
+    m_entries.resize(header.count);
     std::span<std::vector<Sp1Entry>> s{ m_entries };
-    for (const auto &offset : header.offsets()) {
+    for (const auto &offset : header.offsets) {
       auto &current = s.first(1)[0];
-      current.resize(offset.count());
-      size_t sz = sizeof(Sp1Entry) * offset.count();
-      if (std::ranges::size(buffer) < offset.offset() + sz) {
+      current.resize(offset.count);
+      const size_t sz = sizeof(Sp1Entry) * offset.count;
+      if (std::ranges::size(buffer) < offset.offset + sz) {
         m_entries = {};
         return;
       }
       std::memcpy(
         std::ranges::data(current),
-        std::ranges::data(buffer.subspan(offset.offset())),
+        std::ranges::data(buffer.subspan(offset.offset)),
         sz);
       s = s.subspan(1);
     }
@@ -64,19 +67,52 @@ public:
     return m_entries;
   }
 };
-inline std::ostream &
-  operator<<(std::ostream &os, const Sp1 &s)
-{
-  os << "{ Entry Groups Count: " << s.size() << " {";
-  for (const auto &eg : s.entries()) {
-    if (std::ranges::size(eg) > 1) {
-      os << " Entry Count: " << std::ranges::size(eg) << ", ";
-    }
-    for (const auto &e : eg) {
-      os << e;
-    }
-  }
-  return os << "}\n";
-}
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Sp1 &s)
+// {
+//   os << "{ Entry Groups Count: " << s.size() << " {";
+//   for (const auto &eg : s.entries()) {
+//     if (std::ranges::size(eg) > 1) {
+//       os << " Entry Count: " << std::ranges::size(eg) << ", ";
+//     }
+//     for (const auto &e : eg) {
+//       os << e;
+//     }
+//   }
+//   return os << "}\n";
+// }
 }// namespace open_viii::graphics
+
+#include <fmt/format.h>
+
+template<>
+struct fmt::formatter<open_viii::graphics::Sp1>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Sp1 &s, FormatContext &ctx) const
+  {
+    auto out = ctx.out();
+
+    out      = fmt::format_to(out, "{{ Entry Groups Count: {} {{", s.size());
+
+    for (const auto &eg : s.entries()) {
+      if (std::ranges::size(eg) > 1) {
+        out = fmt::format_to(out, " Entry Count: {}, ", std::ranges::size(eg));
+      }
+
+      for (const auto &e : eg) {
+        out = fmt::format_to(out, "{}", e);
+      }
+    }
+
+    return fmt::format_to(out, "}}}}");
+  }
+};
 #endif// VIIIARCHIVE_SP1_HPP

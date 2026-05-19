@@ -48,8 +48,7 @@ public:
   [[maybe_unused]] constexpr static auto EXPLICIT_SIZE = 2U;
   constexpr TexIdBuffer()                              = default;
   constexpr auto
-    operator<=>(const TexIdBuffer &) const
-    = default;
+    operator<=>(const TexIdBuffer &) const = default;
   [[nodiscard]] constexpr TexIdBuffer
     with_id(std::uint8_t in_id) const noexcept
   {

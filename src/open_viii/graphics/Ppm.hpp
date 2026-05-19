@@ -17,6 +17,9 @@
 #include "open_viii/tools/Tools.hpp"
 #include "Point.hpp"
 #include <execution>
+#include <fmt/format.h>
+#include <fmt/std.h>
+#include <spdlog/spdlog.h>
 #include <sstream>
 
 namespace open_viii::graphics {
@@ -85,10 +88,9 @@ private:
     ss.seekg(0, std::ios::end);
     const auto end = ss.tellg();
     const auto sz  = static_cast<std::size_t>(end - start)
-                  / sizeof(Color24<ColorLayoutT::RGB>);
+                   / sizeof(Color24<ColorLayoutT::RGB>);
     if (sz != point.area()) {
-      std::cerr << m_path << "\n\t" << sz << " != area of " << point
-                << std::endl;
+      spdlog::error("{}\n\t{} != area of {}", m_path.string(), sz, point);
       // assert(sz == m_width_height.area());
       return {};// instead of throwing reset the value and quit.
     }
@@ -160,8 +162,12 @@ public:
       return std::string{ input };
     }();
     if (std::ranges::size(data) < width * height) {
-      std::cout << std::ranges::size(data) << ", " << width << '*' << height
-                << '=' << width * height << '\n';
+      spdlog::error(
+        "{} < {} * {} = {}",
+        std::ranges::size(data),
+        width,
+        height,
+        width * height);
       return;
     }
     tools::write_buffer(
@@ -225,11 +231,34 @@ public:
     return m_path;
   }
 };
-inline std::ostream &
-  operator<<(std::ostream &os, const Ppm &ppm)
-{
-  return os << "(Width, Height): " << ppm.width_height() << "\t" << ppm.path()
-            << '\n';
-}
+// inline std::ostream &
+//   operator<<(std::ostream &os, const Ppm &ppm)
+// {
+//   return os << "(Width, Height): " << ppm.width_height() << "\t" <<
+//   ppm.path()
+//             << '\n';
+// }
 }// namespace open_viii::graphics
+#include <fmt/format.h>
+
+template<>
+struct fmt::formatter<open_viii::graphics::Ppm>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Ppm &ppm, FormatContext &ctx) const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "(Width, Height): {}\t{}\n",
+      ppm.width_height(),
+      ppm.path());
+  }
+};
 #endif// VIIIARCHIVE_PPM_HPP

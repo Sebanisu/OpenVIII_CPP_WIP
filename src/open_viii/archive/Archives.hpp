@@ -207,8 +207,9 @@ private:
     case ArchiveTypeT::world:
       return tryAddToFIFLFS(m_world);
     case ArchiveTypeT::zzz_main: {
-      if (const TryAddT try_add_value = tryAddToZZZ(m_zzz_main);
-          try_add_value == TryAddT::archive_full) {
+      if (
+        const TryAddT try_add_value = tryAddToZZZ(m_zzz_main);
+        try_add_value == TryAddT::archive_full) {
         // using namespace std::string_literals;
         // using namespace std::string_view_literals;
         std::vector<std::future<void>> futures{};
@@ -238,12 +239,10 @@ private:
                     localPath.stem().string()))) {
                   continue;
                 }
-                if (const TryAddT fiflfs_try_add_result = try_add(
-                      in_test,
-                      item.get_file_info(),
-                      in_path,
-                      localPath);
-                    fiflfs_try_add_result == TryAddT::archive_full) {
+                if (
+                  const TryAddT fiflfs_try_add_result
+                  = try_add(in_test, item.get_file_info(), in_path, localPath);
+                  fiflfs_try_add_result == TryAddT::archive_full) {
                   return;
                 }
               }
@@ -491,13 +490,13 @@ public:
   using ZZZConstRef     = std::reference_wrapper<const std::optional<ZZZ>>;
 
   using MyVariant       = std::variant<
-          std::monostate,
-          FIFLFSRef,
-          FIFLFSConstRef,
-          FIFLFSRef2,
-          FIFLFSConstRef2,
-          ZZZRef,
-          ZZZConstRef>;
+    std::monostate,
+    FIFLFSRef,
+    FIFLFSConstRef,
+    FIFLFSRef2,
+    FIFLFSConstRef2,
+    ZZZRef,
+    ZZZConstRef>;
 
   [[nodiscard]] MyVariant
     get(const std::string_view &name, bool zzz = false) const
@@ -628,8 +627,9 @@ public:
    * @param path that contains FIFLFS files or ZZZ files.
    */
   Archives(const std::filesystem::path &path, std::string_view lang)
-    : m_lang(set_lang(path, lang)), m_path(set_path(path, m_lang, lang))
   {
+    m_lang = set_lang(path, lang);
+    m_path = set_path(path, m_lang, lang);
     populate_archives_from_path();
   }
   template<typename lambdaT>

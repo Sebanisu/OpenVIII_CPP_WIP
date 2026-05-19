@@ -12,94 +12,57 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef VIIIARCHIVE_SP2ENTRY_HPP
 #define VIIIARCHIVE_SP2ENTRY_HPP
+#include <cstdint>
+#include <fmt/format.h>
 namespace open_viii::graphics {
+
 struct Sp2Entry
 {
-private:
-  std::uint32_t m_count{};
-  std::uint8_t  m_x{};
-  std::uint8_t  m_y{};
-  std::uint8_t  m_unknown1{};
-  std::uint8_t  m_unknown2{};
-  std::uint16_t m_width{};
-  std::uint16_t m_height{};
-  std::uint8_t  m_unknown3{};
-  std::uint8_t  m_unknown4{};
-  std::uint8_t  m_unknown5{};
-  std::uint8_t  m_unknown6{};
+  std::uint32_t count{};
+  std::uint8_t  x{};
+  std::uint8_t  y{};
+  std::uint8_t  unknown1{};
+  std::uint8_t  unknown2{};
+  std::uint16_t width{};
+  std::uint16_t height{};
+  std::uint8_t  unknown3{};
+  std::uint8_t  unknown4{};
+  std::uint8_t  unknown5{};
+  std::uint8_t  unknown6{};
 
-public:
-  [[nodiscard]] auto
-    count() const noexcept
+  constexpr Sp2Entry() = default;
+};
+
+}// namespace open_viii::graphics
+
+template<>
+struct fmt::formatter<open_viii::graphics::Sp2Entry>
+{
+  constexpr auto
+    parse(fmt::format_parse_context &ctx)
   {
-    return m_count;
+    return ctx.begin();
   }
-  [[maybe_unused]] [[nodiscard]] auto
-    x() const noexcept
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Sp2Entry &e, FormatContext &ctx) const
   {
-    return m_x;
-  }
-  [[maybe_unused]] [[nodiscard]] auto
-    y() const noexcept
-  {
-    return m_y;
-  }
-  [[nodiscard]] auto
-    unknown1() const noexcept
-  {
-    return m_unknown1;
-  }
-  [[nodiscard]] auto
-    unknown2() const noexcept
-  {
-    return m_unknown2;
-  }
-  [[nodiscard]] auto
-    width() const noexcept
-  {
-    return m_width;
-  }
-  [[nodiscard]] auto
-    height() const noexcept
-  {
-    return m_height;
-  }
-  [[maybe_unused]] [[nodiscard]] auto
-    unknown3() const noexcept
-  {
-    return m_unknown3;
-  }
-  [[nodiscard]] auto
-    unknown4() const noexcept
-  {
-    return m_unknown4;
-  }
-  [[maybe_unused]] [[nodiscard]] auto
-    unknown5() const noexcept
-  {
-    return m_unknown5;
-  }
-  [[maybe_unused]] [[nodiscard]] auto
-    unknown6() const noexcept
-  {
-    return m_unknown6;
-  }
-  Sp2Entry() = default;
-  friend std::ostream &
-    operator<<(std::ostream &os, const Sp2Entry &e)
-  {
-    return os << "{ " << static_cast<std::size_t>(e.m_count) << " (X, Y) = ("
-              << static_cast<std::size_t>(e.m_x) << ", "
-              << static_cast<std::size_t>(e.m_y) << "), (W, H) = ("
-              << static_cast<std::size_t>(e.m_width) << ", "
-              << static_cast<std::size_t>(e.m_height) << "), Unk("
-              << static_cast<std::size_t>(e.m_unknown1) << ", "
-              << static_cast<std::size_t>(e.m_unknown2) << ", "
-              << static_cast<std::size_t>(e.m_unknown3) << ", "
-              << static_cast<std::size_t>(e.m_unknown4) << ", "
-              << static_cast<std::size_t>(e.m_unknown5) << ", "
-              << static_cast<std::size_t>(e.m_unknown6) << ") }";
+    return fmt::format_to(
+      ctx.out(),
+      "{{ {} (X, Y) = ({}, {}), (W, H) = ({}, {}), "
+      "Unk({}, {}, {}, {}, {}, {}) }}",
+      e.count,
+      +e.x,
+      +e.y,
+      e.width,
+      e.height,
+      +e.unknown1,
+      +e.unknown2,
+      +e.unknown3,
+      +e.unknown4,
+      +e.unknown5,
+      +e.unknown6);
   }
 };
-}// namespace open_viii::graphics
 #endif// VIIIARCHIVE_SP2ENTRY_HPP

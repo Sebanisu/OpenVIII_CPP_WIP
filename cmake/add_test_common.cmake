@@ -1,6 +1,8 @@
+find_package(ut CONFIG REQUIRED)
 function(add_test_common file_name)
     add_executable(${PROJECT_NAME}_UT_${file_name}
             ${file_name}.cpp)
+    apply_common_operations(UT_${file_name})
     target_link_libraries(${PROJECT_NAME}_UT_${file_name}
             PRIVATE Boost::ut
             PRIVATE ${PROJECT_NAME}_project_warnings

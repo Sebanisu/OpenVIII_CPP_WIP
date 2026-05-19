@@ -114,11 +114,11 @@ void
               re_source_y,
               re_x,
               re_y,
-              re_z]
-            = results;
+              re_z] = results;
 #define common_code(arg)                                                       \
-  if (const auto num = get_number<decltype(tile.arg())>(re_##arg);             \
-      num.has_value())                                                         \
+  if (                                                                         \
+    const auto num = get_number<decltype(tile.arg())>(re_##arg);               \
+    num.has_value())                                                           \
   tile = tile.with_##arg(*num)
 #define concept_common_code(arg)                                               \
   if constexpr (has_with_##arg<decltype(tile)>)                                \
@@ -168,7 +168,7 @@ void
               }
               return 4_bpp;
             }(re_depth.to_view()));
-          std::cout << tile << '\n';
+          fmt::print("{}\n", tile);
         }
       },
       variant_tile);
@@ -197,9 +197,10 @@ int
       puts("Path doesn't exist");
       return std::nullopt;
     }
-    if (auto [whole, tile_type_match]
-        = ctre::search<R"(\.([1-3])\.[cC][sS][vV])">(csv_path);
-        whole) {
+    if (
+      auto [whole, tile_type_match]
+      = ctre::search<R"(\.([1-3])\.[cC][sS][vV])">(csv_path);
+      whole) {
       std::cout << tile_type_match.to_string()
                 << '\n';// using to_string here to force ctre to execute
       // different code. should fail unless it's fixed.

@@ -4,116 +4,127 @@
 #ifndef VIIIARCHIVE_VERTICE_HPP
 #define VIIIARCHIVE_VERTICE_HPP
 #include "open_viii/Concepts.hpp"
+#include <cstdint>
+#include <fmt/format.h>
+#include <numeric>
+#include <utility>
+
 namespace open_viii::graphics {
+
 template<Number mainNumberT = std::int16_t>
 struct Vertice
 {
-private:
-  mainNumberT m_x{};
-  mainNumberT m_y{};
-  mainNumberT m_z{};
+  // Public data
+  mainNumberT x{};
+  mainNumberT y{};
+  mainNumberT z{};
 
-public:
   constexpr Vertice() = default;
+
   constexpr Vertice(mainNumberT in_x, mainNumberT in_y, mainNumberT in_z)
-    : m_x(in_x), m_y(in_y), m_z(in_z)
+    : x(in_x), y(in_y), z(in_z)
   {}
+
   template<Number numberT>
-  constexpr explicit Vertice(Vertice<numberT> lhs)
-    : m_x(static_cast<mainNumberT>(lhs.x())),
-      m_y(static_cast<mainNumberT>(lhs.y())),
-      m_z(static_cast<mainNumberT>(lhs.z()))
+  constexpr explicit Vertice(const Vertice<numberT> &lhs)
+    : x(static_cast<mainNumberT>(lhs.x)), y(static_cast<mainNumberT>(lhs.y)),
+      z(static_cast<mainNumberT>(lhs.z))
   {}
+
   template<Number numberT>
-  auto
-    operator/(numberT lhs)
+  [[nodiscard]] constexpr auto
+    operator/(numberT lhs) const
   {
-    return Vertice<numberT>{ static_cast<numberT>(m_x) / lhs,
-                             static_cast<numberT>(m_y) / lhs,
-                             static_cast<numberT>(m_z) / lhs };
+    return Vertice<numberT>{ static_cast<numberT>(x) / lhs,
+                             static_cast<numberT>(y) / lhs,
+                             static_cast<numberT>(z) / lhs };
   }
+
   template<Number numberT>
-  auto
-    operator*(numberT lhs)
+  [[nodiscard]] constexpr auto
+    operator*(numberT lhs) const
   {
-    return Vertice<numberT>{ static_cast<numberT>(m_x) * lhs,
-                             static_cast<numberT>(m_y) * lhs,
-                             static_cast<numberT>(m_z) * lhs };
+    return Vertice<numberT>{ static_cast<numberT>(x) * lhs,
+                             static_cast<numberT>(y) * lhs,
+                             static_cast<numberT>(z) * lhs };
   }
+
   template<Number numberT>
-  auto
-    operator-(numberT lhs)
+  [[nodiscard]] constexpr auto
+    operator-(numberT lhs) const
   {
-    return Vertice<numberT>{ static_cast<numberT>(m_x) - lhs,
-                             static_cast<numberT>(m_y) - lhs,
-                             static_cast<numberT>(m_z) - lhs };
+    return Vertice<numberT>{ static_cast<numberT>(x) - lhs,
+                             static_cast<numberT>(y) - lhs,
+                             static_cast<numberT>(z) - lhs };
   }
+
   template<Number numberT>
-  auto
-    operator+(numberT lhs)
-  {
-    return Vertice<numberT>{ static_cast<numberT>(m_x) + lhs,
-                             static_cast<numberT>(m_y) + lhs,
-                             static_cast<numberT>(m_z) + lhs };
-  }
-  auto
-    operator+(const Vertice<mainNumberT> &lhs)
-  {
-    return Vertice<mainNumberT>{ static_cast<mainNumberT>(m_x + lhs.m_x),
-                                 static_cast<mainNumberT>(m_y + lhs.m_y),
-                                 static_cast<mainNumberT>(m_z + lhs.m_z) };
-  }
   [[nodiscard]] constexpr auto
-    x() const noexcept
+    operator+(numberT lhs) const
   {
-    return m_x;
+    return Vertice<numberT>{ static_cast<numberT>(x) + lhs,
+                             static_cast<numberT>(y) + lhs,
+                             static_cast<numberT>(z) + lhs };
   }
+
   [[nodiscard]] constexpr auto
-    y() const noexcept
+    operator+(const Vertice &lhs) const
   {
-    return m_y;
+    return Vertice{ static_cast<mainNumberT>(x + lhs.x),
+                    static_cast<mainNumberT>(y + lhs.y),
+                    static_cast<mainNumberT>(z + lhs.z) };
   }
-  [[nodiscard]] constexpr auto
-    z() const noexcept
-  {
-    return m_z;
-  }
-  [[nodiscard]] constexpr auto
-    with_x(mainNumberT in_x) const noexcept
+
+  [[nodiscard]] constexpr Vertice
+    with_x(mainNumberT v) const noexcept
   {
     auto ret = *this;
-    ret.m_x  = in_x;
+    ret.x    = v;
     return ret;
   }
-  [[nodiscard]] constexpr auto
-    with_y(mainNumberT in_y) const noexcept
+
+  [[nodiscard]] constexpr Vertice
+    with_y(mainNumberT v) const noexcept
   {
     auto ret = *this;
-    ret.m_y  = in_y;
+    ret.y    = v;
     return ret;
   }
-  [[nodiscard]] constexpr auto
-    with_z(mainNumberT in_z) const noexcept
+
+  [[nodiscard]] constexpr Vertice
+    with_z(mainNumberT v) const noexcept
   {
     auto ret = *this;
-    ret.m_z  = in_z;
+    ret.z    = v;
     return ret;
   }
+
   template<typename T>
   [[nodiscard]] constexpr auto
-    midpoint(const Vertice<T> other) const noexcept
+    midpoint(const Vertice<T> &other) const noexcept
   {
-    return Vertice(
-      std::midpoint(m_x, other.x()),
-      std::midpoint(m_y, other.y()),
-      std::midpoint(m_z, other.z()));
+    return Vertice{ std::midpoint(x, other.x),
+                    std::midpoint(y, other.y),
+                    std::midpoint(z, other.z) };
   }
 };
-template<typename mainNumberT>
-inline std::ostream &
-  operator<<(std::ostream &os, const Vertice<mainNumberT> &lhs)
-{
-  return os << '(' << lhs.x() << ", " << lhs.y() << ", " << lhs.z() << ')';
-}
+
 }// namespace open_viii::graphics
+
+template<typename T>
+struct fmt::formatter<open_viii::graphics::Vertice<T>>
+{
+  constexpr auto
+    parse(format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::Vertice<T> &v, FormatContext &ctx) const
+  {
+    return fmt::format_to(ctx.out(), "({}, {}, {})", v.x, v.y, v.z);
+  }
+};
 #endif// VIIIARCHIVE_VERTICE_HPP

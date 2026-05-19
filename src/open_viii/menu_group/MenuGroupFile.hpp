@@ -28,6 +28,7 @@
 #include "open_viii/menu_group/refine/RefineSection004.hpp"
 #include "open_viii/SectionData.hpp"
 #include "open_viii/tools/Tools.hpp"
+#include <fmt/format.h>
 namespace open_viii::menu_group {
 struct MenuGroupFile
 {
@@ -230,18 +231,16 @@ public:
             MenuMessages{ section_buffer },
             section_buffer);
         }
-        else if constexpr (std::ranges::any_of(
-                             TIM_VALUE_ARRAY,
-                             [](const auto &item) {
-                               return item == sectionT;
-                             })) {
+        else if constexpr (
+          std::ranges::any_of(TIM_VALUE_ARRAY, [](const auto &item) {
+            return item == sectionT;
+          })) {
           return graphics::Tim(section_buffer);
         }
-        else if constexpr (std::ranges::any_of(
-                             MES_VALUE_ARRAY,
-                             [](const auto &item) {
-                               return item == sectionT;
-                             })) {
+        else if constexpr (
+          std::ranges::any_of(MES_VALUE_ARRAY, [](const auto &item) {
+            return item == sectionT;
+          })) {
           return SectionData<MenuMessagesSection>(
             MenuMessagesSection{ section_buffer },
             section_buffer);
@@ -283,10 +282,12 @@ public:
       [&](const auto &section_id, [[maybe_unused]] const graphics::Tim &tim) {
         std::stringstream
           so{};// TODO have these save in the folder with the mngrp files.
-        std::cout << ':' << static_cast<std::size_t>(section_id) << ":  {"
-                  << tim.size() << " bytes},\n";
-        std::cout << tim << '\n';
-        std::cout << tim.check();
+        fmt::print(
+          ":{}:  {{{} bytes}},\n",
+          static_cast<std::size_t>(section_id),
+          tim.size());
+        fmt::print("{}\n", tim);
+        fmt::print("{}", tim.check());
         so << path.string() << static_cast<std::size_t>(section_id);
         const auto colors_dump
           = [&tim, &so](
