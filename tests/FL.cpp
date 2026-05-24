@@ -192,8 +192,10 @@ C:\ff8\Data\eng\FIELD\mapdata\bc\bcform1a.fi)"s;
       append_entry(buffer, "test/test1.test"sv);
       append_entry(buffer, "test/test2.test"sv);
       append_entry(buffer, "test/test3.test"sv);
-      expect(eq(buffer[7], '\\'));
-      expect(eq(std::size(buffer), 60U));
+      expect(buffer[7] == '\\') << "buffer[7]=" << int(buffer[7]);
+
+      expect(std::size(buffer) == 60U)
+        << "actual size=" << std::size(buffer) << "\nbuffer=[" << buffer << "]";
       const auto entries
         = open_viii::archive::fl::get_all_entries("", buffer, 0U);
 

@@ -447,28 +447,35 @@ template<typename T>
 namespace open_viii::archive {
 
 /**
- * Append FL path to buffer.
- * @tparam T type of output buffer.
- * @param path being wrote.
- * @note path is prepended with c:\ and appended with \r\n.
+ * Append an FL-format entry to an output buffer.
+ *
+ * Serializes the supplied path into the FL archive path format using:
+ * - a leading `C:\\` prefix
+ * - Windows-style path separators (`\`)
+ * - a trailing CRLF (`\r\n`)
+ *
+ * Path serialization is platform-independent and produces identical
+ * output on all supported operating systems.
+ *
+ * @tparam T Insertable output buffer or output stream type.
+ * @param output Destination buffer or stream.
+ * @param path Source filesystem path to serialize.
  */
 template<is_insertable_or_ostream T>
-inline void
-  append_entry(T &output, const std::filesystem::path &path)
+inline void append_entry(T &output, const std::filesystem::path &path)
 {
   using namespace std::string_literals;
-  std::filesystem::path windows_path{ "C:" };
 
-  windows_path /= path;
-
-  auto string = windows_path.string();
+  auto string = path.generic_string();
 
   std::ranges::replace(string, '/', '\\');
 
+  string.insert(0, "C:\\");
   string += "\r\n"s;
 
   tl::write::append(output, string);
 }
+
 ///**
 // * Append FL path to buffer.
 // * @tparam T type of output buffer.
