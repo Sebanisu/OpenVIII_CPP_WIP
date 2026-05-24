@@ -1,4 +1,4 @@
-add_library(${PROJECT_NAME}_VIIIGraphics
+add_library(${PROJECT_NAME}_VIIIGraphics STATIC
     background/PupuID.cpp
     background/UniquifyPupu.cpp
 )
