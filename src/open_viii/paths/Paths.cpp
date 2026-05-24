@@ -22,7 +22,15 @@ std::vector<std::filesystem::path> open_viii::Paths::_configDirs;
 
 std::once_flag                     open_viii::Paths::initFlag;
 
-// Helper: verify path exists and is a directory
+/**
+ * @brief Checks whether a filesystem path exists and is a directory.
+ *
+ * Uses the non-throwing std::filesystem overloads with std::error_code
+ * to safely validate a path without generating exceptions.
+ *
+ * @param p Filesystem path to validate.
+ * @return true if the path exists and is a directory.
+ */
 bool
   valid_dir(const std::filesystem::path &p)
 {
@@ -31,127 +39,218 @@ bool
       && std::filesystem::is_directory(p, ec) && !ec;
 }
 
+/**
+ * @brief Resolves an XDG-style filesystem path from an environment variable.
+ *
+ * Returns the value of the specified environment variable when it exists
+ * and is non-empty. Otherwise, returns the provided fallback path.
+ *
+ * @param envName Name of the environment variable to query.
+ * @param fallback Fallback path used when the environment variable is unset.
+ * @return Resolved filesystem path.
+ */
+static std::filesystem::path
+  xdgPath(const char *envName, const std::filesystem::path &fallback)
+{
+  if (const char *value = std::getenv(envName); value && *value) {
+    return std::filesystem::path{ value };
+  }
+
+  return fallback;
+}
+
+#ifndef _WIN32
+/**
+ * @brief Resolves a colon-separated list of filesystem paths from an
+ * environment variable.
+ *
+ * Parses the specified environment variable using ':' as the delimiter and
+ * converts each entry into a std::filesystem::path. If the variable is unset
+ * or empty, the provided fallback list is returned.
+ *
+ * @param envName Name of the environment variable to query.
+ * @param fallback Default list of paths used when the variable is unset.
+ * @return Vector of resolved filesystem paths.
+ */
+static std::vector<std::filesystem::path>
+  xdgPathList(
+    const char                                  *envName,
+    std::initializer_list<std::filesystem::path> fallback)
+{
+  if (const char *value = std::getenv(envName); value && *value) {
+    std::vector<std::filesystem::path> paths;
+
+    std::string_view                   dirs{ value };
+    size_t                             start = 0;
+
+    while (start < dirs.size()) {
+      const size_t end = dirs.find(':', start);
+
+      paths.emplace_back(dirs.substr(start, end - start));
+
+      if (end == std::string_view::npos)
+        break;
+
+      start = end + 1;
+    }
+
+    return paths;
+  }
+
+  return { fallback };
+}
+#endif
+
+/**
+ * @brief Initializes platform-specific XDG and application directory paths.
+ *
+ * Detects and stores standard filesystem locations for user data,
+ * configuration, cache, runtime, and binary directories. Paths are resolved
+ * from environment variables when available, otherwise platform-specific
+ * defaults are used.
+ *
+ * On Windows, locations are derived from USERPROFILE and AppData folders.
+ * On Unix-like systems, XDG Base Directory specifications are followed.
+ */
 void
   open_viii::Paths::initialize()
 {
 #ifdef _WIN32
-  char *homeEnv = std::getenv("USERPROFILE");
-  _home         = homeEnv ? homeEnv : "C:\\Users\\Default";
-
-  _dataHome     = std::filesystem::path(
-    std::getenv("XDG_DATA_HOME") ? std::getenv("XDG_DATA_HOME")
-                                 : (_home / "AppData" / "Local"));
-  _configHome = std::filesystem::path(
-    std::getenv("XDG_CONFIG_HOME") ? std::getenv("XDG_CONFIG_HOME")
-                                   : (_home / "AppData" / "Roaming"));
-  _stateHome = _configHome;
-  _cacheHome = std::filesystem::path(
-    std::getenv("XDG_CACHE_HOME") ? std::getenv("XDG_CACHE_HOME")
-                                  : (_dataHome / "Cache"));
-  _runtimeDir = std::filesystem::path(
-    std::getenv("XDG_RUNTIME_DIR") ? std::getenv("XDG_RUNTIME_DIR")
-                                   : (_dataHome / "Runtime"));
-  _binHome = std::filesystem::path(
-    std::getenv("XDG_BIN_HOME") ? std::getenv("XDG_BIN_HOME")
-                                : (_home / "AppData" / "Local" / "bin"));
+  _home       = xdgPath("USERPROFILE", "C:\\Users\\Default");
+  _dataHome   = xdgPath("XDG_DATA_HOME", _home / "AppData" / "Local");
+  _configHome = xdgPath("XDG_CONFIG_HOME", _home / "AppData" / "Roaming");
+  _stateHome  = _configHome;
+  _cacheHome  = xdgPath("XDG_CACHE_HOME", _dataHome / "Cache");
+  _runtimeDir = xdgPath("XDG_RUNTIME_DIR", _dataHome / "Runtime");
+  _binHome    = xdgPath("XDG_BIN_HOME", _home / "AppData" / "Local" / "bin");
 
   _dataDirs   = { _dataHome, "C:\\ProgramData" };
   _configDirs = { _configHome, "C:\\ProgramData" };
 
 #else
-  char *homeEnv = std::getenv("HOME");
-  _home         = homeEnv ? homeEnv : "/home/user";
+  _home       = xdgPath("HOME", "/home/user");
+  _dataHome   = xdgPath("XDG_DATA_HOME", _home / ".local" / "share");
+  _configHome = xdgPath("XDG_CONFIG_HOME", _home / ".config");
+  _stateHome  = xdgPath("XDG_STATE_HOME", _home / ".local" / "state");
+  _cacheHome  = xdgPath("XDG_CACHE_HOME", _home / ".cache");
+  _runtimeDir = xdgPath(
+    "XDG_RUNTIME_DIR",
+    std::filesystem::temp_directory_path() / "run");
+  _binHome = xdgPath("XDG_BIN_HOME", _home / ".local" / "bin");
 
-  _dataHome     = std::filesystem::path(
-    std::getenv("XDG_DATA_HOME") ? std::getenv("XDG_DATA_HOME")
-                                 : (_home / ".local" / "share"));
-  _configHome = std::filesystem::path(
-    std::getenv("XDG_CONFIG_HOME") ? std::getenv("XDG_CONFIG_HOME")
-                                   : (_home / ".config"));
-  _stateHome = std::filesystem::path(
-    std::getenv("XDG_STATE_HOME") ? std::getenv("XDG_STATE_HOME")
-                                  : (_home / ".local" / "state"));
-  _cacheHome = std::filesystem::path(
-    std::getenv("XDG_CACHE_HOME") ? std::getenv("XDG_CACHE_HOME")
-                                  : (_home / ".cache"));
-  _runtimeDir = std::filesystem::path(
-    std::getenv("XDG_RUNTIME_DIR") ? std::getenv("XDG_RUNTIME_DIR")
-                                   : (_home / ".run"));
-  _binHome = std::filesystem::path(
-    std::getenv("XDG_BIN_HOME") ? std::getenv("XDG_BIN_HOME")
-                                : (_home / ".local" / "bin"));
+  _dataDirs
+    = xdgPathList("XDG_DATA_DIRS", { "/usr/local/share", "/usr/share" });
 
-  const char *dataDirsEnv = std::getenv("XDG_DATA_DIRS");
-  if (dataDirsEnv) {
-    std::string dirs = dataDirsEnv;
-    size_t      pos  = 0;
-    while ((pos = dirs.find(':')) != std::string::npos) {
-      _dataDirs.push_back(dirs.substr(0, pos));
-      dirs.erase(0, pos + 1);
-    }
-    if (!dirs.empty())
-      _dataDirs.push_back(dirs);
-  }
-  else {
-    _dataDirs = { "/usr/local/share", "/usr/share" };
-  }
-
-  const char *configDirsEnv = std::getenv("XDG_CONFIG_DIRS");
-  if (configDirsEnv) {
-    std::string dirs = configDirsEnv;
-    size_t      pos  = 0;
-    while ((pos = dirs.find(':')) != std::string::npos) {
-      _configDirs.push_back(dirs.substr(0, pos));
-      dirs.erase(0, pos + 1);
-    }
-    if (!dirs.empty())
-      _configDirs.push_back(dirs);
-  }
-  else {
-    _configDirs = { "/etc/xdg" };
-  }
+  _configDirs = xdgPathList("XDG_CONFIG_DIRS", { "/etc/xdg" });
 #endif
 }
 
-// Accessors with call_once
+/**
+ * @brief Ensures one-time initialization of static path state.
+ *
+ * Wraps std::call_once to guarantee that Paths::initialize()
+ * executes exactly once in a thread-safe manner before accessing
+ * cached path data.
+ *
+ * This macro is intended for internal accessor usage only.
+ */
 #define INIT() std::call_once(initFlag, initialize)
 
+/**
+ * @brief Returns the user's home directory path.
+ *
+ * Lazily initializes the internal path cache on first access.
+ *
+ * @return Reference to the resolved home directory path.
+ */
 const std::filesystem::path &
   open_viii::Paths::home()
 {
   INIT();
   return _home;
 }
+
+/**
+ * @brief Returns the user-specific data directory path.
+ *
+ * Lazily initializes the internal path cache on first access.
+ *
+ * @return Reference to the resolved data directory path.
+ */
 const std::filesystem::path &
   open_viii::Paths::dataHome()
 {
   INIT();
   return _dataHome;
 }
+
+/**
+ * @brief Returns the user-specific configuration directory path.
+ *
+ * Lazily initializes the internal path cache on first access.
+ *
+ * @return Reference to the resolved configuration directory path.
+ */
 const std::filesystem::path &
   open_viii::Paths::configHome()
 {
   INIT();
   return _configHome;
 }
+
+/**
+ * @brief Returns the user-specific state directory path.
+ *
+ * Lazily initializes the internal path cache on first access.
+ *
+ * @return Reference to the resolved state directory path.
+ */
 const std::filesystem::path &
   open_viii::Paths::stateHome()
 {
   INIT();
   return _stateHome;
 }
+
+/**
+ * @brief Returns the user-specific cache directory path.
+ *
+ * Lazily initializes the internal path cache on first access.
+ *
+ * @return Reference to the resolved cache directory path.
+ */
 const std::filesystem::path &
   open_viii::Paths::cacheHome()
 {
   INIT();
   return _cacheHome;
 }
+
+/**
+ * @brief Returns the runtime directory path.
+ *
+ * Lazily initializes the internal path cache on first access.
+ *
+ * On Unix-like systems, this resolves XDG_RUNTIME_DIR when available.
+ * If unset, a fallback runtime path under the system temporary directory
+ * is used.
+ *
+ * @return Reference to the resolved runtime directory path.
+ */
 const std::filesystem::path &
   open_viii::Paths::runtimeDir()
 {
   INIT();
   return _runtimeDir;
 }
+
+/**
+ * @brief Returns the user-specific binary directory path.
+ *
+ * Lazily initializes the internal path cache on first access.
+ *
+ * @return Reference to the resolved binary directory path.
+ */
 const std::filesystem::path &
   open_viii::Paths::binHome()
 {
@@ -159,12 +258,27 @@ const std::filesystem::path &
   return _binHome;
 }
 
+/**
+ * @brief Returns the list of system-wide data directories.
+ *
+ * Lazily initializes the internal path cache on first access.
+ *
+ * @return Reference to the vector of resolved data directories.
+ */
 const std::vector<std::filesystem::path> &
   open_viii::Paths::dataDirs()
 {
   INIT();
   return _dataDirs;
 }
+
+/**
+ * @brief Returns the list of system-wide configuration directories.
+ *
+ * Lazily initializes the internal path cache on first access.
+ *
+ * @return Reference to the vector of resolved configuration directories.
+ */
 const std::vector<std::filesystem::path> &
   open_viii::Paths::configDirs()
 {
@@ -172,9 +286,18 @@ const std::vector<std::filesystem::path> &
   return _configDirs;
 }
 
-#undef INIT
-
-// Returns FF8 paths under a given Steam library root
+/**
+ * @brief Searches a Steam library for installed Final Fantasy VIII directories.
+ *
+ * Scans the specified Steam library root for FF8 Classic and FF8 Remastered
+ * application manifests. Additional Steam library folders are discovered
+ * through parsing libraryfolders.vdf.
+ *
+ * Valid installation directories are collected, deduplicated, and sorted.
+ *
+ * @param steam_path Root Steam installation path.
+ * @return Vector of detected FF8 installation paths.
+ */
 std::vector<std::filesystem::path>
   open_viii::Paths::ff8_paths_in_steam_library(
     const std::filesystem::path &steam_path)
@@ -243,6 +366,14 @@ std::vector<std::filesystem::path>
   return paths;
 }
 
+/**
+ * @brief Searches common Linux Steam installation locations for FF8 installs.
+ *
+ * Iterates through a predefined set of Steam installation paths relative
+ * to the user's HOME directory and aggregates all detected FF8 installations.
+ *
+ * @return Vector of detected FF8 installation paths.
+ */
 std::vector<std::filesystem::path>
   open_viii::Paths::get_linux_ff8_paths()
 {
@@ -278,6 +409,19 @@ std::vector<std::filesystem::path>
   return paths;
 }
 
+/**
+ * @brief Searches Windows registry and Steam libraries for FF8 installs.
+ *
+ * Detects Final Fantasy VIII installations from:
+ * - Original FF8 registry keys
+ * - WOW6432Node registry keys
+ * - Steam library manifests for FF8 Classic and Remastered
+ *
+ * Invalid or non-directory entries are removed before results are sorted
+ * and deduplicated.
+ *
+ * @return Vector of detected FF8 installation paths.
+ */
 std::vector<std::filesystem::path>
   open_viii::Paths::get_windows_ff8_paths()
 {
@@ -392,17 +536,24 @@ std::vector<std::filesystem::path>
     paths,
     [&error_code](const std::filesystem::path &path) {
       const bool found = std::filesystem::exists(path, error_code);
+
       if (error_code) {
-        // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-        //           << error_code.value() << ": " << error_code.message()
-        //           << error_code.value() << " - path: " << path << std::endl;
+        spdlog::trace(
+          "std::filesystem::exists failed for '{}': {} ({})",
+          path.string(),
+          error_code.message(),
+          error_code.value());
         error_code.clear();
       }
+
       const bool is_dir = std::filesystem::is_directory(path, error_code);
+
       if (error_code) {
-        // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-        //           << error_code.value() << ": " << error_code.message()
-        //           << " - path: " << path << std::endl;
+        spdlog::trace(
+          "std::filesystem::is_directory failed for '{}': {} ({})",
+          path.string(),
+          error_code.message(),
+          error_code.value());
         error_code.clear();
       }
       return !found || !is_dir;
@@ -415,6 +566,23 @@ std::vector<std::filesystem::path>
 #endif
 }
 
+/**
+ * @brief Retrieves all known and discovered Final Fantasy VIII paths.
+ *
+ * Builds and caches a persistent list of FF8 installation paths from:
+ * - Hardcoded default locations
+ * - Optional paths.conf entries
+ * - FF8_PATH environment variable
+ * - Platform-specific Steam and registry discovery
+ *
+ * Paths are normalized, canonicalized, deduplicated, and validated before
+ * being returned.
+ *
+ * The returned vector is initialized once on first access and reused for
+ * the lifetime of the application.
+ *
+ * @return Reference to the cached vector of valid FF8 installation paths.
+ */
 std::vector<std::filesystem::path> &
   open_viii::Paths::get()
 {
@@ -465,10 +633,10 @@ std::vector<std::filesystem::path> &
       static const auto path_file
       = std::filesystem::current_path(error_code) / "paths.conf";
       error_code) {
-      // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-      //           << error_code.value() << ": " << error_code.message()
-      //           << error_code.value() << " - path: " << path_file <<
-      //           std::endl;
+      spdlog::trace(
+        "std::filesystem::current_path failed: {} ({})",
+        error_code.message(),
+        error_code.value());
       error_code.clear();
     }
     else {
@@ -489,18 +657,23 @@ std::vector<std::filesystem::path> &
       paths,
       [&error_code](const std::filesystem::path &path) {
         const bool found = std::filesystem::exists(path, error_code);
+
         if (error_code) {
-          // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-          //           << error_code.value() << ": " << error_code.message()
-          //           << error_code.value() << " - path: " << path <<
-          //           std::endl;
+          spdlog::trace(
+            "std::filesystem::exists failed for '{}': {} ({})",
+            path.string(),
+            error_code.message(),
+            error_code.value());
           error_code.clear();
         }
         const bool is_dir = std::filesystem::is_directory(path, error_code);
+
         if (error_code) {
-          // std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-          //           << error_code.value() << ": " << error_code.message()
-          //           << " - path: " << path << std::endl;
+          spdlog::trace(
+            "std::filesystem::is_directory failed for '{}': {} ({})",
+            path.string(),
+            error_code.message(),
+            error_code.value());
           error_code.clear();
         }
         return !found || !is_dir;
@@ -534,6 +707,16 @@ std::vector<std::filesystem::path> &
   return ret;
 }
 
+/**
+ * @brief Iterates over all valid FF8 installation paths.
+ *
+ * Invokes the provided callback for each valid directory returned by get().
+ * Iteration stops early when the callback returns Ops::Stop.
+ *
+ * Filesystem errors are reported to stderr and ignored.
+ *
+ * @param lambda Callback invoked for each valid filesystem path.
+ */
 void
   open_viii::Paths::for_each_path(
     std::move_only_function<open_viii::Paths::Ops(std::filesystem::path)>
@@ -542,18 +725,24 @@ void
   for (const std::filesystem::path &fs_path : get()) {
     std::error_code error_code{};
     const bool      found = std::filesystem::exists(fs_path, error_code);
+
     if (error_code) {
-      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                << error_code.value() << ": " << error_code.message()
-                << std::endl;
+      spdlog::trace(
+        "std::filesystem::exists failed for '{}': {} ({})",
+        fs_path.string(),
+        error_code.message(),
+        error_code.value());
       error_code.clear();
     }
 
     const bool is_dir = std::filesystem::is_directory(fs_path, error_code);
+
     if (error_code) {
-      std::cerr << "error " << __FILE__ << ":" << __LINE__ << " - "
-                << error_code.value() << ": " << error_code.message()
-                << std::endl;
+      spdlog::trace(
+        "std::filesystem::is_directory failed for '{}': {} ({})",
+        fs_path.string(),
+        error_code.message(),
+        error_code.value());
       error_code.clear();
     }
 
