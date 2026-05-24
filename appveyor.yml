@@ -18,13 +18,17 @@ init:
 
       git clone https://github.com/microsoft/vcpkg c:\\vcpkg
 
-      c:\\vcpkg\\bootstrap-vcpkg.bat
+      cd c:\\vcpkg
+
+      git checkout 4f1406d8f7
+
+      bootstrap-vcpkg.bat
 
       set VCPKG_DEFAULT_TRIPLET=x64-windows-static
 
 build_script:
   - cmd: >-
-      cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -B .build -DCMAKE_TOOLCHAIN_FILE=c:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake .
+      cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -B .build -DCMAKE_TOOLCHAIN_FILE=c:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake .
 
       cmake --build .build
 
