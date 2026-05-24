@@ -2,13 +2,14 @@
   "name": "openviii-cpp-wip",
   "version": "0.1.0",
   "description": "A WIP project for OPENVIII in C++",
-  "builtin-baseline": "b322364f06308bdd24823f9d8f03fe0cc86fd46f",
+  "builtin-baseline": "4f1406d8f7923c3fff34738b6177f72b143ad5b6",
   "dependencies": [
     "ctre",
     "libpng",
     "bext-ut",
     "lz4",
-    "spdlog"
+    "spdlog",
+    "fmt"
   ],
   "overrides":[
     {
@@ -34,6 +35,11 @@
     {
       "name": "spdlog",
       "version": "1.15.3",
+      "port-version": 0
+    },
+    {
+      "name": "fmt",
+      "version": "12.0.0",
       "port-version": 0
     }
   ]

@@ -9,11 +9,13 @@ add_subdirectory(tex)
 add_subdirectory(sp2)
 find_package(PNG REQUIRED)
 target_link_libraries(${PROJECT_NAME}_VIIIGraphics
-    PUBLIC
-        ToolsLibrary_tl
-        ${PROJECT_NAME}_VIIITools
-        ${PROJECT_NAME}_VIIICommon
-        PNG::PNG
+    PUBLIC ToolsLibrary_tl
+    PUBLIC ${PROJECT_NAME}_VIIITools
+    PUBLIC ${PROJECT_NAME}_VIIICommon
+    PUBLIC ${PROJECT_NAME}_project_warnings
+    PUBLIC PNG::PNG
+    PUBLIC spdlog::spdlog
+    PUBLIC Threads::Threads
 )
 
 target_include_directories(${PROJECT_NAME}_VIIIGraphics
