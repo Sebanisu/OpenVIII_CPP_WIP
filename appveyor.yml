@@ -18,11 +18,7 @@ init:
 
       git clone https://github.com/microsoft/vcpkg c:\\vcpkg
 
-      cd c:\\vcpkg
-
-      git checkout 4f1406d8f7
-
-      bootstrap-vcpkg.bat
+      c:\\vcpkg\\bootstrap-vcpkg.bat
 
       set VCPKG_DEFAULT_TRIPLET=x64-windows-static
 
