@@ -31,4 +31,9 @@ if (MSVC)
     target_compile_options(${PROJECT_NAME}_VIIIGraphics
         PUBLIC /utf-8
     )
+
+    target_compile_options(${PROJECT_NAME}_VIIIGraphics  PUBLIC
+            $<$<CONFIG:Debug>:/MTd>
+            $<$<NOT:$<CONFIG:Debug>>:/MT>
+    )
 endif()

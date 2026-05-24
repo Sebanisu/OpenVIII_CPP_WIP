@@ -81,6 +81,16 @@ function(apply_common_operations target_name)
         set_property(TARGET ${PROJECT_NAME}_${target_name}
             PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
         )
+
+
+        target_compile_options(${PROJECT_NAME}_${target_name}
+            PUBLIC /utf-8
+        )
+
+        target_compile_options(${PROJECT_NAME}_${target_name} PUBLIC
+            $<$<CONFIG:Debug>:/MTd>
+            $<$<NOT:$<CONFIG:Debug>>:/MT>
+        )
     endif()
 
     SET_TARGET_PATHS(${PROJECT_NAME}_${target_name})
