@@ -16,8 +16,8 @@
 #include "tl/string.hpp"
 #include <filesystem>
 #include <functional>
-#include <iostream>
 #include <mutex>
+#include <spdlog/spdlog.h>
 #include <system_error>
 #include <utility>
 namespace open_viii {
