@@ -7,9 +7,11 @@ add_library(${PROJECT_NAME}_VIIIPaths STATIC
 target_link_libraries(${PROJECT_NAME}_VIIIPaths
     PUBLIC ${PROJECT_NAME}_VIIICommon
     PUBLIC ${PROJECT_NAME}_VIIITools
+    PUBLIC ${PROJECT_NAME}_project_warnings
+    PUBLIC ctre::ctre
+    PUBLIC spdlog::spdlog
+    PUBLIC Threads::Threads
 )
-
-target_link_libraries(${PROJECT_NAME}_VIIIPaths PRIVATE ctre::ctre)
 
 apply_common_operations(VIIIPaths)
 
