@@ -31,85 +31,72 @@ bool
       && std::filesystem::is_directory(p, ec) && !ec;
 }
 
+static std::filesystem::path
+  xdgPath(const char *envName, const std::filesystem::path &fallback)
+{
+  if (const char *value = std::getenv(envName); value && *value) {
+    return std::filesystem::path{ value };
+  }
+
+  return fallback;
+}
+
+static std::vector<std::filesystem::path>
+  xdgPathList(
+    const char                                  *envName,
+    std::initializer_list<std::filesystem::path> fallback)
+{
+  if (const char *value = std::getenv(envName); value && *value) {
+    std::vector<std::filesystem::path> paths;
+
+    std::string_view                   dirs{ value };
+    size_t                             start = 0;
+
+    while (start < dirs.size()) {
+      const size_t end = dirs.find(':', start);
+
+      paths.emplace_back(dirs.substr(start, end - start));
+
+      if (end == std::string_view::npos)
+        break;
+
+      start = end + 1;
+    }
+
+    return paths;
+  }
+
+  return { fallback };
+}
+
 void
   open_viii::Paths::initialize()
 {
 #ifdef _WIN32
-  char *homeEnv = std::getenv("USERPROFILE");
-  _home         = homeEnv ? homeEnv : "C:\\Users\\Default";
-
-  _dataHome     = std::filesystem::path(
-    std::getenv("XDG_DATA_HOME") ? std::getenv("XDG_DATA_HOME")
-                                 : (_home / "AppData" / "Local"));
-  _configHome = std::filesystem::path(
-    std::getenv("XDG_CONFIG_HOME") ? std::getenv("XDG_CONFIG_HOME")
-                                   : (_home / "AppData" / "Roaming"));
-  _stateHome = _configHome;
-  _cacheHome = std::filesystem::path(
-    std::getenv("XDG_CACHE_HOME") ? std::getenv("XDG_CACHE_HOME")
-                                  : (_dataHome / "Cache"));
-  _runtimeDir = std::filesystem::path(
-    std::getenv("XDG_RUNTIME_DIR") ? std::getenv("XDG_RUNTIME_DIR")
-                                   : (_dataHome / "Runtime"));
-  _binHome = std::filesystem::path(
-    std::getenv("XDG_BIN_HOME") ? std::getenv("XDG_BIN_HOME")
-                                : (_home / "AppData" / "Local" / "bin"));
+  _home       = xdgPath("USERPROFILE", "C:\\Users\\Default");
+  _dataHome   = xdgPath("XDG_DATA_HOME", _home / "AppData" / "Local");
+  _configHome = xdgPath("XDG_CONFIG_HOME", _home / "AppData" / "Roaming");
+  _stateHome  = _configHome;
+  _cacheHome  = xdgPath("XDG_CACHE_HOME", _dataHome / "Cache");
+  _runtimeDir = xdgPath("XDG_RUNTIME_DIR", _dataHome / "Runtime");
+  _binHome    = xdgPath("XDG_BIN_HOME", _home / "AppData" / "Local" / "bin");
 
   _dataDirs   = { _dataHome, "C:\\ProgramData" };
   _configDirs = { _configHome, "C:\\ProgramData" };
 
 #else
-  char *homeEnv = std::getenv("HOME");
-  _home         = homeEnv ? homeEnv : "/home/user";
+  _home       = xdgPath("HOME", "/home/user");
+  _dataHome   = xdgPath("XDG_DATA_HOME", _home / ".local" / "share");
+  _configHome = xdgPath("XDG_CONFIG_HOME", _home / ".config");
+  _stateHome  = xdgPath("XDG_STATE_HOME", _home / ".local" / "state");
+  _cacheHome  = xdgPath("XDG_CACHE_HOME", _home / ".cache");
+  _runtimeDir = xdgPath("XDG_RUNTIME_DIR", std::filesystem::temp_directory_path() / "run");
+  _binHome    = xdgPath("XDG_BIN_HOME", _home / ".local" / "bin");
 
-  _dataHome     = std::filesystem::path(
-    std::getenv("XDG_DATA_HOME") ? std::getenv("XDG_DATA_HOME")
-                                 : (_home / ".local" / "share"));
-  _configHome = std::filesystem::path(
-    std::getenv("XDG_CONFIG_HOME") ? std::getenv("XDG_CONFIG_HOME")
-                                   : (_home / ".config"));
-  _stateHome = std::filesystem::path(
-    std::getenv("XDG_STATE_HOME") ? std::getenv("XDG_STATE_HOME")
-                                  : (_home / ".local" / "state"));
-  _cacheHome = std::filesystem::path(
-    std::getenv("XDG_CACHE_HOME") ? std::getenv("XDG_CACHE_HOME")
-                                  : (_home / ".cache"));
-  _runtimeDir = std::filesystem::path(
-    std::getenv("XDG_RUNTIME_DIR") ? std::getenv("XDG_RUNTIME_DIR")
-                                   : (_home / ".run"));
-  _binHome = std::filesystem::path(
-    std::getenv("XDG_BIN_HOME") ? std::getenv("XDG_BIN_HOME")
-                                : (_home / ".local" / "bin"));
+  _dataDirs
+    = xdgPathList("XDG_DATA_DIRS", { "/usr/local/share", "/usr/share" });
 
-  const char *dataDirsEnv = std::getenv("XDG_DATA_DIRS");
-  if (dataDirsEnv) {
-    std::string dirs = dataDirsEnv;
-    size_t      pos  = 0;
-    while ((pos = dirs.find(':')) != std::string::npos) {
-      _dataDirs.push_back(dirs.substr(0, pos));
-      dirs.erase(0, pos + 1);
-    }
-    if (!dirs.empty())
-      _dataDirs.push_back(dirs);
-  }
-  else {
-    _dataDirs = { "/usr/local/share", "/usr/share" };
-  }
-
-  const char *configDirsEnv = std::getenv("XDG_CONFIG_DIRS");
-  if (configDirsEnv) {
-    std::string dirs = configDirsEnv;
-    size_t      pos  = 0;
-    while ((pos = dirs.find(':')) != std::string::npos) {
-      _configDirs.push_back(dirs.substr(0, pos));
-      dirs.erase(0, pos + 1);
-    }
-    if (!dirs.empty())
-      _configDirs.push_back(dirs);
-  }
-  else {
-    _configDirs = { "/etc/xdg" };
-  }
+  _configDirs = xdgPathList("XDG_CONFIG_DIRS", { "/etc/xdg" });
 #endif
 }
 
