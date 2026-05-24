@@ -40,7 +40,7 @@ static std::filesystem::path
 
   return fallback;
 }
-
+#ifndef _WIN32
 static std::vector<std::filesystem::path>
   xdgPathList(
     const char                                  *envName,
@@ -68,6 +68,7 @@ static std::vector<std::filesystem::path>
 
   return { fallback };
 }
+#endif
 
 void
   open_viii::Paths::initialize()
@@ -90,8 +91,10 @@ void
   _configHome = xdgPath("XDG_CONFIG_HOME", _home / ".config");
   _stateHome  = xdgPath("XDG_STATE_HOME", _home / ".local" / "state");
   _cacheHome  = xdgPath("XDG_CACHE_HOME", _home / ".cache");
-  _runtimeDir = xdgPath("XDG_RUNTIME_DIR", std::filesystem::temp_directory_path() / "run");
-  _binHome    = xdgPath("XDG_BIN_HOME", _home / ".local" / "bin");
+  _runtimeDir = xdgPath(
+    "XDG_RUNTIME_DIR",
+    std::filesystem::temp_directory_path() / "run");
+  _binHome = xdgPath("XDG_BIN_HOME", _home / ".local" / "bin");
 
   _dataDirs
     = xdgPathList("XDG_DATA_DIRS", { "/usr/local/share", "/usr/share" });
