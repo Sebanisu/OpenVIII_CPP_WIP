@@ -1037,4 +1037,12 @@ struct fmt::formatter<open_viii::graphics::background::MapHistory::pushed>
     return fmt::formatter<std::string_view>::format(name, ctx);
   }
 };
+
+inline std::ostream &
+  operator<<(
+    std::ostream                                             &os,
+    const open_viii::graphics::background::MapHistory::pushed pushed)
+{
+  return os << fmt::format("{}", pushed);
+}
 #endif// FIELD_MAP_EDITOR_MAPHISTORY_HPP
