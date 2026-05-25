@@ -1,18 +1,17 @@
 #include "PupuID.hpp"
-namespace open_viii::graphics::background
+[[nodiscard]] std::string
+  open_viii::graphics::background::PupuID::create_summary() const
 {
-[[nodiscard]] std::string PupuID::create_summary() const
-{
-     return fmt::format(
-       "Layer ID: {}\nBlend Mode: {}\nAnimation ID: {}\nAnimation State: "
-       "{}\nOffset: {}\nX not aligned: {}\nY not aligned: {}",
-       layer_id(),
-       blend_mode(),
-       animation_id(),
-       animation_state(),
-       offset(),
-       is_x_not_aligned_to_grid(),
-       is_y_not_aligned_to_grid());
+  return fmt::format(
+    "Layer ID: {}\nBlend Mode: {}\nAnimation ID: {}\nAnimation State: "
+    "{}\nOffset: {}\nX not aligned: {}\nY not aligned: {}",
+    layer_id(),
+    blend_mode(),
+    animation_id(),
+    animation_state(),
+    offset(),
+    is_x_not_aligned_to_grid(),
+    is_y_not_aligned_to_grid());
 }
 
 // You are using all 32 bits without overlap.
@@ -25,11 +24,9 @@ namespace open_viii::graphics::background
 // flags, respectively. Therefore, all 32 bits are used without any overlap or
 // waste of space.
 
-
 // template PupuID::PupuID(const Tile1 &, std::uint8_t);
 // template PupuID::PupuID(const Tile2 &, std::uint8_t);
 // template PupuID::PupuID(const Tile3 &, std::uint8_t);
-
 
 // PupuID = uint32_t(0U + (tile.layer_id() <<
 // 24U)+(static_cast<std::uint32_t>(tile.blend_mode()) << 20U) +
@@ -50,8 +47,6 @@ namespace open_viii::graphics::background
 // [](const Sprite& sprite) {return sprite.ID; }); std::sort(IDs.begin(),
 // IDs.end()); auto it = std::unique(IDs.begin(), IDs.end()); IDs.erase(it,
 // IDs.end());
-}// namespace ff_8
-
 
 // struct PupuIDComparator
 // {

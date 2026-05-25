@@ -4,6 +4,7 @@
 #include "open_viii/graphics/background/BlendModeT.hpp"
 #include <boost/ut.hpp>
 #include <fmt/format.h>
+#include <limits>
 #include <string>
 
 int
@@ -15,7 +16,7 @@ int
 
   using namespace open_viii::graphics::background;
 
-  [[maybe_unused]] suite tests = [] {
+  [[maybe_unused]] suite<"PupuID"> tests = [] {
     "PupuID raw constructor"_test = [] {
       constexpr std::uint32_t raw = 0x1234ABCDu;
 
@@ -79,6 +80,66 @@ int
       const PupuID id{ 0x12345678u };
 
       expect(!id.create_summary().empty());
+    };
+
+    "hsv2rgb produces red"_test = [] {
+      const auto rgb = PupuID::hsv2rgb(0.0f, 1.0f, 1.0f);
+
+      expect(eq(static_cast<int>(rgb[0] * 255.0f), 255));
+      expect(eq(static_cast<int>(rgb[1] * 255.0f), 0));
+      expect(eq(static_cast<int>(rgb[2] * 255.0f), 0));
+    };
+
+    "hsv2rgb produces green"_test = [] {
+      const auto rgb = PupuID::hsv2rgb(1.0f / 3.0f, 1.0f, 1.0f);
+
+      expect(eq(static_cast<int>(rgb[0] * 255.0f), 0));
+      expect(eq(static_cast<int>(rgb[1] * 255.0f), 255));
+      expect(eq(static_cast<int>(rgb[2] * 255.0f), 0));
+    };
+
+    "hsv2rgb produces blue"_test = [] {
+      const auto rgb = PupuID::hsv2rgb(2.0f / 3.0f, 1.0f, 1.0f);
+
+      expect(eq(static_cast<int>(rgb[0] * 255.0f), 0));
+      expect(eq(static_cast<int>(rgb[1] * 255.0f), 0));
+      expect(eq(static_cast<int>(rgb[2] * 255.0f), 255));
+    };
+
+    "fract removes integer portion"_test = [] {
+      expect(eq(PupuID::fract(1.25f), 0.25f));
+      expect(eq(PupuID::fract(5.75f), 0.75f));
+    };
+
+    "mix interpolates values"_test = [] {
+      expect(eq(PupuID::mix(0.0f, 10.0f, 0.0f), 0.0f));
+      expect(eq(PupuID::mix(0.0f, 10.0f, 0.5f), 5.0f));
+      expect(eq(PupuID::mix(0.0f, 10.0f, 1.0f), 10.0f));
+    };
+
+    "encode_uint_to_rgba is deterministic"_test = [] {
+      const auto a = PupuID::encode_uint_to_rgba(123u);
+      const auto b = PupuID::encode_uint_to_rgba(123u);
+
+      expect(eq(a.r(), b.r()));
+      expect(eq(a.g(), b.g()));
+      expect(eq(a.b(), b.b()));
+      expect(eq(a.a(), b.a()));
+    };
+
+    "encode_uint_to_rgba produces opaque alpha"_test = [] {
+      const auto color = PupuID::encode_uint_to_rgba(42u);
+
+      expect(eq(color.a(), std::uint8_t{ 255u }));
+    };
+
+    "encode_uint_to_rgba differentiates nearby ids"_test = [] {
+      const auto a         = PupuID::encode_uint_to_rgba(100u);
+      const auto b         = PupuID::encode_uint_to_rgba(101u);
+
+      const bool different = a.r() != b.r() || a.g() != b.g() || a.b() != b.b();
+
+      expect(different);
     };
   };
 }

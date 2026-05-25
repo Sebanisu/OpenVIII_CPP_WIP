@@ -11,7 +11,7 @@ int
   using namespace boost::ut::operators::terse;
   using namespace boost::ut;
   static constexpr tl::utility::sequence<1U, 100U> run{};
-  [[maybe_unused]] suite                           tests = [] {
+  [[maybe_unused]] suite<"Compression"> tests = [] {
     "lzss compress and uncompress"_test = []() {
       const auto run_once = [&]<size_t i>() {
         const auto                  random_char = tl::random::iota<char, i>();

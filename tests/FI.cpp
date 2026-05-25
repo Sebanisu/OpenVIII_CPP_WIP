@@ -9,7 +9,7 @@ int
   using namespace boost::ut;
   using namespace open_viii::archive;
   using namespace open_viii;
-  [[maybe_unused]] suite tests = [] {
+  [[maybe_unused]] suite<"FI"> tests = [] {
     static constexpr auto check_fi
       = [](
           const std::uint32_t               &size,

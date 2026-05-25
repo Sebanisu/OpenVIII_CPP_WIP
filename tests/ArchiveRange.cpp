@@ -11,7 +11,7 @@ int
   using namespace boost::ut::operators::terse;
   using namespace boost::ut;
   using namespace open_viii::archive;
-  [[maybe_unused]] suite tests = [] -> void {
+  [[maybe_unused]] suite<"ArchiveRange"> tests = [] -> void {
     open_viii::Paths::for_each_path(
       [](const std::filesystem::path &path) -> open_viii::Paths::Ops {
         static constexpr auto coo = open_viii::LangT::en;

@@ -5,9 +5,14 @@
 #ifndef OPEN_VIII_GRAPHICS_BACKGROUND_PUPUID_HPP
 #define OPEN_VIII_GRAPHICS_BACKGROUND_PUPUID_HPP
 #include "Map.hpp"
+#include <algorithm>
+#include <cmath>
 #include <compare>
+#include <cstdlib>
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
+#include <string>
+#include <version>
 namespace open_viii::graphics::background {
 struct PupuID
 {
@@ -201,8 +206,62 @@ struct PupuID
     return (m_raw & mask) == (right.raw() & mask);
   }
 
+#if defined(__cpp_lib_constexpr_cmath) && __cpp_lib_constexpr_cmath >= 202306L
+#define OPENVIII_CONSTEXPR_CMATH constexpr
+#else
+#define OPENVIII_CONSTEXPR_CMATH
+#endif
+
+  using Float3 = std::array<float, 3>;
+  using Float4 = std::array<float, 4>;
+
+  [[nodiscard]] static OPENVIII_CONSTEXPR_CMATH float
+    fract(float v) noexcept
+  {
+    return v - std::floor(v);
+  }
+
+  [[nodiscard]] static constexpr float
+    mix(float a, float b, float t) noexcept
+  {
+    return a + (b - a) * t;
+  }
+
+  [[nodiscard]] static OPENVIII_CONSTEXPR_CMATH Float3
+    hsv2rgb(float h, float s, float v) noexcept
+  {
+    const auto f = [&](float n) {
+      const float k = fract(n + h);
+
+      return v
+           * mix(
+               1.0f,
+               std::clamp(std::abs(k * 6.0f - 3.0f) - 1.0f, 0.0f, 1.0f),
+               s);
+    };
+
+    return { f(0.0f), f(2.0f / 3.0f), f(1.0f / 3.0f) };
+  }
+  [[nodiscard]] static OPENVIII_CONSTEXPR_CMATH Color32RGBA
+    encode_uint_to_rgba(std::uint32_t value) noexcept
+  {
+    static constexpr float GOLDEN_RATIO = 0.61803398875f;
+
+    const float hue = fract(static_cast<float>(value) * GOLDEN_RATIO);
+
+    const auto  rgb = hsv2rgb(hue, 0.8f, 0.9f);
+
+    Color32RGBA out{ static_cast<std::uint8_t>(rgb[0] * 255.0f),
+                     static_cast<std::uint8_t>(rgb[1] * 255.0f),
+                     static_cast<std::uint8_t>(rgb[2] * 255.0f),
+                     std::uint8_t{ 255U } };
+
+    return out;
+  }
+#undef OPENVIII_CONSTEXPR_CMATH
   constexpr auto
     operator<=>(const PupuID &) const noexcept = default;
+
   [[nodiscard]] std::string
     create_summary() const;
 
@@ -210,26 +269,28 @@ private:
   std::uint32_t m_raw{};
 };
 }// namespace open_viii::graphics::background
+
 template<>
-struct fmt::formatter<open_viii::graphics::background::PupuID> : fmt::formatter<std::string>
+struct fmt::formatter<open_viii::graphics::background::PupuID>
+  : fmt::formatter<std::string>
 {
   // Formats value using the parsed format specification stored in this
   // formatter and writes the output to ctx.out().
   auto
-    format(const open_viii::graphics::background::PupuID &value, format_context &ctx) const
-    -> format_context::iterator
+    format(
+      const open_viii::graphics::background::PupuID &value,
+      format_context &ctx) const -> format_context::iterator
   {
     return fmt::format_to(ctx.out(), "{:08X}", value.raw());
   }
 };
 
-namespace open_viii::graphics::background
-{
+namespace open_viii::graphics::background {
 inline std::ostream &
-operator<<(std::ostream &os, const PupuID &value)
+  operator<<(std::ostream &os, const PupuID &value)
 {
   return os << fmt::format("{}", value);
 }
-}
+}// namespace open_viii::graphics::background
 
 #endif// OPEN_VIII_GRAPHICS_BACKGROUND_PUPUID_HPP

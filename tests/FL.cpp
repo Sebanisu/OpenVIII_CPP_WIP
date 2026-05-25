@@ -13,7 +13,7 @@ int
   using namespace std::string_literals;
   using namespace std::string_view_literals;
   using namespace open_viii::archive;
-  [[maybe_unused]] suite tests = [] {
+  [[maybe_unused]] suite<"FL"> tests = [] {
     {
       static const auto check_path_strings = [](std::string &&input) {
         const auto find_r = [](const char &c) -> bool {

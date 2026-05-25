@@ -16,7 +16,7 @@ namespace open_viii::graphics::background {
 /**
  * @brief A class for tracking and resolving conflicts between source tiles.
  *
- * The `source_tile_conflicts` class is used to manage and analyze conflicts
+ * The `SourceTileConflicts` class is used to manage and analyze conflicts
  * between tiles in a grid. It provides methods to:
  * - Track the number of tiles at each location.
  * - Identify locations with conflicts (multiple tiles in the same spot).
@@ -28,7 +28,7 @@ namespace open_viii::graphics::background {
  *
  * @note The class is marked `final` to prevent inheritance.
  */
-class [[nodiscard]] source_tile_conflicts final
+class [[nodiscard]] SourceTileConflicts final
 {
 public:
   /**
@@ -75,8 +75,8 @@ public:
    * (`X_SIZE`) and height (`Y_SIZE`).
    */
   static constexpr auto GRID_SIZE = X_SIZE * Y_SIZE;
-#ifdef UT_source_tile_conflicts_test
-  // Code specific to UT_source_tile_conflicts_test
+#ifdef UT_SourceTileConflicts_test
+  // Code specific to UT_SourceTileConflicts_test
 public:
 #else
   // Code for other cases
@@ -204,7 +204,8 @@ private:
   {
     location l;
     if constexpr (std::signed_integral<Index>) {
-      assert(std::cmp_greater_equal(index, 0) && " index must be greater than 0");
+      assert(
+        std::cmp_greater_equal(index, 0) && " index must be greater than 0");
     }
     assert(
       std::cmp_less(index, X_SIZE * Y_SIZE * T_SIZE)
@@ -381,17 +382,17 @@ public:
   }
 
   // /**
-  //  * @brief Compares two `source_tile_conflicts` objects for ordering and
+  //  * @brief Compares two `SourceTileConflicts` objects for ordering and
   //  equality.
   //  *
   //  * This operator provides default comparison behavior using the
   //  three-way comparison operator.
   //  *
-  //  * @param other The other `source_tile_conflicts` object to compare.
+  //  * @param other The other `SourceTileConflicts` object to compare.
   //  * @return A `std::strong_ordering` indicating the result of the
   //  comparison.
   //  */
-  // constexpr auto               operator<=>(const source_tile_conflicts &)
+  // constexpr auto               operator<=>(const SourceTileConflicts &)
   // const noexcept = default;
 
   /**
