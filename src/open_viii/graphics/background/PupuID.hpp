@@ -201,8 +201,10 @@ struct PupuID
       "same_animation_state_base mask mismatch");
     return (m_raw & mask) == (right.raw() & mask);
   }
+
   using Float3 = std::array<float, 3>;
   using Float4 = std::array<float, 4>;
+
   [[nodiscard]] static constexpr float
     fract(float v) noexcept
   {
