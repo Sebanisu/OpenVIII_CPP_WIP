@@ -14,6 +14,7 @@
 #define VIIIARCHIVE_BLENDMODET_HPP
 #include <cstdint>
 #include <fmt/format.h>
+#include <ostream>
 #include <string_view>
 namespace open_viii::graphics::background {
 enum struct BlendModeT : std::uint8_t
@@ -59,4 +60,42 @@ struct fmt::formatter<open_viii::graphics::background::BlendModeT>
     return fmt::formatter<std::string_view>::format(name, ctx);
   }
 };
+namespace open_viii::graphics::background {
+/**
+ * @brief Streams a textual representation of a blend mode.
+ *
+ * Uses the existing `fmt::formatter` specialization for
+ * `BlendModeT` to format the enum value before writing it to
+ * the provided output stream.
+ *
+ * @param os The output stream to write to.
+ * @param value The blend mode value to format and stream.
+ * @return Reference to the output stream.
+ */
+inline std::ostream &
+  operator<<(std::ostream &os, BlendModeT value)
+{
+  return os << fmt::format("{}", value);
+  // using namespace std::string_view_literals;
+  // switch (value) {
+  // case BlendModeT::add:
+  //   return os << "add"sv;
+  //   break;
+  // case BlendModeT::half_add:
+  //   return os << "half add"sv;
+  //   break;
+  // case BlendModeT::none:
+  //   return os << "none"sv;
+  //   break;
+  // case BlendModeT::quarter_add:
+  //   return os << "quarter add"sv;
+  //   break;
+  // case BlendModeT::subtract:
+  //   return os << "subtract"sv;
+  //   break;
+  // default:
+  //   return os;
+  // };
+}
+}// namespace open_viii::graphics::background
 #endif// VIIIARCHIVE_BLENDMODET_HPP

@@ -439,8 +439,8 @@ struct fmt::formatter<open_viii::graphics::background::TileCommon<tileT>>
 template<typename tileT>
 inline std::ostream &
   open_viii::graphics::background::operator<<(
-    std::ostream            &os,
-    const TileCommon<tileT> &tile)
+    std::ostream                                             &os,
+    const open_viii::graphics::background::TileCommon<tileT> &tile)
 {
   return os << fmt::format("{}", tile);
 }

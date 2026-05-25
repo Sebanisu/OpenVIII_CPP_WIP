@@ -49,5 +49,13 @@ add_test_common(UniquifyPupu)
 target_link_libraries(${PROJECT_NAME}_UT_UniquifyPupu
         PRIVATE ${PROJECT_NAME}_VIIIGraphics
 )
-#PRIVATE ToolsLibrary_tl
-#PRIVATE Threads::Threads
+
+add_test_common(NormalizedSourceTile)
+target_link_libraries(${PROJECT_NAME}_UT_NormalizedSourceTile
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
+)
+
+add_test_common(SourceTileConflicts)
+target_link_libraries(${PROJECT_NAME}_UT_SourceTileConflicts
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
+)
