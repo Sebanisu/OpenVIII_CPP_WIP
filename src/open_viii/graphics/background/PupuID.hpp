@@ -5,10 +5,14 @@
 #ifndef OPEN_VIII_GRAPHICS_BACKGROUND_PUPUID_HPP
 #define OPEN_VIII_GRAPHICS_BACKGROUND_PUPUID_HPP
 #include "Map.hpp"
+#include <algorithm>
+#include <cmath>
 #include <compare>
+#include <cstdlib>
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
 #include <string>
+#include <version>
 namespace open_viii::graphics::background {
 struct PupuID
 {
@@ -202,19 +206,19 @@ struct PupuID
     return (m_raw & mask) == (right.raw() & mask);
   }
 
+#if defined(__cpp_lib_constexpr_cmath) && __cpp_lib_constexpr_cmath >= 202306L
+#define OPENVIII_CONSTEXPR_CMATH constexpr
+#else
+#define OPENVIII_CONSTEXPR_CMATH
+#endif
+
   using Float3 = std::array<float, 3>;
   using Float4 = std::array<float, 4>;
 
-  [[nodiscard]] static constexpr float
+  [[nodiscard]] static OPENVIII_CONSTEXPR_CMATH float
     fract(float v) noexcept
   {
     return v - std::floor(v);
-  }
-
-  [[nodiscard]] static constexpr float
-    clamp(float v, float lo, float hi) noexcept
-  {
-    return v < lo ? lo : (v > hi ? hi : v);
   }
 
   [[nodiscard]] static constexpr float
@@ -223,19 +227,22 @@ struct PupuID
     return a + (b - a) * t;
   }
 
-  [[nodiscard]] static constexpr Float3
+  [[nodiscard]] static OPENVIII_CONSTEXPR_CMATH Float3
     hsv2rgb(float h, float s, float v) noexcept
   {
     const auto f = [&](float n) {
       const float k = fract(n + h);
 
       return v
-           * mix(1.0f, clamp(std::abs(k * 6.0f - 3.0f) - 1.0f, 0.0f, 1.0f), s);
+           * mix(
+               1.0f,
+               std::clamp(std::abs(k * 6.0f - 3.0f) - 1.0f, 0.0f, 1.0f),
+               s);
     };
 
     return { f(0.0f), f(2.0f / 3.0f), f(1.0f / 3.0f) };
   }
-  [[nodiscard]] static constexpr Color32RGBA
+  [[nodiscard]] static OPENVIII_CONSTEXPR_CMATH Color32RGBA
     encode_uint_to_rgba(std::uint32_t value) noexcept
   {
     static constexpr float GOLDEN_RATIO = 0.61803398875f;
@@ -251,6 +258,7 @@ struct PupuID
 
     return out;
   }
+#undef OPENVIII_CONSTEXPR_CMATH
   constexpr auto
     operator<=>(const PupuID &) const noexcept = default;
 
