@@ -96,19 +96,40 @@ int
       expect(neq(a, b));
     };
 
-    // "NormalizedSourceAnimatedTile strips blend"_test = [] {
-    //   Tile1 source{};
-    //   source = source.with_texture_id(5)
-    //              .with_blend(true)
-    //              .with_depth(2_bpp)
-    //              .with_draw(true);
-    //   NormalizedSourceAnimatedTile animated{ source };
+    "NormalizedSourceAnimatedTile strips blend"_test = [] {
+      Tile1 source{};
+      source = source.with_texture_id(5).with_blend(true);
 
-    //   expect(eq(animated.m_tex_id_buffer.blend(), false));
-    //   expect(eq(animated.m_tex_id_buffer.id(), 5U));
-    //   expect(eq(animated.m_tex_id_buffer.depth(), 2_bpp));
-    //   expect(eq(animated.m_tex_id_buffer.draw(), true));
-    // };
+      NormalizedSourceAnimatedTile animated{ source };
+
+      expect(eq(animated.m_tex_id_buffer.blend(), false));
+    };
+
+    "NormalizedSourceAnimatedTile preserves texture id"_test = [] {
+      Tile1 source{};
+      source = source.with_texture_id(5);
+
+      NormalizedSourceAnimatedTile animated{ source };
+
+      expect(eq(animated.m_tex_id_buffer.id(), 5U));
+    };
+
+    "NormalizedSourceAnimatedTile preserves depth"_test = [] {
+      constexpr auto source = Tile1{}.with_texture_id(5).with_depth(4_bpp);
+
+      NormalizedSourceAnimatedTile animated{ source };
+
+      expect(eq(animated.m_tex_id_buffer.depth(), 4_bpp));
+    };
+
+    "NormalizedSourceAnimatedTile preserves draw flag"_test = [] {
+      Tile1 source{};
+      source = source.with_texture_id(5).with_draw(true);
+
+      NormalizedSourceAnimatedTile animated{ source };
+
+      expect(eq(animated.m_tex_id_buffer.draw(), true));
+    };
 
     "NormalizedSourceAnimatedTile preserves palette when not animated"_test
       = [] {
