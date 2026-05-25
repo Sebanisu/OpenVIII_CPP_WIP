@@ -2,6 +2,7 @@ add_library(${PROJECT_NAME}_VIIIGraphics STATIC
     background/BlendModeT.cpp
     background/PupuID.cpp
     background/UniquifyPupu.cpp
+    background/MapHistory.cpp
 )
 add_subdirectory(color)
 add_subdirectory(tim)
