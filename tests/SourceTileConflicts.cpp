@@ -156,5 +156,62 @@ int
 
       expect(eq(after.size() + 1U, before.size()));
     };
+
+    "source_tile_conflicts calculate/reverse round trip"_test = [] {
+      for (std::uint8_t t = 0; t < source_tile_conflicts::T_SIZE; ++t) {
+        for (std::uint16_t y = 0; y < source_tile_conflicts::GRID_SIZE;
+             y += source_tile_conflicts::Y_SIZE) {
+          for (std::uint16_t x = 0; x < source_tile_conflicts::GRID_SIZE;
+               x += source_tile_conflicts::X_SIZE) {
+            const auto index = source_tile_conflicts::calculate_index(x, y, t);
+
+            const auto location = source_tile_conflicts::reverse_index(index);
+
+            expect(eq(location.x, x)) << "x mismatch for index " << index;
+
+            expect(eq(location.y, y)) << "y mismatch for index " << index;
+
+            expect(eq(location.t, t)) << "t mismatch for index " << index;
+          }
+        }
+      }
+
+      "source_tile_conflicts calculate_index produces unique indices"_test =
+        [] {
+          constexpr auto total_size = source_tile_conflicts::X_SIZE
+                                    * source_tile_conflicts::Y_SIZE
+                                    * source_tile_conflicts::T_SIZE;
+
+          std::array<bool, total_size> seen{};
+
+          std::size_t                  visited_count = 0U;
+
+          for (std::uint8_t t = 0; t < source_tile_conflicts::T_SIZE; ++t) {
+            for (std::uint16_t y = 0; y < source_tile_conflicts::GRID_SIZE;
+                 y += source_tile_conflicts::Y_SIZE) {
+              for (std::uint16_t x = 0; x < source_tile_conflicts::GRID_SIZE;
+                   x += source_tile_conflicts::X_SIZE) {
+                const auto index
+                  = source_tile_conflicts::calculate_index(x, y, t);
+
+                expect(index < total_size) << "index out of bounds: " << index;
+
+                expect(!seen[index])
+                  << "duplicate index detected: " << index << " from x=" << x
+                  << " y=" << y << " t=" << static_cast<int>(t);
+
+                seen[index] = true;
+                ++visited_count;
+              }
+            }
+          }
+
+          expect(eq(visited_count, total_size));
+
+          expect(std::ranges::all_of(seen, [](bool v) {
+            return v;
+          }));
+        };
+    };
   };
 }

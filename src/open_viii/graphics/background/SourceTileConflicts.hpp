@@ -204,7 +204,7 @@ private:
   {
     location l;
     if constexpr (std::signed_integral<Index>) {
-      assert(std::cmp_greater(index, 0) && " index must be greater than 0");
+      assert(std::cmp_greater_equal(index, 0) && " index must be greater than 0");
     }
     assert(
       std::cmp_less(index, X_SIZE * Y_SIZE * T_SIZE)
