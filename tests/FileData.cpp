@@ -29,7 +29,7 @@ static constexpr auto expects = [](
 int
   main()
 {
-  [[maybe_unused]] suite tests = [] {
+  [[maybe_unused]] suite<"FileData"> tests = [] {
     static constexpr std::string_view sample_hex
       = "\x0B\x00\x00\x00\x63\x72\x65\x64\x69\x74\x73\x2E\x61\x76\x69\x2E\xA5"
         "\x0C"

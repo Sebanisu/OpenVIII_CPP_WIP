@@ -16,7 +16,7 @@ int
 
   using namespace open_viii::graphics::background;
 
-  [[maybe_unused]] suite tests = [] {
+  [[maybe_unused]] suite<"PupuID"> tests = [] {
     "PupuID raw constructor"_test = [] {
       constexpr std::uint32_t raw = 0x1234ABCDu;
 

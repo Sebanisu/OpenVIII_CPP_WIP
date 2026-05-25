@@ -13,7 +13,7 @@ int
 
   using namespace open_viii::graphics::background;
 
-  [[maybe_unused]] suite tests = [] {
+  [[maybe_unused]] suite<"MapHistory"> tests = [] {
     "default constructed MapHistory is empty"_test = [] {
       const MapHistory history{};
 

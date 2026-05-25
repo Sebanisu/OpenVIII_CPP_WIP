@@ -19,7 +19,7 @@ int
 
   using namespace open_viii::graphics::background;
 
-  [[maybe_unused]] suite tests = [] {
+  [[maybe_unused]] suite<"SourceTileConflicts"> tests = [] {
     "SourceTileConflicts default empty state"_test = [] {
       SourceTileConflicts conflicts{};
 

@@ -14,7 +14,7 @@ int
 
   using namespace open_viii::graphics::background;
 
-  [[maybe_unused]] suite tests = [] {
+  [[maybe_unused]] suite<"UniquifyPupu"> tests = [] {
     "UniquifyPupu increments duplicate ids"_test = [] {
       UniquifyPupu uniquify{};
 

@@ -16,7 +16,7 @@ int
 
   using namespace open_viii::graphics::background;
 
-  [[maybe_unused]] suite tests = [] {
+  [[maybe_unused]] suite<"NormalizedSourceTile and NormalizedSourceAnimatedTile"> tests = [] {
     "NormalizedSourceTile default construction"_test = [] {
       NormalizedSourceTile tile{};
 

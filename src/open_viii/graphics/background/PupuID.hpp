@@ -227,7 +227,8 @@ struct PupuID
     hsv2rgb(float h, float s, float v) noexcept
   {
     const auto f = [&](float n) {
-      const float k = fract(n + h * 6.0f);
+      const float k = fract(n + h);
+
       return v
            * mix(1.0f, clamp(std::abs(k * 6.0f - 3.0f) - 1.0f, 0.0f, 1.0f), s);
     };
