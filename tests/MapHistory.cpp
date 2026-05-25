@@ -27,8 +27,7 @@ int
     "current undo state is empty when no history exists"_test = [] {
       const MapHistory history{};
 
-      expect(eq(history.current_undo_pushed(),
-                MapHistory::pushed::unknown));
+      expect(eq(history.current_undo_pushed(), MapHistory::pushed::unknown));
 
       expect(history.current_undo_description().empty());
     };
@@ -36,8 +35,7 @@ int
     "current redo state is empty when no history exists"_test = [] {
       const MapHistory history{};
 
-      expect(eq(history.current_redo_pushed(),
-                MapHistory::pushed::unknown));
+      expect(eq(history.current_redo_pushed(), MapHistory::pushed::unknown));
 
       expect(history.current_redo_description().empty());
     };
@@ -50,11 +48,11 @@ int
       expect(eq(history.count(), std::size_t{ 1 }));
       expect(history.undo_enabled());
 
-      expect(eq(history.current_undo_pushed(),
-                MapHistory::pushed::working));
+      expect(eq(history.current_undo_pushed(), MapHistory::pushed::working));
 
-      expect(eq(history.current_undo_description(),
-                std::string_view{ "working change" }));
+      expect(eq(
+        history.current_undo_description(),
+        std::string_view{ "working change" }));
     };
 
     "copy_original creates undo entry"_test = [] {
@@ -64,11 +62,11 @@ int
 
       expect(eq(history.count(), std::size_t{ 1 }));
 
-      expect(eq(history.current_undo_pushed(),
-                MapHistory::pushed::original));
+      expect(eq(history.current_undo_pushed(), MapHistory::pushed::original));
 
-      expect(eq(history.current_undo_description(),
-                std::string_view{ "original change" }));
+      expect(eq(
+        history.current_undo_description(),
+        std::string_view{ "original change" }));
     };
 
     "undo transfers state to redo history"_test = [] {
@@ -83,11 +81,10 @@ int
 
       expect(history.redo_enabled());
 
-      expect(eq(history.current_redo_description(),
-                std::string_view{ "change" }));
+      expect(
+        eq(history.current_redo_description(), std::string_view{ "change" }));
 
-      expect(eq(history.current_redo_pushed(),
-                MapHistory::pushed::working));
+      expect(eq(history.current_redo_pushed(), MapHistory::pushed::working));
     };
 
     "redo restores undo history"_test = [] {
@@ -118,7 +115,7 @@ int
       expect(!history.redo_enabled());
     };
 
-    "begin_multi_frame_working creates single undo entry"_test = [] {
+    "begin_multi_frame_working ignores no-op changes"_test = [] {
       MapHistory history{};
 
       (void)history.begin_multi_frame_working("multi frame");
@@ -128,21 +125,8 @@ int
 
       history.end_multi_frame_working();
 
-      expect(eq(history.count(), std::size_t{ 1 }));
-
-      expect(eq(history.current_undo_description(),
-                std::string_view{ "multi frame" }));
-    };
-
-    "end_multi_frame_working updates description"_test = [] {
-      MapHistory history{};
-
-      (void)history.begin_multi_frame_working("before");
-
-      history.end_multi_frame_working("after");
-
-      expect(eq(history.current_undo_description(),
-                std::string_view{ "after" }));
+      expect(eq(history.count(), std::size_t{ 0 }));
+      expect(!history.undo_enabled());
     };
 
     "undo returns false when history is empty"_test = [] {
@@ -160,14 +144,11 @@ int
     "formatter outputs pushed enum names"_test = [] {
       using namespace std::string_literals;
 
-      expect(eq(fmt::format("{}", MapHistory::pushed::unknown),
-                "Unknown"s));
+      expect(eq(fmt::format("{}", MapHistory::pushed::unknown), "Unknown"s));
 
-      expect(eq(fmt::format("{}", MapHistory::pushed::original),
-                "Original"s));
+      expect(eq(fmt::format("{}", MapHistory::pushed::original), "Original"s));
 
-      expect(eq(fmt::format("{}", MapHistory::pushed::working),
-                "Working"s));
+      expect(eq(fmt::format("{}", MapHistory::pushed::working), "Working"s));
     };
   };
 }
