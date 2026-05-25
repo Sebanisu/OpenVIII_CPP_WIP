@@ -76,13 +76,39 @@ struct Map
   using variant_tile = std::variant<std::monostate, Tile1, Tile2, Tile3>;
 
 private:
-  variant_tiles       m_tiles{};
+  variant_tiles       m_tiles{ std::monostate{} };
   /**
    * offset holds the original position of canvas.
    */
   Point<std::int16_t> m_offset{};
 
 public:
+
+  /**
+   * @brief Resets the map to its default empty state.
+   *
+   * Clears all stored tile data by resetting the tile variant to
+   * `std::monostate` and restores the offset to `(0, 0)`.
+   *
+   * This avoids full object reassignment and performs an in-place reset
+   * of internal state.
+   *
+   * @note Uses `std::variant::emplace` to reconstruct the active variant
+   * alternative directly, avoiding unnecessary temporary objects and
+   * move assignments.
+   *
+   * @post `m_tiles` contains `std::monostate`.
+   * @post `m_offset == Point<std::int16_t>{}`.
+   *
+   * @throws None.
+   */
+  void
+    reset() noexcept
+  {
+    m_tiles.template emplace<std::monostate>();
+    m_offset = {};
+  }
+
   /**
    * @brief Visits `m_tiles` and applies the provided lambda if it contains
    * valid tiles.
@@ -571,16 +597,16 @@ private:
     variant_tiles tiles{};
     switch (mim_type.type) {
     case 1:
-      tiles = std::vector<Tile1>{};
+      tiles.template emplace<std::vector<Tile1>>();
       break;
     case 2:
-      tiles = std::vector<Tile2>{};
+      tiles.template emplace<std::vector<Tile2>>();
       break;
     case 3:
-      tiles = std::vector<Tile3>{};
+      tiles.template emplace<std::vector<Tile3>>();
       break;
     default:
-      tiles = std::monostate{};// Unknown type.
+      tiles.template emplace<std::monostate>();// Unknown type.
     }
     std::visit(
       [&buffer](auto &&local_tiles) {
@@ -704,7 +730,7 @@ public:
    */
   template<typename tile_funcT>
     requires(std::is_invocable_r_v<variant_tile, tile_funcT>)
-  explicit Map(tile_funcT tile_func) : m_tiles(std::monostate())
+  explicit Map(tile_funcT tile_func)
   {
 
     bool       on   = true;
@@ -715,7 +741,7 @@ public:
       }
       else {
         visit_not_tiles([this]() {
-          m_tiles = std::vector<map_type>{};
+          m_tiles.template emplace<std::vector<map_type>>();
         });
         visit_tiles([&on, &item](auto &&tiles) {
           using tiles_type     = std::remove_cvref_t<decltype(tiles)>;
