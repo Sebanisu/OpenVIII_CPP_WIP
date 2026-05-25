@@ -2,7 +2,7 @@
 
 #include <boost/ut.hpp>
 
-#define UT_source_tile_conflicts_test
+#define UT_SourceTileConflicts_test
 
 #include "open_viii/graphics/background/SourceTileConflicts.hpp"
 #include "open_viii/graphics/background/Tile1.hpp"
@@ -20,22 +20,22 @@ int
   using namespace open_viii::graphics::background;
 
   [[maybe_unused]] suite tests = [] {
-    "source_tile_conflicts default empty state"_test = [] {
-      source_tile_conflicts conflicts{};
+    "SourceTileConflicts default empty state"_test = [] {
+      SourceTileConflicts conflicts{};
 
-      const auto            occupied = conflicts.range_of_occupied_locations()
-                                     | std::ranges::to<std::vector>();
+      const auto          occupied = conflicts.range_of_occupied_locations()
+                                   | std::ranges::to<std::vector>();
 
-      const auto conflict_range      = conflicts.range_of_conflicts_flattened();
+      const auto conflict_range    = conflicts.range_of_conflicts_flattened();
 
       expect(occupied.empty());
       expect(conflict_range.empty());
     };
 
-    "source_tile_conflicts tracks occupied tile"_test = [] {
-      source_tile_conflicts conflicts{};
+    "SourceTileConflicts tracks occupied tile"_test = [] {
+      SourceTileConflicts conflicts{};
 
-      Tile1                 tile{};
+      Tile1               tile{};
 
       tile = tile.with_texture_id(1).with_source_xy(16, 32);
 
@@ -51,10 +51,10 @@ int
       expect(eq(occupied.front().t, 1U));
     };
 
-    "source_tile_conflicts detects conflicts"_test = [] {
-      source_tile_conflicts conflicts{};
+    "SourceTileConflicts detects conflicts"_test = [] {
+      SourceTileConflicts conflicts{};
 
-      Tile1                 tile{};
+      Tile1               tile{};
 
       tile = tile.with_texture_id(2).with_source_xy(32, 48);
 
@@ -68,11 +68,11 @@ int
       expect(eq(flattened[1], 2));
     };
 
-    "source_tile_conflicts separates texture pages"_test = [] {
-      source_tile_conflicts conflicts{};
+    "SourceTileConflicts separates texture pages"_test = [] {
+      SourceTileConflicts conflicts{};
 
-      Tile1                 a{};
-      Tile1                 b{};
+      Tile1               a{};
+      Tile1               b{};
 
       a = a.with_texture_id(0).with_source_xy(16, 16);
 
@@ -91,11 +91,11 @@ int
       expect(eq(occupied.size(), 2U));
     };
 
-    "source_tile_conflicts non conflicts flattened"_test = [] {
-      source_tile_conflicts conflicts{};
+    "SourceTileConflicts non conflicts flattened"_test = [] {
+      SourceTileConflicts conflicts{};
 
-      Tile1                 a{};
-      Tile1                 b{};
+      Tile1               a{};
+      Tile1               b{};
 
       a = a.with_texture_id(0).with_source_xy(0, 0);
 
@@ -112,8 +112,8 @@ int
       expect(eq(non_conflicts[1], 4));
     };
 
-    "source_tile_conflicts operator access by coordinates"_test = [] {
-      source_tile_conflicts conflicts{};
+    "SourceTileConflicts operator access by coordinates"_test = [] {
+      SourceTileConflicts conflicts{};
 
       conflicts(16, 32, 1).push_back(99);
 
@@ -121,10 +121,10 @@ int
       expect(eq(conflicts(16, 32, 1).front(), 99));
     };
 
-    "source_tile_conflicts multiple conflicts stay grouped"_test = [] {
-      source_tile_conflicts conflicts{};
+    "SourceTileConflicts multiple conflicts stay grouped"_test = [] {
+      SourceTileConflicts conflicts{};
 
-      Tile1                 tile{};
+      Tile1               tile{};
 
       tile = tile.with_texture_id(3).with_source_xy(48, 48);
 
@@ -139,10 +139,10 @@ int
       expect(eq(grouped.front().size(), 3U));
     };
 
-    "source_tile_conflicts empty locations shrink after insert"_test = [] {
-      source_tile_conflicts conflicts{};
+    "SourceTileConflicts empty locations shrink after insert"_test = [] {
+      SourceTileConflicts conflicts{};
 
-      const auto            before
+      const auto          before
         = conflicts.range_of_empty_locations() | std::ranges::to<std::vector>();
 
       Tile1 tile{};
@@ -157,15 +157,15 @@ int
       expect(eq(after.size() + 1U, before.size()));
     };
 
-    "source_tile_conflicts calculate/reverse round trip"_test = [] {
-      for (std::uint8_t t = 0; t < source_tile_conflicts::T_SIZE; ++t) {
-        for (std::uint16_t y = 0; y < source_tile_conflicts::GRID_SIZE;
-             y += source_tile_conflicts::Y_SIZE) {
-          for (std::uint16_t x = 0; x < source_tile_conflicts::GRID_SIZE;
-               x += source_tile_conflicts::X_SIZE) {
-            const auto index = source_tile_conflicts::calculate_index(x, y, t);
+    "SourceTileConflicts calculate/reverse round trip"_test = [] {
+      for (std::uint8_t t = 0; t < SourceTileConflicts::T_SIZE; ++t) {
+        for (std::uint16_t y = 0; y < SourceTileConflicts::GRID_SIZE;
+             y += SourceTileConflicts::Y_SIZE) {
+          for (std::uint16_t x = 0; x < SourceTileConflicts::GRID_SIZE;
+               x += SourceTileConflicts::X_SIZE) {
+            const auto index    = SourceTileConflicts::calculate_index(x, y, t);
 
-            const auto location = source_tile_conflicts::reverse_index(index);
+            const auto location = SourceTileConflicts::reverse_index(index);
 
             expect(eq(location.x, x)) << "x mismatch for index " << index;
 
@@ -176,42 +176,40 @@ int
         }
       }
 
-      "source_tile_conflicts calculate_index produces unique indices"_test =
-        [] {
-          constexpr auto total_size = source_tile_conflicts::X_SIZE
-                                    * source_tile_conflicts::Y_SIZE
-                                    * source_tile_conflicts::T_SIZE;
+      "SourceTileConflicts calculate_index produces unique indices"_test = [] {
+        constexpr auto               total_size = SourceTileConflicts::X_SIZE
+                                                * SourceTileConflicts::Y_SIZE
+                                                * SourceTileConflicts::T_SIZE;
 
-          std::array<bool, total_size> seen{};
+        std::array<bool, total_size> seen{};
 
-          std::size_t                  visited_count = 0U;
+        std::size_t                  visited_count = 0U;
 
-          for (std::uint8_t t = 0; t < source_tile_conflicts::T_SIZE; ++t) {
-            for (std::uint16_t y = 0; y < source_tile_conflicts::GRID_SIZE;
-                 y += source_tile_conflicts::Y_SIZE) {
-              for (std::uint16_t x = 0; x < source_tile_conflicts::GRID_SIZE;
-                   x += source_tile_conflicts::X_SIZE) {
-                const auto index
-                  = source_tile_conflicts::calculate_index(x, y, t);
+        for (std::uint8_t t = 0; t < SourceTileConflicts::T_SIZE; ++t) {
+          for (std::uint16_t y = 0; y < SourceTileConflicts::GRID_SIZE;
+               y += SourceTileConflicts::Y_SIZE) {
+            for (std::uint16_t x = 0; x < SourceTileConflicts::GRID_SIZE;
+                 x += SourceTileConflicts::X_SIZE) {
+              const auto index = SourceTileConflicts::calculate_index(x, y, t);
 
-                expect(index < total_size) << "index out of bounds: " << index;
+              expect(index < total_size) << "index out of bounds: " << index;
 
-                expect(!seen[index])
-                  << "duplicate index detected: " << index << " from x=" << x
-                  << " y=" << y << " t=" << static_cast<int>(t);
+              expect(!seen[index])
+                << "duplicate index detected: " << index << " from x=" << x
+                << " y=" << y << " t=" << static_cast<int>(t);
 
-                seen[index] = true;
-                ++visited_count;
-              }
+              seen[index] = true;
+              ++visited_count;
             }
           }
+        }
 
-          expect(eq(visited_count, total_size));
+        expect(eq(visited_count, total_size));
 
-          expect(std::ranges::all_of(seen, [](bool v) {
-            return v;
-          }));
-        };
+        expect(std::ranges::all_of(seen, [](bool v) {
+          return v;
+        }));
+      };
     };
   };
 }
