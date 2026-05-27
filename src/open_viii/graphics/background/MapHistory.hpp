@@ -2,8 +2,8 @@
 // Created by pcvii on 6/2/2022.
 //
 
-#ifndef FIELD_MAP_EDITOR_MAPHISTORY_HPP
-#define FIELD_MAP_EDITOR_MAPHISTORY_HPP
+#ifndef OPEN_VIII_GRAPHICS_BACKGROUND_MAPHISTORY_HPP
+#define OPEN_VIII_GRAPHICS_BACKGROUND_MAPHISTORY_HPP
 #include "Map.hpp"
 #include "NormalizedSourceTile.hpp"
 #include "PupuID.hpp"
@@ -1045,4 +1045,4 @@ inline std::ostream &
 {
   return os << fmt::format("{}", pushed);
 }
-#endif// FIELD_MAP_EDITOR_MAPHISTORY_HPP
+#endif// OPEN_VIII_GRAPHICS_BACKGROUND_MAPHISTORY_HPP

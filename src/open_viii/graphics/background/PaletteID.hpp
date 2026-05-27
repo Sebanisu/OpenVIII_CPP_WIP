@@ -50,13 +50,13 @@ public:
       (m_data & THIRTY_INVERSE_MASK) | (in_thirty & THIRTY_MASK));
     return out;
   }
-  [[nodiscard]] std::uint8_t
+  [[nodiscard]] constexpr std::uint8_t
     thirty() const noexcept
   {
     return static_cast<std::uint8_t>(m_data & THIRTY_MASK);
   }
 
-  [[nodiscard]] auto
+  [[nodiscard]] constexpr auto
     with_id(std::uint8_t in_id) const noexcept
   {
     PaletteID out{};
@@ -69,7 +69,7 @@ public:
   {
     return static_cast<std::uint8_t>((m_data & ID_MASK) >> ID_SHIFT);
   }
-  [[nodiscard]] auto
+  [[nodiscard]] constexpr auto
     with_zero(std::uint16_t in_zero) const noexcept
   {
     PaletteID out{};
@@ -77,12 +77,12 @@ public:
       (m_data & ZERO_INVERSE_MASK) | ((in_zero << ZERO_SHIFT) & ZERO_MASK));
     return out;
   }
-  [[nodiscard]] std::uint8_t
+  [[nodiscard]] constexpr std::uint8_t
     zero() const noexcept
   {
     return static_cast<std::uint8_t>((m_data & ZERO_MASK) >> ZERO_SHIFT);
   }
-  [[nodiscard]] explicit
+  [[nodiscard]] constexpr explicit
     operator std::uint16_t() const noexcept
   {
     return m_data;

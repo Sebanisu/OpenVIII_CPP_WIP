@@ -1,6 +1,7 @@
 #include "open_viii/graphics/background/Tile1.hpp"
 #include "open_viii/graphics/background/Tile2.hpp"
 #include "open_viii/graphics/background/Tile3.hpp"
+#include "open_viii/graphics/background/TileOperations.hpp"
 #include <boost/ut.hpp>
 #include <tuple>
 #include <variant>
@@ -67,14 +68,14 @@ int
             {
               using T = decltype(tile);
               using namespace open_viii::graphics::background;
-              if constexpr (has_with_layer_id<T>)
+              if constexpr (tile_operations::has_with_layer_id<T>)
                 tile = tile.with_layer_id(1U);
-              if constexpr (has_with_blend_mode<T>)
+              if constexpr (tile_operations::has_with_blend_mode<T>)
                 tile = tile.with_blend_mode(
                   open_viii::graphics::background::BlendModeT::quarter_add);
-              if constexpr (has_with_animation_id<T>)
+              if constexpr (tile_operations::has_with_animation_id<T>)
                 tile = tile.with_animation_id(1U);
-              if constexpr (has_with_animation_state<T>)
+              if constexpr (tile_operations::has_with_animation_state<T>)
                 tile = tile.with_animation_state(1U);
             }
             expect(eq(tile.source_x(), 1U));

@@ -354,23 +354,6 @@ public:
     os << std::dec << std::setfill(' ') << std::setw(1) << std::nouppercase;
   }
 };
-template<typename T>
-concept has_with_layer_id
-  = requires(std::decay_t<T> t) { t = t.with_layer_id(1U); };
-
-template<typename T>
-concept has_with_blend_mode = requires(std::decay_t<T> t) {
-  t = t.with_blend_mode(
-    open_viii::graphics::background::BlendModeT::quarter_add);
-};
-
-template<typename T>
-concept has_with_animation_id
-  = requires(std::decay_t<T> t) { t = t.with_animation_id(1U); };
-
-template<typename T>
-concept has_with_animation_state
-  = requires(std::decay_t<T> t) { t = t.with_animation_state(1U); };
 }// namespace open_viii::graphics::background
 
 template<typename tileT>

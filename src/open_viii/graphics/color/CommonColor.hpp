@@ -7,6 +7,8 @@
 #include "ColorLayoutT.hpp"
 #include "open_viii/Concepts.hpp"
 #include <algorithm>
+#include <fmt/format.h>
+#include <ostream>
 namespace open_viii::graphics {
 template<typename T>
 struct CommonColor : T
@@ -253,4 +255,28 @@ public:
   }
 };
 }// namespace open_viii::graphics
+
+template<typename T>
+struct fmt::formatter<open_viii::graphics::CommonColor<T>>
+{
+  constexpr auto
+    parse(format_parse_context &ctx)
+  {
+    return ctx.begin();
+  }
+
+  template<typename FormatContext>
+  auto
+    format(const open_viii::graphics::CommonColor<T> &color, FormatContext &ctx)
+      const
+  {
+    return fmt::format_to(
+      ctx.out(),
+      "{{{:02X}, {:02X}, {:02X}, {:02X}}}",
+      +color.r(),
+      +color.g(),
+      +color.b(),
+      +color.a());
+  }
+};
 #endif// OPENVIII_CPP_WIP_COMMONCOLOR_HPP
