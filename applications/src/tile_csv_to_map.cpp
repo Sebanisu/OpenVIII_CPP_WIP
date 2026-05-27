@@ -121,7 +121,7 @@ void
     num.has_value())                                                           \
   tile = tile.with_##arg(*num)
 #define concept_common_code(arg)                                               \
-  if constexpr (has_with_##arg<decltype(tile)>)                                \
+  if constexpr (tile_operations::has_with_##arg<decltype(tile)>)               \
   common_code(arg)
           common_code(z);
           common_code(y);
@@ -137,7 +137,7 @@ void
           concept_common_code(layer_id);
 #undef concept_common_code
 #undef common_code
-          if constexpr (has_with_blend_mode<decltype(tile)>) {
+          if constexpr (tile_operations::has_with_blend_mode<decltype(tile)>) {
             tile = tile.with_blend_mode([](const std::string_view sv) {
               if (open_viii::tools::i_equals(sv, "Half Add"))
                 return BlendModeT::half_add;

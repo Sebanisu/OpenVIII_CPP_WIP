@@ -215,5 +215,20 @@ TILE_OPERATION(AnimationId, animation_id);
 TILE_OPERATION(AnimationState, animation_state);
 #undef TILE_OPERATION
 #undef CONCAT
+
+static_assert(has_with_animation_state<Tile1>);
+static_assert(has_with_animation_id<Tile1>);
+static_assert(has_with_blend_mode<Tile1>);
+static_assert(has_with_layer_id<Tile1>);
+
+static_assert(has_with_animation_state<Tile2>);
+static_assert(has_with_animation_id<Tile2>);
+static_assert(not has_with_blend_mode<Tile2>);
+static_assert(not has_with_layer_id<Tile2>);
+
+static_assert(not has_with_animation_state<Tile3>);
+static_assert(not has_with_animation_id<Tile3>);
+static_assert(not has_with_blend_mode<Tile3>);
+static_assert(not has_with_layer_id<Tile3>);
 }// namespace open_viii::graphics::background::tile_operations
 #endif// OPEN_VIII_GRAPHICS_BACKGROUND_TILE_OPERATIONS_HPP

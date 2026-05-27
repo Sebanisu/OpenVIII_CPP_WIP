@@ -5,6 +5,7 @@
 #ifndef OPENVIII_CPP_WIP_TILE_CSV_TO_MAP_HPP
 #define OPENVIII_CPP_WIP_TILE_CSV_TO_MAP_HPP
 #include "open_viii/graphics/background/Map.hpp"
+#include "open_viii/graphics/background/TileOperations.hpp"
 #include <charconv>
 #include <ctre.hpp>
 #include <filesystem>
