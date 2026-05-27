@@ -65,6 +65,39 @@ concept is_contiguous_sized_tiles
  && std::ranges::contiguous_range<std::remove_cvref_t<T>>
  && std::ranges::sized_range<std::remove_cvref_t<T>>;
 
+/**
+ * @brief Predicate that filters out sentinel/invalid tiles.
+ *
+ * A tile is considered valid when its x-coordinate does not match the
+ * sentinel end marker value (`0x7FFF`).
+ *
+ * Intended for use with standard algorithms and ranges filters when
+ * iterating tile collections that may contain terminator entries.
+ */
+struct NotInvalidTile
+{
+  /**
+   * @brief Checks whether a tile is valid.
+   *
+   * @tparam T Tile type satisfying the `is_tile` concept.
+   * @param tile Tile instance to evaluate.
+   * @return `true` if the tile is not the sentinel/invalid tile.
+   * @return `false` if the tile x-coordinate equals the sentinel value.
+   */
+  template<is_tile T>
+  constexpr bool
+    operator()(const T &tile) const noexcept
+  {
+    return (std::cmp_not_equal(tile.x(), s_end_x));
+  }
+
+private:
+  /**
+   * @brief Sentinel x-coordinate used to identify invalid/end tiles.
+   */
+  static constexpr std::uint16_t s_end_x = { 0x7FFFU };
+};
+
 struct Map
 {
   using variant_tiles = std::variant<
@@ -83,7 +116,6 @@ private:
   Point<std::int16_t> m_offset{};
 
 public:
-
   /**
    * @brief Resets the map to its default empty state.
    *

@@ -215,17 +215,5 @@ TILE_OPERATION(AnimationId, animation_id);
 TILE_OPERATION(AnimationState, animation_state);
 #undef TILE_OPERATION
 #undef CONCAT
-struct NotInvalidTile
-{
-  template<is_tile T>
-  constexpr bool
-    operator()(const T &tile) const noexcept
-  {
-    return (std::cmp_not_equal(tile.x(), s_end_x));
-  }
-
-private:
-  static constexpr std::uint16_t s_end_x = { 0x7FFFU };
-};
 }// namespace open_viii::graphics::background::tile_operations
 #endif// OPEN_VIII_GRAPHICS_BACKGROUND_TILE_OPERATIONS_HPP
