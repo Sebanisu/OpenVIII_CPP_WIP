@@ -50,7 +50,7 @@ void
     "WithX transforms tile x"_test = [] {
       constexpr auto tile    = TileT{}.with_x(10);
 
-      auto           updated = WithX<TileT>{ 42 }(tile);
+      const auto     updated = WithX<TileT>{ 42 }(tile);
 
       expect(eq(updated.x(), 42));
       expect(eq(updated.y(), tile.y()));
@@ -59,7 +59,7 @@ void
     "WithY transforms tile y"_test = [] {
       constexpr auto tile    = TileT{}.with_y(10);
 
-      auto           updated = WithY<TileT>{ 77 }(tile);
+      const auto     updated = WithY<TileT>{ 77 }(tile);
 
       expect(eq(updated.y(), 77));
       expect(eq(updated.x(), tile.x()));
@@ -68,7 +68,7 @@ void
     "pipe operator applies transform"_test = [] {
       constexpr auto tile    = TileT{}.with_x(1);
 
-      auto           updated = tile | WithX<TileT>{ 999 };
+      const auto     updated = tile | WithX<TileT>{ 999 };
 
       expect(eq(updated.x(), 999));
     };
@@ -76,7 +76,7 @@ void
     "TranslateWithX offsets x coordinate"_test = [] {
       constexpr auto tile       = TileT{}.with_x(100);
 
-      auto           translated = TranslateWithX<TileT>{ 100, 200 }(tile);
+      const auto     translated = TranslateWithX<TileT>{ 100, 200 }(tile);
 
       expect(eq(translated.x(), 200));
     };
@@ -84,7 +84,7 @@ void
     "TranslateWithY offsets y coordinate"_test = [] {
       constexpr auto tile       = TileT{}.with_y(50);
 
-      auto           translated = TranslateWithY<TileT>{ 50, 75 }(tile);
+      const auto     translated = TranslateWithY<TileT>{ 50, 75 }(tile);
 
       expect(eq(translated.y(), 75));
     };
@@ -138,17 +138,135 @@ void
       expect(eq(it->x(), 2));
     };
 
-    "NotInvalidTile accepts normal tiles"_test = [] {
-      constexpr auto tile = TileT{}.with_x(0);
+    "XY getter extracts packed coordinates"_test = [] {
+      constexpr auto tile = TileT{}.with_x(12).with_y(34);
 
-      expect(NotInvalidTile{}(tile));
+      const auto     xy   = XY{}(tile);
+
+      expect(eq(xy.x(), 12));
+      expect(eq(xy.y(), 34));
     };
 
-    "NotInvalidTile rejects sentinel tiles"_test = [] {
-      constexpr auto tile = TileT{}.with_x(0x7FFF);
+    "Z getter extracts z value"_test = [] {
+      constexpr auto tile = TileT{}.with_z(55);
 
-      expect(!NotInvalidTile{}(tile));
+      expect(eq(Z{}(tile), 55));
     };
+
+    "SourceX transform updates source x"_test = [] {
+      constexpr auto tile    = TileT{}.with_source_x(10);
+
+      const auto     updated = WithSourceX<TileT>{ 99 }(tile);
+
+      expect(eq(updated.source_x(), 99));
+    };
+
+    "SourceY match compares source y"_test = [] {
+      constexpr auto tile = TileT{}.with_source_y(44);
+
+      expect(SourceYMatch{ 44 }(tile));
+      expect(!SourceYMatch{ 12 }(tile));
+    };
+
+    "SourceXY getter extracts packed source coordinates"_test = [] {
+      constexpr auto tile = TileT{}.with_source_x(7).with_source_y(9);
+
+      const auto     xy   = SourceXY{}(tile);
+
+      expect(eq(xy.x(), 7));
+      expect(eq(xy.y(), 9));
+    };
+
+    "TextureId transform updates texture id"_test = [] {
+      constexpr auto tile    = TileT{}.with_texture_id(1);
+
+      const auto     updated = WithTextureId<TileT>{ 5 }(tile);
+
+      expect(eq(updated.texture_id(), 5));
+    };
+
+    if constexpr (has_with_blend_mode<TileT>) {
+      "BlendMode transform updates blend mode"_test = [] {
+        using blend_mode_type = tile_operations::BlendModeT<TileT>;
+
+        constexpr auto tile   = TileT{}.with_blend_mode(blend_mode_type::add);
+
+        const auto     updated
+          = WithBlendMode<TileT>{ blend_mode_type::quarter_add }(tile);
+
+        expect(eq(updated.blend_mode(), blend_mode_type::quarter_add));
+      };
+    }
+
+    "Blend predicate matches blend flag"_test = [] {
+      constexpr auto tile = TileT{}.with_blend(true);
+
+      expect(BlendMatch{ true }(tile));
+      expect(!BlendMatch{ false }(tile));
+    };
+
+    "Draw transform updates draw flag"_test = [] {
+      constexpr auto tile    = TileT{}.with_draw(false);
+
+      const auto     updated = WithDraw<TileT>{ true }(tile);
+
+      expect(updated.draw());
+    };
+
+    "Depth getter extracts depth"_test = [] {
+      using namespace open_viii::graphics::literals;
+      constexpr auto tile = TileT{}.with_depth(4_bpp);
+
+      expect(eq(Depth{}(tile), 4_bpp));
+    };
+
+    if constexpr (has_with_layer_id<TileT>) {
+      "LayerId transform updates layer id"_test = [] {
+        using layer_id_type    = LayerIdT<TileT>;
+
+        constexpr auto tile    = TileT{}.with_layer_id(layer_id_type{ 1 });
+
+        auto           updated = WithLayerId<TileT>{ layer_id_type{ 9 } }(tile);
+
+        expect(eq(updated.layer_id(), layer_id_type{ 9 }));
+      };
+    }
+
+    if constexpr (has_with_palette_id<TileT>) {
+      "PaletteId transform updates palette id"_test = [] {
+        using value_type       = PaletteIdT<TileT>;
+
+        constexpr auto tile    = TileT{}.with_palette_id(value_type{ 2 });
+
+        const auto     updated = WithPaletteId<TileT>{ value_type{ 7 } }(tile);
+
+        expect(eq(updated.palette_id(), value_type{ 7 }));
+      };
+    }
+
+    if constexpr (has_with_animation_id<TileT>) {
+      "AnimationId transform updates animation id"_test = [] {
+        using value_type    = AnimationIdT<TileT>;
+
+        constexpr auto tile = TileT{}.with_animation_id(value_type{ 3 });
+
+        const auto updated  = WithAnimationId<TileT>{ value_type{ 8 } }(tile);
+
+        expect(eq(updated.animation_id(), value_type{ 8 }));
+      };
+    }
+
+    if constexpr (has_with_animation_state<TileT>) {
+      "AnimationState transform updates animation state"_test = [] {
+        using value_type    = AnimationStateT<TileT>;
+
+        constexpr auto tile = TileT{}.with_animation_state(value_type{ 1 });
+
+        const auto updated = WithAnimationState<TileT>{ value_type{ 4 } }(tile);
+
+        expect(eq(updated.animation_state(), value_type{ 4 }));
+      };
+    }
   };
 }
 
