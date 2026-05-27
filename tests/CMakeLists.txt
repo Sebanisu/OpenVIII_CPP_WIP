@@ -64,3 +64,8 @@ add_test_common(MapHistory)
 target_link_libraries(${PROJECT_NAME}_UT_MapHistory
         PRIVATE ${PROJECT_NAME}_VIIIGraphics
 )
+
+add_test_common(TileOperations)
+target_link_libraries(${PROJECT_NAME}_UT_TileOperations
+        PRIVATE ${PROJECT_NAME}_VIIIGraphics
+)
