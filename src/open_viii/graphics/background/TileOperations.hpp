@@ -193,7 +193,7 @@ static constexpr TileT MaxTile = []() {
     }();                                                                       \
     value_type            current   = {};                                      \
     constexpr static bool read_only = !CONCAT(has_with_, FUNCTION)<TileT>;     \
-    using transform_with            = CONCAT(With, STRING)<value_type>;        \
+    using transform_with            = CONCAT(With, STRING)<TileT>;             \
     using match_with                = CONCAT(STRING, Match)<value_type>;       \
   }
 
