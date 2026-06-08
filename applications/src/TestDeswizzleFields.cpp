@@ -36,13 +36,11 @@ int
         field.execute_with_nested(
           {},
           [](const open_viii::archive::FIFLFS<false> &e) {
-            const std::string_view basename = e.get_base_name();
-            const auto             mim_name
-              = std::string{ basename }
-              + open_viii::graphics::background::Mim::EXT.data();
+            const auto basename = e.get_base_name();
+            const auto mim_name
+              = basename + open_viii::graphics::background::Mim::EXT.data();
             const auto map_name
-              = std::string{ basename }
-              + open_viii::graphics::background::Map::EXT.data();
+              = basename + open_viii::graphics::background::Map::EXT.data();
             auto mim = open_viii::graphics::background::Mim{ e.get_entry_data(
                                                                mim_name),
                                                              basename };

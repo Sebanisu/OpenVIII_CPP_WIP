@@ -161,7 +161,7 @@ private:
 
     const auto base_path = std::filesystem::path(m_path).parent_path()
                          / fmt::format(
-                             "{}_{}.mimmap",
+                             "{}_{}",
                              std::filesystem::path(m_path).stem().string(),
                              pupu);
     if (!Png::save(out, width, height, { .filename = base_path })) {
@@ -241,14 +241,17 @@ public:
     save() const
   {
     std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
-
-    for_each_pupu_and_tile(
-      [this, &out](const PupuID &pupu, const is_tile auto &tile) {
+    for_each_pupu([this, &out](const PupuID &unique_pupu_id) {
+      bool drawn = false;
+      for_each_pupu_and_tile([this, &out, &drawn, &unique_pupu_id](
+                               const PupuID       &pupu,
+                               const is_tile auto &tile) {
+        if (pupu != unique_pupu_id) {
+          return;
+        }
         if (!tile.draw()) {
           return;
         }
-
-        bool drawn = false;
 
         open_viii::tools::for_each_xy(
           tile.height(),
@@ -270,11 +273,11 @@ public:
 
             drawn |= set_color(out, pixel_out, pixel_in);
           });
-
-        if (drawn) {
-          save_out_buffer_and_clear(out, pupu);
-        }
       });
+      if (drawn) {
+        save_out_buffer_and_clear(out, unique_pupu_id);
+      }
+    });
   }
 };
 }// namespace open_viii::graphics::background
