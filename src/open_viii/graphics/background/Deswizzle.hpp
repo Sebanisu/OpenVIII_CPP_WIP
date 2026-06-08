@@ -241,42 +241,40 @@ public:
     save() const
   {
     std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
-    for_each_pupu([this, &out](const PupuID &unique_pupu_id) {
-      bool drawn = false;
-      for_each_pupu_and_tile([this, &out, &drawn, &unique_pupu_id](
-                               const PupuID       &pupu,
-                               const is_tile auto &tile) {
-        if (pupu != unique_pupu_id) {
-          return;
-        }
-        if (!tile.draw()) {
-          return;
-        }
 
-        open_viii::tools::for_each_xy(
-          tile.height(),
-          [this, &pupu, &out, &drawn, &tile](
-            const std::integral auto &x,
-            const std::integral auto &y) {
-            Color32RGBA pixel_in{};
+    visit_mim([&](auto &&mim) {
+      for_each_pupu([&](const PupuID &unique_pupu_id) {
+        bool drawn = false;
+        for_each_pupu_and_tile(
+          [&](const PupuID &pupu, const is_tile auto &tile) {
+            if (pupu != unique_pupu_id) {
+              return;
+            }
+            if (!tile.draw()) {
+              return;
+            }
 
-            visit_mim([&tile, &y, &x, &pixel_in](auto &&mim) {
-              pixel_in = Color32RGBA{ mim.get_color(
-                static_cast<std::uint32_t>(x + tile.source_x()),
-                static_cast<std::uint32_t>(y + tile.source_y()),
-                tile.depth(),
-                tile.palette_id(),
-                tile.texture_id()) };
-            });
+            open_viii::tools::for_each_xy(
+              tile.height(),
+              [&](const std::integral auto &x, const std::integral auto &y) {
+                Color32RGBA pixel_in{};
 
-            const std::uint32_t pixel_out = get_output_index(x, y, tile);
+                pixel_in                      = Color32RGBA{ mim.get_color(
+                  static_cast<std::uint32_t>(x + tile.source_x()),
+                  static_cast<std::uint32_t>(y + tile.source_y()),
+                  tile.depth(),
+                  tile.palette_id(),
+                  tile.texture_id()) };
 
-            drawn |= set_color(out, pixel_out, pixel_in);
+                const std::uint32_t pixel_out = get_output_index(x, y, tile);
+
+                drawn |= set_color(out, pixel_out, pixel_in);
+              });
           });
+        if (drawn) {
+          save_out_buffer_and_clear(out, unique_pupu_id);
+        }
       });
-      if (drawn) {
-        save_out_buffer_and_clear(out, unique_pupu_id);
-      }
     });
   }
 };
