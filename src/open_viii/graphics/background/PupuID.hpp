@@ -152,6 +152,7 @@ struct PupuID
   constexpr PupuID &
     operator+=(std::uint32_t right) noexcept
   {
+    assert((right & ~offset_mask) == 0); // only allow modifying the offset bits
     m_raw += right;
     return *this;
   }
@@ -164,6 +165,7 @@ struct PupuID
   constexpr PupuID &
     operator|=(std::uint32_t right) noexcept
   {
+    assert((right & ~offset_mask) == 0); // only allow modifying the offset bits
     m_raw |= right;
     return *this;
   }
