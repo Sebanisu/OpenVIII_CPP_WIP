@@ -52,7 +52,7 @@ int
                     mim,
                     map,
                     e.get_full_path(mim_name))
-                    .save();
+                    .save(open_viii::LangT::generic);
                 };
             process(
               open_viii::graphics::background::Map{

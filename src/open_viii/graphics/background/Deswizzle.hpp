@@ -153,24 +153,42 @@ private:
   }
 
   void
-    save_out_buffer_and_clear(std::vector<outColorT> &out, const PupuID &pupu)
-      const
+    save_out_buffer_and_clear(
+      std::vector<outColorT> &out,
+      const PupuID           &pupu,
+      const open_viii::LangT  lang) const
   {
-    save_out_buffer(out, pupu);
+    save_out_buffer(out, pupu, lang);
     clear(out);
   }
 
   void
-    save_out_buffer(std::vector<outColorT> &out, const PupuID &pupu) const
+    save_out_buffer(
+      std::vector<outColorT> &out,
+      const PupuID           &pupu,
+      const open_viii::LangT  lang) const
   {
-    const auto width     = static_cast<uint32_t>(m_canvas.width());
-    const auto height    = static_cast<uint32_t>(m_canvas.height());
+    const auto width       = static_cast<uint32_t>(m_canvas.width());
+    const auto height      = static_cast<uint32_t>(m_canvas.height());
+    const auto lang_suffix = open_viii::LangCommon::to_string(lang);
 
-    const auto base_path = std::filesystem::path(m_path).parent_path()
-                         / fmt::format(
-                             "{}_{}",
-                             std::filesystem::path(m_path).stem().string(),
-                             pupu);
+    const auto base_path   = [&]() {
+      if (lang == open_viii::LangT::generic) {
+        return std::filesystem::path(m_path).parent_path()
+             / fmt::format(
+                 "{}_{}",
+                 std::filesystem::path(m_path).stem().string(),
+                 pupu);
+      }
+      else {
+        return std::filesystem::path(m_path).parent_path()
+             / fmt::format(
+                 "{}_{}_{}",
+                 std::filesystem::path(m_path).stem().string(),
+                 lang_suffix,
+                 pupu);
+      }
+    }();
     if (!Png::save(out, width, height, { .filename = base_path })) {
       spdlog::error("Failed to save mimmap image");
     }
@@ -272,12 +290,12 @@ public:
     });
   }
   void
-    save() const
+    save(const open_viii::LangT lang) const
   {
     std::vector<std::jthread> workers;
 
     for (const auto &pupu : m_unique_pupus) {
-      workers.emplace_back([this, pupu] {
+      workers.emplace_back([this, pupu, lang] {
         std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
 
         bool                   drawn = false;
@@ -292,7 +310,7 @@ public:
           });
 
         if (drawn) {
-          save_out_buffer(out, pupu);
+          save_out_buffer(out, pupu, lang);
         }
       });
     }
