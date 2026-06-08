@@ -34,6 +34,7 @@ private:
   std::string                                    m_path            = {};
   std::vector<std::uint8_t>                      m_unique_palettes = {};
   Rectangle<std::int32_t>                        m_canvas          = {};
+  std::vector<PupuID>                            m_pupus           = {};
   std::vector<PupuID>                            m_unique_pupus    = {};
   auto
     find_unique_palettes() const
@@ -52,8 +53,27 @@ private:
     });
     return out;
   }
+
+  /**
+   * @brief Generates a uniquified PupuID for every tile in traversal order.
+   *
+   * Each tile is processed through UniquifyPupu so tiles that would
+   * otherwise generate identical PupuIDs receive stable unique offsets
+   * based on their occurrence and position.
+   *
+   * The returned vector preserves:
+   * - original tile traversal order
+   * - duplicate entries
+   * - one entry per tile
+   *
+   * This result acts as the canonical tile-to-Pupu mapping for the
+   * current deswizzle session and should be reused rather than
+   * regenerated.
+   *
+   * @return Vector of uniquified PupuIDs matching tile traversal order.
+   */
   auto
-    find_unique_pupu() const
+    find_pupu() const
   {
     return m_map.visit_tiles([](auto &&tiles) {
       UniquifyPupu uniquify_pupu = {};
@@ -61,13 +81,60 @@ private:
         = tiles | std::views::transform([&uniquify_pupu](const auto &tile) {
             return uniquify_pupu(tile);
           });
-      auto out = std::vector<PupuID>(
+      return std::vector<PupuID>(
         std::ranges::begin(pupu_view),
         std::ranges::end(pupu_view));
-      std::sort(out.begin(), out.end());
-      auto last = std::unique(std::ranges::begin(out), std::ranges::end(out));
-      out.erase(last, std::ranges::end(out));
-      return out;
+    });
+  }
+
+  /**
+   * @brief Generates a sorted list of unique uniquified PupuIDs.
+   *
+   * This function derives its result from find_pupu() and removes
+   * duplicate entries while preserving the uniquified identifiers
+   * generated during the original traversal pass.
+   *
+   * The returned vector is intended for grouped iteration and
+   * deswizzle output generation where only distinct PupuIDs are
+   * required.
+   *
+   * @return Sorted vector containing unique uniquified PupuIDs.
+   */
+  auto
+    find_unique_pupu() const
+  {
+    auto out = find_pupu();
+    std::sort(out.begin(), out.end());
+    auto last = std::unique(std::ranges::begin(out), std::ranges::end(out));
+    out.erase(last, std::ranges::end(out));
+    return out;
+  }
+
+  /**
+   * @brief Iterates over each tile and its corresponding uniquified PupuID.
+   *
+   * Visits tiles in traversal order and pairs each tile with the
+   * corresponding entry from m_pupus. The provided lambda receives:
+   *
+   * - the uniquified PupuID
+   * - the tile
+   *
+   * This preserves the stable mapping generated during the original
+   * uniquification pass.
+   *
+   * @tparam lambdaT Callable type.
+   * @param lambda Function invoked for each PupuID/tile pair.
+   */
+  template<typename lambdaT>
+  void
+    for_each_pupu_and_tile(const lambdaT &lambda) const
+  {
+    m_map.visit_tiles([this, &lambda](auto &&tiles) {
+      auto zipped = std::views::zip(m_pupus, tiles);
+
+      std::ranges::for_each(zipped, [&lambda](const auto &pair) {
+        lambda(std::get<0>(pair), std::get<1>(pair));
+      });
     });
   }
 
@@ -77,6 +144,7 @@ private:
   {
     std::ranges::for_each(m_unique_pupus, lambda);
   }
+
   template<typename lambdaT>
   void
     for_each_palette(const lambdaT &lambda) const
@@ -167,57 +235,46 @@ public:
     std::string            in_path)
     : m_mim(in_mim), m_map(in_map), m_path(std::move(in_path)),
       m_unique_palettes(find_unique_palettes()), m_canvas(in_map.canvas()),
-      m_unique_pupus(find_unique_pupu())
+      m_pupus(find_pupu()), m_unique_pupus(find_unique_pupu())
   {}
   void
     save() const
   {
     std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
-    for_each_pupu([this, &out](const PupuID &pupu) {
-      bool drawn = false;
-      //      std::uint32_t raw_width{};
-      //      visit_mim([&pupu, &raw_width](auto &&mim) {
-      //        raw_width = mim.get_raw_width(pupu.depth());
-      //      });
-      // const auto &tiles     = m_map.tiles();
-      m_map.visit_tiles([this, &pupu, &drawn, &out](auto &&tiles) {
-        for_each_palette(
-          [this, &pupu, &tiles, &drawn, &out](const std::uint8_t &palette) {
-            auto filtered_tiles
-              = tiles
-              | std::views::filter(
-                  [&pupu, &palette](const auto &local_t) -> bool {
-                    return local_t.draw() && palette == local_t.palette_id()
-                        && pupu == local_t;
-                  });
-            std::ranges::for_each(
-              filtered_tiles,
-              [this, &pupu, &out, &drawn, &palette](const is_tile auto &t) {
-                open_viii::tools::for_each_xy(
-                  t.height(),
-                  [this, &pupu, &out, &drawn, &t, &palette](
-                    const auto &x,
-                    const auto &y) {
-                    Color32RGBA pixel_in{};
-                    visit_mim(
-                      [&t, &y, &pupu, &palette, &x, &pixel_in](auto &&mim) {
-                        pixel_in = Color32RGBA{ mim.get_color(
-                          static_cast<std::uint32_t>((x + t.source_x())),
-                          static_cast<std::uint32_t>((y + t.source_y())),
-                          t.depth(),
-                          palette,
-                          t.texture_id()) };
-                      });
-                    const std::uint32_t pixel_out = get_output_index(x, y, t);
-                    drawn |= set_color(out, pixel_out, pixel_in);
-                  });
-              });
+
+    for_each_pupu_and_tile(
+      [this, &out](const PupuID &pupu, const is_tile auto &tile) {
+        if (!tile.draw()) {
+          return;
+        }
+
+        bool drawn = false;
+
+        open_viii::tools::for_each_xy(
+          tile.height(),
+          [this, &pupu, &out, &drawn, &tile](
+            const std::integral auto &x,
+            const std::integral auto &y) {
+            Color32RGBA pixel_in{};
+
+            visit_mim([&tile, &y, &x, &pixel_in](auto &&mim) {
+              pixel_in = Color32RGBA{ mim.get_color(
+                static_cast<std::uint32_t>(x + tile.source_x()),
+                static_cast<std::uint32_t>(y + tile.source_y()),
+                tile.depth(),
+                tile.palette_id(),
+                tile.texture_id()) };
+            });
+
+            const std::uint32_t pixel_out = get_output_index(x, y, tile);
+
+            drawn |= set_color(out, pixel_out, pixel_in);
           });
+
+        if (drawn) {
+          save_out_buffer_and_clear(out, pupu);
+        }
       });
-      if (drawn) {
-        save_out_buffer_and_clear(out, pupu);
-      }
-    });
   }
 };
 }// namespace open_viii::graphics::background
