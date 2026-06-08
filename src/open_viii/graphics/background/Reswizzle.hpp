@@ -4,13 +4,13 @@
 #ifndef VIIIARCHIVE_RESWIZZLE_HPP
 #define VIIIARCHIVE_RESWIZZLE_HPP
 #include "Map.hpp"
-#include "open_viii/graphics/Ppm.hpp"
-#include "Pupu.hpp"
+#include "Ppm.hpp"
+#include "PupuID.hpp"
 namespace open_viii::graphics::background {
 struct PupuPath
 {
-  open_viii::graphics::background::Pupu pupu = {};
-  std::filesystem::path                 path = {};
+  open_viii::graphics::background::PupuID pupu = {};
+  std::filesystem::path                   path = {};
   //  auto read_entire_file() const
   //  {
   //    return open_viii::tools::read_entire_file<std::string>(path);
@@ -141,7 +141,8 @@ private:
         if (open_viii::tools::i_equals(prefix, m_dir_name)) {
           // std::cout << prefix << '\n';
           pupu_paths.emplace_back(
-            PupuPath{ open_viii::graphics::background::Pupu(hex), file_path });
+            PupuPath{ open_viii::graphics::background::PupuID(hex),
+                      file_path });
         }
       });
     return pupu_paths;

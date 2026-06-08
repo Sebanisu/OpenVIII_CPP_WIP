@@ -15,6 +15,7 @@
 #include "Map.hpp"
 #include "MimFromPath.hpp"
 #include "open_viii/graphics/Png.hpp"
+#include "PupuID.hpp"
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
 namespace open_viii::graphics::background {
@@ -32,7 +33,7 @@ private:
   std::string                                    m_path            = {};
   std::vector<std::uint8_t>                      m_unique_palettes = {};
   Rectangle<std::int32_t>                        m_canvas          = {};
-  std::vector<Pupu>                              m_unique_pupus    = {};
+  std::vector<PupuID>                            m_unique_pupus    = {};
   auto
     find_unique_palettes() const
   {
@@ -53,12 +54,12 @@ private:
   auto
     find_unique_pupu() const
   {
-    auto out = std::vector<Pupu>{};
+    auto out = std::vector<PupuID>{};
     m_map.visit_tiles([&out](auto &&tiles) {
       auto pupu_view = tiles | std::views::transform([](const auto &tile) {
-                         return Pupu(tile);
+                         return PupuID(tile);
                        });
-      out            = std::vector<Pupu>(
+      out            = std::vector<PupuID>(
         std::ranges::begin(pupu_view),
         std::ranges::end(pupu_view));
       std::sort(out.begin(), out.end());
@@ -81,7 +82,7 @@ private:
   }
 
   void
-    save_out_buffer_and_clear(std::vector<outColorT> &out, const Pupu &pupu)
+    save_out_buffer_and_clear(std::vector<outColorT> &out, const PupuID &pupu)
       const
   {
     const auto width     = static_cast<uint32_t>(m_canvas.width());
@@ -169,7 +170,7 @@ public:
     save() const
   {
     std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
-    for_each_pupu([this, &out](const Pupu &pupu) {
+    for_each_pupu([this, &out](const PupuID &pupu) {
       bool drawn = false;
       //      std::uint32_t raw_width{};
       //      visit_mim([&pupu, &raw_width](auto &&mim) {
@@ -188,7 +189,7 @@ public:
                   });
             std::ranges::for_each(
               filtered_tiles,
-              [this, &pupu, &out, &drawn, &palette](const auto &t) {
+              [this, &pupu, &out, &drawn, &palette](const is_tile auto &t) {
                 open_viii::tools::for_each_xy(
                   t.height(),
                   [this, &pupu, &out, &drawn, &t, &palette](
@@ -200,7 +201,7 @@ public:
                         pixel_in = Color32RGBA{ mim.get_color(
                           static_cast<std::uint32_t>((x + t.source_x())),
                           static_cast<std::uint32_t>((y + t.source_y())),
-                          pupu.depth(),
+                          t.depth(),
                           palette,
                           t.texture_id()) };
                       });

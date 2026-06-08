@@ -4,6 +4,8 @@
 
 #ifndef OPENVIII_CPP_WIP_COLORBYTEARRAY_HPP
 #define OPENVIII_CPP_WIP_COLORBYTEARRAY_HPP
+#include <array>
+#include <cstdint>
 namespace open_viii::graphics {
 template<std::size_t sizeT>
   requires(sizeT == 3U || sizeT == 4U)

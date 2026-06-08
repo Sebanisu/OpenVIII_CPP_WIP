@@ -14,7 +14,7 @@
 #define VIIIARCHIVE_MAP_HPP
 #include "Mim.hpp"
 #include "open_viii/tools/Tools.hpp"
-#include "Pupu.hpp"
+#include "PupuID.hpp"
 #include "Tile1.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
@@ -23,81 +23,8 @@
 #include <ranges>
 #include <utility>
 #include <variant>
+
 namespace open_viii::graphics::background {
-/**
- * @brief Concept to determine if a type represents a tile.
- *
- * A type satisfies `is_tile` if it has a nested `impl_type` and is derived from
- * it.
- *
- * @tparam T The type to check.
- */
-template<typename T>
-concept is_tile = requires { typename std::remove_cvref_t<T>::impl_type; }
-               && std::derived_from<
-                    std::remove_cvref_t<T>,
-                    typename std::remove_cvref_t<T>::impl_type>;
-
-/**
- * @brief Concept to determine if a type is a range of tiles.
- *
- * A type satisfies `is_tiles` if it is a range and its elements satisfy
- * `is_tile`.
- *
- * @tparam T The type to check.
- */
-template<typename T>
-concept is_tiles = is_tile<std::ranges::range_value_t<std::remove_cvref_t<T>>>
-                && std::ranges::range<std::remove_cvref_t<T>>;
-
-/**
- * @brief Concept to determine if a type is a contiguous and sized range of
- * tiles.
- *
- * A type satisfies `is_contiguous_sized_tiles` if it meets the `is_tiles`
- * requirement and is both a contiguous range and a sized range.
- *
- * @tparam T The type to check.
- */
-template<typename T>
-concept is_contiguous_sized_tiles
-  = is_tiles<std::remove_cvref_t<T>>
- && std::ranges::contiguous_range<std::remove_cvref_t<T>>
- && std::ranges::sized_range<std::remove_cvref_t<T>>;
-
-/**
- * @brief Predicate that filters out sentinel/invalid tiles.
- *
- * A tile is considered valid when its x-coordinate does not match the
- * sentinel end marker value (`0x7FFF`).
- *
- * Intended for use with standard algorithms and ranges filters when
- * iterating tile collections that may contain terminator entries.
- */
-struct NotInvalidTile
-{
-  /**
-   * @brief Checks whether a tile is valid.
-   *
-   * @tparam T Tile type satisfying the `is_tile` concept.
-   * @param tile Tile instance to evaluate.
-   * @return `true` if the tile is not the sentinel/invalid tile.
-   * @return `false` if the tile x-coordinate equals the sentinel value.
-   */
-  template<is_tile T>
-  constexpr bool
-    operator()(const T &tile) const noexcept
-  {
-    return (std::cmp_not_equal(tile.x(), s_end_x));
-  }
-
-private:
-  /**
-   * @brief Sentinel x-coordinate used to identify invalid/end tiles.
-   */
-  static constexpr std::uint16_t s_end_x = { 0x7FFFU };
-};
-
 struct Map
 {
   using variant_tiles = std::variant<

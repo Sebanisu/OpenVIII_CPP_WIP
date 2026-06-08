@@ -4,7 +4,8 @@
 
 #ifndef OPEN_VIII_GRAPHICS_BACKGROUND_PUPUID_HPP
 #define OPEN_VIII_GRAPHICS_BACKGROUND_PUPUID_HPP
-#include "Map.hpp"
+#include "color/Color32.hpp"
+#include "TileCommon.hpp"
 #include <algorithm>
 #include <cmath>
 #include <compare>
@@ -53,6 +54,38 @@ struct PupuID
     (animation_state_mask << animation_state_offset) == 0x0000'0FF0);
 
   constexpr PupuID() noexcept = default;
+  explicit PupuID(std::string_view hex_str)
+  {
+    if (hex_str.starts_with("0x") || hex_str.starts_with("0X")) {
+      hex_str.remove_prefix(2);
+    }
+    if (hex_str.size() != 8) {
+      throw std::invalid_argument(
+        "PupuID hex string must contain exactly 8 hex characters");
+    }
+
+    std::uint32_t value{};
+
+    const auto    result = std::from_chars(
+      hex_str.data(),
+      hex_str.data() + hex_str.size(),
+      value,
+      16);
+
+    if (result.ec == std::errc::invalid_argument) {
+      throw std::invalid_argument("Invalid PupuID hex string");
+    }
+
+    if (result.ec == std::errc::result_out_of_range) {
+      throw std::out_of_range("PupuID hex string out of range");
+    }
+
+    if (result.ptr != hex_str.data() + hex_str.size()) {
+      throw std::invalid_argument("Trailing characters in PupuID hex string");
+    }
+
+    m_raw = value;
+  }
   constexpr explicit PupuID(std::uint32_t raw) noexcept : m_raw(raw) {}
   constexpr explicit PupuID(
     const is_tile auto &tile,
@@ -259,11 +292,66 @@ struct PupuID
     return out;
   }
 #undef OPENVIII_CONSTEXPR_CMATH
+  constexpr bool
+    operator==(const PupuID &) const noexcept = default;
+
   constexpr auto
     operator<=>(const PupuID &) const noexcept = default;
 
   [[nodiscard]] std::string
     create_summary() const;
+
+  /**
+   * @brief Checks whether a tile matches this PupuID's tracked properties.
+   *
+   * Compares all fields stored in the PupuID except the offset bits.
+   * This is intended to determine whether a tile could belong to the
+   * same grouping or bucket represented by this PupuID.
+   *
+   * Compared properties:
+   * - layer id
+   * - blend mode
+   * - animation id
+   * - animation state
+   * - x grid alignment flag
+   * - y grid alignment flag
+   *
+   * The tile offset is intentionally ignored because it is not intrinsic
+   * to the tile itself.
+   *
+   * @tparam TileT A type satisfying the is_tile concept.
+   * @param tile Tile to compare against this PupuID.
+   * @return true if the tile matches all tracked properties.
+   * @return false otherwise.
+   */
+  template<is_tile TileT>
+  [[nodiscard]] constexpr bool
+    operator==(const TileT &tile) const noexcept
+  {
+    return layer_id() == tile.layer_id() && blend_mode() == tile.blend_mode()
+        && animation_id() == tile.animation_id()
+        && animation_state() == tile.animation_state()
+        && is_x_not_aligned_to_grid() == ((tile.x() % tile_grid_size) != 0)
+        && is_y_not_aligned_to_grid() == ((tile.y() % tile_grid_size) != 0);
+  }
+
+  /**
+   * @brief Checks whether a tile does not match this PupuID's tracked
+   * properties.
+   *
+   * Logical inverse of operator==().
+   *
+   * @tparam TileT A type satisfying the is_tile concept.
+   * @param tile Tile to compare against this PupuID.
+   * @return true if the tile differs in any tracked property.
+   * @return false if the tile matches all tracked properties.
+   */
+  template<is_tile TileT>
+  [[nodiscard]] constexpr bool
+    operator!=(const TileT &tile) const noexcept
+  {
+    return !(*this == tile);
+  }
 
 private:
   std::uint32_t m_raw{};
