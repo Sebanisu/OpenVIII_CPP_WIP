@@ -156,6 +156,13 @@ private:
     save_out_buffer_and_clear(std::vector<outColorT> &out, const PupuID &pupu)
       const
   {
+    save_out_buffer(out, pupu);
+    clear(out);
+  }
+
+  void
+    save_out_buffer(std::vector<outColorT> &out, const PupuID &pupu) const
+  {
     const auto width     = static_cast<uint32_t>(m_canvas.width());
     const auto height    = static_cast<uint32_t>(m_canvas.height());
 
@@ -167,6 +174,11 @@ private:
     if (!Png::save(out, width, height, { .filename = base_path })) {
       spdlog::error("Failed to save mimmap image");
     }
+  }
+
+  void
+    clear(std::vector<outColorT> &out) const
+  {
 
     std::ranges::fill(out, outColorT{});
   }
@@ -237,45 +249,53 @@ public:
       m_unique_palettes(find_unique_palettes()), m_canvas(in_map.canvas()),
       m_pupus(find_pupu()), m_unique_pupus(find_unique_pupu())
   {}
+
+  template<typename TileT>
+  void
+    draw_tile(std::vector<outColorT> &out, const TileT &tile, bool &drawn) const
+  {
+    visit_mim([&](auto &&mim) {
+      open_viii::tools::for_each_xy(
+        tile.height(),
+        [&](const std::integral auto &x, const std::integral auto &y) {
+          const auto pixel_in  = Color32RGBA{ mim.get_color(
+            static_cast<std::uint32_t>(x + tile.source_x()),
+            static_cast<std::uint32_t>(y + tile.source_y()),
+            tile.depth(),
+            tile.palette_id(),
+            tile.texture_id()) };
+
+          const auto pixel_out = get_output_index(x, y, tile);
+
+          drawn                = set_color(out, pixel_out, pixel_in) || drawn;
+        });
+    });
+  }
   void
     save() const
   {
-    std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
+    std::vector<std::jthread> workers;
 
-    visit_mim([&](auto &&mim) {
-      for_each_pupu([&](const PupuID &unique_pupu_id) {
-        bool drawn = false;
+    for (const auto &pupu : m_unique_pupus) {
+      workers.emplace_back([this, pupu] {
+        std::vector<outColorT> out(static_cast<std::size_t>(m_canvas.area()));
+
+        bool                   drawn = false;
+
         for_each_pupu_and_tile(
-          [&](const PupuID &pupu, const is_tile auto &tile) {
-            if (pupu != unique_pupu_id) {
-              return;
-            }
-            if (!tile.draw()) {
+          [&](const PupuID &current, const is_tile auto &tile) {
+            if (current != pupu || !tile.draw()) {
               return;
             }
 
-            open_viii::tools::for_each_xy(
-              tile.height(),
-              [&](const std::integral auto &x, const std::integral auto &y) {
-                Color32RGBA pixel_in{};
-
-                pixel_in                      = Color32RGBA{ mim.get_color(
-                  static_cast<std::uint32_t>(x + tile.source_x()),
-                  static_cast<std::uint32_t>(y + tile.source_y()),
-                  tile.depth(),
-                  tile.palette_id(),
-                  tile.texture_id()) };
-
-                const std::uint32_t pixel_out = get_output_index(x, y, tile);
-
-                drawn |= set_color(out, pixel_out, pixel_in);
-              });
+            draw_tile(out, tile, drawn);
           });
+
         if (drawn) {
-          save_out_buffer_and_clear(out, unique_pupu_id);
+          save_out_buffer(out, pupu);
         }
       });
-    });
+    }
   }
 };
 }// namespace open_viii::graphics::background
