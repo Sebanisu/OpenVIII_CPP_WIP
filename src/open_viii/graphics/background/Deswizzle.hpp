@@ -16,6 +16,7 @@
 #include "MimFromPath.hpp"
 #include "open_viii/graphics/Png.hpp"
 #include "PupuID.hpp"
+#include "UniquifyPupu.hpp"
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
 namespace open_viii::graphics::background {
@@ -54,20 +55,22 @@ private:
   auto
     find_unique_pupu() const
   {
-    auto out = std::vector<PupuID>{};
-    m_map.visit_tiles([&out](auto &&tiles) {
-      auto pupu_view = tiles | std::views::transform([](const auto &tile) {
-                         return PupuID(tile);
-                       });
-      out            = std::vector<PupuID>(
+    return m_map.visit_tiles([](auto &&tiles) {
+      UniquifyPupu uniquify_pupu = {};
+      auto         pupu_view
+        = tiles | std::views::transform([&uniquify_pupu](const auto &tile) {
+            return uniquify_pupu(tile);
+          });
+      auto out = std::vector<PupuID>(
         std::ranges::begin(pupu_view),
         std::ranges::end(pupu_view));
       std::sort(out.begin(), out.end());
       auto last = std::unique(std::ranges::begin(out), std::ranges::end(out));
       out.erase(last, std::ranges::end(out));
+      return out;
     });
-    return out;
   }
+
   template<typename lambdaT>
   void
     for_each_pupu(const lambdaT &lambda) const
