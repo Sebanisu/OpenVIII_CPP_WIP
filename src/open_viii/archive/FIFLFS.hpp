@@ -563,6 +563,23 @@ public:
   {
     return get_entry_id_and_path(filename).second;
   }
+
+  /**
+   * @brief Check if the archive contains an entry matching the filename.
+   *
+   * This function searches the archive for the specified filename and
+   * returns true if a matching entry exists.
+   *
+   * @param filename A string_view of the filename to search for.
+   * @return True if the archive contains the specified filename, false
+   * otherwise.
+   */
+  [[nodiscard]] bool
+    contains(const std::string_view &filename) const
+  {
+    return !get_entry_id_and_path(filename).second.empty();
+  }
+
   /**
    * @brief Retrieve the file entry data given its filename.
    *

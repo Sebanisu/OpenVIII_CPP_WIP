@@ -343,16 +343,23 @@ public:
                                    width<output_type>(),
                                    height<output_type>() };
   }
-  void
-    to_hex(std::ostream &os) const
+
+  [[nodiscard]] std::string
+    to_hex() const
   {
-    std::array<char, sizeof(this_type)> raw{};
+    std::array<std::uint8_t, sizeof(this_type)> raw{};
     std::memcpy(raw.data(), this, sizeof(this_type));
-    os << "0x";
-    for (char c : raw)
-      os << std::hex << std::setfill('0') << std::setw(2) << std::uppercase
-         << (static_cast<unsigned short>(c) & 0xFFU);
-    os << std::dec << std::setfill(' ') << std::setw(1) << std::nouppercase;
+
+    std::string result;
+    result.reserve(2U + raw.size() * 2U);
+
+    result += "0x";
+
+    for (const auto byte : raw) {
+      fmt::format_to(std::back_inserter(result), "{:02X}", byte);
+    }
+
+    return result;
   }
 };
 
@@ -447,26 +454,9 @@ struct fmt::formatter<open_viii::graphics::background::TileCommon<tileT>>
       const open_viii::graphics::background::TileCommon<tileT> &tile,
       FormatContext                                            &ctx) const
   {
-    auto out = ctx.out();
-
-    // prefix
-    out      = fmt::format_to(out, "\t  ");
-
-    // hex output (still uses stream-style API)
-    {
-      std::string tmp;
-      {
-        std::back_insert_iterator<std::string> it(tmp);
-        std::ostringstream                     oss;
-        tile.to_hex(oss);
-        tmp = std::move(oss).str();
-      }
-      out = fmt::format_to(out, "{}", tmp);
-    }
-
-    // rest of fields (matches original exactly)
-    out = fmt::format_to(
-      out,
+    return fmt::format_to(
+      ctx.out(),
+      "\t  {}"
       ", Source: {}"
       ", Output: {}"
       ", Z: {}"
@@ -479,6 +469,7 @@ struct fmt::formatter<open_viii::graphics::background::TileCommon<tileT>>
       ", Animation ID: {}"
       ", Animation State: {}"
       ", Draw: {}",
+      tile.to_hex(),
       tile.source_rectangle(),
       tile.output_rectangle(),
       tile.z(),
@@ -486,13 +477,11 @@ struct fmt::formatter<open_viii::graphics::background::TileCommon<tileT>>
       +tile.palette_id(),
       +tile.texture_id(),
       +tile.layer_id(),
-      static_cast<std::uint16_t>(tile.blend_mode()),
+      tile.blend_mode(),
       +tile.blend(),
       +tile.animation_id(),
       +tile.animation_state(),
-      +tile.draw());
-
-    return out;
+      tile.draw());
   }
 };
 template<typename tileT>

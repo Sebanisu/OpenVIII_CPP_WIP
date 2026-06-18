@@ -838,55 +838,50 @@ public:
    * @brief Saves the tile data as a CSV file.
    *
    * @param in_path The output file path.
-   * @param pupu_numbers raw pupu ids as 32bit unsigned ints.
+   * @param pupu_numbers Raw Pupu IDs.
    */
   void
     save_csv(
-      const std::string_view           &in_path,
-      const std::vector<std::uint32_t> &pupu_numbers) const
+      const std::string_view    &in_path,
+      const std::vector<PupuID> &pupu_numbers) const
   {
     auto path = std::filesystem::path(in_path);
+
     tools::write_buffer(
       [&](std::ostream &os) {
-        os
-          << R"("Index","Raw bytes","Draw","BPP","Blend Mode","Blend Other","Layer","Texture Page","Palette","Animation","Animation Frame","Source X","Source Y","X","Y","Z","Pupu")"
-          << '\n';
+        fmt::print(
+          os,
+          "\"Index\",\"Raw bytes\",\"Draw\",\"BPP\",\"Blend Mode\","
+          "\"Blend Other\",\"Layer\",\"Texture Page\",\"Palette\","
+          "\"Animation\",\"Animation Frame\",\"Source X\",\"Source Y\","
+          "\"X\",\"Y\",\"Z\",\"Pupu\"\n");
+
         std::size_t i{};
+
         visit_tiles([&](auto &&tiles) {
           const auto action
-            = [&](const auto &t, const std::uint32_t pupu_number = 0) {
-                os << i++ << ',' << '"';
-                t.to_hex(os);
-                os << "\"," << t.draw() << ',' << int{ t.depth() } << ",\"" <<
-                  [&t]() {
-                    switch (t.blend_mode()) {
-                    case BlendModeT::half_add:
-                      return "Half Add";
-                    case BlendModeT::add:
-                      return "Add";
-                    case BlendModeT::subtract:
-                      return "Subtract";
-                    case BlendModeT::quarter_add:
-                      return "Quarter Add";
-                    case BlendModeT::none:
-                    default:
-                      return "None";
-                    }
-                  }()
-                   << "\"," << static_cast<uint16_t>(t.blend()) << ','
-                   << static_cast<uint16_t>(t.layer_id()) << ','
-                   << static_cast<uint16_t>(t.texture_id()) << ','
-                   << static_cast<uint16_t>(t.palette_id()) << ','
-                   << static_cast<uint16_t>(t.animation_id()) << ','
-                   << static_cast<uint16_t>(t.animation_state()) << ','
-                   << static_cast<uint16_t>(t.source_x()) << ','
-                   << static_cast<uint16_t>(t.source_y()) << ','
-                   << static_cast<int16_t>(t.x()) << ','
-                   << static_cast<int16_t>(t.y()) << ','
-                   << static_cast<int16_t>(t.z()) << ',' << "\"0x" << std::hex
-                   << std::setw(8) << std::setfill('0') << std::uppercase
-                   << pupu_number << std::dec << std::setfill(' ')
-                   << std::nouppercase << '"' << "," << '\n';
+            = [&](const auto &t, const PupuID pupu_number = {}) {
+                fmt::print(
+                  os,
+                  "{},\"{}\",{},{},\"{}\",{},{},{},{},{},{},{},{},{},{},{},"
+                  "\"0x{:08X}\"\n",
+                  i++,
+                  t.to_hex(),
+                  t.draw(),
+                  static_cast<int>(t.depth()),
+                  t.blend_mode(),
+                  static_cast<uint16_t>(t.blend()),
+                  static_cast<uint16_t>(t.layer_id()),
+                  static_cast<uint16_t>(t.texture_id()),
+                  static_cast<uint16_t>(t.palette_id()),
+                  static_cast<uint16_t>(t.animation_id()),
+                  static_cast<uint16_t>(t.animation_state()),
+                  static_cast<uint16_t>(t.source_x()),
+                  static_cast<uint16_t>(t.source_y()),
+                  static_cast<int16_t>(t.x()),
+                  static_cast<int16_t>(t.y()),
+                  static_cast<uint16_t>(t.z()),
+                  pupu_number.raw());
               };
 
           if (pupu_numbers.empty()) {

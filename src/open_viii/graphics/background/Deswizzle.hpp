@@ -289,6 +289,12 @@ public:
         });
     });
   }
+  const std::vector<PupuID> &
+    pupus() const noexcept
+  {
+    return m_pupus;
+  }
+
   void
     save(const open_viii::LangT lang) const
   {
