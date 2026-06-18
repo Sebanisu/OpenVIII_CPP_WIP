@@ -2,6 +2,7 @@
 
 #include "open_viii/graphics/background/PupuID.hpp"
 #include "open_viii/graphics/background/BlendModeT.hpp"
+#include "open_viii/graphics/background/Tile1.hpp"
 #include <boost/ut.hpp>
 #include <fmt/format.h>
 #include <limits>
@@ -140,6 +141,69 @@ int
       const bool different = a.r() != b.r() || a.g() != b.g() || a.b() != b.b();
 
       expect(different);
+    };
+
+    "PupuID hex string constructor"_test = [] {
+      const PupuID id{ "1234ABCD" };
+
+      expect(eq(id.raw(), 0x1234ABCDu));
+    };
+
+    "PupuID hex string constructor accepts 0x prefix"_test = [] {
+      const PupuID id{ "0x89ABCDEF" };
+
+      expect(eq(id.raw(), 0x89ABCDEFu));
+    };
+
+    "PupuID hex string constructor rejects invalid size"_test = [] {
+      expect(throws([] {
+        PupuID{ "1234" };
+      }));
+    };
+
+    "PupuID hex string constructor rejects invalid characters"_test = [] {
+      expect(throws([] {
+        PupuID{ "ZZZZZZZZ" };
+      }));
+    };
+
+    "PupuID compares equal to matching tile"_test = [] {
+      constexpr auto tile = Tile1{}
+                              .with_layer_id(2)
+                              .with_blend_mode(BlendModeT::half_add)
+                              .with_animation_id(3)
+                              .with_animation_state(4)
+                              .with_x(17) // not aligned
+                              .with_y(32);// aligned
+
+      const PupuID   id{ tile };
+
+      expect(id == tile);
+      expect(!(id != tile));
+    };
+
+    "PupuID compares unequal to different tile"_test = [] {
+      constexpr auto tile_a = Tile1{}.with_layer_id(2);
+      constexpr auto tile_b = Tile1{}.with_layer_id(3);
+
+      const PupuID   id{ tile_a };
+
+      expect(id != tile_b);
+      expect(!(id == tile_b));
+    };
+
+    "PupuID tile comparison ignores offset"_test = [] {
+      constexpr auto tile = Tile1{}
+                              .with_layer_id(1)
+                              .with_blend_mode(BlendModeT::none)
+                              .with_animation_id(2)
+                              .with_animation_state(3);
+
+      auto           id   = PupuID{ tile };
+
+      id += 5U;
+
+      expect(id == tile);
     };
   };
 }

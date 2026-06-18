@@ -499,14 +499,14 @@ public:
       const std::uint32_t y,
       const std::uint8_t  texture_id) const
   {
-    const auto width = m_mim_type.width(BPPT::BPP4_CONST());
+    const auto width = m_mim_type.width(BPPT::BPP4_CONST()) / 2U;
     const auto texture_page_offset
       = std::uint32_t{ +texture_page_width_t::bit_4 }
       * std::uint32_t{ texture_id };
     const auto       m_image_buffer_bbp4 = set_image_span_bpp4();
-    const Bit4Values pair                = m_image_buffer_bbp4
-      [(std::uint32_t{ x } + texture_page_offset) / 2U
-       + (std::uint32_t{ y } * width)];
+    const auto       index = (std::uint32_t{ x } + texture_page_offset) / 2U
+                           + (std::uint32_t{ y } * width);
+    const Bit4Values pair  = m_image_buffer_bbp4[index];
     return x % 2U == 0 ? pair.first : pair.second;
   }
 

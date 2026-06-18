@@ -34,8 +34,13 @@ if (MSVC)
         PUBLIC /utf-8
     )
 
-    target_compile_options(${PROJECT_NAME}_VIIIGraphics  PUBLIC
-            $<$<CONFIG:Debug>:/MTd>
-            $<$<NOT:$<CONFIG:Debug>>:/MT>
+    # target_compile_options(${PROJECT_NAME}_VIIIGraphics  PUBLIC
+    #         $<$<CONFIG:Debug>:/MTd>
+    #         $<$<NOT:$<CONFIG:Debug>>:/MT>
+    # )
+
+    set_property(TARGET ${PROJECT_NAME}_VIIIGraphics PROPERTY
+        MSVC_RUNTIME_LIBRARY
+        "MultiThreaded$<$<CONFIG:Debug>:Debug>"
     )
 endif()

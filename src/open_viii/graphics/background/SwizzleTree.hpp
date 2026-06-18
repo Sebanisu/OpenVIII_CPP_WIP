@@ -99,7 +99,7 @@ private:
       = MimFromPath{ m_mim_type, m_dir_path, m_dir_name, m_output_prefix };
     const auto map = Map{ m_mim_type, get_map_buffer() };
     const auto r   = Deswizzle(mim, map, m_output_prefix);
-    r.save();
+    r.save(open_viii::LangT::generic);
     // const auto r = Deswizzle<map_type>(get_map_buffer(), m_dir_path,
     // m_dir_name, m_output_prefix); r.process();
   }

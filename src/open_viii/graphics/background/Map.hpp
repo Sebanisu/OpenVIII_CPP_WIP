@@ -14,7 +14,7 @@
 #define VIIIARCHIVE_MAP_HPP
 #include "Mim.hpp"
 #include "open_viii/tools/Tools.hpp"
-#include "Pupu.hpp"
+#include "PupuID.hpp"
 #include "Tile1.hpp"
 #include "Tile2.hpp"
 #include "Tile3.hpp"
@@ -23,81 +23,8 @@
 #include <ranges>
 #include <utility>
 #include <variant>
+
 namespace open_viii::graphics::background {
-/**
- * @brief Concept to determine if a type represents a tile.
- *
- * A type satisfies `is_tile` if it has a nested `impl_type` and is derived from
- * it.
- *
- * @tparam T The type to check.
- */
-template<typename T>
-concept is_tile = requires { typename std::remove_cvref_t<T>::impl_type; }
-               && std::derived_from<
-                    std::remove_cvref_t<T>,
-                    typename std::remove_cvref_t<T>::impl_type>;
-
-/**
- * @brief Concept to determine if a type is a range of tiles.
- *
- * A type satisfies `is_tiles` if it is a range and its elements satisfy
- * `is_tile`.
- *
- * @tparam T The type to check.
- */
-template<typename T>
-concept is_tiles = is_tile<std::ranges::range_value_t<std::remove_cvref_t<T>>>
-                && std::ranges::range<std::remove_cvref_t<T>>;
-
-/**
- * @brief Concept to determine if a type is a contiguous and sized range of
- * tiles.
- *
- * A type satisfies `is_contiguous_sized_tiles` if it meets the `is_tiles`
- * requirement and is both a contiguous range and a sized range.
- *
- * @tparam T The type to check.
- */
-template<typename T>
-concept is_contiguous_sized_tiles
-  = is_tiles<std::remove_cvref_t<T>>
- && std::ranges::contiguous_range<std::remove_cvref_t<T>>
- && std::ranges::sized_range<std::remove_cvref_t<T>>;
-
-/**
- * @brief Predicate that filters out sentinel/invalid tiles.
- *
- * A tile is considered valid when its x-coordinate does not match the
- * sentinel end marker value (`0x7FFF`).
- *
- * Intended for use with standard algorithms and ranges filters when
- * iterating tile collections that may contain terminator entries.
- */
-struct NotInvalidTile
-{
-  /**
-   * @brief Checks whether a tile is valid.
-   *
-   * @tparam T Tile type satisfying the `is_tile` concept.
-   * @param tile Tile instance to evaluate.
-   * @return `true` if the tile is not the sentinel/invalid tile.
-   * @return `false` if the tile x-coordinate equals the sentinel value.
-   */
-  template<is_tile T>
-  constexpr bool
-    operator()(const T &tile) const noexcept
-  {
-    return (std::cmp_not_equal(tile.x(), s_end_x));
-  }
-
-private:
-  /**
-   * @brief Sentinel x-coordinate used to identify invalid/end tiles.
-   */
-  static constexpr std::uint16_t s_end_x = { 0x7FFFU };
-};
-
 struct Map
 {
   using variant_tiles = std::variant<
@@ -911,55 +838,52 @@ public:
    * @brief Saves the tile data as a CSV file.
    *
    * @param in_path The output file path.
-   * @param pupu_numbers raw pupu ids as 32bit unsigned ints.
+   * @param pupu_numbers Raw Pupu IDs.
    */
   void
     save_csv(
-      const std::string_view           &in_path,
-      const std::vector<std::uint32_t> &pupu_numbers) const
+      const std::string_view    &in_path,
+      const std::vector<PupuID> &pupu_numbers) const
   {
     auto path = std::filesystem::path(in_path);
+    path      = (path.parent_path() / path.stem()).string() + ".csv";
+    spdlog::info("Saving map data to CSV file: {}", path);
+
     tools::write_buffer(
       [&](std::ostream &os) {
-        os
-          << R"("Index","Raw bytes","Draw","BPP","Blend Mode","Blend Other","Layer","Texture Page","Palette","Animation","Animation Frame","Source X","Source Y","X","Y","Z","Pupu")"
-          << '\n';
+        fmt::print(
+          os,
+          "\"Index\",\"Raw bytes\",\"Draw\",\"BPP\",\"Blend Mode\","
+          "\"Blend Other\",\"Layer\",\"Texture Page\",\"Palette\","
+          "\"Animation\",\"Animation Frame\",\"Source X\",\"Source Y\","
+          "\"X\",\"Y\",\"Z\",\"Pupu\"\n");
+
         std::size_t i{};
+
         visit_tiles([&](auto &&tiles) {
           const auto action
-            = [&](const auto &t, const std::uint32_t pupu_number = 0) {
-                os << i++ << ',' << '"';
-                t.to_hex(os);
-                os << "\"," << t.draw() << ',' << int{ t.depth() } << ",\"" <<
-                  [&t]() {
-                    switch (t.blend_mode()) {
-                    case BlendModeT::half_add:
-                      return "Half Add";
-                    case BlendModeT::add:
-                      return "Add";
-                    case BlendModeT::subtract:
-                      return "Subtract";
-                    case BlendModeT::quarter_add:
-                      return "Quarter Add";
-                    case BlendModeT::none:
-                    default:
-                      return "None";
-                    }
-                  }()
-                   << "\"," << static_cast<uint16_t>(t.blend()) << ','
-                   << static_cast<uint16_t>(t.layer_id()) << ','
-                   << static_cast<uint16_t>(t.texture_id()) << ','
-                   << static_cast<uint16_t>(t.palette_id()) << ','
-                   << static_cast<uint16_t>(t.animation_id()) << ','
-                   << static_cast<uint16_t>(t.animation_state()) << ','
-                   << static_cast<uint16_t>(t.source_x()) << ','
-                   << static_cast<uint16_t>(t.source_y()) << ','
-                   << static_cast<int16_t>(t.x()) << ','
-                   << static_cast<int16_t>(t.y()) << ','
-                   << static_cast<int16_t>(t.z()) << ',' << "\"0x" << std::hex
-                   << std::setw(8) << std::setfill('0') << std::uppercase
-                   << pupu_number << std::dec << std::setfill(' ')
-                   << std::nouppercase << '"' << "," << '\n';
+            = [&](const auto &t, const PupuID pupu_number = {}) {
+                fmt::print(
+                  os,
+                  "{},\"{}\",{},{},\"{}\",{},{},{},{},{},{},{},{},{},{},{},"
+                  "\"0x{:08X}\"\n",
+                  i++,
+                  t.to_hex(),
+                  t.draw(),
+                  static_cast<int>(t.depth()),
+                  t.blend_mode(),
+                  static_cast<uint16_t>(t.blend()),
+                  static_cast<uint16_t>(t.layer_id()),
+                  static_cast<uint16_t>(t.texture_id()),
+                  static_cast<uint16_t>(t.palette_id()),
+                  static_cast<uint16_t>(t.animation_id()),
+                  static_cast<uint16_t>(t.animation_state()),
+                  static_cast<uint16_t>(t.source_x()),
+                  static_cast<uint16_t>(t.source_y()),
+                  static_cast<int16_t>(t.x()),
+                  static_cast<int16_t>(t.y()),
+                  static_cast<uint16_t>(t.z()),
+                  pupu_number.raw());
               };
 
           if (pupu_numbers.empty()) {
@@ -975,7 +899,7 @@ public:
           }
         });
       },
-      (path.parent_path() / path.stem()).string() + ".csv");
+      path);
   }
 
   /**

@@ -26,7 +26,7 @@ build_script:
   - cmd: >-
       cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -B .build -DCMAKE_TOOLCHAIN_FILE=c:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake .
 
-      cmake --build .build
+      cmake --build .build --verbose
 
 test_script:
   - cmd:

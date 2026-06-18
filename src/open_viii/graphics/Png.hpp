@@ -92,7 +92,10 @@ private:
   {
     // Initialize info structure
     const auto safe_png_info_deleter = [&png_ptr](png_info *info) {
-      png_free_data(png_ptr.get(), info, PNG_FREE_ALL, -1);
+      if (info != nullptr) {
+        png_infop tmp = info;
+        png_destroy_info_struct(png_ptr.get(), &tmp);
+      }
     };
     using safe_png_info
       = std::unique_ptr<png_info, decltype(safe_png_info_deleter)>;
