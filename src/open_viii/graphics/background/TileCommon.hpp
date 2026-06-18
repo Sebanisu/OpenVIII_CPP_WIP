@@ -10,6 +10,7 @@
 #include <cstring>
 #include <fmt/format.h>
 #include <iomanip>
+#include <utility>
 namespace open_viii::graphics::background {
 template<typename tileT>
 struct TileCommon;
