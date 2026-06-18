@@ -846,6 +846,8 @@ public:
       const std::vector<PupuID> &pupu_numbers) const
   {
     auto path = std::filesystem::path(in_path);
+    path      = (path.parent_path() / path.stem()).string() + ".csv";
+    spdlog::info("Saving map data to CSV file: {}", path);
 
     tools::write_buffer(
       [&](std::ostream &os) {
@@ -897,7 +899,7 @@ public:
           }
         });
       },
-      (path.parent_path() / path.stem()).string() + ".csv");
+      path);
   }
 
   /**
