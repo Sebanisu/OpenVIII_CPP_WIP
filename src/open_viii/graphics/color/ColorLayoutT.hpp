@@ -4,6 +4,8 @@
 
 #ifndef OPENVIII_CPP_WIP_COLORLAYOUTT_HPP
 #define OPENVIII_CPP_WIP_COLORLAYOUTT_HPP
+#include <bit>
+#include <cstdint>
 namespace open_viii::graphics {
 enum struct ColorLayoutT : std::uint8_t
 {
